@@ -61,6 +61,15 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# AppSignal
+config :appsignal, :config,
+  active: false,
+  ecto_repos: [BemedaPersonal.Repo],
+  env: config_env(),
+  ignore_actions: ["BemedaPersonalWeb.HealthController#index"],
+  name: "bemeda_personal",
+  otp_app: :bemeda_personal
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

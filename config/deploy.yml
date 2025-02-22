@@ -23,7 +23,7 @@ proxy:
   # Proxy connects to your container on port 80 by default.
   app_port: 4256
   healthcheck:
-    path: /
+    path: /health
 
 # Credentials for your image host.
 registry:
@@ -50,6 +50,8 @@ env:
     POOL_SIZE: 10
     PORT: 4256
   secret:
+    - APPSIGNAL_APP_ENV
+    - APPSIGNAL_PUSH_API_KEY
     - DATABASE_URL
     - SECRET_KEY_BASE
 

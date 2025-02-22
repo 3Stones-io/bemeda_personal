@@ -3,19 +3,33 @@ defmodule BemedaPersonal.Release do
   Used for executing DB release tasks when run in production without Mix
   installed.
   """
+
+  @type response :: {:ok, fun(), any()}
+
   @app :bemeda_personal
 
+  @doc """
+  Migrates the production DB.
+  """
+  @spec migrate() :: [response()]
   def migrate do
     load_app()
 
     for repo <- repos() do
-      {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :up, all: true))
+      {:ok, _fun_return, _apps} =
+        Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :up, all: true))
     end
   end
 
+  @doc """
+  Rolls back the production DB.
+  """
+  @spec rollback(Ecto.Repo.t(), any()) :: response()
   def rollback(repo, version) do
     load_app()
-    {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, to: version))
+
+    {:ok, _fun_return, _apps} =
+      Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, to: version))
   end
 
   defp repos do

@@ -37,3 +37,11 @@ npm-debug.log
 
 # Secrets
 .env.prod
+
+# Optimum development/test artifacts
+/node_modules/
+/priv/plts/
+.DS_Store
+.env
+package.json
+package-lock.json

@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.PageControllerTest do
-  use BemedaPersonalWeb.ConnCase
+  use BemedaPersonalWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")

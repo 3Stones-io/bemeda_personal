@@ -41,4 +41,6 @@ defmodule BemedaPersonalWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
+
+  resources "/health", BemedaPersonalWeb.HealthController, only: [:index]
 end
