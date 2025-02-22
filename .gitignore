@@ -35,3 +35,5 @@ bemeda_personal-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Secrets
+.env.prod
