@@ -17,6 +17,11 @@ defmodule BemedaPersonalWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  alias BemedaPersonal.Accounts
+
+  @type conn :: Plug.Conn.t()
+  @type context :: map()
+
   using do
     quote do
       # The default endpoint for testing
@@ -34,5 +39,33 @@ defmodule BemedaPersonalWeb.ConnCase do
   setup tags do
     BemedaPersonal.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  @doc """
+  Setup helper that registers and logs in users.
+
+      setup :register_and_log_in_user
+
+  It stores an updated connection and a registered user in the
+  test context.
+  """
+  @spec register_and_log_in_user(context()) :: context()
+  def register_and_log_in_user(%{conn: conn}) do
+    user = BemedaPersonal.AccountsFixtures.user_fixture()
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  @doc """
+  Logs the given `user` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  @spec log_in_user(conn(), Accounts.User.t()) :: conn()
+  def log_in_user(conn, user) do
+    token = BemedaPersonal.Accounts.generate_user_session_token(user)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:user_token, token)
   end
 end
