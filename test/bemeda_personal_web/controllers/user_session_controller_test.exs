@@ -4,7 +4,7 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
   import BemedaPersonal.AccountsFixtures
 
   setup do
-    %{user: user_fixture()}
+    %{user: user_fixture(confirmed: true)}
   end
 
   describe "POST /users/log_in" do
@@ -54,7 +54,9 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Welcome back!"
     end
 
-    test "login following registration", %{conn: conn, user: user} do
+    test "login following registration shows a confirmation message", %{conn: conn} do
+      user = user_fixture()
+
       conn =
         post(conn, ~p"/users/log_in", %{
           "_action" => "registered",
@@ -64,8 +66,10 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
           }
         })
 
-      assert redirected_to(conn) == ~p"/"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Account created successfully"
+      assert redirected_to(conn) == ~p"/users/log_in"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
+               "You must confirm your email address"
     end
 
     test "login following password update", %{conn: conn, user: user} do

@@ -64,7 +64,9 @@ defmodule BemedaPersonal.MixProject do
   # Type `mix help deps` for examples and options.
   defp app_deps do
     [
-      {:bcrypt_elixir, "~> 3.0"}
+      {:bcrypt_elixir, "~> 3.0"},
+      {:multipart, "~> 0.4"},
+      {:plug, "~> 1.14"}
     ]
   end
 

@@ -159,6 +159,8 @@ defmodule GithubWorkflows do
           APPSIGNAL_PUSH_API_KEY=${{ secrets.APPSIGNAL_PUSH_API_KEY }}
           DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@bemeda-personal-db:5432/bemeda_personal
           KAMAL_REGISTRY_PASSWORD=${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}
           EOL

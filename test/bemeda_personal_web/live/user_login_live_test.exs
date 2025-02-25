@@ -27,7 +27,7 @@ defmodule BemedaPersonalWeb.UserLoginLiveTest do
   describe "user login" do
     test "redirects if user login with valid credentials", %{conn: conn} do
       password = "123456789abcd"
-      user = user_fixture(%{password: password})
+      user = user_fixture(%{confirmed: true, password: password})
 
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 
@@ -52,6 +52,23 @@ defmodule BemedaPersonalWeb.UserLoginLiveTest do
       conn = submit_form(form, conn)
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+
+      assert redirected_to(conn) == "/users/log_in"
+    end
+
+    test "redirects to login page with a flash error if the user is not confirmed", %{conn: conn} do
+      password = "123456789abcd"
+      user = user_fixture(%{password: password})
+
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      form =
+        form(lv, "#login_form", user: %{email: user.email, password: password, remember_me: true})
+
+      conn = submit_form(form, conn)
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+               "You must confirm your email address"
 
       assert redirected_to(conn) == "/users/log_in"
     end

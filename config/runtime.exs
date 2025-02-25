@@ -234,4 +234,22 @@ if config_env() == :prod do
     env: appsignal_app_env,
     push_api_key: appsignal_push_api_key,
     revision: appsignal_revision
+
+  mailgun_api_key =
+    System.get_env("MAILGUN_API_KEY") ||
+      raise """
+      environment variable MAILGUN_API_KEY is missing.
+      """
+
+  mailgun_domain =
+    System.get_env("MAILGUN_DOMAIN") ||
+      raise """
+      environment variable MAILGUN_DOMAIN is missing.
+      """
+
+  config :bemeda_personal, BemedaPersonal.Mailer,
+    adapter: Swoosh.Adapters.Mailgun,
+    api_key: mailgun_api_key,
+    base_url: "https://api.eu.mailgun.net/v3",
+    domain: mailgun_domain
 end

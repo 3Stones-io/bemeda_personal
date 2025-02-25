@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     test "renders settings page", %{conn: conn} do
       {:ok, _lv, html} =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(user_fixture(confirmed: true))
         |> live(~p"/users/settings")
 
       assert html =~ "Change Email"
@@ -29,7 +29,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
   describe "update email form" do
     setup %{conn: conn} do
       password = valid_user_password()
-      user = user_fixture(%{password: password})
+      user = user_fixture(%{confirmed: true, password: password})
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 
@@ -86,7 +86,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
   describe "update password form" do
     setup %{conn: conn} do
       password = valid_user_password()
-      user = user_fixture(%{password: password})
+      user = user_fixture(%{confirmed: true, password: password})
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 

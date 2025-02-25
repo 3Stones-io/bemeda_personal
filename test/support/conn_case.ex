@@ -51,7 +51,7 @@ defmodule BemedaPersonalWeb.ConnCase do
   """
   @spec register_and_log_in_user(context()) :: context()
   def register_and_log_in_user(%{conn: conn}) do
-    user = BemedaPersonal.AccountsFixtures.user_fixture()
+    user = BemedaPersonal.AccountsFixtures.user_fixture(confirmed: true)
     %{conn: log_in_user(conn, user), user: user}
   end
 

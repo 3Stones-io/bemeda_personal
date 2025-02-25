@@ -37,7 +37,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
   end
 
   describe "register user" do
-    test "creates account and logs the user in", %{conn: conn} do
+    test "creates account and shows a confirmation message", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       email = unique_user_email()
@@ -45,14 +45,12 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/users/log_in"
 
       # Now do a logged in request and assert on the menu
-      logged_in_conn = get(conn, "/")
+      logged_in_conn = get(conn, ~p"/users/log_in")
       response = html_response(logged_in_conn, 200)
-      assert response =~ email
-      assert response =~ "Settings"
-      assert response =~ "Log out"
+      assert response =~ "You must confirm your email address"
     end
 
     test "renders errors for duplicated email", %{conn: conn} do

@@ -53,6 +53,8 @@ env:
     - APPSIGNAL_APP_ENV
     - APPSIGNAL_PUSH_API_KEY
     - DATABASE_URL
+    - MAILGUN_API_KEY
+    - MAILGUN_DOMAIN
     - SECRET_KEY_BASE
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:

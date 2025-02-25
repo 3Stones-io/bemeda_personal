@@ -6,7 +6,7 @@ defmodule BemedaPersonal.AccountsFixtures do
 
   alias BemedaPersonal.Accounts.User
 
-  @type attrs :: map()
+  @type attrs :: keyword()
 
   @spec unique_user_email() :: String.t()
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
@@ -14,22 +14,31 @@ defmodule BemedaPersonal.AccountsFixtures do
   @spec valid_user_password() :: String.t()
   def valid_user_password, do: "hello world!"
 
-  @spec valid_user_attributes(attrs()) :: attrs()
-  def valid_user_attributes(attrs \\ %{}) do
-    Enum.into(attrs, %{
-      email: unique_user_email(),
-      password: valid_user_password()
-    })
+  @spec valid_user_attributes(attrs()) :: map()
+  def valid_user_attributes(attrs \\ []) do
+    Enum.into(
+      attrs,
+      %{
+        email: unique_user_email(),
+        password: valid_user_password()
+      }
+    )
   end
 
   @spec user_fixture(attrs()) :: User.t()
-  def user_fixture(attrs \\ %{}) do
+  def user_fixture(attrs \\ []) do
     {:ok, user} =
       attrs
       |> valid_user_attributes()
       |> BemedaPersonal.Accounts.register_user()
 
-    user
+    if attrs[:confirmed] do
+      user
+      |> Ecto.Changeset.change(%{confirmed_at: DateTime.utc_now(:second)})
+      |> BemedaPersonal.Repo.update!()
+    else
+      user
+    end
   end
 
   @spec extract_user_token(function()) :: String.t()
