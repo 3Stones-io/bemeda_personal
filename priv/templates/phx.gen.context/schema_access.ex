@@ -1,7 +1,7 @@
 alias <%= inspect schema.module %>
 
 @type attrs :: map()
-@type <%= schema.singular %> :: %<%= inspect schema.alias %>{}
+@type <%= schema.singular %> :: <%= inspect schema.alias %>.t()
 @type id :: binary()
 @type changeset :: Ecto.Changeset.t()
 

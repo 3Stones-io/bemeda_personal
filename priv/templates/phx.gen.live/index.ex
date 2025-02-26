@@ -43,7 +43,7 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
   @impl Phoenix.LiveView
   def handle_event("delete", %{"id" => id}, socket) do
     <%= schema.singular %> = <%= inspect context.alias %>.get_<%= schema.singular %>!(id)
-    {:ok, _} = <%= inspect context.alias %>.delete_<%= schema.singular %>(<%= schema.singular %>)
+    {:ok, _result} = <%= inspect context.alias %>.delete_<%= schema.singular %>(<%= schema.singular %>)
 
     {:noreply, stream_delete(socket, :<%= schema.collection %>, <%= schema.singular %>)}
   end

@@ -4,5 +4,6 @@ defmodule <%= inspect context.module %> do
   """
 
   import Ecto.Query, warn: false
+
   alias <%= inspect schema.repo %><%= schema.repo_alias %>
 end

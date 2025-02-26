@@ -2,7 +2,7 @@
 <%= function_def %>
 <% end %>
 
-  @spec <%= schema.singular %>_fixture(map()) :: <%= inspect schema.module %>
+  @spec <%= schema.singular %>_fixture(map()) :: <%= inspect schema.module %>.t()
   def <%= schema.singular %>_fixture(attrs \\ %{}) do
     {:ok, <%= schema.singular %>} =
       attrs
