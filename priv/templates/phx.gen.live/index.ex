@@ -6,10 +6,7 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok,
-     socket
-     |> assign(:<%= schema.collection %>, <%= inspect context.alias %>.list_<%= schema.collection %>())
-     |> assign(:<%= schema.singular %>, nil)}
+    {:ok, stream(socket, :<%= schema.collection %>, <%= inspect context.alias %>.list_<%= schema.plural %>())}
   end
 
   @impl Phoenix.LiveView
