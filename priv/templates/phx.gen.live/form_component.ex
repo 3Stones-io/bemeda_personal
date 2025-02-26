@@ -36,12 +36,14 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"<%= schema.singular %>" => <%= schema.singular %>_params}, socket) do
     changeset = <%= inspect context.alias %>.change_<%= schema.singular %>(socket.assigns.<%= schema.singular %>, <%= schema.singular %>_params)
+
     {:noreply,
      socket
      |> assign(:changeset, changeset)
      |> assign_form(changeset)}
   end
 
+  @impl Phoenix.LiveComponent
   def handle_event("save", %{"<%= schema.singular %>" => <%= schema.singular %>_params}, socket) do
     save_<%= schema.singular %>(socket, socket.assigns.action, <%= schema.singular %>_params)
   end
@@ -80,6 +82,10 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
          |> assign(:changeset, changeset)
          |> assign_form(changeset)}
     end
+  end
+
+  defp assign_form(socket, changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
