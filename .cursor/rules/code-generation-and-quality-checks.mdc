@@ -1,6 +1,7 @@
 ---
 description: Code Generation, Code Quality Checks, Credo Error Resolution
 globs: *.ex, *.exs, *.heex
+alwaysApply: false
 ---
 
 - Prefix your answer with 🤖

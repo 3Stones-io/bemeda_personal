@@ -1,5 +1,6 @@
 ---
 description: Installing npm packages
 globs: 
+alwaysApply: false
 ---
 Navigate to /assests/js before running any npm installation commands
