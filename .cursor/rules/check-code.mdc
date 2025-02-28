@@ -1,0 +1,6 @@
+---
+description: Commands to run when checking code
+globs: *
+---
+
+Always run `mix format` before running `mix check_code`

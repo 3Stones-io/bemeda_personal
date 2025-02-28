@@ -1,0 +1,62 @@
+---
+description: Code Generation, Code Quality Checks, Credo Error Resolution
+globs: *.ex, *.exs, *.heex
+---
+
+- Prefix your answer with 🤖
+- Avoid using `Enum.empty?/1` on large collections, as it can be an expensive operation. Use an alternative like checking the size of the collection.  
+- Calls to `IEx.pry/0` should not be included in production code, as they are meant for debugging purposes.  
+- Avoid leaving calls to `IO.inspect/2` in production code, as they are typically used for debugging.  
+- Ensure that metadata keys used in logger configurations are included to avoid missing critical logging information.  
+- Avoid performing operations on the same values, such as `x == x`, as these often indicate logical errors.  
+- Operations that yield constant results should be avoided, as they add unnecessary complexity.  
+- Avoid raising exceptions inside `rescue` blocks unless absolutely necessary, as this can make error handling more difficult.  
+- Ensure that function specs include structs where applicable to improve type safety and clarity.  
+- Avoid executing external commands without proper safeguards, as this can introduce security vulnerabilities.  
+- Enum operations whose results are not used should be removed to improve performance and clarity.  
+- File operations whose results are not used should be removed to avoid unnecessary resource usage.  
+- Keyword operations whose results are not used should be removed to improve code efficiency.  
+- List operations whose results are not used should be removed, as they unnecessarily increase complexity.  
+- Path operations whose results are not used should be removed to improve code readability and efficiency.  
+- Regex operations whose results are not used should be removed to avoid unnecessary complexity.  
+- String operations whose results are not used should be removed for better performance and cleaner code.  
+- Tuple operations whose results are not used should be removed to avoid unnecessary operations.  
+- Test files should use the correct extension (`.exs`) to ensure they are treated as test files.  
+- Group multiple `alias`, `import`, `require`, or `use` statements together consistently for better readability.  
+- Unused variables should follow a consistent naming convention, typically prefixed with an underscore (`_var`) to signify their intent.  
+- Avoid duplicating code. Refactor shared logic into reusable functions to reduce redundancy.  
+- Tests that are skipped should include a comment explaining the reason for skipping.  
+- Avoid aliasing modules with `as:`, unless absolutely necessary, to avoid confusion and improve readability.  
+- When piping into blocks, ensure proper indentation and formatting to maintain code clarity.  
+- Avoid using `impl true` in module definitions unless absolutely necessary, as it can reduce readability. @impl true` should be `@impl MyBehaviour
+- Use `alias` for multiple module imports from the same namespace to improve readability and reduce redundancy.  
+- Avoid excessive nesting of function calls, as it can reduce readability and make the code harder to follow.  
+- Avoid piping into functions with only one argument, as it can obscure the purpose of the pipe.  
+- Ensure that each pipe (`|>`) is used on its own line for better readability.  
+- Separate `alias` and `require` statements to improve clarity and structure in the code.  
+- Avoid piping a single function call into a block, as it can obscure the purpose of the pipe.  
+- Avoid using a single pipe (`|>`) for a simple operation when it could be written more clearly without piping.  
+- Ensure that all functions have appropriate specs (`@spec`) for better type documentation and clarity.  
+- Follow a strict module layout order, ensuring that elements like `@shortdoc`, `@moduledoc`, and imports appear in a consistent order.  
+- Avoid returning custom-tagged tuples in functions. Use standard `{:ok, _}` and `{:error, _}` tuples for consistency.  
+- Functions with high ABC (Assignments, Branches, and Conditionals) size should be refactored into simpler ones to improve maintainability.  
+- Avoid using `List.append/2` for adding a single item. Use the `++` operator for simplicity and performance.  
+- Avoid double boolean negations (`!!`). Simplify the expression for better clarity.  
+- Avoid using `Enum.filter/2` followed by `Enum.reject/2`. Combine them into a single operation for better efficiency.  
+- Avoid using `IO.puts/2` for debugging purposes in production code.  
+- Avoid chaining multiple `Enum.map/2` calls. Combine them into a single `map` operation for efficiency.  
+- Refactor modules with excessive dependencies into smaller, more manageable modules to reduce complexity.  
+- Avoid negating `is_nil/1`. Use the positive form of the condition for clarity.  
+- Test cases should use `async: true` where possible to improve performance and test execution speed.  
+- Avoid starting a pipe chain with a value other than a function call for better clarity.  
+- Avoid using `Enum.reject/2` followed by `Enum.filter/2`. Combine them into a single operation for better efficiency.  
+- Avoid unnecessary variable rebinding in functions. Instead, strive for clarity and immutability.  
+- Avoid leaking sensitive environment variables in logs or other outputs.  
+- Avoid passing unchecked data into `Map.get/2` without a default or proper validation.  
+- Avoid using `Mix.env/0` directly in your code. Instead, pass the environment as an argument to functions.  
+- Avoid converting unchecked data to atoms using `String.to_atom/1`, as this can lead to atom exhaustion and memory leaks.  
+- If there are multiple callback functions with the same name, add the @impl clause only to the first one to indicate implementation, and omit it from subsequent definitions for clarity and conciseness.
+- Imports should be listed before aliases to maintain a consistent and logical order in module definitions.
+- Imports and aliases should be alphabetically sorted in ascending order to ensure consistency and readability.
+- Test files should pass the :async boolean option when using a test case module to enable concurrent test execution where possible.
+- When adding specs to a function, define user-defined types (@type) to enhance readability and provide clear, meaningful documentation, rather than using raw types directly to improve documentation.

@@ -1,0 +1,5 @@
+---
+description: Installing npm packages
+globs: 
+---
+Navigate to /assests/js before running any npm installation commands
