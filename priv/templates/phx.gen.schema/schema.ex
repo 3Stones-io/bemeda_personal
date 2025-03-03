@@ -2,11 +2,12 @@ defmodule <%= inspect schema.module %> do
   @moduledoc false
 
   use Ecto.Schema
+
   import Ecto.Changeset
 
-  @type t :: %__MODULE__{}
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
+  @type t :: %__MODULE__{}
 
 <%= if schema.prefix do %>
   @schema_prefix :<%= schema.prefix %>
@@ -21,7 +22,6 @@ defmodule <%= inspect schema.module %> do
     timestamps(<%= if schema.timestamp_type != :naive_datetime, do: "type: #{inspect schema.timestamp_type}" %>)
   end
 
-  @doc false
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(<%= schema.singular %>, attrs) do
     <%= schema.singular %>
