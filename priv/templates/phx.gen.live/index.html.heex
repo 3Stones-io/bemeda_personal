@@ -11,8 +11,7 @@
   id="<%= schema.plural %>"
   rows={@streams.<%= schema.collection %>}
   row_click={fn {_id, <%= schema.singular %>} -> JS.navigate(~p"<%= schema.route_prefix %>/#{<%= schema.singular %>}") end}
->
-<%= for {k, _} <- schema.attrs do %>
+><%= for {k, _} <- schema.attrs do %>
   <:col :let={{_id, <%= schema.singular %>}} label="<%= Phoenix.Naming.humanize(Atom.to_string(k)) %>">{<%= schema.singular %>.<%= k %>}</:col>
 <% end %>
   <:action :let={{_id, <%= schema.singular %>}}>
@@ -34,7 +33,8 @@
 <.modal
   :if={@live_action in [:new, :edit]}
   id="<%= schema.singular %>-modal"
-  show on_cancel={JS.patch(~p"<%= schema.route_prefix %>")}
+  show
+  on_cancel={JS.patch(~p"<%= schema.route_prefix %>")}
 >
   <.live_component
     module={<%= inspect context.web_module %>.<%= inspect Module.concat(schema.web_namespace, schema.alias) %>Live.FormComponent}

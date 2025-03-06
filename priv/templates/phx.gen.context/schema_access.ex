@@ -2,9 +2,9 @@
   alias <%= inspect schema.repo %><%= schema.repo_alias %>
 
   @type attrs :: map()
-  @type <%= schema.singular %> :: <%= inspect schema.alias %>.t()
-  @type id :: binary()
   @type changeset :: Ecto.Changeset.t()
+  @type id :: binary()
+  @type <%= schema.singular %> :: <%= inspect schema.alias %>.t()
 
   @doc """
   Returns the list of <%= schema.plural %>.
