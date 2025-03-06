@@ -7,6 +7,10 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
   def render(assigns) do
     ~H"""
     <div>
+      <.header>
+        {@title}
+      </.header>
+
       <.simple_form
         for={@form}
         id="<%= schema.singular %>-form"
@@ -25,22 +29,22 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
 
   @impl Phoenix.LiveComponent
   def update(%{<%= schema.singular %>: <%= schema.singular %>} = assigns, socket) do
+    changeset = <%= inspect context.alias %>.change_<%= schema.singular %>(<%= schema.singular %>)
+
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_new(:form, fn ->
-       to_form(<%= inspect context.alias %>.change_<%= schema.singular %>(<%= schema.singular %>))
-     end)}
+     |> assign_form(changeset)}
   end
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"<%= schema.singular %>" => <%= schema.singular %>_params}, socket) do
-    changeset = <%= inspect context.alias %>.change_<%= schema.singular %>(socket.assigns.<%= schema.singular %>, <%= schema.singular %>_params)
+    changeset =
+      socket.assigns.<%= schema.singular %>
+      |> <%= inspect context.alias %>.change_<%= schema.singular %>(<%= schema.singular %>_params)
+      |> Map.put(:action, :validate)
 
-    {:noreply,
-     socket
-     |> assign(:changeset, changeset)
-     |> assign_form(changeset)}
+    {:noreply, assign_form(socket, changeset)}
   end
 
   @impl Phoenix.LiveComponent
@@ -59,10 +63,7 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply,
-         socket
-         |> assign(:changeset, changeset)
-         |> assign_form(changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
@@ -77,14 +78,11 @@ defmodule <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply,
-         socket
-         |> assign(:changeset, changeset)
-         |> assign_form(changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
-  defp assign_form(socket, changeset) do
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
 
