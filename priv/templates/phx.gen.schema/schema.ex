@@ -8,7 +8,6 @@ defmodule <%= inspect schema.module %> do
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type t :: %__MODULE__{}
-
 <%= if schema.prefix do %>
   @schema_prefix :<%= schema.prefix %>
 <% end %><%= if schema.binary_id do %>
@@ -17,7 +16,7 @@ defmodule <%= inspect schema.module %> do
 <% end %>
   schema <%= inspect schema.table %> do
 <%= Mix.Phoenix.Schema.format_fields_for_schema(schema) %>
-<%= for {_, k, _, _} <- schema.assocs do %>    field <%= inspect k %>, <%= if schema.binary_id do %>:binary_id<% else %>:id<% end %>
+<%= for {k, _, assoc_schema_name, _} <- schema.assocs do %>    belongs_to <%= inspect k %>, <%= assoc_schema_name |> String.split(".") |> Enum.take(-1) |> Module.concat() |> inspect() %>
 <% end %>
     timestamps(<%= if schema.timestamp_type != :naive_datetime, do: "type: #{inspect schema.timestamp_type}" %>)
   end
