@@ -20,6 +20,8 @@ defmodule BemedaPersonal.AccountsFixtures do
       attrs,
       %{
         email: unique_user_email(),
+        first_name: "Test",
+        last_name: "User",
         password: valid_user_password()
       }
     )

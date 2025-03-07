@@ -28,11 +28,19 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       result =
         lv
         |> element("#registration_form")
-        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
+        |> render_change(
+          user: %{
+            "email" => "with spaces",
+            "first_name" => "",
+            "last_name" => "",
+            "password" => "too short"
+          }
+        )
 
       assert result =~ "Register"
       assert result =~ "must have the @ sign and no spaces"
       assert result =~ "should be at least 12 character"
+      assert result =~ "can&#39;t be blank"
     end
   end
 

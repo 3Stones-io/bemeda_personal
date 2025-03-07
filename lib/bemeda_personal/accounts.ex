@@ -398,4 +398,37 @@ defmodule BemedaPersonal.Accounts do
       {:error, :user, changeset, _changes_so_far} -> {:error, changeset}
     end
   end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user name.
+
+  ## Examples
+
+      iex> change_user_name(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  @spec change_user_name(user(), attrs()) :: changeset()
+  def change_user_name(user, attrs \\ %{}) do
+    User.name_changeset(user, attrs)
+  end
+
+  @doc """
+  Updates the user name.
+
+  ## Examples
+
+      iex> update_user_name(user, %{first_name: "John", last_name: "Doe"})
+      {:ok, %User{}}
+
+      iex> update_user_name(user, %{first_name: ""})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec update_user_name(user(), attrs()) :: {:ok, user()} | {:error, changeset()}
+  def update_user_name(user, attrs) do
+    user
+    |> User.name_changeset(attrs)
+    |> Repo.update()
+  end
 end
