@@ -1,19 +1,17 @@
-  import <%= inspect context.module %>Fixtures
-
   alias <%= inspect context.module %>
 
   @invalid_attrs <%= Mix.Phoenix.to_text for {key, _} <- schema.params.create, into: %{}, do: {key, nil} %>
 
   describe "list_<%= schema.plural %>/0" do
     test "returns all <%= schema.plural %>" do
-      <%= schema.singular %> = <%= schema.singular %>_fixture()
+      <%= schema.singular %> = insert(:<%= schema.singular %>)
       assert <%= inspect context.alias %>.list_<%= schema.plural %>() == [<%= schema.singular %>]
     end
   end
 
   describe "get_<%= schema.singular %>!/1" do
     test "returns the <%= schema.singular %> with given id" do
-      <%= schema.singular %> = <%= schema.singular %>_fixture()
+      <%= schema.singular %> = insert(:<%= schema.singular %>)
       assert <%= inspect context.alias %>.get_<%= schema.singular %>!(<%= schema.singular %>.id) == <%= schema.singular %>
     end
   end
@@ -33,7 +31,7 @@
 
   describe "update_<%= schema.singular %>/2" do
     test "with valid data updates the <%= schema.singular %>" do
-      <%= schema.singular %> = <%= schema.singular %>_fixture()
+      <%= schema.singular %> = insert(:<%= schema.singular %>)
       update_attrs = <%= Mix.Phoenix.to_text schema.params.update%>
 
       assert {:ok, %<%=  inspect context.alias %>.<%= inspect schema.alias %>{} = <%= schema.singular %>} = <%= inspect context.alias %>.update_<%= schema.singular %>(<%= schema.singular %>, update_attrs)<%= for {field, value} <- schema.params.update do %>
@@ -41,7 +39,7 @@
     end
 
     test "with invalid data returns error changeset" do
-      <%= schema.singular %> = <%= schema.singular %>_fixture()
+      <%= schema.singular %> = insert(:<%= schema.singular %>)
       assert {:error, %Ecto.Changeset{}} = <%= inspect context.alias %>.update_<%= schema.singular %>(<%= schema.singular %>, @invalid_attrs)
       assert <%= schema.singular %> == <%= inspect context.alias %>.get_<%= schema.singular %>!(<%= schema.singular %>.id)
     end
@@ -49,7 +47,7 @@
 
   describe "delete_<%= schema.singular %>/1" do
     test "deletes the <%= schema.singular %>" do
-      <%= schema.singular %> = <%= schema.singular %>_fixture()
+      <%= schema.singular %> = insert(:<%= schema.singular %>)
       assert {:ok, %<%=  inspect context.alias %>.<%= inspect schema.alias %>{}} = <%= inspect context.alias %>.delete_<%= schema.singular %>(<%= schema.singular %>)
       assert_raise Ecto.NoResultsError, fn -> <%= inspect context.alias %>.get_<%= schema.singular %>!(<%= schema.singular %>.id) end
     end
@@ -57,7 +55,7 @@
 
   describe "change_<%= schema.singular %>/1" do
     test "returns a <%= schema.singular %> changeset" do
-      <%= schema.singular %> = <%= schema.singular %>_fixture()
+      <%= schema.singular %> = insert(:<%= schema.singular %>)
       assert %Ecto.Changeset{} = <%= inspect context.alias %>.change_<%= schema.singular %>(<%= schema.singular %>)
     end
   end

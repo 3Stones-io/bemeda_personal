@@ -33,6 +33,7 @@ defmodule BemedaPersonalWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import BemedaPersonalWeb.ConnCase
+      import BemedaPersonal.Factory
     end
   end
 

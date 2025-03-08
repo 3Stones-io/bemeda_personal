@@ -26,6 +26,7 @@ defmodule BemedaPersonal.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import BemedaPersonal.DataCase
+      import BemedaPersonal.Factory
     end
   end
 
