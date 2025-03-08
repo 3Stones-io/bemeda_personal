@@ -142,6 +142,7 @@ defmodule BemedaPersonal.MixProject do
         "esbuild bemeda_personal --minify",
         "phx.digest"
       ],
+      "phx.gen.context": "phx.gen.context_factories",
       check_code: [
         "deps.unlock --check-unused",
         # TODO: Remove the flag once the hackney issue is fixed
