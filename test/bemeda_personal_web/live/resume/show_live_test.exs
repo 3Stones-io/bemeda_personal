@@ -78,11 +78,12 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> log_in_user(user)
         |> live(~p"/resume")
 
-      assert show_live
-             |> element("a", "Edit")
-             |> render_click() =~ "Edit"
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a", "Edit")
+               |> render_click()
 
-      assert_patch(show_live, ~p"/resume/edit")
+      assert path == ~p"/resume/edit"
     end
   end
 
@@ -110,11 +111,12 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> live(~p"/resume")
 
       # Use a more specific selector for the Education Add button
-      assert show_live
-             |> element("a[href='/resume/education/new']")
-             |> render_click() =~ "Add"
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href='/resume/education/new']")
+               |> render_click()
 
-      assert_patch(show_live, ~p"/resume/education/new")
+      assert path == ~p"/resume/education/new"
     end
 
     test "can navigate to edit education form", %{conn: conn, user: user, education: education} do
@@ -123,11 +125,12 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> log_in_user(user)
         |> live(~p"/resume")
 
-      assert show_live
-             |> element("a[href*='education/#{education.id}/edit']")
-             |> render_click() =~ "Edit Education"
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href*='education/#{education.id}/edit']")
+               |> render_click()
 
-      assert_patch(show_live, ~p"/resume/education/#{education.id}/edit")
+      assert path == ~p"/resume/education/#{education.id}/edit"
     end
 
     test "can delete education entry", %{conn: conn, user: user, education: education} do
@@ -137,7 +140,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> live(~p"/resume")
 
       assert show_live
-             |> element("a[href*='education/#{education.id}/delete']")
+             |> element("#delete-education-#{education.id}")
              |> render_click()
 
       # After deletion, the education entry should not be present
@@ -174,11 +177,12 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> live(~p"/resume")
 
       # Use a more specific selector for the Work Experience Add button
-      assert show_live
-             |> element("a[href='/resume/work-experience/new']")
-             |> render_click() =~ "Add"
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href='/resume/work-experience/new']")
+               |> render_click()
 
-      assert_patch(show_live, ~p"/resume/work-experience/new")
+      assert path == ~p"/resume/work-experience/new"
     end
 
     test "can navigate to edit work experience form", %{
@@ -191,11 +195,12 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> log_in_user(user)
         |> live(~p"/resume")
 
-      assert show_live
-             |> element("a[href*='work-experience/#{work_experience.id}/edit']")
-             |> render_click() =~ "Edit Work Experience"
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href*='work-experience/#{work_experience.id}/edit']")
+               |> render_click()
 
-      assert_patch(show_live, ~p"/resume/work-experience/#{work_experience.id}/edit")
+      assert path == ~p"/resume/work-experience/#{work_experience.id}/edit"
     end
 
     test "can delete work experience entry", %{
@@ -209,7 +214,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> live(~p"/resume")
 
       assert show_live
-             |> element("a[href*='work-experience/#{work_experience.id}/delete']")
+             |> element("#delete-work-experience-#{work_experience.id}")
              |> render_click()
 
       # After deletion, the work experience entry should not be present

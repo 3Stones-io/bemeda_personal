@@ -41,19 +41,16 @@ defmodule BemedaPersonal.Resumes.Education do
       :start_date,
       :end_date,
       :current,
-      :description,
-      :resume_id
+      :description
     ])
     |> validate_required([
       :institution,
       :degree,
       :field_of_study,
-      :start_date,
-      :resume_id
+      :start_date
     ])
     |> DateValidator.validate_end_date_after_start_date()
     |> validate_current_education()
-    |> foreign_key_constraint(:resume_id)
   end
 
   defp validate_current_education(changeset) do

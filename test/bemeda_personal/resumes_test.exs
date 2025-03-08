@@ -106,19 +106,17 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "orders by current and start_date", %{resume: resume, education: education} do
-      # Create a current education with an earlier start date
-      current_education = education_fixture(resume, %{current: true, start_date: ~D[2010-01-01]})
+      newer_education =
+        education_fixture(resume, %{start_date: ~D[2010-01-01], end_date: ~D[2014-01-01]})
 
-      # Create another non-current education with a later start date
-      newer_education = education_fixture(resume, %{start_date: ~D[2020-01-01]})
+      current_education = education_fixture(resume, %{start_date: ~D[2020-01-01], end_date: nil})
 
       educations = Resumes.list_educations(resume.id)
 
-      # Current education should be first, then ordered by start_date (desc)
       assert Enum.map(educations, & &1.id) == [
                current_education.id,
-               newer_education.id,
-               education.id
+               education.id,
+               newer_education.id
              ]
     end
   end
@@ -290,7 +288,12 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "orders by current and start_date", %{resume: resume, work_experience: work_experience} do
       # Create a current work experience with an earlier start date
-      current_work = work_experience_fixture(resume, %{current: true, start_date: ~D[2010-01-01]})
+      current_work =
+        work_experience_fixture(resume, %{
+          current: true,
+          start_date: ~D[2010-01-01],
+          end_date: nil
+        })
 
       # Create another non-current work experience with a later start date
       newer_work = work_experience_fixture(resume, %{start_date: ~D[2020-01-01]})

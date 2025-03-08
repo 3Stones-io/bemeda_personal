@@ -5,6 +5,7 @@ defmodule BemedaPersonal.ResumesFixtures do
   """
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Resumes
   alias BemedaPersonal.Resumes.Education
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonal.Resumes.WorkExperience
@@ -40,13 +41,11 @@ defmodule BemedaPersonal.ResumesFixtures do
     attrs = valid_resume_attributes(attrs)
 
     {:ok, resume} =
-      %Resume{}
-      |> Resume.changeset(attrs)
-      |> Ecto.Changeset.put_assoc(:user, user)
-      |> BemedaPersonal.Repo.insert()
+      user
+      |> Resumes.get_or_create_resume_by_user()
+      |> Resumes.update_resume(attrs)
 
-    # Reload the resume to ensure consistent test results
-    BemedaPersonal.Repo.get(Resume, resume.id)
+    resume
   end
 
   @doc """
@@ -65,32 +64,7 @@ defmodule BemedaPersonal.ResumesFixtures do
       description: "Studied computer science with a focus on software engineering."
     }
 
-    # Merge provided attributes with defaults
-    attrs = Enum.into(attrs, base_attrs)
-
-    # Handle current education (end_date should be nil)
-    if attrs.current == true do
-      Map.put(attrs, :end_date, nil)
-    else
-      ensure_valid_date_range(attrs)
-    end
-  end
-
-  # Helper function to ensure end_date is after start_date
-  @spec ensure_valid_date_range(attrs()) :: attrs()
-  defp ensure_valid_date_range(attrs) do
-    case {Map.get(attrs, :start_date), Map.get(attrs, :end_date)} do
-      {%Date{} = start_date, %Date{} = end_date} ->
-        if Date.compare(end_date, start_date) == :lt do
-          # If end_date is before start_date, set it to 4 years after start_date
-          Map.put(attrs, :end_date, Date.add(start_date, 365 * 4))
-        else
-          attrs
-        end
-
-      {_start_date_unused, _end_date_unused} ->
-        attrs
-    end
+    Enum.into(attrs, base_attrs)
   end
 
   @doc """
@@ -101,9 +75,11 @@ defmodule BemedaPersonal.ResumesFixtures do
     attrs = valid_education_attributes(attrs)
 
     {:ok, education} =
-      %Education{}
-      |> Education.changeset(Map.put(attrs, :resume_id, resume.id))
-      |> BemedaPersonal.Repo.insert()
+      Resumes.create_or_update_education(
+        %Education{},
+        resume,
+        attrs
+      )
 
     education
   end
@@ -124,32 +100,7 @@ defmodule BemedaPersonal.ResumesFixtures do
       description: "Developed web applications using Elixir and Phoenix."
     }
 
-    # Merge provided attributes with defaults
-    attrs = Enum.into(attrs, base_attrs)
-
-    # Handle current job (end_date should be nil)
-    if attrs.current == true do
-      Map.put(attrs, :end_date, nil)
-    else
-      ensure_valid_work_date_range(attrs)
-    end
-  end
-
-  # Helper function to ensure end_date is after start_date for work experience
-  @spec ensure_valid_work_date_range(attrs()) :: attrs()
-  defp ensure_valid_work_date_range(attrs) do
-    case {Map.get(attrs, :start_date), Map.get(attrs, :end_date)} do
-      {%Date{} = start_date, %Date{} = end_date} ->
-        if Date.compare(end_date, start_date) == :lt do
-          # If end_date is before start_date, set it to 3 years after start_date
-          Map.put(attrs, :end_date, Date.add(start_date, 365 * 3))
-        else
-          attrs
-        end
-
-      {_start_date_unused, _end_date_unused} ->
-        attrs
-    end
+    Enum.into(attrs, base_attrs)
   end
 
   @doc """
@@ -160,9 +111,11 @@ defmodule BemedaPersonal.ResumesFixtures do
     attrs = valid_work_experience_attributes(attrs)
 
     {:ok, work_experience} =
-      %WorkExperience{}
-      |> WorkExperience.changeset(Map.put(attrs, :resume_id, resume.id))
-      |> BemedaPersonal.Repo.insert()
+      Resumes.create_or_update_work_experience(
+        %WorkExperience{},
+        resume,
+        attrs
+      )
 
     work_experience
   end

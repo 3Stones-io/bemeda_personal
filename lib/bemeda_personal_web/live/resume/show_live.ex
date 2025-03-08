@@ -17,17 +17,15 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     educations = Resumes.list_educations(resume.id)
     work_experiences = Resumes.list_work_experiences(resume.id)
 
-    socket =
-      socket
-      |> assign(:resume, resume)
-      |> assign(:educations, educations)
-      |> assign(:work_experiences, work_experiences)
-      |> assign(:page_title, "My Resume")
-      |> assign(:active_component, nil)
-      |> assign(:education, %Education{resume_id: resume.id})
-      |> assign(:work_experience, %WorkExperience{resume_id: resume.id})
-
-    {:ok, socket}
+    {:ok,
+     socket
+     |> assign(:active_component, nil)
+     |> assign(:education, %Education{})
+     |> assign(:educations, educations)
+     |> assign(:page_title, "My Resume")
+     |> assign(:resume, resume)
+     |> assign(:work_experience, %WorkExperience{})
+     |> assign(:work_experiences, work_experiences)}
   end
 
   @impl Phoenix.LiveView
@@ -50,7 +48,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
   defp apply_action(socket, :new_education, _params) do
     socket
     |> assign(:page_title, "Add Education")
-    |> assign(:education, %Education{resume_id: socket.assigns.resume.id})
+    |> assign(:education, %Education{})
     |> assign(:active_component, :education_form)
   end
 
@@ -63,22 +61,10 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     |> assign(:active_component, :education_form)
   end
 
-  defp apply_action(socket, :delete_education, %{"id" => id}) do
-    education = Resumes.get_education!(id)
-    {:ok, _education} = Resumes.delete_education(education)
-
-    educations = Resumes.list_educations(socket.assigns.resume.id)
-
-    socket
-    |> assign(:educations, educations)
-    |> put_flash(:info, "Education entry deleted")
-    |> push_patch(to: ~p"/resume")
-  end
-
   defp apply_action(socket, :new_work_experience, _params) do
     socket
     |> assign(:page_title, "Add Work Experience")
-    |> assign(:work_experience, %WorkExperience{resume_id: socket.assigns.resume.id})
+    |> assign(:work_experience, %WorkExperience{})
     |> assign(:active_component, :work_experience_form)
   end
 
@@ -91,81 +77,47 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     |> assign(:active_component, :work_experience_form)
   end
 
-  defp apply_action(socket, :delete_work_experience, %{"id" => id}) do
-    work_experience = Resumes.get_work_experience!(id)
-    {:ok, _work_experience} = Resumes.delete_work_experience(work_experience)
-
-    work_experiences = Resumes.list_work_experiences(socket.assigns.resume.id)
-
-    socket
-    |> assign(:work_experiences, work_experiences)
-    |> put_flash(:info, "Work experience entry deleted")
-    |> push_patch(to: ~p"/resume")
-  end
-
   # Event handlers
   @impl Phoenix.LiveView
-  def handle_event("edit-resume", _params, socket) do
-    {:noreply, push_patch(socket, to: ~p"/resume/edit")}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("new-education", _params, socket) do
-    {:noreply, push_patch(socket, to: ~p"/resume/education/new")}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("edit-education", %{"id" => id}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/resume/education/#{id}/edit")}
-  end
-
-  @impl Phoenix.LiveView
   def handle_event("delete-education", %{"id" => id}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/resume/education/#{id}/delete")}
-  end
+    education = Resumes.get_education!(id)
+    {:ok, _education} = Resumes.delete_education(education)
 
-  @impl Phoenix.LiveView
-  def handle_event("new-work-experience", _params, socket) do
-    {:noreply, push_patch(socket, to: ~p"/resume/work-experience/new")}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("edit-work-experience", %{"id" => id}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/resume/work-experience/#{id}/edit")}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("delete-work-experience", %{"id" => id}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/resume/work-experience/#{id}/delete")}
-  end
-
-  # Handle form component messages
-  @impl Phoenix.LiveView
-  def handle_info({ResumeFormComponent, {:saved, resume}}, socket) do
-    {:noreply,
-     socket
-     |> assign(:resume, resume)
-     |> push_patch(to: ~p"/resume")}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_info({EducationFormComponent, {:saved, _education}}, socket) do
     educations = Resumes.list_educations(socket.assigns.resume.id)
 
     {:noreply,
      socket
      |> assign(:educations, educations)
-     |> push_patch(to: ~p"/resume")}
+     |> put_flash(:info, "Education entry deleted")}
   end
 
-  @impl Phoenix.LiveView
-  def handle_info({WorkExperienceFormComponent, {:saved, _work_experience}}, socket) do
+  def handle_event("delete-work-experience", %{"id" => id}, socket) do
+    work_experience = Resumes.get_work_experience!(id)
+    {:ok, _work_experience} = Resumes.delete_work_experience(work_experience)
+
     work_experiences = Resumes.list_work_experiences(socket.assigns.resume.id)
 
     {:noreply,
      socket
      |> assign(:work_experiences, work_experiences)
-     |> push_patch(to: ~p"/resume")}
+     |> put_flash(:info, "Work experience entry deleted")}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({ResumeFormComponent, {:saved, resume}}, socket) do
+    {:noreply, assign(socket, :resume, resume)}
+  end
+
+  def handle_info({EducationFormComponent, {:saved, _education}}, socket) do
+    educations = Resumes.list_educations(socket.assigns.resume.id)
+
+    {:noreply, assign(socket, :educations, educations)}
+  end
+
+  def handle_info({WorkExperienceFormComponent, {:saved, _work_experience}}, socket) do
+    work_experiences = Resumes.list_work_experiences(socket.assigns.resume.id)
+
+    {:noreply, assign(socket, :work_experiences, work_experiences)}
   end
 
   # Helper function to format dates

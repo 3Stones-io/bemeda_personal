@@ -14,7 +14,7 @@
             </.link>
           <% end %>
           <.link
-            patch={~p"/resume/edit"}
+            navigate={~p"/resume/edit"}
             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
           >
             <.icon name="hero-pencil-square" class="h-5 w-5 mr-2" /> Edit
@@ -99,14 +99,14 @@
       </div>
     </div>
   </div>
-
+  
 <!-- Education Section -->
   <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
     <div class="p-6">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800">Education</h2>
         <.link
-          patch={~p"/resume/education/new"}
+          navigate={~p"/resume/education/new"}
           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
         >
           <.icon name="hero-plus" class="h-5 w-5 mr-2" /> Add
@@ -139,17 +139,23 @@
                 </div>
                 <div class="flex space-x-2">
                   <.link
-                    patch={~p"/resume/education/#{education.id}/edit"}
+                    navigate={~p"/resume/education/#{education.id}/edit"}
                     class="text-blue-500 hover:text-blue-600"
                     title="Edit"
                   >
                     <.icon name="hero-pencil-square" class="h-5 w-5" />
                   </.link>
                   <.link
-                    patch={~p"/resume/education/#{education.id}/delete"}
+                    phx-click={
+                      JS.push("delete-education",
+                        value: %{id: education.id}
+                      )
+                      |> JS.hide(to: "#education-#{education.id}")
+                    }
                     data-confirm="Are you sure you want to delete this education entry?"
                     class="text-red-500 hover:text-red-600"
                     title="Delete"
+                    id={"delete-education-#{education.id}"}
                   >
                     <.icon name="hero-trash" class="h-5 w-5" />
                   </.link>
@@ -161,14 +167,14 @@
       <% end %>
     </div>
   </div>
-
+  
 <!-- Work Experience Section -->
   <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
     <div class="p-6">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800">Work Experience</h2>
         <.link
-          patch={~p"/resume/work-experience/new"}
+          navigate={~p"/resume/work-experience/new"}
           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
         >
           <.icon name="hero-plus" class="h-5 w-5 mr-2" /> Add
@@ -183,7 +189,7 @@
         <div class="space-y-6">
           <%= for work_experience <- @work_experiences do %>
             <div class="border-b border-gray-200 pb-4 last:border-b-0 last:pb-0">
-              <div class="flex justify-between">
+              <div class="flex justify-between" id="work-experience-#{work_experience.id}">
                 <div>
                   <h3 class="font-semibold text-gray-800">{work_experience.title}</h3>
                   <p class="text-gray-600">{work_experience.company_name}</p>
@@ -201,17 +207,24 @@
                 </div>
                 <div class="flex space-x-2">
                   <.link
-                    patch={~p"/resume/work-experience/#{work_experience.id}/edit"}
+                    navigate={~p"/resume/work-experience/#{work_experience.id}/edit"}
                     class="text-blue-500 hover:text-blue-600"
                     title="Edit"
                   >
                     <.icon name="hero-pencil-square" class="h-5 w-5" />
                   </.link>
+
                   <.link
-                    patch={~p"/resume/work-experience/#{work_experience.id}/delete"}
+                    phx-click={
+                      JS.push("delete-work-experience",
+                        value: %{id: work_experience.id}
+                      )
+                      |> JS.hide(to: "#work-experience-#{work_experience.id}")
+                    }
                     data-confirm="Are you sure you want to delete this work experience entry?"
                     class="text-red-500 hover:text-red-600"
                     title="Delete"
+                    id={"delete-work-experience-#{work_experience.id}"}
                   >
                     <.icon name="hero-trash" class="h-5 w-5" />
                   </.link>
@@ -223,7 +236,7 @@
       <% end %>
     </div>
   </div>
-
+  
 <!-- Form Components -->
   <.modal
     id="resume-form-modal"
@@ -237,7 +250,6 @@
       action={:edit_resume}
       resume={@resume}
       patch={~p"/resume"}
-      :if={@active_component == :resume_form}
     />
   </.modal>
 
@@ -249,12 +261,11 @@
     <.live_component
       module={BemedaPersonalWeb.Resume.EducationFormComponent}
       id="education-form"
-      title={if @education.id, do: "Edit Education", else: "Add Education"}
-      action={if @education.id, do: :edit_education, else: :new_education}
       education={@education}
       resume={@resume}
       patch={~p"/resume"}
-      :if={@active_component == :education_form}
+      action={@live_action}
+      title={@page_title}
     />
   </.modal>
 
@@ -266,12 +277,11 @@
     <.live_component
       module={BemedaPersonalWeb.Resume.WorkExperienceFormComponent}
       id="work-experience-form"
-      title={if @work_experience.id, do: "Edit Work Experience", else: "Add Work Experience"}
-      action={if @work_experience.id, do: :edit_work_experience, else: :new_work_experience}
       work_experience={@work_experience}
       resume={@resume}
       patch={~p"/resume"}
-      :if={@active_component == :work_experience_form}
+      action={@live_action}
+      title={@page_title}
     />
   </.modal>
 </div>
