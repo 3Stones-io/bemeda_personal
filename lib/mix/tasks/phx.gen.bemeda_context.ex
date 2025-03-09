@@ -1,10 +1,10 @@
-defmodule Mix.Tasks.Phx.Gen.ContextFactories do
+defmodule Mix.Tasks.Phx.Gen.BemedaContext do
   @shortdoc "Generates a context with functions around an Ecto schema"
 
   @moduledoc """
   Generates a context with functions around an Ecto schema.
 
-      $ mix phx.gen.context Accounts User users name:string age:integer
+      $ mix phx.gen.bemeda_context Accounts User users name:string age:integer
 
   The first argument is the context module followed by the schema module
   and its plural name (used as the schema table name).
@@ -40,7 +40,7 @@ defmodule Mix.Tasks.Phx.Gen.ContextFactories do
   the plural name provided for the resource. To customize this value,
   a `--table` option may be provided. For example:
 
-      $ mix phx.gen.context Accounts User users --table cms_users
+      $ mix phx.gen.bemeda_context Accounts User users --table cms_users
 
   ## binary_id
 
@@ -98,7 +98,7 @@ defmodule Mix.Tasks.Phx.Gen.ContextFactories do
   def run(args) do
     if Mix.Project.umbrella?() do
       Mix.raise(
-        "mix phx.gen.context must be invoked from within your *_web application root directory"
+        "mix phx.gen.bemeda_context must be invoked from within your *_web application root directory"
       )
     end
 
@@ -340,57 +340,6 @@ defmodule Mix.Tasks.Phx.Gen.ContextFactories do
     end
   end
 
-  defp inject_test_fixture(
-         %Context{test_fixtures_file: test_fixtures_file} = context,
-         paths,
-         binding
-       ) do
-    ensure_test_fixtures_file_exists(context, paths, binding)
-
-    paths
-    |> Mix.Phoenix.eval_from("priv/templates/phx.gen.context/fixtures.ex", binding)
-    |> Mix.Phoenix.prepend_newline()
-    |> inject_eex_before_final_end(test_fixtures_file, binding)
-
-    maybe_print_unimplemented_fixture_functions(context)
-  end
-
-  defp maybe_print_unimplemented_fixture_functions(%Context{} = context) do
-    fixture_functions_needing_implementations =
-      Enum.flat_map(
-        context.schema.fixture_unique_functions,
-        fn
-          {_field, {_function_name, function_def, true}} -> [function_def]
-          {_field, {_function_name, _function_def, false}} -> []
-        end
-      )
-
-    if Enum.any?(fixture_functions_needing_implementations) do
-      Mix.shell().info("""
-
-      Some of the generated database columns are unique. Please provide
-      unique implementations for the following fixture function(s) in
-      #{context.test_fixtures_file}:
-
-      #{fixture_functions_needing_implementations |> Enum.map_join(&indent(&1, 2)) |> String.trim_trailing()}
-      """)
-    end
-  end
-
-  defp indent(string, spaces) do
-    indent_string = String.duplicate(" ", spaces)
-
-    string
-    |> String.split("\n")
-    |> Enum.map_join(fn line ->
-      if String.trim(line) == "" do
-        "\n"
-      else
-        indent_string <> line <> "\n"
-      end
-    end)
-  end
-
   defp inject_eex_before_final_end(content_to_inject, file_path, binding) do
     file = File.read!(file_path)
 
@@ -409,30 +358,13 @@ defmodule Mix.Tasks.Phx.Gen.ContextFactories do
     end
   end
 
-  @doc false
-  def print_shell_instructions(%Context{schema: schema}) do
+   @doc false
+   def print_shell_instructions(%Context{schema: schema}) do
     if schema.generate? do
       Gen.Schema.print_shell_instructions(schema)
     else
       :ok
     end
-
-    # Print ExMachina instructions
-    Mix.shell().info("""
-
-    Factory functions were generated for your schema.
-    Remember to add ExMachina as a dependency in mix.exs:
-
-        def deps do
-          [
-            {:ex_machina, "~> 2.8.0", only: :test}
-          ]
-        end
-
-    And to start the application in test/test_helper.exs:
-
-        {:ok, _} = Application.ensure_all_started(:ex_machina)
-    """)
   end
 
   defp schema_access_template(%Context{schema: schema}) do
