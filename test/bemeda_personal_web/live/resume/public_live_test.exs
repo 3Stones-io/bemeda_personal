@@ -49,7 +49,7 @@ defmodule BemedaPersonalWeb.Resume.PublicLiveTest do
     %{user: user, resume: resume}
   end
 
-  describe "/resume/:id" do
+  describe "/resumes/:id" do
     setup [:create_public_resume, :create_education, :create_work_experience]
 
     test "displays resume with all sections", %{
@@ -58,7 +58,7 @@ defmodule BemedaPersonalWeb.Resume.PublicLiveTest do
       education: education,
       work_experience: work_experience
     } do
-      {:ok, _public_live, html} = live(conn, ~p"/resume/#{resume.id}")
+      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
       # Resume header information
       assert html =~ "Resume"
@@ -90,25 +90,25 @@ defmodule BemedaPersonalWeb.Resume.PublicLiveTest do
     end
   end
 
-  describe "/resume/:id with empty sections" do
+  describe "/resumes/:id with empty sections" do
     setup [:create_public_resume]
 
     test "displays resume with empty education and work experience sections", %{
       conn: conn,
       resume: resume
     } do
-      {:ok, _public_live, html} = live(conn, ~p"/resume/#{resume.id}")
+      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
       assert html =~ "No education entries available."
       assert html =~ "No work experience entries available."
     end
   end
 
-  describe "/resume/:id with empty fields" do
+  describe "/resumes/:id with empty fields" do
     setup [:create_resume_with_empty_fields]
 
     test "handles missing optional fields gracefully", %{conn: conn, resume: resume} do
-      {:ok, _public_live, html} = live(conn, ~p"/resume/#{resume.id}")
+      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
       assert html =~ "Professional"
       assert html =~ "No summary provided"
@@ -119,11 +119,11 @@ defmodule BemedaPersonalWeb.Resume.PublicLiveTest do
     end
   end
 
-  describe "/resume/:id with non-existent or private resume" do
+  describe "/resumes/:id with non-existent or private resume" do
     setup [:create_private_resume]
 
     test "shows 404 when resume does not exist", %{conn: conn} do
-      {:ok, _public_live, html} = live(conn, ~p"/resume/#{Ecto.UUID.generate()}")
+      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{Ecto.UUID.generate()}")
 
       assert html =~ "404"
       assert html =~ "Resume Not Found"
@@ -131,7 +131,7 @@ defmodule BemedaPersonalWeb.Resume.PublicLiveTest do
     end
 
     test "shows 404 when resume is not public", %{conn: conn, resume: resume} do
-      {:ok, _public_live, html} = live(conn, ~p"/resume/#{resume.id}")
+      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
       assert html =~ "404"
       assert html =~ "Resume Not Found"

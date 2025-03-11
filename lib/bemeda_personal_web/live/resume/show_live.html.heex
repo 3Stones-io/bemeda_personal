@@ -6,7 +6,7 @@
         <div class="flex space-x-2">
           <%= if @resume.is_public do %>
             <.link
-              href={~p"/resume/#{@resume.id}"}
+              href={~p"/resumes/#{@resume.id}"}
               target="_blank"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center"
             >
@@ -35,13 +35,13 @@
                 id="share-url"
                 class="text-sm bg-white border border-gray-300 rounded px-2 py-1 w-64 overflow-hidden text-ellipsis whitespace-nowrap m-0"
               >
-                {url(~p"/resume/#{@resume.id}")}
+                {url(~p"/resumes/#{@resume.id}")}
               </p>
               <button
                 id="copy-button"
                 class="ml-2 text-blue-500 hover:text-blue-700"
                 phx-hook="CopyToClipboard"
-                data-clipboard-text={url(~p"/resume/#{@resume.id}")}
+                data-clipboard-text={url(~p"/resumes/#{@resume.id}")}
                 title="Copy to clipboard"
               >
                 <span id="copy-icon">

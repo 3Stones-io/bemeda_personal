@@ -236,7 +236,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> live(~p"/resume")
 
       assert html =~ "Your resume is public"
-      assert html =~ "/resume/#{resume.id}"
+      assert html =~ "/resumes/#{resume.id}"
     end
 
     test "does not show public link when resume is private", %{
@@ -260,7 +260,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
       {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
 
       # Access the public resume directly without logging in
-      {:ok, _public_live, html} = live(conn, ~p"/resume/#{resume.id}")
+      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
       assert html =~ resume.headline
     end
