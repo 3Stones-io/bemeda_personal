@@ -103,7 +103,7 @@ defmodule BemedaPersonal.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email]
+      assert changeset.required == [:first_name, :last_name, :password, :email]
     end
 
     test "allows fields to be set" do
@@ -313,6 +313,32 @@ defmodule BemedaPersonal.AccountsTest do
         })
 
       refute Repo.get_by(UserToken, user_id: user.id)
+    end
+  end
+
+  describe "change_user_name/2" do
+    test "returns a user changeset" do
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_name(%User{})
+      assert changeset.required == [:first_name, :last_name]
+    end
+  end
+
+  describe "update_user_name/2" do
+    test "updates the user name" do
+      user = user_fixture()
+
+      {:ok, updated_user} =
+        Accounts.update_user_name(user, %{first_name: "John", last_name: "Doe"})
+
+      assert updated_user.first_name == "John"
+      assert updated_user.last_name == "Doe"
+    end
+
+    test "returns an error if the user name is invalid" do
+      user = user_fixture()
+      {:error, changeset} = Accounts.update_user_name(user, %{first_name: "", last_name: ""})
+      assert "can't be blank" in errors_on(changeset).first_name
+      assert "can't be blank" in errors_on(changeset).last_name
     end
   end
 

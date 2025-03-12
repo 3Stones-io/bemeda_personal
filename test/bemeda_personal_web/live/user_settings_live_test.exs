@@ -15,6 +15,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
 
       assert html =~ "Change Email"
       assert html =~ "Change Password"
+      assert html =~ "Update Name"
     end
 
     test "redirects if user is not logged in", %{conn: conn} do
@@ -50,7 +51,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert Accounts.get_user_by_email(user.email)
     end
 
-    test "renders errors with invalid data (phx-change)", %{conn: conn} do
+    test "form renders errors with invalid data", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
       result =
@@ -66,7 +67,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert result =~ "must have the @ sign and no spaces"
     end
 
-    test "renders errors with invalid data (phx-submit)", %{conn: conn, user: user} do
+    test "form cannot submit with invalid data", %{conn: conn, user: user} do
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
       result =
@@ -206,6 +207,57 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert path == ~p"/users/log_in"
       assert %{"error" => message} = flash
       assert message == "You must log in to access this page."
+    end
+  end
+
+  describe "update name form" do
+    setup %{conn: conn} do
+      user = user_fixture(%{confirmed: true})
+      %{conn: log_in_user(conn, user), user: user}
+    end
+
+    test "updates the user name", %{conn: conn} do
+      new_first_name = "New"
+      new_last_name = "Name"
+
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      result =
+        lv
+        |> form("#name_form", %{
+          "user" => %{"first_name" => new_first_name, "last_name" => new_last_name}
+        })
+        |> render_submit()
+
+      assert result =~ "Name updated successfully"
+    end
+
+    test "renders errors with invalid data (phx-change)", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      result =
+        lv
+        |> element("#name_form")
+        |> render_change(%{
+          "user" => %{"first_name" => "", "last_name" => ""}
+        })
+
+      assert result =~ "Update Name"
+      assert result =~ "can&#39;t be blank"
+    end
+
+    test "renders errors with invalid data (phx-submit)", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      result =
+        lv
+        |> form("#name_form", %{
+          "user" => %{"first_name" => "", "last_name" => ""}
+        })
+        |> render_submit()
+
+      assert result =~ "Update Name"
+      assert result =~ "can&#39;t be blank"
     end
   end
 end
