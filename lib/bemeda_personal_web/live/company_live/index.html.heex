@@ -1,0 +1,47 @@
+<.header>
+  Your Company
+  <:actions>
+    <%= if @user_company do %>
+      <.link patch={~p"/companies/#{@user_company.id}/edit"}>
+        <.button>Edit Company</.button>
+      </.link>
+    <% else %>
+      <.link patch={~p"/companies/new"}>
+        <.button>New Company</.button>
+      </.link>
+    <% end %>
+  </:actions>
+</.header>
+
+<%= if @user_company do %>
+  <.list>
+    <:item title="Name">{@user_company.name}</:item>
+    <:item title="Description">{@user_company.description}</:item>
+    <:item title="Industry">{@user_company.industry}</:item>
+    <:item title="Size">{@user_company.size}</:item>
+    <:item title="Website URL">{@user_company.website_url}</:item>
+    <:item title="Location">{@user_company.location}</:item>
+    <:item title="Logo URL">{@user_company.logo_url}</:item>
+  </.list>
+<% else %>
+  <div class="mt-8 text-center">
+    <p class="text-lg">You don't have a company yet. Create one to get started.</p>
+  </div>
+<% end %>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="company-modal"
+  show
+  on_cancel={JS.patch(~p"/companies")}
+>
+  <.live_component
+    module={BemedaPersonalWeb.CompanyLive.FormComponent}
+    id={@company.id || :new}
+    title={@page_title}
+    action={@live_action}
+    company={@company}
+    current_user={@current_user}
+    patch={~p"/companies"}
+  />
+</.modal>
