@@ -17,15 +17,14 @@ defmodule BemedaPersonal.Resumes.Resume do
   @foreign_key_type :binary_id
   schema "resumes" do
     field :contact_email, :string
+    has_many :educations, Education
     field :headline, :string
     field :is_public, :boolean, default: false
     field :location, :string
     field :phone_number, :string
     field :summary, :string
-    field :website_url, :string
-
     belongs_to :user, User
-    has_many :educations, Education
+    field :website_url, :string
     has_many :work_experiences, WorkExperience
 
     timestamps(type: :utc_datetime)
@@ -33,17 +32,14 @@ defmodule BemedaPersonal.Resumes.Resume do
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(resume, attrs \\ %{}) do
-    resume
-    |> cast(attrs, [
+    cast(resume, attrs, [
       :headline,
       :summary,
       :location,
       :is_public,
       :contact_email,
       :phone_number,
-      :website_url,
-      :user_id
+      :website_url
     ])
-    |> unique_constraint(:user_id)
   end
 end

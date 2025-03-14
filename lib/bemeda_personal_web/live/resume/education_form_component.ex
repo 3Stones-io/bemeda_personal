@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
 
   alias BemedaPersonal.Resumes
   alias BemedaPersonal.Resumes.Resume
+  alias BemedaPersonalWeb.Components.ResumeComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -40,9 +41,20 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
           label="Field of Study"
           placeholder="e.g., Computer Science"
         />
-        <.input field={@form[:start_date]} type="date" label="Start Date" required />
-        <.input field={@form[:current]} type="checkbox" label="I am currently studying here" />
-        <.input field={@form[:end_date]} type="date" label="End Date" />
+        <ResumeComponents.date_input field={@form[:start_date]} label="Start Date" required={true} />
+        <.input
+          field={@form[:current]}
+          type="checkbox"
+          label="I am currently studying here"
+          phx-hook="CurrentCheckbox"
+          data-end-date-id={@form[:end_date].id}
+        />
+        <ResumeComponents.date_input
+          field={@form[:end_date]}
+          label="End Date"
+          disabled={Phoenix.HTML.Form.input_value(@form, :current)}
+          label_class={Phoenix.HTML.Form.input_value(@form, :current) && "opacity-50"}
+        />
         <.input
           field={@form[:description]}
           type="textarea"
@@ -74,6 +86,9 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"education" => education_params}, socket) do
+    # Clear end_date if current is true
+    education_params = maybe_clear_end_date(education_params)
+
     changeset =
       socket.assigns.education
       |> Resumes.change_education(education_params)
@@ -85,7 +100,19 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"education" => education_params}, socket) do
+    # Clear end_date if current is true
+    education_params = maybe_clear_end_date(education_params)
+
     save_education(socket, education_params)
+  end
+
+  # Helper function to clear end_date if current is true
+  defp maybe_clear_end_date(params) do
+    if params["current"] == "true" do
+      Map.put(params, "end_date", nil)
+    else
+      params
+    end
   end
 
   defp save_education(socket, education_params) do

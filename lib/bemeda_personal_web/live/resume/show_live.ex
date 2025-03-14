@@ -1,12 +1,12 @@
 defmodule BemedaPersonalWeb.Resume.ShowLive do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Resumes
-  alias BemedaPersonal.Resumes.Education
-  alias BemedaPersonal.Resumes.WorkExperience
+  import BemedaPersonalWeb.Components.ResumeComponents
 
+  alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Resume.EducationFormComponent
   alias BemedaPersonalWeb.Resume.ResumeFormComponent
+  alias BemedaPersonalWeb.Resume.SharedHelpers
   alias BemedaPersonalWeb.Resume.WorkExperienceFormComponent
 
   @impl Phoenix.LiveView
@@ -14,18 +14,16 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     current_user = socket.assigns.current_user
     resume = Resumes.get_or_create_resume_by_user(current_user)
 
-    educations = Resumes.list_educations(resume.id)
-    work_experiences = Resumes.list_work_experiences(resume.id)
+    socket =
+      socket
+      |> stream_configure(:educations, dom_id: &"education-#{&1.id}")
+      |> stream_configure(:work_experiences, dom_id: &"work-experience-#{&1.id}")
+      |> assign(:active_component, nil)
+      |> assign(:education, %Resumes.Education{})
+      |> assign(:work_experience, %Resumes.WorkExperience{})
+      |> SharedHelpers.setup_resume_data(resume)
 
-    {:ok,
-     socket
-     |> assign(:active_component, nil)
-     |> assign(:education, %Education{})
-     |> assign(:educations, educations)
-     |> assign(:page_title, "My Resume")
-     |> assign(:resume, resume)
-     |> assign(:work_experience, %WorkExperience{})
-     |> assign(:work_experiences, work_experiences)}
+    {:ok, socket}
   end
 
   @impl Phoenix.LiveView
@@ -48,12 +46,12 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
   defp apply_action(socket, :new_education, _params) do
     socket
     |> assign(:page_title, "Add Education")
-    |> assign(:education, %Education{})
+    |> assign(:education, %Resumes.Education{})
     |> assign(:active_component, :education_form)
   end
 
   defp apply_action(socket, :edit_education, %{"id" => id}) do
-    education = Resumes.get_education!(id)
+    education = Resumes.get_education(id)
 
     socket
     |> assign(:page_title, "Edit Education")
@@ -64,7 +62,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
   defp apply_action(socket, :new_work_experience, _params) do
     socket
     |> assign(:page_title, "Add Work Experience")
-    |> assign(:work_experience, %WorkExperience{})
+    |> assign(:work_experience, %Resumes.WorkExperience{})
     |> assign(:active_component, :work_experience_form)
   end
 
@@ -77,53 +75,42 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     |> assign(:active_component, :work_experience_form)
   end
 
-  # Event handlers
   @impl Phoenix.LiveView
   def handle_event("delete-education", %{"id" => id}, socket) do
-    education = Resumes.get_education!(id)
+    education = Resumes.get_education(id)
     {:ok, _education} = Resumes.delete_education(education)
 
-    educations = Resumes.list_educations(socket.assigns.resume.id)
+    # No need to manually update the educations list here
+    # The PubSub event will handle the UI update
 
-    {:noreply,
-     socket
-     |> assign(:educations, educations)
-     |> put_flash(:info, "Education entry deleted")}
+    {:noreply, put_flash(socket, :info, "Education entry deleted")}
   end
 
   def handle_event("delete-work-experience", %{"id" => id}, socket) do
-    work_experience = Resumes.get_work_experience!(id)
+    work_experience = Resumes.get_work_experience(id)
     {:ok, _work_experience} = Resumes.delete_work_experience(work_experience)
 
-    work_experiences = Resumes.list_work_experiences(socket.assigns.resume.id)
-
-    {:noreply,
-     socket
-     |> assign(:work_experiences, work_experiences)
-     |> put_flash(:info, "Work experience entry deleted")}
+    {:noreply, put_flash(socket, :info, "Work experience entry deleted")}
   end
 
   @impl Phoenix.LiveView
-  def handle_info({ResumeFormComponent, {:saved, resume}}, socket) do
+  def handle_info({:resume_updated, resume}, socket) do
     {:noreply, assign(socket, :resume, resume)}
   end
 
-  def handle_info({EducationFormComponent, {:saved, _education}}, socket) do
-    educations = Resumes.list_educations(socket.assigns.resume.id)
-
-    {:noreply, assign(socket, :educations, educations)}
+  def handle_info({:education_updated, education}, socket) do
+    {:noreply, stream_insert(socket, :educations, education)}
   end
 
-  def handle_info({WorkExperienceFormComponent, {:saved, _work_experience}}, socket) do
-    work_experiences = Resumes.list_work_experiences(socket.assigns.resume.id)
-
-    {:noreply, assign(socket, :work_experiences, work_experiences)}
+  def handle_info({:education_deleted, education}, socket) do
+    {:noreply, stream_delete(socket, :educations, education)}
   end
 
-  # Helper function to format dates
-  defp format_date(nil), do: ""
+  def handle_info({:work_experience_updated, work_experience}, socket) do
+    {:noreply, stream_insert(socket, :work_experiences, work_experience)}
+  end
 
-  defp format_date(%Date{} = date) do
-    "#{date.month}/#{date.day}/#{date.year}"
+  def handle_info({:work_experience_deleted, work_experience}, socket) do
+    {:noreply, stream_delete(socket, :work_experiences, work_experience)}
   end
 end

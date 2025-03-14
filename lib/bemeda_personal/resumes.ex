@@ -3,24 +3,38 @@ defmodule BemedaPersonal.Resumes do
   The Resumes context.
 
   This context handles all operations related to user resumes, including
-  education, work experience, and skills.
+  education and work experience.
   """
 
   import Ecto.Query, warn: false
-  alias BemedaPersonal.Repo
-  alias Ecto.Changeset
 
+  alias BemedaPersonal.Repo
   alias BemedaPersonal.Resumes.Education
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonal.Resumes.WorkExperience
+  alias Ecto.Changeset
+  alias Phoenix.PubSub
 
-  # Custom types for type specifications
   @type changeset :: Ecto.Changeset.t()
   @type education :: Education.t()
+  @type education_id :: Ecto.UUID.t()
   @type resume :: Resume.t()
+  @type resume_id :: Ecto.UUID.t()
   @type user :: BemedaPersonal.Accounts.User.t()
-  @type uuid :: Ecto.UUID.t()
   @type work_experience :: WorkExperience.t()
+  @type work_experience_id :: Ecto.UUID.t()
+
+  @resume_topic "resume"
+  @education_topic "education"
+  @work_experience_topic "work_experience"
+
+  defp broadcast_event(topic, message) do
+    PubSub.broadcast(
+      BemedaPersonal.PubSub,
+      topic,
+      message
+    )
+  end
 
   @doc """
   Gets or creates a resume for a user.
@@ -38,10 +52,14 @@ defmodule BemedaPersonal.Resumes do
   def get_or_create_resume_by_user(user) do
     case Repo.get_by(Resume, user_id: user.id) do
       nil ->
-        %Resume{}
-        |> Resume.changeset()
-        |> Ecto.Changeset.put_assoc(:user, user)
-        |> Repo.insert!()
+        resume =
+          %Resume{}
+          |> Resume.changeset()
+          |> Changeset.put_assoc(:user, user)
+          |> Repo.insert!()
+
+        broadcast_event(@resume_topic, {:resume_created, resume})
+        resume
 
       resume ->
         resume
@@ -62,7 +80,7 @@ defmodule BemedaPersonal.Resumes do
       nil
 
   """
-  @spec get_resume(uuid()) :: resume() | nil
+  @spec get_resume(resume_id()) :: resume() | nil
   def get_resume(id) do
     Resume
     |> Repo.get(id)
@@ -83,9 +101,19 @@ defmodule BemedaPersonal.Resumes do
   """
   @spec update_resume(resume(), map()) :: {:ok, resume()} | {:error, changeset()}
   def update_resume(%Resume{} = resume, attrs) do
-    resume
-    |> Resume.changeset(attrs)
-    |> Repo.update()
+    result =
+      resume
+      |> Resume.changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, updated_resume} ->
+        broadcast_event(@resume_topic, {:resume_updated, updated_resume})
+        {:ok, updated_resume}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -113,7 +141,7 @@ defmodule BemedaPersonal.Resumes do
       [%Education{}, ...]
 
   """
-  @spec list_educations(uuid()) :: [education()]
+  @spec list_educations(resume_id()) :: [education()]
   def list_educations(resume_id) do
     Education
     |> where([e], e.resume_id == ^resume_id)
@@ -129,17 +157,17 @@ defmodule BemedaPersonal.Resumes do
 
   ## Examples
 
-      iex> get_education!(123)
+      iex> get_education(123)
       %Education{}
 
-      iex> get_education!(456)
-      ** (Ecto.NoResultsError)
+      iex> get_education(456)
+      nil
 
   """
-  @spec get_education!(uuid()) :: education()
-  def get_education!(id) do
+  @spec get_education(education_id()) :: education() | nil
+  def get_education(id) do
     Education
-    |> Repo.get!(id)
+    |> Repo.get(id)
     |> Repo.preload(:resume)
   end
 
@@ -158,10 +186,24 @@ defmodule BemedaPersonal.Resumes do
   @spec create_or_update_education(education(), resume(), map()) ::
           {:ok, education()} | {:error, changeset()}
   def create_or_update_education(education, resume, attrs \\ %{}) do
-    education
-    |> Education.changeset(attrs)
-    |> Changeset.put_assoc(:resume, resume)
-    |> Repo.insert_or_update()
+    result =
+      education
+      |> Education.changeset(attrs)
+      |> Changeset.put_assoc(:resume, resume)
+      |> Repo.insert_or_update()
+
+    case result do
+      {:ok, updated_education} ->
+        broadcast_event(
+          "#{@education_topic}:#{resume.id}",
+          {:education_updated, updated_education}
+        )
+
+        {:ok, updated_education}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -178,7 +220,23 @@ defmodule BemedaPersonal.Resumes do
   """
   @spec delete_education(education()) :: {:ok, education()} | {:error, changeset()}
   def delete_education(%Education{} = education) do
-    Repo.delete(education)
+    result = Repo.delete(education)
+
+    case result do
+      {:ok, deleted_education} ->
+        # Preload resume to get the resume_id for scoping the topic
+        deleted_education = Repo.preload(deleted_education, :resume)
+
+        broadcast_event(
+          "#{@education_topic}:#{deleted_education.resume.id}",
+          {:education_deleted, deleted_education}
+        )
+
+        {:ok, deleted_education}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -206,12 +264,33 @@ defmodule BemedaPersonal.Resumes do
       [%WorkExperience{}, ...]
 
   """
-  @spec list_work_experiences(uuid()) :: [work_experience()]
+  @spec list_work_experiences(resume_id()) :: [work_experience()]
   def list_work_experiences(resume_id) do
     WorkExperience
     |> where([w], w.resume_id == ^resume_id)
     |> order_by([w], desc: w.current, desc: w.start_date)
     |> Repo.all()
+    |> Repo.preload(:resume)
+  end
+
+  @doc """
+  Gets a single work experience entry.
+
+  Raises `Ecto.NoResultsError` if the WorkExperience does not exist.
+
+  ## Examples
+
+      iex> get_work_experience(123)
+      %WorkExperience{}
+
+      iex> get_work_experience(456)
+      nil
+
+  """
+  @spec get_work_experience(work_experience_id()) :: work_experience() | nil
+  def get_work_experience(id) do
+    WorkExperience
+    |> Repo.get(id)
     |> Repo.preload(:resume)
   end
 
@@ -229,7 +308,7 @@ defmodule BemedaPersonal.Resumes do
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_work_experience!(uuid()) :: work_experience()
+  @spec get_work_experience!(work_experience_id()) :: work_experience()
   def get_work_experience!(id) do
     WorkExperience
     |> Repo.get!(id)
@@ -251,10 +330,24 @@ defmodule BemedaPersonal.Resumes do
   @spec create_or_update_work_experience(work_experience(), resume(), map()) ::
           {:ok, work_experience()} | {:error, changeset()}
   def create_or_update_work_experience(work_experience, resume, attrs \\ %{}) do
-    work_experience
-    |> WorkExperience.changeset(attrs)
-    |> Changeset.put_assoc(:resume, resume)
-    |> Repo.insert_or_update()
+    result =
+      work_experience
+      |> WorkExperience.changeset(attrs)
+      |> Changeset.put_assoc(:resume, resume)
+      |> Repo.insert_or_update()
+
+    case result do
+      {:ok, updated_work_experience} ->
+        broadcast_event(
+          "#{@work_experience_topic}:#{resume.id}",
+          {:work_experience_updated, updated_work_experience}
+        )
+
+        {:ok, updated_work_experience}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -272,7 +365,23 @@ defmodule BemedaPersonal.Resumes do
   @spec delete_work_experience(work_experience()) ::
           {:ok, work_experience()} | {:error, changeset()}
   def delete_work_experience(%WorkExperience{} = work_experience) do
-    Repo.delete(work_experience)
+    result = Repo.delete(work_experience)
+
+    case result do
+      {:ok, deleted_work_experience} ->
+        # Preload resume to get the resume_id for scoping the topic
+        deleted_work_experience = Repo.preload(deleted_work_experience, :resume)
+
+        broadcast_event(
+          "#{@work_experience_topic}:#{deleted_work_experience.resume.id}",
+          {:work_experience_deleted, deleted_work_experience}
+        )
+
+        {:ok, deleted_work_experience}
+
+      error ->
+        error
+    end
   end
 
   @doc """

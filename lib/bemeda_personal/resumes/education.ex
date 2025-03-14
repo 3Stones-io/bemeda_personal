@@ -28,9 +28,6 @@ defmodule BemedaPersonal.Resumes.Education do
     timestamps(type: :utc_datetime)
   end
 
-  @doc """
-  Creates a changeset for an education entry.
-  """
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(education, attrs) do
     education
@@ -50,17 +47,6 @@ defmodule BemedaPersonal.Resumes.Education do
       :start_date
     ])
     |> DateValidator.validate_end_date_after_start_date()
-    |> validate_current_education()
-  end
-
-  defp validate_current_education(changeset) do
-    current = get_field(changeset, :current)
-    end_date = get_field(changeset, :end_date)
-
-    if current && end_date != nil do
-      add_error(changeset, :end_date, "must be blank for current education")
-    else
-      changeset
-    end
+    |> DateValidator.validate_current_end_date("end date must be blank for current education")
   end
 end

@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
 
   alias BemedaPersonal.Resumes
   alias BemedaPersonal.Resumes.Resume
+  alias BemedaPersonalWeb.Components.ResumeComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -41,9 +42,20 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
           label="Location"
           placeholder="e.g., Mountain View, CA"
         />
-        <.input field={@form[:start_date]} type="date" label="Start Date" required />
-        <.input field={@form[:current]} type="checkbox" label="I currently work here" />
-        <.input field={@form[:end_date]} type="date" label="End Date" />
+        <ResumeComponents.date_input field={@form[:start_date]} label="Start Date" required={true} />
+        <.input
+          field={@form[:current]}
+          type="checkbox"
+          label="I currently work here"
+          phx-hook="CurrentCheckbox"
+          data-end-date-id={@form[:end_date].id}
+        />
+        <ResumeComponents.date_input
+          field={@form[:end_date]}
+          label="End Date"
+          disabled={Phoenix.HTML.Form.input_value(@form, :current)}
+          label_class={Phoenix.HTML.Form.input_value(@form, :current) && "opacity-50"}
+        />
         <.input
           field={@form[:description]}
           type="textarea"
@@ -75,6 +87,9 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"work_experience" => work_experience_params}, socket) do
+    # Clear end_date if current is true
+    work_experience_params = maybe_clear_end_date(work_experience_params)
+
     changeset =
       socket.assigns.work_experience
       |> Resumes.change_work_experience(work_experience_params)
@@ -86,7 +101,19 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"work_experience" => work_experience_params}, socket) do
+    # Clear end_date if current is true
+    work_experience_params = maybe_clear_end_date(work_experience_params)
+
     save_work_experience(socket, work_experience_params)
+  end
+
+  # Helper function to clear end_date if current is true
+  defp maybe_clear_end_date(params) do
+    if params["current"] == "true" do
+      Map.put(params, "end_date", nil)
+    else
+      params
+    end
   end
 
   defp save_work_experience(socket, work_experience_params) do

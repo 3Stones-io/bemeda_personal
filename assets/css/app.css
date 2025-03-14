@@ -1,5 +1,14 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import '../node_modules/flatpickr/dist/flatpickr.css';
 
 /* This file is for your main application CSS */
+
+/* Truncate text styles */
+.truncate-text a.read-more-link,
+.truncate-text a.read-less-link {
+  display: inline-block;
+  margin-left: 0.25rem;
+  font-weight: 500;
+}

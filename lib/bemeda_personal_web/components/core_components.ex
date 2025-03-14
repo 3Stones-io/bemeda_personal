@@ -286,6 +286,8 @@ defmodule BemedaPersonalWeb.CoreComponents do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+  attr :label_class, :string, default: nil, doc: "the class for the label"
+  attr :input_class, :string, default: nil, doc: "the class for the input"
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
@@ -310,7 +312,10 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
     ~H"""
     <div>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+      <label class={[
+        "flex items-center gap-4 text-sm leading-6 text-zinc-600",
+        @label_class
+      ]}>
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
           type="checkbox"
@@ -318,7 +323,10 @@ defmodule BemedaPersonalWeb.CoreComponents do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          class={[
+            "rounded border-zinc-300 text-zinc-900 focus:ring-0",
+            @input_class
+          ]}
           {@rest}
         />
         {@label}
@@ -331,7 +339,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id}>{@label}</.label>
+      <.label for={@id} class={@label_class}>{@label}</.label>
       <select
         id={@id}
         name={@name}
@@ -350,12 +358,13 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id}>{@label}</.label>
+      <.label for={@id} class={@label_class}>{@label}</.label>
       <textarea
         id={@id}
         name={@name}
         class={[
           "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
+          @input_class,
           @errors == [] && "border-zinc-300 focus:border-zinc-400",
           @errors != [] && "border-rose-400 focus:border-rose-400"
         ]}
@@ -370,7 +379,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div>
-      <.label for={@id}>{@label}</.label>
+      <.label for={@id} class={@label_class}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -378,6 +387,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
           "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
+          @input_class,
           @errors == [] && "border-zinc-300 focus:border-zinc-400",
           @errors != [] && "border-rose-400 focus:border-rose-400"
         ]}
@@ -392,11 +402,18 @@ defmodule BemedaPersonalWeb.CoreComponents do
   Renders a label.
   """
   attr :for, :string, default: nil
+  attr :class, :string, default: nil
   slot :inner_block, required: true
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label
+      for={@for}
+      class={[
+        "block text-sm font-semibold leading-6 text-zinc-800",
+        @class
+      ]}
+    >
       {render_slot(@inner_block)}
     </label>
     """

@@ -34,10 +34,14 @@ defmodule BemedaPersonal.ResumesTest do
       fetched_resume = Resumes.get_resume(resume.id)
       assert fetched_resume.id == resume.id
       assert fetched_resume.headline == resume.headline
+
+      assert Ecto.assoc_loaded?(fetched_resume.user)
+      assert Ecto.assoc_loaded?(fetched_resume.educations)
+      assert Ecto.assoc_loaded?(fetched_resume.work_experiences)
     end
 
     test "returns nil if resume doesn't exist" do
-      assert Resumes.get_resume(Ecto.UUID.generate()) == nil
+      refute Resumes.get_resume(Ecto.UUID.generate())
     end
   end
 
@@ -56,18 +60,11 @@ defmodule BemedaPersonal.ResumesTest do
       user = user_fixture()
       resume = resume_fixture(user)
 
-      # Create another user and resume to test uniqueness constraint
-      other_user = user_fixture()
-      _other_resume = resume_fixture(other_user)
+      {:ok, _updated_resume} = Resumes.update_resume(resume, %{headline: "New Headline"})
 
-      # Try to update resume with another user's ID (which should fail due to unique constraint)
-      assert {:error, %Ecto.Changeset{}} =
-               Resumes.update_resume(resume, %{user_id: other_user.id})
-
-      # Verify the resume wasn't changed
       fetched_resume = Resumes.get_resume(resume.id)
       assert fetched_resume.id == resume.id
-      assert fetched_resume.headline == resume.headline
+      assert fetched_resume.headline == "New Headline"
     end
   end
 
@@ -78,9 +75,7 @@ defmodule BemedaPersonal.ResumesTest do
 
       assert %Ecto.Changeset{} = Resumes.change_resume(resume)
     end
-  end
 
-  describe "change_resume/2" do
     test "returns a resume changeset with changes applied" do
       user = user_fixture()
       resume = resume_fixture(user)
@@ -103,6 +98,10 @@ defmodule BemedaPersonal.ResumesTest do
       educations = Resumes.list_educations(resume.id)
       assert length(educations) == 1
       assert hd(educations).id == education.id
+
+      Enum.each(educations, fn education ->
+        assert Ecto.assoc_loaded?(education.resume)
+      end)
     end
 
     test "orders by current and start_date", %{resume: resume, education: education} do
@@ -119,6 +118,14 @@ defmodule BemedaPersonal.ResumesTest do
                newer_education.id
              ]
     end
+
+    test "returns an empty list for a non-existent resume ID" do
+      non_existent_id = Ecto.UUID.generate()
+
+      assert non_existent_id
+             |> Resumes.list_educations()
+             |> Enum.empty?()
+    end
   end
 
   describe "get_education!/1" do
@@ -131,16 +138,16 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "returns the education with given id", %{education: education} do
-      fetched_education = Resumes.get_education!(education.id)
+      fetched_education = Resumes.get_education(education.id)
       assert fetched_education.id == education.id
       assert fetched_education.institution == education.institution
       assert fetched_education.degree == education.degree
+
+      assert Ecto.assoc_loaded?(fetched_education.resume)
     end
 
-    test "raises if education doesn't exist" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Resumes.get_education!(Ecto.UUID.generate())
-      end
+    test "returns nil if education doesn't exist" do
+      refute Resumes.get_education(Ecto.UUID.generate())
     end
   end
 
@@ -177,11 +184,9 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "with valid data updates the education", %{resume: resume} do
-      # Create a new education to update
       education_fixture = education_fixture(resume)
       update_attrs = %{institution: "Updated University", degree: "Updated Degree"}
 
-      # Preload the resume association
       education_with_resume = Repo.preload(education_fixture, :resume)
 
       assert {:ok, %Education{} = updated_education} =
@@ -192,7 +197,6 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "with invalid data returns error changeset", %{resume: resume} do
-      # Missing required field (institution)
       assert {:error, %Ecto.Changeset{}} =
                Resumes.create_or_update_education(%Education{}, resume, %{degree: "Some Degree"})
     end
@@ -207,7 +211,7 @@ defmodule BemedaPersonal.ResumesTest do
       assert {:error, changeset} =
                Resumes.create_or_update_education(%Education{}, resume, invalid_attrs)
 
-      assert "must be after or equal to start date" in errors_on(changeset).end_date
+      assert "end date must be after or equal to start date" in errors_on(changeset).end_date
     end
 
     test "validates current education has no end date", %{resume: resume} do
@@ -220,7 +224,7 @@ defmodule BemedaPersonal.ResumesTest do
       assert {:error, changeset} =
                Resumes.create_or_update_education(%Education{}, resume, invalid_attrs)
 
-      assert "must be blank for current education" in errors_on(changeset).end_date
+      assert "end date must be blank for current education" in errors_on(changeset).end_date
     end
   end
 
@@ -235,7 +239,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "deletes the education", %{education: education} do
       assert {:ok, %Education{}} = Resumes.delete_education(education)
-      assert_raise Ecto.NoResultsError, fn -> Resumes.get_education!(education.id) end
+      refute Resumes.get_education(education.id)
     end
   end
 
@@ -284,10 +288,13 @@ defmodule BemedaPersonal.ResumesTest do
       work_experiences = Resumes.list_work_experiences(resume.id)
       assert length(work_experiences) == 1
       assert hd(work_experiences).id == work_experience.id
+
+      Enum.each(work_experiences, fn work_experience ->
+        assert Ecto.assoc_loaded?(work_experience.resume)
+      end)
     end
 
     test "orders by current and start_date", %{resume: resume, work_experience: work_experience} do
-      # Create a current work experience with an earlier start date
       current_work =
         work_experience_fixture(resume, %{
           current: true,
@@ -295,17 +302,23 @@ defmodule BemedaPersonal.ResumesTest do
           end_date: nil
         })
 
-      # Create another non-current work experience with a later start date
       newer_work = work_experience_fixture(resume, %{start_date: ~D[2020-01-01]})
 
       work_experiences = Resumes.list_work_experiences(resume.id)
 
-      # Current work should be first, then ordered by start_date (desc)
       assert Enum.map(work_experiences, & &1.id) == [
                current_work.id,
                newer_work.id,
                work_experience.id
              ]
+    end
+
+    test "returns an empty list for a non-existent resume ID" do
+      non_existent_id = Ecto.UUID.generate()
+
+      assert non_existent_id
+             |> Resumes.list_work_experiences()
+             |> Enum.empty?()
     end
   end
 
@@ -319,16 +332,16 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "returns the work_experience with given id", %{work_experience: work_experience} do
-      fetched_work_experience = Resumes.get_work_experience!(work_experience.id)
+      fetched_work_experience = Resumes.get_work_experience(work_experience.id)
       assert fetched_work_experience.id == work_experience.id
       assert fetched_work_experience.company_name == work_experience.company_name
       assert fetched_work_experience.title == work_experience.title
+
+      assert Ecto.assoc_loaded?(fetched_work_experience.resume)
     end
 
-    test "raises if work_experience doesn't exist" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Resumes.get_work_experience!(Ecto.UUID.generate())
-      end
+    test "returns nil if work_experience doesn't exist" do
+      refute Resumes.get_work_experience(Ecto.UUID.generate())
     end
   end
 
@@ -365,11 +378,9 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "with valid data updates the work_experience", %{resume: resume} do
-      # Create a new work experience to update
       work_experience_fixture = work_experience_fixture(resume)
       update_attrs = %{company_name: "Updated Company", title: "Updated Title"}
 
-      # Preload the resume association
       work_experience_with_resume = Repo.preload(work_experience_fixture, :resume)
 
       assert {:ok, %WorkExperience{} = updated_work_experience} =
@@ -384,7 +395,6 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "with invalid data returns error changeset", %{resume: resume} do
-      # Missing required fields (company_name, title, start_date)
       assert {:error, %Ecto.Changeset{}} =
                Resumes.create_or_update_work_experience(%WorkExperience{}, resume, %{
                  location: "Some Location"
@@ -402,7 +412,7 @@ defmodule BemedaPersonal.ResumesTest do
       assert {:error, changeset} =
                Resumes.create_or_update_work_experience(%WorkExperience{}, resume, invalid_attrs)
 
-      assert "must be after or equal to start date" in errors_on(changeset).end_date
+      assert "end date must be after or equal to start date" in errors_on(changeset).end_date
     end
 
     test "validates current job has no end date", %{resume: resume} do
@@ -417,7 +427,7 @@ defmodule BemedaPersonal.ResumesTest do
       assert {:error, changeset} =
                Resumes.create_or_update_work_experience(%WorkExperience{}, resume, invalid_attrs)
 
-      assert "must be blank for current job" in errors_on(changeset).end_date
+      assert "end date must be blank for current job" in errors_on(changeset).end_date
     end
   end
 
@@ -432,7 +442,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "deletes the work_experience", %{work_experience: work_experience} do
       assert {:ok, %WorkExperience{}} = Resumes.delete_work_experience(work_experience)
-      assert_raise Ecto.NoResultsError, fn -> Resumes.get_work_experience!(work_experience.id) end
+      refute Resumes.get_work_experience(work_experience.id)
     end
   end
 
@@ -464,6 +474,123 @@ defmodule BemedaPersonal.ResumesTest do
     } do
       assert %Ecto.Changeset{changes: %{company_name: "New Company"}} =
                Resumes.change_work_experience(work_experience, %{company_name: "New Company"})
+    end
+  end
+
+  describe "PubSub integration" do
+    test "get_or_create_resume_by_user/1 broadcasts resume update event" do
+      user = user_fixture()
+
+      # First, create a resume
+      resume = Resumes.get_or_create_resume_by_user(user)
+
+      # Now subscribe to the specific topic for this resume
+      topic = "resume"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      # Create a new user and resume to test the broadcast
+      new_user = user_fixture()
+      new_resume = Resumes.get_or_create_resume_by_user(new_user)
+
+      # We should receive a message for the new resume
+      assert_receive {:resume_created, ^new_resume}
+
+      # But if we update our original resume, we should get a message
+      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+      assert_receive {:resume_updated, ^updated_resume}
+    end
+
+    test "update_resume/2 broadcasts resume update event" do
+      user = user_fixture()
+      resume = resume_fixture(user)
+
+      # Subscribe to the resume topic
+      topic = "resume"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      # Update the resume
+      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+
+      # Assert that we receive the message
+      assert_receive {:resume_updated, ^updated_resume}
+    end
+
+    test "create_or_update_education/3 broadcasts education update event" do
+      user = user_fixture()
+      resume = resume_fixture(user)
+
+      # Subscribe to the education topic
+      topic = "education:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      # Create a new education entry
+      attrs = %{
+        institution: "University of Example",
+        degree: "Bachelor of Science",
+        field_of_study: "Computer Science",
+        start_date: ~D[2015-09-01],
+        end_date: ~D[2019-05-31]
+      }
+
+      {:ok, education} = Resumes.create_or_update_education(%Education{}, resume, attrs)
+
+      # Assert that we receive the message
+      assert_receive {:education_updated, ^education}
+    end
+
+    test "delete_education/1 broadcasts education delete event" do
+      user = user_fixture()
+      resume = resume_fixture(user)
+      education = education_fixture(resume)
+
+      # Subscribe to the education topic
+      topic = "education:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      # Delete the education entry
+      {:ok, deleted_education} = Resumes.delete_education(education)
+
+      # Assert that we receive the message
+      assert_receive {:education_deleted, ^deleted_education}
+    end
+
+    test "create_or_update_work_experience/3 broadcasts work experience update event" do
+      user = user_fixture()
+      resume = resume_fixture(user)
+
+      # Subscribe to the work experience topic
+      topic = "work_experience:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      # Create a new work experience entry
+      attrs = %{
+        company_name: "Example Corp",
+        title: "Software Engineer",
+        start_date: ~D[2020-01-01],
+        end_date: ~D[2022-12-31]
+      }
+
+      {:ok, work_experience} =
+        Resumes.create_or_update_work_experience(%WorkExperience{}, resume, attrs)
+
+      # Assert that we receive the message
+      assert_receive {:work_experience_updated, ^work_experience}
+    end
+
+    test "delete_work_experience/1 broadcasts work experience delete event" do
+      user = user_fixture()
+      resume = resume_fixture(user)
+      work_experience = work_experience_fixture(resume)
+
+      # Subscribe to the work experience topic
+      topic = "work_experience:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      # Delete the work experience entry
+      {:ok, deleted_work_experience} = Resumes.delete_work_experience(work_experience)
+
+      # Assert that we receive the message
+      assert_receive {:work_experience_deleted, ^deleted_work_experience}
     end
   end
 end

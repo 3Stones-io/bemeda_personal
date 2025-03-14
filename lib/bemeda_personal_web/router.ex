@@ -95,6 +95,6 @@ defmodule BemedaPersonalWeb.Router do
     end
 
     # Public resume route
-    live "/resumes/:id", Resume.PublicLive, :show
+    live "/resumes/:id", Resume.IndexLive, :show
   end
 end

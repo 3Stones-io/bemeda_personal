@@ -28,9 +28,6 @@ defmodule BemedaPersonal.Resumes.WorkExperience do
     timestamps(type: :utc_datetime)
   end
 
-  @doc """
-  Creates a changeset for a work experience entry.
-  """
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(work_experience, attrs) do
     work_experience
@@ -49,17 +46,6 @@ defmodule BemedaPersonal.Resumes.WorkExperience do
       :start_date
     ])
     |> DateValidator.validate_end_date_after_start_date()
-    |> validate_current_job()
-  end
-
-  defp validate_current_job(changeset) do
-    current = get_field(changeset, :current)
-    end_date = get_field(changeset, :end_date)
-
-    if current && end_date != nil do
-      add_error(changeset, :end_date, "must be blank for current job")
-    else
-      changeset
-    end
+    |> DateValidator.validate_current_end_date("end date must be blank for current job")
   end
 end
