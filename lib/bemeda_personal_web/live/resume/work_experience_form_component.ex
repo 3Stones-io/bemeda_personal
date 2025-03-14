@@ -87,9 +87,6 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"work_experience" => work_experience_params}, socket) do
-    # Clear end_date if current is true
-    work_experience_params = maybe_clear_end_date(work_experience_params)
-
     changeset =
       socket.assigns.work_experience
       |> Resumes.change_work_experience(work_experience_params)
@@ -101,19 +98,7 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"work_experience" => work_experience_params}, socket) do
-    # Clear end_date if current is true
-    work_experience_params = maybe_clear_end_date(work_experience_params)
-
     save_work_experience(socket, work_experience_params)
-  end
-
-  # Helper function to clear end_date if current is true
-  defp maybe_clear_end_date(params) do
-    if params["current"] == "true" do
-      Map.put(params, "end_date", nil)
-    else
-      params
-    end
   end
 
   defp save_work_experience(socket, work_experience_params) do
@@ -122,9 +107,7 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
            socket.assigns.resume,
            work_experience_params
          ) do
-      {:ok, work_experience} ->
-        notify_parent({:saved, work_experience})
-
+      {:ok, _work_experience} ->
         {:noreply,
          socket
          |> put_flash(:info, "Work experience saved successfully")
@@ -138,6 +121,4 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

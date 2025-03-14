@@ -24,6 +24,23 @@ defmodule BemedaPersonal.ResumesTest do
       assert %Resume{} = resume = Resumes.get_or_create_resume_by_user(user)
       assert resume.user_id == user.id
     end
+
+    test "broadcasts resume update event" do
+      user = user_fixture()
+
+      resume = Resumes.get_or_create_resume_by_user(user)
+
+      topic = "resume"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      new_user = user_fixture()
+      new_resume = Resumes.get_or_create_resume_by_user(new_user)
+
+      assert_receive {:resume_created, ^new_resume}
+
+      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+      assert_receive {:resume_updated, ^updated_resume}
+    end
   end
 
   describe "get_resume/1" do
@@ -65,6 +82,18 @@ defmodule BemedaPersonal.ResumesTest do
       fetched_resume = Resumes.get_resume(resume.id)
       assert fetched_resume.id == resume.id
       assert fetched_resume.headline == "New Headline"
+    end
+
+    test "broadcasts resume update event" do
+      user = user_fixture()
+      resume = resume_fixture(user)
+
+      topic = "resume"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+
+      assert_receive {:resume_updated, ^updated_resume}
     end
   end
 
@@ -226,6 +255,23 @@ defmodule BemedaPersonal.ResumesTest do
 
       assert "end date must be blank for current education" in errors_on(changeset).end_date
     end
+
+    test "broadcasts education update event", %{resume: resume} do
+      topic = "education:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      attrs = %{
+        institution: "University of Example",
+        degree: "Bachelor of Science",
+        field_of_study: "Computer Science",
+        start_date: ~D[2015-09-01],
+        end_date: ~D[2019-05-31]
+      }
+
+      {:ok, education} = Resumes.create_or_update_education(%Education{}, resume, attrs)
+
+      assert_receive {:education_updated, ^education}
+    end
   end
 
   describe "delete_education/1" do
@@ -234,12 +280,21 @@ defmodule BemedaPersonal.ResumesTest do
       resume = resume_fixture(user)
       education = education_fixture(resume)
 
-      %{education: education}
+      %{education: education, resume: resume}
     end
 
     test "deletes the education", %{education: education} do
       assert {:ok, %Education{}} = Resumes.delete_education(education)
       refute Resumes.get_education(education.id)
+    end
+
+    test "broadcasts education delete event", %{education: education, resume: resume} do
+      topic = "education:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      {:ok, deleted_education} = Resumes.delete_education(education)
+
+      assert_receive {:education_deleted, ^deleted_education}
     end
   end
 
@@ -429,6 +484,23 @@ defmodule BemedaPersonal.ResumesTest do
 
       assert "end date must be blank for current job" in errors_on(changeset).end_date
     end
+
+    test "broadcasts work experience update event", %{resume: resume} do
+      topic = "work_experience:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      attrs = %{
+        company_name: "Example Corp",
+        title: "Software Engineer",
+        start_date: ~D[2020-01-01],
+        end_date: ~D[2022-12-31]
+      }
+
+      {:ok, work_experience} =
+        Resumes.create_or_update_work_experience(%WorkExperience{}, resume, attrs)
+
+      assert_receive {:work_experience_updated, ^work_experience}
+    end
   end
 
   describe "delete_work_experience/1" do
@@ -437,12 +509,24 @@ defmodule BemedaPersonal.ResumesTest do
       resume = resume_fixture(user)
       work_experience = work_experience_fixture(resume)
 
-      %{work_experience: work_experience}
+      %{work_experience: work_experience, resume: resume}
     end
 
     test "deletes the work_experience", %{work_experience: work_experience} do
       assert {:ok, %WorkExperience{}} = Resumes.delete_work_experience(work_experience)
       refute Resumes.get_work_experience(work_experience.id)
+    end
+
+    test "broadcasts work experience delete event", %{
+      work_experience: work_experience,
+      resume: resume
+    } do
+      topic = "work_experience:#{resume.id}"
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+
+      {:ok, deleted_work_experience} = Resumes.delete_work_experience(work_experience)
+
+      assert_receive {:work_experience_deleted, ^deleted_work_experience}
     end
   end
 
@@ -474,123 +558,6 @@ defmodule BemedaPersonal.ResumesTest do
     } do
       assert %Ecto.Changeset{changes: %{company_name: "New Company"}} =
                Resumes.change_work_experience(work_experience, %{company_name: "New Company"})
-    end
-  end
-
-  describe "PubSub integration" do
-    test "get_or_create_resume_by_user/1 broadcasts resume update event" do
-      user = user_fixture()
-
-      # First, create a resume
-      resume = Resumes.get_or_create_resume_by_user(user)
-
-      # Now subscribe to the specific topic for this resume
-      topic = "resume"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
-
-      # Create a new user and resume to test the broadcast
-      new_user = user_fixture()
-      new_resume = Resumes.get_or_create_resume_by_user(new_user)
-
-      # We should receive a message for the new resume
-      assert_receive {:resume_created, ^new_resume}
-
-      # But if we update our original resume, we should get a message
-      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
-      assert_receive {:resume_updated, ^updated_resume}
-    end
-
-    test "update_resume/2 broadcasts resume update event" do
-      user = user_fixture()
-      resume = resume_fixture(user)
-
-      # Subscribe to the resume topic
-      topic = "resume"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
-
-      # Update the resume
-      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
-
-      # Assert that we receive the message
-      assert_receive {:resume_updated, ^updated_resume}
-    end
-
-    test "create_or_update_education/3 broadcasts education update event" do
-      user = user_fixture()
-      resume = resume_fixture(user)
-
-      # Subscribe to the education topic
-      topic = "education:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
-
-      # Create a new education entry
-      attrs = %{
-        institution: "University of Example",
-        degree: "Bachelor of Science",
-        field_of_study: "Computer Science",
-        start_date: ~D[2015-09-01],
-        end_date: ~D[2019-05-31]
-      }
-
-      {:ok, education} = Resumes.create_or_update_education(%Education{}, resume, attrs)
-
-      # Assert that we receive the message
-      assert_receive {:education_updated, ^education}
-    end
-
-    test "delete_education/1 broadcasts education delete event" do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      education = education_fixture(resume)
-
-      # Subscribe to the education topic
-      topic = "education:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
-
-      # Delete the education entry
-      {:ok, deleted_education} = Resumes.delete_education(education)
-
-      # Assert that we receive the message
-      assert_receive {:education_deleted, ^deleted_education}
-    end
-
-    test "create_or_update_work_experience/3 broadcasts work experience update event" do
-      user = user_fixture()
-      resume = resume_fixture(user)
-
-      # Subscribe to the work experience topic
-      topic = "work_experience:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
-
-      # Create a new work experience entry
-      attrs = %{
-        company_name: "Example Corp",
-        title: "Software Engineer",
-        start_date: ~D[2020-01-01],
-        end_date: ~D[2022-12-31]
-      }
-
-      {:ok, work_experience} =
-        Resumes.create_or_update_work_experience(%WorkExperience{}, resume, attrs)
-
-      # Assert that we receive the message
-      assert_receive {:work_experience_updated, ^work_experience}
-    end
-
-    test "delete_work_experience/1 broadcasts work experience delete event" do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      work_experience = work_experience_fixture(resume)
-
-      # Subscribe to the work experience topic
-      topic = "work_experience:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
-
-      # Delete the work experience entry
-      {:ok, deleted_work_experience} = Resumes.delete_work_experience(work_experience)
-
-      # Assert that we receive the message
-      assert_receive {:work_experience_deleted, ^deleted_work_experience}
     end
   end
 end

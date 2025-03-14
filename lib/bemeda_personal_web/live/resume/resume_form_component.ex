@@ -93,9 +93,7 @@ defmodule BemedaPersonalWeb.Resume.ResumeFormComponent do
 
   defp save_resume(socket, :edit_resume, resume_params) do
     case Resumes.update_resume(socket.assigns.resume, resume_params) do
-      {:ok, resume} ->
-        notify_parent({:saved, resume})
-
+      {:ok, _resume} ->
         {:noreply,
          socket
          |> put_flash(:info, "Resume updated successfully")
@@ -109,6 +107,4 @@ defmodule BemedaPersonalWeb.Resume.ResumeFormComponent do
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

@@ -24,17 +24,9 @@ defmodule BemedaPersonal.Resumes do
   @type work_experience :: WorkExperience.t()
   @type work_experience_id :: Ecto.UUID.t()
 
-  @resume_topic "resume"
   @education_topic "education"
+  @resume_topic "resume"
   @work_experience_topic "work_experience"
-
-  defp broadcast_event(topic, message) do
-    PubSub.broadcast(
-      BemedaPersonal.PubSub,
-      topic,
-      message
-    )
-  end
 
   @doc """
   Gets or creates a resume for a user.
@@ -396,5 +388,13 @@ defmodule BemedaPersonal.Resumes do
   @spec change_work_experience(work_experience(), map()) :: changeset()
   def change_work_experience(%WorkExperience{} = work_experience, attrs \\ %{}) do
     WorkExperience.changeset(work_experience, attrs)
+  end
+
+  defp broadcast_event(topic, message) do
+    PubSub.broadcast(
+      BemedaPersonal.PubSub,
+      topic,
+      message
+    )
   end
 end

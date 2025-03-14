@@ -6,20 +6,6 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
   alias BemedaPersonal.DateUtils
   alias Phoenix.LiveView.JS
 
-  # Public functions
-
-  @doc """
-  A reusable date input component with a calendar icon.
-
-  ## Examples
-
-      <.date_input
-        field={@form[:start_date]}
-        label="Start Date"
-        required={true}
-        disabled={false}
-      />
-  """
   attr :field, Phoenix.HTML.FormField, required: true
   attr :label, :string, required: true
   attr :current_checkbox_id, :string, default: nil
@@ -29,14 +15,12 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
 
   @spec date_input(map()) :: Phoenix.LiveView.Rendered.t()
   def date_input(assigns) do
-    # Process errors to ensure they're in the correct format
     errors =
       Enum.map(assigns.field.errors, fn
         {msg, opts} when is_tuple(msg) -> {elem(msg, 0), opts}
         error -> error
       end)
 
-    # Create a new assigns map with the errors
     assigns = Map.put(assigns, :errors, errors)
 
     ~H"""
@@ -62,7 +46,6 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
     """
   end
 
-  # Helper function to format error messages
   defp format_error({msg, _opts}), do: msg
   defp format_error(msg) when is_binary(msg), do: msg
   defp format_error(_unused), do: "Invalid input"

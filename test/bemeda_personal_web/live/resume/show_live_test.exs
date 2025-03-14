@@ -8,20 +8,17 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Resumes
 
-  # Consolidated setup function
   defp setup_resume_data(context) do
-    # Convert list to map if needed
     context = if is_list(context), do: Map.new(context), else: context
 
     user = user_fixture(confirmed: true)
     resume = resume_fixture(user)
     resume_with_user = Repo.preload(resume, :user)
 
-    # Create education if needed
     context_with_education =
       if context[:create_education] do
         education = education_fixture(resume)
-        # Reload education with resume association preloaded
+
         education_with_resume =
           Resumes.Education
           |> Repo.get!(education.id)
@@ -32,11 +29,10 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         context
       end
 
-    # Create work experience if needed
     context_with_work_experience =
       if context_with_education[:create_work_experience] do
         work_experience = work_experience_fixture(resume)
-        # Reload work experience with resume association preloaded
+
         work_experience_with_resume =
           Resumes.WorkExperience
           |> Repo.get!(work_experience.id)
@@ -110,7 +106,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> log_in_user(user)
         |> live(~p"/resume")
 
-      # Use a more specific selector for the Education Add button
       assert {:error, {:live_redirect, %{to: path}}} =
                show_live
                |> element("a[href='/resume/education/new']")
@@ -143,7 +138,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
              |> element("#delete-education-#{education.id}")
              |> render_click()
 
-      # After deletion, the education entry should not be present
       refute render(show_live) =~ education.institution
       assert render(show_live) =~ "Education entry deleted"
     end
@@ -176,7 +170,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
         |> log_in_user(user)
         |> live(~p"/resume")
 
-      # Use a more specific selector for the Work Experience Add button
       assert {:error, {:live_redirect, %{to: path}}} =
                show_live
                |> element("a[href='/resume/work-experience/new']")
@@ -217,7 +210,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
              |> element("#delete-work-experience-#{work_experience.id}")
              |> render_click()
 
-      # After deletion, the work experience entry should not be present
       refute render(show_live) =~ work_experience.company_name
       assert render(show_live) =~ "Work experience entry deleted"
     end
@@ -227,7 +219,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
     setup [:setup_resume_data]
 
     test "shows public link when resume is public", %{conn: conn, user: user, resume: resume} do
-      # Update resume to be public
       {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
 
       {:ok, _show_live, html} =
@@ -244,7 +235,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
       user: user,
       resume: resume
     } do
-      # Update resume to be private
       {:ok, _resume} = Resumes.update_resume(resume, %{is_public: false})
 
       {:ok, _show_live, html} =
@@ -256,10 +246,8 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
     end
 
     test "can view public resume", %{conn: conn, resume: resume} do
-      # Update resume to be public
       {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
 
-      # Access the public resume directly without logging in
       {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
       assert html =~ resume.headline

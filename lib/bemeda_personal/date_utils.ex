@@ -1,6 +1,6 @@
 defmodule BemedaPersonal.DateUtils do
   @moduledoc """
-  tility functions for date operations.
+  Utility functions for date operations.
   """
 
   @type date :: Date.t()

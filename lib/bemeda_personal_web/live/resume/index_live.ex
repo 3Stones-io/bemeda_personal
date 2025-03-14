@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
   import BemedaPersonalWeb.Components.ResumeComponents
 
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Resume.SharedHelpers
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -34,19 +35,7 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
   end
 
   defp handle_resume_result(%Resumes.Resume{is_public: true} = resume, socket) do
-    educations = Resumes.list_educations(resume.id)
-    work_experiences = Resumes.list_work_experiences(resume.id)
-
-    if connected?(socket) do
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "resume:#{resume.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "education:#{resume.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "work_experience:#{resume.id}")
-    end
-
-    socket
-    |> assign(:resume, resume)
-    |> stream(:educations, educations)
-    |> stream(:work_experiences, work_experiences)
+    SharedHelpers.setup_resume_data(socket, resume)
   end
 
   # Handle PubSub events

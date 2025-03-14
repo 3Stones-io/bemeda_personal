@@ -24,16 +24,16 @@ import topbar from '../vendor/topbar'
 
 // Import hooks
 import CopyToClipboard from './hooks/copy_to_clipboard'
+import CurrentCheckbox from './hooks/current_checkbox'
 import FlatpickrCalendar from './hooks/flatpickr_calendar'
 import TextTruncate from './hooks/text_truncate'
-import CurrentCheckbox from './hooks/current_checkbox'
 
 // Define hooks object
 const Hooks = {
   CopyToClipboard,
+  CurrentCheckbox,
   FlatpickrCalendar,
   TextTruncate,
-  CurrentCheckbox,
 }
 
 let csrfToken = document

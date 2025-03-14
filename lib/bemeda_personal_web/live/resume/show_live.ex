@@ -80,9 +80,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     education = Resumes.get_education(id)
     {:ok, _education} = Resumes.delete_education(education)
 
-    # No need to manually update the educations list here
-    # The PubSub event will handle the UI update
-
     {:noreply, put_flash(socket, :info, "Education entry deleted")}
   end
 

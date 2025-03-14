@@ -10,12 +10,11 @@ defmodule BemedaPersonal.ResumesFixtures do
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonal.Resumes.WorkExperience
 
-  # Custom types for type specifications
-  @type user :: User.t()
-  @type resume :: Resume.t()
-  @type education :: Education.t()
-  @type work_experience :: WorkExperience.t()
   @type attrs :: map()
+  @type education :: Education.t()
+  @type resume :: Resume.t()
+  @type user :: User.t()
+  @type work_experience :: WorkExperience.t()
 
   @doc """
   Generate valid resume attributes.
@@ -53,7 +52,6 @@ defmodule BemedaPersonal.ResumesFixtures do
   """
   @spec valid_education_attributes(attrs()) :: attrs()
   def valid_education_attributes(attrs \\ %{}) do
-    # Default attributes
     base_attrs = %{
       institution: "University of Example",
       degree: "Bachelor of Science",
@@ -89,7 +87,6 @@ defmodule BemedaPersonal.ResumesFixtures do
   """
   @spec valid_work_experience_attributes(attrs()) :: attrs()
   def valid_work_experience_attributes(attrs \\ %{}) do
-    # Default attributes
     base_attrs = %{
       company_name: "Example Corp",
       title: "Software Engineer",

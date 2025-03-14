@@ -86,9 +86,6 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"education" => education_params}, socket) do
-    # Clear end_date if current is true
-    education_params = maybe_clear_end_date(education_params)
-
     changeset =
       socket.assigns.education
       |> Resumes.change_education(education_params)
@@ -100,19 +97,7 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"education" => education_params}, socket) do
-    # Clear end_date if current is true
-    education_params = maybe_clear_end_date(education_params)
-
     save_education(socket, education_params)
-  end
-
-  # Helper function to clear end_date if current is true
-  defp maybe_clear_end_date(params) do
-    if params["current"] == "true" do
-      Map.put(params, "end_date", nil)
-    else
-      params
-    end
   end
 
   defp save_education(socket, education_params) do
@@ -121,9 +106,7 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
            socket.assigns.resume,
            education_params
          ) do
-      {:ok, education} ->
-        notify_parent({:saved, education})
-
+      {:ok, _education} ->
         {:noreply,
          socket
          |> put_flash(:info, "Education saved successfully")
@@ -137,6 +120,4 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end
