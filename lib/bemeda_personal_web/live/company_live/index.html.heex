@@ -5,6 +5,9 @@
       <.link patch={~p"/companies/#{@user_company.id}/edit"}>
         <.button>Edit Company</.button>
       </.link>
+      <.link navigate={~p"/companies/#{@user_company.id}/job_postings"} class="ml-2">
+        <.button>Manage Jobs</.button>
+      </.link>
     <% else %>
       <.link patch={~p"/companies/new"}>
         <.button>New Company</.button>

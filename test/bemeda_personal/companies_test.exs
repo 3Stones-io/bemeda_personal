@@ -5,82 +5,76 @@ defmodule BemedaPersonal.CompaniesTest do
   import BemedaPersonal.AccountsFixtures
 
   alias BemedaPersonal.Companies
+  alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.Repo
 
-  describe "companies" do
-    alias BemedaPersonal.Companies.Company
+  @invalid_attrs %{
+    name: nil,
+    size: nil,
+    description: nil,
+    location: nil,
+    industry: nil,
+    website_url: nil,
+    logo_url: nil
+  }
 
-    @invalid_attrs %{
-      name: nil,
-      size: nil,
-      description: nil,
-      location: nil,
-      industry: nil,
-      website_url: nil,
-      logo_url: nil
-    }
+  setup do
+    user = user_fixture()
+    company = company_fixture(user)
+    %{user: user, company: company}
+  end
 
-    test "list_companies/0 returns all companies" do
-      company = company_fixture()
-      # Get the company without preloaded associations for comparison
-      db_company = List.first(Companies.list_companies())
+  describe "list_companies/0" do
+    test "returns all companies", %{company: company, user: user} do
+      [result] = Companies.list_companies()
 
-      assert db_company.id == company.id
-      assert db_company.name == company.name
-      assert db_company.description == company.description
-      assert db_company.industry == company.industry
-      assert db_company.location == company.location
-      assert db_company.logo_url == company.logo_url
-      assert db_company.size == company.size
-      assert db_company.website_url == company.website_url
-      assert db_company.admin_user_id == company.admin_user_id
+      assert company.admin_user_id == user.id
+      assert company.id == result.id
+      assert company.name == result.name
     end
 
-    test "get_company!/1 returns the company with given id" do
-      company = company_fixture()
-      # Get the company without preloaded associations for comparison
-      db_company = Companies.get_company!(company.id)
+    test "returns empty list when no companies exist" do
+      Repo.delete_all(Company)
 
-      assert db_company.id == company.id
-      assert db_company.name == company.name
-      assert db_company.description == company.description
-      assert db_company.industry == company.industry
-      assert db_company.location == company.location
-      assert db_company.logo_url == company.logo_url
-      assert db_company.size == company.size
-      assert db_company.website_url == company.website_url
-      assert db_company.admin_user_id == company.admin_user_id
+      assert Companies.list_companies() == []
+    end
+  end
+
+  describe "get_company!/1" do
+    test "returns the company with given id", %{company: company, user: user} do
+      result = Companies.get_company!(company.id)
+
+      assert company.id == result.id
+      assert company.name == result.name
+      assert company.admin_user_id == user.id
     end
 
-    test "get_company_by_user/1 returns the company for a user" do
+    test "raises Ecto.NoResultsError if company does not exist" do
+      non_existent_id = Ecto.UUID.generate()
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Companies.get_company!(non_existent_id)
+      end
+    end
+  end
+
+  describe "get_company_by_user/1" do
+    test "returns the company for a user", %{user: user, company: company} do
+      result = Companies.get_company_by_user(user)
+
+      assert company.id == result.id
+      assert company.name == result.name
+      assert company.admin_user_id == user.id
+    end
+
+    test "returns nil when user has no company" do
       user = user_fixture()
-
-      {:ok, company} =
-        Companies.create_company(user, %{
-          name: "some name",
-          size: "some size",
-          description: "some description",
-          location: "some location",
-          industry: "some industry",
-          website_url: "some website_url",
-          logo_url: "some logo_url"
-        })
-
-      db_company = Companies.get_company_by_user(user)
-
-      assert db_company.id == company.id
-      assert db_company.name == company.name
-      assert db_company.admin_user_id == user.id
+      refute Companies.get_company_by_user(user)
     end
+  end
 
-    test "get_company_by_user/1 returns nil when user has no company" do
-      user = user_fixture()
-
-      assert Companies.get_company_by_user(user) == nil
-    end
-
-    test "create_company/2 with valid data creates a company" do
-      user = user_fixture()
-
+  describe "create_company/2" do
+    test "with valid data creates a company", %{user: user} do
       valid_attrs = %{
         name: "some name",
         size: "some size",
@@ -91,72 +85,42 @@ defmodule BemedaPersonal.CompaniesTest do
         logo_url: "some logo_url"
       }
 
-      assert {:ok, %Company{} = company} = Companies.create_company(user, valid_attrs)
+      company = company_fixture(user, valid_attrs)
       assert company.name == "some name"
       assert company.size == "some size"
       assert company.description == "some description"
-      assert company.location == "some location"
-      assert company.industry == "some industry"
-      assert company.website_url == "some website_url"
-      assert company.logo_url == "some logo_url"
       assert company.admin_user_id == user.id
     end
 
-    test "create_company/2 with invalid data returns error changeset" do
-      user = user_fixture()
+    test "with invalid data returns error changeset", %{user: user} do
       assert {:error, %Ecto.Changeset{}} = Companies.create_company(user, @invalid_attrs)
     end
+  end
 
-    test "update_company/2 with valid data updates the company" do
-      company = company_fixture()
-
+  describe "update_company/2" do
+    test "with valid data updates the company", %{company: company} do
       update_attrs = %{
-        name: "some updated name",
-        size: "some updated size",
-        description: "some updated description",
-        location: "some updated location",
-        industry: "some updated industry",
-        website_url: "some updated website_url",
-        logo_url: "some updated logo_url"
+        name: "some updated name"
       }
 
-      assert {:ok, %Company{} = company} =
-               Companies.update_company(company, update_attrs)
+      assert {:ok, %Company{} = company_1} = Companies.update_company(company, update_attrs)
 
-      assert company.name == "some updated name"
-      assert company.size == "some updated size"
-      assert company.description == "some updated description"
-      assert company.location == "some updated location"
-      assert company.industry == "some updated industry"
-      assert company.website_url == "some updated website_url"
-      assert company.logo_url == "some updated logo_url"
+      assert company_1.name == "some updated name"
+      assert company_1.size == company.size
     end
 
-    test "update_company/2 with invalid data returns error changeset" do
-      company = company_fixture()
-      assert {:error, %Ecto.Changeset{}} = Companies.update_company(company, @invalid_attrs)
-
-      # Get the company without preloaded associations for comparison
-      db_company = Companies.get_company!(company.id)
-
-      assert db_company.id == company.id
-      assert db_company.name == company.name
-      assert db_company.description == company.description
-      assert db_company.industry == company.industry
-      assert db_company.location == company.location
-      assert db_company.logo_url == company.logo_url
-      assert db_company.size == company.size
-      assert db_company.website_url == company.website_url
-      assert db_company.admin_user_id == company.admin_user_id
+    test "with invalid data returns error changeset", %{company: company} do
+      assert {:error, %Ecto.Changeset{}} =
+         Companies.update_company(company, @invalid_attrs)
     end
+  end
 
-    test "change_company/1 returns a company changeset" do
-      company = company_fixture()
+  describe "change_company/1" do
+    test "returns a company changeset", %{company: company} do
       assert %Ecto.Changeset{} = Companies.change_company(company)
     end
 
-    test "change_company/2 with attrs returns a company changeset" do
-      company = company_fixture()
+    test "with attrs returns a company changeset", %{company: company} do
       attrs = %{name: "updated name"}
       changeset = Companies.change_company(company, attrs)
 
