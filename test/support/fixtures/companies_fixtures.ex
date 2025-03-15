@@ -4,24 +4,17 @@ defmodule BemedaPersonal.CompaniesFixtures do
   entities via the `BemedaPersonal.Companies` context.
   """
 
-  import BemedaPersonal.AccountsFixtures
+  alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Companies
 
-  @spec company_fixture(map()) :: BemedaPersonal.Companies.Company.t()
-  def company_fixture(attrs \\ %{}) do
-    # Create a user if not provided
-    user =
-      if Map.has_key?(attrs, :admin_user) || Map.has_key?(attrs, "admin_user") do
-        attrs.admin_user || attrs["admin_user"]
-      else
-        user_fixture()
-      end
+  @type attrs :: map()
+  @type company :: Companies.Company.t()
+  @type user :: User.t()
 
-    # Remove admin_user_id from attrs as it's now passed separately
-    attrs = Map.drop(attrs, [:admin_user_id, "admin_user_id", :admin_user, "admin_user"])
-
-    {:ok, company} =
-      attrs
-      |> Enum.into(%{
+  @spec company_fixture(user(), attrs()) :: company()
+  def company_fixture(user = %User{} = _user, attrs \\ %{}) do
+    company_attrs =
+      Enum.into(attrs, %{
         description: "some description",
         industry: "some industry",
         location: "some location",
@@ -30,7 +23,8 @@ defmodule BemedaPersonal.CompaniesFixtures do
         size: "some size",
         website_url: "some website_url"
       })
-      |> then(fn attrs -> BemedaPersonal.Companies.create_company(user, attrs) end)
+
+    {:ok, company} = Companies.create_company(user, company_attrs)
 
     company
   end
