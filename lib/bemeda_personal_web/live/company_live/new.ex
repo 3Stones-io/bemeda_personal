@@ -21,7 +21,7 @@ defmodule BemedaPersonalWeb.CompanyLive.New do
         {:noreply,
          socket
          |> put_flash(:info, "Company profile created successfully.")
-         |> redirect(to: ~p"/companies/dashboard")}
+         |> redirect(to: ~p"/companies")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

@@ -1,29 +1,18 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.New do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobPosting
 
   @impl true
   def mount(%{"company_id" => company_id}, _session, socket) do
-    company = Companies.get_company!(company_id)
+    # Company is already assigned by the :require_admin_user on_mount function
+    changeset = Jobs.change_job_posting(%JobPosting{})
 
-    # Check if the current user is authorized to create jobs for this company
-    if company.admin_user_id == socket.assigns.current_user.id do
-      changeset = Jobs.change_job_posting(%JobPosting{})
-
-      {:ok,
-       socket
-       |> assign(:page_title, "Post New Job")
-       |> assign(:company, company)
-       |> assign(:changeset, changeset)}
-    else
-      {:ok,
-       socket
-       |> put_flash(:error, "You are not authorized to post jobs for this company.")
-       |> redirect(to: ~p"/companies/dashboard")}
-    end
+    {:ok,
+     socket
+     |> assign(:page_title, "Post New Job")
+     |> assign(:changeset, changeset)}
   end
 
   @impl true

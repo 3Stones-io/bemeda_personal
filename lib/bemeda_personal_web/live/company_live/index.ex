@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.CompanyLive.Dashboard do
+defmodule BemedaPersonalWeb.CompanyLive.Index do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Companies

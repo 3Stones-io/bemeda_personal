@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   import Phoenix.Controller
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Companies
 
   @type conn() :: Plug.Conn.t()
   @type params() :: map()
@@ -140,6 +141,11 @@ defmodule BemedaPersonalWeb.UserAuth do
     * `:redirect_if_user_is_authenticated` - Authenticates the user from the session.
       Redirects to signed_in_path if there's a logged user.
 
+    * `:require_admin_user` - Authenticates the user from the session,
+      verifies they are the admin of the company specified in the params,
+      and assigns both current_user and company to socket assigns.
+      Redirects to unauthorized page if user is not the admin of the company.
+
   ## Examples
 
   Use the `on_mount` lifecycle macro in LiveViews to mount or authenticate
@@ -185,6 +191,43 @@ defmodule BemedaPersonalWeb.UserAuth do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
     else
       {:cont, socket}
+    end
+  end
+
+  def on_mount(:require_admin_user, params, session, socket) do
+    socket = mount_current_user(socket, session)
+
+    if socket.assigns.current_user do
+      company_id = params["company_id"]
+
+      if company_id do
+        company = Companies.get_company!(company_id)
+
+        if company.admin_user_id == socket.assigns.current_user.id do
+          {:cont, Phoenix.Component.assign(socket, :company, company)}
+        else
+          socket =
+            socket
+            |> Phoenix.LiveView.put_flash(:error, "You don't have permission to access this company.")
+            |> Phoenix.LiveView.redirect(to: ~p"/companies")
+
+          {:halt, socket}
+        end
+      else
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(:error, "Company not found.")
+          |> Phoenix.LiveView.redirect(to: ~p"/companies")
+
+        {:halt, socket}
+      end
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+      {:halt, socket}
     end
   end
 

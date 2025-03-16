@@ -5,23 +5,13 @@ defmodule BemedaPersonalWeb.CompanyLive.Edit do
 
   @impl true
   def mount(%{"company_id" => company_id}, _session, socket) do
-    company = Companies.get_company!(company_id)
+    # Company is already assigned by the :require_admin_user on_mount function
+    changeset = Companies.change_company(socket.assigns.company)
 
-    # Check if the current user is authorized to edit this company
-    if company.admin_user_id == socket.assigns.current_user.id do
-      changeset = Companies.change_company(company)
-
-      {:ok,
-       socket
-       |> assign(:page_title, "Edit Company Profile")
-       |> assign(:company, company)
-       |> assign(:changeset, changeset)}
-    else
-      {:ok,
-       socket
-       |> put_flash(:error, "You are not authorized to edit this company profile.")
-       |> redirect(to: ~p"/companies/dashboard")}
-    end
+    {:ok,
+     socket
+     |> assign(:page_title, "Edit Company Profile")
+     |> assign(:changeset, changeset)}
   end
 
   @impl true
@@ -31,7 +21,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Edit do
         {:noreply,
          socket
          |> put_flash(:info, "Company profile updated successfully.")
-         |> redirect(to: ~p"/companies/dashboard")}
+         |> redirect(to: ~p"/companies")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
@@ -91,7 +81,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Edit do
 
             <div class="flex justify-end space-x-3">
               <.link
-                navigate={~p"/companies/dashboard"}
+                navigate={~p"/companies"}
                 class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Cancel

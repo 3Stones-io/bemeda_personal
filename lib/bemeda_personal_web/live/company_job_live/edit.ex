@@ -1,30 +1,27 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.Edit do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
 
   @impl true
   def mount(%{"company_id" => company_id, "id" => job_id}, _session, socket) do
-    company = Companies.get_company!(company_id)
+    # Company is already assigned by the :require_admin_user on_mount function
     job_posting = Jobs.get_job_posting!(job_id)
 
-    # Check if the current user is authorized to edit jobs for this company
-    # and if the job belongs to the company
-    if company.admin_user_id == socket.assigns.current_user.id && job_posting.company_id == company.id do
+    # Still check if the job belongs to the company for security
+    if job_posting.company_id == socket.assigns.company.id do
       changeset = Jobs.change_job_posting(job_posting)
 
       {:ok,
        socket
        |> assign(:page_title, "Edit Job")
-       |> assign(:company, company)
        |> assign(:job_posting, job_posting)
        |> assign(:changeset, changeset)}
     else
       {:ok,
        socket
-       |> put_flash(:error, "You are not authorized to edit this job.")
-       |> redirect(to: ~p"/companies/dashboard")}
+       |> put_flash(:error, "This job does not belong to your company.")
+       |> redirect(to: ~p"/companies/#{socket.assigns.company.id}/jobs")}
     end
   end
 

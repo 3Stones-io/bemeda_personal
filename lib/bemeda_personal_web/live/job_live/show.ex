@@ -31,7 +31,11 @@ defmodule BemedaPersonalWeb.JobLive.Show do
         </div>
         <h1 class="mt-2 text-3xl font-bold text-gray-900"><%= @job_posting.title %></h1>
         <div class="mt-1">
-          <p class="text-lg text-gray-700"><%= @job_posting.company.name %></p>
+          <p class="text-lg text-gray-700">
+            <.link navigate={~p"/company/#{@job_posting.company.id}"} class="hover:text-indigo-600">
+              <%= @job_posting.company.name %>
+            </.link>
+          </p>
         </div>
       </div>
 
@@ -123,7 +127,11 @@ defmodule BemedaPersonalWeb.JobLive.Show do
               <dl class="grid grid-cols-1 gap-x-4 gap-y-6">
                 <div>
                   <dt class="text-sm font-medium text-gray-500">Company Name</dt>
-                  <dd class="mt-1 text-sm text-gray-900"><%= @job_posting.company.name %></dd>
+                  <dd class="mt-1 text-sm text-gray-900">
+                    <.link navigate={~p"/company/#{@job_posting.company.id}"} class="text-indigo-600 hover:text-indigo-900">
+                      <%= @job_posting.company.name %>
+                    </.link>
+                  </dd>
                 </div>
 
                 <%= if @job_posting.company.industry do %>
@@ -150,6 +158,21 @@ defmodule BemedaPersonalWeb.JobLive.Show do
                     </dd>
                   </div>
                 <% end %>
+
+                <div class="mt-4">
+                  <.link
+                    navigate={~p"/company/#{@job_posting.company.id}"}
+                    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    View Company Profile
+                  </.link>
+                  <.link
+                    navigate={~p"/company/#{@job_posting.company.id}/jobs"}
+                    class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    View All Jobs
+                  </.link>
+                </div>
               </dl>
             </div>
           </div>

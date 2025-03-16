@@ -25,6 +25,10 @@ defmodule BemedaPersonalWeb.Router do
     # Public job routes - using LiveView
     live "/jobs", JobLive.Index, :index
     live "/jobs/:id", JobLive.Show, :show
+
+    # Public company routes - using LiveView
+    live "/company/:id", CompanyPublicLive.Show, :show
+    live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
   end
 
   # Other scopes may use custom stacks.
@@ -75,12 +79,14 @@ defmodule BemedaPersonalWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
-      # Company dashboard routes
+      live "/companies", CompanyLive.Index, :index
       live "/companies/new", CompanyLive.New, :new
-      live "/companies/dashboard", CompanyLive.Dashboard, :index
+    end
+
+    live_session :require_admin_user,
+      on_mount: [{BemedaPersonalWeb.UserAuth, :require_admin_user}] do
       live "/companies/:company_id/edit", CompanyLive.Edit, :edit
 
-      # Company job management routes
       live "/companies/:company_id/jobs", CompanyJobLive.Index, :index
       live "/companies/:company_id/jobs/new", CompanyJobLive.New, :new
       live "/companies/:company_id/jobs/:id/edit", CompanyJobLive.Edit, :edit

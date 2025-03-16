@@ -1,35 +1,24 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
 
   @impl true
   def mount(%{"company_id" => company_id}, _session, socket) do
-    company = Companies.get_company!(company_id)
+    # Company is already assigned by the :require_admin_user on_mount function
+    job_postings = Jobs.list_job_postings(%{company_id: socket.assigns.company.id})
 
-    # Check if the current user is authorized to view this company's jobs
-    if company.admin_user_id == socket.assigns.current_user.id do
-      job_postings = Jobs.list_job_postings(%{company_id: company.id})
-
-      {:ok,
-       socket
-       |> assign(:page_title, "Company Jobs")
-       |> assign(:company, company)
-       |> assign(:job_postings, job_postings)}
-    else
-      {:ok,
-       socket
-       |> put_flash(:error, "You are not authorized to view this company's jobs.")
-       |> redirect(to: ~p"/companies/dashboard")}
-    end
+    {:ok,
+     socket
+     |> assign(:page_title, "Company Jobs")
+     |> assign(:job_postings, job_postings)}
   end
 
   @impl true
   def handle_event("delete", %{"id" => job_id}, socket) do
     job_posting = Jobs.get_job_posting!(job_id)
 
-    # Check if the job belongs to the company
+    # Still check if the job belongs to the company for security
     if job_posting.company_id == socket.assigns.company.id do
       {:ok, _} = Jobs.delete_job_posting(job_posting)
 
@@ -59,7 +48,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
         </div>
         <div class="flex space-x-3">
           <.link
-            navigate={~p"/companies/dashboard"}
+            navigate={~p"/companies"}
             class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Back to Dashboard
