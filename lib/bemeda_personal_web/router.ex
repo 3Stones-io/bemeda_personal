@@ -70,19 +70,6 @@ defmodule BemedaPersonalWeb.Router do
       on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-
-      live "/companies", CompanyLive.Index, :index
-      live "/companies/new", CompanyLive.Index, :new
-      live "/companies/:id/edit", CompanyLive.Index, :edit
-
-      live "/job_postings", JobPostingLive.Index, :index
-      live "/job_postings/new", JobPostingLive.Index, :new
-      live "/job_postings/:id/edit", JobPostingLive.Index, :edit
-      live "/job_postings/:id", JobPostingLive.Show, :show
-      live "/job_postings/:id/show/edit", JobPostingLive.Show, :edit
-
-      live "/companies/:company_id/job_postings", JobPostingLive.Index, :index
-      live "/companies/:company_id/job_postings/new", JobPostingLive.Index, :new
     end
   end
 
