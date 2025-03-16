@@ -6,7 +6,6 @@ defmodule BemedaPersonal.JobsTest do
   import BemedaPersonal.JobsFixtures
 
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.Jobs.JobPosting
 
   @invalid_attrs %{
     description: nil,

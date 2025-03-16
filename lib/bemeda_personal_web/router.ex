@@ -21,6 +21,10 @@ defmodule BemedaPersonalWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    # Public job routes - using LiveView
+    live "/jobs", JobLive.Index, :index
+    live "/jobs/:id", JobLive.Show, :show
   end
 
   # Other scopes may use custom stacks.
@@ -70,6 +74,16 @@ defmodule BemedaPersonalWeb.Router do
       on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      # Company dashboard routes
+      live "/companies/new", CompanyLive.New, :new
+      live "/companies/dashboard", CompanyLive.Dashboard, :index
+      live "/companies/:company_id/edit", CompanyLive.Edit, :edit
+
+      # Company job management routes
+      live "/companies/:company_id/jobs", CompanyJobLive.Index, :index
+      live "/companies/:company_id/jobs/new", CompanyJobLive.New, :new
+      live "/companies/:company_id/jobs/:id/edit", CompanyJobLive.Edit, :edit
     end
   end
 
