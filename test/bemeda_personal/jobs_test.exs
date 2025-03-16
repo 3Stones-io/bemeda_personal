@@ -6,6 +6,7 @@ defmodule BemedaPersonal.JobsTest do
   import BemedaPersonal.JobsFixtures
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Jobs.JobPosting
 
   @invalid_attrs %{
     description: nil,
@@ -26,43 +27,210 @@ defmodule BemedaPersonal.JobsTest do
     %{company: company, job_posting: job_posting, user: user}
   end
 
-  describe "list_job_postings/0" do
-    setup :create_job_posting
-
-    test "returns all job_postings", %{job_posting: job_posting} do
-      result = Jobs.list_job_postings()
-      assert length(result) == 1
-
-      [result_job] = result
-      assert result_job.id == job_posting.id
-      assert result_job.title == job_posting.title
-      assert result_job.description == job_posting.description
-    end
-
-    test "returns empty list when no job postings exist" do
-      # Delete all job postings first
-      Repo.delete_all(Jobs.JobPosting)
-      assert Enum.empty?(Jobs.list_job_postings())
-    end
+  defp create_multiple_job_postings(company, count) do
+    Enum.map(1..count, fn i ->
+      job_posting_fixture(company, %{
+        title: "Job Posting #{i}",
+        description: "Description for job posting #{i}",
+        employment_type: "Full-time #{i}",
+        experience_level: "Senior #{i}",
+        location: "Location #{i}",
+        remote_allowed: rem(i, 2) == 0,
+        salary_min: i * 10000,
+        salary_max: i * 15000
+      })
+    end)
   end
 
-  describe "list_company_job_postings/1" do
-    setup :create_job_posting
+  describe "list_job_postings/2" do
+    test "returns all job_postings when no filter is passed" do
+      %{job_posting: job_posting} = create_job_posting(%{})
 
-    test "returns all job postings for a company", %{company: company, job_posting: job_posting} do
-      result = Jobs.list_company_job_postings(company)
-      assert length(result) == 1
-
-      [result_job] = result
-      assert result_job.id == job_posting.id
-      assert result_job.title == job_posting.title
-      assert result_job.description == job_posting.description
+      assert [result] = Jobs.list_job_postings()
+      assert result.id == job_posting.id
+      assert Ecto.assoc_loaded?(result.company)
     end
 
-    test "returns empty list when company has no job postings" do
+    test "can filter job_postings by company_id" do
+      %{company: company, job_posting: job_posting} = create_job_posting(%{})
+
+      user2 = user_fixture(%{email: "user2@example.com"})
+      company2 = company_fixture(user2)
+      job_posting_fixture(company2, %{title: "Job Posting for Company 2"})
+
+      assert [result] = Jobs.list_job_postings(%{company_id: company.id})
+      assert result.id == job_posting.id
+      assert result.company_id == company.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "returns empty list when a company has no job_postings" do
       user = user_fixture()
       company = company_fixture(user)
-      assert Enum.empty?(Jobs.list_company_job_postings(company))
+      non_existing_company_id = Ecto.UUID.generate()
+
+      assert [] = Jobs.list_job_postings(%{company_id: non_existing_company_id})
+      assert [] = Jobs.list_job_postings(%{company_id: company.id})
+    end
+
+    test "can filter job_postings by title" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{title: "Software Engineer"})
+      job_posting_fixture(company, %{title: "Product Manager"})
+
+      assert [result] = Jobs.list_job_postings(%{title: "Engineer"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by employment_type" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{employment_type: "Full-time"})
+      job_posting_fixture(company, %{employment_type: "Part-time"})
+
+      assert [result] = Jobs.list_job_postings(%{employment_type: "Full"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by experience_level" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{experience_level: "Senior"})
+      job_posting_fixture(company, %{experience_level: "Junior"})
+
+      assert [result] = Jobs.list_job_postings(%{experience_level: "Senior"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by remote_allowed" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{remote_allowed: true})
+      job_posting_fixture(company, %{remote_allowed: false})
+
+      assert [result] = Jobs.list_job_postings(%{remote_allowed: true})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by location" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{location: "New York"})
+      job_posting_fixture(company, %{location: "San Francisco"})
+
+      assert [result] = Jobs.list_job_postings(%{location: "New"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by salary_range" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{salary_min: 50000, salary_max: 100000})
+      job_posting2 = job_posting_fixture(company, %{salary_min: 30000, salary_max: 60000})
+      job_posting_fixture(company, %{salary_min: 120000, salary_max: 150000})
+
+      assert results = Jobs.list_job_postings(%{salary_range: [55000, 70000]})
+      assert length(results) == 2
+
+      job_ids = Enum.map(results, & &1.id)
+      assert job_posting1.id in job_ids
+      assert job_posting2.id in job_ids
+      assert length(job_ids) == 2
+
+      results = Jobs.list_job_postings(%{salary_range: [40000, 1000000]})
+      assert length(results) == 3
+
+      results = Jobs.list_job_postings(%{salary_range: [0, 70000]})
+      assert length(results) == 2
+
+      job_ids = Enum.map(results, & &1.id) |> Enum.sort()
+      assert job_posting2.id in job_ids
+    end
+
+    test "can filter job_postings by multiple parameters" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{
+        title: "Senior Software Engineer",
+        employment_type: "Full-time",
+        remote_allowed: true,
+        salary_min: 80000,
+        salary_max: 120000
+      })
+
+      job_posting_fixture(company, %{
+        title: "Junior Software Engineer",
+        employment_type: "Full-time",
+        remote_allowed: false,
+        salary_min: 50000,
+        salary_max: 70000
+      })
+
+      job_posting_fixture(company, %{
+        title: "Senior Product Manager",
+        employment_type: "Full-time",
+        remote_allowed: true,
+        salary_min: 90000,
+        salary_max: 130000
+      })
+
+      assert [result] = Jobs.list_job_postings(%{
+        title: "Engineer",
+        remote_allowed: true,
+        salary_range: [75000, 125000]
+      })
+
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "returns empty list for multiple filters whose conditions are not met" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting_fixture(company, %{
+        title: "Senior Software Engineer",
+        employment_type: "Full-time",
+        remote_allowed: true,
+        salary_min: 80000,
+        salary_max: 120000
+      })
+
+      assert [] = Jobs.list_job_postings(%{
+        title: "Engineer",
+        remote_allowed: false,
+        salary_min: 100000
+      })
+    end
+
+    test "defaults to listing all job_postings if a non-existent filter is passed" do
+      %{job_posting: job_posting} = create_job_posting(%{})
+
+      assert [result] = Jobs.list_job_postings(%{unknown_filter: "unknown_filter"})
+      assert job_posting.id == result.id
+    end
+
+    test "limits the number of returned job_postings" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      create_multiple_job_postings(company, 15)
+      assert length(Jobs.list_job_postings()) == 10
+      assert length(Jobs.list_job_postings(%{}, 5)) == 5
+      assert length(Jobs.list_job_postings(%{}, 20)) == 15
     end
   end
 

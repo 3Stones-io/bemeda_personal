@@ -24,32 +24,71 @@ defmodule BemedaPersonal.Jobs do
       iex> list_job_postings()
       [%JobPosting{}, ...]
 
-  """
-  @spec list_job_postings() :: [job_posting()]
-  def list_job_postings do
-    JobPosting
-    |> order_by([j], desc: j.inserted_at)
-    |> Repo.all()
-    |> Repo.preload(:company)
-  end
+      iex> list_job_postings(%{company_id: company_id})
+      [%JobPosting{}, ...]
 
-  @doc """
-  Returns the list of job_postings for a specific company.
+      iex> list_job_postings(%{salary_range: [50000, 100000]})
+      [%JobPosting{}, ...]
 
-  ## Examples
-
-      iex> list_company_job_postings(company_id)
+      iex> list_job_postings(%{title: "Engineer", remote_allowed: true})
       [%JobPosting{}, ...]
 
   """
-  @spec list_company_job_postings(company()) :: [job_posting()]
-  def list_company_job_postings(%Company{} = company) do
-    JobPosting
-    |> where([j], j.company_id == ^company.id)
+  @spec list_job_postings(map(), non_neg_integer()) :: [job_posting()]
+  def list_job_postings(filters \\ %{}, limit \\ 10) do
+    filter_query = apply_filters()
+
+    job_posting_query()
+    |> where(^filter_query.(filters))
     |> order_by([j], desc: j.inserted_at)
+    |> limit(^limit)
     |> Repo.all()
     |> Repo.preload(:company)
   end
+
+  defp job_posting_query do
+    from job_posting in JobPosting, as: :job_posting
+  end
+
+  defp apply_filters do
+    fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_filter/2)
+    end
+  end
+
+  defp apply_filter({:company_id, company_id}, dynamic) do
+    dynamic([job_posting: j], ^dynamic and j.company_id == ^company_id)
+  end
+
+  defp apply_filter({:title, title}, dynamic) do
+    pattern = "%#{title}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.title, ^pattern))
+  end
+
+  defp apply_filter({:employment_type, employment_type}, dynamic) do
+    pattern = "%#{employment_type}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.employment_type, ^pattern))
+  end
+
+  defp apply_filter({:experience_level, experience_level}, dynamic) do
+    pattern = "%#{experience_level}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.experience_level, ^pattern))
+  end
+
+  defp apply_filter({:remote_allowed, remote_allowed}, dynamic) do
+    dynamic([job_posting: j], ^dynamic and j.remote_allowed == ^remote_allowed)
+  end
+
+  defp apply_filter({:location, location}, dynamic) do
+    pattern = "%#{location}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.location, ^pattern))
+  end
+
+  defp apply_filter({:salary_range, [min, max]}, dynamic) do
+    dynamic([job_posting: j], ^dynamic and j.salary_min <= ^max and j.salary_max >= ^min)
+  end
+
+  defp apply_filter(_other, dynamic), do: dynamic
 
   @doc """
   Gets a single job_posting.
