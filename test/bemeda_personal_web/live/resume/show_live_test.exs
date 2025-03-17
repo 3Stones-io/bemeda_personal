@@ -1,9 +1,9 @@
 defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
-  import Phoenix.LiveViewTest
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.ResumesFixtures
+  import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Resumes
@@ -215,7 +215,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
     end
   end
 
-  describe "/resume/:id" do
+  describe "/resume" do
     setup [:setup_resume_data]
 
     test "shows public link when resume is public", %{conn: conn, user: user, resume: resume} do

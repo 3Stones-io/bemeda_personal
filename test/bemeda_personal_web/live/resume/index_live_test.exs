@@ -1,9 +1,9 @@
 defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
-  import Phoenix.LiveViewTest
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.ResumesFixtures
+  import Phoenix.LiveViewTest
 
   describe "/resumes/:id" do
     test "displays resume with all sections", %{conn: conn} do

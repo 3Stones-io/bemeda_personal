@@ -18,8 +18,9 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
       socket
       |> stream_configure(:educations, dom_id: &"education-#{&1.id}")
       |> stream_configure(:work_experiences, dom_id: &"work-experience-#{&1.id}")
-      |> assign(:active_component, nil)
       |> assign(:education, %Resumes.Education{})
+      |> assign(:form_component, nil)
+      |> assign(:component_id, nil)
       |> assign(:work_experience, %Resumes.WorkExperience{})
       |> SharedHelpers.setup_resume_data(resume)
 
@@ -33,46 +34,51 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
 
   defp apply_action(socket, :show, _params) do
     socket
+    |> assign(:form_component, nil)
     |> assign(:page_title, "My Resume")
-    |> assign(:active_component, nil)
   end
 
   defp apply_action(socket, :edit_resume, _params) do
     socket
+    |> assign(:component_id, "resume-form")
+    |> assign(:form_component, ResumeFormComponent)
     |> assign(:page_title, "Edit Resume")
-    |> assign(:active_component, :resume_form)
   end
 
   defp apply_action(socket, :new_education, _params) do
     socket
-    |> assign(:page_title, "Add Education")
+    |> assign(:component_id, "education-form")
     |> assign(:education, %Resumes.Education{})
-    |> assign(:active_component, :education_form)
+    |> assign(:form_component, EducationFormComponent)
+    |> assign(:page_title, "Add Education")
   end
 
   defp apply_action(socket, :edit_education, %{"id" => id}) do
     education = Resumes.get_education(id)
 
     socket
-    |> assign(:page_title, "Edit Education")
+    |> assign(:component_id, "education-form")
     |> assign(:education, education)
-    |> assign(:active_component, :education_form)
+    |> assign(:form_component, EducationFormComponent)
+    |> assign(:page_title, "Edit Education")
   end
 
   defp apply_action(socket, :new_work_experience, _params) do
     socket
+    |> assign(:component_id, "work-experience-form")
+    |> assign(:form_component, WorkExperienceFormComponent)
     |> assign(:page_title, "Add Work Experience")
     |> assign(:work_experience, %Resumes.WorkExperience{})
-    |> assign(:active_component, :work_experience_form)
   end
 
   defp apply_action(socket, :edit_work_experience, %{"id" => id}) do
     work_experience = Resumes.get_work_experience!(id)
 
     socket
+    |> assign(:component_id, "work-experience-form")
+    |> assign(:form_component, WorkExperienceFormComponent)
     |> assign(:page_title, "Edit Work Experience")
     |> assign(:work_experience, work_experience)
-    |> assign(:active_component, :work_experience_form)
   end
 
   @impl Phoenix.LiveView

@@ -37,7 +37,7 @@
     <:resume_item :let={education}>
       <.resume_item
         delete_event="delete-education"
-        edit_path={"/resume/education/#{education.id}/edit"}
+        edit_path={~p"/resume/education/#{education.id}/edit"}
         id={"education-#{education.id}"}
         item={education}
         subtitle={
@@ -66,7 +66,7 @@
         title={work_experience.title}
         subtitle={work_experience.company_name}
         extra_info={work_experience.location}
-        edit_path={"/resume/work-experience/#{work_experience.id}/edit"}
+        edit_path={~p"/resume/work-experience/#{work_experience.id}/edit"}
         delete_event="delete-work-experience"
       />
     </:resume_item>

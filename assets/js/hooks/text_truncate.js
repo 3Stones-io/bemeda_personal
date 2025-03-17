@@ -13,12 +13,11 @@ const TextTruncate = {
 
     // Set up event listeners for the "More" and "Less" links
     textElement.addEventListener('click', (e) => {
+      e.preventDefault()
       if (e.target.classList.contains('read-more-link')) {
         this.showFullText(textElement, fullText)
-        e.preventDefault()
       } else if (e.target.classList.contains('read-less-link')) {
         this.truncateText(textElement, fullText, maxLength)
-        e.preventDefault()
       }
     })
   },

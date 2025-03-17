@@ -76,7 +76,7 @@
             else: education.degree
           )
         }
-        edit_path={"/resume/education/#{education.id}/edit"}
+        edit_path={~p"/resume/education/#{education.id}/edit"}
         delete_event="delete-education"
         can_update_resume={true}
       />
@@ -96,7 +96,7 @@
       <.resume_item
         can_update_resume={true}
         delete_event="delete-work-experience"
-        edit_path={"/resume/work-experience/#{work_experience.id}/edit"}
+        edit_path={~p"/resume/work-experience/#{work_experience.id}/edit"}
         extra_info={work_experience.location}
         id={"work-experience-#{work_experience.id}"}
         item={work_experience}
@@ -108,47 +108,18 @@
   
 <!-- Form Components -->
   <.modal
-    id="resume-form-modal"
-    show={@active_component == :resume_form}
+    :if={@form_component}
+    id={"#{@component_id}-modal"}
+    show={@form_component}
     on_cancel={JS.patch(~p"/resume")}
   >
     <.live_component
-      module={ResumeFormComponent}
-      id="resume-form"
-      title="Edit Resume"
-      action={:edit_resume}
-      resume={@resume}
-      patch={~p"/resume"}
-    />
-  </.modal>
-
-  <.modal
-    id="education-form-modal"
-    show={@active_component == :education_form}
-    on_cancel={JS.patch(~p"/resume")}
-  >
-    <.live_component
-      module={EducationFormComponent}
-      id="education-form"
+      module={@form_component}
+      id={@component_id}
       education={@education}
-      resume={@resume}
-      patch={~p"/resume"}
-      action={@live_action}
-      title={@page_title}
-    />
-  </.modal>
-
-  <.modal
-    id="work-experience-form-modal"
-    show={@active_component == :work_experience_form}
-    on_cancel={JS.patch(~p"/resume")}
-  >
-    <.live_component
-      module={WorkExperienceFormComponent}
-      id="work-experience-form"
       work_experience={@work_experience}
       resume={@resume}
-      patch={~p"/resume"}
+      return_to={~p"/resume"}
       action={@live_action}
       title={@page_title}
     />

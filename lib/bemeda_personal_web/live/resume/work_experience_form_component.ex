@@ -111,7 +111,7 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Work experience saved successfully")
-         |> push_navigate(to: socket.assigns.patch)}
+         |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}

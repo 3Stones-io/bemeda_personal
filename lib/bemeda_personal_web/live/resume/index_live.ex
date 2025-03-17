@@ -25,16 +25,16 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
   defp apply_action(socket, :show, %{"id" => id}) do
     id
     |> Resumes.get_resume()
-    |> handle_resume_result(socket)
+    |> assign_resume(socket)
     |> assign(:page_title, "Resume")
   end
 
-  defp handle_resume_result(resume, socket)
-       when is_nil(resume) or (is_struct(resume, Resumes.Resume) and resume.is_public == false) do
-    assign(socket, :not_found, true)
-  end
+  defp assign_resume(nil, socket), do: assign(socket, :not_found, true)
 
-  defp handle_resume_result(%Resumes.Resume{is_public: true} = resume, socket) do
+  defp assign_resume(%Resumes.Resume{is_public: false}, socket),
+    do: assign(socket, :not_found, true)
+
+  defp assign_resume(%Resumes.Resume{is_public: true} = resume, socket) do
     SharedHelpers.setup_resume_data(socket, resume)
   end
 

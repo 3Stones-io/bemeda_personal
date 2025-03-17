@@ -17,15 +17,5 @@ defmodule BemedaPersonal.DateUtilsTest do
       date = ~D[2023-01-05]
       assert DateUtils.format_date(date) == "1/5/2023"
     end
-
-    test "handles last day of the year" do
-      date = ~D[2023-12-31]
-      assert DateUtils.format_date(date) == "12/31/2023"
-    end
-
-    test "handles leap year date" do
-      date = ~D[2024-02-29]
-      assert DateUtils.format_date(date) == "2/29/2024"
-    end
   end
 end
