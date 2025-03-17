@@ -100,6 +100,41 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
       assert html =~ education.field_of_study
     end
 
+    test "shows public link when resume is public", %{conn: conn, user: user, resume: resume} do
+      {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
+
+      {:ok, _show_live, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert html =~ "Your resume is public"
+      assert html =~ "/resumes/#{resume.id}"
+    end
+
+    test "does not show public link when resume is private", %{
+      conn: conn,
+      user: user,
+      resume: resume
+    } do
+      {:ok, _resume} = Resumes.update_resume(resume, %{is_public: false})
+
+      {:ok, _show_live, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      refute html =~ "Your resume is public"
+    end
+
+    test "can view public resume", %{conn: conn, resume: resume} do
+      {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
+
+      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
+
+      assert html =~ resume.headline
+    end
+
     test "can navigate to add education form", %{conn: conn, user: user} do
       {:ok, show_live, _html} =
         conn
@@ -212,45 +247,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
 
       refute render(show_live) =~ work_experience.company_name
       assert render(show_live) =~ "Work experience entry deleted"
-    end
-  end
-
-  describe "/resume" do
-    setup [:setup_resume_data]
-
-    test "shows public link when resume is public", %{conn: conn, user: user, resume: resume} do
-      {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
-
-      {:ok, _show_live, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/resume")
-
-      assert html =~ "Your resume is public"
-      assert html =~ "/resumes/#{resume.id}"
-    end
-
-    test "does not show public link when resume is private", %{
-      conn: conn,
-      user: user,
-      resume: resume
-    } do
-      {:ok, _resume} = Resumes.update_resume(resume, %{is_public: false})
-
-      {:ok, _show_live, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/resume")
-
-      refute html =~ "Your resume is public"
-    end
-
-    test "can view public resume", %{conn: conn, resume: resume} do
-      {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
-
-      {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
-
-      assert html =~ resume.headline
     end
   end
 end
