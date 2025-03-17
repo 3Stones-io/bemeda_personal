@@ -249,4 +249,316 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
       assert render(show_live) =~ "Work experience entry deleted"
     end
   end
+
+  describe "/resume/edit" do
+    setup [:setup_resume_data]
+
+    test "user can update a resume", %{conn: conn, user: user, resume: _resume} do
+      # Navigate to the edit resume form
+      {:ok, show_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a", "Edit")
+               |> render_click()
+
+      assert path == ~p"/resume/edit"
+
+      # Submit the form with updated data
+      {:ok, edit_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume/edit")
+
+      updated_headline = "Senior Software Engineer"
+      updated_summary = "Experienced software engineer with a passion for Elixir and Phoenix."
+      updated_location = "San Francisco, CA"
+
+      assert edit_live
+             |> form("#resume-form", %{
+               "resume" => %{
+                 "headline" => updated_headline,
+                 "summary" => updated_summary,
+                 "location" => updated_location
+               }
+             })
+             |> render_submit()
+
+      # Verify the resume was updated
+      {:ok, _show_live, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert html =~ updated_headline
+      assert html =~ updated_summary
+      assert html =~ updated_location
+    end
+  end
+
+  describe "/resume/education/new" do
+    setup [:setup_resume_data]
+
+    test "user can create a new education entry", %{conn: conn, user: user} do
+      # Navigate to the new education form
+      {:ok, show_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href='/resume/education/new']")
+               |> render_click()
+
+      assert path == ~p"/resume/education/new"
+
+      # Submit the form with new education data
+      {:ok, new_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume/education/new")
+
+      institution = "Harvard University"
+      degree = "Master of Science"
+      field_of_study = "Data Science"
+
+      assert new_live
+             |> form("#education-form", %{
+               "education" => %{
+                 "institution" => institution,
+                 "degree" => degree,
+                 "field_of_study" => field_of_study,
+                 "start_date" => "2020-09-01",
+                 "end_date" => "2022-05-31",
+                 "current" => false,
+                 "description" => "Studied data science with a focus on machine learning."
+               }
+             })
+             |> render_submit()
+
+      # Verify the education entry was created
+      {:ok, _show_live, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert html =~ institution
+      assert html =~ degree
+      assert html =~ field_of_study
+    end
+
+    test "renders errors when education data is invalid", %{conn: conn, user: user} do
+      {:ok, new_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume/education/new")
+
+      # Try to submit the form with invalid data (missing required fields)
+      result =
+        new_live
+        |> form("#education-form", %{
+          "education" => %{
+            "institution" => "",
+            "start_date" => ""
+          }
+        })
+        |> render_change()
+
+      # Verify error messages are displayed
+      assert result =~ "can&#39;t be blank"
+    end
+  end
+
+  describe "/resume/education/:id/edit" do
+    setup [:setup_resume_data]
+
+    test "user can update an existing education entry", %{conn: conn, user: user} do
+      # Create an education entry first
+      resume = Resumes.get_or_create_resume_by_user(user)
+      education = education_fixture(resume)
+
+      # Navigate to the edit education form
+      {:ok, show_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href*='education/#{education.id}/edit']")
+               |> render_click()
+
+      assert path == ~p"/resume/education/#{education.id}/edit"
+
+      # Submit the form with updated education data
+      {:ok, edit_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume/education/#{education.id}/edit")
+
+      updated_institution = "MIT"
+      updated_degree = "PhD"
+      updated_field_of_study = "Artificial Intelligence"
+
+      assert edit_live
+             |> form("#education-form", %{
+               "education" => %{
+                 "institution" => updated_institution,
+                 "degree" => updated_degree,
+                 "field_of_study" => updated_field_of_study,
+                 "start_date" => "2018-09-01",
+                 "end_date" => "2023-05-31",
+                 "current" => false,
+                 "description" => "Advanced research in AI and machine learning."
+               }
+             })
+             |> render_submit()
+
+      # Verify the education entry was updated
+      {:ok, _show_live, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert html =~ updated_institution
+      assert html =~ updated_degree
+      assert html =~ updated_field_of_study
+    end
+  end
+
+  describe "/resume/work-experience/new" do
+    setup [:setup_resume_data]
+
+    test "user can create a new work_experience record", %{conn: conn, user: user} do
+      # Navigate to the new work experience form
+      {:ok, show_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href='/resume/work-experience/new']")
+               |> render_click()
+
+      assert path == ~p"/resume/work-experience/new"
+
+      # Submit the form with new work experience data
+      {:ok, new_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume/work-experience/new")
+
+      company_name = "Google"
+      title = "Senior Software Engineer"
+      location = "Mountain View, CA"
+
+      assert new_live
+             |> form("#work-experience-form", %{
+               "work_experience" => %{
+                 "company_name" => company_name,
+                 "title" => title,
+                 "location" => location,
+                 "start_date" => "2020-01-01",
+                 "end_date" => "2023-12-31",
+                 "current" => false,
+                 "description" => "Developed web applications using Elixir and Phoenix."
+               }
+             })
+             |> render_submit()
+
+      # Verify the work experience entry was created
+      {:ok, _show_live, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert html =~ company_name
+      assert html =~ title
+      assert html =~ location
+    end
+
+    test "renders errors when work experience data is invalid", %{conn: conn, user: user} do
+      {:ok, new_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume/work-experience/new")
+
+      # Try to submit the form with invalid data (missing required fields)
+      result =
+        new_live
+        |> form("#work-experience-form", %{
+          "work_experience" => %{
+            "company_name" => "",
+            "title" => "",
+            "start_date" => ""
+          }
+        })
+        |> render_change()
+
+      # Verify error messages are displayed
+      assert result =~ "can&#39;t be blank"
+    end
+  end
+
+  describe "/resume/work-experience/:id/edit" do
+    setup [:setup_resume_data]
+
+    test "user can update an existing work_experience record", %{conn: conn, user: user} do
+      # Create a work experience entry first
+      resume = Resumes.get_or_create_resume_by_user(user)
+      work_experience = work_experience_fixture(resume)
+
+      # Navigate to the edit work experience form
+      {:ok, show_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert {:error, {:live_redirect, %{to: path}}} =
+               show_live
+               |> element("a[href*='work-experience/#{work_experience.id}/edit']")
+               |> render_click()
+
+      assert path == ~p"/resume/work-experience/#{work_experience.id}/edit"
+
+      # Submit the form with updated work experience data
+      {:ok, edit_live, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume/work-experience/#{work_experience.id}/edit")
+
+      updated_company_name = "Microsoft"
+      updated_title = "Principal Engineer"
+      updated_location = "Seattle, WA"
+
+      assert edit_live
+             |> form("#work-experience-form", %{
+               "work_experience" => %{
+                 "company_name" => updated_company_name,
+                 "title" => updated_title,
+                 "location" => updated_location,
+                 "start_date" => "2018-01-01",
+                 "end_date" => "2022-12-31",
+                 "current" => false,
+                 "description" => "Led development of cloud-based solutions."
+               }
+             })
+             |> render_submit()
+
+      # Verify the work experience entry was updated
+      {:ok, _show_live, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/resume")
+
+      assert html =~ updated_company_name
+      assert html =~ updated_title
+      assert html =~ updated_location
+    end
+  end
 end

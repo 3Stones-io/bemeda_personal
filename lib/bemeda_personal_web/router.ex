@@ -76,10 +76,8 @@ defmodule BemedaPersonalWeb.Router do
       live "/resume/edit", Resume.ShowLive, :edit_resume
       live "/resume/education/new", Resume.ShowLive, :new_education
       live "/resume/education/:id/edit", Resume.ShowLive, :edit_education
-      live "/resume/education/:id/delete", Resume.ShowLive, :delete_education
       live "/resume/work-experience/new", Resume.ShowLive, :new_work_experience
       live "/resume/work-experience/:id/edit", Resume.ShowLive, :edit_work_experience
-      live "/resume/work-experience/:id/delete", Resume.ShowLive, :delete_work_experience
     end
   end
 
