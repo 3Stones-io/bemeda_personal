@@ -29,14 +29,10 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
     |> assign(:page_title, "Resume")
   end
 
-  defp assign_resume(nil, socket), do: assign(socket, :not_found, true)
+  defp assign_resume(%Resumes.Resume{is_public: true} = resume, socket),
+    do: SharedHelpers.setup_resume_data(socket, resume)
 
-  defp assign_resume(%Resumes.Resume{is_public: false}, socket),
-    do: assign(socket, :not_found, true)
-
-  defp assign_resume(%Resumes.Resume{is_public: true} = resume, socket) do
-    SharedHelpers.setup_resume_data(socket, resume)
-  end
+  defp assign_resume(_resume, socket), do: assign(socket, :not_found, true)
 
   # Handle PubSub events
   @impl Phoenix.LiveView
