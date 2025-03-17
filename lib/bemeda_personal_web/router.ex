@@ -96,7 +96,7 @@ defmodule BemedaPersonalWeb.Router do
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
         {BemedaPersonalWeb.UserAuth, :require_no_existing_company}
       ] do
-      live "/new", CompanyLive.New, :new
+      live "/new", CompanyLive.Index, :new
     end
   end
 
@@ -108,7 +108,7 @@ defmodule BemedaPersonalWeb.Router do
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
         {BemedaPersonalWeb.UserAuth, :require_admin_user}
       ] do
-      live "/:company_id/edit", CompanyLive.Edit, :edit
+      live "/:id/edit", CompanyLive.Index, :edit
 
       live "/:company_id/jobs", CompanyJobLive.Index, :index
       live "/:company_id/jobs/new", CompanyJobLive.New, :new
