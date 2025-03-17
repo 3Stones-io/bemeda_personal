@@ -4,7 +4,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Edit do
   alias BemedaPersonal.Companies
 
   @impl true
-  def mount(%{"company_id" => company_id}, _session, socket) do
+  def mount(_params, _session, socket) do
     # Company is already assigned by the :require_admin_user on_mount function
     changeset = Companies.change_company(socket.assigns.company)
 
@@ -51,12 +51,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Edit do
             </div>
 
             <div>
-              <.input
-                field={f[:description]}
-                type="textarea"
-                label="Company Description"
-                rows={4}
-              />
+              <.input field={f[:description]} type="textarea" label="Company Description" rows={4} />
             </div>
 
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">

@@ -27,7 +27,7 @@ defmodule BemedaPersonal.Jobs do
       iex> list_job_postings(%{company_id: company_id})
       [%JobPosting{}, ...]
 
-      iex> list_job_postings(%{salary_range: [50000, 100000]})
+      iex> list_job_postings(%{salary_range: [50000, 100_000]})
       [%JobPosting{}, ...]
 
       iex> list_job_postings(%{title: "Engineer", remote_allowed: true})

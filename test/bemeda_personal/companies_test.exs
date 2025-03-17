@@ -111,7 +111,7 @@ defmodule BemedaPersonal.CompaniesTest do
 
     test "with invalid data returns error changeset", %{company: company} do
       assert {:error, %Ecto.Changeset{}} =
-         Companies.update_company(company, @invalid_attrs)
+               Companies.update_company(company, @invalid_attrs)
     end
   end
 

@@ -51,12 +51,7 @@ defmodule BemedaPersonalWeb.CompanyLive.New do
             </div>
 
             <div>
-              <.input
-                field={f[:description]}
-                type="textarea"
-                label="Company Description"
-                rows={4}
-              />
+              <.input field={f[:description]} type="textarea" label="Company Description" rows={4} />
             </div>
 
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">

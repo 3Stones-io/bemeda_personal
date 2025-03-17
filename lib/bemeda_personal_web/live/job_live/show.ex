@@ -23,17 +23,27 @@ defmodule BemedaPersonalWeb.JobLive.Show do
             navigate={~p"/jobs"}
             class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-900"
           >
-            <svg class="mr-2 h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            <svg
+              class="mr-2 h-5 w-5 text-indigo-500"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
             </svg>
             Back to Jobs
           </.link>
         </div>
-        <h1 class="mt-2 text-3xl font-bold text-gray-900"><%= @job_posting.title %></h1>
+        <h1 class="mt-2 text-3xl font-bold text-gray-900">{@job_posting.title}</h1>
         <div class="mt-1">
           <p class="text-lg text-gray-700">
             <.link navigate={~p"/company/#{@job_posting.company.id}"} class="hover:text-indigo-600">
-              <%= @job_posting.company.name %>
+              {@job_posting.company.name}
             </.link>
           </p>
         </div>
@@ -46,7 +56,7 @@ defmodule BemedaPersonalWeb.JobLive.Show do
               <h2 class="text-xl font-semibold text-gray-900">Job Description</h2>
             </div>
             <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none">
-              <%= @job_posting.description %>
+              {@job_posting.description}
             </div>
           </div>
         </div>
@@ -61,27 +71,47 @@ defmodule BemedaPersonalWeb.JobLive.Show do
                 <div>
                   <dt class="text-sm font-medium text-gray-500">Location</dt>
                   <dd class="mt-1 text-sm text-gray-900 flex items-center">
-                    <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    <svg
+                      class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                        clip-rule="evenodd"
+                      />
                     </svg>
-                    <%= @job_posting.location || "Remote" %>
+                    {@job_posting.location || "Remote"}
                   </dd>
                 </div>
 
                 <div>
                   <dt class="text-sm font-medium text-gray-500">Employment Type</dt>
                   <dd class="mt-1 text-sm text-gray-900 flex items-center">
-                    <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                    <svg
+                      class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                        clip-rule="evenodd"
+                      />
                     </svg>
-                    <%= @job_posting.employment_type || "Not specified" %>
+                    {@job_posting.employment_type || "Not specified"}
                   </dd>
                 </div>
 
                 <div>
                   <dt class="text-sm font-medium text-gray-500">Experience Level</dt>
                   <dd class="mt-1 text-sm text-gray-900">
-                    <%= @job_posting.experience_level || "Not specified" %>
+                    {@job_posting.experience_level || "Not specified"}
                   </dd>
                 </div>
 
@@ -100,11 +130,22 @@ defmodule BemedaPersonalWeb.JobLive.Show do
                   <div>
                     <dt class="text-sm font-medium text-gray-500">Salary Range</dt>
                     <dd class="mt-1 text-sm text-gray-900 flex items-center">
-                      <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <svg
+                        class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
                         <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"
+                          clip-rule="evenodd"
+                        />
                       </svg>
-                      <%= @job_posting.salary_min %> - <%= @job_posting.salary_max %> <%= @job_posting.currency || "USD" %>
+                      {@job_posting.salary_min} - {@job_posting.salary_max} {@job_posting.currency ||
+                        "USD"}
                     </dd>
                   </div>
                 <% end %>
@@ -112,7 +153,7 @@ defmodule BemedaPersonalWeb.JobLive.Show do
                 <div>
                   <dt class="text-sm font-medium text-gray-500">Posted</dt>
                   <dd class="mt-1 text-sm text-gray-900">
-                    <%= Calendar.strftime(@job_posting.inserted_at, "%B %d, %Y") %>
+                    {Calendar.strftime(@job_posting.inserted_at, "%B %d, %Y")}
                   </dd>
                 </div>
               </dl>
@@ -128,8 +169,11 @@ defmodule BemedaPersonalWeb.JobLive.Show do
                 <div>
                   <dt class="text-sm font-medium text-gray-500">Company Name</dt>
                   <dd class="mt-1 text-sm text-gray-900">
-                    <.link navigate={~p"/company/#{@job_posting.company.id}"} class="text-indigo-600 hover:text-indigo-900">
-                      <%= @job_posting.company.name %>
+                    <.link
+                      navigate={~p"/company/#{@job_posting.company.id}"}
+                      class="text-indigo-600 hover:text-indigo-900"
+                    >
+                      {@job_posting.company.name}
                     </.link>
                   </dd>
                 </div>
@@ -137,14 +181,14 @@ defmodule BemedaPersonalWeb.JobLive.Show do
                 <%= if @job_posting.company.industry do %>
                   <div>
                     <dt class="text-sm font-medium text-gray-500">Industry</dt>
-                    <dd class="mt-1 text-sm text-gray-900"><%= @job_posting.company.industry %></dd>
+                    <dd class="mt-1 text-sm text-gray-900">{@job_posting.company.industry}</dd>
                   </div>
                 <% end %>
 
                 <%= if @job_posting.company.size do %>
                   <div>
                     <dt class="text-sm font-medium text-gray-500">Company Size</dt>
-                    <dd class="mt-1 text-sm text-gray-900"><%= @job_posting.company.size %></dd>
+                    <dd class="mt-1 text-sm text-gray-900">{@job_posting.company.size}</dd>
                   </div>
                 <% end %>
 
@@ -152,8 +196,12 @@ defmodule BemedaPersonalWeb.JobLive.Show do
                   <div>
                     <dt class="text-sm font-medium text-gray-500">Website</dt>
                     <dd class="mt-1 text-sm text-gray-900">
-                      <a href={@job_posting.company.website_url} target="_blank" class="text-indigo-600 hover:text-indigo-900">
-                        <%= @job_posting.company.website_url %>
+                      <a
+                        href={@job_posting.company.website_url}
+                        target="_blank"
+                        class="text-indigo-600 hover:text-indigo-900"
+                      >
+                        {@job_posting.company.website_url}
                       </a>
                     </dd>
                   </div>

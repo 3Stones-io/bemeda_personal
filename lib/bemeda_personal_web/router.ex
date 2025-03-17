@@ -55,8 +55,6 @@ defmodule BemedaPersonalWeb.Router do
 
   resources "/health", BemedaPersonalWeb.HealthController, only: [:index]
 
-  ## Authentication routes
-
   scope "/", BemedaPersonalWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
@@ -78,18 +76,43 @@ defmodule BemedaPersonalWeb.Router do
       on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-
-      live "/companies", CompanyLive.Index, :index
-      live "/companies/new", CompanyLive.New, :new
     end
+  end
+
+  scope "/companies", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :user_companies,
+      on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
+      live "/", CompanyLive.Index, :index
+    end
+  end
+
+  scope "/companies", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_no_existing_company]
+
+    live_session :new_company,
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.UserAuth, :require_no_existing_company}
+      ] do
+      live "/new", CompanyLive.New, :new
+    end
+  end
+
+  scope "/companies", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_admin_user]
 
     live_session :require_admin_user,
-      on_mount: [{BemedaPersonalWeb.UserAuth, :require_admin_user}] do
-      live "/companies/:company_id/edit", CompanyLive.Edit, :edit
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.UserAuth, :require_admin_user}
+      ] do
+      live "/:company_id/edit", CompanyLive.Edit, :edit
 
-      live "/companies/:company_id/jobs", CompanyJobLive.Index, :index
-      live "/companies/:company_id/jobs/new", CompanyJobLive.New, :new
-      live "/companies/:company_id/jobs/:id/edit", CompanyJobLive.Edit, :edit
+      live "/:company_id/jobs", CompanyJobLive.Index, :index
+      live "/:company_id/jobs/new", CompanyJobLive.New, :new
+      live "/:company_id/jobs/:id/edit", CompanyJobLive.Edit, :edit
     end
   end
 

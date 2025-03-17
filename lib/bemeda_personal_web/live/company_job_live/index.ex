@@ -41,7 +41,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="mb-8 flex justify-between items-center">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Jobs for <%= @company.name %></h1>
+          <h1 class="text-3xl font-bold text-gray-900">Jobs for {@company.name}</h1>
           <p class="mt-2 text-sm text-gray-500">
             Manage your job postings
           </p>
@@ -78,16 +78,28 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Job Title
                   </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Location
                   </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Type
                   </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Posted
                   </th>
                   <th scope="col" class="relative px-6 py-3">
@@ -99,20 +111,24 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
                 <%= for job <- @job_postings do %>
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm font-medium text-indigo-600"><%= job.title %></div>
+                      <div class="text-sm font-medium text-indigo-600">{job.title}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= job.location || "Remote" %></div>
+                      <div class="text-sm text-gray-900">{job.location || "Remote"}</div>
                       <%= if job.remote_allowed do %>
                         <div class="text-xs text-gray-500">Remote allowed</div>
                       <% end %>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= job.employment_type || "Not specified" %></div>
-                      <div class="text-xs text-gray-500"><%= job.experience_level || "Not specified" %></div>
+                      <div class="text-sm text-gray-900">
+                        {job.employment_type || "Not specified"}
+                      </div>
+                      <div class="text-xs text-gray-500">
+                        {job.experience_level || "Not specified"}
+                      </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <%= Calendar.strftime(job.inserted_at, "%b %d, %Y") %>
+                      {Calendar.strftime(job.inserted_at, "%b %d, %Y")}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div class="flex justify-end space-x-3">

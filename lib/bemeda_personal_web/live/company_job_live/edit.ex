@@ -27,7 +27,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Edit do
 
   @impl true
   def handle_event("save", %{"job_posting" => job_params}, socket) do
-    case Jobs.create_or_update_job_posting(socket.assigns.company, Map.put(job_params, "id", socket.assigns.job_posting.id)) do
+    case Jobs.create_or_update_job_posting(
+           socket.assigns.company,
+           Map.put(job_params, "id", socket.assigns.job_posting.id)
+         ) do
       {:ok, _job} ->
         {:noreply,
          socket
@@ -46,7 +49,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Edit do
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Edit Job</h1>
         <p class="mt-2 text-sm text-gray-500">
-          Update job posting for <%= @company.name %>
+          Update job posting for {@company.name}
         </p>
       </div>
 
@@ -104,31 +107,17 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Edit do
               </div>
 
               <div>
-                <.input
-                  field={f[:remote_allowed]}
-                  type="checkbox"
-                  label="Remote Work Allowed"
-                />
+                <.input field={f[:remote_allowed]} type="checkbox" label="Remote Work Allowed" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
               <div>
-                <.input
-                  field={f[:salary_min]}
-                  type="number"
-                  label="Minimum Salary"
-                  min="0"
-                />
+                <.input field={f[:salary_min]} type="number" label="Minimum Salary" min="0" />
               </div>
 
               <div>
-                <.input
-                  field={f[:salary_max]}
-                  type="number"
-                  label="Maximum Salary"
-                  min="0"
-                />
+                <.input field={f[:salary_max]} type="number" label="Maximum Salary" min="0" />
               </div>
 
               <div>

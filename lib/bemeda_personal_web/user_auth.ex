@@ -141,10 +141,11 @@ defmodule BemedaPersonalWeb.UserAuth do
     * `:redirect_if_user_is_authenticated` - Authenticates the user from the session.
       Redirects to signed_in_path if there's a logged user.
 
-    * `:require_admin_user` - Authenticates the user from the session,
-      verifies they are the admin of the company specified in the params,
-      and assigns both current_user and company to socket assigns.
-      Redirects to unauthorized page if user is not the admin of the company.
+    * `:require_admin_user` - Checks if the current user is the admin of the company.
+      Redirects to companies page if not.
+
+    * `:require_no_existing_company` - Checks if the current user already has a company.
+      Redirects to companies page if they do, preventing creation of multiple companies.
 
   ## Examples
 
@@ -194,40 +195,33 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
-  def on_mount(:require_admin_user, params, session, socket) do
-    socket = mount_current_user(socket, session)
+  def on_mount(:require_admin_user, params, _session, socket) do
+    company_id = params["company_id"]
+    company = Companies.get_company!(company_id)
 
-    if socket.assigns.current_user do
-      company_id = params["company_id"]
-
-      if company_id do
-        company = Companies.get_company!(company_id)
-
-        if company.admin_user_id == socket.assigns.current_user.id do
-          {:cont, Phoenix.Component.assign(socket, :company, company)}
-        else
-          socket =
-            socket
-            |> Phoenix.LiveView.put_flash(:error, "You don't have permission to access this company.")
-            |> Phoenix.LiveView.redirect(to: ~p"/companies")
-
-          {:halt, socket}
-        end
-      else
-        socket =
-          socket
-          |> Phoenix.LiveView.put_flash(:error, "Company not found.")
-          |> Phoenix.LiveView.redirect(to: ~p"/companies")
-
-        {:halt, socket}
-      end
+    if company.admin_user_id == socket.assigns.current_user.id do
+      {:cont, Phoenix.Component.assign(socket, :company, company)}
     else
       socket =
         socket
-        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
-        |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+        |> Phoenix.LiveView.put_flash(:error, "You don't have permission to access this company.")
+        |> Phoenix.LiveView.redirect(to: ~p"/companies")
 
       {:halt, socket}
+    end
+  end
+
+  def on_mount(:require_no_existing_company, _params, _session, socket) do
+    user = socket.assigns.current_user
+    company = Companies.get_company_by_user(user)
+
+    if company do
+      socket =
+        Phoenix.LiveView.redirect(socket, to: ~p"/companies")
+
+      {:halt, socket}
+    else
+      {:cont, socket}
     end
   end
 
@@ -237,6 +231,35 @@ defmodule BemedaPersonalWeb.UserAuth do
         Accounts.get_user_by_session_token(user_token)
       end
     end)
+  end
+
+  @spec require_admin_user(conn(), any()) :: any()
+  def require_admin_user(conn, _opts) do
+    company_id = conn.params["company_id"]
+    company = Companies.get_company!(company_id)
+
+    if company.admin_user_id == conn.assigns[:current_user].id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You don't have permission to access this company.")
+      |> redirect(to: ~p"/companies")
+      |> halt()
+    end
+  end
+
+  @spec require_no_existing_company(conn(), params()) :: conn()
+  def require_no_existing_company(conn, _opts) do
+    user = conn.assigns[:current_user]
+    company = Companies.get_company_by_user(user)
+
+    if company do
+      conn
+      |> redirect(to: ~p"/companies")
+      |> halt()
+    else
+      conn
+    end
   end
 
   @doc """

@@ -136,9 +136,9 @@ defmodule BemedaPersonal.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      job_posting1 = job_posting_fixture(company, %{salary_min: 50000, salary_max: 100000})
+      job_posting1 = job_posting_fixture(company, %{salary_min: 50000, salary_max: 100_000})
       job_posting2 = job_posting_fixture(company, %{salary_min: 30000, salary_max: 60000})
-      job_posting_fixture(company, %{salary_min: 120000, salary_max: 150000})
+      job_posting_fixture(company, %{salary_min: 120_000, salary_max: 150_000})
 
       assert results = Jobs.list_job_postings(%{salary_range: [55000, 70000]})
       assert length(results) == 2
@@ -148,7 +148,7 @@ defmodule BemedaPersonal.JobsTest do
       assert job_posting2.id in job_ids
       assert length(job_ids) == 2
 
-      results = Jobs.list_job_postings(%{salary_range: [40000, 1000000]})
+      results = Jobs.list_job_postings(%{salary_range: [40000, 1_000_000]})
       assert length(results) == 3
 
       results = Jobs.list_job_postings(%{salary_range: [0, 70000]})
@@ -162,13 +162,14 @@ defmodule BemedaPersonal.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      job_posting1 = job_posting_fixture(company, %{
-        title: "Senior Software Engineer",
-        employment_type: "Full-time",
-        remote_allowed: true,
-        salary_min: 80000,
-        salary_max: 120000
-      })
+      job_posting1 =
+        job_posting_fixture(company, %{
+          title: "Senior Software Engineer",
+          employment_type: "Full-time",
+          remote_allowed: true,
+          salary_min: 80000,
+          salary_max: 120_000
+        })
 
       job_posting_fixture(company, %{
         title: "Junior Software Engineer",
@@ -183,14 +184,15 @@ defmodule BemedaPersonal.JobsTest do
         employment_type: "Full-time",
         remote_allowed: true,
         salary_min: 90000,
-        salary_max: 130000
+        salary_max: 130_000
       })
 
-      assert [result] = Jobs.list_job_postings(%{
-        title: "Engineer",
-        remote_allowed: true,
-        salary_range: [75000, 125000]
-      })
+      assert [result] =
+               Jobs.list_job_postings(%{
+                 title: "Engineer",
+                 remote_allowed: true,
+                 salary_range: [75000, 125_000]
+               })
 
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
@@ -205,14 +207,15 @@ defmodule BemedaPersonal.JobsTest do
         employment_type: "Full-time",
         remote_allowed: true,
         salary_min: 80000,
-        salary_max: 120000
+        salary_max: 120_000
       })
 
-      assert [] = Jobs.list_job_postings(%{
-        title: "Engineer",
-        remote_allowed: false,
-        salary_min: 100000
-      })
+      assert [] =
+               Jobs.list_job_postings(%{
+                 title: "Engineer",
+                 remote_allowed: false,
+                 salary_min: 100_000
+               })
     end
 
     test "defaults to listing all job_postings if a non-existent filter is passed" do
@@ -266,7 +269,9 @@ defmodule BemedaPersonal.JobsTest do
         remote_allowed: true
       }
 
-      assert {:ok, %Jobs.JobPosting{} = job_posting} = Jobs.create_or_update_job_posting(company, valid_attrs)
+      assert {:ok, %Jobs.JobPosting{} = job_posting} =
+               Jobs.create_or_update_job_posting(company, valid_attrs)
+
       assert job_posting.description == "some description that is long enough"
       assert job_posting.title == "some valid title"
       assert job_posting.company_id == company.id
@@ -289,7 +294,8 @@ defmodule BemedaPersonal.JobsTest do
     end
 
     test "with invalid data returns error changeset", %{company: company} do
-      assert {:error, %Ecto.Changeset{}} = Jobs.create_or_update_job_posting(company, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.create_or_update_job_posting(company, @invalid_attrs)
     end
 
     test "with salary_min greater than salary_max returns error changeset", %{company: company} do
@@ -305,7 +311,8 @@ defmodule BemedaPersonal.JobsTest do
         remote_allowed: true
       }
 
-      assert {:error, %Ecto.Changeset{}} = Jobs.create_or_update_job_posting(company, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.create_or_update_job_posting(company, invalid_attrs)
     end
 
     test "with title too short returns error changeset", %{company: company} do
@@ -321,7 +328,8 @@ defmodule BemedaPersonal.JobsTest do
         remote_allowed: true
       }
 
-      assert {:error, %Ecto.Changeset{}} = Jobs.create_or_update_job_posting(company, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.create_or_update_job_posting(company, invalid_attrs)
     end
 
     test "with description too short returns error changeset", %{company: company} do
@@ -337,7 +345,8 @@ defmodule BemedaPersonal.JobsTest do
         remote_allowed: true
       }
 
-      assert {:error, %Ecto.Changeset{}} = Jobs.create_or_update_job_posting(company, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.create_or_update_job_posting(company, invalid_attrs)
     end
   end
 
@@ -367,7 +376,9 @@ defmodule BemedaPersonal.JobsTest do
       assert %Ecto.Changeset{} = Jobs.change_job_posting(job_posting)
     end
 
-    test "returns a job_posting changeset with errors when data is invalid", %{job_posting: job_posting} do
+    test "returns a job_posting changeset with errors when data is invalid", %{
+      job_posting: job_posting
+    } do
       changeset = Jobs.change_job_posting(job_posting, @invalid_attrs)
       assert %Ecto.Changeset{valid?: false} = changeset
       assert errors_on(changeset)[:title] == ["can't be blank"]
