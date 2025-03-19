@@ -117,37 +117,36 @@
     </div>
 
     <div class="company-info outline outline-gray-200 p-4 rounded-lg">
-    <h2 class="text-sm font-semibold text-gray-400 mb-2">About {@company.name}</h2>
-    <div class="mb-2">
-      <h4 class="uppercase text-xs font-semibold">Website</h4>
-      <a
-        href={@company.website_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-indigo-600 hover:text-indigo-900 text-sm"
-      >
-        {String.replace(@company.website_url, ~r{^https?://(www\.)?}, "")}
-      </a>
+      <h2 class="text-sm font-semibold text-gray-400 mb-2">About {@company.name}</h2>
+      <div :if={@company.website_url} class="mb-2">
+        <h4 class="uppercase text-xs font-semibold">Website</h4>
+        <a
+          href={@company.website_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-indigo-600 hover:text-indigo-900 text-sm"
+        >
+          {String.replace(@company.website_url, ~r{^https?://(www\.)?}, "")}
+        </a>
+      </div>
+      <div class="mb-2">
+        <h4 class="uppercase text-xs font-semibold mb-1">Industry</h4>
+        <p class="text-sm text-gray-600">{@company.industry}</p>
+      </div>
+      <div class="mb-2">
+        <h4 class="uppercase text-xs font-semibold mb-1">Company Size</h4>
+        <p class="text-sm text-gray-600">{@company.size}</p>
+      </div>
+      <div class="mb-2">
+        <h4 class="uppercase text-xs font-semibold mb-1">Location</h4>
+        <p class="text-sm text-gray-600">{@company.location}</p>
+      </div>
     </div>
-    <div class="mb-2">
-      <h4 class="uppercase text-xs font-semibold mb-1">Industry</h4>
-      <p class="text-sm text-gray-600">{@company.industry}</p>
-    </div>
-    <div class="mb-2">
-      <h4 class="uppercase text-xs font-semibold mb-1">Company Size</h4>
-      <p class="text-sm text-gray-600">{@company.size}</p>
-    </div>
-    <div class="mb-2">
-      <h4 class="uppercase text-xs font-semibold mb-1">Location</h4>
-      <p class="text-sm text-gray-600">{@company.location}</p>
-    </div>
-  </div>
-
   </div>
 
   <div class="jobs">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-2xl font-bold text-gray-900">Jobs</h2>
+      <h2 class="text-2xl font-bold text-gray-900">Recent Jobs</h2>
       <.link
         :if={@job_count > 0}
         navigate={~p"/company/#{@company.id}/jobs"}
@@ -175,24 +174,12 @@
       </p>
 
       <ul>
-        <li :for={{dom_id, job} <- @streams.job_postings} class="hover:bg-gray-200 odd:bg-gray-100 rounded-sm">
-          <.link navigate={~p"/jobs/#{job.id}"} class="inline-block px-8 py-6" id={dom_id}>
-            <span class="text-lg font-medium text-indigo-600 hover:text-indigo-800 mb-2">
-              {job.title}
-            </span>
-            <span class="flex items-center text-sm text-gray-500 gap-x-4">
-              <span :if={job.location}>{job.location}</span>
-              <span :if={job.location} class="text-gray-300">•</span>
-
-              <span :if={job.employment_type}>{job.employment_type}</span>
-              <span :if={job.employment_type} class="text-gray-300">•</span>
-
-              <span :if={job.remote_allowed}>Remote</span>
-              <span :if={job.remote_allowed} class="text-gray-300">•</span>
-
-              <span>1 month ago</span>
-            </span>
-          </.link>
+        <li
+          :for={{dom_id, job} <- @streams.job_postings}
+          class="odd:bg-gray-100 rounded-md hover:bg-gray-200"
+          id={dom_id}
+        >
+          <JobsComponents.job_posting_card job={job} id={dom_id} />
         </li>
       </ul>
     </div>

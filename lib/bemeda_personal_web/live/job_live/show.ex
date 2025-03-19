@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.JobLive.Show do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
   def handle_params(%{"id" => id}, _url, socket) do

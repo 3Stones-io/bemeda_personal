@@ -169,7 +169,6 @@ defmodule BemedaPersonal.Jobs do
       |> JobPosting.changeset(attrs)
       |> Repo.update()
 
-
     case result do
       {:ok, updated_job_posting} ->
         broadcast_event(

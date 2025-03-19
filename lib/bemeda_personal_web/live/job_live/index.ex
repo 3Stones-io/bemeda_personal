@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.JobLive.Index do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do

@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Jobs do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do

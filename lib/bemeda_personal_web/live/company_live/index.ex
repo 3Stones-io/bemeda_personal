@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.JobsComponents
   alias Phoenix.LiveView.JS
 
   @impl Phoenix.LiveView

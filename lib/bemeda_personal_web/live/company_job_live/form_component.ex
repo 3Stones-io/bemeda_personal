@@ -108,34 +108,33 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"job_posting" => job_params}, socket) do
-    save_job_posting(socket, job_params)
+    save_job_posting(socket, socket.assigns.action, job_params)
   end
 
-  defp save_job_posting(socket, job_params) do
-    if socket.assigns.action == :new do
-      # Create a new job posting
-      case Jobs.create_job_posting(socket.assigns.company, job_params) do
-        {:ok, _job_posting} ->
-          {:noreply,
-           socket
-           |> put_flash(:info, "Job posted successfully.")
-           |> push_navigate(to: socket.assigns.return_to)}
+  defp save_job_posting(socket, :new, job_params) do
+    # Create a new job posting
+    case Jobs.create_job_posting(socket.assigns.company, job_params) do
+      {:ok, _job_posting} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Job posted successfully.")
+         |> push_navigate(to: socket.assigns.return_to)}
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          {:noreply, assign(socket, :form, to_form(changeset))}
-      end
-    else
-      # Update existing job posting
-      case Jobs.update_job_posting(socket.assigns.job_posting, job_params) do
-        {:ok, _job_posting} ->
-          {:noreply,
-           socket
-           |> put_flash(:info, "Job updated successfully.")
-           |> push_navigate(to: socket.assigns.return_to)}
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, :form, to_form(changeset))}
+    end
+  end
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          {:noreply, assign(socket, :form, to_form(changeset))}
-      end
+  defp save_job_posting(socket, :edit, job_params) do
+    case Jobs.update_job_posting(socket.assigns.job_posting, job_params) do
+      {:ok, _job_posting} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Job updated successfully.")
+         |> push_navigate(to: socket.assigns.return_to)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
 end
