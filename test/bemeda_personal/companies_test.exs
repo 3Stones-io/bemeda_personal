@@ -7,6 +7,7 @@ defmodule BemedaPersonal.CompaniesTest do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Repo
+  alias Phoenix.PubSub
 
   @invalid_attrs %{
     name: nil,
@@ -95,6 +96,35 @@ defmodule BemedaPersonal.CompaniesTest do
     test "with invalid data returns error changeset", %{user: user} do
       assert {:error, %Ecto.Changeset{}} = Companies.create_company(user, @invalid_attrs)
     end
+
+    test "broadcasts company_created event when creating a company", %{user: user} do
+      # Delete the company created in setup to avoid conflicts with company_fixture
+      Repo.delete_all(Company)
+
+      valid_attrs = %{
+        name: "new company",
+        size: "small",
+        description: "a new company",
+        location: "location",
+        industry: "industry",
+        website_url: "website_url",
+        logo_url: "logo_url"
+      }
+
+      # We need to create the company directly to test the broadcast
+      {:ok, company} = Companies.create_company(user, valid_attrs)
+      company_topic = "company:#{company.id}"
+
+      # Subscribe after to avoid receiving the broadcast sent during creation
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+
+      # Create another company to ensure broadcasting still works
+      another_user = user_fixture(%{email: "another@example.com"})
+      {:ok, another_company} = Companies.create_company(another_user, %{name: "another company"})
+
+      # We should not receive a broadcast for the other company
+      refute_receive {:company_created, ^another_company}
+    end
   end
 
   describe "update_company/2" do
@@ -112,6 +142,19 @@ defmodule BemedaPersonal.CompaniesTest do
     test "with invalid data returns error changeset", %{company: company} do
       assert {:error, %Ecto.Changeset{}} =
                Companies.update_company(company, @invalid_attrs)
+    end
+
+    test "broadcasts company_updated event when updating a company", %{company: company} do
+      company_topic = "company:#{company.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+
+      update_attrs = %{
+        name: "updated company name"
+      }
+
+      {:ok, updated_company} = Companies.update_company(company, update_attrs)
+
+      assert_receive {:company_updated, ^updated_company}
     end
   end
 

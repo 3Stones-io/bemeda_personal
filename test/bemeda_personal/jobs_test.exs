@@ -6,6 +6,7 @@ defmodule BemedaPersonal.JobsTest do
   import BemedaPersonal.JobsFixtures
 
   alias BemedaPersonal.Jobs
+  alias Phoenix.PubSub
 
   @invalid_attrs %{
     description: nil,
@@ -348,6 +349,48 @@ defmodule BemedaPersonal.JobsTest do
       assert {:error, %Ecto.Changeset{}} =
                Jobs.create_or_update_job_posting(company, invalid_attrs)
     end
+
+    test "broadcasts job_posting_updated event when creating a new job posting", %{
+      company: company
+    } do
+      company_topic = "job_posting:company:#{company.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+
+      valid_attrs = %{
+        description: "some description that is long enough",
+        title: "some valid title",
+        location: "some location",
+        currency: "some currency",
+        employment_type: "some employment_type",
+        experience_level: "some experience_level",
+        salary_min: 42,
+        salary_max: 42,
+        remote_allowed: true
+      }
+
+      {:ok, job_posting} = Jobs.create_or_update_job_posting(company, valid_attrs)
+
+      assert_receive {:job_posting_updated, ^job_posting}
+    end
+
+    test "broadcasts job_posting_updated event when updating a job posting", %{
+      company: company,
+      job_posting: job_posting
+    } do
+      company_topic = "job_posting:company:#{company.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+
+      update_attrs = %{
+        id: job_posting.id,
+        description: "some updated description that is long enough",
+        title: "some updated valid title",
+        remote_allowed: false
+      }
+
+      {:ok, updated_job_posting} = Jobs.create_or_update_job_posting(company, update_attrs)
+
+      assert_receive {:job_posting_updated, ^updated_job_posting}
+    end
   end
 
   describe "delete_job_posting/1" do
@@ -356,6 +399,20 @@ defmodule BemedaPersonal.JobsTest do
     test "deletes the job_posting", %{job_posting: job_posting} do
       assert {:ok, %Jobs.JobPosting{}} = Jobs.delete_job_posting(job_posting)
       assert_raise Ecto.NoResultsError, fn -> Jobs.get_job_posting!(job_posting.id) end
+    end
+
+    test "broadcasts job_posting_deleted event when deleting a job posting", %{
+      job_posting: job_posting,
+      company: company
+    } do
+      company_topic = "job_posting:company:#{company.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+
+      job_posting = Repo.preload(job_posting, :company)
+
+      {:ok, deleted_job_posting} = Jobs.delete_job_posting(job_posting)
+
+      assert_receive {:job_posting_deleted, ^deleted_job_posting}
     end
 
     test "returns error when job posting does not exist" do

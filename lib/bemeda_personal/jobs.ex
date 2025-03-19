@@ -9,12 +9,15 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Repo
   alias Ecto.Changeset
+  alias Phoenix.PubSub
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type company :: Company.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
+
+  @job_posting_topic "job_posting"
 
   @doc """
   Returns the list of job_postings.
@@ -126,10 +129,24 @@ defmodule BemedaPersonal.Jobs do
   @spec create_or_update_job_posting(company(), attrs()) ::
           {:ok, job_posting()} | {:error, changeset()}
   def create_or_update_job_posting(%Company{} = company, attrs \\ %{}) do
-    %JobPosting{}
-    |> JobPosting.changeset(attrs)
-    |> Changeset.put_assoc(:company, company)
-    |> Repo.insert_or_update()
+    result =
+      %JobPosting{}
+      |> JobPosting.changeset(attrs)
+      |> Changeset.put_assoc(:company, company)
+      |> Repo.insert_or_update()
+
+    case result do
+      {:ok, job_posting} ->
+        broadcast_event(
+          "#{@job_posting_topic}:company:#{company.id}",
+          {:job_posting_updated, job_posting}
+        )
+
+        {:ok, job_posting}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -146,7 +163,22 @@ defmodule BemedaPersonal.Jobs do
   """
   @spec delete_job_posting(job_posting()) :: {:ok, job_posting()} | {:error, changeset()}
   def delete_job_posting(job_posting) do
-    Repo.delete(job_posting)
+    # Preload company to get the company_id for scoping the topic
+    job_posting = Repo.preload(job_posting, :company)
+    result = Repo.delete(job_posting)
+
+    case result do
+      {:ok, deleted_job_posting} ->
+        broadcast_event(
+          "#{@job_posting_topic}:company:#{deleted_job_posting.company.id}",
+          {:job_posting_deleted, deleted_job_posting}
+        )
+
+        {:ok, deleted_job_posting}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -161,5 +193,13 @@ defmodule BemedaPersonal.Jobs do
   @spec change_job_posting(job_posting(), attrs()) :: changeset()
   def change_job_posting(%JobPosting{} = job_posting, attrs \\ %{}) do
     JobPosting.changeset(job_posting, attrs)
+  end
+
+  defp broadcast_event(topic, message) do
+    PubSub.broadcast(
+      BemedaPersonal.PubSub,
+      topic,
+      message
+    )
   end
 end

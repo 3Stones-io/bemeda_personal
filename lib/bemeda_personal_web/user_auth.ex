@@ -196,7 +196,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   def on_mount(:require_admin_user, params, _session, socket) do
-    company_id = params["id"]
+    company_id = params["company_id"]
     company = Companies.get_company!(company_id)
 
     if company.admin_user_id == socket.assigns.current_user.id do
@@ -235,7 +235,7 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   @spec require_admin_user(conn(), any()) :: any()
   def require_admin_user(conn, _opts) do
-    company_id = conn.params["id"]
+    company_id = conn.params["company_id"]
     company = Companies.get_company!(company_id)
 
     if company.admin_user_id == conn.assigns[:current_user].id do

@@ -57,8 +57,11 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
               Cancel
             </.link>
           <% end %>
-          <.button type="submit" phx-disable-with={if @action == :new, do: "Creating...", else: "Saving..."}>
-            <%= if @action == :new, do: "Create Company Profile", else: "Save Changes" %>
+          <.button
+            type="submit"
+            phx-disable-with={if @action == :new, do: "Creating...", else: "Saving..."}
+          >
+            {if @action == :new, do: "Create Company Profile", else: "Save Changes"}
           </.button>
         </div>
       </.form>
@@ -92,9 +95,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
 
   defp save_company(socket, :edit, company_params) do
     case Companies.update_company(socket.assigns.company, company_params) do
-      {:ok, company} ->
-        notify_parent({:saved, company})
-
+      {:ok, _company} ->
         {:noreply,
          socket
          |> put_flash(:info, "Company profile updated successfully.")
@@ -107,8 +108,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
 
   defp save_company(socket, :new, company_params) do
     case Companies.create_company(socket.assigns.current_user, company_params) do
-      {:ok, company} ->
-        notify_parent({:saved, company})
+      {:ok, _company} ->
 
         {:noreply,
          socket
@@ -119,6 +119,4 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
         {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

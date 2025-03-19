@@ -9,12 +9,15 @@ defmodule BemedaPersonal.Companies do
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Repo
   alias Ecto.Changeset
+  alias Phoenix.PubSub
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type id :: binary()
   @type company :: Company.t()
   @type user :: User.t()
+
+  @company_topic "company"
 
   @doc """
   Returns the list of companies.
@@ -82,10 +85,20 @@ defmodule BemedaPersonal.Companies do
   """
   @spec create_company(user(), attrs()) :: {:ok, company()} | {:error, changeset()}
   def create_company(user, attrs \\ %{}) do
-    %Company{}
-    |> Company.changeset(attrs)
-    |> Changeset.put_assoc(:admin_user, user)
-    |> Repo.insert()
+    result =
+      %Company{}
+      |> Company.changeset(attrs)
+      |> Changeset.put_assoc(:admin_user, user)
+      |> Repo.insert()
+
+    case result do
+      {:ok, company} ->
+        broadcast_event("#{@company_topic}:#{user.id}", {:company_created, company})
+        {:ok, company}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -102,9 +115,23 @@ defmodule BemedaPersonal.Companies do
   """
   @spec update_company(company(), attrs()) :: {:ok, company()} | {:error, changeset()}
   def update_company(%Company{} = company, attrs) do
-    company
-    |> Company.changeset(attrs)
-    |> Repo.update()
+    result =
+      company
+      |> Company.changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, updated_company} ->
+        broadcast_event(
+          "#{@company_topic}:#{updated_company.admin_user_id}",
+          {:company_updated, updated_company}
+        )
+
+        {:ok, updated_company}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -119,5 +146,13 @@ defmodule BemedaPersonal.Companies do
   @spec change_company(company(), attrs()) :: changeset()
   def change_company(%Company{} = company, attrs \\ %{}) do
     Company.changeset(company, attrs)
+  end
+
+  defp broadcast_event(topic, message) do
+    PubSub.broadcast(
+      BemedaPersonal.PubSub,
+      topic,
+      message
+    )
   end
 end

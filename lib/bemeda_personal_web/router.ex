@@ -108,11 +108,11 @@ defmodule BemedaPersonalWeb.Router do
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
         {BemedaPersonalWeb.UserAuth, :require_admin_user}
       ] do
-      live "/:id/edit", CompanyLive.Index, :edit
+      live "/:company_id/edit", CompanyLive.Index, :edit
 
       live "/:company_id/jobs", CompanyJobLive.Index, :index
-      live "/:company_id/jobs/new", CompanyJobLive.New, :new
-      live "/:company_id/jobs/:id/edit", CompanyJobLive.Edit, :edit
+      live "/:company_id/jobs/new", CompanyJobLive.Index, :new
+      live "/:company_id/jobs/:id/edit", CompanyJobLive.Index, :edit
     end
   end
 
