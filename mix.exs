@@ -73,7 +73,7 @@ defmodule BemedaPersonal.MixProject do
   defp optimum_deps do
     [
       {:appsignal_phoenix, "~> 2.3"},
-      {:credo, "~> 1.7", only: :test, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: :test, runtime: false},
       {:doctest_formatter, "~> 0.3", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},
