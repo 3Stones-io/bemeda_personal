@@ -26,7 +26,7 @@ defmodule BemedaPersonal.JobsFixtures do
         title: "some title"
       })
 
-    {:ok, job_posting} = Jobs.create_or_update_job_posting(company, job_posting_attrs)
+    {:ok, job_posting} = Jobs.create_job_posting(company, job_posting_attrs)
 
     job_posting
   end

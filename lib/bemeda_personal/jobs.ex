@@ -119,21 +119,21 @@ defmodule BemedaPersonal.Jobs do
 
   ## Examples
 
-      iex> create_or_update_job_posting(company, %{field: value})
+      iex> create_job_posting(company, %{field: value})
       {:ok, %JobPosting{}}
 
-      iex> create_or_update_job_posting(company, %{field: bad_value})
+      iex> create_job_posting(company, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_or_update_job_posting(company(), attrs()) ::
+  @spec create_job_posting(company(), attrs()) ::
           {:ok, job_posting()} | {:error, changeset()}
-  def create_or_update_job_posting(%Company{} = company, attrs \\ %{}) do
+  def create_job_posting(%Company{} = company, attrs \\ %{}) do
     result =
       %JobPosting{}
       |> JobPosting.changeset(attrs)
       |> Changeset.put_assoc(:company, company)
-      |> Repo.insert_or_update()
+      |> Repo.insert()
 
     case result do
       {:ok, job_posting} ->
@@ -143,6 +143,41 @@ defmodule BemedaPersonal.Jobs do
         )
 
         {:ok, job_posting}
+
+      error ->
+        error
+    end
+  end
+
+  @doc """
+  Updates a job_posting.
+
+  ## Examples
+
+      iex> update_job_posting(job_posting, %{field: new_value})
+      {:ok, %JobPosting{}}
+
+      iex> update_job_posting(job_posting, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec update_job_posting(job_posting(), attrs()) ::
+          {:ok, job_posting()} | {:error, changeset()}
+  def update_job_posting(%JobPosting{} = job_posting, attrs \\ %{}) do
+    result =
+      job_posting
+      |> JobPosting.changeset(attrs)
+      |> Repo.update()
+
+
+    case result do
+      {:ok, updated_job_posting} ->
+        broadcast_event(
+          "#{@job_posting_topic}:company:#{job_posting.company.id}",
+          {:job_posting_updated, updated_job_posting}
+        )
+
+        {:ok, updated_job_posting}
 
       error ->
         error

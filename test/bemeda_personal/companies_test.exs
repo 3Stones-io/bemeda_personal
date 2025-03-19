@@ -113,7 +113,7 @@ defmodule BemedaPersonal.CompaniesTest do
 
       # We need to create the company directly to test the broadcast
       {:ok, company} = Companies.create_company(user, valid_attrs)
-      company_topic = "company:#{company.id}"
+      company_topic = "company:#{company.admin_user_id}"
 
       # Subscribe after to avoid receiving the broadcast sent during creation
       PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
@@ -145,7 +145,7 @@ defmodule BemedaPersonal.CompaniesTest do
     end
 
     test "broadcasts company_updated event when updating a company", %{company: company} do
-      company_topic = "company:#{company.id}"
+      company_topic = "company:#{company.admin_user_id}"
       PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
 
       update_attrs = %{

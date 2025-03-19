@@ -254,7 +254,7 @@ defmodule BemedaPersonal.JobsTest do
     end
   end
 
-  describe "create_or_update_job_posting/2" do
+  describe "create_job_posting/2" do
     setup :create_job_posting
 
     test "with valid data creates a job_posting", %{company: company} do
@@ -271,32 +271,16 @@ defmodule BemedaPersonal.JobsTest do
       }
 
       assert {:ok, %Jobs.JobPosting{} = job_posting} =
-               Jobs.create_or_update_job_posting(company, valid_attrs)
+               Jobs.create_job_posting(company, valid_attrs)
 
       assert job_posting.description == "some description that is long enough"
       assert job_posting.title == "some valid title"
       assert job_posting.company_id == company.id
     end
 
-    test "with valid data updates the job_posting", %{company: company, job_posting: job_posting} do
-      update_attrs = %{
-        id: job_posting.id,
-        description: "some updated description that is long enough",
-        title: "some updated valid title",
-        remote_allowed: false
-      }
-
-      assert {:ok, %Jobs.JobPosting{} = updated_job_posting} =
-               Jobs.create_or_update_job_posting(company, update_attrs)
-
-      assert updated_job_posting.description == "some updated description that is long enough"
-      assert updated_job_posting.title == "some updated valid title"
-      assert updated_job_posting.remote_allowed == false
-    end
-
     test "with invalid data returns error changeset", %{company: company} do
       assert {:error, %Ecto.Changeset{}} =
-               Jobs.create_or_update_job_posting(company, @invalid_attrs)
+               Jobs.create_job_posting(company, @invalid_attrs)
     end
 
     test "with salary_min greater than salary_max returns error changeset", %{company: company} do
@@ -313,7 +297,7 @@ defmodule BemedaPersonal.JobsTest do
       }
 
       assert {:error, %Ecto.Changeset{}} =
-               Jobs.create_or_update_job_posting(company, invalid_attrs)
+               Jobs.create_job_posting(company, invalid_attrs)
     end
 
     test "with title too short returns error changeset", %{company: company} do
@@ -330,7 +314,7 @@ defmodule BemedaPersonal.JobsTest do
       }
 
       assert {:error, %Ecto.Changeset{}} =
-               Jobs.create_or_update_job_posting(company, invalid_attrs)
+               Jobs.create_job_posting(company, invalid_attrs)
     end
 
     test "with description too short returns error changeset", %{company: company} do
@@ -347,7 +331,7 @@ defmodule BemedaPersonal.JobsTest do
       }
 
       assert {:error, %Ecto.Changeset{}} =
-               Jobs.create_or_update_job_posting(company, invalid_attrs)
+               Jobs.create_job_posting(company, invalid_attrs)
     end
 
     test "broadcasts job_posting_updated event when creating a new job posting", %{
@@ -368,26 +352,49 @@ defmodule BemedaPersonal.JobsTest do
         remote_allowed: true
       }
 
-      {:ok, job_posting} = Jobs.create_or_update_job_posting(company, valid_attrs)
+      {:ok, job_posting} = Jobs.create_job_posting(company, valid_attrs)
 
       assert_receive {:job_posting_updated, ^job_posting}
     end
+  end
 
-    test "broadcasts job_posting_updated event when updating a job posting", %{
-      company: company,
-      job_posting: job_posting
-    } do
-      company_topic = "job_posting:company:#{company.id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+  describe "update_job_posting/2" do
+    setup :create_job_posting
 
+    test "with valid data updates the job_posting", %{job_posting: job_posting} do
       update_attrs = %{
-        id: job_posting.id,
         description: "some updated description that is long enough",
         title: "some updated valid title",
         remote_allowed: false
       }
 
-      {:ok, updated_job_posting} = Jobs.create_or_update_job_posting(company, update_attrs)
+      assert {:ok, %Jobs.JobPosting{} = updated_job_posting} =
+               Jobs.update_job_posting(job_posting, update_attrs)
+
+      assert updated_job_posting.description == "some updated description that is long enough"
+      assert updated_job_posting.title == "some updated valid title"
+      assert updated_job_posting.remote_allowed == false
+    end
+
+    test "with invalid data returns error changeset", %{job_posting: job_posting} do
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.update_job_posting(job_posting, @invalid_attrs)
+    end
+
+    test "broadcasts job_posting_updated event when updating a job posting", %{
+      job_posting: job_posting,
+      company: company
+    } do
+      company_topic = "job_posting:company:#{company.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+
+      update_attrs = %{
+        description: "some updated description that is long enough",
+        title: "some updated valid title",
+        remote_allowed: false
+      }
+
+      {:ok, updated_job_posting} = Jobs.update_job_posting(job_posting, update_attrs)
 
       assert_receive {:job_posting_updated, ^updated_job_posting}
     end
@@ -423,6 +430,42 @@ defmodule BemedaPersonal.JobsTest do
       assert_raise Ecto.StaleEntryError, fn ->
         Jobs.delete_job_posting(job_posting)
       end
+    end
+  end
+
+  describe "company_jobs_count/1" do
+    test "returns the correct count of job postings for a company" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      # Initially should be zero
+      assert Jobs.company_jobs_count(company.id) == 0
+
+      # Create 3 job postings
+      create_multiple_job_postings(company, 3)
+      assert Jobs.company_jobs_count(company.id) == 3
+
+      # Create another company with different job count
+      user2 = user_fixture(%{email: "another@example.com"})
+      company2 = company_fixture(user2)
+      create_multiple_job_postings(company2, 2)
+
+      # Original company should still have 3 jobs
+      assert Jobs.company_jobs_count(company.id) == 3
+      # New company should have 2 jobs
+      assert Jobs.company_jobs_count(company2.id) == 2
+    end
+
+    test "returns zero for company with no job postings" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      assert Jobs.company_jobs_count(company.id) == 0
+    end
+
+    test "returns zero for non-existent company ID" do
+      non_existent_id = Ecto.UUID.generate()
+      assert Jobs.company_jobs_count(non_existent_id) == 0
     end
   end
 
