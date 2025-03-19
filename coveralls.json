@@ -1,10 +1,10 @@
 {
   "coverage_options": {
-    "minimum_coverage": 90.7
+    "minimum_coverage": 96.1
   },
   "skip_files": [
     "lib/bemeda_personal/release.ex",
     "lib/bemeda_personal_web/components/core_components.ex",
-    "lib/credo_checks/readability/import_order.ex"
+    "test/support/credo_checks/readability/import_order.ex"
   ]
 }
