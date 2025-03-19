@@ -1,112 +1,200 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-    <div class="flex items-center mb-4 md:mb-0">
-      <div class="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center overflow-hidden mr-4">
-        <%= if @company.logo_url do %>
-          <img src={@company.logo_url} alt={@company.name} class="w-full h-full object-cover" />
-        <% else %>
-          <div class="text-2xl font-bold text-gray-500">{String.first(@company.name)}</div>
-        <% end %>
+<section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+  <div class="company-hero grid gap-y-2 border-b border-gray-200 pb-8">
+    <div class="flex items-center gap-4">
+      <div class="w-20 h-14 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+        <img
+          :if={@company.logo_url}
+          src={@company.logo_url}
+          alt={@company.name}
+          class="w-full h-full object-cover"
+        />
+        <div :if={!@company.logo_url} class="text-2xl font-bold text-gray-500">
+          {String.first(@company.name)}
+        </div>
       </div>
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">{@company.name}</h1>
-        <p class="text-sm text-gray-500">
-          {@company.industry} • {@company.location || "Remote"} • {@company.size || "Unknown size"}
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">{@company.name}</h1>
+    </div>
+
+    <div :if={@company.industry} class="flex items-center text-gray-700">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 mr-3 text-gray-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+        />
+      </svg>
+      <span>{@company.industry}</span>
+    </div>
+    <div :if={@company.size} class="flex items-center text-gray-700 mobile-size">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 mr-3 text-gray-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+        />
+      </svg>
+      <span>{@company.size}</span>
+    </div>
+    <div :if={@company.location} class="flex items-center text-gray-700 mobile-location">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 mr-3 text-gray-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+      <span>{@company.location}</span>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg p-8 shadow-sm mt-4 company-stats">
+      <div class="flex gap-4 justify-between">
+        <p class="flex flex-col gap-1">
+          <span class="text-sm text-gray-500 mb-1">Open Jobs</span>
+          <span class="text-xl font-bold text-gray-900">{@job_count}</span>
+        </p>
+        <p class="flex flex-col gap-1">
+          <span class="text-sm text-gray-500 mb-1">Industry</span>
+          <span class="text-xl font-bold text-gray-900">
+            {String.slice(@company.industry || "Tech", 0, 10)}
+          </span>
         </p>
       </div>
     </div>
-    <div class="flex space-x-3">
+
+    <div class="flex items-center gap-4 mt-4">
       <.link
         navigate={~p"/company/#{@company.id}/jobs"}
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        View Jobs ({@job_count})
+        View All Jobs
       </.link>
-      <%= if @company.website_url do %>
-        <a
-          href={@company.website_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      <.link
+        :if={@company.website_url}
+        href={@company.website_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center px-5 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Visit Website
+      </.link>
+    </div>
+  </div>
+
+  <div class="about-company py-4">
+    <div class="description">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-3">About {@company.name}</h2>
+      <p :if={@company.description}>{@company.description}</p>
+      <p :if={!@company.description} class="text-gray-500">
+        No company description available.
+      </p>
+    </div>
+
+    <div class="company-info outline outline-gray-200 p-4 rounded-lg">
+    <h2 class="text-sm font-semibold text-gray-400 mb-2">About {@company.name}</h2>
+    <div class="mb-2">
+      <h4 class="uppercase text-xs font-semibold">Website</h4>
+      <a
+        href={@company.website_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-indigo-600 hover:text-indigo-900 text-sm"
+      >
+        {String.replace(@company.website_url, ~r{^https?://(www\.)?}, "")}
+      </a>
+    </div>
+    <div class="mb-2">
+      <h4 class="uppercase text-xs font-semibold mb-1">Industry</h4>
+      <p class="text-sm text-gray-600">{@company.industry}</p>
+    </div>
+    <div class="mb-2">
+      <h4 class="uppercase text-xs font-semibold mb-1">Company Size</h4>
+      <p class="text-sm text-gray-600">{@company.size}</p>
+    </div>
+    <div class="mb-2">
+      <h4 class="uppercase text-xs font-semibold mb-1">Location</h4>
+      <p class="text-sm text-gray-600">{@company.location}</p>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="jobs">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-bold text-gray-900">Jobs</h2>
+      <.link
+        :if={@job_count > 0}
+        navigate={~p"/company/#{@company.id}/jobs"}
+        class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center"
+      >
+        View all jobs
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 ml-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          Visit Website
-        </a>
-      <% end %>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </.link>
     </div>
-  </div>
 
-  <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-    <div class="px-4 py-5 sm:px-6">
-      <h2 class="text-xl font-semibold text-gray-900">About {@company.name}</h2>
-    </div>
-    <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
-      <%= if @company.description do %>
-        <div class="prose max-w-none">
-          <p>{@company.description}</p>
-        </div>
-      <% else %>
-        <p class="text-gray-500">No company description available.</p>
-      <% end %>
-    </div>
-  </div>
+    <div id="recent-jobs" phx-update="stream">
+      <p
+        id="empty-jobs"
+        class="hidden bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500 only:block"
+      >
+        No open positions at this time
+      </p>
 
-  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-    <div class="px-4 py-5 sm:px-6">
-      <h2 class="text-xl font-semibold text-gray-900">Company Information</h2>
-    </div>
-    <div class="border-t border-gray-200">
-      <dl>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Industry</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-            {@company.industry || "Not specified"}
-          </dd>
-        </div>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Location</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-            {@company.location || "Not specified"}
-          </dd>
-        </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Company Size</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-            {@company.size || "Not specified"}
-          </dd>
-        </div>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Website</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-            <%= if @company.website_url do %>
-              <a
-                href={@company.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-indigo-600 hover:text-indigo-900"
-              >
-                {@company.website_url}
-              </a>
-            <% else %>
-              Not specified
-            <% end %>
-          </dd>
-        </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Open Positions</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-            <%= if @job_count > 0 do %>
-              <.link
-                navigate={~p"/company/#{@company.id}/jobs"}
-                class="text-indigo-600 hover:text-indigo-900"
-              >
-                {@job_count} open {if @job_count == 1, do: "position", else: "positions"}
-              </.link>
-            <% else %>
-              No open positions at this time
-            <% end %>
-          </dd>
-        </div>
-      </dl>
+      <ul>
+        <li :for={{dom_id, job} <- @streams.job_postings} class="hover:bg-gray-200 odd:bg-gray-100 rounded-sm">
+          <.link navigate={~p"/jobs/#{job.id}"} class="inline-block px-8 py-6" id={dom_id}>
+            <span class="text-lg font-medium text-indigo-600 hover:text-indigo-800 mb-2">
+              {job.title}
+            </span>
+            <span class="flex items-center text-sm text-gray-500 gap-x-4">
+              <span :if={job.location}>{job.location}</span>
+              <span :if={job.location} class="text-gray-300">•</span>
+
+              <span :if={job.employment_type}>{job.employment_type}</span>
+              <span :if={job.employment_type} class="text-gray-300">•</span>
+
+              <span :if={job.remote_allowed}>Remote</span>
+              <span :if={job.remote_allowed} class="text-gray-300">•</span>
+
+              <span>1 month ago</span>
+            </span>
+          </.link>
+        </li>
+      </ul>
     </div>
   </div>
-</div>
+</section>

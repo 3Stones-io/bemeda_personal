@@ -109,7 +109,6 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
   defp save_company(socket, :new, company_params) do
     case Companies.create_company(socket.assigns.current_user, company_params) do
       {:ok, _company} ->
-
         {:noreply,
          socket
          |> put_flash(:info, "Company profile created successfully.")

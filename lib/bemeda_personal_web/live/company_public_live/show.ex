@@ -5,36 +5,26 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   alias BemedaPersonal.Jobs
 
   @impl Phoenix.LiveView
-  def mount(%{"id" => id}, _session, socket) do
-    case get_company(id) do
-      {:ok, company} ->
-        job_count = get_job_count(company.id)
-
-        {:ok,
-         socket
-         |> assign(:page_title, company.name)
-         |> assign(:company, company)
-         |> assign(:job_count, job_count)}
-
-      {:error, _reason} ->
-        {:ok,
-         socket
-         |> put_flash(:error, "Company not found")
-         |> redirect(to: ~p"/")}
-    end
+  def mount(_params, _session, socket) do
+    {:ok,
+     socket
+     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
+     |> stream(:job_postings, [])}
   end
 
-  defp get_company(id) do
-    try do
-      company = Companies.get_company!(id)
-      {:ok, company}
-    rescue
-      Ecto.NoResultsError -> {:error, :not_found}
-    end
+  @impl Phoenix.LiveView
+  def handle_params(params, _uri, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp get_job_count(company_id) do
-    Jobs.list_job_postings(%{company_id: company_id})
-    |> length()
+  defp apply_action(socket, :show, %{"id" => id}) do
+    company = Companies.get_company!(id)
+    job_postings = Jobs.list_job_postings(%{company_id: company.id}, 10)
+
+    socket
+    |> assign(:page_title, company.name)
+    |> assign(:company, company)
+    |> assign(:job_count, Jobs.company_jobs_count(company.id))
+    |> stream(:job_postings, job_postings)
   end
 end

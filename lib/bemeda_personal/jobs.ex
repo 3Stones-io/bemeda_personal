@@ -195,6 +195,23 @@ defmodule BemedaPersonal.Jobs do
     JobPosting.changeset(job_posting, attrs)
   end
 
+  @doc """
+  Returns the count of job postings for a specific company.
+
+  ## Examples
+
+      iex> company_jobs_count(company_id)
+      5
+
+  """
+  @spec company_jobs_count(Ecto.UUID.t()) :: non_neg_integer()
+  def company_jobs_count(company_id) do
+    job_posting_query()
+    |> where([j], j.company_id == ^company_id)
+    |> select([j], count(j.id))
+    |> Repo.one()
+  end
+
   defp broadcast_event(topic, message) do
     PubSub.broadcast(
       BemedaPersonal.PubSub,

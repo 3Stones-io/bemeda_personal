@@ -2,4 +2,43 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* This file is for your main application CSS */
+.company-info {
+  @apply hidden;
+}
+
+.company-profile-grid > * {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 800px) {
+  .company-info {
+    @apply block;
+  }
+
+  .company-stats {
+    @apply hidden;
+  }
+
+  .mobile-location,
+  .mobile-size {
+    @apply hidden;
+  }
+
+  .about-company {
+    display: grid;
+    grid-template-columns: 70% 27%;
+    gap: 3%;
+    grid-template-areas:
+      "description sidebar"
+      "description ...";
+  }
+
+  .about-company .description {
+    grid-area: description;
+  }
+
+  .about-company .sidebar {
+    grid-area: sidebar;
+  }
+}
+

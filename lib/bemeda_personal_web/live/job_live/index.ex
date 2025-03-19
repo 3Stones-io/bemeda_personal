@@ -10,17 +10,7 @@ defmodule BemedaPersonalWeb.JobLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Job Listings")
-     |> assign(:job_postings, job_postings)}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
-
-  defp apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Job Listings")
+     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
+     |> stream(:job_postings, job_postings)}
   end
 end
-# Start here -> Streams, UI fix (esp for show)
