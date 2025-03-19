@@ -70,6 +70,14 @@ defmodule BemedaPersonalWeb.Router do
       on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      # Resume routes
+      live "/resume", Resume.ShowLive, :show
+      live "/resume/edit", Resume.ShowLive, :edit_resume
+      live "/resume/education/new", Resume.ShowLive, :new_education
+      live "/resume/education/:id/edit", Resume.ShowLive, :edit_education
+      live "/resume/work-experience/new", Resume.ShowLive, :new_work_experience
+      live "/resume/work-experience/:id/edit", Resume.ShowLive, :edit_work_experience
     end
   end
 
@@ -83,5 +91,8 @@ defmodule BemedaPersonalWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
+
+    # Public resume route
+    live "/resumes/:id", Resume.IndexLive, :show
   end
 end

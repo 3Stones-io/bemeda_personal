@@ -3,7 +3,10 @@
   <:subtitle>This is a <%= schema.singular %> record from your database.</:subtitle>
   <:actions>
     <.link patch={~p"<%= schema.route_prefix %>/#{@<%= schema.singular %>}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit <%= schema.singular %></.button>
+      <.button>
+        <.icon name="hero-pencil-square" class="h-4 w-4 mr-1" />
+        Edit <%= schema.singular %>
+      </.button>
     </.link>
   </:actions>
 </.header>
@@ -12,7 +15,10 @@
   <:item title="<%= Phoenix.Naming.humanize(Atom.to_string(k)) %>">{@<%= schema.singular %>.<%= k %>}</:item><% end %>
 </.list>
 
-<.back navigate={~p"<%= schema.route_prefix %>"}>Back to <%= schema.plural %></.back>
+<.back navigate={~p"<%= schema.route_prefix %>"}>
+  <.icon name="hero-arrow-left" class="h-4 w-4 mr-1" />
+  Back to <%= schema.plural %>
+</.back>
 
 <.modal
   :if={@live_action == :edit}

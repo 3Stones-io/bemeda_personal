@@ -1,0 +1,72 @@
+<div
+  :if={@not_found}
+  class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+>
+  <div class="max-w-md w-full space-y-8 text-center">
+    <div>
+      <h1 class="text-9xl font-extrabold text-gray-400">404</h1>
+      <h2 class="mt-6 text-3xl font-bold text-gray-900">
+        Resume Not Found
+      </h2>
+      <p class="mt-2 text-sm text-gray-600">
+        The resume you're looking for doesn't exist or is not available for public viewing.
+      </p>
+    </div>
+    <div class="mt-8">
+      <.link
+        href={~p"/"}
+        class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+      >
+        <.icon name="hero-home" class="h-5 w-5 mr-2 text-white" /> Return to Home
+      </.link>
+    </div>
+  </div>
+</div>
+
+<div :if={!@not_found} class="container mx-auto px-4 py-8 max-w-4xl">
+  <.resume_profile resume={@resume} title="Resume" />
+  
+<!-- Education Section -->
+  <.resume_section
+    id="educations"
+    title="Education"
+    items={@streams.educations}
+    empty_state_message="No education entries available."
+  >
+    <:resume_item :let={education}>
+      <.resume_item
+        delete_event="delete-education"
+        edit_path={~p"/resume/education/#{education.id}/edit"}
+        id={"education-#{education.id}"}
+        item={education}
+        subtitle={
+          if(education.field_of_study,
+            do: "#{education.degree} in #{education.field_of_study}",
+            else: education.degree
+          )
+        }
+        title={education.institution}
+      />
+    </:resume_item>
+  </.resume_section>
+  
+<!-- Work Experience Section -->
+  <.resume_section
+    id="work_experiences"
+    title="Work Experience"
+    items={@streams.work_experiences}
+    empty_state_message="No work experience entries available."
+  >
+    <:resume_item :let={work_experience}>
+      <.resume_item
+        id={"work-experience-#{work_experience.id}"}
+        item={work_experience}
+        title={work_experience.title}
+        subtitle={work_experience.company_name}
+        extra_info={work_experience.location}
+        edit_path={~p"/resume/work-experience/#{work_experience.id}/edit"}
+        delete_event="delete-work-experience"
+      />
+    </:resume_item>
+  </.resume_section>
+</div>

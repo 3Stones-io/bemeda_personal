@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
-  import Phoenix.LiveViewTest
   import BemedaPersonal.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do

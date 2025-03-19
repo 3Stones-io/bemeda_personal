@@ -22,10 +22,10 @@ defmodule BemedaPersonal.DataCase do
     quote do
       alias BemedaPersonal.Repo
 
+      import BemedaPersonal.DataCase
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import BemedaPersonal.DataCase
     end
   end
 
