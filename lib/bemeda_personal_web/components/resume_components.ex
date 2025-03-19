@@ -52,7 +52,7 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
 
   attr :id, :string, default: nil
   attr :title, :string, required: true
-  attr :add_path, :string, required: true
+  attr :add_path, :string
   attr :items, :any, required: true
   attr :empty_state_message, :string, required: true
   attr :can_update_resume, :boolean, default: false

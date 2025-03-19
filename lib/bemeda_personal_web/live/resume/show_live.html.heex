@@ -109,7 +109,7 @@
 <!-- Form Components -->
   <.modal
     :if={@form_component}
-    id={"#{@component_id}-modal"}
+    id="resume-form-modal"
     show={@form_component}
     on_cancel={JS.patch(~p"/resume")}
   >
