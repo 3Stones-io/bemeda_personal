@@ -21,8 +21,13 @@
     </div>
   </div>
 
-  <JobsComponents.job_listing_section
-    title="Open Positions"
-    streams_job_postings={@streams.job_postings}
+  <JobsComponents.job_filters is_open={@filter_open} />
+
+ <.jobs_list
+    id="job-post-list"
+    filters={@filters}
+    end_of_timeline?={@end_of_timeline?}
+    empty_state_message="Please check back later for new opportunities."
+    job_postings={@streams.job_postings}
   />
 </div>

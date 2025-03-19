@@ -4,29 +4,17 @@
     Find your next career opportunity
   </p>
 
+  <JobsComponents.job_filters is_open={@filter_open} />
+
   <div class="bg-white shadow overflow-hidden sm:rounded-lg">
     <h2 class="px-4 py-5 sm:px-6 text-xl font-semibold text-gray-900">Available Positions</h2>
 
-    <div class="border-t border-gray-200" id="job-postings" phx-update="stream">
-      <div class="px-4 py-5 sm:px-6 text-center hidden only:block">
-        <p class="text-gray-500">No job postings available at the moment.</p>
-        <p class="mt-2 text-sm text-gray-500">
-          Please check back later for new opportunities.
-        </p>
-      </div>
-
-      <ul
-        role="list"
-        class="divide-y divide-gray-200"
-      >
-        <li
-          :for={{dom_id, job} <- @streams.job_postings}
-          class="odd:bg-gray-100 rounded-sm hover:bg-gray-200"
-          id={dom_id}
-        >
-          <JobsComponents.job_posting_card job={job} id={dom_id} />
-        </li>
-      </ul>
-    </div>
+    <.jobs_list
+      id="job-post-list"
+      filters={@filters}
+      end_of_timeline?={@end_of_timeline?}
+      empty_state_message="Please check back later for new opportunities."
+      job_postings={@streams.job_postings}
+    />
   </div>
 </section>

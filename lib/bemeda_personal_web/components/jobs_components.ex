@@ -7,55 +7,80 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :job, :any, required: true
   attr :id, :string, required: true
   attr :show_company_name, :boolean, default: true
+  attr :show_actions, :boolean, default: false
+  attr :company_id, :any, default: nil
+  attr :return_to, :string, default: nil
 
   @spec job_posting_card(assigns()) :: output()
   def job_posting_card(assigns) do
     ~H"""
-    <div class="px-8 py-6 cursor-pointer" phx-click={JS.navigate(~p"/jobs/#{@job.id}")}>
-      <p class="text-lg font-medium mb-1">
-        <.link
-          navigate={~p"/jobs/#{@job.id}"}
-          class="text-indigo-600 hover:text-indigo-800 mb-2"
-          id={@id}
-        >
-          {@job.title}
-        </.link>
-      </p>
+    <div class="px-8 py-6 relative group">
+      <div class="cursor-pointer" phx-click={JS.navigate(~p"/jobs/#{@job.id}")}>
+        <p class="text-lg font-medium mb-1">
+          <.link
+            navigate={~p"/jobs/#{@job.id}"}
+            class="text-indigo-600 hover:text-indigo-800 mb-2"
+            id={@id}
+          >
+            {@job.title}
+          </.link>
+        </p>
 
-      <p class="text-sm mb-2" :if={@show_company_name}>
-        <.link
-          navigate={~p"/company/#{@job.company.id}"}
-          class="text-indigo-600 hover:text-indigo-800"
-        >
-          {@job.company.name}
-        </.link>
-      </p>
+        <p :if={@show_company_name} class="text-sm mb-2">
+          <.link
+            navigate={~p"/company/#{@job.company.id}"}
+            class="text-indigo-600 hover:text-indigo-800"
+          >
+            {@job.company.name}
+          </.link>
+        </p>
 
-      <p class="flex items-center text-sm text-gray-500 gap-x-4">
-        <span :if={@job.location} class="flex items-center gap-x-2">
-          <.icon name="hero-map-pin" class="w-4 h-4" />
-          {@job.location}
-        </span>
-        <span :if={@job.remote_allowed} class="flex items-center gap-x-2">
-          <.icon name="hero-map-pin" class="w-4 h-4" /> Remote
-        </span>
-        <span :if={@job.employment_type} class="flex items-center gap-x-2">
-          <.icon name="hero-briefcase" class="w-4 h-4" />
-          {@job.employment_type}
-        </span>
-        <span
-          :if={@job.salary_min && @job.salary_max && @job.currency}
-          class="flex items-center gap-x-2"
+        <p class="flex items-center text-sm text-gray-500 gap-x-4">
+          <span :if={@job.location} class="flex items-center gap-x-2">
+            <.icon name="hero-map-pin" class="w-4 h-4" />
+            {@job.location}
+          </span>
+          <span :if={@job.remote_allowed} class="flex items-center gap-x-2">
+            <.icon name="hero-map-pin" class="w-4 h-4" /> Remote
+          </span>
+          <span :if={@job.employment_type} class="flex items-center gap-x-2">
+            <.icon name="hero-briefcase" class="w-4 h-4" />
+            {@job.employment_type}
+          </span>
+          <span
+            :if={@job.salary_min && @job.salary_max && @job.currency}
+            class="flex items-center gap-x-2"
+          >
+            <.icon name="hero-currency-dollar" class="w-4 h-4" />
+            {@job.currency} {Number.Delimit.number_to_delimited(@job.salary_min)} - {Number.Delimit.number_to_delimited(
+              @job.salary_max
+            )}
+          </span>
+        </p>
+        <p :if={@job.description} class="mt-4 text-sm text-gray-500 line-clamp-2">
+          {@job.description}
+        </p>
+      </div>
+
+      <div :if={@show_actions && @company_id} class="flex absolute top-4 right-4 space-x-4">
+        <.link
+          patch={~p"/companies/#{@company_id}/jobs/#{@job.id}/edit"}
+          class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center"
+          title="Edit job"
         >
-          <.icon name="hero-currency-dollar" class="w-4 h-4" />
-          {@job.currency} {Number.Delimit.number_to_delimited(@job.salary_min)} - {Number.Delimit.number_to_delimited(
-            @job.salary_max
-          )}
-        </span>
-      </p>
-      <p :if={@job.description} class="mt-4 text-sm text-gray-500 line-clamp-2">
-        {@job.description}
-      </p>
+          <.icon name="hero-pencil" class="w-4 h-4" />
+        </.link>
+        <.link
+          href="#"
+          phx-click="delete"
+          phx-value-id={@job.id}
+          data-confirm="Are you sure you want to delete this job posting? This action cannot be undone."
+          class="w-8 h-8 bg-red-100 rounded-full text-red-600 hover:bg-red-200 flex items-center justify-center"
+          title="Delete job"
+        >
+          <.icon name="hero-trash" class="w-4 h-4" />
+        </.link>
+      </div>
     </div>
     """
   end
@@ -163,7 +188,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </dd>
           </div>
 
-          <div class="mt-4" :if={@show_links}>
+          <div :if={@show_links} class="mt-4">
             <.link
               navigate={~p"/company/#{@company.id}"}
               class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -220,14 +245,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
     <nav class="flex mb-4" aria-label="Breadcrumb">
       <ol class="flex items-center space-x-2">
         <li>
-          <.link
-            navigate={~p"/company/#{@company.id}"}
-            class="text-gray-500 hover:text-gray-700"
-          >
+          <.link navigate={~p"/company/#{@company.id}"} class="text-gray-500 hover:text-gray-700">
             {@company.name}
           </.link>
         </li>
-        <li class="flex items-center" :if={@active_page}>
+        <li :if={@active_page} class="flex items-center">
           <.icon name="hero-chevron-right" class="h-5 w-5 text-gray-400" />
           <span class="ml-2 text-gray-700 font-medium">{@active_page}</span>
         </li>
@@ -246,14 +268,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
     ~H"""
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-gray-900"><%= @title %></h2>
+        <h2 class="text-xl font-semibold text-gray-900">{@title}</h2>
       </div>
       <div class="border-t border-gray-200">
         <div id="job_postings" phx-update="stream" class="divide-y divide-gray-200">
           <div id="job_postings-empty" class="only:block hidden px-4 py-5 sm:px-6 text-center">
-            <p class="text-gray-500"><%= @empty_text %></p>
+            <p class="text-gray-500">{@empty_text}</p>
             <p class="mt-2 text-sm text-gray-500">
-              <%= @empty_subtext %>
+              {@empty_subtext}
             </p>
           </div>
 
@@ -281,117 +303,29 @@ defmodule BemedaPersonalWeb.JobsComponents do
     <div class="bg-white shadow overflow-hidden sm:rounded-lg w-full">
       <h2 class="text-xl font-semibold text-gray-900 px-4 py-5 sm:px-6">Job Postings</h2>
       <div class="border-t border-gray-200">
-        <table class="w-full table-fixed">
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                class="w-[30%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Job Title
-              </th>
-              <th
-                scope="col"
-                class="w-[20%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Location
-              </th>
-              <th
-                scope="col"
-                class="w-[20%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Type
-              </th>
-              <th
-                scope="col"
-                class="w-[15%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Posted
-              </th>
-              <th scope="col" class="w-[15%] px-6 py-3 text-center" :if={@allow_actions}>
-                <span class="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody id="job_postings" phx-update="stream" class="bg-white divide-y divide-gray-200">
-            <tr id="job_postings-empty" class="hidden only:table-row">
-              <td colspan={if @allow_actions, do: "5", else: "4"} class="px-4 py-5 sm:px-6 text-center">
-                <p class="text-gray-500">You haven't posted any jobs yet.</p>
-                <p class="mt-2 text-sm text-gray-500">
-                  Get started by clicking the "Post New Job" button above.
-                </p>
-              </td>
-            </tr>
-            <tr
+        <div id="job_postings" phx-update="stream" class="divide-y divide-gray-200">
+          <div id="job_postings-empty" class="hidden only:block px-4 py-5 sm:px-6 text-center">
+            <p class="text-gray-500">You haven't posted any jobs yet.</p>
+            <p class="mt-2 text-sm text-gray-500">
+              Get started by clicking the "Post New Job" button above.
+            </p>
+          </div>
+
+          <ul>
+            <li
               :for={{dom_id, job} <- @streams_job_postings}
               id={dom_id}
-              class="group hover:bg-gray-50"
+              class="odd:bg-gray-100 rounded-sm hover:bg-gray-200"
             >
-              <td
-                class="px-6 py-4 relative hover:cursor-pointer"
-                phx-click={JS.navigate(~p"/jobs/#{job.id}")}
-              >
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-gray-50 sm:rounded-l-xl" />
-                <div class="text-sm font-medium text-indigo-600 truncate relative">{job.title}</div>
-              </td>
-              <td
-                class="px-6 py-4 relative hover:cursor-pointer"
-                phx-click={JS.navigate(~p"/jobs/#{job.id}")}
-              >
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-gray-50" />
-                <div class="relative">
-                  <div class="text-sm text-gray-900">{job.location || "Global"}</div>
-                  <div class="text-xs text-gray-500" :if={job.remote_allowed}>Remote allowed</div>
-                </div>
-              </td>
-              <td
-                class="px-6 py-4 relative hover:cursor-pointer"
-                phx-click={JS.navigate(~p"/jobs/#{job.id}")}
-              >
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-gray-50" />
-                <div class="relative">
-                  <div class="text-sm text-gray-900">
-                    {job.employment_type || "Full-time"}
-                  </div>
-                  <div class="text-xs text-gray-500">
-                    {job.experience_level || "Entry Level"}
-                  </div>
-                </div>
-              </td>
-              <td
-                class="px-6 py-4 text-sm text-gray-500 relative hover:cursor-pointer"
-                phx-click={JS.navigate(~p"/jobs/#{job.id}")}
-              >
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-gray-50" />
-                <div class="relative">
-                  {Calendar.strftime(job.inserted_at, "%b %d, %Y")}
-                </div>
-              </td>
-              <td class="px-6 py-4 text-sm relative w-14" :if={@allow_actions && @company_id}>
-                <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                  <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-gray-50 sm:rounded-r-xl" />
-                  <div class="flex justify-center space-x-5 relative">
-                    <.link
-                      patch={~p"/companies/#{@company_id}/jobs/#{job.id}/edit"}
-                      class="font-semibold leading-6 text-indigo-600 hover:text-indigo-900"
-                    >
-                      Edit
-                    </.link>
-                    <.link
-                      href="#"
-                      phx-click="delete"
-                      phx-value-id={job.id}
-                      data-confirm="Are you sure you want to delete this job posting? This action cannot be undone."
-                      class="font-semibold leading-6 text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </.link>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              <.job_posting_card
+                job={job}
+                id={dom_id}
+                show_actions={@allow_actions}
+                company_id={@company_id}
+              />
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     """
@@ -404,6 +338,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   def job_detail_header(assigns) do
     assigns = assign_new(assigns, :back_link, fn -> ~p"/jobs" end)
+
     ~H"""
     <div class="mb-8">
       <div class="flex items-center">
@@ -412,7 +347,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-900"
         >
           <.icon name="hero-chevron-left" class="mr-2 h-5 w-5 text-indigo-500" />
-          <%= @back_text %>
+          {@back_text}
         </.link>
       </div>
       <h1 class="mt-2 text-3xl font-bold text-gray-900">{@job.title}</h1>
@@ -422,6 +357,161 @@ defmodule BemedaPersonalWeb.JobsComponents do
             {@job.company.name}
           </.link>
         </p>
+      </div>
+    </div>
+    """
+  end
+
+  # Job filters component
+  attr :is_open, :boolean, default: false
+  attr :employment_types, :list, default: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"]
+  attr :experience_levels, :list, default: ["Entry-level", "Mid-level", "Senior", "Lead", "Executive"]
+
+  def job_filters(assigns) do
+    ~H"""
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Filters</h2>
+        <div class="flex space-x-2">
+          <button
+            phx-click="toggle_filter"
+            class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+          >
+            <.icon name="hero-funnel" class="w-4 h-4 mr-1" />
+            Filter
+          </button>
+          <button
+            phx-click="clear_filters"
+            class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <div class={["overflow-hidden transition-all duration-300", @is_open && "block" || "hidden"]}>
+        <.form :let={f} for={%{}} as={:filters} phx-submit="filter_jobs">
+          <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <label for="filters_title" class="block text-sm font-medium text-gray-700">
+                  Job Title
+                </label>
+                <div class="mt-1">
+                  <.input
+                    field={f[:title]}
+                    type="text"
+                    placeholder="Search by job title"
+                    class="w-full"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="filters_location" class="block text-sm font-medium text-gray-700">
+                  Location
+                </label>
+                <div class="mt-1">
+                  <.input
+                    field={f[:location]}
+                    type="text"
+                    placeholder="Enter location"
+                    class="w-full"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="filters_employment_type" class="block text-sm font-medium text-gray-700">
+                  Employment Type
+                </label>
+                <div class="mt-1">
+                  <select
+                    name="filters[employment_type]"
+                    id="filters_employment_type"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  >
+                    <option value="">Select employment type</option>
+                    <option :for={type <- @employment_types} value={type}>
+                      <%= type %>
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="filters_experience_level" class="block text-sm font-medium text-gray-700">
+                  Experience Level
+                </label>
+                <div class="mt-1">
+                  <select
+                    name="filters[experience_level]"
+                    id="filters_experience_level"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  >
+                    <option value="">Select experience level</option>
+                    <option :for={level <- @experience_levels} value={level}>
+                      <%= level %>
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="filters_remote_allowed" class="block text-sm font-medium text-gray-700">
+                  Remote Work
+                </label>
+                <div class="mt-1">
+                  <select
+                    name="filters[remote_allowed]"
+                    id="filters_remote_allowed"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  >
+                    <option value="">Any</option>
+                    <option value="true">Remote Only</option>
+                    <option value="false">On-site Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <fieldset>
+                  <legend class="block text-sm font-medium text-gray-700">Salary Range</legend>
+                  <div class="mt-1 grid grid-cols-2 gap-x-2">
+                    <div>
+                      <label for="salary_min" class="sr-only">Minimum Salary</label>
+                      <.input
+                        field={f[:salary_min]}
+                        type="number"
+                        placeholder="Min"
+                        min="0"
+                        class="w-full"
+                      />
+                    </div>
+                    <div>
+                      <label for="salary_max" class="sr-only">Maximum Salary</label>
+                      <.input
+                        field={f[:salary_max]}
+                        type="number"
+                        placeholder="Max"
+                        min="0"
+                        class="w-full"
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+              <button
+                type="submit"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </.form>
       </div>
     </div>
     """

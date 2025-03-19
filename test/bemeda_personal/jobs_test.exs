@@ -219,6 +219,102 @@ defmodule BemedaPersonal.JobsTest do
                })
     end
 
+    test "can filter job_postings by newer_than and older_than timestamp" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      # Create job posts with controlled timestamps
+      older_timestamp = DateTime.from_naive!(~N[2023-01-01 00:00:00], "Etc/UTC")
+      middle_timestamp = DateTime.from_naive!(~N[2023-02-01 00:00:00], "Etc/UTC")
+      newer_timestamp = DateTime.from_naive!(~N[2023-03-01 00:00:00], "Etc/UTC")
+
+      older_job =
+        %BemedaPersonal.Jobs.JobPosting{}
+        |> BemedaPersonal.Jobs.JobPosting.changeset(%{
+          title: "Older Job",
+          description: "Description for older job",
+          location: "Location",
+          currency: "USD",
+          employment_type: "Full-time",
+          experience_level: "Mid-level",
+          salary_min: 50000,
+          salary_max: 70000,
+          remote_allowed: false
+        })
+        |> Ecto.Changeset.put_assoc(:company, company)
+        |> Ecto.Changeset.put_change(:inserted_at, older_timestamp)
+        |> Repo.insert!()
+
+      middle_job =
+        %BemedaPersonal.Jobs.JobPosting{}
+        |> BemedaPersonal.Jobs.JobPosting.changeset(%{
+          title: "Middle Job",
+          description: "Description for middle job",
+          location: "Location",
+          currency: "USD",
+          employment_type: "Full-time",
+          experience_level: "Mid-level",
+          salary_min: 60000,
+          salary_max: 80000,
+          remote_allowed: false
+        })
+        |> Ecto.Changeset.put_assoc(:company, company)
+        |> Ecto.Changeset.put_change(:inserted_at, middle_timestamp)
+        |> Repo.insert!()
+
+      newer_job =
+        %BemedaPersonal.Jobs.JobPosting{}
+        |> BemedaPersonal.Jobs.JobPosting.changeset(%{
+          title: "Newer Job",
+          description: "Description for newer job",
+          location: "Location",
+          currency: "USD",
+          employment_type: "Full-time",
+          experience_level: "Mid-level",
+          salary_min: 70000,
+          salary_max: 90000,
+          remote_allowed: false
+        })
+        |> Ecto.Changeset.put_assoc(:company, company)
+        |> Ecto.Changeset.put_change(:inserted_at, newer_timestamp)
+        |> Repo.insert!()
+
+      # Test newer_than filter
+      assert results = Jobs.list_job_postings(%{newer_than: middle_job})
+      assert length(results) == 1
+      assert hd(results).id == newer_job.id
+
+      # Test older_than filter
+      assert results = Jobs.list_job_postings(%{older_than: middle_job})
+      assert length(results) == 1
+      assert hd(results).id == older_job.id
+
+      # Test combined filters
+      another_older_job =
+        %BemedaPersonal.Jobs.JobPosting{}
+        |> BemedaPersonal.Jobs.JobPosting.changeset(%{
+          title: "Another Older Job",
+          description: "Description for another older job",
+          location: "Location",
+          currency: "USD",
+          employment_type: "Full-time",
+          experience_level: "Mid-level",
+          salary_min: 55000,
+          salary_max: 75000,
+          remote_allowed: true
+        })
+        |> Ecto.Changeset.put_assoc(:company, company)
+        |> Ecto.Changeset.put_change(
+          :inserted_at,
+          DateTime.from_naive!(~N[2023-01-15 00:00:00], "Etc/UTC")
+        )
+        |> Repo.insert!()
+
+      assert results = Jobs.list_job_postings(%{older_than: middle_job, remote_allowed: true})
+      assert length(results) == 1
+      assert hd(results).id == another_older_job.id
+    end
+
     test "defaults to listing all job_postings if a non-existent filter is passed" do
       %{job_posting: job_posting} = create_job_posting(%{})
 
@@ -438,21 +534,16 @@ defmodule BemedaPersonal.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      # Initially should be zero
       assert Jobs.company_jobs_count(company.id) == 0
 
-      # Create 3 job postings
       create_multiple_job_postings(company, 3)
       assert Jobs.company_jobs_count(company.id) == 3
 
-      # Create another company with different job count
       user2 = user_fixture(%{email: "another@example.com"})
       company2 = company_fixture(user2)
       create_multiple_job_postings(company2, 2)
 
-      # Original company should still have 3 jobs
       assert Jobs.company_jobs_count(company.id) == 3
-      # New company should have 2 jobs
       assert Jobs.company_jobs_count(company2.id) == 2
     end
 

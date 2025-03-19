@@ -36,6 +36,12 @@ defmodule BemedaPersonal.Jobs do
       iex> list_job_postings(%{title: "Engineer", remote_allowed: true})
       [%JobPosting{}, ...]
 
+      iex> list_job_postings(%{newer_than: job_posting})
+      [%JobPosting{}, ...]
+
+      iex> list_job_postings(%{older_than: job_posting})
+      [%JobPosting{}, ...]
+
   """
   @spec list_job_postings(map(), non_neg_integer()) :: [job_posting()]
   def list_job_postings(filters \\ %{}, limit \\ 10) do
@@ -89,6 +95,14 @@ defmodule BemedaPersonal.Jobs do
 
   defp apply_filter({:salary_range, [min, max]}, dynamic) do
     dynamic([job_posting: j], ^dynamic and j.salary_min <= ^max and j.salary_max >= ^min)
+  end
+
+  defp apply_filter({:newer_than, %JobPosting{} = job_posting}, dynamic) do
+    dynamic([job_posting: j], ^dynamic and j.inserted_at > ^job_posting.inserted_at)
+  end
+
+  defp apply_filter({:older_than, %JobPosting{} = job_posting}, dynamic) do
+    dynamic([job_posting: j], ^dynamic and j.inserted_at < ^job_posting.inserted_at)
   end
 
   defp apply_filter(_other, dynamic), do: dynamic
