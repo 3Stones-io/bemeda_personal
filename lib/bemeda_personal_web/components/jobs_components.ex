@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   attr :job, :any, required: true
   attr :id, :string, required: true
-  attr :show_company_name, :boolean, default: true
+  attr :show_company_name, :boolean, default: false
   attr :show_actions, :boolean, default: false
   attr :company_id, :any, default: nil
   attr :return_to, :string, default: nil
@@ -362,10 +362,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  # Job filters component
-  attr :is_open, :boolean, default: false
-  attr :employment_types, :list, default: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"]
-  attr :experience_levels, :list, default: ["Entry-level", "Mid-level", "Senior", "Lead", "Executive"]
+  attr :employment_types, :list,
+    default: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"]
+
+  attr :experience_levels, :list,
+    default: ["Entry-level", "Mid-level", "Senior", "Lead", "Executive"]
 
   def job_filters(assigns) do
     ~H"""
@@ -374,22 +375,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <h2 class="text-lg font-semibold">Filters</h2>
         <div class="flex space-x-2">
           <button
-            phx-click="toggle_filter"
+            phx-click={JS.toggle(to: "#job_filters")}
             class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
           >
-            <.icon name="hero-funnel" class="w-4 h-4 mr-1" />
-            Filter
-          </button>
-          <button
-            phx-click="clear_filters"
-            class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
-          >
-            Clear All
+            <.icon name="hero-funnel" class="w-4 h-4 mr-1" /> Filter
           </button>
         </div>
       </div>
 
-      <div class={["overflow-hidden transition-all duration-300", @is_open && "block" || "hidden"]}>
+      <div class="overflow-hidden transition-all duration-300 hidden" id="job_filters">
         <.form :let={f} for={%{}} as={:filters} phx-submit="filter_jobs">
           <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -433,7 +427,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   >
                     <option value="">Select employment type</option>
                     <option :for={type <- @employment_types} value={type}>
-                      <%= type %>
+                      {type}
                     </option>
                   </select>
                 </div>
@@ -451,7 +445,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   >
                     <option value="">Select experience level</option>
                     <option :for={level <- @experience_levels} value={level}>
-                      <%= level %>
+                      {level}
                     </option>
                   </select>
                 </div>
@@ -473,36 +467,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   </select>
                 </div>
               </div>
-
-              <div>
-                <fieldset>
-                  <legend class="block text-sm font-medium text-gray-700">Salary Range</legend>
-                  <div class="mt-1 grid grid-cols-2 gap-x-2">
-                    <div>
-                      <label for="salary_min" class="sr-only">Minimum Salary</label>
-                      <.input
-                        field={f[:salary_min]}
-                        type="number"
-                        placeholder="Min"
-                        min="0"
-                        class="w-full"
-                      />
-                    </div>
-                    <div>
-                      <label for="salary_max" class="sr-only">Maximum Salary</label>
-                      <.input
-                        field={f[:salary_max]}
-                        type="number"
-                        placeholder="Max"
-                        min="0"
-                        class="w-full"
-                      />
-                    </div>
-                  </div>
-                </fieldset>
-              </div>
             </div>
-            <div class="mt-6 flex justify-end">
+            <div class="mt-6 flex justify-end gap-x-2">
+              <button
+                type="reset"
+                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+              >
+                Clear All
+              </button>
+
               <button
                 type="submit"
                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

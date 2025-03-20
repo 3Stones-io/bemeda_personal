@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.JobPostListHelper do
   def jobs_list(assigns) do
     ~H"""
     <div
-      class="border-t border-gray-200 py-8"
+      class="border-t border-gray-200"
       id={@id}
       phx-update="stream"
       phx-viewport-top={!@end_of_timeline? && JS.push("prev-page", target: "##{@id}")}
@@ -20,17 +20,22 @@ defmodule BemedaPersonalWeb.JobPostListHelper do
       <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
         <p class="text-gray-500">No job postings available at the moment.</p>
         <p class="mt-2 text-sm text-gray-500">
-        {@empty_state_message}
+          {@empty_state_message}
         </p>
       </div>
-      <ul role="list" class="divide-y divide-gray-200">
-        <li
-          :for={{job_id, job} <- @job_postings}
-          class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200 rounded-md last:mb-8"
-        >
-          <JobsComponents.job_posting_card job={job} id={job_id} show_company_name={false} />
-        </li>
-      </ul>
+
+      <div
+        :for={{job_id, job} <- @job_postings}
+        class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200 rounded-md"
+        id={job_id}
+        role="list"
+      >
+        <JobsComponents.job_posting_card
+          job={job}
+          id={"card-#{job_id}"}
+          show_company_name={@show_company_name}
+        />
+      </div>
     </div>
     """
   end
@@ -38,6 +43,8 @@ defmodule BemedaPersonalWeb.JobPostListHelper do
   @spec assign_jobs(Phoenix.LiveView.Socket.t()) :: map()
   def assign_jobs(socket) do
     jobs = Jobs.list_job_postings(socket.assigns.filters)
+    IO.inspect(jobs, label: "JOBS")
+    IO.inspect(socket.assigns.filters, label: "FILTERS")
 
     first_job = List.first(jobs)
     last_job = List.last(jobs)

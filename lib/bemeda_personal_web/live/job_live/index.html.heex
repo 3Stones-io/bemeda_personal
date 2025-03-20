@@ -4,7 +4,7 @@
     Find your next career opportunity
   </p>
 
-  <JobsComponents.job_filters is_open={@filter_open} />
+  <JobsComponents.job_filters />
 
   <div class="bg-white shadow overflow-hidden sm:rounded-lg">
     <h2 class="px-4 py-5 sm:px-6 text-xl font-semibold text-gray-900">Available Positions</h2>
@@ -15,6 +15,7 @@
       end_of_timeline?={@end_of_timeline?}
       empty_state_message="Please check back later for new opportunities."
       job_postings={@streams.job_postings}
+      show_company_name={true}
     />
   </div>
 </section>

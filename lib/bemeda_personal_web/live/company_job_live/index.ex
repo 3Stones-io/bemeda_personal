@@ -144,6 +144,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
   defp parse_integer(nil), do: nil
   defp parse_integer(""), do: nil
+
   defp parse_integer(str) do
     case Integer.parse(str) do
       {num, _} -> num

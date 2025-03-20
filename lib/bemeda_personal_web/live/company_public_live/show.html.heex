@@ -124,15 +124,18 @@
         No open positions at this time
       </p>
 
-      <ul>
-        <li
-          :for={{dom_id, job} <- @streams.job_postings}
-          class="odd:bg-gray-100 rounded-md hover:bg-gray-200"
-          id={dom_id}
-        >
-          <JobsComponents.job_posting_card job={job} id={dom_id} />
-        </li>
-      </ul>
+      <div
+        :for={{job_id, job} <- @streams.job_postings}
+        class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200 rounded-md"
+        id={job_id}
+        role="list"
+      >
+        <JobsComponents.job_posting_card
+          job={job}
+          id={"card-#{job_id}"}
+          show_company_name={false}
+        />
+      </div>
     </div>
   </div>
 </section>
