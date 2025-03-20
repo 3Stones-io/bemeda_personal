@@ -86,8 +86,6 @@ defmodule BemedaPersonalWeb.UserAuthTest do
 
   defp setup_test_connections(conn, entities) do
     %{
-      company: company,
-      company_for_user: company_for_user,
       user_token: user_token,
       other_user_token: other_user_token,
       user_without_company_token: user_without_company_token,

@@ -6,7 +6,6 @@ defmodule BemedaPersonalWeb.JobListComponent do
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.JobsComponents
 
-  # Also render filters here
   @impl Phoenix.LiveComponent
   def render(assigns) do
     ~H"""
@@ -48,6 +47,15 @@ defmodule BemedaPersonalWeb.JobListComponent do
   @impl Phoenix.LiveComponent
   def update(%{job_posting: job_posting}, socket) do
     {:ok, stream_insert(socket, :job_postings, job_posting)}
+  end
+
+  def update(%{filters: filters} = assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(:end_of_timeline?, false)
+     |> assign(:filters, filters)
+     |> assign_jobs()}
   end
 
   def update(assigns, socket) do

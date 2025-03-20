@@ -26,7 +26,8 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
           title: "Product Manager",
           location: "San Francisco",
           employment_type: "Full-time",
-          experience_level: "Senior"
+          experience_level: "Senior",
+          remote_allowed: false
         })
 
       job3 =

@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonalWeb.JobListComponent
+  alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.LiveView.JS
 
   @impl Phoenix.LiveView
@@ -48,6 +49,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     socket
     |> assign(:page_title, "Company Jobs")
     |> assign(:job_posting, nil)
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("filter_jobs", %{"filters" => filter_params}, socket) do
+    SharedHelpers.process_job_filters(filter_params, socket)
   end
 
   @impl Phoenix.LiveView

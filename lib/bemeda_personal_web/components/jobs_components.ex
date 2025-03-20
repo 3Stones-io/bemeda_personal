@@ -2,6 +2,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
   @moduledoc false
   use BemedaPersonalWeb, :html
 
+  alias BemedaPersonalWeb.SharedHelpers
+
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
 
@@ -59,9 +61,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
             )}
           </span>
         </p>
-        <p :if={@job.description} class="mt-4 text-sm text-gray-500 line-clamp-2">
-          {@job.description}
-        </p>
+        <div :if={@job.description} class="mt-4 text-sm text-gray-500 line-clamp-2 md-to-html-basic">
+          {SharedHelpers.to_html(@job.description)}
+        </div>
       </div>
 
       <div :if={@show_actions} class="flex absolute top-4 right-4 space-x-4">
