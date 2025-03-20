@@ -52,7 +52,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({event, job_posting}, socket)
-    when event in [:job_posting_created, :job_posting_updated] do
+      when event in [:job_posting_created, :job_posting_updated] do
     send_update(JobListComponent, id: "job-post-list", job_posting: job_posting)
     {:noreply, socket}
   end

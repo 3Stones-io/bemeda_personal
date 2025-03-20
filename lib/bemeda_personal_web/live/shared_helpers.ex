@@ -1,7 +1,6 @@
 defmodule BemedaPersonalWeb.SharedHelpers do
   @moduledoc false
 
-
   @spec to_html(binary()) :: Phoenix.HTML.safe()
   def to_html(markdown) do
     markdown

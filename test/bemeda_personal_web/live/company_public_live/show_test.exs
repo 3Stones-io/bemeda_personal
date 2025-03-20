@@ -15,7 +15,11 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       %{conn: conn, user: user, company: company, job_posting: job_posting}
     end
 
-    test "renders company public profile for unauthenticated users", %{conn: conn, company: company, job_posting: job_posting} do
+    test "renders company public profile for unauthenticated users", %{
+      conn: conn,
+      company: company,
+      job_posting: job_posting
+    } do
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
 
       # Company information is displayed
@@ -31,7 +35,11 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       assert html =~ job_posting.title
     end
 
-    test "renders company profile for authenticated users", %{conn: conn, company: company, user: user} do
+    test "renders company profile for authenticated users", %{
+      conn: conn,
+      company: company,
+      user: user
+    } do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)

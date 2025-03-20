@@ -19,38 +19,33 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     %{user: user_fixture(), conn: conn}
   end
 
+  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
+  @spec create_companies_and_users(map()) :: map()
   def create_companies_and_users(%{conn: conn, user: user}) do
+    # Create entities
+    entities = create_test_entities(user)
+
+    # Setup connections and sessions
+    connections = setup_test_connections(conn, entities)
+
+    # Return all test data
+    Map.merge(entities, connections)
+  end
+
+  defp create_test_entities(user) do
     company = company_fixture(user)
     other_user = user_fixture()
     user_without_company = user_fixture()
     user_with_company = user_fixture()
-    _company = company_fixture(user_with_company)
+    company_for_user = company_fixture(user_with_company)
 
+    # Generate tokens
     user_token = Accounts.generate_user_session_token(user)
     other_user_token = Accounts.generate_user_session_token(other_user)
     user_without_company_token = Accounts.generate_user_session_token(user_without_company)
     user_with_company_token = Accounts.generate_user_session_token(user_with_company)
 
-    user_session =
-      conn
-      |> put_session(:user_token, user_token)
-      |> get_session()
-
-    other_user_session =
-      conn
-      |> put_session(:user_token, other_user_token)
-      |> get_session()
-
-    user_without_company_session =
-      conn
-      |> put_session(:user_token, user_without_company_token)
-      |> get_session()
-
-    user_with_company_session =
-      conn
-      |> put_session(:user_token, user_with_company_token)
-      |> get_session()
-
+    # Create sockets
     user_socket = %LiveView.Socket{
       endpoint: BemedaPersonalWeb.Endpoint,
       assigns: %{__changed__: %{}, flash: %{}, current_user: user}
@@ -71,37 +66,63 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       assigns: %{__changed__: %{}, flash: %{}, current_user: user_with_company}
     }
 
-    admin_conn =
-      conn
-      |> assign(:current_user, user)
-      |> fetch_flash()
-
-    non_admin_conn =
-      conn
-      |> assign(:current_user, other_user)
-      |> fetch_flash()
-
-    user_without_company_conn =
-      conn
-      |> assign(:current_user, user_without_company)
-
-    user_with_company_conn =
-      conn
-      |> assign(:current_user, user_with_company)
-
     %{
+      user: user,
       company: company,
+      company_for_user: company_for_user,
       other_user: other_user,
       user_without_company: user_without_company,
       user_with_company: user_with_company,
-      user_session: user_session,
+      user_token: user_token,
+      other_user_token: other_user_token,
+      user_without_company_token: user_without_company_token,
+      user_with_company_token: user_with_company_token,
       user_socket: user_socket,
-      other_user_session: other_user_session,
       other_user_socket: other_user_socket,
-      user_without_company_session: user_without_company_session,
       user_without_company_socket: user_without_company_socket,
+      user_with_company_socket: user_with_company_socket
+    }
+  end
+
+  defp setup_test_connections(conn, entities) do
+    %{
+      company: company,
+      company_for_user: company_for_user,
+      user_token: user_token,
+      other_user_token: other_user_token,
+      user_without_company_token: user_without_company_token,
+      user_with_company_token: user_with_company_token,
+      user: user,
+      other_user: other_user,
+      user_without_company: user_without_company,
+      user_with_company: user_with_company
+    } = entities
+
+    # Create sessions
+    user_session = get_session(put_session(conn, :user_token, user_token))
+
+    other_user_session = get_session(put_session(conn, :user_token, other_user_token))
+
+    user_without_company_session =
+      get_session(put_session(conn, :user_token, user_without_company_token))
+
+    user_with_company_session =
+      get_session(put_session(conn, :user_token, user_with_company_token))
+
+    # Create conn variants
+    admin_conn = fetch_flash(assign(conn, :current_user, user))
+
+    non_admin_conn = fetch_flash(assign(conn, :current_user, other_user))
+
+    user_without_company_conn = assign(conn, :current_user, user_without_company)
+
+    user_with_company_conn = assign(conn, :current_user, user_with_company)
+
+    %{
+      user_session: user_session,
+      other_user_session: other_user_session,
+      user_without_company_session: user_without_company_session,
       user_with_company_session: user_with_company_session,
-      user_with_company_socket: user_with_company_socket,
       admin_conn: admin_conn,
       non_admin_conn: non_admin_conn,
       user_without_company_conn: user_without_company_conn,

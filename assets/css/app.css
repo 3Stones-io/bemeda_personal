@@ -43,11 +43,13 @@
   @apply text-blue-600 hover:text-blue-800 hover:underline;
 }
 
-.md-to-html strong, .md-to-html b {
+.md-to-html strong,
+.md-to-html b {
   @apply font-semibold text-gray-900;
 }
 
-.md-to-html em, .md-to-html i {
+.md-to-html em,
+.md-to-html i {
   @apply italic;
 }
 
@@ -70,8 +72,8 @@
     grid-template-columns: 70% 27%;
     gap: 3%;
     grid-template-areas:
-      "description sidebar"
-      "description ...";
+      'description sidebar'
+      'description ...';
   }
 
   .about-company .description {
@@ -82,4 +84,3 @@
     grid-area: sidebar;
   }
 }
-

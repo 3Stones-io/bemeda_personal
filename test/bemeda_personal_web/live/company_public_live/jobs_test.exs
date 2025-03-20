@@ -11,23 +11,26 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      job1 = job_posting_fixture(company, %{
-        title: "Software Engineer",
-        employment_type: "Full-time",
-        experience_level: "Mid-level"
-      })
+      job1 =
+        job_posting_fixture(company, %{
+          title: "Software Engineer",
+          employment_type: "Full-time",
+          experience_level: "Mid-level"
+        })
 
-      job2 = job_posting_fixture(company, %{
-        title: "Product Manager",
-        employment_type: "Full-time",
-        experience_level: "Senior"
-      })
+      job2 =
+        job_posting_fixture(company, %{
+          title: "Product Manager",
+          employment_type: "Full-time",
+          experience_level: "Senior"
+        })
 
-      job3 = job_posting_fixture(company, %{
-        title: "UI/UX Designer",
-        employment_type: "Contract",
-        experience_level: "Mid-level"
-      })
+      job3 =
+        job_posting_fixture(company, %{
+          title: "UI/UX Designer",
+          employment_type: "Contract",
+          experience_level: "Mid-level"
+        })
 
       %{
         conn: conn,
@@ -39,7 +42,13 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       }
     end
 
-    test "renders company jobs page for unauthenticated users", %{conn: conn, company: company, job1: job1, job2: job2, job3: job3} do
+    test "renders company jobs page for unauthenticated users", %{
+      conn: conn,
+      company: company,
+      job1: job1,
+      job2: job2,
+      job3: job3
+    } do
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
 
       assert html =~ "Jobs at #{company.name}"
@@ -74,13 +83,13 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       assert html =~ company.name
       assert html =~ "Jobs"
 
-      {:ok, _view, html} =
+      {:ok, _view, html2} =
         view
         |> element("a[href='/company/#{company.id}']")
         |> render_click()
         |> follow_redirect(conn, ~p"/company/#{company.id}")
 
-      assert html =~ "About #{company.name}"
+      assert html2 =~ "About #{company.name}"
     end
 
     test "job listings are paginated when there are many jobs", %{conn: conn, company: company} do
@@ -94,7 +103,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       assert html =~ "Job 9"
       assert html =~ "Software Engineer"
 
-      job_count = Regex.scan(~r/job_postings-[a-f0-9-]+/, html) |> length()
+      patterns = Regex.scan(~r/job_postings-[a-f0-9-]+/, html)
+      job_count = length(patterns)
       assert job_count > 5, "Expected at least 5 job postings to be displayed"
     end
   end

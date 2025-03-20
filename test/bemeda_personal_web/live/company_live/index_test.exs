@@ -62,8 +62,8 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> live(~p"/companies")
 
       assert view
-        |> element("a[href='/companies/#{company.id}/edit']")
-        |> has_element?()
+             |> element("a[href='/companies/#{company.id}/edit']")
+             |> has_element?()
     end
 
     test "users can navigate to view all jobs", %{conn: conn} do
@@ -76,8 +76,8 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> live(~p"/companies")
 
       assert view
-        |> element("a[href='/companies/#{company.id}/jobs']")
-        |> has_element?()
+             |> element("a[href='/companies/#{company.id}/jobs']")
+             |> has_element?()
     end
 
     test "users can navigate to create a company if they don't have one", %{conn: conn} do
@@ -92,8 +92,8 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ "You need to create a company profile before you can post jobs"
 
       assert view
-        |> element("a[href='/companies/new']")
-        |> has_element?()
+             |> element("a[href='/companies/new']")
+             |> has_element?()
     end
   end
 
@@ -103,9 +103,9 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       _company = company_fixture(user)
 
       assert {:error, {:redirect, %{to: path}}} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/companies/new")
+               conn
+               |> log_in_user(user)
+               |> live(~p"/companies/new")
 
       assert path == ~p"/companies"
     end
@@ -169,7 +169,17 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         })
         |> render_submit()
 
-      assert view |> render() =~ "can&#39;t be blank"
+      assert render(view) =~ "can&#39;t be blank"
+    end
+
+    test "shows error with invalid data", %{conn: conn} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user_fixture())
+        |> live(~p"/companies/new")
+
+      assert render_submit(form(view, "#company-form", company: %{name: nil})) =~
+               "can&#39;t be blank"
     end
   end
 
@@ -180,9 +190,9 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       company = company_fixture(user)
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
-        conn
-        |> log_in_user(other_user)
-        |> live(~p"/companies/#{company.id}/edit")
+               conn
+               |> log_in_user(other_user)
+               |> live(~p"/companies/#{company.id}/edit")
 
       assert path == ~p"/companies"
       assert flash["error"] == "You don't have permission to access this company."

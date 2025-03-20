@@ -28,9 +28,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       other_user = user_fixture(%{email: "other@example.com"})
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
-        conn
-        |> log_in_user(other_user)
-        |> live(~p"/companies/#{company.id}/jobs")
+               conn
+               |> log_in_user(other_user)
+               |> live(~p"/companies/#{company.id}/jobs")
 
       assert path == ~p"/companies"
       assert flash["error"] == "You don't have permission to access this company."
@@ -127,7 +127,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       %{job_posting: job_posting}
     end
 
-    test "renders edit form for job posting", %{conn: conn, user: user, company: company, job_posting: job_posting} do
+    test "renders edit form for job posting", %{
+      conn: conn,
+      user: user,
+      company: company,
+      job_posting: job_posting
+    } do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
@@ -137,7 +142,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert html =~ job_posting.title
     end
 
-    test "updates job posting", %{conn: conn, user: user, company: company, job_posting: job_posting} do
+    test "updates job posting", %{
+      conn: conn,
+      user: user,
+      company: company,
+      job_posting: job_posting
+    } do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
@@ -146,7 +156,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       view
       |> form("#job-posting-form", %{
         "job_posting" => %{
-          "title" => "Updated Job Title",
+          "title" => "Updated Job Title"
         }
       })
       |> render_submit()
@@ -161,9 +171,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       other_job = job_posting_fixture(other_company)
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/companies/#{other_company.id}/jobs/#{other_job.id}/edit")
+               conn
+               |> log_in_user(user)
+               |> live(~p"/companies/#{other_company.id}/jobs/#{other_job.id}/edit")
 
       assert path == "/companies"
       assert flash["error"] == "You don't have permission to access this company."

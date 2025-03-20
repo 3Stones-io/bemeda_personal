@@ -6,7 +6,6 @@ defmodule BemedaPersonalWeb.JobListComponent do
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.JobsComponents
 
-
   # Also render filters here
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -73,7 +72,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
     {:noreply, socket}
   end
 
-  def handle_event("prev-page", _params, socket) do
+  def handle_event("prev-page", _unused_params, socket) do
     filters = %{newer_than: socket.assigns.first_job}
 
     {
@@ -85,8 +84,8 @@ defmodule BemedaPersonalWeb.JobListComponent do
   def handle_event("filter_jobs", %{"filters" => filter_params}, socket) do
     filters =
       filter_params
-      |> Enum.filter(fn {_, v} -> v && v != "" end)
-      |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
+      |> Enum.filter(fn {_k, v} -> v && v != "" end)
+      |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
       |> Enum.into(%{})
 
     {:noreply,
@@ -97,12 +96,12 @@ defmodule BemedaPersonalWeb.JobListComponent do
 
   def handle_event("delete-job-posting", %{"id" => id}, socket) do
     job_posting = Jobs.get_job_posting!(id)
-    {:ok, job_posting} = Jobs.delete_job_posting(job_posting)
+    {:ok, deleted_job_posting} = Jobs.delete_job_posting(job_posting)
 
-    {:noreply,  stream_delete(socket, :job_postings, job_posting)}
+    {:noreply, stream_delete(socket, :job_postings, deleted_job_posting)}
   end
 
-  @spec assign_jobs(Phoenix.LiveView.Socket.t()) :: map()
+  @spec assign_jobs(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
   def assign_jobs(socket) do
     jobs = Jobs.list_job_postings(socket.assigns.filters)
 
@@ -115,12 +114,18 @@ defmodule BemedaPersonalWeb.JobListComponent do
     |> assign(:last_job, last_job)
   end
 
+  @spec maybe_insert_jobs(Phoenix.LiveView.Socket.t(), map(), any(), keyword()) ::
+          Phoenix.LiveView.Socket.t()
   def maybe_insert_jobs(socket, _filters, _first_or_last_job, _opts \\ [])
 
+  @spec maybe_insert_jobs(Phoenix.LiveView.Socket.t(), map(), nil, keyword()) ::
+          Phoenix.LiveView.Socket.t()
   def maybe_insert_jobs(socket, _filters, nil, _opts) do
     assign(socket, :end_of_timeline?, true)
   end
 
+  @spec maybe_insert_jobs(Phoenix.LiveView.Socket.t(), map(), any(), keyword()) ::
+          Phoenix.LiveView.Socket.t()
   def maybe_insert_jobs(socket, filters, _first_or_last_job, opts) do
     jobs =
       filters

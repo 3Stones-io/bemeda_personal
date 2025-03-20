@@ -36,8 +36,8 @@ defmodule BemedaPersonal.JobsTest do
         experience_level: "Senior #{i}",
         location: "Location #{i}",
         remote_allowed: rem(i, 2) == 0,
-        salary_min: i * 10000,
-        salary_max: i * 15000
+        salary_min: i * 10_000,
+        salary_max: i * 15_000
       })
     end)
   end
@@ -137,11 +137,11 @@ defmodule BemedaPersonal.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      job_posting1 = job_posting_fixture(company, %{salary_min: 50000, salary_max: 100_000})
-      job_posting2 = job_posting_fixture(company, %{salary_min: 30000, salary_max: 60000})
+      job_posting1 = job_posting_fixture(company, %{salary_min: 50_000, salary_max: 100_000})
+      job_posting2 = job_posting_fixture(company, %{salary_min: 30_000, salary_max: 60_000})
       job_posting_fixture(company, %{salary_min: 120_000, salary_max: 150_000})
 
-      assert results = Jobs.list_job_postings(%{salary_range: [55000, 70000]})
+      assert results = Jobs.list_job_postings(%{salary_range: [55_000, 70_000]})
       assert length(results) == 2
 
       job_ids = Enum.map(results, & &1.id)
@@ -149,14 +149,18 @@ defmodule BemedaPersonal.JobsTest do
       assert job_posting2.id in job_ids
       assert length(job_ids) == 2
 
-      results = Jobs.list_job_postings(%{salary_range: [40000, 1_000_000]})
-      assert length(results) == 3
+      results_with_higher_range = Jobs.list_job_postings(%{salary_range: [40_000, 1_000_000]})
+      assert length(results_with_higher_range) == 3
 
-      results = Jobs.list_job_postings(%{salary_range: [0, 70000]})
-      assert length(results) == 2
+      results_with_lower_range = Jobs.list_job_postings(%{salary_range: [0, 70_000]})
+      assert length(results_with_lower_range) == 2
 
-      job_ids = Enum.map(results, & &1.id) |> Enum.sort()
-      assert job_posting2.id in job_ids
+      job_ids_for_lower_range =
+        results_with_lower_range
+        |> Enum.map(& &1.id)
+        |> Enum.sort()
+
+      assert job_posting2.id in job_ids_for_lower_range
     end
 
     test "can filter job_postings by multiple parameters" do
@@ -168,7 +172,7 @@ defmodule BemedaPersonal.JobsTest do
           title: "Senior Software Engineer",
           employment_type: "Full-time",
           remote_allowed: true,
-          salary_min: 80000,
+          salary_min: 80_000,
           salary_max: 120_000
         })
 
@@ -176,15 +180,15 @@ defmodule BemedaPersonal.JobsTest do
         title: "Junior Software Engineer",
         employment_type: "Full-time",
         remote_allowed: false,
-        salary_min: 50000,
-        salary_max: 70000
+        salary_min: 50_000,
+        salary_max: 70_000
       })
 
       job_posting_fixture(company, %{
         title: "Senior Product Manager",
         employment_type: "Full-time",
         remote_allowed: true,
-        salary_min: 90000,
+        salary_min: 90_000,
         salary_max: 130_000
       })
 
@@ -192,7 +196,7 @@ defmodule BemedaPersonal.JobsTest do
                Jobs.list_job_postings(%{
                  title: "Engineer",
                  remote_allowed: true,
-                 salary_range: [75000, 125_000]
+                 salary_range: [75_000, 125_000]
                })
 
       assert result.id == job_posting1.id
@@ -207,7 +211,7 @@ defmodule BemedaPersonal.JobsTest do
         title: "Senior Software Engineer",
         employment_type: "Full-time",
         remote_allowed: true,
-        salary_min: 80000,
+        salary_min: 80_000,
         salary_max: 120_000
       })
 
@@ -237,8 +241,8 @@ defmodule BemedaPersonal.JobsTest do
           currency: "USD",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 50000,
-          salary_max: 70000,
+          salary_min: 50_000,
+          salary_max: 70_000,
           remote_allowed: false
         })
         |> Ecto.Changeset.put_assoc(:company, company)
@@ -254,8 +258,8 @@ defmodule BemedaPersonal.JobsTest do
           currency: "USD",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 60000,
-          salary_max: 80000,
+          salary_min: 60_000,
+          salary_max: 80_000,
           remote_allowed: false
         })
         |> Ecto.Changeset.put_assoc(:company, company)
@@ -271,8 +275,8 @@ defmodule BemedaPersonal.JobsTest do
           currency: "USD",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 70000,
-          salary_max: 90000,
+          salary_min: 70_000,
+          salary_max: 90_000,
           remote_allowed: false
         })
         |> Ecto.Changeset.put_assoc(:company, company)
@@ -299,8 +303,8 @@ defmodule BemedaPersonal.JobsTest do
           currency: "USD",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 55000,
-          salary_max: 75000,
+          salary_min: 55_000,
+          salary_max: 75_000,
           remote_allowed: true
         })
         |> Ecto.Changeset.put_assoc(:company, company)

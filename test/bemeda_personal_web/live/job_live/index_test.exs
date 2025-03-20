@@ -12,28 +12,31 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
       company = company_fixture(user)
 
       # Create test jobs with diverse attributes for testing filters
-      job1 = job_posting_fixture(company, %{
-        title: "Software Engineer",
-        location: "New York",
-        employment_type: "Full-time",
-        experience_level: "Mid-level",
-        remote_allowed: true
-      })
+      job1 =
+        job_posting_fixture(company, %{
+          title: "Software Engineer",
+          location: "New York",
+          employment_type: "Full-time",
+          experience_level: "Mid-level",
+          remote_allowed: true
+        })
 
-      job2 = job_posting_fixture(company, %{
-        title: "Product Manager",
-        location: "San Francisco",
-        employment_type: "Full-time",
-        experience_level: "Senior"
-      })
+      job2 =
+        job_posting_fixture(company, %{
+          title: "Product Manager",
+          location: "San Francisco",
+          employment_type: "Full-time",
+          experience_level: "Senior"
+        })
 
-      job3 = job_posting_fixture(company, %{
-        title: "UI/UX Designer",
-        location: "Remote",
-        employment_type: "Contract",
-        experience_level: "Mid-level",
-        remote_allowed: true
-      })
+      job3 =
+        job_posting_fixture(company, %{
+          title: "UI/UX Designer",
+          location: "Remote",
+          employment_type: "Contract",
+          experience_level: "Mid-level",
+          remote_allowed: true
+        })
 
       %{
         conn: conn,
@@ -69,7 +72,11 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
       assert html =~ job1.description
     end
 
-    test "displays company information in job listings", %{conn: conn, company: company, job1: job1} do
+    test "displays company information in job listings", %{
+      conn: conn,
+      company: company,
+      job1: job1
+    } do
       {:ok, _view, html} = live(conn, ~p"/jobs")
 
       assert html =~ job1.title

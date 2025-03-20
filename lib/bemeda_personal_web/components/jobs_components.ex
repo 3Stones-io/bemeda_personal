@@ -74,7 +74,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </.link>
         <.link
           href="#"
-          phx-click={JS.push("delete-job-posting", target: @target, value: %{id: @job.id}) |> JS.hide(to: "#job_postings-#{@job.id}")}
+          phx-click={
+            JS.push("delete-job-posting", target: @target, value: %{id: @job.id})
+            |> JS.hide(to: "#job_postings-#{@job.id}")
+          }
           data-confirm="Are you sure you want to delete this job posting? This action cannot be undone."
           class="w-8 h-8 bg-red-100 rounded-full text-red-600 hover:bg-red-200 flex items-center justify-center"
           title="Delete job"

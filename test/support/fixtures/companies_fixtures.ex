@@ -12,7 +12,7 @@ defmodule BemedaPersonal.CompaniesFixtures do
   @type user :: User.t()
 
   @spec company_fixture(user(), attrs()) :: company()
-  def company_fixture(user = %User{} = _user, attrs \\ %{}) do
+  def company_fixture(%User{} = user, attrs \\ %{}) do
     company_attrs =
       Enum.into(attrs, %{
         description: "some description",

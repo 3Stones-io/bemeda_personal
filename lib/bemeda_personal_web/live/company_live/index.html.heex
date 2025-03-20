@@ -79,26 +79,25 @@
 
     <div class="border-t border-gray-200">
       <div id="job-postings-container" phx-update="stream">
-        <div
-          id="no-jobs-message"
-          class="px-4 py-5 sm:px-6 text-center only:block hidden">
+        <div id="no-jobs-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
           <p class="text-gray-500">You haven't posted any jobs yet.</p>
           <p class="mt-2 text-sm text-gray-500">
             Get started by clicking the "Post New Job" button above.
           </p>
         </div>
 
-          <div
-            :for={{job_id, job} <- @streams.job_postings}
-            id={job_id}
-            class="odd:bg-gray-100 hover:bg-gray-200"
-            role="list"
-          >
-            <JobsComponents.job_posting_card
-              job={job}
-              id={"card-#{job_id}"}
-              show_company_name={false} />
-          </div>
+        <div
+          :for={{job_id, job} <- @streams.job_postings}
+          id={job_id}
+          class="odd:bg-gray-100 hover:bg-gray-200"
+          role="list"
+        >
+          <JobsComponents.job_posting_card
+            job={job}
+            id={"card-#{job_id}"}
+            show_company_name={false}
+          />
+        </div>
       </div>
     </div>
   </div>

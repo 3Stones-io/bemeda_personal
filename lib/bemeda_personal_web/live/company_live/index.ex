@@ -22,13 +22,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
       |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
       |> assign(:company, company)
       |> assign_job_postings(company)
-
-    socket =
-      if company do
-        assign(socket, :job_count, Jobs.company_jobs_count(company.id))
-      else
-        assign(socket, :job_count, 0)
-      end
+      |> assign_job_count(company)
 
     {:ok, socket}
   end
@@ -65,7 +59,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   def handle_info({event, job}, socket)
-    when event in [:job_posting_created, :job_posting_updated] do
+      when event in [:job_posting_created, :job_posting_updated] do
     {:noreply,
      socket
      |> assign(:job_count, Jobs.company_jobs_count(socket.assigns.company.id))
@@ -83,4 +77,9 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
     stream(socket, :job_postings, job_postings)
   end
+
+  defp assign_job_count(socket, nil), do: assign(socket, :job_count, 0)
+
+  defp assign_job_count(socket, company),
+    do: assign(socket, :job_count, Jobs.company_jobs_count(company.id))
 end

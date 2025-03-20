@@ -12,7 +12,7 @@ defmodule BemedaPersonal.JobsFixtures do
   @type job_posting :: Jobs.JobPosting.t()
 
   @spec job_posting_fixture(company(), attrs()) :: job_posting()
-  def job_posting_fixture(company = %Companies.Company{}, attrs \\ %{}) do
+  def job_posting_fixture(%Companies.Company{} = company, attrs \\ %{}) do
     job_posting_attrs =
       Enum.into(attrs, %{
         currency: "USD",

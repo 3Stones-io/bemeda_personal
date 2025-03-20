@@ -10,17 +10,19 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
     setup %{conn: conn} do
       user = user_fixture()
       company = company_fixture(user)
-      job = job_posting_fixture(company, %{
-        title: "Software Engineer",
-        description: "Build amazing software products",
-        location: "New York",
-        employment_type: "Full-time",
-        experience_level: "Mid-level",
-        remote_allowed: true,
-        salary_min: 80000,
-        salary_max: 120000,
-        currency: "USD"
-      })
+
+      job =
+        job_posting_fixture(company, %{
+          title: "Senior Software Engineer",
+          description: "Build amazing software products",
+          location: "New York",
+          employment_type: "Full-time",
+          experience_level: "Senior",
+          remote_allowed: true,
+          salary_min: 70_000,
+          salary_max: 80_000,
+          currency: "USD"
+        })
 
       %{
         conn: conn,
@@ -84,19 +86,23 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
       {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
 
       # Check for the salary information in the format it's actually displayed
-      assert html =~ "80000 - 120000 USD"
+      assert html =~ "70000 - 80000 USD"
     end
 
     test "view company profile button exists", %{conn: conn, job: job} do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}")
 
-      assert view |> element("a", "View Company Profile") |> has_element?()
+      assert view
+             |> element("a", "View Company Profile")
+             |> has_element?()
     end
 
     test "view all jobs button exists", %{conn: conn, job: job} do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}")
 
-      assert view |> element("a", "View All Jobs") |> has_element?()
+      assert view
+             |> element("a", "View All Jobs")
+             |> has_element?()
     end
   end
 end
