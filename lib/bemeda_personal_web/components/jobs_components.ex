@@ -1,15 +1,17 @@
 defmodule BemedaPersonalWeb.JobsComponents do
+  @moduledoc false
   use BemedaPersonalWeb, :html
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
 
-  attr :job, :any, required: true
-  attr :id, :string, required: true
-  attr :show_company_name, :boolean, default: false
-  attr :show_actions, :boolean, default: false
   attr :company_id, :any, default: nil
+  attr :id, :string, required: true
+  attr :job, :any, required: true
   attr :return_to, :string, default: nil
+  attr :show_actions, :boolean, default: false
+  attr :show_company_name, :boolean, default: false
+  attr :target, :string, default: nil
 
   @spec job_posting_card(assigns()) :: output()
   def job_posting_card(assigns) do
@@ -62,9 +64,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </p>
       </div>
 
-      <div :if={@show_actions && @company_id} class="flex absolute top-4 right-4 space-x-4">
+      <div :if={@show_actions} class="flex absolute top-4 right-4 space-x-4">
         <.link
-          patch={~p"/companies/#{@company_id}/jobs/#{@job.id}/edit"}
+          patch={~p"/companies/#{@job.company_id}/jobs/#{@job.id}/edit"}
           class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center"
           title="Edit job"
         >
@@ -72,8 +74,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </.link>
         <.link
           href="#"
-          phx-click="delete"
-          phx-value-id={@job.id}
+          phx-click={JS.push("delete-job-posting", target: @target, value: %{id: @job.id}) |> JS.hide(to: "#job_postings-#{@job.id}")}
           data-confirm="Are you sure you want to delete this job posting? This action cannot be undone."
           class="w-8 h-8 bg-red-100 rounded-full text-red-600 hover:bg-red-200 flex items-center justify-center"
           title="Delete job"
@@ -85,9 +86,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  # Job details section component
   attr :job, :any, required: true
 
+  @spec job_details(assigns()) :: output()
   def job_details(assigns) do
     ~H"""
     <dl class="grid grid-cols-1 gap-x-4 gap-y-6">
@@ -141,10 +142,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  # Company details card component
   attr :company, :any, required: true
   attr :show_links, :boolean, default: true
 
+  @spec company_details_card(assigns()) :: output()
   def company_details_card(assigns) do
     ~H"""
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -208,10 +209,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  # Company header component
   attr :company, :any, required: true
   attr :show_website_button, :boolean, default: true
 
+  @spec company_header(assigns()) :: output()
   def company_header(assigns) do
     ~H"""
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -236,10 +237,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  # Company breadcrumb component
-  attr :company, :any, required: true
   attr :active_page, :string, default: nil
+  attr :company, :any, required: true
 
+  @spec company_breadcrumb(assigns()) :: output()
   def company_breadcrumb(assigns) do
     ~H"""
     <nav class="flex mb-4" aria-label="Breadcrumb">
@@ -258,12 +259,12 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  # Job listing section component
-  attr :title, :string, default: "Open Positions"
-  attr :empty_text, :string, default: "No open positions at this time."
   attr :empty_subtext, :string, default: "Check back later for new opportunities."
+  attr :empty_text, :string, default: "No open positions at this time."
   attr :streams_job_postings, :any, required: true
+  attr :title, :string, default: "Open Positions"
 
+  @spec job_listing_section(assigns()) :: output()
   def job_listing_section(assigns) do
     ~H"""
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -293,49 +294,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  # Job listings table component (for company dashboard)
-  attr :streams_job_postings, :any, required: true
-  attr :allow_actions, :boolean, default: true
-  attr :company_id, :any, default: nil
-
-  def job_listings_table(assigns) do
-    ~H"""
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg w-full">
-      <h2 class="text-xl font-semibold text-gray-900 px-4 py-5 sm:px-6">Job Postings</h2>
-      <div class="border-t border-gray-200">
-        <div id="job_postings" phx-update="stream" class="divide-y divide-gray-200">
-          <div id="job_postings-empty" class="hidden only:block px-4 py-5 sm:px-6 text-center">
-            <p class="text-gray-500">You haven't posted any jobs yet.</p>
-            <p class="mt-2 text-sm text-gray-500">
-              Get started by clicking the "Post New Job" button above.
-            </p>
-          </div>
-
-          <ul>
-            <li
-              :for={{dom_id, job} <- @streams_job_postings}
-              id={dom_id}
-              class="odd:bg-gray-100 rounded-sm hover:bg-gray-200"
-            >
-              <.job_posting_card
-                job={job}
-                id={dom_id}
-                show_actions={@allow_actions}
-                company_id={@company_id}
-              />
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    """
-  end
-
-  # Job details header component with back button
-  attr :job, :any, required: true
   attr :back_link, :string, default: nil
   attr :back_text, :string, default: "Back to Jobs"
+  attr :job, :any, required: true
 
+  @spec job_detail_header(assigns()) :: output()
   def job_detail_header(assigns) do
     assigns = assign_new(assigns, :back_link, fn -> ~p"/jobs" end)
 
@@ -368,6 +331,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :experience_levels, :list,
     default: ["Entry-level", "Mid-level", "Senior", "Lead", "Executive"]
 
+  attr :target, :string
+
+  @spec job_filters(assigns()) :: output()
   def job_filters(assigns) do
     ~H"""
     <div class="mb-8">
@@ -384,7 +350,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       </div>
 
       <div class="overflow-hidden transition-all duration-300 hidden" id="job_filters">
-        <.form :let={f} for={%{}} as={:filters} phx-submit="filter_jobs">
+        <.form :let={f} for={%{}} as={:filters} phx-submit="filter_jobs" phx-target={@target}>
           <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
               <div>

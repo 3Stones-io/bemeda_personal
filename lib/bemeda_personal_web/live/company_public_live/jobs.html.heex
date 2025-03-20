@@ -21,14 +21,12 @@
     </div>
   </div>
 
-  <JobsComponents.job_filters />
-
-  <.jobs_list
+  <.live_component
+    module={JobListComponent}
     id="job-post-list"
     filters={@filters}
-    end_of_timeline?={@end_of_timeline?}
     empty_state_message="Please check back later for new opportunities."
-    job_postings={@streams.job_postings}
     show_company_name={false}
+    show_actions={false}
   />
 </div>

@@ -112,13 +112,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp save_job_posting(socket, :new, job_params) do
-    # Create a new job posting
     case Jobs.create_job_posting(socket.assigns.company, job_params) do
       {:ok, _job_posting} ->
         {:noreply,
          socket
          |> put_flash(:info, "Job posted successfully.")
-         |> push_navigate(to: socket.assigns.return_to)}
+         |> push_patch(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
@@ -131,7 +130,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Job updated successfully.")
-         |> push_navigate(to: socket.assigns.return_to)}
+         |> push_patch(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}

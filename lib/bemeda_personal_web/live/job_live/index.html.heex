@@ -4,18 +4,16 @@
     Find your next career opportunity
   </p>
 
-  <JobsComponents.job_filters />
-
   <div class="bg-white shadow overflow-hidden sm:rounded-lg">
     <h2 class="px-4 py-5 sm:px-6 text-xl font-semibold text-gray-900">Available Positions</h2>
 
-    <.jobs_list
+    <.live_component
+      module={JobListComponent}
       id="job-post-list"
       filters={@filters}
-      end_of_timeline?={@end_of_timeline?}
       empty_state_message="Please check back later for new opportunities."
-      job_postings={@streams.job_postings}
       show_company_name={true}
+      show_actions={false}
     />
   </div>
 </section>

@@ -211,8 +211,6 @@ defmodule BemedaPersonal.Jobs do
   """
   @spec delete_job_posting(job_posting()) :: {:ok, job_posting()} | {:error, changeset()}
   def delete_job_posting(job_posting) do
-    # Preload company to get the company_id for scoping the topic
-    job_posting = Repo.preload(job_posting, :company)
     result = Repo.delete(job_posting)
 
     case result do

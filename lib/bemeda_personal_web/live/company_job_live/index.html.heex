@@ -1,11 +1,11 @@
-<div class="mb-8 flex justify-between items-center">
+<section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
   <div>
     <h1 class="text-3xl font-bold text-gray-900">Jobs for {@company.name}</h1>
     <p class="mt-2 text-sm text-gray-500">
       Manage your job postings
     </p>
   </div>
-  <div class="flex space-x-3">
+  <div class="flex space-x-3 justify-end mb-8">
     <.link
       navigate={~p"/companies"}
       class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -19,15 +19,16 @@
       Post New Job
     </.link>
   </div>
-</div>
 
-<JobsComponents.job_filters />
-
-<JobsComponents.job_listings_table
-  streams_job_postings={@streams.job_postings}
-  company_id={@company.id}
-  allow_actions={true}
-/>
+  <.live_component
+    module={JobListComponent}
+    id="job-post-list"
+    filters={@filters}
+    empty_state_message="Please check back later for new opportunities."
+    show_company_name={true}
+    show_actions={true}
+    />
+</section>
 
 <.modal
   :if={@live_action in [:new, :edit]}
