@@ -5,8 +5,8 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   use BemedaPersonalWeb, :verified_routes
 
-  import Plug.Conn
   import Phoenix.Controller
+  import Plug.Conn
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Companies

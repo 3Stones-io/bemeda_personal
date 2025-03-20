@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.UserLoginLiveTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
-  import Phoenix.LiveViewTest
   import BemedaPersonal.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do

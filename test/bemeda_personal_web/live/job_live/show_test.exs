@@ -1,10 +1,10 @@
 defmodule BemedaPersonalWeb.JobLive.ShowTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
-  import Phoenix.LiveViewTest
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
+  import Phoenix.LiveViewTest
 
   describe "Job Show" do
     setup %{conn: conn} do

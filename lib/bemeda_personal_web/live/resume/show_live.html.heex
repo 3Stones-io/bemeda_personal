@@ -1,0 +1,127 @@
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+  <div :if={@resume.is_public} class="mb-8 p-3 bg-green-50 border border-green-200 rounded-md">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <.icon name="hero-information-circle" class="h-5 w-5 text-green-500 mr-2" />
+        <span class="text-green-700">Your resume is public</span>
+      </div>
+      <div class="flex items-center">
+        <span class="text-sm text-gray-600 mr-2">Share URL:</span>
+        <p
+          id="share-url"
+          class="text-sm bg-white border border-gray-300 rounded px-2 py-1 w-64 overflow-hidden text-ellipsis whitespace-nowrap m-0"
+        >
+          {url(~p"/resumes/#{@resume.id}")}
+        </p>
+        <button
+          id="copy-button"
+          class="ml-2 text-blue-500 hover:text-blue-700"
+          phx-hook="CopyToClipboard"
+          data-clipboard-text={url(~p"/resumes/#{@resume.id}")}
+          title="Copy to clipboard"
+        >
+          <span id="copy-icon">
+            <.icon name="hero-clipboard-document" class="h-5 w-5" />
+          </span>
+        </button>
+        <span id="copy-confirm-message" class="hidden ml-2 text-green-500">
+          <.icon name="hero-check" class="h-5 w-5" />
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <.resume_profile
+    resume={@resume}
+    title="My Resume"
+    email_fallback={@current_user.email}
+    headline_default="Add a professional headline"
+    summary_default="Add a summary of your professional experience and skills"
+  >
+    <:actions>
+      <.link
+        :if={@resume.is_public}
+        href={~p"/resumes/#{@resume.id}"}
+        target="_blank"
+        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center"
+      >
+        <.icon name="hero-eye" class="h-5 w-5 mr-2" /> View Public
+      </.link>
+      <.link
+        navigate={~p"/resume/edit"}
+        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
+      >
+        <.icon name="hero-pencil-square" class="h-5 w-5 mr-2" /> Edit
+      </.link>
+    </:actions>
+  </.resume_profile>
+  
+<!-- Education Section -->
+  <.resume_section
+    id="educations"
+    title="Education"
+    add_path={~p"/resume/education/new"}
+    items={@streams.educations}
+    empty_state_message="No education entries yet. Click 'Add' to add your educational background."
+    can_update_resume={true}
+  >
+    <:resume_item :let={education}>
+      <.resume_item
+        id={"education-#{education.id}"}
+        item={education}
+        title={education.institution}
+        subtitle={
+          if(education.field_of_study,
+            do: "#{education.degree} in #{education.field_of_study}",
+            else: education.degree
+          )
+        }
+        edit_path={~p"/resume/education/#{education.id}/edit"}
+        delete_event="delete-education"
+        can_update_resume={true}
+      />
+    </:resume_item>
+  </.resume_section>
+  
+<!-- Work Experience Section -->
+  <.resume_section
+    id="work_experiences"
+    title="Work Experience"
+    add_path={~p"/resume/work-experience/new"}
+    items={@streams.work_experiences}
+    empty_state_message="No work experience entries yet. Click 'Add' to add your work history."
+    can_update_resume={true}
+  >
+    <:resume_item :let={work_experience}>
+      <.resume_item
+        can_update_resume={true}
+        delete_event="delete-work-experience"
+        edit_path={~p"/resume/work-experience/#{work_experience.id}/edit"}
+        extra_info={work_experience.location}
+        id={"work-experience-#{work_experience.id}"}
+        item={work_experience}
+        subtitle={work_experience.company_name}
+        title={work_experience.title}
+      />
+    </:resume_item>
+  </.resume_section>
+  
+<!-- Form Components -->
+  <.modal
+    :if={@form_component}
+    id="resume-form-modal"
+    show={@form_component}
+    on_cancel={JS.patch(~p"/resume")}
+  >
+    <.live_component
+      module={@form_component}
+      id={@component_id}
+      education={@education}
+      work_experience={@work_experience}
+      resume={@resume}
+      return_to={~p"/resume"}
+      action={@live_action}
+      title={@page_title}
+    />
+  </.modal>
+</div>

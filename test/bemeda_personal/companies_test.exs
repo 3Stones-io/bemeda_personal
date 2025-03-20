@@ -1,8 +1,8 @@
 defmodule BemedaPersonal.CompaniesTest do
   use BemedaPersonal.DataCase, async: true
 
-  import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.AccountsFixtures
+  import BemedaPersonal.CompaniesFixtures
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Companies.Company

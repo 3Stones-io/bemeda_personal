@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.SharedHelpers do
   @moduledoc false
 
-  import Phoenix.LiveView
   import Phoenix.Component, only: [assign: 3]
+  import Phoenix.LiveView
 
   alias BemedaPersonalWeb.JobListComponent
 

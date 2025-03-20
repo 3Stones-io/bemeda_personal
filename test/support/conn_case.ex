@@ -30,9 +30,9 @@ defmodule BemedaPersonalWeb.ConnCase do
       use BemedaPersonalWeb, :verified_routes
 
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
       import BemedaPersonalWeb.ConnCase
+      import Phoenix.ConnTest
+      import Plug.Conn
     end
   end
 
