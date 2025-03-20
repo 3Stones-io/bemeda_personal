@@ -17,11 +17,20 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_posting:company:#{company.id}")
     end
 
-    {:ok,
-     socket
-     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
-     |> assign(:company, company)
-     |> assign_job_postings(company)}
+    socket =
+      socket
+      |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
+      |> assign(:company, company)
+      |> assign_job_postings(company)
+
+    socket =
+      if company do
+        assign(socket, :job_count, Jobs.company_jobs_count(company.id))
+      else
+        assign(socket, :job_count, 0)
+      end
+
+    {:ok, socket}
   end
 
   @impl Phoenix.LiveView
@@ -55,8 +64,12 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
      |> assign_job_postings(company)}
   end
 
-  def handle_info({:job_posting_updated, job}, socket) do
-    {:noreply, stream_insert(socket, :job_postings, job)}
+  def handle_info({event, job}, socket)
+    when event in [:job_posting_created, :job_posting_updated] do
+    {:noreply,
+     socket
+     |> assign(:job_count, Jobs.company_jobs_count(socket.assigns.company.id))
+     |> stream_insert(:job_postings, job)}
   end
 
   def handle_info({:job_posting_deleted, job}, socket) do
@@ -66,7 +79,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])
 
   defp assign_job_postings(socket, company) do
-    job_postings = Jobs.list_job_postings(%{company_id: company.id})
+    job_postings = Jobs.list_job_postings(%{company_id: company.id}, 5)
 
     stream(socket, :job_postings, job_postings)
   end

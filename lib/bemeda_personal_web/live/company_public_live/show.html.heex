@@ -63,9 +63,11 @@
   </div>
 
   <div class="about-company py-4">
-    <div class="description">
+    <div class="description py-4">
       <h2 class="text-2xl font-semibold text-gray-900 mb-3">About {@company.name}</h2>
-      <p :if={@company.description}>{@company.description}</p>
+      <div :if={@company.description} class="md-to-html">
+        {SharedHelpers.to_html(@company.description)}
+      </div>
       <p :if={!@company.description} class="text-gray-500">
         No company description available.
       </p>

@@ -4,7 +4,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.JobsComponents
-
+  alias BemedaPersonalWeb.SharedHelpers
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     {:ok,

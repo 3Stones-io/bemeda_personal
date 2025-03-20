@@ -32,6 +32,10 @@
           <dd class="mt-1 text-sm text-gray-900">{@company.size || "Not specified"}</dd>
         </div>
         <div>
+          <dt class="text-sm font-medium text-gray-500">Open Positions</dt>
+          <dd class="mt-1 text-sm text-gray-900">{@job_count}</dd>
+        </div>
+        <div>
           <dt class="text-sm font-medium text-gray-500">Website</dt>
           <dd class="mt-1 text-sm text-gray-900">
             <%= if @company.website_url do %>
@@ -56,32 +60,45 @@
     class="bg-white shadow overflow-hidden sm:rounded-lg"
   >
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">Job Postings</h2>
-      <.link
-        navigate={~p"/companies/#{@company.id}/jobs/new"}
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Post New Job
-      </.link>
+      <h2 class="text-xl font-semibold text-gray-900">Recent Jobs</h2>
+      <div>
+        <.link
+          navigate={~p"/companies/#{@company.id}/jobs"}
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          View All Jobs
+        </.link>
+        <.link
+          navigate={~p"/companies/#{@company.id}/jobs/new"}
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Post New Job
+        </.link>
+      </div>
     </div>
+
     <div class="border-t border-gray-200">
       <div id="job-postings-container" phx-update="stream">
-        <div class="px-4 py-5 sm:px-6 text-center only:block hidden">
+        <div
+          id="no-jobs-message"
+          class="px-4 py-5 sm:px-6 text-center only:block hidden">
           <p class="text-gray-500">You haven't posted any jobs yet.</p>
           <p class="mt-2 text-sm text-gray-500">
             Get started by clicking the "Post New Job" button above.
           </p>
         </div>
 
-        <ul role="list" class="divide-y divide-gray-200">
-          <li
+          <div
             :for={{job_id, job} <- @streams.job_postings}
             id={job_id}
             class="odd:bg-gray-100 hover:bg-gray-200"
+            role="list"
           >
-            <JobsComponents.job_posting_card job={job} id={job_id} show_company_name={false} />
-          </li>
-        </ul>
+            <JobsComponents.job_posting_card
+              job={job}
+              id={"card-#{job_id}"}
+              show_company_name={false} />
+          </div>
       </div>
     </div>
   </div>

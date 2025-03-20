@@ -4,6 +4,8 @@ defmodule BemedaPersonalWeb.JobLive.Show do
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.JobsComponents
 
+  alias BemedaPersonalWeb.SharedHelpers
+
   @impl Phoenix.LiveView
   def handle_params(%{"id" => id}, _url, socket) do
     job_posting = Jobs.get_job_posting!(id)

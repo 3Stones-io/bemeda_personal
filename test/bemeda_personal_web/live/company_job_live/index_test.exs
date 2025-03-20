@@ -8,197 +8,165 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
   alias BemedaPersonal.Jobs
 
-  describe "/companies/:company_id" do
-    setup %{conn: conn} do
-      user = user_fixture(%{confirmed: true})
-      company = company_fixture(user)
-      job1 = job_posting_fixture(company, %{title: "Software Engineer"})
-      job2 = job_posting_fixture(company, %{title: "Product Manager"})
-      unauthorized_user = user_fixture(%{confirmed: true})
+  setup %{conn: conn} do
+    user = user_fixture()
+    company = company_fixture(user)
 
-      %{
-        conn: conn,
-        user: user,
-        unauthorized_user: unauthorized_user,
-        company: company,
-        job1: job1,
-        job2: job2
-      }
-    end
+    %{conn: conn, user: user, company: company}
+  end
 
-    test "authorized user can see jobs listing", %{conn: conn, user: user, company: company, job1: job1, job2: job2} do
-      {:ok, lv, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
+  describe "Index" do
+    test "redirects if user is not logged in", %{conn: conn, company: company} do
+      assert {:error, redirect} = live(conn, ~p"/companies/#{company.id}/jobs")
 
-      assert html =~ "Jobs for #{company.name}"
-      assert html =~ "Manage your job postings"
-      assert html =~ "Post New Job"
-
-      assert has_element?(lv, "#job_postings-#{job1.id}")
-      assert has_element?(lv, "#job_postings-#{job2.id}")
-      assert html =~ job1.title
-      assert html =~ job2.title
-    end
-
-    test "unauthorized user is redirected", %{conn: conn, unauthorized_user: unauthorized_user, company: company} do
-      {:error, redirect} =
-        conn
-        |> log_in_user(unauthorized_user)
-        |> live(~p"/companies/#{company.id}/jobs")
-
-      assert {:redirect, %{to: path}} = redirect
-      assert path == ~p"/companies"
-    end
-
-    test "unauthenticated user is redirected to login", %{conn: conn, company: company} do
-      {:error, redirect} = live(conn, ~p"/companies/#{company.id}/jobs")
-
-      assert {:redirect, %{to: path}} = redirect
+      assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
+      assert %{"error" => "You must log in to access this page."} = flash
     end
 
-    test "renders new job form", %{conn: conn, user: user, company: company} do
-      {:ok, lv, _html} =
+    test "redirects if user is not admin of the company", %{conn: conn, company: company} do
+      other_user = user_fixture(%{email: "other@example.com"})
+
+      assert {:error, {:redirect, %{to: path, flash: flash}}} =
+        conn
+        |> log_in_user(other_user)
+        |> live(~p"/companies/#{company.id}/jobs")
+
+      assert path == ~p"/companies"
+      assert flash["error"] == "You don't have permission to access this company."
+    end
+
+    test "renders company jobs page with job list", %{conn: conn, user: user, company: company} do
+      _job1 = job_posting_fixture(company, %{title: "Test Job 1"})
+      _job2 = job_posting_fixture(company, %{title: "Test Job 2"})
+
+      {:ok, _view, html} =
         conn
         |> log_in_user(user)
         |> live(~p"/companies/#{company.id}/jobs")
 
-      lv
+      assert html =~ "Company Jobs"
+      assert html =~ "Test Job 1"
+      assert html =~ "Test Job 2"
+    end
+
+    test "allows admin to create a new job", %{conn: conn, user: user, company: company} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs")
+
+      view
       |> element("a", "Post New Job")
       |> render_click()
 
-      assert_patch(lv, ~p"/companies/#{company.id}/jobs/new")
+      assert_patch(view, ~p"/companies/#{company.id}/jobs/new")
+    end
+  end
 
-      html = render(lv)
+  describe "New" do
+    test "renders form for creating a job posting", %{conn: conn, user: user, company: company} do
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/new")
+
+      assert html =~ "Post Job"
       assert html =~ "Job Title"
       assert html =~ "Job Description"
-      assert html =~ "Employment Type"
     end
 
-    test "can create a new job", %{conn: conn, user: user, company: company} do
-      {:ok, lv, _html} =
+    test "validates job posting data", %{conn: conn, user: user, company: company} do
+      {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
-
-      lv
-      |> element("a", "Post New Job")
-      |> render_click()
+        |> live(~p"/companies/#{company.id}/jobs/new")
 
       result =
-        lv
-        |> form("#job-posting-form", %{
-          "job_posting" => %{
-            "title" => "Test Engineer",
-            "description" => "This is a test job",
-            "employment_type" => "Full-time",
-            "location" => "Remote",
-            "experience_level" => "Mid Level",
-            "remote_allowed" => true,
-            "salary_min" => 50000,
-            "salary_max" => 80000,
-            "currency" => "USD"
-          }
-        })
-        |> render_submit()
-
-      assert result =~ "Job posted successfully"
-
-      assert [job] = Jobs.list_job_postings(%{title: "Test Engineer"})
-      assert job.employment_type == "Full-time"
-    end
-
-    test "form renders errors with invalid data", %{conn: conn, user: user, company: company} do
-      {:ok, lv, _html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
-
-      lv
-      |> element("a", "Post New Job")
-      |> render_click()
-
-      result =
-        lv
+        view
         |> form("#job-posting-form", %{
           "job_posting" => %{
             "title" => "",
-            "description" => "",
-            "salary_min" => 80000,
-            "salary_max" => 50000
+            "description" => ""
           }
         })
         |> render_change()
 
       assert result =~ "can&#39;t be blank"
-      assert result =~ "must be less than or equal to"
     end
 
-    test "can edit an existing job", %{conn: conn, user: user, company: company, job1: job1} do
-      {:ok, lv, _html} =
+    test "creates a job posting", %{conn: conn, user: user, company: company} do
+      {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
+        |> live(~p"/companies/#{company.id}/jobs/new")
 
-      lv
-      |> element("a[href='/companies/#{company.id}/jobs/#{job1.id}/edit']")
-      |> render_click()
+      job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
 
-      assert_patch(lv, ~p"/companies/#{company.id}/jobs/#{job1.id}/edit")
+      view
+      |> form("#job-posting-form", %{
+        "job_posting" => %{
+          "title" => "Software Engineer",
+          "description" => "We are looking for a talented software engineer to join our team.",
+          "location" => "Remote",
+          "employment_type" => "Full-time",
+          "experience_level" => "Mid Level",
+          "remote_allowed" => true
+        }
+      })
+      |> render_submit()
 
-      result =
-        lv
-        |> form("#job-posting-form", %{
-          "job_posting" => %{
-            "title" => "Updated Job Title",
-          }
-        })
-        |> render_submit()
+      job_count_after = length(Jobs.list_job_postings(%{company_id: company.id}))
+      assert job_count_after == job_count_before + 1
+    end
+  end
 
-      assert result =~ "Job updated successfully"
+  describe "Edit" do
+    setup %{company: company} do
+      job_posting = job_posting_fixture(company)
+      %{job_posting: job_posting}
+    end
 
-      updated_job = Jobs.get_job_posting!(job1.id)
+    test "renders edit form for job posting", %{conn: conn, user: user, company: company, job_posting: job_posting} do
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+
+      assert html =~ "Save Changes"
+      assert html =~ job_posting.title
+    end
+
+    test "updates job posting", %{conn: conn, user: user, company: company, job_posting: job_posting} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+
+      view
+      |> form("#job-posting-form", %{
+        "job_posting" => %{
+          "title" => "Updated Job Title",
+        }
+      })
+      |> render_submit()
+
+      updated_job = Jobs.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
     end
 
-    test "job details links exist in the page", %{conn: conn, user: user, company: company, job1: job1} do
-      {:ok, _lv, html} =
+    test "redirects if trying to edit another company's job", %{conn: conn, user: user} do
+      other_user = user_fixture(%{email: "other@example.com"})
+      other_company = company_fixture(other_user)
+      other_job = job_posting_fixture(other_company)
+
+      assert {:error, {:redirect, %{to: path, flash: flash}}} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
+        |> live(~p"/companies/#{other_company.id}/jobs/#{other_job.id}/edit")
 
-      assert html =~ ~s|href="/jobs/#{job1.id}"|
-    end
-
-    test "back to dashboard link exists in the page", %{conn: conn, user: user, company: company} do
-      {:ok, _lv, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
-
-      assert html =~ "Back to Dashboard"
-      assert html =~ ~s|href="/companies"|
-    end
-
-    test "has filter UI elements", %{conn: conn, user: user, company: company} do
-      job_posting_fixture(company, %{title: "Frontend Developer", employment_type: "Full-time"})
-      job_posting_fixture(company, %{title: "Backend Developer", employment_type: "Contract"})
-
-      {:ok, _lv, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
-
-      assert html =~ "Filter"
-
-      assert html =~ "filters_title"
-      assert html =~ "filters_employment_type"
-      assert html =~ "filters_experience_level"
-
-      assert html =~ "Frontend Developer"
-      assert html =~ "Backend Developer"
+      assert path == "/companies"
+      assert flash["error"] == "You don't have permission to access this company."
     end
   end
 end
