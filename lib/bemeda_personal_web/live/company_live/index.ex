@@ -51,7 +51,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({event, company}, socket) when event in [:company_created, :company_updated] do
+  def handle_info({:company_updated, company}, socket) do
     {:noreply,
      socket
      |> assign(:company, company)
