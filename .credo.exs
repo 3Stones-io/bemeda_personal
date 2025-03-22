@@ -29,7 +29,8 @@
           "apps/*/lib/",
           "apps/*/src/",
           "apps/*/test/",
-          "apps/*/web/"
+          "apps/*/web/",
+          "mix.exs"
         ],
         excluded: [~r"/_build/", ~r"/deps/", ~r"/node_modules/"]
       },
@@ -105,6 +106,7 @@
           ## Readability Checks
           #
           {Credo.Check.Readability.AliasOrder, []},
+          {Credo.Check.Readability.DepsOrder, []},
           {Credo.Check.Readability.ImportOrder, []},
           {Credo.Check.Readability.TypespecOrder, []},
           {Credo.Check.Readability.FunctionNames, []},
