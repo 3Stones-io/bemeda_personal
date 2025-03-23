@@ -31,6 +31,13 @@ defmodule BemedaPersonalWeb.Router do
     live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
   end
 
+  # Mux webhook endpoint
+  scope "/", BemedaPersonalWeb do
+    pipe_through :api
+
+    post "/webhooks/mux", MuxWebhookController, :handle
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", BemedaPersonalWeb do
   #   pipe_through :api

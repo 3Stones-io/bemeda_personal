@@ -65,10 +65,12 @@ defmodule BemedaPersonal.MixProject do
   defp app_deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:mdex, "~> 0.4.0"},
       {:multipart, "~> 0.4"},
+      {:mux, "~> 3.2"},
       {:number, "~> 1.0"},
       {:plug, "~> 1.14"},
-      {:mdex, "~> 0.4.0"}
+      {:req, "~> 0.4"}
     ]
   end
 
