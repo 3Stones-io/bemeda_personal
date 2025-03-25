@@ -1,0 +1,47 @@
+<section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+  <div>
+    <h1 class="text-3xl font-bold text-gray-900">Jobs for {@company.name}</h1>
+    <p class="mt-2 text-sm text-gray-500">
+      Manage your job postings
+    </p>
+  </div>
+  <div class="flex space-x-3 justify-end mb-8">
+    <.link
+      navigate={~p"/companies"}
+      class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+    >
+      Back to Dashboard
+    </.link>
+    <.link
+      patch={~p"/companies/#{@company.id}/jobs/new"}
+      class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+    >
+      Post New Job
+    </.link>
+  </div>
+
+  <.live_component
+    module={JobListComponent}
+    empty_state_message="Please check back later for new opportunities."
+    filters={@filters}
+    id="job-post-list"
+    show_actions={true}
+    show_company_name={true}
+  />
+</section>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="job-modal"
+  show
+  on_cancel={JS.patch(~p"/companies/#{@company.id}/jobs")}
+>
+  <.live_component
+    module={BemedaPersonalWeb.CompanyJobLive.FormComponent}
+    action={@live_action}
+    company={@company}
+    id={if @live_action == :edit, do: @job_posting.id, else: :new}
+    job_posting={@job_posting}
+    return_to={~p"/companies/#{@company.id}/jobs"}
+  />
+</.modal>

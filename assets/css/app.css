@@ -3,9 +3,89 @@
 @import 'tailwindcss/utilities';
 @import '../node_modules/flatpickr/dist/flatpickr.css';
 
-/* This file is for your main application CSS */
+.company-info {
+  @apply hidden;
+}
 
-/* Truncate text styles */
+.company-profile-grid > * {
+  grid-column: 1 / -1;
+}
+
+/* Job Description Markdown Styles */
+.md-to-html h1 {
+  @apply text-2xl font-bold mb-4 mt-6 text-gray-900;
+}
+
+.md-to-html h2 {
+  @apply text-xl font-semibold mb-3 mt-5 text-gray-800;
+}
+
+.md-to-html p {
+  @apply mb-4 text-gray-700 leading-relaxed;
+}
+
+.md-to-html ul {
+  @apply list-disc pl-6 mb-4 text-gray-700;
+}
+
+.md-to-html ul li {
+  @apply mb-2;
+}
+
+.md-to-html ol {
+  @apply list-decimal pl-6 mb-4 text-gray-700;
+}
+
+.md-to-html ol li {
+  @apply mb-2;
+}
+
+.md-to-html a {
+  @apply text-blue-600 hover:text-blue-800 hover:underline;
+}
+
+.md-to-html strong,
+.md-to-html b {
+  @apply font-semibold text-gray-900;
+}
+
+.md-to-html em,
+.md-to-html i {
+  @apply italic;
+}
+
+@media (min-width: 800px) {
+  .company-info {
+    @apply block;
+  }
+
+  .company-stats {
+    @apply hidden;
+  }
+
+  .mobile-location,
+  .mobile-size {
+    @apply hidden;
+  }
+
+  .about-company {
+    display: grid;
+    grid-template-columns: 70% 27%;
+    gap: 3%;
+    grid-template-areas:
+      'description sidebar'
+      'description ...';
+  }
+
+  .about-company .description {
+    grid-area: description;
+  }
+
+  .about-company .sidebar {
+    grid-area: sidebar;
+  }
+}
+
 .truncate-text a.read-more-link,
 .truncate-text a.read-less-link {
   display: inline-block;

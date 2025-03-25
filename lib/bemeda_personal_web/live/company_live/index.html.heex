@@ -1,0 +1,140 @@
+<section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Company Dashboard</h1>
+  </div>
+
+  <div
+    :if={@company && @live_action != :new}
+    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
+  >
+    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900">{@company.name}</h2>
+        <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
+      </div>
+      <div>
+        <.link
+          patch={~p"/companies/#{@company}/edit"}
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Edit Company Profile
+        </.link>
+      </div>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+      <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Location</dt>
+          <dd class="mt-1 text-sm text-gray-900">{@company.location || "Not specified"}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Company Size</dt>
+          <dd class="mt-1 text-sm text-gray-900">{@company.size || "Not specified"}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Open Positions</dt>
+          <dd class="mt-1 text-sm text-gray-900">{@job_count}</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Website</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            <%= if @company.website_url do %>
+              <a
+                href={@company.website_url}
+                target="_blank"
+                class="text-indigo-600 hover:text-indigo-900"
+              >
+                {@company.website_url}
+              </a>
+            <% else %>
+              Not specified
+            <% end %>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <div
+    :if={@company && @live_action != :new}
+    class="bg-white shadow overflow-hidden sm:rounded-lg"
+  >
+    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-gray-900">Recent Jobs</h2>
+      <div>
+        <.link
+          navigate={~p"/companies/#{@company.id}/jobs"}
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          View All Jobs
+        </.link>
+        <.link
+          navigate={~p"/companies/#{@company.id}/jobs/new"}
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Post New Job
+        </.link>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200">
+      <div id="job-postings-container" phx-update="stream">
+        <div id="no-jobs-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
+          <p class="text-gray-500">You haven't posted any jobs yet.</p>
+          <p class="mt-2 text-sm text-gray-500">
+            Get started by clicking the "Post New Job" button above.
+          </p>
+        </div>
+
+        <div
+          :for={{job_id, job} <- @streams.job_postings}
+          id={job_id}
+          class="odd:bg-gray-100 hover:bg-gray-200"
+          role="list"
+        >
+          <JobsComponents.job_posting_card
+            id={"card-#{job_id}"}
+            job={job}
+            show_company_name={false}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div :if={!@company} class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6">
+      <h2 class="text-xl font-semibold text-gray-900">Create Your Company Profile</h2>
+      <p class="mt-1 text-sm text-gray-500">
+        You need to create a company profile before you can post jobs.
+      </p>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:px-6 text-center">
+      <p class="text-gray-500 mb-4">
+        Set up your company profile to start posting jobs and connecting with potential candidates.
+      </p>
+      <.link
+        patch={~p"/companies/new"}
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Create Company Profile
+      </.link>
+    </div>
+  </div>
+</section>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="company-modal"
+  show
+  on_cancel={JS.patch(~p"/companies")}
+>
+  <.live_component
+    module={BemedaPersonalWeb.CompanyLive.FormComponent}
+    action={@live_action}
+    company={@company}
+    current_user={@current_user}
+    id={@company.id || :new}
+    return_to={~p"/companies"}
+  />
+</.modal>
