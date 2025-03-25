@@ -3,7 +3,6 @@ defmodule BemedaPersonalWeb.MuxWebhookController do
 
   require Logger
 
-  alias BemedaPersonal.Jobs
   alias Phoenix.PubSub
 
   @doc """

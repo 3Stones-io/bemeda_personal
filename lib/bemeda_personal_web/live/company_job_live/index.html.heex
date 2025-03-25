@@ -38,7 +38,7 @@
 >
   <.live_component
     module={BemedaPersonalWeb.CompanyJobLive.FormComponent}
-    id={if @live_action == :edit, do: @job_posting.id, else: :new}
+    id="company-job-form"
     action={@live_action}
     job_posting={@job_posting}
     company={@company}

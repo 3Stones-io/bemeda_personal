@@ -74,78 +74,40 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           />
         </div>
 
-    <div
-      id={"#{@id}-video-upload"}
-      class={[
-        "relative w-full rounded-lg border-2 border-dashed border-gray-300 p-8 bg-gray-50 cursor-pointer"
-      ]}
-      phx-hook="VideoUpload"
-      data-company-id={@company.id}
-    >
-      <div class="text-center flex flex-col items-center justify-center">
-        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-          <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-indigo-600" />
-        </div>
-        <h3 class="mb-2 text-lg font-medium text-gray-900">Drag and drop to upload your video</h3>
-        <p class="mb-4 text-sm text-gray-500">or</p>
-        <div>
-          <label
-            for={"#{@id}-video-upload-input"}
-            class="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Browse Files
-            <input
-              id={"#{@id}-video-upload-input"}
-              type="file"
-              class="hidden"
-              accept="video/*"
-              data-max-file-size="50000000"
-            />
-          </label>
-        </div>
-        <p class="mt-2 text-xs text-gray-500">
-          Max file size: 50MB
-        </p>
-
-        <div id={"#{@id}-upload-status"} class="upload-status-container mt-4 text-sm w-full" style="display: none;">
-          <!-- Loading State -->
-          <div id={"#{@id}-loading-state"} class="flex items-center">
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span>Preparing upload...</span>
-          </div>
-
-          <!-- Progress State (initially hidden) -->
-          <div id={"#{@id}-progress-state"} style="display: none;">
-            <div class="flex items-center mb-2">
-              <span class="text-gray-700 mr-2">Uploading:</span>
-              <span id={"#{@id}-filename"} class="font-medium"></span>
+        <div
+          id={"#{@id}-video-upload"}
+          class={[
+            "relative w-full rounded-lg border-2 border-dashed border-gray-300 p-8 bg-gray-50 cursor-pointer"
+          ]}
+          phx-hook="VideoUpload"
+          data-company-id={@company.id}
+        >
+          <div class="text-center flex flex-col items-center justify-center">
+            <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
+              <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-indigo-600" />
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
-              <div id={"#{@id}-progress-bar"} class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+            <h3 class="mb-2 text-lg font-medium text-gray-900">Drag and drop to upload your video</h3>
+            <p class="mb-4 text-sm text-gray-500">or</p>
+            <div>
+              <label
+                for="hidden-file-input"
+                class="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Browse Files
+                <input
+                  id="hidden-file-input"
+                  type="file"
+                  class="hidden"
+                  accept="video/*"
+                  data-max-file-size="50000000"
+                />
+              </label>
             </div>
-            <div class="text-xs text-gray-500 mt-1">
-              <span id={"#{@id}-progress-text"}>0%</span> complete
-            </div>
-          </div>
-
-          <!-- Error State (initially hidden) -->
-          <div id={"#{@id}-error-state"} class="text-red-600" style="display: none;"></div>
-
-          <!-- Success State (initially hidden) -->
-          <div id={"#{@id}-success-state"} style="display: none;">
-            <div class="text-green-600 flex items-center">
-              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-              </svg>
-              Upload complete!
-            </div>
+            <p class="mt-2 text-xs text-gray-500">
+              Max file size: 50MB
+            </p>
           </div>
         </div>
-      </div>
-    </div>
 
         <div class="flex justify-end space-x-3">
           <.button :if={@action == :edit} type="submit" phx-disable-with="Saving...">
@@ -161,24 +123,26 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{mux_data: mux_data}, socket) do
+    IO.puts(IO.ANSI.format([:yellow, "#{inspect(mux_data)}"]))
+    {:ok, assign(socket, :mux_data, mux_data)}
+  end
+
   def update(%{job_posting: job_posting} = assigns, socket) do
+    IO.puts(IO.ANSI.format([:yellow, "OTHER UPDATE:: #{inspect(assigns)}"]))
     changeset = Jobs.change_job_posting(job_posting)
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:mux_data, nil)
+     |> assign(:mux_data, %{})
      |> assign(:form, to_form(changeset))}
   end
 
   @impl Phoenix.LiveComponent
-  def update(%{mux_data: mux_data} = assigns, socket) when is_map(mux_data) do
-    # Store the mux data but keep all other component state intact
-    {:ok, socket |> assign(:mux_data, mux_data)}
-  end
-
-  @impl Phoenix.LiveComponent
   def handle_event("validate", %{"job_posting" => job_params}, socket) do
+    job_params = Map.put(job_params, "mux_data", socket.assigns.mux_data)
+
     changeset =
       socket.assigns.job_posting
       |> Jobs.change_job_posting(job_params)
@@ -188,38 +152,23 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
-  def handle_event("begin-video-upload", _params, socket) do
+  def handle_event("save", %{"job_posting" => job_params}, socket) do
+    save_job_posting(socket, socket.assigns.action, job_params)
+  end
+
+  def handle_event("upload-video", _params, socket) do
     case MuxHelper.create_direct_upload() do
-      %{url: url, id: id} ->
-        {:reply, %{url: url, id: id}, socket}
+      %{url: upload_url} ->
+        {:reply, %{upload_url: upload_url}, socket}
 
       {:error, reason} ->
         {:reply, %{error: "Failed to create upload URL: #{inspect(reason)}"}, socket}
     end
   end
 
-  @impl Phoenix.LiveComponent
-  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
-    # Store the video data in the LiveComponent state
-    {:noreply, socket |> assign(:mux_data, %{asset_id: asset_id, playback_id: playback_id})}
-  end
-
-  @impl Phoenix.LiveComponent
-  def handle_event("save", %{"job_posting" => job_params}, socket) do
-    # If we have MUX data, merge it into the job params
-    updated_params = case socket.assigns.mux_data do
-      %{asset_id: asset_id, playback_id: playback_id} when not is_nil(asset_id) ->
-        Map.put(job_params, "mux_data", %{
-          "asset_id" => asset_id,
-          "playback_id" => playback_id
-        })
-      _ -> job_params
-    end
-
-    save_job_posting(socket, socket.assigns.action, updated_params)
-  end
-
   defp save_job_posting(socket, :new, job_params) do
+    job_params = Map.put(job_params, "mux_data", socket.assigns.mux_data)
+
     case Jobs.create_job_posting(socket.assigns.company, job_params) do
       {:ok, _job_posting} ->
         {:noreply,
@@ -233,6 +182,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp save_job_posting(socket, :edit, job_params) do
+    job_params = Map.put(job_params, "mux_data", socket.assigns.mux_data)
+
     case Jobs.update_job_posting(socket.assigns.job_posting, job_params) do
       {:ok, _job_posting} ->
         {:noreply,

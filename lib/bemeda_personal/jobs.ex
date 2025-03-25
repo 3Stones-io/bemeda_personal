@@ -283,7 +283,8 @@ defmodule BemedaPersonal.Jobs do
   def find_job_posting_by_upload_id(upload_id) when is_binary(upload_id) do
     query =
       from jp in JobPosting,
-        join: m in fragment("SELECT * FROM jsonb_to_recordset(?->'mux_data') as x(asset_id text)", jp),
+        join:
+          m in fragment("SELECT * FROM jsonb_to_recordset(?->'mux_data') as x(asset_id text)", jp),
         where: m.asset_id == ^upload_id,
         limit: 1
 

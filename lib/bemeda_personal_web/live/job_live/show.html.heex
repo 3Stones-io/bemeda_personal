@@ -10,6 +10,22 @@
         <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
           {SharedHelpers.to_html(@job_posting.description)}
         </div>
+
+        <div class="flex w-full h-auto" id="video-player" phx-update="ignore">
+          <video
+            class="video-js w-full rounded-lg h-[400px]"
+            controls
+            crossorigin="anonymous"
+            id="video-player-#{@job_posting.id}"
+            phx-hook="VideoPlayer"
+            preload="auto"
+          >
+            <source
+              src={"https://stream.mux.com/#{@job_posting.mux_data.playback_id}.m3u8"}
+              type="application/x-mpegURL"
+            />
+          </video>
+        </div>
       </div>
     </div>
 

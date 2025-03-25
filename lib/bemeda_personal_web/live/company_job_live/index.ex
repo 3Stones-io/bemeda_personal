@@ -70,61 +70,14 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({:job_posting_video_processing, job_posting}, socket) do
-    # Update the form if this job posting is being edited
-    if socket.assigns.job_posting && socket.assigns.job_posting.id == job_posting.id do
-      {:noreply,
-       socket
-       |> assign(:job_posting, job_posting)
-       |> push_event("video-processing", %{})}
-    else
-      {:noreply, socket}
-    end
-  end
+  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
+    IO.puts(IO.ANSI.format([:green, "Video ready: #{asset_id} with playback_id: #{playback_id}"]))
 
-  @impl Phoenix.LiveView
-  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}} = event, socket) do
-    # Check if we're currently editing a job posting
-    if socket.assigns.job_posting && socket.assigns.job_posting.mux_data do
-      current_job = socket.assigns.job_posting
+    send_update(BemedaPersonalWeb.CompanyJobLive.FormComponent,
+      id: "company-job-form",
+      mux_data: %{asset_id: asset_id, playback_id: playback_id}
+    )
 
-      # Check if this event is for the job posting we're currently editing
-      if current_job.mux_data.asset_id == asset_id do
-        # Send the event to the form component using the job_posting.id for existing jobs
-        # or :new for new job postings
-        form_id = if socket.assigns.live_action == :edit, do: current_job.id, else: :new
-
-        send_update(BemedaPersonalWeb.CompanyJobLive.FormComponent,
-          id: form_id,
-          mux_data: %{asset_id: asset_id, playback_id: playback_id}
-        )
-
-        # Push the video-ready event to update the UI
-        {:noreply,
-         socket |> push_event("video-ready", %{
-           asset_id: asset_id,
-           playback_id: playback_id
-         })}
-      else
-        {:noreply, socket}
-      end
-    else
-      {:noreply, socket}
-    end
-  end
-
-  @impl Phoenix.LiveView
-  def handle_info({:job_posting_video_ready, job_posting}, socket) do
-    # Update the form if this job posting is being edited
-    if socket.assigns.job_posting && socket.assigns.job_posting.id == job_posting.id do
-      {:noreply,
-       socket
-       |> assign(:job_posting, job_posting)
-       |> push_event("video-ready", %{
-         playback_id: job_posting.mux_data.playback_id
-       })}
-    else
-      {:noreply, socket}
-    end
+    {:noreply, socket}
   end
 end
