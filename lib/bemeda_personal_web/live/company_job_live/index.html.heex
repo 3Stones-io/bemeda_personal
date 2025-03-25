@@ -22,11 +22,11 @@
 
   <.live_component
     module={JobListComponent}
-    id="job-post-list"
-    filters={@filters}
     empty_state_message="Please check back later for new opportunities."
-    show_company_name={true}
+    filters={@filters}
+    id="job-post-list"
     show_actions={true}
+    show_company_name={true}
   />
 </section>
 
@@ -38,10 +38,10 @@
 >
   <.live_component
     module={BemedaPersonalWeb.CompanyJobLive.FormComponent}
-    id={if @live_action == :edit, do: @job_posting.id, else: :new}
     action={@live_action}
-    job_posting={@job_posting}
     company={@company}
+    id={if @live_action == :edit, do: @job_posting.id, else: :new}
+    job_posting={@job_posting}
     return_to={~p"/companies/#{@company.id}/jobs"}
   />
 </.modal>

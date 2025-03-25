@@ -12,7 +12,7 @@ defmodule BemedaPersonalWeb.JobLive.Show do
 
     {:noreply,
      socket
-     |> assign(:page_title, job_posting.title)
-     |> assign(:job_posting, job_posting)}
+     |> assign(:job_posting, job_posting)
+     |> assign(:page_title, job_posting.title)}
   end
 end

@@ -13,18 +13,16 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     company = Companies.get_company_by_user(current_user)
 
     if connected?(socket) && company do
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "company:#{socket.assigns.current_user.id}")
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "company:#{current_user.id}")
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_posting:company:#{company.id}")
     end
 
-    socket =
-      socket
-      |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
-      |> assign(:company, company)
-      |> assign_job_postings(company)
-      |> assign_job_count(company)
-
-    {:ok, socket}
+    {:ok,
+     socket
+     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
+     |> assign(:company, company)
+     |> assign_job_count(company)
+     |> assign_job_postings(company)}
   end
 
   @impl Phoenix.LiveView
@@ -36,14 +34,14 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     company = Companies.get_company!(company_id)
 
     socket
-    |> assign(:page_title, "Edit Company Profile")
     |> assign(:company, company)
+    |> assign(:page_title, "Edit Company Profile")
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "Create Company Profile")
     |> assign(:company, %Company{})
+    |> assign(:page_title, "Create Company Profile")
   end
 
   defp apply_action(socket, :index, _params) do

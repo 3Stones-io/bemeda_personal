@@ -12,9 +12,9 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Jobs do
 
     {:ok,
      socket
+     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
      |> assign(:company, company)
-     |> assign(:filters, %{company_id: company.id})
-     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")}
+     |> assign(:filters, %{company_id: company.id})}
   end
 
   @impl Phoenix.LiveView

@@ -12,11 +12,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     user = user_fixture()
     company = company_fixture(user)
 
-    %{conn: conn, user: user, company: company}
+    %{conn: conn, company: company, user: user}
   end
 
   describe "Index" do
-    test "redirects if user is not logged in", %{conn: conn, company: company} do
+    test "redirects if user is not logged in", %{company: company, conn: conn} do
       assert {:error, redirect} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
@@ -24,7 +24,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert %{"error" => "You must log in to access this page."} = flash
     end
 
-    test "redirects if user is not admin of the company", %{conn: conn, company: company} do
+    test "redirects if user is not admin of the company", %{company: company, conn: conn} do
       other_user = user_fixture(%{email: "other@example.com"})
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
@@ -36,7 +36,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert flash["error"] == "You don't have permission to access this company."
     end
 
-    test "renders company jobs page with job list", %{conn: conn, user: user, company: company} do
+    test "renders company jobs page with job list", %{company: company, conn: conn, user: user} do
       _job1 = job_posting_fixture(company, %{title: "Test Job 1"})
       _job2 = job_posting_fixture(company, %{title: "Test Job 2"})
 
@@ -50,7 +50,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert html =~ "Test Job 2"
     end
 
-    test "allows admin to create a new job", %{conn: conn, user: user, company: company} do
+    test "allows admin to create a new job", %{company: company, conn: conn, user: user} do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
@@ -65,7 +65,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
   end
 
   describe "New" do
-    test "renders form for creating a job posting", %{conn: conn, user: user, company: company} do
+    test "renders form for creating a job posting", %{company: company, conn: conn, user: user} do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
@@ -76,7 +76,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert html =~ "Job Description"
     end
 
-    test "validates job posting data", %{conn: conn, user: user, company: company} do
+    test "validates job posting data", %{company: company, conn: conn, user: user} do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
@@ -95,7 +95,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert result =~ "can&#39;t be blank"
     end
 
-    test "creates a job posting", %{conn: conn, user: user, company: company} do
+    test "creates a job posting", %{company: company, conn: conn, user: user} do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
@@ -106,12 +106,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       view
       |> form("#job-posting-form", %{
         "job_posting" => %{
-          "title" => "Software Engineer",
           "description" => "We are looking for a talented software engineer to join our team.",
-          "location" => "Remote",
           "employment_type" => "Full-time",
           "experience_level" => "Mid Level",
-          "remote_allowed" => true
+          "location" => "Remote",
+          "remote_allowed" => true,
+          "title" => "Software Engineer"
         }
       })
       |> render_submit()
@@ -128,10 +128,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     end
 
     test "renders edit form for job posting", %{
-      conn: conn,
-      user: user,
       company: company,
-      job_posting: job_posting
+      conn: conn,
+      job_posting: job_posting,
+      user: user
     } do
       {:ok, _view, html} =
         conn
@@ -143,10 +143,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     end
 
     test "updates job posting", %{
-      conn: conn,
-      user: user,
       company: company,
-      job_posting: job_posting
+      conn: conn,
+      job_posting: job_posting,
+      user: user
     } do
       {:ok, view, _html} =
         conn
@@ -165,7 +165,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert updated_job.title == "Updated Job Title"
     end
 
-    test "redirects if trying to edit another company's job", %{conn: conn, user: user} do
+    test "redirects if trying to edit another company's job", %{
+      conn: conn,
+      user: user
+    } do
       other_user = user_fixture(%{email: "other@example.com"})
       other_company = company_fixture(other_user)
       other_job = job_posting_fixture(other_company)

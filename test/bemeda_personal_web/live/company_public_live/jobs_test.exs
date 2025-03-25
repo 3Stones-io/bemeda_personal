@@ -13,38 +13,38 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
 
       job1 =
         job_posting_fixture(company, %{
-          title: "Software Engineer",
           employment_type: "Full-time",
-          experience_level: "Mid-level"
+          experience_level: "Mid-level",
+          title: "Software Engineer"
         })
 
       job2 =
         job_posting_fixture(company, %{
-          title: "Product Manager",
           employment_type: "Full-time",
-          experience_level: "Senior"
+          experience_level: "Senior",
+          title: "Product Manager"
         })
 
       job3 =
         job_posting_fixture(company, %{
-          title: "UI/UX Designer",
           employment_type: "Contract",
-          experience_level: "Mid-level"
+          experience_level: "Mid-level",
+          title: "UI/UX Designer"
         })
 
       %{
-        conn: conn,
-        user: user,
         company: company,
+        conn: conn,
         job1: job1,
         job2: job2,
-        job3: job3
+        job3: job3,
+        user: user
       }
     end
 
     test "renders company jobs page for unauthenticated users", %{
-      conn: conn,
       company: company,
+      conn: conn,
       job1: job1,
       job2: job2,
       job3: job3
@@ -60,7 +60,11 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       assert html =~ job3.title
     end
 
-    test "renders job details correctly", %{conn: conn, company: company, job1: job1} do
+    test "renders job details correctly", %{
+      company: company,
+      conn: conn,
+      job1: job1
+    } do
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
 
       assert html =~ job1.title
@@ -68,7 +72,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       assert html =~ job1.experience_level
     end
 
-    test "shows website link if available", %{conn: conn, company: company} do
+    test "shows website link if available", %{
+      company: company,
+      conn: conn
+    } do
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
 
       if company.website_url do
@@ -77,7 +84,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       end
     end
 
-    test "includes breadcrumb navigation", %{conn: conn, company: company} do
+    test "includes breadcrumb navigation", %{
+      company: company,
+      conn: conn
+    } do
       {:ok, view, html} = live(conn, ~p"/company/#{company.id}/jobs")
 
       assert html =~ company.name
@@ -92,7 +102,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       assert html2 =~ "About #{company.name}"
     end
 
-    test "job listings are paginated when there are many jobs", %{conn: conn, company: company} do
+    test "job listings are paginated when there are many jobs", %{
+      company: company,
+      conn: conn
+    } do
       for i <- 4..12 do
         job_posting_fixture(company, %{title: "Job #{i}"})
       end

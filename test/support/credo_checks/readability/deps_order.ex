@@ -3,7 +3,7 @@ defmodule Credo.Check.Readability.DepsOrder do
   A check that ensures dependencies are alphabetically ordered within their groups.
 
   Alphabetically ordered dependencies are more easily scannable by the reader.
-  This check enforces that dependencies in app_deps, optimum_deps, and phoenix_deps
+  This check enforces that dependencies in app_deps and optimum_deps
   are ordered alphabetically within their respective groups.
   """
 
@@ -44,7 +44,6 @@ defmodule Credo.Check.Readability.DepsOrder do
       Dependencies should be alphabetically ordered within each deps group:
       - app_deps
       - optimum_deps
-      - phoenix_deps
 
       Like all `Readability` issues, this one is not a technical concern.
       But you can improve the odds of others reading and liking your code by making
@@ -78,7 +77,7 @@ defmodule Credo.Check.Readability.DepsOrder do
     {_ast, deps_functions} =
       Macro.prewalk(ast, [], fn
         {:defp, _meta, [{name, _fun_meta, _args}, _do_block]} = node, acc
-        when name in [:app_deps, :optimum_deps, :phoenix_deps] ->
+        when name in [:app_deps, :optimum_deps] ->
           {node, [node | acc]}
 
         node, acc ->
