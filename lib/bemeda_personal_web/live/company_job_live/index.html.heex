@@ -38,10 +38,11 @@
 >
   <.live_component
     module={BemedaPersonalWeb.CompanyJobLive.FormComponent}
-    id="company-job-form"
     action={@live_action}
-    job_posting={@job_posting}
     company={@company}
+    id="company-job-form"
+    job_posting={@job_posting}
+    live_action={@live_action}
     return_to={~p"/companies/#{@company.id}/jobs"}
   />
 </.modal>

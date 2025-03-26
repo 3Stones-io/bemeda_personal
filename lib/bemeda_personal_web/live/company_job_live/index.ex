@@ -15,7 +15,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
         "job_posting:company:#{socket.assigns.company.id}"
       )
 
-      # Subscribe to video upload events using the global job-video topic
       Phoenix.PubSub.subscribe(
         BemedaPersonal.PubSub,
         "job-video"
@@ -69,10 +68,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     {:noreply, socket}
   end
 
-  @impl Phoenix.LiveView
   def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
-    IO.puts(IO.ANSI.format([:green, "Video ready: #{asset_id} with playback_id: #{playback_id}"]))
-
     send_update(BemedaPersonalWeb.CompanyJobLive.FormComponent,
       id: "company-job-form",
       mux_data: %{asset_id: asset_id, playback_id: playback_id}
@@ -80,4 +76,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
     {:noreply, socket}
   end
+
+  def handle_info(_event, socket), do: {:noreply, socket}
 end

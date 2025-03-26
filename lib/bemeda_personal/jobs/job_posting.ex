@@ -21,12 +21,11 @@ defmodule BemedaPersonal.Jobs.JobPosting do
     field :employment_type, :string
     field :experience_level, :string
     field :location, :string
+    embeds_one :mux_data, VideoMuxData, on_replace: :update
     field :remote_allowed, :boolean, default: false
     field :salary_max, :integer
     field :salary_min, :integer
     field :title, :string
-
-    embeds_one :mux_data, VideoMuxData, on_replace: :update
 
     timestamps(type: :utc_datetime)
   end

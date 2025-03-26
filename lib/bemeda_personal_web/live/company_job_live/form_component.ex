@@ -77,12 +77,14 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         <div
           id={"#{@id}-video-upload"}
           class={[
-            "relative w-full rounded-lg border-2 border-dashed border-gray-300 p-8 bg-gray-50 cursor-pointer"
+            "relative w-full"
           ]}
           phx-hook="VideoUpload"
-          data-company-id={@company.id}
         >
-          <div class="text-center flex flex-col items-center justify-center">
+          <div
+            id="video-upload-inputs-container"
+            class="text-center flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-8 bg-gray-50 cursor-pointer"
+          >
             <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
               <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-indigo-600" />
             </div>
@@ -110,10 +112,20 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         </div>
 
         <div class="flex justify-end space-x-3">
-          <.button :if={@action == :edit} type="submit" phx-disable-with="Saving...">
+          <.button
+            :if={@action == :edit}
+            type="submit"
+            phx-disable-with="Saving..."
+            id="job-posting-form-submit-button"
+          >
             Save Changes
           </.button>
-          <.button :if={@action == :new} type="submit" phx-disable-with="Posting...">
+          <.button
+            :if={@action == :new}
+            type="submit"
+            phx-disable-with="Posting..."
+            id="job-posting-form-submit-button"
+          >
             Post Job
           </.button>
         </div>
@@ -124,12 +136,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def update(%{mux_data: mux_data}, socket) do
-    IO.puts(IO.ANSI.format([:yellow, "#{inspect(mux_data)}"]))
-    {:ok, assign(socket, :mux_data, mux_data)}
+    {:ok, assign(socket, :mux_data, Map.merge(socket.assigns.mux_data, mux_data))}
   end
 
   def update(%{job_posting: job_posting} = assigns, socket) do
-    IO.puts(IO.ANSI.format([:yellow, "OTHER UPDATE:: #{inspect(assigns)}"]))
     changeset = Jobs.change_job_posting(job_posting)
 
     {:ok,
@@ -141,7 +151,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"job_posting" => job_params}, socket) do
-    job_params = Map.put(job_params, "mux_data", socket.assigns.mux_data)
+    job_params = update_mux_data_params(socket, job_params)
 
     changeset =
       socket.assigns.job_posting
@@ -153,6 +163,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"job_posting" => job_params}, socket) do
+    job_params = update_mux_data_params(socket, job_params)
+
     save_job_posting(socket, socket.assigns.action, job_params)
   end
 
@@ -167,8 +179,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp save_job_posting(socket, :new, job_params) do
-    job_params = Map.put(job_params, "mux_data", socket.assigns.mux_data)
-
     case Jobs.create_job_posting(socket.assigns.company, job_params) do
       {:ok, _job_posting} ->
         {:noreply,
@@ -182,8 +192,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp save_job_posting(socket, :edit, job_params) do
-    job_params = Map.put(job_params, "mux_data", socket.assigns.mux_data)
-
     case Jobs.update_job_posting(socket.assigns.job_posting, job_params) do
       {:ok, _job_posting} ->
         {:noreply,
@@ -194,5 +202,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
     end
+  end
+
+  defp update_mux_data_params(socket, job_params) do
+    Map.put(job_params, "mux_data", socket.assigns.mux_data)
   end
 end

@@ -43,6 +43,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
       |> Enum.into(%{})
       |> Map.merge(socket.assigns.filters)
+      |> IO.inspect(label: "FILTERS")
 
     send_update(JobListComponent, id: "job-post-list", filters: filters)
 

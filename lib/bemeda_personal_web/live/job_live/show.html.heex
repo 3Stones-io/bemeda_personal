@@ -4,27 +4,16 @@
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2">
       <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6">
-          <h2 class="text-xl font-semibold text-gray-900">Job Description</h2>
-        </div>
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
-          {SharedHelpers.to_html(@job_posting.description)}
+        <div class="py-3">
+          <mux-player playback-id={@job_posting.mux_data.playback_id}></mux-player>
         </div>
 
-        <div class="flex w-full h-auto" id="video-player" phx-update="ignore">
-          <video
-            class="video-js w-full rounded-lg h-[400px]"
-            controls
-            crossorigin="anonymous"
-            id="video-player-#{@job_posting.id}"
-            phx-hook="VideoPlayer"
-            preload="auto"
-          >
-            <source
-              src={"https://stream.mux.com/#{@job_posting.mux_data.playback_id}.m3u8"}
-              type="application/x-mpegURL"
-            />
-          </video>
+        <h2 class="px-4 py-5 sm:px-6 text-xl font-semibold text-gray-900 border-t border-gray-200">
+          Job Description
+        </h2>
+
+        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
+          {SharedHelpers.to_html(@job_posting.description)}
         </div>
       </div>
     </div>
