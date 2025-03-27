@@ -4,7 +4,7 @@
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2">
       <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="py-3">
+        <div class="py-3" :if={@job_posting.mux_data}>
           <mux-player playback-id={@job_posting.mux_data.playback_id}></mux-player>
         </div>
 

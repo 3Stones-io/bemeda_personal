@@ -461,18 +461,24 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  attr :id, :string, required: true # This will be the upload_id
+  attr :id, :string, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
 
   def video_upload_progress(assigns) do
     ~H"""
     <div
-      id={"#{@id}-video-upload-progress-container"}
-      class="mt-4 bg-white rounded-lg border border-gray-200 p-4 hidden"
+      id={"#{@id}"}
+      class={[
+      "mt-4 bg-white rounded-lg border border-gray-200 p-4",
+      @class
+    ]}
+    {@rest}
     >
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center space-x-2">
           <.icon name="hero-video-camera" class="h-5 w-5 text-gray-400" />
-          <span id={"#{@id}-upload-filename"} class="text-sm font-medium text-gray-700"></span>
+          <span class="text-sm font-medium text-gray-700" id={"#{@id}-upload-filename"}></span>
         </div>
       </div>
       <div class="relative w-full">
@@ -487,7 +493,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           <div
             class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
             style="width: 0%"
-            id="upload-progress-bar"
+            id={"#{@id}-upload-progress-bar"}
           >
           </div>
         </div>

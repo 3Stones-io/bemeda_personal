@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.MuxHelper
+  alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -17,12 +18,30 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         phx-submit="save"
         class="space-y-6"
       >
-        <.input field={f[:title]} type="text" label="Job Title" required />
+        <.input
+          field={f[:title]}
+          type="text"
+          label="Job Title"
+          required
+          phx-debounce="blur"
+        />
 
-        <.input field={f[:description]} type="textarea" label="Job Description" rows={6} required />
+        <.input
+          field={f[:description]}
+          type="textarea"
+          label="Job Description"
+          rows={6}
+          required
+          phx-debounce="blur"
+        />
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <.input field={f[:location]} type="text" label="Location" />
+          <.input
+            field={f[:location]}
+            type="text"
+            label="Location"
+            phx-debounce="blur"
+          />
 
           <.input
             field={f[:employment_type]}
@@ -35,6 +54,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
               {"Temporary", "Temporary"},
               {"Internship", "Internship"}
             ]}
+            phx-debounce="blur"
           />
         </div>
 
@@ -51,13 +71,30 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             ]}
           />
 
-          <.input field={f[:remote_allowed]} type="checkbox" label="Remote Work Allowed" />
+          <.input
+            field={f[:remote_allowed]}
+            type="checkbox"
+            label="Remote Work Allowed"
+            phx-debounce="blur"
+          />
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
-          <.input field={f[:salary_min]} type="number" label="Minimum Salary" min="0" />
+          <.input
+            field={f[:salary_min]}
+            type="number"
+            label="Minimum Salary"
+            min="0"
+            phx-debounce="blur"
+          />
 
-          <.input field={f[:salary_max]} type="number" label="Maximum Salary" min="0" />
+          <.input
+            field={f[:salary_max]}
+            type="number"
+            label="Maximum Salary"
+            min="0"
+            phx-debounce="blur"
+          />
 
           <.input
             field={f[:currency]}
@@ -71,6 +108,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
               {"AUD", "AUD"},
               {"JPY", "JPY"}
             ]}
+            phx-debounce="blur"
           />
         </div>
 
@@ -80,6 +118,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             "relative w-full"
           ]}
           phx-hook="VideoUpload"
+          phx-update="ignore"
         >
           <div
             id="video-upload-inputs-container"
@@ -109,24 +148,29 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
               Max file size: 50MB
             </p>
           </div>
+
+          <p id="video-upload-error" class="mt-2 text-sm text-red-600 text-center mt-4 hidden">
+            <.icon name="hero-exclamation-circle" class="h-4 w-4" />
+            Unsupported file type. Please upload a video file.
+          </p>
+
         </div>
+
+        <JobsComponents.video_upload_progress
+          id={"#{@id}-video"}
+          class="job-form-video-upload-progress hidden"
+          phx-update="ignore"
+        />
 
         <div class="flex justify-end space-x-3">
           <.button
-            :if={@action == :edit}
             type="submit"
-            phx-disable-with="Saving..."
             id="job-posting-form-submit-button"
+            class={
+              !@enable_submit? && "opacity-50 cursor-not-allowed"
+            }
           >
-            Save Changes
-          </.button>
-          <.button
-            :if={@action == :new}
-            type="submit"
-            phx-disable-with="Posting..."
-            id="job-posting-form-submit-button"
-          >
-            Post Job
+            {if(@action == :edit, do: "Save Changes", else: "Post Job")}
           </.button>
         </div>
       </.form>
@@ -146,7 +190,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:mux_data, %{})
-     |> assign(:form, to_form(changeset))}
+     |> assign(:form, to_form(changeset))
+     |> assign(:enable_submit?, true)}
   end
 
   @impl Phoenix.LiveComponent
@@ -171,11 +216,17 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   def handle_event("upload-video", _params, socket) do
     case MuxHelper.create_direct_upload() do
       %{url: upload_url} ->
-        {:reply, %{upload_url: upload_url}, socket}
+        {:reply,
+          %{upload_url: upload_url},
+          assign(socket, :enable_submit?, false)}
 
       {:error, reason} ->
         {:reply, %{error: "Failed to create upload URL: #{inspect(reason)}"}, socket}
     end
+  end
+
+  def handle_event("enable-submit", _params, socket) do
+    {:noreply, assign(socket, :enable_submit?, true)}
   end
 
   defp save_job_posting(socket, :new, job_params) do

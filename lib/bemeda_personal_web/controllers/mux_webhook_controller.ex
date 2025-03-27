@@ -14,7 +14,8 @@ defmodule BemedaPersonalWeb.MuxWebhookController do
   @spec handle(conn(), params()) :: conn()
   def handle(
         conn,
-        %{"type" => "video.asset.ready", "data" => %{"id" => asset_id}} = event
+        %{"type" => "video.asset.ready", "data" => %{"id" => asset_id}} =
+          event
       ) do
     playback_id = get_playback(event)
 

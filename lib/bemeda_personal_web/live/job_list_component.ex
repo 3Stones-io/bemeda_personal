@@ -49,10 +49,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
     {:ok, stream_insert(socket, :job_postings, job_posting)}
   end
 
-  # TODO: Fix bug on filtering job postings in company-job view
   def update(%{filters: filters} = assigns, socket) do
-    IO.puts(IO.ANSI.format([:yellow, "UPDATE FILTERS: #{inspect(assigns)}"]))
-
     {:ok,
      socket
      |> assign(assigns)

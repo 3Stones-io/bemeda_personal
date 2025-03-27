@@ -21,7 +21,6 @@ defmodule BemedaPersonal.MuxHelper do
              },
              cors_origin: "*"
            }) do
-      IO.inspect(upload_data, label: "upload_data ID")
       %{url: upload_data["url"], id: upload_data["id"]}
     else
       {:error, reason, _client} ->

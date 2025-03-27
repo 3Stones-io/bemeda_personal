@@ -4,17 +4,24 @@ import * as UpChunk from '@mux/upchunk'
 export default VideoUpload = {
   mounted() {
     const hook = this
-    const videoUploadContainer = hook.el
-    const videoUploadInputsContainer = videoUploadContainer.querySelector('#video-upload-inputs-container')
+    const videoUploadInput = hook.el
+    const videoUploadInputsContainer = videoUploadInput.querySelector('#video-upload-inputs-container')
+    const input = videoUploadInput.querySelector('#hidden-file-input')
 
-    const filenameElement = videoUploadContainer.querySelector(`#company-job-form-upload-filename`)
-    const input = videoUploadContainer.querySelector('#hidden-file-input')
-    const percentageElement = videoUploadContainer.querySelector(`#company-job-form-upload-percentage`)
-    const progressElement = videoUploadContainer.querySelector(`#company-job-form-upload-progress`)
-    const sizeElement = videoUploadContainer.querySelector(`#company-job-form-upload-size`)
+    const uploadProgressElement = document.querySelector('.job-form-video-upload-progress')
+    const filenameElement = uploadProgressElement.querySelector('#company-job-form-video-upload-filename');
+    const fileSizeElement = uploadProgressElement.querySelector('#company-job-form-video-upload-size');
+    const percentageElement = uploadProgressElement.querySelector('#company-job-form-video-upload-percentage');
+    const progressBar = uploadProgressElement.querySelector('#company-job-form-video-upload-progress-bar');
+    const progressElement = uploadProgressElement.querySelector('#company-job-form-video-upload-progress');
 
-    const videoUploadProgressContainer = videoUploadContainer.querySelector(`#video-upload-progress-container`)
-    const uploadProgressBar = videoUploadProgressContainer.querySelector(`#upload-progress-bar`)
+    let currentUpload;
+   
+    const restoreDropzoneStyles = () => {
+      videoUploadInputsContainer.classList.remove('border-indigo-600')
+      videoUploadInputsContainer.classList.add('border-gray-300')
+      videoUploadInputsContainer.classList.remove('dropzone')
+    }
 
     const fileSizeSI = (bytes) => {
       const exponent = Math.floor(Math.log(bytes) / Math.log(1000.0))
@@ -22,49 +29,54 @@ export default VideoUpload = {
       return `${decimal} ${exponent ? `${'kMGTPEZY'[exponent - 1]}B` : 'B'}`
     }
 
-    const restoreDropzoneStyles = () => {
-      videoUploadInputsContainer.classList.remove('border-indigo-600')
-      videoUploadInputsContainer.classList.add('border-gray-300')
-      videoUploadInputsContainer.classList.remove('dropzone')
-    }
-
     const uploadVideo = (newFiles) => {
-      hook.pushEventTo("#job-posting-form",
-        "upload-video",
+      if (currentUpload) {
+        currentUpload.abort() 
+        currentUpload = null
+      }
+
+      hook.pushEventTo("#job-posting-form", "upload-video",
         {},
         ({ upload_url: uploadUrl }) => {
-          videoUploadProgressContainer.classList.remove('hidden')
-          filenameElement.textContent = newFiles.name
-          sizeElement.textContent = fileSizeSI(newFiles.size)
+          uploadProgressElement.classList.remove('hidden')
 
-          const upload = UpChunk.createUpload({
+          filenameElement.textContent = newFiles.name
+          fileSizeElement.textContent = fileSizeSI(newFiles.size)
+
+          currentUpload = UpChunk.createUpload({
             endpoint: uploadUrl,
             file: newFiles,
             chunkSize: 30720,
           });
 
-          upload.on('progress', (entry) => {
+          currentUpload.on('progress', (entry) => {
             let progress = Math.round(entry.detail)
-            console.log(progress)
+
             percentageElement.textContent = `${progress}%`
             progressElement.setAttribute('aria-valuenow', progress)
-            uploadProgressBar.style.width = `${progress}%`
+            progressBar.style.width = `${progress}%`
           })
 
-          upload.on('error', (_error) => {
-            uploadProgressBar.classList.remove('bg-indigo-600')
-            uploadProgressBar.classList.add('bg-red-600')
+          currentUpload.on('error', (_error) => {
+            hook.pushEventTo("#job-posting-form", "enable-submit")
+
+            progressBar.classList.remove('bg-indigo-600')
+            progressBar.classList.add('bg-red-600')
             percentageElement.textContent = 'An error has occurred, please try again'
           })
 
-          upload.on('success', () => {
+          currentUpload.on('success', (_entry) => {
+            hook.pushEventTo("#job-posting-form", "enable-submit")
+
+            progressBar.classList.remove('bg-indigo-600')
+            progressBar.classList.add('bg-green-600')
             percentageElement.textContent = 'Completed'
           })
         }
       )
     }
 
-    new Dragster(videoUploadContainer);
+    new Dragster(videoUploadInput);
 
     videoUploadInputsContainer.addEventListener(
       'dragster:enter',
@@ -104,5 +116,3 @@ export default VideoUpload = {
     })
   },
 }
-
-
