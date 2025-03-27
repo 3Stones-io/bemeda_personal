@@ -9,8 +9,8 @@ defmodule BemedaPersonalWeb.JobLive.Index do
     {:ok,
      socket
      |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
-     |> assign(:page_title, "Job Listings")
-     |> assign(:filters, %{})}
+     |> assign(:filters, %{})
+     |> assign(:page_title, "Job Listings")}
   end
 
   @impl Phoenix.LiveView

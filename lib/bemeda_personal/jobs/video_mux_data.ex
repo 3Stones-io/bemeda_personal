@@ -5,9 +5,9 @@ defmodule BemedaPersonal.Jobs.VideoMuxData do
 
   import Ecto.Changeset
 
-  @type t :: %__MODULE__{}
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
+  @type t :: %__MODULE__{}
 
   embedded_schema do
     field :asset_id, :string

@@ -12,12 +12,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
-      %{conn: conn, user: user, company: company, job_posting: job_posting}
+      %{conn: conn, company: company, user: user, job_posting: job_posting}
     end
 
     test "renders company public profile for unauthenticated users", %{
-      conn: conn,
       company: company,
+      conn: conn,
       job_posting: job_posting
     } do
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
@@ -36,8 +36,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     end
 
     test "renders company profile for authenticated users", %{
-      conn: conn,
       company: company,
+      conn: conn,
       user: user
     } do
       {:ok, _view, html} =
@@ -50,7 +50,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       assert html =~ company.industry
     end
 
-    test "displays correct job count", %{conn: conn, company: company} do
+    test "displays correct job count", %{
+      company: company,
+      conn: conn
+    } do
       # Create a second job for the company
       job_posting_fixture(company)
 
@@ -61,7 +64,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       assert html =~ "2"
     end
 
-    test "allows navigation to all jobs page", %{conn: conn, company: company} do
+    test "allows navigation to all jobs page", %{
+      company: company,
+      conn: conn
+    } do
       {:ok, view, _html} = live(conn, ~p"/company/#{company.id}")
 
       # Click view all jobs link

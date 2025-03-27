@@ -10,13 +10,13 @@ defmodule BemedaPersonal.CompaniesTest do
   alias Phoenix.PubSub
 
   @invalid_attrs %{
+    description: nil,
+    industry: nil,
+    location: nil,
+    logo_url: nil,
     name: nil,
     size: nil,
-    description: nil,
-    location: nil,
-    industry: nil,
-    website_url: nil,
-    logo_url: nil
+    website_url: nil
   }
 
   setup do

@@ -19,115 +19,6 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     %{user: user_fixture(), conn: conn}
   end
 
-  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
-  @spec create_companies_and_users(map()) :: map()
-  def create_companies_and_users(%{conn: conn, user: user}) do
-    # Create entities
-    entities = create_test_entities(user)
-
-    # Setup connections and sessions
-    connections = setup_test_connections(conn, entities)
-
-    # Return all test data
-    Map.merge(entities, connections)
-  end
-
-  defp create_test_entities(user) do
-    company = company_fixture(user)
-    other_user = user_fixture()
-    user_without_company = user_fixture()
-    user_with_company = user_fixture()
-    company_for_user = company_fixture(user_with_company)
-
-    # Generate tokens
-    user_token = Accounts.generate_user_session_token(user)
-    other_user_token = Accounts.generate_user_session_token(other_user)
-    user_without_company_token = Accounts.generate_user_session_token(user_without_company)
-    user_with_company_token = Accounts.generate_user_session_token(user_with_company)
-
-    # Create sockets
-    user_socket = %LiveView.Socket{
-      endpoint: BemedaPersonalWeb.Endpoint,
-      assigns: %{__changed__: %{}, flash: %{}, current_user: user}
-    }
-
-    other_user_socket = %LiveView.Socket{
-      endpoint: BemedaPersonalWeb.Endpoint,
-      assigns: %{__changed__: %{}, flash: %{}, current_user: other_user}
-    }
-
-    user_without_company_socket = %LiveView.Socket{
-      endpoint: BemedaPersonalWeb.Endpoint,
-      assigns: %{__changed__: %{}, flash: %{}, current_user: user_without_company}
-    }
-
-    user_with_company_socket = %LiveView.Socket{
-      endpoint: BemedaPersonalWeb.Endpoint,
-      assigns: %{__changed__: %{}, flash: %{}, current_user: user_with_company}
-    }
-
-    %{
-      user: user,
-      company: company,
-      company_for_user: company_for_user,
-      other_user: other_user,
-      user_without_company: user_without_company,
-      user_with_company: user_with_company,
-      user_token: user_token,
-      other_user_token: other_user_token,
-      user_without_company_token: user_without_company_token,
-      user_with_company_token: user_with_company_token,
-      user_socket: user_socket,
-      other_user_socket: other_user_socket,
-      user_without_company_socket: user_without_company_socket,
-      user_with_company_socket: user_with_company_socket
-    }
-  end
-
-  defp setup_test_connections(conn, entities) do
-    %{
-      user_token: user_token,
-      other_user_token: other_user_token,
-      user_without_company_token: user_without_company_token,
-      user_with_company_token: user_with_company_token,
-      user: user,
-      other_user: other_user,
-      user_without_company: user_without_company,
-      user_with_company: user_with_company
-    } = entities
-
-    # Create sessions
-    user_session = get_session(put_session(conn, :user_token, user_token))
-
-    other_user_session = get_session(put_session(conn, :user_token, other_user_token))
-
-    user_without_company_session =
-      get_session(put_session(conn, :user_token, user_without_company_token))
-
-    user_with_company_session =
-      get_session(put_session(conn, :user_token, user_with_company_token))
-
-    # Create conn variants
-    admin_conn = fetch_flash(assign(conn, :current_user, user))
-
-    non_admin_conn = fetch_flash(assign(conn, :current_user, other_user))
-
-    user_without_company_conn = assign(conn, :current_user, user_without_company)
-
-    user_with_company_conn = assign(conn, :current_user, user_with_company)
-
-    %{
-      user_session: user_session,
-      other_user_session: other_user_session,
-      user_without_company_session: user_without_company_session,
-      user_with_company_session: user_with_company_session,
-      admin_conn: admin_conn,
-      non_admin_conn: non_admin_conn,
-      user_without_company_conn: user_without_company_conn,
-      user_with_company_conn: user_with_company_conn
-    }
-  end
-
   describe "log_in_user/3" do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
@@ -367,13 +258,20 @@ defmodule BemedaPersonalWeb.UserAuthTest do
   end
 
   describe "on_mount :require_admin_user" do
-    setup [:create_companies_and_users]
+    test "continues if user is admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
+      user_token = Accounts.generate_user_session_token(user)
 
-    test "continues if user is admin of the company", %{
-      user_socket: socket,
-      user_session: session,
-      company: company
-    } do
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user}
+      }
+
       params = %{"company_id" => company.id}
 
       {:cont, updated_socket} = UserAuth.on_mount(:require_admin_user, params, session, socket)
@@ -381,11 +279,21 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       assert updated_socket.assigns.company.id == company.id
     end
 
-    test "halts if user is not admin of the company", %{
-      other_user_socket: socket,
-      other_user_session: session,
-      company: company
-    } do
+    test "halts if user is not admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
+      other_user = user_fixture()
+      other_user_token = Accounts.generate_user_session_token(other_user)
+
+      session =
+        conn
+        |> put_session(:user_token, other_user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: other_user}
+      }
+
       params = %{"company_id" => company.id}
 
       {:halt, updated_socket} = UserAuth.on_mount(:require_admin_user, params, session, socket)
@@ -396,20 +304,39 @@ defmodule BemedaPersonalWeb.UserAuthTest do
   end
 
   describe "on_mount :require_no_existing_company" do
-    setup [:create_companies_and_users]
+    test "continues if user has no company", %{conn: conn} do
+      user_without_company = user_fixture()
+      user_without_company_token = Accounts.generate_user_session_token(user_without_company)
 
-    test "continues if user has no company", %{
-      user_without_company_socket: socket,
-      user_without_company_session: session
-    } do
+      session =
+        conn
+        |> put_session(:user_token, user_without_company_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user_without_company}
+      }
+
       {:cont, _updated_socket} =
         UserAuth.on_mount(:require_no_existing_company, %{}, session, socket)
     end
 
-    test "halts if user already has a company", %{
-      user_with_company_socket: socket,
-      user_with_company_session: session
-    } do
+    test "halts if user already has a company", %{conn: conn} do
+      user_with_company = user_fixture()
+      company_fixture(user_with_company)
+      user_with_company_token = Accounts.generate_user_session_token(user_with_company)
+
+      session =
+        conn
+        |> put_session(:user_token, user_with_company_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user_with_company}
+      }
+
       {:halt, updated_socket} =
         UserAuth.on_mount(:require_no_existing_company, %{}, session, socket)
 
@@ -489,20 +416,30 @@ defmodule BemedaPersonalWeb.UserAuthTest do
   end
 
   describe "require_admin_user/2" do
-    setup [:create_companies_and_users]
+    test "allows access if user is admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
 
-    test "allows access if user is admin of the company", %{admin_conn: conn, company: company} do
-      conn = %{conn | params: %{"company_id" => company.id}}
+      conn =
+        conn
+        |> assign(:current_user, user)
+        |> fetch_flash()
+        |> Map.put(:params, %{"company_id" => company.id})
+
       result_conn = UserAuth.require_admin_user(conn, [])
 
       refute result_conn.halted
     end
 
-    test "redirects if user is not admin of the company", %{
-      non_admin_conn: conn,
-      company: company
-    } do
-      conn = %{conn | params: %{"company_id" => company.id}}
+    test "redirects if user is not admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
+      other_user = user_fixture()
+
+      conn =
+        conn
+        |> assign(:current_user, other_user)
+        |> fetch_flash()
+        |> Map.put(:params, %{"company_id" => company.id})
+
       result_conn = UserAuth.require_admin_user(conn, [])
 
       assert result_conn.halted
@@ -514,15 +451,18 @@ defmodule BemedaPersonalWeb.UserAuthTest do
   end
 
   describe "require_no_existing_company/2" do
-    setup [:create_companies_and_users]
-
-    test "allows access if user has no company", %{user_without_company_conn: conn} do
+    test "allows access if user has no company", %{conn: conn} do
+      user_without_company = user_fixture()
+      conn = assign(conn, :current_user, user_without_company)
       result_conn = UserAuth.require_no_existing_company(conn, [])
 
       refute result_conn.halted
     end
 
-    test "redirects if user already has a company", %{user_with_company_conn: conn} do
+    test "redirects if user already has a company", %{conn: conn} do
+      user_with_company = user_fixture()
+      company_fixture(user_with_company)
+      conn = assign(conn, :current_user, user_with_company)
       result_conn = UserAuth.require_no_existing_company(conn, [])
 
       assert result_conn.halted

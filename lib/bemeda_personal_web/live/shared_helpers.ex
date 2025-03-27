@@ -12,19 +12,19 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     |> MDEx.to_html!(
       features: [syntax_highlight_theme: "onedark"],
       extension: [
-        strikethrough: true,
-        underline: true,
-        tagfilter: true,
-        table: true,
         autolink: true,
-        tasklist: true,
         footnotes: true,
-        shortcodes: true
+        shortcodes: true,
+        strikethrough: true,
+        table: true,
+        tagfilter: true,
+        tasklist: true,
+        underline: true
       ],
       parse: [
-        smart: true,
+        relaxed_autolinks: true,
         relaxed_tasklist_matching: true,
-        relaxed_autolinks: true
+        smart: true
       ],
       render: [
         github_pre_lang: true,

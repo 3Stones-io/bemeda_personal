@@ -23,8 +23,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
     {:ok,
      socket
-     |> assign(:job_posting, %JobPosting{})
-     |> assign(:filters, %{company_id: socket.assigns.company.id})}
+     |> assign(:filters, %{company_id: socket.assigns.company.id})
+     |> assign(:job_posting, %JobPosting{})}
   end
 
   @impl Phoenix.LiveView
@@ -39,21 +39,21 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
       push_patch(socket, to: ~p"/companies/#{socket.assigns.company.id}/jobs")
     else
       socket
-      |> assign(:page_title, "Edit Job")
       |> assign(:job_posting, job_posting)
+      |> assign(:page_title, "Edit Job")
     end
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "Post New Job")
     |> assign(:job_posting, %JobPosting{})
+    |> assign(:page_title, "Post New Job")
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Company Jobs")
     |> assign(:job_posting, nil)
+    |> assign(:page_title, "Company Jobs")
   end
 
   @impl Phoenix.LiveView

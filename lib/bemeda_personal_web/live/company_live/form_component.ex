@@ -49,14 +49,13 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
         </div>
 
         <div class="flex justify-end space-x-3">
-          <%= if @action == :edit do %>
-            <.link
-              navigate={~p"/companies"}
-              class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Cancel
-            </.link>
-          <% end %>
+          <.link
+            :if={@action == :edit}
+            navigate={~p"/companies"}
+            class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Cancel
+          </.link>
           <.button
             type="submit"
             phx-disable-with={if @action == :new, do: "Creating...", else: "Saving..."}

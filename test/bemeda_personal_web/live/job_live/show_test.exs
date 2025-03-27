@@ -13,22 +13,22 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
 
       job =
         job_posting_fixture(company, %{
-          title: "Senior Software Engineer",
+          currency: "USD",
           description: "Build amazing software products",
-          location: "New York",
           employment_type: "Full-time",
           experience_level: "Senior",
+          location: "New York",
           remote_allowed: true,
-          salary_min: 70_000,
           salary_max: 80_000,
-          currency: "USD"
+          salary_min: 70_000,
+          title: "Senior Software Engineer"
         })
 
       %{
-        conn: conn,
-        user: user,
         company: company,
-        job: job
+        conn: conn,
+        job: job,
+        user: user
       }
     end
 

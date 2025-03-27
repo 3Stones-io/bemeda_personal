@@ -13,8 +13,8 @@ defmodule BemedaPersonal.Companies do
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
-  @type id :: binary()
   @type company :: Company.t()
+  @type id :: binary()
   @type user :: User.t()
 
   @company_topic "company"

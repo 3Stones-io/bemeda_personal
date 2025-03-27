@@ -32,10 +32,10 @@ defmodule BemedaPersonalWeb.JobListComponent do
           role="list"
         >
           <JobsComponents.job_posting_card
-            job={job}
             id={"card-#{job_id}"}
-            show_company_name={@show_company_name}
+            job={job}
             show_actions={@show_actions}
+            show_company_name={@show_company_name}
             target={"##{@id}"}
           />
         </div>
@@ -109,8 +109,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
     {:noreply, stream_delete(socket, :job_postings, deleted_job_posting)}
   end
 
-  @spec assign_jobs(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
-  def assign_jobs(socket) do
+  defp assign_jobs(socket) do
     jobs = Jobs.list_job_postings(socket.assigns.filters)
 
     first_job = List.first(jobs)
@@ -122,19 +121,13 @@ defmodule BemedaPersonalWeb.JobListComponent do
     |> assign(:last_job, last_job)
   end
 
-  @spec maybe_insert_jobs(Phoenix.LiveView.Socket.t(), map(), any(), keyword()) ::
-          Phoenix.LiveView.Socket.t()
-  def maybe_insert_jobs(socket, _filters, _first_or_last_job, _opts \\ [])
+  defp maybe_insert_jobs(socket, _filters, _first_or_last_job, _opts \\ [])
 
-  @spec maybe_insert_jobs(Phoenix.LiveView.Socket.t(), map(), nil, keyword()) ::
-          Phoenix.LiveView.Socket.t()
-  def maybe_insert_jobs(socket, _filters, nil, _opts) do
+  defp maybe_insert_jobs(socket, _filters, nil, _opts) do
     assign(socket, :end_of_timeline?, true)
   end
 
-  @spec maybe_insert_jobs(Phoenix.LiveView.Socket.t(), map(), any(), keyword()) ::
-          Phoenix.LiveView.Socket.t()
-  def maybe_insert_jobs(socket, filters, _first_or_last_job, opts) do
+  defp maybe_insert_jobs(socket, filters, _first_or_last_job, opts) do
     jobs =
       filters
       |> Map.merge(socket.assigns.filters)

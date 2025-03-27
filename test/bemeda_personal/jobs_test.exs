@@ -9,15 +9,15 @@ defmodule BemedaPersonal.JobsTest do
   alias Phoenix.PubSub
 
   @invalid_attrs %{
-    description: nil,
-    title: nil,
-    location: nil,
     currency: nil,
+    description: nil,
     employment_type: nil,
     experience_level: nil,
-    salary_min: nil,
+    location: nil,
+    remote_allowed: nil,
     salary_max: nil,
-    remote_allowed: nil
+    salary_min: nil,
+    title: nil
   }
 
   defp create_job_posting(_attrs) do
@@ -30,14 +30,14 @@ defmodule BemedaPersonal.JobsTest do
   defp create_multiple_job_postings(company, count) do
     Enum.map(1..count, fn i ->
       job_posting_fixture(company, %{
-        title: "Job Posting #{i}",
         description: "Description for job posting #{i}",
         employment_type: "Full-time #{i}",
         experience_level: "Senior #{i}",
         location: "Location #{i}",
         remote_allowed: rem(i, 2) == 0,
+        salary_max: i * 15_000,
         salary_min: i * 10_000,
-        salary_max: i * 15_000
+        title: "Job Posting #{i}"
       })
     end)
   end
@@ -169,34 +169,34 @@ defmodule BemedaPersonal.JobsTest do
 
       job_posting1 =
         job_posting_fixture(company, %{
-          title: "Senior Software Engineer",
           employment_type: "Full-time",
           remote_allowed: true,
+          salary_max: 120_000,
           salary_min: 80_000,
-          salary_max: 120_000
+          title: "Senior Software Engineer"
         })
 
       job_posting_fixture(company, %{
-        title: "Junior Software Engineer",
         employment_type: "Full-time",
         remote_allowed: false,
+        salary_max: 70_000,
         salary_min: 50_000,
-        salary_max: 70_000
+        title: "Junior Software Engineer"
       })
 
       job_posting_fixture(company, %{
-        title: "Senior Product Manager",
         employment_type: "Full-time",
         remote_allowed: true,
+        salary_max: 130_000,
         salary_min: 90_000,
-        salary_max: 130_000
+        title: "Senior Product Manager"
       })
 
       assert [result] =
                Jobs.list_job_postings(%{
-                 title: "Engineer",
                  remote_allowed: true,
-                 salary_range: [75_000, 125_000]
+                 salary_range: [75_000, 125_000],
+                 title: "Engineer"
                })
 
       assert result.id == job_posting1.id
@@ -208,18 +208,18 @@ defmodule BemedaPersonal.JobsTest do
       company = company_fixture(user)
 
       job_posting_fixture(company, %{
-        title: "Senior Software Engineer",
         employment_type: "Full-time",
         remote_allowed: true,
+        salary_max: 120_000,
         salary_min: 80_000,
-        salary_max: 120_000
+        title: "Senior Software Engineer"
       })
 
       assert [] =
                Jobs.list_job_postings(%{
-                 title: "Engineer",
                  remote_allowed: false,
-                 salary_min: 100_000
+                 salary_min: 100_000,
+                 title: "Engineer"
                })
     end
 
@@ -235,15 +235,15 @@ defmodule BemedaPersonal.JobsTest do
       older_job =
         %BemedaPersonal.Jobs.JobPosting{}
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
-          title: "Older Job",
-          description: "Description for older job",
-          location: "Location",
           currency: "USD",
+          description: "Description for older job",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 50_000,
+          location: "Location",
+          remote_allowed: false,
           salary_max: 70_000,
-          remote_allowed: false
+          salary_min: 50_000,
+          title: "Older Job"
         })
         |> Ecto.Changeset.put_assoc(:company, company)
         |> Ecto.Changeset.put_change(:inserted_at, older_timestamp)
@@ -252,15 +252,15 @@ defmodule BemedaPersonal.JobsTest do
       middle_job =
         %BemedaPersonal.Jobs.JobPosting{}
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
-          title: "Middle Job",
-          description: "Description for middle job",
-          location: "Location",
           currency: "USD",
+          description: "Description for middle job",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 60_000,
+          location: "Location",
+          remote_allowed: false,
           salary_max: 80_000,
-          remote_allowed: false
+          salary_min: 60_000,
+          title: "Middle Job"
         })
         |> Ecto.Changeset.put_assoc(:company, company)
         |> Ecto.Changeset.put_change(:inserted_at, middle_timestamp)
@@ -269,15 +269,15 @@ defmodule BemedaPersonal.JobsTest do
       newer_job =
         %BemedaPersonal.Jobs.JobPosting{}
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
-          title: "Newer Job",
-          description: "Description for newer job",
-          location: "Location",
           currency: "USD",
+          description: "Description for newer job",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 70_000,
+          location: "Location",
+          remote_allowed: false,
           salary_max: 90_000,
-          remote_allowed: false
+          salary_min: 70_000,
+          title: "Newer Job"
         })
         |> Ecto.Changeset.put_assoc(:company, company)
         |> Ecto.Changeset.put_change(:inserted_at, newer_timestamp)
@@ -297,15 +297,15 @@ defmodule BemedaPersonal.JobsTest do
       another_older_job =
         %BemedaPersonal.Jobs.JobPosting{}
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
-          title: "Another Older Job",
-          description: "Description for another older job",
-          location: "Location",
           currency: "USD",
+          description: "Description for another older job",
           employment_type: "Full-time",
           experience_level: "Mid-level",
-          salary_min: 55_000,
+          location: "Location",
+          remote_allowed: true,
           salary_max: 75_000,
-          remote_allowed: true
+          salary_min: 55_000,
+          title: "Another Older Job"
         })
         |> Ecto.Changeset.put_assoc(:company, company)
         |> Ecto.Changeset.put_change(
@@ -359,15 +359,15 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with valid data creates a job_posting", %{company: company} do
       valid_attrs = %{
-        description: "some description that is long enough",
-        title: "some valid title",
-        location: "some location",
         currency: "some currency",
+        description: "some description that is long enough",
         employment_type: "some employment_type",
         experience_level: "some experience_level",
-        salary_min: 42,
+        location: "some location",
+        remote_allowed: true,
         salary_max: 42,
-        remote_allowed: true
+        salary_min: 42,
+        title: "some valid title"
       }
 
       assert {:ok, %Jobs.JobPosting{} = job_posting} =
@@ -385,15 +385,15 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with salary_min greater than salary_max returns error changeset", %{company: company} do
       invalid_attrs = %{
-        description: "some description that is long enough",
-        title: "some valid title",
-        location: "some location",
         currency: "some currency",
+        description: "some description that is long enough",
         employment_type: "some employment_type",
         experience_level: "some experience_level",
-        salary_min: 100,
+        location: "some location",
+        remote_allowed: true,
         salary_max: 50,
-        remote_allowed: true
+        salary_min: 100,
+        title: "some valid title"
       }
 
       assert {:error, %Ecto.Changeset{}} =
@@ -402,15 +402,15 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with title too short returns error changeset", %{company: company} do
       invalid_attrs = %{
-        description: "some description that is long enough",
-        title: "tiny",
-        location: "some location",
         currency: "some currency",
+        description: "some description that is long enough",
         employment_type: "some employment_type",
         experience_level: "some experience_level",
-        salary_min: 42,
+        location: "some location",
+        remote_allowed: true,
         salary_max: 42,
-        remote_allowed: true
+        salary_min: 42,
+        title: "tiny"
       }
 
       assert {:error, %Ecto.Changeset{}} =
@@ -419,15 +419,15 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with description too short returns error changeset", %{company: company} do
       invalid_attrs = %{
-        description: "too short",
-        title: "some valid title",
-        location: "some location",
         currency: "some currency",
+        description: "too short",
         employment_type: "some employment_type",
         experience_level: "some experience_level",
-        salary_min: 42,
+        location: "some location",
+        remote_allowed: true,
         salary_max: 42,
-        remote_allowed: true
+        salary_min: 42,
+        title: "some valid title"
       }
 
       assert {:error, %Ecto.Changeset{}} =
@@ -441,15 +441,15 @@ defmodule BemedaPersonal.JobsTest do
       PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
 
       valid_attrs = %{
-        description: "some description that is long enough",
-        title: "some valid title",
-        location: "some location",
         currency: "some currency",
+        description: "some description that is long enough",
         employment_type: "some employment_type",
         experience_level: "some experience_level",
-        salary_min: 42,
+        location: "some location",
+        remote_allowed: true,
         salary_max: 42,
-        remote_allowed: true
+        salary_min: 42,
+        title: "some valid title"
       }
 
       {:ok, job_posting} = Jobs.create_job_posting(company, valid_attrs)
