@@ -212,11 +212,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
     {:ok,
      socket
-     |> assign(assigns)
+     |> assign(:enable_submit?, true)
+     |> assign(:form, to_form(changeset))
      |> assign(:mux_data, %{})
      |> assign(:show_video_description, job_posting.mux_data && job_posting.mux_data.playback_id)
-     |> assign(:form, to_form(changeset))
-     |> assign(:enable_submit?, true)}
+     |> assign(assigns)}
   end
 
   @impl Phoenix.LiveComponent
@@ -243,8 +243,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:ok, upload_url} ->
         {:reply, %{upload_url: upload_url},
          socket
-         |> assign(:mux_data, %{file_name: filename})
-         |> assign(:enable_submit?, false)}
+         |> assign(:enable_submit?, false)
+         |> assign(:mux_data, %{file_name: filename})}
 
       {:error, reason} ->
         {:reply, %{error: "Failed to create upload URL: #{inspect(reason)}"}, socket}
@@ -258,8 +258,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   def handle_event("edit-video", _params, socket) do
     {:noreply,
      socket
-     |> assign(:show_video_description, false)
-     |> assign(:mux_data, %{asset_id: nil, playback_id: nil, file_name: nil})}
+     |> assign(:mux_data, %{asset_id: nil, playback_id: nil, file_name: nil})
+     |> assign(:show_video_description, false)}
   end
 
   defp save_job_posting(socket, :new, job_params) do
