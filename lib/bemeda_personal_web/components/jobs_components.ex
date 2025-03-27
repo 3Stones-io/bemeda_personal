@@ -465,15 +465,16 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :class, :string, default: nil
   attr :rest, :global
 
+  @spec video_upload_progress(assigns()) :: output()
   def video_upload_progress(assigns) do
     ~H"""
     <div
       id={"#{@id}"}
       class={[
-      "mt-4 bg-white rounded-lg border border-gray-200 p-4",
-      @class
-    ]}
-    {@rest}
+        "mt-4 bg-white rounded-lg border border-gray-200 p-4",
+        @class
+      ]}
+      {@rest}
     >
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center space-x-2">

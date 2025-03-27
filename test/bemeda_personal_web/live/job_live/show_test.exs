@@ -104,5 +104,27 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
              |> element("a", "View All Jobs")
              |> has_element?()
     end
+
+    test "displays video player for job posting with video", %{conn: conn, job: job} do
+      # Update the job posting with video data
+      {:ok, job} =
+        BemedaPersonal.Jobs.update_job_posting(job, %{
+          mux_data: %{
+            file_name: "test_video.mp4",
+            playback_id: "test-playback-id",
+            asset_id: "test-asset-id"
+          }
+        })
+
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
+
+      assert html =~ ~s(<mux-player playback-id="test-playback-id")
+    end
+
+    test "does not display video player for job posting without video", %{conn: conn, job: job} do
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
+
+      refute html =~ ~s(<mux-player)
+    end
   end
 end

@@ -2,7 +2,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.MuxHelper
+  alias BemedaPersonal.MuxHelpers.Client
   alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveComponent
@@ -18,13 +18,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         phx-submit="save"
         class="space-y-6"
       >
-        <.input
-          field={f[:title]}
-          type="text"
-          label="Job Title"
-          required
-          phx-debounce="blur"
-        />
+        <.input field={f[:title]} type="text" label="Job Title" required phx-debounce="blur" />
 
         <.input
           field={f[:description]}
@@ -36,12 +30,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         />
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <.input
-            field={f[:location]}
-            type="text"
-            label="Location"
-            phx-debounce="blur"
-          />
+          <.input field={f[:location]} type="text" label="Location" phx-debounce="blur" />
 
           <.input
             field={f[:employment_type]}
@@ -112,10 +101,48 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           />
         </div>
 
+        <div :if={@show_video_description} id="job-posting-form-video-description">
+          <p class="text-sm font-medium text-gray-900 mb-4">Video Description</p>
+
+          <div
+            class="relative w-full bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:bg-gray-50"
+            role="button"
+            phx-click={
+              JS.toggle(
+                to: "#video-preview-player",
+                in: "transition-all duration-500 ease-in-out",
+                out: "transition-all duration-500 ease-in-out"
+              )
+            }
+          >
+            <div class="flex items-center space-x-4">
+              <div class="flex-shrink-0">
+                <.icon name="hero-video-camera" class="h-8 w-8 text-indigo-600" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 truncate">
+                  {@job_posting.mux_data.file_name}
+                </p>
+              </div>
+              <div class="flex-shrink-0">
+                <button type="button" class="text-red-600 hover:text-red-800">
+                  <.icon name="hero-trash" class="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="video-preview-player" class="mt-4 hidden">
+            <mux-player playback-id={@job_posting.mux_data.playback_id} class="w-full aspect-video">
+            </mux-player>
+          </div>
+        </div>
+
         <div
           id={"#{@id}-video-upload"}
           class={[
-            "relative w-full"
+            "relative w-full",
+            @show_video_description && "hidden"
           ]}
           phx-hook="VideoUpload"
           phx-update="ignore"
@@ -153,7 +180,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             <.icon name="hero-exclamation-circle" class="h-4 w-4" />
             Unsupported file type. Please upload a video file.
           </p>
-
         </div>
 
         <JobsComponents.video_upload_progress
@@ -166,9 +192,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.button
             type="submit"
             id="job-posting-form-submit-button"
-            class={
-              !@enable_submit? && "opacity-50 cursor-not-allowed"
-            }
+            class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
           >
             {if(@action == :edit, do: "Save Changes", else: "Post Job")}
           </.button>
@@ -190,6 +214,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:mux_data, %{})
+     |> assign(:show_video_description, job_posting.mux_data && job_posting.mux_data.playback_id)
      |> assign(:form, to_form(changeset))
      |> assign(:enable_submit?, true)}
   end
@@ -213,12 +238,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
     save_job_posting(socket, socket.assigns.action, job_params)
   end
 
-  def handle_event("upload-video", _params, socket) do
-    case MuxHelper.create_direct_upload() do
-      %{url: upload_url} ->
-        {:reply,
-          %{upload_url: upload_url},
-          assign(socket, :enable_submit?, false)}
+  def handle_event("upload-video", %{"filename" => filename}, socket) do
+    case Client.create_direct_upload() do
+      {:ok, upload_url} ->
+        {:reply, %{upload_url: upload_url},
+         socket
+         |> assign(:mux_data, %{file_name: filename})
+         |> assign(:enable_submit?, false)}
 
       {:error, reason} ->
         {:reply, %{error: "Failed to create upload URL: #{inspect(reason)}"}, socket}
@@ -227,6 +253,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   def handle_event("enable-submit", _params, socket) do
     {:noreply, assign(socket, :enable_submit?, true)}
+  end
+
+  def handle_event("edit-video", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:show_video_description, false)
+     |> assign(:mux_data, %{asset_id: nil, playback_id: nil, file_name: nil})}
   end
 
   defp save_job_posting(socket, :new, job_params) do

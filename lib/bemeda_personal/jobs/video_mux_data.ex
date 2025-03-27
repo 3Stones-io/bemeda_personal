@@ -11,12 +11,12 @@ defmodule BemedaPersonal.Jobs.VideoMuxData do
 
   embedded_schema do
     field :asset_id, :string
+    field :file_name, :string
     field :playback_id, :string
   end
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(video_data, attrs) do
-    video_data
-    |> cast(attrs, [:asset_id, :playback_id])
+    cast(video_data, attrs, [:asset_id, :file_name, :playback_id])
   end
 end
