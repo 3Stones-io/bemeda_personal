@@ -5,7 +5,9 @@ defmodule BemedaPersonal.Jobs do
 
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Repo
   alias Ecto.Changeset
@@ -14,8 +16,10 @@ defmodule BemedaPersonal.Jobs do
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type company :: Company.t()
+  @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
+  @type user :: User.t()
 
   @job_posting_topic "job_posting"
 
@@ -257,6 +261,130 @@ defmodule BemedaPersonal.Jobs do
     |> select([j], count(j.id))
     |> Repo.one()
   end
+
+  @doc """
+  Gets a single job application.
+
+  Raises `Ecto.NoResultsError` if the Job application does not exist.
+
+  ## Examples
+
+      iex> get_job_application!(123)
+      %JobApplication{}
+
+      iex> get_job_application!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  @spec get_job_application!(Ecto.UUID.t()) :: job_application() | no_return()
+  def get_job_application!(id) do
+    JobApplication
+    |> Repo.get!(id)
+    |> Repo.preload([:job_posting, :user])
+  end
+
+  @doc """
+  Creates a job application.
+
+  ## Examples
+
+      iex> create_job_application(%{field: value})
+      {:ok, %JobApplication{}}
+
+      iex> create_job_application(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec create_job_application(user(), job_posting(), attrs()) ::
+          {:ok, job_application()} | {:error, changeset()}
+  def create_job_application(%User{} = user, %JobPosting{} = job_posting, attrs \\ %{}) do
+    %JobApplication{}
+    |> JobApplication.changeset(attrs)
+    |> Changeset.put_assoc(:user, user)
+    |> Changeset.put_assoc(:job_posting, job_posting)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a job application.
+
+  ## Examples
+
+      iex> update_job_application(job_application, %{field: new_value})
+      {:ok, %JobApplication{}}
+
+      iex> update_job_application(job_application, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec update_job_application(job_application(), attrs()) ::
+          {:ok, job_application()} | {:error, changeset()}
+  def update_job_application(%JobApplication{} = job_application, attrs) do
+    job_application
+    |> JobApplication.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking job application changes.
+
+  ## Examples
+
+      iex> change_job_application(job_application)
+      %Ecto.Changeset{data: %JobApplication{}}
+
+  """
+  @spec change_job_application(job_application(), attrs()) :: changeset()
+  def change_job_application(%JobApplication{} = job_application, attrs \\ %{}) do
+    JobApplication.changeset(job_application, attrs)
+  end
+
+  @doc """
+  Returns the list of job applications with optional filtering.
+
+  ## Examples
+
+      iex> list_job_applications()
+      [%JobApplication{}, ...]
+
+      iex> list_job_applications(%{user_id: user_id})
+      [%JobApplication{}, ...]
+
+      iex> list_job_applications(%{job_posting_id: job_posting_id})
+      [%JobApplication{}, ...]
+
+  """
+  @spec list_job_applications(map(), non_neg_integer()) :: [job_application()]
+  def list_job_applications(filters \\ %{}, limit \\ 10) do
+    filter_query = apply_job_application_filters()
+
+    job_application_query()
+    |> where(^filter_query.(filters))
+    |> order_by([ja], desc: ja.inserted_at)
+    |> limit(^limit)
+    |> Repo.all()
+    |> Repo.preload([:job_posting, :user])
+  end
+
+  defp job_application_query do
+    from job_application in JobApplication, as: :job_application
+  end
+
+  defp apply_job_application_filters do
+    fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_job_application_filter/2)
+    end
+  end
+
+  defp apply_job_application_filter({:user_id, user_id}, dynamic) do
+    dynamic([job_application: ja], ^dynamic and ja.user_id == ^user_id)
+  end
+
+  defp apply_job_application_filter({:job_posting_id, job_posting_id}, dynamic) do
+    dynamic([job_application: ja], ^dynamic and ja.job_posting_id == ^job_posting_id)
+  end
+
+  defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   defp broadcast_event(topic, message) do
     PubSub.broadcast(

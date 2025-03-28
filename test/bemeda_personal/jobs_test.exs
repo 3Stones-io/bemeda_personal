@@ -24,7 +24,14 @@ defmodule BemedaPersonal.JobsTest do
     user = user_fixture()
     company = company_fixture(user)
     job_posting = job_posting_fixture(company)
-    %{company: company, job_posting: job_posting, user: user}
+    job_application = job_application_fixture(user, job_posting)
+
+    %{
+      company: company,
+      job_posting: job_posting,
+      user: user,
+      job_application: job_application
+    }
   end
 
   defp create_multiple_job_postings(company, count) do
@@ -577,6 +584,219 @@ defmodule BemedaPersonal.JobsTest do
       changeset = Jobs.change_job_posting(job_posting, @invalid_attrs)
       assert %Ecto.Changeset{valid?: false} = changeset
       assert errors_on(changeset)[:title] == ["can't be blank"]
+    end
+  end
+
+  # Job Applications
+  describe "create_job_application/3" do
+    setup [:create_job_posting]
+
+    test "creates a job_application with valid data", %{job_posting: job_posting, user: user} do
+      valid_attrs = %{
+        cover_letter: "some cover letter"
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = job_application} =
+               Jobs.create_job_application(user, job_posting, valid_attrs)
+
+      assert job_application.cover_letter == "some cover letter"
+      assert job_application.job_posting_id == job_posting.id
+      assert job_application.user_id == user.id
+    end
+
+    test "returns error changeset when data is invalid", %{job_posting: job_posting, user: user} do
+      invalid_attrs = %{
+        cover_letter: nil
+      }
+
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.create_job_application(user, job_posting, invalid_attrs)
+    end
+  end
+
+  describe "change_job_posting_application/1" do
+    setup [:create_job_posting]
+
+    test "returns a job_posting changeset", %{job_application: job_application} do
+      assert %Ecto.Changeset{} = Jobs.change_job_application(job_application)
+    end
+
+    test "returns a job_posting changeset with errors when data is invalid", %{
+      job_application: job_application
+    } do
+      changeset = Jobs.change_job_application(job_application, %{cover_letter: nil})
+      assert %Ecto.Changeset{valid?: false} = changeset
+      assert errors_on(changeset)[:cover_letter] == ["can't be blank"]
+    end
+  end
+
+  describe "update_job_application/2" do
+    setup [:create_job_posting]
+
+    test "updates the job_application with valid data", %{job_application: job_application} do
+      update_attrs = %{
+        cover_letter: "updated cover letter"
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = updated_job_application} =
+               Jobs.update_job_application(job_application, update_attrs)
+
+      assert updated_job_application.cover_letter == "updated cover letter"
+      assert updated_job_application.id == job_application.id
+    end
+
+    test "returns error changeset with invalid data", %{job_application: job_application} do
+      invalid_attrs = %{
+        cover_letter: nil
+      }
+
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.update_job_application(job_application, invalid_attrs)
+
+      # The job application should remain unchanged
+      unchanged_job_application = Jobs.get_job_application!(job_application.id)
+      assert unchanged_job_application.cover_letter == job_application.cover_letter
+    end
+  end
+
+  describe "get_job_application!/1" do
+    setup [:create_job_posting]
+
+    test "returns the job_application with given id", %{job_application: job_application} do
+      result = Jobs.get_job_application!(job_application.id)
+      assert result.id == job_application.id
+      assert result.cover_letter == job_application.cover_letter
+      assert Ecto.assoc_loaded?(result.job_posting)
+      assert Ecto.assoc_loaded?(result.user)
+    end
+
+    test "raises error when job application with id does not exist" do
+      assert_raise Ecto.NoResultsError, fn ->
+        Jobs.get_job_application!(Ecto.UUID.generate())
+      end
+    end
+  end
+
+  describe "list_job_applications/2" do
+    setup [:create_job_posting]
+
+    test "returns all job applications when no filter is passed", %{
+      job_application: job_application
+    } do
+      assert [result] = Jobs.list_job_applications()
+      assert result.id == job_application.id
+      assert Ecto.assoc_loaded?(result.job_posting)
+      assert Ecto.assoc_loaded?(result.user)
+    end
+
+    test "can filter job applications by user_id", %{job_application: job_application, user: user} do
+      # Create another user with an application
+      user2 = user_fixture(%{email: "user2@example.com"})
+      job_application_fixture(user2, job_application.job_posting)
+
+      assert [result] = Jobs.list_job_applications(%{user_id: user.id})
+      assert result.id == job_application.id
+      assert result.user_id == user.id
+      assert Ecto.assoc_loaded?(result.job_posting)
+      assert Ecto.assoc_loaded?(result.user)
+    end
+
+    test "can filter job applications by job_posting_id", %{
+      job_application: job_application,
+      user: user
+    } do
+      # Create another job posting with an application
+      another_company = company_fixture(user)
+      another_job_posting = job_posting_fixture(another_company)
+      job_application_fixture(user, another_job_posting)
+
+      assert [result] =
+               Jobs.list_job_applications(%{job_posting_id: job_application.job_posting_id})
+
+      assert result.id == job_application.id
+      assert result.job_posting_id == job_application.job_posting_id
+      assert Ecto.assoc_loaded?(result.job_posting)
+      assert Ecto.assoc_loaded?(result.user)
+    end
+
+    test "returns empty list when a user has no job applications" do
+      user = user_fixture(%{email: "no_applications@example.com"})
+      non_existing_user_id = Ecto.UUID.generate()
+
+      assert %{user_id: non_existing_user_id}
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
+
+      assert %{user_id: user.id}
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
+    end
+
+    test "returns empty list when a job posting has no applications" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+      non_existing_job_posting_id = Ecto.UUID.generate()
+
+      assert %{job_posting_id: non_existing_job_posting_id}
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
+
+      assert %{job_posting_id: job_posting.id}
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
+    end
+
+    test "can filter job applications by multiple parameters", %{
+      job_application: job_application,
+      user: user,
+      job_posting: job_posting
+    } do
+      # Create another user
+      user2 = user_fixture(%{email: "user2@example.com"})
+
+      # Create another job posting
+      another_company = company_fixture(user)
+      another_job_posting = job_posting_fixture(another_company)
+
+      # Create job applications with different combinations
+      job_application_fixture(user2, job_posting)
+      job_application_fixture(user, another_job_posting)
+      job_application_fixture(user2, another_job_posting)
+
+      # Test filtering by both user_id and job_posting_id
+      assert [result] =
+               Jobs.list_job_applications(%{
+                 user_id: user.id,
+                 job_posting_id: job_posting.id
+               })
+
+      assert result.id == job_application.id
+      assert result.user_id == user.id
+      assert result.job_posting_id == job_posting.id
+    end
+
+    test "defaults to listing all job applications if a non-existent filter is passed", %{
+      job_application: job_application
+    } do
+      assert [result] = Jobs.list_job_applications(%{unknown_filter: "unknown_filter"})
+      assert job_application.id == result.id
+    end
+
+    test "limits the number of returned job applications" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+
+      # Create multiple job applications
+      Enum.each(1..15, fn _application ->
+        job_application_fixture(user, job_posting, %{
+          cover_letter: "Cover letter #{:rand.uniform(1000)}"
+        })
+      end)
+
+      assert length(Jobs.list_job_applications()) == 10
+      assert length(Jobs.list_job_applications(%{}, 5)) == 5
     end
   end
 end
