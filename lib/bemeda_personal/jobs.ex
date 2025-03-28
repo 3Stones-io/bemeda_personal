@@ -263,6 +263,53 @@ defmodule BemedaPersonal.Jobs do
   end
 
   @doc """
+  Returns the list of job applications with optional filtering.
+
+  ## Examples
+
+      iex> list_job_applications()
+      [%JobApplication{}, ...]
+
+      iex> list_job_applications(%{user_id: user_id})
+      [%JobApplication{}, ...]
+
+      iex> list_job_applications(%{job_posting_id: job_posting_id})
+      [%JobApplication{}, ...]
+
+  """
+  @spec list_job_applications(map(), non_neg_integer()) :: [job_application()]
+  def list_job_applications(filters \\ %{}, limit \\ 10) do
+    filter_query = apply_job_application_filters()
+
+    job_application_query()
+    |> where(^filter_query.(filters))
+    |> order_by([ja], desc: ja.inserted_at)
+    |> limit(^limit)
+    |> Repo.all()
+    |> Repo.preload([:user, job_posting: [:company]])
+  end
+
+  defp job_application_query do
+    from job_application in JobApplication, as: :job_application
+  end
+
+  defp apply_job_application_filters do
+    fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_job_application_filter/2)
+    end
+  end
+
+  defp apply_job_application_filter({:user_id, user_id}, dynamic) do
+    dynamic([job_application: ja], ^dynamic and ja.user_id == ^user_id)
+  end
+
+  defp apply_job_application_filter({:job_posting_id, job_posting_id}, dynamic) do
+    dynamic([job_application: ja], ^dynamic and ja.job_posting_id == ^job_posting_id)
+  end
+
+  defp apply_job_application_filter(_other, dynamic), do: dynamic
+
+  @doc """
   Gets a single job application.
 
   Raises `Ecto.NoResultsError` if the Job application does not exist.
@@ -281,6 +328,22 @@ defmodule BemedaPersonal.Jobs do
     JobApplication
     |> Repo.get!(id)
     |> Repo.preload([:job_posting, :user])
+  end
+
+  @doc """
+  Returns a job application for a specific user and job posting.
+
+  ## Examples
+
+      iex> get_user_job_application(user, job_posting)
+      %JobApplication{}
+
+  """
+  @spec get_user_job_application(user(), job_posting()) :: job_application() | no_return()
+  def get_user_job_application(%User{} = user, %JobPosting{} = job) do
+    JobApplication
+    |> where([ja], ja.user_id == ^user.id and ja.job_posting_id == ^job.id)
+    |> Repo.one()
   end
 
   @doc """
@@ -338,53 +401,6 @@ defmodule BemedaPersonal.Jobs do
   def change_job_application(%JobApplication{} = job_application, attrs \\ %{}) do
     JobApplication.changeset(job_application, attrs)
   end
-
-  @doc """
-  Returns the list of job applications with optional filtering.
-
-  ## Examples
-
-      iex> list_job_applications()
-      [%JobApplication{}, ...]
-
-      iex> list_job_applications(%{user_id: user_id})
-      [%JobApplication{}, ...]
-
-      iex> list_job_applications(%{job_posting_id: job_posting_id})
-      [%JobApplication{}, ...]
-
-  """
-  @spec list_job_applications(map(), non_neg_integer()) :: [job_application()]
-  def list_job_applications(filters \\ %{}, limit \\ 10) do
-    filter_query = apply_job_application_filters()
-
-    job_application_query()
-    |> where(^filter_query.(filters))
-    |> order_by([ja], desc: ja.inserted_at)
-    |> limit(^limit)
-    |> Repo.all()
-    |> Repo.preload([:job_posting, :user])
-  end
-
-  defp job_application_query do
-    from job_application in JobApplication, as: :job_application
-  end
-
-  defp apply_job_application_filters do
-    fn filters ->
-      Enum.reduce(filters, dynamic(true), &apply_job_application_filter/2)
-    end
-  end
-
-  defp apply_job_application_filter({:user_id, user_id}, dynamic) do
-    dynamic([job_application: ja], ^dynamic and ja.user_id == ^user_id)
-  end
-
-  defp apply_job_application_filter({:job_posting_id, job_posting_id}, dynamic) do
-    dynamic([job_application: ja], ^dynamic and ja.job_posting_id == ^job_posting_id)
-  end
-
-  defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   defp broadcast_event(topic, message) do
     PubSub.broadcast(

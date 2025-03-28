@@ -18,17 +18,17 @@ defmodule BemedaPersonalWeb.Router do
   end
 
   scope "/", BemedaPersonalWeb do
-    pipe_through :browser
+    pipe_through [:browser, :assign_current_user]
 
     get "/", PageController, :home
 
-    # Public job routes - using LiveView
-    live "/jobs", JobLive.Index, :index
-    live "/jobs/:id", JobLive.Show, :show
-
-    # Public company routes - using LiveView
-    live "/company/:id", CompanyPublicLive.Show, :show
-    live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
+    live_session :public_routes,
+      on_mount: [{BemedaPersonalWeb.UserAuth, :mount_current_user}] do
+      live "/jobs", JobLive.Index, :index
+      live "/jobs/:id", JobLive.Show, :show
+      live "/company/:id", CompanyPublicLive.Show, :show
+      live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
+    end
   end
 
   # Other scopes may use custom stacks.
@@ -84,6 +84,12 @@ defmodule BemedaPersonalWeb.Router do
       live "/resume/education/:id/edit", Resume.ShowLive, :edit_education
       live "/resume/work-experience/new", Resume.ShowLive, :new_work_experience
       live "/resume/work-experience/:id/edit", Resume.ShowLive, :edit_work_experience
+
+      # Job application routes
+      live "/jobs/:job_id/job_applications", JobApplicationLive.Index, :index
+      live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
+      live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
+      live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
     end
   end
 

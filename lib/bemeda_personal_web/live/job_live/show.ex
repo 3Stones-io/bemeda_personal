@@ -13,6 +13,22 @@ defmodule BemedaPersonalWeb.JobLive.Show do
     {:noreply,
      socket
      |> assign(:job_posting, job_posting)
-     |> assign(:page_title, job_posting.title)}
+     |> assign(:page_title, job_posting.title)
+     |> assign_current_user_application()}
+  end
+
+  defp assign_current_user_application(socket) do
+    if socket.assigns.current_user do
+      assign(
+        socket,
+        :application,
+        Jobs.get_user_job_application(
+          socket.assigns.current_user,
+          socket.assigns.job_posting
+        )
+      )
+    else
+      assign(socket, :application, nil)
+    end
   end
 end

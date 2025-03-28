@@ -1,0 +1,77 @@
+<section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+  <div
+    :if={!@resume}
+    id="resume-warning"
+    class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6"
+  >
+    <div class="flex justify-between">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <.icon name="hero-exclamation-triangle" class="h-5 w-5 text-yellow-400" />
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            You haven't created a resume yet.
+            <.link
+              navigate={~p"/resume"}
+              class="font-medium underline text-yellow-700 hover:text-yellow-600"
+            >
+              Create your resume
+            </.link>
+            to improve your chances of getting hired.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        phx-click={JS.hide(to: "#resume-warning", transition: "fade-out")}
+        class="text-yellow-500 hover:text-yellow-700"
+      >
+        <.icon name="hero-x-mark" class="h-5 w-5" />
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white overflow-hidden shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">
+            <.link navigate={~p"/jobs/#{@job_posting.id}"} class="hover:text-blue-600">
+              {@job_posting.title} at {@job_posting.company.name}
+            </.link>
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">
+            Submitted on {Calendar.strftime(@job_application.inserted_at, "%B %d, %Y")}
+          </p>
+        </div>
+        <div class="flex space-x-2">
+          <.link
+            :if={@resume}
+            navigate={~p"/resume"}
+            class="inline-flex rounded-md items-center text-blue-700 bg-blue-100 hover:bg-blue-200 px-2"
+          >
+            <.icon name="hero-document" class="h-5 w-5 mr-2" /> Edit Your Resume
+          </.link>
+
+          <.link navigate={
+            ~p"/jobs/#{@job_posting.id}/job_applications/#{@job_application.id}/edit"
+          }>
+            <.button>Edit application</.button>
+          </.link>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white overflow-hidden shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <div class="mt-4 prose max-w-none">
+        <h3 class="text-lg font-medium text-gray-700">Cover Letter</h3>
+        <div class="mt-2 md-to-html">
+          {SharedHelpers.to_html(@job_application.cover_letter)}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

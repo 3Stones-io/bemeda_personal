@@ -1,0 +1,70 @@
+<section class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto mt-4">
+  <h1 class="text-2xl font-bold">My Job Applications</h1>
+
+  <div
+    :if={@live_action == :index}
+    role="list"
+    class="mt-8 space-y-4"
+    phx-update="stream"
+    id="job-applications"
+  >
+    <div
+      :for={{id, application} <- @streams.job_applications}
+      role="listitem"
+      id={id}
+      class="bg-white shadow rounded-lg overflow-hidden border border-gray-200"
+    >
+      <div
+        class="p-6 hover:bg-gray-50 cursor-pointer relative"
+        phx-click={
+          JS.navigate(~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}")
+        }
+      >
+        <div class="flex justify-between">
+          <div class="flex-1 pr-4">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">{application.job_posting.title}</h3>
+              <p class="text-sm text-gray-600 mt-1">{application.job_posting.company.name}</p>
+            </div>
+
+            <div class="mt-4 flex items-center text-sm text-gray-500">
+              <.icon name="hero-calendar" class="w-4 h-4 mr-1" />
+              Applied on {DateUtils.format_date(DateTime.to_date(application.inserted_at))}
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <.link
+              navigate={
+                ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}/edit"
+              }
+              class="px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Edit
+            </.link>
+            <.link
+              navigate={~p"/jobs/#{application.job_posting_id}"}
+              class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              View Job
+            </.link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div :if={@live_action in [:new, :edit]}>
+    <.live_component
+      module={FormComponent}
+      action={@live_action}
+      id="job-application-form"
+      job_posting={@job_posting}
+      job_application={@job_application}
+      return_to={~p"/jobs/#{@job_posting.id}/job_applications"}
+      resume={@resume}
+      title={@page_title}
+      current_user={@current_user}
+    />
+  </div>
+</section>

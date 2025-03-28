@@ -80,6 +80,18 @@ defmodule BemedaPersonal.Resumes do
   end
 
   @doc """
+  Gets a user's resume.
+
+  Returns nil if the user does not have a resume.
+  """
+  @spec get_user_resume(user()) :: resume() | nil
+  def get_user_resume(user) do
+    Resume
+    |> where([r], r.user_id == ^user.id)
+    |> Repo.one()
+  end
+
+  @doc """
   Updates a resume.
 
   ## Examples

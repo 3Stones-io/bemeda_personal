@@ -799,4 +799,24 @@ defmodule BemedaPersonal.JobsTest do
       assert length(Jobs.list_job_applications(%{}, 5)) == 5
     end
   end
+
+  describe "get_user_job_application/2" do
+    setup [:create_job_posting]
+
+    test "returns the job_application for a user and job posting", %{
+      job_application: job_application,
+      user: user,
+      job_posting: job_posting
+    } do
+      result = Jobs.get_user_job_application(user, job_posting)
+      assert result.id == job_application.id
+      assert result.user_id == user.id
+      assert result.job_posting_id == job_posting.id
+    end
+
+    test "returns nil when a user has not applied to a job posting", %{job_posting: job_posting} do
+      another_user = user_fixture(%{email: "no_application@example.com"})
+      refute Jobs.get_user_job_application(another_user, job_posting)
+    end
+  end
 end
