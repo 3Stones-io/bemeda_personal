@@ -10,6 +10,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   def mount(_params, _session, socket) do
     job_applications = Jobs.list_job_applications(%{user_id: socket.assigns.current_user.id})
 
+    if connected?(socket),
+      do: Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job-video")
+
     {:ok,
      socket
      |> stream(:job_applications, job_applications)
@@ -21,6 +24,18 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
+
+  @impl Phoenix.LiveView
+  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
+    send_update(FormComponent,
+      id: "job-application-form",
+      mux_data: %{asset_id: asset_id, playback_id: playback_id}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_info(_event, socket), do: {:noreply, socket}
 
   defp apply_action(socket, :new, %{"job_id" => job_id}) do
     job_posting = Jobs.get_job_posting!(job_id)

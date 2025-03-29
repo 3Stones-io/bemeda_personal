@@ -2,6 +2,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.MuxHelpers.Client
+  alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -11,13 +13,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
         {@title}
       </.header>
 
-      <.simple_form
-        for={@form}
-        id="job_application-form"
-        phx-target={@myself}
-        phx-change="validate"
-        phx-submit="save"
-      >
+      <.simple_form for={@form} id={@id} phx-target={@myself} phx-change="validate" phx-submit="save">
         <.input
           field={@form[:cover_letter]}
           type="textarea"
@@ -26,8 +22,32 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
           phx-debounce="blur"
         />
 
+        <JobsComponents.video_preview_component
+          show_video_description={@show_video_description}
+          mux_data={@job_application.mux_data}
+        />
+
+        <JobsComponents.video_upload_input_component
+          id="job_application-video"
+          show_video_description={@show_video_description}
+          events_target={@id}
+        />
+
+        <JobsComponents.video_upload_progress
+          id={"#{@id}-video"}
+          class="job-application-form-video-upload-progress hidden"
+          phx-update="ignore"
+        />
+
         <:actions>
-          <.button phx-disable-with="Saving...">Submit Application</.button>
+          <div class="ml-auto mb-4">
+            <.button
+              class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
+              phx-disable-with="Saving..."
+            >
+              Submit Application
+            </.button>
+          </div>
         </:actions>
       </.simple_form>
     </div>
@@ -35,17 +55,29 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{mux_data: mux_data}, socket) do
+    {:ok, assign(socket, :mux_data, Map.merge(socket.assigns.mux_data, mux_data))}
+  end
+
   def update(%{job_application: job_application} = assigns, socket) do
     changeset = Jobs.change_job_application(job_application)
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:enable_submit?, true)
+     |> assign(:mux_data, %{})
+     |> assign(
+       :show_video_description,
+       job_application.mux_data && job_application.mux_data.playback_id
+     )
      |> assign_form(changeset)}
   end
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"job_application" => job_application_params}, socket) do
+    job_application_params = update_mux_data_params(socket, job_application_params)
+
     changeset =
       socket.assigns.job_application
       |> Jobs.change_job_application(job_application_params)
@@ -56,7 +88,33 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"job_application" => job_application_params}, socket) do
+    job_application_params = update_mux_data_params(socket, job_application_params)
+
     save_job_application(socket, socket.assigns.action, job_application_params)
+  end
+
+  def handle_event("upload-video", %{"filename" => filename}, socket) do
+    case Client.create_direct_upload() do
+      {:ok, upload_url} ->
+        {:reply, %{upload_url: upload_url},
+         socket
+         |> assign(:enable_submit?, false)
+         |> assign(:mux_data, %{file_name: filename})}
+
+      {:error, reason} ->
+        {:reply, %{error: "Failed to create upload URL: #{inspect(reason)}"}, socket}
+    end
+  end
+
+  def handle_event("enable-submit", _params, socket) do
+    {:noreply, assign(socket, :enable_submit?, true)}
+  end
+
+  def handle_event("edit-video", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:mux_data, %{asset_id: nil, playback_id: nil, file_name: nil})
+     |> assign(:show_video_description, false)}
   end
 
   defp save_job_application(socket, :edit, job_application_params) do
@@ -97,7 +155,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     assign(socket, :form, to_form(changeset))
   end
 
+  defp update_mux_data_params(socket, params) do
+    Map.put(params, "mux_data", socket.assigns.mux_data)
+  end
+
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end
-
-# Show the application preview instead -> Here show / remind the user about the resume

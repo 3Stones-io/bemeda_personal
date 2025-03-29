@@ -31,10 +31,12 @@ defmodule BemedaPersonalWeb.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", BemedaPersonalWeb do
-  #   pipe_through :api
-  # end
+  # Mux webhook endpoint
+  scope "/", BemedaPersonalWeb do
+    pipe_through :api
+
+    post "/webhooks/mux", MuxWebhookController, :handle
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:bemeda_personal, :dev_routes) do

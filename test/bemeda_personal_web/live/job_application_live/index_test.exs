@@ -178,7 +178,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       html =
         view
-        |> form("#job_application-form", %{
+        |> form("#job-application-form", %{
           "job_application" => %{
             "cover_letter" => ""
           }
@@ -186,6 +186,32 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         |> render_change()
 
       assert html =~ "can&#39;t be blank"
+    end
+
+    test "shows video upload input component on new application form", %{
+      conn: conn,
+      job: job
+    } do
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
+
+      assert html =~ "Drag and drop to upload your video"
+      assert html =~ "Browse Files"
+      assert html =~ "Max file size: 50MB"
+    end
+
+    test "renders video upload progress component correctly", %{
+      conn: conn,
+      job: job
+    } do
+      {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
+
+      assert view
+             |> element(".job-application-form-video-upload-progress")
+             |> has_element?()
+
+      assert view
+             |> element("#job-application-form-video")
+             |> has_element?()
     end
   end
 
@@ -236,7 +262,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       html =
         view
-        |> form("#job_application-form", %{
+        |> form("#job-application-form", %{
           "job_application" => %{
             "cover_letter" => ""
           }
@@ -274,7 +300,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
       assert view
-             |> form("#job_application-form", %{
+             |> form("#job-application-form", %{
                "job_application" => %{
                  "cover_letter" =>
                    "I am very interested in this position. Please consider my application."
@@ -307,7 +333,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         )
 
       assert view
-             |> form("#job_application-form", %{
+             |> form("#job-application-form", %{
                "job_application" => %{
                  "cover_letter" => "Updated cover letter with more details about my experience."
                }
@@ -320,6 +346,64 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
+    end
+  end
+
+  describe "job application form with video" do
+    setup %{conn: conn} do
+      base_data = create_test_data(conn)
+
+      application_with_video =
+        job_application_fixture(
+          base_data.user,
+          base_data.job,
+          %{
+            cover_letter: "Application with video",
+            mux_data: %{
+              asset_id: "asset_123",
+              playback_id: "playback_123",
+              file_name: "test_video.mp4"
+            }
+          }
+        )
+
+      Map.put(base_data, :application_with_video, application_with_video)
+    end
+
+    test "displays video filename when editing application with video", %{
+      conn: conn,
+      application_with_video: application
+    } do
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}/edit"
+        )
+
+      assert html =~ "Video Description"
+      assert html =~ "test_video.mp4"
+    end
+
+    test "provides video upload controls on new application form", %{
+      conn: conn,
+      job: job
+    } do
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
+
+      assert html =~ "video-upload-inputs-container"
+      assert html =~ "Drag and drop to upload your video"
+      assert html =~ "Browse Files"
+    end
+
+    test "shows video upload progress component", %{
+      conn: conn,
+      job: job
+    } do
+      {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
+
+      assert view
+             |> element(".job-application-form-video-upload-progress")
+             |> has_element?()
     end
   end
 end

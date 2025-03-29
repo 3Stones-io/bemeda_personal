@@ -176,5 +176,46 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ job_application.job_posting.title
       assert html =~ job_application.job_posting.description
     end
+
+    test "displays video player when application has video", %{
+      conn: conn,
+      user: user,
+      job: job
+    } do
+      job_application_with_video =
+        job_application_fixture(
+          user,
+          job,
+          %{
+            cover_letter: "Application with video",
+            mux_data: %{
+              asset_id: "asset_123",
+              playback_id: "test-playback-id",
+              file_name: "test_video.mp4"
+            }
+          }
+        )
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application_with_video.job_posting_id}/job_applications/#{job_application_with_video.id}"
+        )
+
+      assert html =~ ~s(<mux-player playback-id="test-playback-id")
+    end
+
+    test "does not display video player when application has no video", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      refute html =~ "<mux-player"
+    end
   end
 end
