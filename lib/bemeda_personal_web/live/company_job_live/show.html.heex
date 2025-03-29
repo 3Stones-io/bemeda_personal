@@ -1,0 +1,44 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <JobsComponents.job_detail_header job={@job_posting} back_link={~p"/jobs"} />
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-900">Job Description</h2>
+          <div class="flex justify-between gap-x-2">
+            <.link
+              navigate={~p"/companies/#{@job_posting.company_id}/jobs/#{@job_posting.id}/edit"}
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+            >
+              Edit Job
+            </.link>
+
+            <.link
+              navigate={~p"/companies/#{@job_posting.company_id}/applicants/#{@job_posting.id}"}
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+            >
+              View Applicants
+            </.link>
+          </div>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
+          {SharedHelpers.to_html(@job_posting.description)}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6">
+          <h2 class="text-lg font-medium text-gray-900">Job Details</h2>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 mb-4">
+          <JobsComponents.job_details job={@job_posting} />
+        </div>
+      </div>
+
+      <JobsComponents.company_details_card company={@job_posting.company} />
+    </div>
+  </div>
+</div>

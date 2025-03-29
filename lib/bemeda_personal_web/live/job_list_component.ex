@@ -34,6 +34,11 @@ defmodule BemedaPersonalWeb.JobListComponent do
           <JobsComponents.job_posting_card
             id={"card-#{job_id}"}
             job={job}
+            job_view_url={
+              if @company_job_view_url == :company_job,
+                do: ~p"/companies/#{job.company_id}/jobs/#{job.id}",
+                else: ~p"/jobs/#{job.id}"
+            }
             show_actions={@show_actions}
             show_company_name={@show_company_name}
             target={"##{@id}"}

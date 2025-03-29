@@ -89,6 +89,7 @@ defmodule BemedaPersonal.Resumes do
     Resume
     |> where([r], r.user_id == ^user.id)
     |> Repo.one()
+    |> Repo.preload([:user, :educations, :work_experiences])
   end
 
   @doc """

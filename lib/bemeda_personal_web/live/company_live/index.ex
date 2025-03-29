@@ -20,9 +20,11 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     {:ok,
      socket
      |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
+     |> stream_configure(:recent_applicants, dom_id: &"applicant-#{&1.id}")
      |> assign(:company, company)
      |> assign_job_count(company)
-     |> assign_job_postings(company)}
+     |> assign_job_postings(company)
+     |> assign_recent_applicants(company)}
   end
 
   @impl Phoenix.LiveView
@@ -74,6 +76,14 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     job_postings = Jobs.list_job_postings(%{company_id: company.id}, 5)
 
     stream(socket, :job_postings, job_postings)
+  end
+
+  defp assign_recent_applicants(socket, nil), do: stream(socket, :recent_applicants, [])
+
+  defp assign_recent_applicants(socket, company) do
+    recent_applicants = Jobs.list_job_applications(%{company_id: company.id}, 10)
+
+    stream(socket, :recent_applicants, recent_applicants)
   end
 
   defp assign_job_count(socket, nil), do: assign(socket, :job_count, 0)

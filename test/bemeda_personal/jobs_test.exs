@@ -719,6 +719,27 @@ defmodule BemedaPersonal.JobsTest do
       assert Ecto.assoc_loaded?(result.user)
     end
 
+    test "can filter job applications by company_id", %{
+      job_application: job_application,
+      user: user,
+      job_posting: job_posting
+    } do
+      company_id = job_posting.company_id
+
+      another_company = company_fixture(user)
+      another_job_posting = job_posting_fixture(another_company)
+      job_application_fixture(user, another_job_posting)
+
+      results = Jobs.list_job_applications(%{company_id: company_id})
+
+      assert length(results) == 1
+      [result] = results
+      assert result.id == job_application.id
+      assert result.job_posting.company_id == company_id
+      assert Ecto.assoc_loaded?(result.job_posting)
+      assert Ecto.assoc_loaded?(result.user)
+    end
+
     test "returns empty list when a user has no job applications" do
       user = user_fixture(%{email: "no_applications@example.com"})
       non_existing_user_id = Ecto.UUID.generate()
@@ -752,10 +773,8 @@ defmodule BemedaPersonal.JobsTest do
       user: user,
       job_posting: job_posting
     } do
-      # Create another user
       user2 = user_fixture(%{email: "user2@example.com"})
 
-      # Create another job posting
       another_company = company_fixture(user)
       another_job_posting = job_posting_fixture(another_company)
 
@@ -764,11 +783,11 @@ defmodule BemedaPersonal.JobsTest do
       job_application_fixture(user, another_job_posting)
       job_application_fixture(user2, another_job_posting)
 
-      # Test filtering by both user_id and job_posting_id
       assert [result] =
                Jobs.list_job_applications(%{
                  user_id: user.id,
-                 job_posting_id: job_posting.id
+                 job_posting_id: job_posting.id,
+                 company_id: job_posting.company_id
                })
 
       assert result.id == job_application.id

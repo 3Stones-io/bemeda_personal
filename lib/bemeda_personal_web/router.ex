@@ -124,9 +124,15 @@ defmodule BemedaPersonalWeb.Router do
       ] do
       live "/:company_id/edit", CompanyLive.Index, :edit
 
-      live "/:company_id/jobs", CompanyJobLive.Index, :index
       live "/:company_id/jobs/new", CompanyJobLive.Index, :new
+      live "/:company_id/jobs", CompanyJobLive.Index, :index
+      live "/:company_id/jobs/:id", CompanyJobLive.Show, :show
       live "/:company_id/jobs/:id/edit", CompanyJobLive.Index, :edit
+
+      # Applicant routes
+      live "/:company_id/applicants", CompanyApplicantLive.Index, :index
+      live "/:company_id/applicants/:job_id", CompanyApplicantLive.Index, :index
+      live "/:company_id/applicant/:id", CompanyApplicantLive.Show, :show
     end
   end
 

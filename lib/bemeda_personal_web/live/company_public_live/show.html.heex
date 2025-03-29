@@ -135,6 +135,7 @@
         <JobsComponents.job_posting_card
           id={"card-#{job_id}"}
           job={job}
+          job_view_url={~p"/jobs/#{job.id}"}
           show_company_name={false}
         />
       </div>

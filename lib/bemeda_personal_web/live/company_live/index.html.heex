@@ -57,7 +57,7 @@
 
   <div
     :if={@company && @live_action != :new}
-    class="bg-white shadow overflow-hidden sm:rounded-lg"
+    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
   >
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
       <h2 class="text-xl font-semibold text-gray-900">Recent Jobs</h2>
@@ -94,8 +94,50 @@
         >
           <JobsComponents.job_posting_card
             id={"card-#{job_id}"}
+            job_view_url={~p"/companies/#{@company.id}/jobs/#{job.id}"}
             job={job}
             show_company_name={false}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    :if={@company && @live_action != :new}
+    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
+  >
+    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-gray-900">Recent Applicants</h2>
+      <div>
+        <.link
+          navigate={~p"/companies/#{@company.id}/applicants"}
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          View All Applicants
+        </.link>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200">
+      <div id="recent-applicants-container" phx-update="stream">
+        <div id="no-applicants-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
+          <p class="text-gray-500">You don't have any applicants yet.</p>
+          <p class="mt-2 text-sm text-gray-500">
+            Applicants will appear here when they apply to your job postings.
+          </p>
+        </div>
+
+        <div
+          :for={{applicant_id, application} <- @streams.recent_applicants}
+          id={applicant_id}
+          class="odd:bg-gray-100 hover:bg-gray-200"
+        >
+          <JobsComponents.applicant_card
+            applicant={application}
+            id={"applicant-card-#{applicant_id}"}
+            job={application.job_posting}
+            show_job={true}
           />
         </div>
       </div>

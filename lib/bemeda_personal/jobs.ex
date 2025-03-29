@@ -278,19 +278,40 @@ defmodule BemedaPersonal.Jobs do
 
   """
   @spec list_job_applications(map(), non_neg_integer()) :: [job_application()]
-  def list_job_applications(filters \\ %{}, limit \\ 10) do
+  def list_job_applications(filters \\ %{}, limit \\ 10)
+
+  def list_job_applications(%{company_id: _company_id} = filters, limit) do
+    job_post_with_applications_query()
+    |> list_applications(filters, limit)
+    |> Repo.preload([:user, job_posting: [:company]])
+  end
+
+  def list_job_applications(filters, limit) do
+    job_application_query()
+    |> list_applications(filters, limit)
+    |> Repo.preload([:user, job_posting: [:company]])
+  end
+
+  defp list_applications(query, filters, limit) do
     filter_query = apply_job_application_filters()
 
-    job_application_query()
+    query
     |> where(^filter_query.(filters))
     |> order_by([ja], desc: ja.inserted_at)
     |> limit(^limit)
     |> Repo.all()
-    |> Repo.preload([:user, job_posting: [:company]])
   end
 
   defp job_application_query do
     from job_application in JobApplication, as: :job_application
+  end
+
+  defp job_post_with_applications_query do
+    from job_application in JobApplication,
+      as: :job_application,
+      left_join: job_posting in JobPosting,
+      as: :job_posting,
+      on: job_application.job_posting_id == job_posting.id
   end
 
   defp apply_job_application_filters do
@@ -305,6 +326,10 @@ defmodule BemedaPersonal.Jobs do
 
   defp apply_job_application_filter({:job_posting_id, job_posting_id}, dynamic) do
     dynamic([job_application: ja], ^dynamic and ja.job_posting_id == ^job_posting_id)
+  end
+
+  defp apply_job_application_filter({:company_id, company_id}, dynamic) do
+    dynamic([job_application: ja, job_posting: jp], ^dynamic and jp.company_id == ^company_id)
   end
 
   defp apply_job_application_filter(_other, dynamic), do: dynamic
