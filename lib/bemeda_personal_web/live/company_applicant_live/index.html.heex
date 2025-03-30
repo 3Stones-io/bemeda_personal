@@ -26,23 +26,11 @@
     </p>
   </div>
 
-  <div class="bg-white shadow rounded-lg overflow-hidden">
-    <div id="applicants" phx-update="stream" class="divide-y divide-gray-200">
-      <div id="applicants-empty" class="only:block hidden px-4 py-5 sm:px-6 text-center">
-        <p class="text-gray-500">No applicants found.</p>
-        <p class="mt-2 text-sm text-gray-500">
-          Applicants will appear here when they apply to your job postings.
-        </p>
-      </div>
-
-      <div :for={{dom_id, application} <- @streams.applicants} id={dom_id}>
-        <JobsComponents.applicant_card
-          applicant={application}
-          id={"applicant-#{application.id}"}
-          job={application.job_posting}
-          show_job={true}
-        />
-      </div>
-    </div>
-  </div>
+  <.live_component
+    module={JobApplicationsListComponent}
+    filters={@filters}
+    id="job-applications-list"
+    job_posting={@job_posting}
+    list_type={:recruiter}
+  />
 </div>

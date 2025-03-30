@@ -846,6 +846,80 @@ defmodule BemedaPersonal.JobsTest do
       assert length(Jobs.list_job_applications()) == 10
       assert length(Jobs.list_job_applications(%{}, 5)) == 5
     end
+
+    test "can filter job applications by newer_than and older_than timestamp" do
+      Repo.delete_all(BemedaPersonal.Jobs.JobApplication)
+
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+
+      older_timestamp = DateTime.from_naive!(~N[2023-01-01 00:00:00], "Etc/UTC")
+      middle_timestamp = DateTime.from_naive!(~N[2023-02-01 00:00:00], "Etc/UTC")
+      newer_timestamp = DateTime.from_naive!(~N[2023-03-01 00:00:00], "Etc/UTC")
+
+      older_application =
+        %BemedaPersonal.Jobs.JobApplication{}
+        |> BemedaPersonal.Jobs.JobApplication.changeset(%{
+          cover_letter: "Cover letter for older application"
+        })
+        |> Ecto.Changeset.put_assoc(:user, user)
+        |> Ecto.Changeset.put_assoc(:job_posting, job_posting)
+        |> Ecto.Changeset.put_change(:inserted_at, older_timestamp)
+        |> Repo.insert!()
+
+      middle_application =
+        %BemedaPersonal.Jobs.JobApplication{}
+        |> BemedaPersonal.Jobs.JobApplication.changeset(%{
+          cover_letter: "Cover letter for middle application"
+        })
+        |> Ecto.Changeset.put_assoc(:user, user)
+        |> Ecto.Changeset.put_assoc(:job_posting, job_posting)
+        |> Ecto.Changeset.put_change(:inserted_at, middle_timestamp)
+        |> Repo.insert!()
+
+      newer_application =
+        %BemedaPersonal.Jobs.JobApplication{}
+        |> BemedaPersonal.Jobs.JobApplication.changeset(%{
+          cover_letter: "Cover letter for newer application"
+        })
+        |> Ecto.Changeset.put_assoc(:user, user)
+        |> Ecto.Changeset.put_assoc(:job_posting, job_posting)
+        |> Ecto.Changeset.put_change(:inserted_at, newer_timestamp)
+        |> Repo.insert!()
+
+      assert results = Jobs.list_job_applications(%{newer_than: middle_application})
+      assert length(results) == 1
+      assert hd(results).id == newer_application.id
+
+      assert results = Jobs.list_job_applications(%{older_than: middle_application})
+      assert length(results) == 1
+      assert hd(results).id == older_application.id
+
+      another_user = user_fixture(%{email: "another@example.com"})
+
+      another_older_application =
+        %BemedaPersonal.Jobs.JobApplication{}
+        |> BemedaPersonal.Jobs.JobApplication.changeset(%{
+          cover_letter: "Cover letter for another older application"
+        })
+        |> Ecto.Changeset.put_assoc(:user, another_user)
+        |> Ecto.Changeset.put_assoc(:job_posting, job_posting)
+        |> Ecto.Changeset.put_change(
+          :inserted_at,
+          DateTime.from_naive!(~N[2023-01-15 00:00:00], "Etc/UTC")
+        )
+        |> Repo.insert!()
+
+      assert results =
+               Jobs.list_job_applications(%{
+                 older_than: middle_application,
+                 user_id: another_user.id
+               })
+
+      assert length(results) == 1
+      assert hd(results).id == another_older_application.id
+    end
   end
 
   describe "get_user_job_application/2" do

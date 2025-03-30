@@ -1,15 +1,13 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.JobApplicationLive.FormComponent
+  alias BemedaPersonalWeb.JobApplicationsListComponent
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    job_applications = Jobs.list_job_applications(%{user_id: socket.assigns.current_user.id})
-
     if connected?(socket) do
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application")
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job-video")
@@ -17,7 +15,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
     {:ok,
      socket
-     |> stream(:job_applications, job_applications)
+     |> assign(:filters, %{user_id: socket.assigns.current_user.id})
      |> assign(:page_title, "My Job Applications")
      |> assign(:resume, Resumes.get_user_resume(socket.assigns.current_user))}
   end
@@ -42,7 +40,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
              :job_application_created,
              :job_application_updated
            ] do
-    {:noreply, stream_insert(socket, :job_applications, job_application)}
+    send_update(
+      JobApplicationsListComponent,
+      id: "job-applications-list",
+      job_application: job_application
+    )
+
+    {:noreply, socket}
   end
 
   def handle_info(_event, socket), do: {:noreply, socket}

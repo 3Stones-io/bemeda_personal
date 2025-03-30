@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
-  alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.JobApplicationsListComponent
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -14,6 +14,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     {:ok,
      socket
      |> stream(:applicants, [])
+     |> assign(:filters, %{company_id: socket.assigns.company.id})
      |> assign(:job_posting, nil)}
   end
 
@@ -25,26 +26,18 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   defp apply_action(socket, :index, %{"job_id" => job_id}) do
     job_posting = Jobs.get_job_posting!(job_id)
 
-    job_applications =
-      Jobs.list_job_applications(%{
-        company_id: job_posting.company_id,
-        job_posting_id: job_posting.id
-      })
-
     socket
-    |> stream(:applicants, job_applications)
-    |> assign(:company, job_posting.company)
+    |> assign(:filters, %{company_id: job_posting.company_id, job_posting_id: job_posting.id})
     |> assign(:job_posting, job_posting)
     |> assign(:page_title, "Applicants - #{job_posting.title}")
   end
 
   defp apply_action(socket, :index, %{"company_id" => company_id}) do
     company = Companies.get_company!(company_id)
-    job_applications = Jobs.list_job_applications(%{company_id: company_id})
 
     socket
-    |> stream(:applicants, job_applications)
     |> assign(:company, company)
+    |> assign(:filters, %{company_id: company_id})
     |> assign(:job_posting, nil)
     |> assign(:page_title, "Applicants - #{company.name}")
   end
@@ -55,6 +48,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
              :job_application_created,
              :job_application_updated
            ] do
-    {:noreply, stream_insert(socket, :applicants, job_application)}
+    send_update(
+      JobApplicationsListComponent,
+      id: "job-applications-list",
+      job_application: job_application
+    )
+
+    {:noreply, socket}
   end
 end

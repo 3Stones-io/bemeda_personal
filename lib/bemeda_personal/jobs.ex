@@ -335,6 +335,14 @@ defmodule BemedaPersonal.Jobs do
     dynamic([job_application: ja, job_posting: jp], ^dynamic and jp.company_id == ^company_id)
   end
 
+  defp apply_job_application_filter({:newer_than, job_application}, dynamic) do
+    dynamic([job_application: ja], ^dynamic and ja.inserted_at > ^job_application.inserted_at)
+  end
+
+  defp apply_job_application_filter({:older_than, job_application}, dynamic) do
+    dynamic([job_application: ja], ^dynamic and ja.inserted_at < ^job_application.inserted_at)
+  end
+
   defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   @doc """
