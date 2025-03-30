@@ -612,6 +612,23 @@ defmodule BemedaPersonal.JobsTest do
       assert {:error, %Ecto.Changeset{}} =
                Jobs.create_job_application(user, job_posting, invalid_attrs)
     end
+
+    test "broadcasts job_application_created event when creating a new job application", %{
+      job_posting: job_posting,
+      user: user
+    } do
+      job_application_topic = "job_application"
+
+      PubSub.subscribe(BemedaPersonal.PubSub, job_application_topic)
+
+      valid_attrs = %{
+        cover_letter: "some cover letter"
+      }
+
+      {:ok, job_application} = Jobs.create_job_application(user, job_posting, valid_attrs)
+
+      assert_receive {:job_application_created, ^job_application}
+    end
   end
 
   describe "change_job_posting_application/1" do
@@ -653,9 +670,24 @@ defmodule BemedaPersonal.JobsTest do
       assert {:error, %Ecto.Changeset{}} =
                Jobs.update_job_application(job_application, invalid_attrs)
 
-      # The job application should remain unchanged
       unchanged_job_application = Jobs.get_job_application!(job_application.id)
       assert unchanged_job_application.cover_letter == job_application.cover_letter
+    end
+
+    test "broadcasts job_application_updated event when updating a job application", %{
+      job_application: job_application
+    } do
+      job_application_topic = "job_application"
+
+      PubSub.subscribe(BemedaPersonal.PubSub, job_application_topic)
+
+      update_attrs = %{
+        cover_letter: "updated cover letter"
+      }
+
+      {:ok, updated_job_application} = Jobs.update_job_application(job_application, update_attrs)
+
+      assert_receive {:job_application_updated, ^updated_job_application}
     end
   end
 
@@ -690,7 +722,6 @@ defmodule BemedaPersonal.JobsTest do
     end
 
     test "can filter job applications by user_id", %{job_application: job_application, user: user} do
-      # Create another user with an application
       user2 = user_fixture(%{email: "user2@example.com"})
       job_application_fixture(user2, job_application.job_posting)
 
@@ -705,7 +736,6 @@ defmodule BemedaPersonal.JobsTest do
       job_application: job_application,
       user: user
     } do
-      # Create another job posting with an application
       another_company = company_fixture(user)
       another_job_posting = job_posting_fixture(another_company)
       job_application_fixture(user, another_job_posting)
@@ -807,7 +837,6 @@ defmodule BemedaPersonal.JobsTest do
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
-      # Create multiple job applications
       Enum.each(1..15, fn _application ->
         job_application_fixture(user, job_posting, %{
           cover_letter: "Cover letter #{:rand.uniform(1000)}"

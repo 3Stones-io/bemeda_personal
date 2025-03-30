@@ -14,6 +14,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
     if connected?(socket) && company do
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "company:#{current_user.id}")
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application")
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_posting:company:#{company.id}")
     end
 
@@ -68,6 +69,14 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   def handle_info({:job_posting_deleted, job}, socket) do
     {:noreply, stream_delete(socket, :job_postings, job)}
+  end
+
+  def handle_info({event, job_application}, socket)
+      when event in [
+             :job_application_created,
+             :job_application_updated
+           ] do
+    {:noreply, stream_insert(socket, :recent_applicants, job_application)}
   end
 
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])

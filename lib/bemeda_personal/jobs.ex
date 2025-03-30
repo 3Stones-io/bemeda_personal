@@ -21,6 +21,7 @@ defmodule BemedaPersonal.Jobs do
   @type job_posting_id :: Ecto.UUID.t()
   @type user :: User.t()
 
+  @job_application_topic "job_application"
   @job_posting_topic "job_posting"
 
   @doc """
@@ -262,6 +263,8 @@ defmodule BemedaPersonal.Jobs do
     |> Repo.one()
   end
 
+  # JOB APPLICATIONS
+
   @doc """
   Returns the list of job applications with optional filtering.
 
@@ -386,11 +389,25 @@ defmodule BemedaPersonal.Jobs do
   @spec create_job_application(user(), job_posting(), attrs()) ::
           {:ok, job_application()} | {:error, changeset()}
   def create_job_application(%User{} = user, %JobPosting{} = job_posting, attrs \\ %{}) do
-    %JobApplication{}
-    |> JobApplication.changeset(attrs)
-    |> Changeset.put_assoc(:user, user)
-    |> Changeset.put_assoc(:job_posting, job_posting)
-    |> Repo.insert()
+    result =
+      %JobApplication{}
+      |> JobApplication.changeset(attrs)
+      |> Changeset.put_assoc(:user, user)
+      |> Changeset.put_assoc(:job_posting, job_posting)
+      |> Repo.insert()
+
+    case result do
+      {:ok, job_application} ->
+        broadcast_event(
+          "#{@job_application_topic}",
+          {:job_application_created, job_application}
+        )
+
+        {:ok, job_application}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -408,9 +425,23 @@ defmodule BemedaPersonal.Jobs do
   @spec update_job_application(job_application(), attrs()) ::
           {:ok, job_application()} | {:error, changeset()}
   def update_job_application(%JobApplication{} = job_application, attrs) do
-    job_application
-    |> JobApplication.changeset(attrs)
-    |> Repo.update()
+    result =
+      job_application
+      |> JobApplication.changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, updated_job_application} ->
+        broadcast_event(
+          "#{@job_application_topic}",
+          {:job_application_updated, updated_job_application}
+        )
+
+        {:ok, updated_job_application}
+
+      error ->
+        error
+    end
   end
 
   @doc """

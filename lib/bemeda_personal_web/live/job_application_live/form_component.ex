@@ -119,9 +119,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
   defp save_job_application(socket, :edit, job_application_params) do
     case Jobs.update_job_application(socket.assigns.job_application, job_application_params) do
-      {:ok, job_application} ->
-        notify_parent({:saved, job_application})
-
+      {:ok, _job_application} ->
         {:noreply,
          socket
          |> put_flash(:info, "Application updated successfully")
@@ -138,9 +136,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
            socket.assigns.job_posting,
            job_application_params
          ) do
-      {:ok, job_application} ->
-        notify_parent({:saved, job_application})
-
+      {:ok, _job_application} ->
         {:noreply,
          socket
          |> put_flash(:info, "Application submitted successfully")
@@ -158,6 +154,4 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   defp update_mux_data_params(socket, params) do
     Map.put(params, "mux_data", socket.assigns.mux_data)
   end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

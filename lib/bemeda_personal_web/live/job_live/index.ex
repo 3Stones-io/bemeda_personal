@@ -14,7 +14,6 @@ defmodule BemedaPersonalWeb.JobLive.Index do
   end
 
   @impl Phoenix.LiveView
-  @spec handle_event(<<_::88>>, map(), map()) :: {:noreply, map()}
   def handle_event("filter_jobs", %{"filters" => filter_params}, socket) do
     SharedHelpers.process_job_filters(filter_params, socket)
   end

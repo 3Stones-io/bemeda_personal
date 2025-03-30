@@ -10,8 +10,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   def mount(_params, _session, socket) do
     job_applications = Jobs.list_job_applications(%{user_id: socket.assigns.current_user.id})
 
-    if connected?(socket),
-      do: Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job-video")
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application")
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job-video")
+    end
 
     {:ok,
      socket
@@ -33,6 +35,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     )
 
     {:noreply, socket}
+  end
+
+  def handle_info({event, job_application}, socket)
+      when event in [
+             :job_application_created,
+             :job_application_updated
+           ] do
+    {:noreply, stream_insert(socket, :job_applications, job_application)}
   end
 
   def handle_info(_event, socket), do: {:noreply, socket}

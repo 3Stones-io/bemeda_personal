@@ -7,6 +7,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application")
+    end
+
     {:ok,
      socket
      |> stream(:applicants, [])
@@ -22,7 +26,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     job_posting = Jobs.get_job_posting!(job_id)
 
     job_applications =
-      Jobs.list_job_applications(%{company_id: job_posting.company_id, job_id: job_posting.id})
+      Jobs.list_job_applications(%{
+        company_id: job_posting.company_id,
+        job_posting_id: job_posting.id
+      })
 
     socket
     |> stream(:applicants, job_applications)
@@ -40,5 +47,14 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     |> assign(:company, company)
     |> assign(:job_posting, nil)
     |> assign(:page_title, "Applicants - #{company.name}")
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({event, job_application}, socket)
+      when event in [
+             :job_application_created,
+             :job_application_updated
+           ] do
+    {:noreply, stream_insert(socket, :applicants, job_application)}
   end
 end

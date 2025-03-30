@@ -129,13 +129,13 @@
         </div>
 
         <div
-          :for={{applicant_id, application} <- @streams.recent_applicants}
-          id={applicant_id}
+          :for={{dom_id, application} <- @streams.recent_applicants}
+          id={dom_id}
           class="odd:bg-gray-100 hover:bg-gray-200"
         >
           <JobsComponents.applicant_card
             applicant={application}
-            id={"applicant-card-#{applicant_id}"}
+            id={"applicant-card-#{application.id}"}
             job={application.job_posting}
             show_job={true}
           />
