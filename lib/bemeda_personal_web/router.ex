@@ -17,6 +17,10 @@ defmodule BemedaPersonalWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :mux do
+    plug BemedaPersonalWeb.Plugs.MuxSignature
+  end
+
   scope "/", BemedaPersonalWeb do
     pipe_through :browser
 
@@ -33,7 +37,7 @@ defmodule BemedaPersonalWeb.Router do
 
   # Mux webhook endpoint
   scope "/", BemedaPersonalWeb do
-    pipe_through :api
+    pipe_through [:mux]
 
     post "/webhooks/mux", MuxWebhookController, :handle
   end

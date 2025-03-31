@@ -107,7 +107,6 @@ export default VideoUpload = {
       )
     }
 
-    // Handle delete button click
     const deleteButton = videoDescription?.querySelector(
       'button[type="button"]'
     )

@@ -18,7 +18,10 @@ defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
 
       PubSub.subscribe(BemedaPersonal.PubSub, "job-video")
 
-      conn = post(conn, "/webhooks/mux", params)
+      conn =
+        conn
+        |> Plug.Conn.assign(:raw_body, [Jason.encode!(params)])
+        |> post("/webhooks/mux", params)
 
       assert conn.status == 200
 

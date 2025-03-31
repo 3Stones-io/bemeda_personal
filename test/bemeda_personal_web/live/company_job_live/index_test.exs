@@ -159,7 +159,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       company: company,
       job_posting: job_posting
     } do
-      # Update the job posting with video data
       {:ok, job_posting} =
         Jobs.update_job_posting(job_posting, %{
           mux_data: %{
