@@ -60,7 +60,7 @@ export default VideoUpload = {
             progressBar.classList.remove('bg-indigo-600')
             progressBar.classList.add('bg-red-600')
             percentageElement.textContent = response.error
-            
+
             hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
 
             return
@@ -85,7 +85,6 @@ export default VideoUpload = {
           })
 
           currentUpload.on('error', (_error) => {
-
             hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
 
             progressBar.classList.remove('bg-indigo-600')
