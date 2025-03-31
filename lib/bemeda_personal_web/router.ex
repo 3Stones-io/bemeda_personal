@@ -88,7 +88,7 @@ defmodule BemedaPersonalWeb.Router do
       live "/resume/work-experience/:id/edit", Resume.ShowLive, :edit_work_experience
 
       # Job application routes
-      live "/jobs/:job_id/job_applications", JobApplicationLive.Index, :index
+      live "/job_applications", JobApplicationLive.Index, :index
       live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
       live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
       live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show

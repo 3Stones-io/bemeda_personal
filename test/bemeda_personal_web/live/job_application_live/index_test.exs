@@ -41,12 +41,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       })
     end
 
-    test "requires authentication for access", %{
-      job_application: job_application
-    } do
+    test "requires authentication for access" do
       public_conn = build_conn()
 
-      response = get(public_conn, ~p"/jobs/#{job_application.job_posting_id}/job_applications")
+      response = get(public_conn, ~p"/job_applications")
       assert redirected_to(response) == ~p"/users/log_in"
     end
 
@@ -56,7 +54,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       job_application2: job_application2
     } do
       {:ok, _view, html} =
-        live(conn, ~p"/jobs/#{job_application.job_posting_id}/job_applications")
+        live(conn, ~p"/job_applications")
 
       assert html =~ "My Job Applications"
       assert html =~ job_application.job_posting.title
@@ -68,7 +66,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       job_application: job_application
     } do
       {:ok, view, _html} =
-        live(conn, ~p"/jobs/#{job_application.job_posting_id}/job_applications")
+        live(conn, ~p"/job_applications")
 
       {:ok, _view, html} =
         view
@@ -88,7 +86,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       job_application: job_application
     } do
       {:ok, view, _html} =
-        live(conn, ~p"/jobs/#{job_application.job_posting_id}/job_applications")
+        live(conn, ~p"/job_applications")
 
       edit_link_selector = "a[href*='#{job_application.id}/edit']"
 
@@ -113,7 +111,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       job_application: job_application
     } do
       {:ok, view, _html} =
-        live(conn, ~p"/jobs/#{job_application.job_posting_id}/job_applications")
+        live(conn, ~p"/job_applications")
 
       view_job_selector = "a[href='/jobs/#{job_application.job_posting_id}']"
 
@@ -136,7 +134,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       job_application: job_application
     } do
       {:ok, _view, html} =
-        live(conn, ~p"/jobs/#{job_application.job_posting_id}/job_applications")
+        live(conn, ~p"/job_applications")
 
       application_date = DateTime.to_date(job_application.inserted_at)
       formatted_date = BemedaPersonal.DateUtils.format_date(application_date)
@@ -308,7 +306,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/jobs/#{job.id}/job_applications")
+      assert_redirect(view, ~p"/job_applications")
 
       applications = BemedaPersonal.Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
@@ -340,7 +338,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/jobs/#{job_application.job_posting_id}/job_applications")
+      assert_redirect(view, ~p"/job_applications")
 
       updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
 

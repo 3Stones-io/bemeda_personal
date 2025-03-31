@@ -13,8 +13,11 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
     <div class="bg-white shadow rounded-lg overflow-hidden">
       <div
         :if={@list_type == :recruiter}
-        id="applicants"
+        id={@id}
         phx-update="stream"
+        phx-viewport-top={!@end_of_timeline? && JS.push("prev-page", target: "##{@id}")}
+        phx-viewport-bottom={!@end_of_timeline? && JS.push("next-page", target: "##{@id}")}
+        phx-page-loading
         class="divide-y divide-gray-200"
       >
         <div id="applicants-empty" class="only:block hidden px-4 py-5 sm:px-6 text-center">
@@ -39,7 +42,10 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
         role="list"
         class="mt-8 space-y-4"
         phx-update="stream"
-        id="job-applications"
+        phx-viewport-top={!@end_of_timeline? && JS.push("prev-page", target: "##{@id}")}
+        phx-viewport-bottom={!@end_of_timeline? && JS.push("next-page", target: "##{@id}")}
+        phx-page-loading
+        id={@id}
       >
         <div
           :for={{id, application} <- @streams.job_applications}

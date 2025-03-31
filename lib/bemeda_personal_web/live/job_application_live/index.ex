@@ -72,5 +72,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
+    |> assign(:page_title, "My Job Applications")
+    |> assign(:filters, %{user_id: socket.assigns.current_user.id})
   end
 end
