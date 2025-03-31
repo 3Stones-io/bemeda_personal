@@ -1,0 +1,65 @@
+{
+  "accessor": null,
+  "accessor_source": null,
+  "attempts": [],
+  "created_at": "2025-03-27T13:20:46.369000Z",
+  "data": {
+    "aspect_ratio": "2:1",
+    "created_at": 1743081644,
+    "duration": 10.176844,
+    "encoding_tier": "smart",
+    "id": "n85OU013Oi0000zO01Zhqd7SCcUZqIxzbHqhldz67pIGnFg",
+    "ingest_type": "on_demand_direct_upload",
+    "master_access": "none",
+    "max_resolution_tier": "1080p",
+    "max_stored_frame_rate": 23.976,
+    "max_stored_resolution": "SD",
+    "mp4_support": "standard",
+    "playback_ids": [
+      {
+        "id": "5301gHI001uiiiMdwgnP5okwt7VMdzd3jOjB00Ts7aDUU00",
+        "policy": "public"
+      }
+    ],
+    "progress": {
+      "state": "completed"
+    },
+    "resolution_tier": "720p",
+    "static_renditions": {
+      "status": "preparing"
+    },
+    "status": "ready",
+    "test": true,
+    "tracks": [
+      {
+        "duration": 12.027937,
+        "id": "BgJzGxs553Na1AHvp00LDdiMrn76Srw85TfcwmtqgAGA",
+        "max_channel_layout": "stereo",
+        "max_channels": 2,
+        "primary": true,
+        "type": "audio"
+      },
+      {
+        "duration": 12.012,
+        "id": "1Kzs62TqMktZVzi4OjNdNdyW6z6LtYco2LKpPmzAGCs",
+        "max_frame_rate": 23.976,
+        "max_height": 320,
+        "max_width": 640,
+        "type": "video"
+      }
+    ],
+    "upload_id": "Q3601jdE2EQ2GwpkZTcMNtL01Sl4Jkdpzx3h01500RARgFA",
+    "video_quality": "plus"
+  },
+  "environment": {
+    "id": "6g9cbu",
+    "name": "BemedaPersonal"
+  },
+  "id": "b0be9d11-4e15-8202-989e-4c6d678482bc",
+  "object": {
+    "id": "n85OU013Oi0000zO01Zhqd7SCcUZqIxzbHqhldz67pIGnFg",
+    "type": "asset"
+  },
+  "request_id": null,
+  "type": "video.asset.ready"
+}

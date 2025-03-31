@@ -40,8 +40,9 @@
     module={BemedaPersonalWeb.CompanyJobLive.FormComponent}
     action={@live_action}
     company={@company}
-    id={if @live_action == :edit, do: @job_posting.id, else: :new}
+    id="company-job-form"
     job_posting={@job_posting}
+    live_action={@live_action}
     return_to={~p"/companies/#{@company.id}/jobs"}
   />
 </.modal>

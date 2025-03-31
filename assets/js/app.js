@@ -27,6 +27,7 @@ import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
 import FlatpickrCalendar from './hooks/flatpickr_calendar'
 import TextTruncate from './hooks/text_truncate'
+import VideoUpload from './hooks/video_upload'
 
 // Define hooks object
 const Hooks = {
@@ -34,6 +35,7 @@ const Hooks = {
   CurrentCheckbox,
   FlatpickrCalendar,
   TextTruncate,
+  VideoUpload,
 }
 
 let csrfToken = document
