@@ -161,6 +161,9 @@ defmodule GithubWorkflows do
           KAMAL_REGISTRY_PASSWORD=${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}
           MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}
+          MUX_TOKEN_ID=${{ secrets.MUX_TOKEN_ID }}
+          MUX_TOKEN_SECRET=${{ secrets.MUX_TOKEN_SECRET }}
+          MUX_WEBHOOK_SECRET=${{ secrets.MUX_WEBHOOK_SECRET }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}
           EOL

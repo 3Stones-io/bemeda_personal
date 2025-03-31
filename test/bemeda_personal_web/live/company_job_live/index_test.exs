@@ -84,7 +84,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       result =
         view
-        |> form("#job-posting-form", %{
+        |> form("#company-job-form", %{
           "job_posting" => %{
             "title" => "",
             "description" => ""
@@ -104,7 +104,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
 
       view
-      |> form("#job-posting-form", %{
+      |> form("#company-job-form", %{
         "job_posting" => %{
           "description" => "We are looking for a talented software engineer to join our team.",
           "employment_type" => "Full-time",
@@ -118,6 +118,17 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       job_count_after = length(Jobs.list_job_postings(%{company_id: company.id}))
       assert job_count_after == job_count_before + 1
+    end
+
+    test "shows video upload input on new job form", %{conn: conn, user: user, company: company} do
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/new")
+
+      assert html =~ "Drag and drop to upload your video"
+      assert html =~ "Browse Files"
+      assert html =~ "Max file size: 50MB"
     end
   end
 
@@ -142,6 +153,30 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert html =~ job_posting.title
     end
 
+    test "shows video filename for job posting with video", %{
+      conn: conn,
+      user: user,
+      company: company,
+      job_posting: job_posting
+    } do
+      {:ok, job_posting} =
+        Jobs.update_job_posting(job_posting, %{
+          mux_data: %{
+            file_name: "test_video.mp4",
+            playback_id: "test-playback-id",
+            asset_id: "test-asset-id"
+          }
+        })
+
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+
+      assert html =~ "test_video.mp4"
+      assert html =~ "Video Description"
+    end
+
     test "updates job posting", %{
       company: company,
       conn: conn,
@@ -154,7 +189,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
 
       view
-      |> form("#job-posting-form", %{
+      |> form("#company-job-form", %{
         "job_posting" => %{
           "title" => "Updated Job Title"
         }

@@ -55,6 +55,9 @@ env:
     - DATABASE_URL
     - MAILGUN_API_KEY
     - MAILGUN_DOMAIN
+    - MUX_TOKEN_ID
+    - MUX_TOKEN_SECRET
+    - MUX_WEBHOOK_SECRET
     - SECRET_KEY_BASE
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:

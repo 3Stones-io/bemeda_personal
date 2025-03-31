@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@mux/upchunk": "^3.5.0",
     "clipboard": "^2.0.11",
+    "dragster": "^0.1.3",
     "flatpickr": "^4.6.13"
   }
 }

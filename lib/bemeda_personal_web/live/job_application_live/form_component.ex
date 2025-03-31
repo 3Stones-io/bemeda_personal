@@ -2,8 +2,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.MuxHelpers.Client
   alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -94,16 +94,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   end
 
   def handle_event("upload-video", %{"filename" => filename}, socket) do
-    case Client.create_direct_upload() do
-      {:ok, upload_url} ->
-        {:reply, %{upload_url: upload_url},
-         socket
-         |> assign(:enable_submit?, false)
-         |> assign(:mux_data, %{file_name: filename})}
-
-      {:error, reason} ->
-        {:reply, %{error: "Failed to create upload URL: #{inspect(reason)}"}, socket}
-    end
+    SharedHelpers.create_video_upload(socket, filename)
   end
 
   def handle_event("enable-submit", _params, socket) do

@@ -6,6 +6,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   import Ecto.Changeset
 
   alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.Jobs.VideoMuxData
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -20,6 +21,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
     field :employment_type, :string
     field :experience_level, :string
     field :location, :string
+    embeds_one :mux_data, VideoMuxData, on_replace: :update
     field :remote_allowed, :boolean, default: false
     field :salary_max, :integer
     field :salary_min, :integer
@@ -42,6 +44,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
       :currency,
       :remote_allowed
     ])
+    |> cast_embed(:mux_data)
     |> validate_required([:title, :description])
     |> validate_length(:title, min: 5, max: 255)
     |> validate_length(:description, min: 10)

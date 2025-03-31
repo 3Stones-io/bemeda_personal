@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.LiveView
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.MuxHelpers.Client
   alias BemedaPersonalWeb.JobListComponent
 
   @spec to_html(binary()) :: Phoenix.HTML.safe()
@@ -74,6 +75,21 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       )
     else
       assign(socket, :application, nil)
+    end
+  end
+
+  @spec create_video_upload(Phoenix.LiveView.Socket.t(), String.t()) ::
+          {:reply, map(), Phoenix.LiveView.Socket.t()}
+  def create_video_upload(socket, filename) do
+    case Client.create_direct_upload() do
+      {:ok, upload_url} ->
+        {:reply, %{upload_url: upload_url},
+         socket
+         |> assign(:enable_submit?, false)
+         |> assign(:mux_data, %{file_name: filename})}
+
+      {:error, reason} ->
+        {:reply, %{error: "Failed to create upload URL: #{inspect(reason)}"}, socket}
     end
   end
 end
