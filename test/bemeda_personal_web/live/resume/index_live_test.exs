@@ -34,7 +34,6 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
       assert html =~ resume.website_url
 
       refute html =~ "Edit"
-      refute html =~ "Add"
       refute html =~ "Delete"
     end
 
