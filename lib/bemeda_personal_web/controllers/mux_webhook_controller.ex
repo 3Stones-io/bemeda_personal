@@ -1,7 +1,7 @@
 defmodule BemedaPersonalWeb.MuxWebhookController do
   use BemedaPersonalWeb, :controller
 
-  alias Phoenix.PubSub
+  alias BemedaPersonal.MuxHelpers.WebhookHandler
 
   @type conn() :: Plug.Conn.t()
   @type params() :: map()
@@ -14,16 +14,16 @@ defmodule BemedaPersonalWeb.MuxWebhookController do
   @spec handle(conn(), params()) :: conn()
   def handle(
         conn,
-        %{"type" => "video.asset.ready", "data" => %{"id" => asset_id}} =
+        %{"type" => "video.asset.ready", "data" => %{"id" => asset_id, "upload_id" => upload_id}} =
           event
       ) do
     playback_id = get_playback(event)
 
-    PubSub.broadcast(
-      BemedaPersonal.PubSub,
-      "job-video",
-      {:video_ready, %{asset_id: asset_id, playback_id: playback_id}}
-    )
+    WebhookHandler.handle_webhook_response(%{
+      asset_id: asset_id,
+      playback_id: playback_id,
+      upload_id: upload_id
+    })
 
     conn_response(conn)
   end

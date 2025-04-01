@@ -14,6 +14,7 @@ defmodule BemedaPersonal.Application do
       {Phoenix.PubSub, name: BemedaPersonal.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: BemedaPersonal.Finch},
+      {Registry, keys: :unique, name: BemedaPersonal.Registry},
       # Start a worker by calling: BemedaPersonal.Worker.start_link(arg)
       # {BemedaPersonal.Worker, arg},
       # Start to serve requests, typically the last entry

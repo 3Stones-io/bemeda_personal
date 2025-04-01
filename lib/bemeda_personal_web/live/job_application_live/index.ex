@@ -10,7 +10,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job-video")
     end
 
     {:ok,

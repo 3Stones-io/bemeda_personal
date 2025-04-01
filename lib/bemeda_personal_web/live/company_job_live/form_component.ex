@@ -169,7 +169,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   def handle_event("upload-video", %{"filename" => filename}, socket) do
-    SharedHelpers.create_video_upload(socket, filename)
+    SharedHelpers.create_video_upload(socket, filename, self())
   end
 
   def handle_event("enable-submit", _params, socket) do

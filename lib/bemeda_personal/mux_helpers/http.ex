@@ -24,7 +24,7 @@ defmodule BemedaPersonal.MuxHelpers.Http do
 
     case upload do
       {:ok, upload_data, _client} ->
-        {:ok, upload_data["url"]}
+        {:ok, upload_data["url"], upload_data["id"]}
 
       {:error, reason, _client} ->
         Logger.error("Error creating direct upload url: #{inspect(reason)}")

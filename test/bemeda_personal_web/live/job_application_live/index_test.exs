@@ -7,7 +7,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
-  # Common setup to reduce code duplication
+  alias BemedaPersonal.Jobs
+
   defp create_test_data(conn) do
     user = user_fixture()
     company = company_fixture(user_fixture(%{email: "company@example.com"}))
@@ -317,7 +318,57 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
             "I am very interested in this position. Please consider my application."
         end)
 
-      assert created_application != nil
+      assert created_application.job_posting_id == job.id
+
+      assert created_application.cover_letter ==
+               "I am very interested in this position. Please consider my application."
+    end
+
+    test "submits new job application successfully with video", %{
+      conn: conn,
+      job: job
+    } do
+      {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
+
+      send(
+        view.pid,
+        {:video_ready,
+         %{
+           asset_id: "test-asset-id",
+           playback_id: "test-playback-id",
+           upload_id: "test-upload-id"
+         }}
+      )
+
+      assert view
+             |> form("#job-application-form", %{
+               "job_application" => %{
+                 "cover_letter" =>
+                   "I am very interested in this position. Please consider my application."
+               }
+             })
+             |> render_submit()
+
+      assert_redirect(view, ~p"/job_applications")
+
+      applications = Jobs.list_job_applications(%{job_posting_id: job.id})
+      assert length(applications) > 0
+
+      created_application =
+        Enum.find(applications, fn app ->
+          app.cover_letter ==
+            "I am very interested in this position. Please consider my application."
+        end)
+
+      assert created_application.job_posting_id == job.id
+
+      assert created_application.cover_letter ==
+               "I am very interested in this position. Please consider my application."
+
+      assert %Jobs.VideoMuxData{
+               asset_id: "test-asset-id",
+               playback_id: "test-playback-id"
+             } = created_application.mux_data
     end
 
     test "updates existing job application successfully", %{
@@ -344,6 +395,57 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
+    end
+
+    test "updates existing job application with video", %{
+      conn: conn,
+      job: job,
+      user: user
+    } do
+      job_application =
+        job_application_fixture(user, job, %{
+          mux_data: %{
+            asset_id: "asset_123",
+            playback_id: "playback_123",
+            file_name: "test_video.mp4"
+          }
+        })
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
+        )
+
+      send(
+        view.pid,
+        {:video_ready,
+         %{
+           asset_id: "updated_asset_123",
+           playback_id: "updated_playback_123",
+           upload_id: "updated_upload_123"
+         }}
+      )
+
+      assert view
+             |> form("#job-application-form", %{
+               "job_application" => %{
+                 "cover_letter" => "Updated cover letter with more details about my experience."
+               }
+             })
+             |> render_submit()
+
+      assert_redirect(view, ~p"/job_applications")
+
+      updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
+
+      assert updated_application.cover_letter ==
+               "Updated cover letter with more details about my experience."
+
+      assert %Jobs.VideoMuxData{
+               asset_id: "updated_asset_123",
+               playback_id: "updated_playback_123"
+             } = updated_application.mux_data
     end
   end
 
