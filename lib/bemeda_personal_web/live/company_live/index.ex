@@ -14,7 +14,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
     if connected?(socket) && company do
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "company:#{current_user.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application")
+      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application:company:#{company.id}")
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_posting:company:#{company.id}")
     end
 

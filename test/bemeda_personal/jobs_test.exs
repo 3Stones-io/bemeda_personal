@@ -617,9 +617,11 @@ defmodule BemedaPersonal.JobsTest do
       job_posting: job_posting,
       user: user
     } do
-      job_application_topic = "job_application"
+      company_job_application_topic = "job_application:company:#{job_posting.company_id}"
+      user_job_application_topic = "job_application:user:#{user.id}"
 
-      PubSub.subscribe(BemedaPersonal.PubSub, job_application_topic)
+      PubSub.subscribe(BemedaPersonal.PubSub, company_job_application_topic)
+      PubSub.subscribe(BemedaPersonal.PubSub, user_job_application_topic)
 
       valid_attrs = %{
         cover_letter: "some cover letter"
@@ -627,7 +629,8 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, job_application} = Jobs.create_job_application(user, job_posting, valid_attrs)
 
-      assert_receive {:job_application_created, ^job_application}
+      assert_receive {:company_job_application_created, ^job_application}
+      assert_receive {:user_job_application_created, ^job_application}
     end
   end
 
@@ -677,9 +680,13 @@ defmodule BemedaPersonal.JobsTest do
     test "broadcasts job_application_updated event when updating a job application", %{
       job_application: job_application
     } do
-      job_application_topic = "job_application"
+      company_job_application_topic =
+        "job_application:company:#{job_application.job_posting.company_id}"
 
-      PubSub.subscribe(BemedaPersonal.PubSub, job_application_topic)
+      user_job_application_topic = "job_application:user:#{job_application.user_id}"
+
+      PubSub.subscribe(BemedaPersonal.PubSub, company_job_application_topic)
+      PubSub.subscribe(BemedaPersonal.PubSub, user_job_application_topic)
 
       update_attrs = %{
         cover_letter: "updated cover letter"
@@ -687,7 +694,8 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, updated_job_application} = Jobs.update_job_application(job_application, update_attrs)
 
-      assert_receive {:job_application_updated, ^updated_job_application}
+      assert_receive {:company_job_application_updated, ^updated_job_application}
+      assert_receive {:user_job_application_updated, ^updated_job_application}
     end
   end
 

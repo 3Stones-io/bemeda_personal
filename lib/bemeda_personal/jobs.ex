@@ -406,10 +406,17 @@ defmodule BemedaPersonal.Jobs do
 
     case result do
       {:ok, job_application} ->
-        broadcast_event(
-          "#{@job_application_topic}",
-          {:job_application_created, job_application}
-        )
+        :ok =
+          broadcast_event(
+            "#{@job_application_topic}:company:#{job_posting.company_id}",
+            {:company_job_application_created, job_application}
+          )
+
+        :ok =
+          broadcast_event(
+            "#{@job_application_topic}:user:#{user.id}",
+            {:user_job_application_created, job_application}
+          )
 
         {:ok, job_application}
 
@@ -441,8 +448,13 @@ defmodule BemedaPersonal.Jobs do
     case result do
       {:ok, updated_job_application} ->
         broadcast_event(
-          "#{@job_application_topic}",
-          {:job_application_updated, updated_job_application}
+          "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
+          {:company_job_application_updated, updated_job_application}
+        )
+
+        broadcast_event(
+          "#{@job_application_topic}:user:#{job_application.user_id}",
+          {:user_job_application_updated, updated_job_application}
         )
 
         {:ok, updated_job_application}

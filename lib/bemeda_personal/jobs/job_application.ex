@@ -8,6 +8,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.VideoMuxData
+
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type t :: %__MODULE__{}
