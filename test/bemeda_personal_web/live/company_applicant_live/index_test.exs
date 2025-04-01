@@ -76,9 +76,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert {:ok, view, html} = live(conn, ~p"/companies/#{company.id}/applicants")
       assert html =~ "#{application.user.first_name} #{application.user.last_name}"
 
-      assert view
-             |> element("#applicant-#{application.id}")
-             |> has_element?()
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> element("#applicant-#{application.id}")
+               |> render_click()
+
+      assert path == ~p"/companies/#{company.id}/applicant/#{application.id}"
     end
   end
 end

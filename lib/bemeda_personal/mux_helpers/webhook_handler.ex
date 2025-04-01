@@ -1,5 +1,6 @@
 defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
   @moduledoc false
+
   require Logger
 
   @type upload_id :: String.t()

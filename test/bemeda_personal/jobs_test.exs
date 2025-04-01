@@ -587,7 +587,6 @@ defmodule BemedaPersonal.JobsTest do
     end
   end
 
-  # Job Applications
   describe "create_job_application/3" do
     setup [:create_job_posting]
 
