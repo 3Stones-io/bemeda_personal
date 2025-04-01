@@ -14,11 +14,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
         BemedaPersonal.PubSub,
         "job_posting:company:#{socket.assigns.company.id}"
       )
-
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job-video"
-      )
     end
 
     {:ok,

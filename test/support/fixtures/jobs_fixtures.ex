@@ -4,12 +4,15 @@ defmodule BemedaPersonal.JobsFixtures do
   entities via the `BemedaPersonal.Jobs` context.
   """
 
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
 
   @type attrs :: map()
   @type company :: Companies.Company.t()
+  @type job_application :: Jobs.JobApplication.t()
   @type job_posting :: Jobs.JobPosting.t()
+  @type user :: User.t()
 
   @spec job_posting_fixture(company(), attrs()) :: job_posting()
   def job_posting_fixture(%Companies.Company{} = company, attrs \\ %{}) do
@@ -29,5 +32,17 @@ defmodule BemedaPersonal.JobsFixtures do
     {:ok, job_posting} = Jobs.create_job_posting(company, job_posting_attrs)
 
     job_posting
+  end
+
+  @spec job_application_fixture(user(), job_posting(), attrs()) :: job_application()
+  def job_application_fixture(%User{} = user, %Jobs.JobPosting{} = job_posting, attrs \\ %{}) do
+    job_application_attrs =
+      Enum.into(attrs, %{
+        cover_letter: "some cover letter"
+      })
+
+    {:ok, job_application} = Jobs.create_job_application(user, job_posting, job_application_attrs)
+
+    job_application
   end
 end

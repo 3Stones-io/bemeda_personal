@@ -8,29 +8,24 @@ export default VideoUpload = {
     const videoUploadInputsContainer = videoUploadInput.querySelector(
       '#video-upload-inputs-container'
     )
+    const eventsTarget = videoUploadInput.dataset.eventsTarget
+
     const input = videoUploadInput.querySelector('#hidden-file-input')
-    const videoDescription = document.querySelector(
-      '#job-posting-form-video-description'
-    )
+    const videoDescription = document.querySelector('#video-description')
 
     const uploadProgressElement = document.querySelector(
-      '.job-form-video-upload-progress'
+      '.video-upload-progress'
     )
-    const filenameElement = uploadProgressElement.querySelector(
-      '#company-job-form-video-upload-filename'
-    )
-    const fileSizeElement = uploadProgressElement.querySelector(
-      '#company-job-form-video-upload-size'
-    )
-    const percentageElement = uploadProgressElement.querySelector(
-      '#company-job-form-video-upload-percentage'
-    )
+    const filenameElement =
+      uploadProgressElement.querySelector('#upload-filename')
+    const fileSizeElement = uploadProgressElement.querySelector('#upload-size')
+    const percentageElement =
+      uploadProgressElement.querySelector('#upload-percentage')
     const progressBar = uploadProgressElement.querySelector(
-      '#company-job-form-video-upload-progress-bar'
+      '#upload-progress-bar'
     )
-    const progressElement = uploadProgressElement.querySelector(
-      '#company-job-form-video-upload-progress'
-    )
+    const progressElement =
+      uploadProgressElement.querySelector('#upload-progress')
 
     let currentUpload
 
@@ -55,7 +50,8 @@ export default VideoUpload = {
       }
 
       hook.pushEventTo(
-        '#job-posting-form',
+        `#${eventsTarget}`,
+
         'upload-video',
         { filename: newFiles.name },
         (response) => {
@@ -65,7 +61,8 @@ export default VideoUpload = {
             progressBar.classList.add('bg-red-600')
             percentageElement.textContent = response.error
 
-            hook.pushEventTo('#job-posting-form', 'enable-submit')
+            hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
+
             return
           }
 
@@ -88,7 +85,7 @@ export default VideoUpload = {
           })
 
           currentUpload.on('error', (_error) => {
-            hook.pushEventTo('#job-posting-form', 'enable-submit')
+            hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
 
             progressBar.classList.remove('bg-indigo-600')
             progressBar.classList.add('bg-red-600')
@@ -97,8 +94,7 @@ export default VideoUpload = {
           })
 
           currentUpload.on('success', (_entry) => {
-            hook.pushEventTo('#job-posting-form', 'enable-submit')
-
+            hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
             progressBar.classList.remove('bg-indigo-600')
             progressBar.classList.add('bg-green-600')
             percentageElement.textContent = 'Completed'
@@ -114,7 +110,7 @@ export default VideoUpload = {
       deleteButton.addEventListener('click', () => {
         videoUploadInput.classList.remove('hidden')
         videoDescription.classList.add('hidden')
-        hook.pushEventTo('#job-posting-form', 'edit-video')
+        hook.pushEventTo(`#${eventsTarget}`, 'edit-video')
       })
     }
 

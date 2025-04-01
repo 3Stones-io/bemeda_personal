@@ -1,7 +1,7 @@
 defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
-  alias Phoenix.PubSub
+  alias BemedaPersonal.MuxHelpers.WebhookHandler
 
   @payload_path "test/support/payloads/mux_event_controller/video.asset.ready.json"
 
@@ -15,8 +15,9 @@ defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
       asset_id = params["data"]["id"]
       [playback_ids] = params["data"]["playback_ids"]
       playback_id = playback_ids["id"]
+      upload_id = params["data"]["upload_id"]
 
-      PubSub.subscribe(BemedaPersonal.PubSub, "job-video")
+      WebhookHandler.register(upload_id, self())
 
       conn =
         conn

@@ -225,6 +225,18 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
+  @spec assign_current_user(conn(), any()) :: map()
+  def assign_current_user(conn, _opts) do
+    user_token = get_session(conn, "user_token")
+
+    if user_token do
+      user = Accounts.get_user_by_session_token(user_token)
+      assign(conn, :current_user, user)
+    else
+      conn
+    end
+  end
+
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do

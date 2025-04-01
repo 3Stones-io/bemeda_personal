@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.JobLive.Show do
+defmodule BemedaPersonalWeb.CompanyJobLive.Show do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonalWeb.JobsComponents

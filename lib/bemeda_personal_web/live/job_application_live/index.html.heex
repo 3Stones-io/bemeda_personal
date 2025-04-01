@@ -1,0 +1,26 @@
+<section class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto mt-4">
+  <h1 class="text-2xl font-bold">My Job Applications</h1>
+
+  <div :if={@live_action == :index}>
+    <.live_component
+      module={JobApplicationsListComponent}
+      filters={@filters}
+      id="job-applications-list"
+      list_type={:applicant}
+    />
+  </div>
+
+  <div :if={@live_action in [:new, :edit]}>
+    <.live_component
+      module={FormComponent}
+      action={@live_action}
+      id="job-application-form"
+      job_posting={@job_posting}
+      job_application={@job_application}
+      return_to={~p"/job_applications"}
+      resume={@resume}
+      title={@page_title}
+      current_user={@current_user}
+    />
+  </div>
+</section>

@@ -84,7 +84,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       result =
         view
-        |> form("#job-posting-form", %{
+        |> form("#company-job-form", %{
           "job_posting" => %{
             "title" => "",
             "description" => ""
@@ -104,7 +104,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
 
       view
-      |> form("#job-posting-form", %{
+      |> form("#company-job-form", %{
         "job_posting" => %{
           "description" => "We are looking for a talented software engineer to join our team.",
           "employment_type" => "Full-time",
@@ -118,6 +118,49 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       job_count_after = length(Jobs.list_job_postings(%{company_id: company.id}))
       assert job_count_after == job_count_before + 1
+    end
+
+    test "creates a job posting with video", %{company: company, conn: conn, user: user} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/new")
+
+      job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
+
+      send(
+        view.pid,
+        {:video_ready,
+         %{
+           asset_id: "test-asset-id",
+           playback_id: "test-playback-id",
+           upload_id: "test-upload-id"
+         }}
+      )
+
+      view
+      |> form("#company-job-form", %{
+        "job_posting" => %{
+          "description" => "We are looking for a talented software engineer to join our team.",
+          "employment_type" => "Full-time",
+          "experience_level" => "Mid Level",
+          "location" => "Remote",
+          "remote_allowed" => true,
+          "title" => "Software Engineer"
+        }
+      })
+      |> render_submit()
+
+      job_postings = Jobs.list_job_postings(%{company_id: company.id})
+      job_count_after = length(job_postings)
+      assert job_count_after == job_count_before + 1
+
+      job_posting = List.first(job_postings)
+
+      assert %Jobs.VideoMuxData{
+               asset_id: "test-asset-id",
+               playback_id: "test-playback-id"
+             } = job_posting.mux_data
     end
 
     test "shows video upload input on new job form", %{conn: conn, user: user, company: company} do
@@ -189,7 +232,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
 
       view
-      |> form("#job-posting-form", %{
+      |> form("#company-job-form", %{
         "job_posting" => %{
           "title" => "Updated Job Title"
         }
@@ -198,6 +241,52 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       updated_job = Jobs.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
+    end
+
+    test "updates job posting video", %{
+      company: company,
+      conn: conn,
+      user: user
+    } do
+      job_posting =
+        job_posting_fixture(company, %{
+          mux_data: %{
+            file_name: "test_video.mp4",
+            playback_id: "test-playback-id",
+            asset_id: "test-asset-id"
+          }
+        })
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+
+      send(
+        view.pid,
+        {:video_ready,
+         %{
+           asset_id: "updated_test-asset-id",
+           playback_id: "updated_test-playback-id",
+           upload_id: "updated_test-upload-id"
+         }}
+      )
+
+      view
+      |> form("#company-job-form", %{
+        "job_posting" => %{
+          "title" => "Updated Job Title"
+        }
+      })
+      |> render_submit()
+
+      updated_job = Jobs.get_job_posting!(job_posting.id)
+      assert updated_job.title == "Updated Job Title"
+
+      assert %Jobs.VideoMuxData{
+               asset_id: "updated_test-asset-id",
+               playback_id: "updated_test-playback-id"
+             } = updated_job.mux_data
     end
 
     test "redirects if trying to edit another company's job", %{

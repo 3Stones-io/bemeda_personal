@@ -12,10 +12,10 @@ defmodule BemedaPersonal.MuxHelpers.ClientTest do
       expect(
         Client.Mock,
         :create_direct_upload,
-        fn -> {:ok, "https://example.com"} end
+        fn -> {:ok, "https://example.com", "123"} end
       )
 
-      assert {:ok, "https://example.com"} = Client.create_direct_upload()
+      assert {:ok, "https://example.com", "123"} = Client.create_direct_upload()
     end
 
     test "returns an error " do

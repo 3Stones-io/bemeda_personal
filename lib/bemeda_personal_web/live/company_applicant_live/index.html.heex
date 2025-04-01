@@ -1,0 +1,36 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <nav class="flex mb-8" aria-label="Breadcrumb">
+    <ol class="flex items-center space-x-2">
+      <li>
+        <.link navigate={~p"/companies"} class="text-gray-500 hover:text-gray-700">
+          Dashboard
+        </.link>
+      </li>
+      <li class="flex items-center">
+        <.icon name="hero-chevron-right" class="h-5 w-5 text-gray-400" />
+        <span class="ml-2 text-gray-700 font-medium">Applicants</span>
+      </li>
+    </ol>
+  </nav>
+
+  <div class="mb-8">
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold text-gray-900">Applicants</h1>
+    </div>
+    <p :if={!@job_posting} class="mt-2 text-sm text-gray-600">
+      View and manage applicants for all job postings at {@company.name}.
+    </p>
+
+    <p :if={@job_posting} class="mt-2 text-sm text-gray-600">
+      View and manage applicants for {@job_posting.title}.
+    </p>
+  </div>
+
+  <.live_component
+    module={JobApplicationsListComponent}
+    filters={@filters}
+    id="job-applications-list"
+    job_posting={@job_posting}
+    list_type={:recruiter}
+  />
+</div>

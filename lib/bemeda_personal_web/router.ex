@@ -22,17 +22,17 @@ defmodule BemedaPersonalWeb.Router do
   end
 
   scope "/", BemedaPersonalWeb do
-    pipe_through :browser
+    pipe_through [:browser, :assign_current_user]
 
     get "/", PageController, :home
 
-    # Public job routes - using LiveView
-    live "/jobs", JobLive.Index, :index
-    live "/jobs/:id", JobLive.Show, :show
-
-    # Public company routes - using LiveView
-    live "/company/:id", CompanyPublicLive.Show, :show
-    live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
+    live_session :public_routes,
+      on_mount: [{BemedaPersonalWeb.UserAuth, :mount_current_user}] do
+      live "/jobs", JobLive.Index, :index
+      live "/jobs/:id", JobLive.Show, :show
+      live "/company/:id", CompanyPublicLive.Show, :show
+      live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
+    end
   end
 
   # Mux webhook endpoint
@@ -95,6 +95,12 @@ defmodule BemedaPersonalWeb.Router do
       live "/resume/education/:id/edit", Resume.ShowLive, :edit_education
       live "/resume/work-experience/new", Resume.ShowLive, :new_work_experience
       live "/resume/work-experience/:id/edit", Resume.ShowLive, :edit_work_experience
+
+      # Job application routes
+      live "/job_applications", JobApplicationLive.Index, :index
+      live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
+      live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
+      live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
     end
   end
 
@@ -129,9 +135,15 @@ defmodule BemedaPersonalWeb.Router do
       ] do
       live "/:company_id/edit", CompanyLive.Index, :edit
 
-      live "/:company_id/jobs", CompanyJobLive.Index, :index
       live "/:company_id/jobs/new", CompanyJobLive.Index, :new
+      live "/:company_id/jobs", CompanyJobLive.Index, :index
+      live "/:company_id/jobs/:id", CompanyJobLive.Show, :show
       live "/:company_id/jobs/:id/edit", CompanyJobLive.Index, :edit
+
+      # Applicant routes
+      live "/:company_id/applicants", CompanyApplicantLive.Index, :index
+      live "/:company_id/applicants/:job_id", CompanyApplicantLive.Index, :index
+      live "/:company_id/applicant/:id", CompanyApplicantLive.Show, :show
     end
   end
 

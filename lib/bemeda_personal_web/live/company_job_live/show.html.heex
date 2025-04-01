@@ -6,34 +6,26 @@
       <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
           <h2 class="text-xl font-semibold text-gray-900">Job Description</h2>
-          <.link
-            :if={!@application}
-            navigate={~p"/jobs/#{@job_posting.id}/job_applications/new"}
-            class="w-[20%]"
-          >
-            <.button class="w-full">
-              Apply to this job
-            </.button>
-          </.link>
+          <div class="flex justify-between gap-x-2">
+            <.link
+              navigate={~p"/companies/#{@job_posting.company_id}/jobs/#{@job_posting.id}/edit"}
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+            >
+              Edit Job
+            </.link>
 
-          <.link
-            :if={@application}
-            navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@application.id}"}
-            class="w-[30%]"
-          >
-            <.button class="w-full">
-              Review Application
-            </.button>
-          </.link>
+            <.link
+              navigate={~p"/companies/#{@job_posting.company_id}/applicants/#{@job_posting.id}"}
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+            >
+              View Applicants
+            </.link>
+          </div>
         </div>
 
         <div :if={@job_posting.mux_data && @job_posting.mux_data.playback_id} class="py-3">
           <mux-player playback-id={@job_posting.mux_data.playback_id}></mux-player>
         </div>
-
-        <h2 class="px-4 py-5 sm:px-6 text-xl font-semibold text-gray-900 border-t border-gray-200">
-          Job Description
-        </h2>
 
         <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
           {SharedHelpers.to_html(@job_posting.description)}

@@ -560,4 +560,20 @@ defmodule BemedaPersonal.ResumesTest do
                Resumes.change_work_experience(work_experience, %{company_name: "New Company"})
     end
   end
+
+  describe "get_user_resume/1" do
+    test "returns the resume for a given user" do
+      user = user_fixture()
+      resume = resume_fixture(user)
+
+      fetched_resume = Resumes.get_user_resume(user)
+      assert fetched_resume.id == resume.id
+      assert fetched_resume.user_id == user.id
+    end
+
+    test "returns nil if user doesn't have a resume" do
+      user = user_fixture()
+      refute Resumes.get_user_resume(user)
+    end
+  end
 end
