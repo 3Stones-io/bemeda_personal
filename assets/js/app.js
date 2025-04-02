@@ -25,7 +25,6 @@ import topbar from '../vendor/topbar'
 // Import hooks
 import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
-import FlatpickrCalendar from './hooks/flatpickr_calendar'
 import TextTruncate from './hooks/text_truncate'
 import VideoUpload from './hooks/video_upload'
 
@@ -33,7 +32,6 @@ import VideoUpload from './hooks/video_upload'
 const Hooks = {
   CopyToClipboard,
   CurrentCheckbox,
-  FlatpickrCalendar,
   TextTruncate,
   VideoUpload,
 }

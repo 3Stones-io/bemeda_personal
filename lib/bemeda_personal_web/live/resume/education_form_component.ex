@@ -5,7 +5,6 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
 
   alias BemedaPersonal.Resumes
   alias BemedaPersonal.Resumes.Resume
-  alias BemedaPersonalWeb.Components.ResumeComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -41,7 +40,7 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
           label="Field of Study"
           placeholder="e.g., Computer Science"
         />
-        <ResumeComponents.date_input field={@form[:start_date]} label="Start Date" required={true} />
+        <.input field={@form[:start_date]} type="date" label="Start Date" required={true} />
         <.input
           field={@form[:current]}
           type="checkbox"
@@ -49,11 +48,12 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
           phx-hook="CurrentCheckbox"
           data-end-date-id={@form[:end_date].id}
         />
-        <ResumeComponents.date_input
+        <.input
           field={@form[:end_date]}
+          type="date"
           label="End Date"
-          disabled={Phoenix.HTML.Form.input_value(@form, :current)}
-          label_class={Phoenix.HTML.Form.input_value(@form, :current) && "opacity-50"}
+          required={true}
+          disabled={@form[:current].value}
         />
         <.input
           field={@form[:description]}

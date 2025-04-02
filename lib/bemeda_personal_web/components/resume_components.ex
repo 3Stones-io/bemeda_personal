@@ -6,50 +6,6 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
   alias BemedaPersonal.DateUtils
   alias Phoenix.LiveView.JS
 
-  attr :field, Phoenix.HTML.FormField, required: true
-  attr :label, :string, required: true
-  attr :current_checkbox_id, :string, default: nil
-  attr :required, :boolean, default: false
-  attr :disabled, :boolean, default: false
-  attr :label_class, :string, default: nil
-
-  @spec date_input(map()) :: Phoenix.LiveView.Rendered.t()
-  def date_input(assigns) do
-    errors =
-      Enum.map(assigns.field.errors, fn
-        {msg, opts} when is_tuple(msg) -> {elem(msg, 0), opts}
-        error -> error
-      end)
-
-    assigns = Map.put(assigns, :errors, errors)
-
-    ~H"""
-    <div>
-      <.label for={@field.id} class={@label_class}>{@label}</.label>
-      <div class="mt-2 relative" id={"#{@field.id}-container"} phx-update="ignore">
-        <input
-          type="text"
-          name={@field.name}
-          id={@field.id}
-          value={Phoenix.HTML.Form.input_value(@field.form, @field.field)}
-          class="block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 border-zinc-300 focus:border-zinc-400 pr-10 disabled:opacity-50 disabled:pointer-events-none"
-          required={@required}
-          disabled={@disabled}
-          phx-hook="FlatpickrCalendar"
-        />
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <.icon name="hero-calendar" class="h-5 w-5 text-gray-400" />
-        </div>
-      </div>
-      <.error :for={msg <- @errors}>{format_error(msg)}</.error>
-    </div>
-    """
-  end
-
-  defp format_error({msg, _opts}), do: msg
-  defp format_error(msg) when is_binary(msg), do: msg
-  defp format_error(_unused), do: "Invalid input"
-
   attr :id, :string, default: nil
   attr :title, :string, required: true
   attr :add_path, :string
