@@ -66,7 +66,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
     send_update(BemedaPersonalWeb.CompanyJobLive.FormComponent,
       id: "company-job-form",
-      mux_data: %{asset_id: asset_id, playback_id: playback_id}
+      mux_data: %{asset_id: asset_id, playback_id: playback_id},
+      enable_submit?: true
     )
 
     {:noreply, socket}

@@ -66,6 +66,8 @@ export default VideoUpload = {
             return
           }
 
+          progressBar.classList.add('bg-indigo-600')
+          progressBar.classList.remove('bg-green-600')
           uploadProgressElement.classList.remove('hidden')
           filenameElement.textContent = newFiles.name
           fileSizeElement.textContent = fileSizeSI(newFiles.size)
@@ -94,7 +96,6 @@ export default VideoUpload = {
           })
 
           currentUpload.on('success', (_entry) => {
-            hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
             progressBar.classList.remove('bg-indigo-600')
             progressBar.classList.add('bg-green-600')
             percentageElement.textContent = 'Completed'

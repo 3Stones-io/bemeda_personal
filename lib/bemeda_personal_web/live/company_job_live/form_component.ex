@@ -106,6 +106,15 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           mux_data={@job_posting.mux_data}
         />
 
+        <div
+          :if={@show_video_description}
+          id="video-preview-player"
+          class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6 hidden"
+        >
+          <mux-player playback-id={@job_posting.mux_data.playback_id} class="aspect-video">
+          </mux-player>
+        </div>
+
         <JobsComponents.video_upload_input_component
           id="job_posting-video"
           show_video_description={@show_video_description}
@@ -123,6 +132,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="submit"
             id="job-posting-form-submit-button"
             class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
+            disabled={!@enable_submit?}
           >
             {if(@action == :edit, do: "Save Changes", else: "Post Job")}
           </.button>
@@ -133,8 +143,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
-  def update(%{mux_data: mux_data}, socket) do
-    {:ok, assign(socket, :mux_data, Map.merge(socket.assigns.mux_data, mux_data))}
+  def update(%{enable_submit?: enable_submit?, mux_data: mux_data}, socket) do
+    {:ok,
+     socket
+     |> assign(:enable_submit?, enable_submit?)
+     |> assign(:mux_data, Map.merge(socket.assigns.mux_data, mux_data))}
   end
 
   def update(%{job_posting: job_posting} = assigns, socket) do

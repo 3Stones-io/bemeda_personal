@@ -33,7 +33,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
     send_update(FormComponent,
       id: "job-application-form",
-      mux_data: %{asset_id: asset_id, playback_id: playback_id}
+      mux_data: %{asset_id: asset_id, playback_id: playback_id},
+      enable_submit?: true
     )
 
     {:noreply, socket}
