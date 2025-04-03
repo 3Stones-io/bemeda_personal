@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
+  import BemedaPersonal.CompaniesFixtures
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonalWeb.UserAuth
@@ -256,6 +257,94 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     end
   end
 
+  describe "on_mount :require_admin_user" do
+    test "continues if user is admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
+      user_token = Accounts.generate_user_session_token(user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user}
+      }
+
+      params = %{"company_id" => company.id}
+
+      {:cont, updated_socket} = UserAuth.on_mount(:require_admin_user, params, session, socket)
+
+      assert updated_socket.assigns.company.id == company.id
+    end
+
+    test "halts if user is not admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
+      other_user = user_fixture()
+      other_user_token = Accounts.generate_user_session_token(other_user)
+
+      session =
+        conn
+        |> put_session(:user_token, other_user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: other_user}
+      }
+
+      params = %{"company_id" => company.id}
+
+      {:halt, updated_socket} = UserAuth.on_mount(:require_admin_user, params, session, socket)
+
+      assert updated_socket.assigns.flash["error"] ==
+               "You don't have permission to access this company."
+    end
+  end
+
+  describe "on_mount :require_no_existing_company" do
+    test "continues if user has no company", %{conn: conn} do
+      user_without_company = user_fixture()
+      user_without_company_token = Accounts.generate_user_session_token(user_without_company)
+
+      session =
+        conn
+        |> put_session(:user_token, user_without_company_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user_without_company}
+      }
+
+      {:cont, _updated_socket} =
+        UserAuth.on_mount(:require_no_existing_company, %{}, session, socket)
+    end
+
+    test "halts if user already has a company", %{conn: conn} do
+      user_with_company = user_fixture()
+      company_fixture(user_with_company)
+      user_with_company_token = Accounts.generate_user_session_token(user_with_company)
+
+      session =
+        conn
+        |> put_session(:user_token, user_with_company_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user_with_company}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:require_no_existing_company, %{}, session, socket)
+
+      assert {:redirect, %{to: path}} = updated_socket.redirected
+      assert path == ~p"/companies"
+    end
+  end
+
   describe "redirect_if_user_is_authenticated/2" do
     test "redirects if user is authenticated", %{conn: conn, user: user} do
       conn =
@@ -323,6 +412,61 @@ defmodule BemedaPersonalWeb.UserAuthTest do
 
       refute conn.halted
       refute conn.status
+    end
+  end
+
+  describe "require_admin_user/2" do
+    test "allows access if user is admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
+
+      conn =
+        conn
+        |> assign(:current_user, user)
+        |> fetch_flash()
+        |> Map.put(:params, %{"company_id" => company.id})
+
+      result_conn = UserAuth.require_admin_user(conn, [])
+
+      refute result_conn.halted
+    end
+
+    test "redirects if user is not admin of the company", %{conn: conn, user: user} do
+      company = company_fixture(user)
+      other_user = user_fixture()
+
+      conn =
+        conn
+        |> assign(:current_user, other_user)
+        |> fetch_flash()
+        |> Map.put(:params, %{"company_id" => company.id})
+
+      result_conn = UserAuth.require_admin_user(conn, [])
+
+      assert result_conn.halted
+      assert redirected_to(result_conn) == ~p"/companies"
+
+      assert Phoenix.Flash.get(result_conn.assigns.flash, :error) ==
+               "You don't have permission to access this company."
+    end
+  end
+
+  describe "require_no_existing_company/2" do
+    test "allows access if user has no company", %{conn: conn} do
+      user_without_company = user_fixture()
+      conn = assign(conn, :current_user, user_without_company)
+      result_conn = UserAuth.require_no_existing_company(conn, [])
+
+      refute result_conn.halted
+    end
+
+    test "redirects if user already has a company", %{conn: conn} do
+      user_with_company = user_fixture()
+      company_fixture(user_with_company)
+      conn = assign(conn, :current_user, user_with_company)
+      result_conn = UserAuth.require_no_existing_company(conn, [])
+
+      assert result_conn.halted
+      assert redirected_to(result_conn) == ~p"/companies"
     end
   end
 end

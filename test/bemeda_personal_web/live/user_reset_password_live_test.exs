@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.UserResetPasswordLiveTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
-  import Phoenix.LiveViewTest
   import BemedaPersonal.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Accounts
 

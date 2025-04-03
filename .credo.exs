@@ -29,7 +29,8 @@
           "apps/*/lib/",
           "apps/*/src/",
           "apps/*/test/",
-          "apps/*/web/"
+          "apps/*/web/",
+          "mix.exs"
         ],
         excluded: [~r"/_build/", ~r"/deps/", ~r"/node_modules/"]
       },
@@ -41,7 +42,7 @@
       # If you create your own checks, you must specify the source files for
       # them here, so they can be loaded by Credo before running the analysis.
       #
-      requires: [],
+      requires: ["test/support/credo_checks"],
       #
       # If you want to enforce a style guide and need a more traditional linting
       # experience, you can change `strict` to `true` below:
@@ -105,6 +106,9 @@
           ## Readability Checks
           #
           {Credo.Check.Readability.AliasOrder, []},
+          {Credo.Check.Readability.DepsOrder, []},
+          {Credo.Check.Readability.ImportOrder, []},
+          {Credo.Check.Readability.TypespecOrder, []},
           {Credo.Check.Readability.FunctionNames, []},
           {Credo.Check.Readability.LargeNumbers, []},
           {Credo.Check.Readability.MaxLineLength, [priority: :low, max_length: 120]},
@@ -140,7 +144,14 @@
           {Credo.Check.Refactor.MatchInCondition, []},
           {Credo.Check.Refactor.NegatedConditionsInUnless, []},
           {Credo.Check.Refactor.NegatedConditionsWithElse, []},
-          {Credo.Check.Refactor.Nesting, []},
+          {Credo.Check.Refactor.Nesting,
+           [
+             files: %{
+               excluded: [
+                 "test/support/credo_checks/readability/typespec_order.ex"
+               ]
+             }
+           ]},
           {Credo.Check.Refactor.RedundantWithClauseResult, []},
           {Credo.Check.Refactor.RejectReject, []},
           {Credo.Check.Refactor.UnlessWithElse, []},
@@ -201,7 +212,14 @@
           {Credo.Check.Readability.StrictModuleLayout,
            order: [:shortdoc, :moduledoc, :use, :import, :alias, :require, :behaviour]},
           {Credo.Check.Readability.WithCustomTaggedTuple, []},
-          {Credo.Check.Refactor.ABCSize, []},
+          {Credo.Check.Refactor.ABCSize,
+           [
+             files: %{
+               excluded: [
+                 "test/support/credo_checks/readability/typespec_order.ex"
+               ]
+             }
+           ]},
           {Credo.Check.Refactor.AppendSingleItem, []},
           {Credo.Check.Refactor.DoubleBooleanNegation, []},
           {Credo.Check.Refactor.FilterReject, []},

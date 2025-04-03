@@ -43,5 +43,5 @@ npm-debug.log
 /priv/plts/
 .DS_Store
 .env
-package.json
-package-lock.json
+/package.json
+/package-lock.json

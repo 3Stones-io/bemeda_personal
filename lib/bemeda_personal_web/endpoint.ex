@@ -42,6 +42,7 @@ defmodule BemedaPersonalWeb.Endpoint do
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
+    body_reader: {BemedaPersonalWeb.BodyReader, :read_body, []},
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()

@@ -1,6 +1,7 @@
 defmodule BemedaPersonal.MixProject do
   use Mix.Project
 
+  @spec project() :: keyword()
   def project do
     [
       app: :bemeda_personal,
@@ -48,6 +49,7 @@ defmodule BemedaPersonal.MixProject do
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.
+  @spec application() :: keyword()
   def application do
     [
       mod: {BemedaPersonal.Application, []},
@@ -57,7 +59,7 @@ defmodule BemedaPersonal.MixProject do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
+  defp elixirc_paths(_other), do: ["lib"]
 
   # Specifies your project dependencies.
   #
@@ -65,7 +67,11 @@ defmodule BemedaPersonal.MixProject do
   defp app_deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:mdex, "~> 0.4.0"},
+      {:mox, "~> 1.2", only: :test},
       {:multipart, "~> 0.4"},
+      {:mux, "~> 3.2"},
+      {:number, "~> 1.0"},
       {:plug, "~> 1.14"}
     ]
   end
@@ -135,7 +141,11 @@ defmodule BemedaPersonal.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.setup": [
+        "tailwind.install --if-missing",
+        "esbuild.install --if-missing",
+        "cmd --cd assets npm install"
+      ],
       "assets.build": ["tailwind bemeda_personal", "esbuild bemeda_personal"],
       "assets.deploy": [
         "tailwind bemeda_personal --minify",

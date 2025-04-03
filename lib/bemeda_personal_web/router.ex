@@ -17,10 +17,29 @@ defmodule BemedaPersonalWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :mux do
+    plug BemedaPersonalWeb.Plugs.MuxSignature
+  end
+
   scope "/", BemedaPersonalWeb do
-    pipe_through :browser
+    pipe_through [:browser, :assign_current_user]
 
     get "/", PageController, :home
+
+    live_session :public_routes,
+      on_mount: [{BemedaPersonalWeb.UserAuth, :mount_current_user}] do
+      live "/jobs", JobLive.Index, :index
+      live "/jobs/:id", JobLive.Show, :show
+      live "/company/:id", CompanyPublicLive.Show, :show
+      live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
+    end
+  end
+
+  # Mux webhook endpoint
+  scope "/", BemedaPersonalWeb do
+    pipe_through [:mux]
+
+    post "/webhooks/mux", MuxWebhookController, :handle
   end
 
   # Other scopes may use custom stacks.
@@ -47,8 +66,6 @@ defmodule BemedaPersonalWeb.Router do
 
   resources "/health", BemedaPersonalWeb.HealthController, only: [:index]
 
-  ## Authentication routes
-
   scope "/", BemedaPersonalWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
@@ -70,6 +87,63 @@ defmodule BemedaPersonalWeb.Router do
       on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      # Resume routes
+      live "/resume", Resume.ShowLive, :show
+      live "/resume/edit", Resume.ShowLive, :edit_resume
+      live "/resume/education/new", Resume.ShowLive, :new_education
+      live "/resume/education/:id/edit", Resume.ShowLive, :edit_education
+      live "/resume/work-experience/new", Resume.ShowLive, :new_work_experience
+      live "/resume/work-experience/:id/edit", Resume.ShowLive, :edit_work_experience
+
+      # Job application routes
+      live "/job_applications", JobApplicationLive.Index, :index
+      live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
+      live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
+      live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
+    end
+  end
+
+  scope "/companies", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :user_companies,
+      on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
+      live "/", CompanyLive.Index, :index
+    end
+  end
+
+  scope "/companies", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_no_existing_company]
+
+    live_session :new_company,
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.UserAuth, :require_no_existing_company}
+      ] do
+      live "/new", CompanyLive.Index, :new
+    end
+  end
+
+  scope "/companies", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_admin_user]
+
+    live_session :require_admin_user,
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.UserAuth, :require_admin_user}
+      ] do
+      live "/:company_id/edit", CompanyLive.Index, :edit
+
+      live "/:company_id/jobs/new", CompanyJobLive.Index, :new
+      live "/:company_id/jobs", CompanyJobLive.Index, :index
+      live "/:company_id/jobs/:id", CompanyJobLive.Show, :show
+      live "/:company_id/jobs/:id/edit", CompanyJobLive.Index, :edit
+
+      # Applicant routes
+      live "/:company_id/applicants", CompanyApplicantLive.Index, :index
+      live "/:company_id/applicants/:job_id", CompanyApplicantLive.Index, :index
+      live "/:company_id/applicant/:id", CompanyApplicantLive.Show, :show
     end
   end
 
@@ -83,5 +157,8 @@ defmodule BemedaPersonalWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
+
+    # Public resume route
+    live "/resumes/:id", Resume.IndexLive, :show
   end
 end

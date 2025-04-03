@@ -15,10 +15,14 @@ defmodule BemedaPersonal.Accounts.User do
   @foreign_key_type :binary_id
   schema "users" do
     field :email, :string
+    field :first_name, :string
+    field :last_name, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+
+    has_one :resume, BemedaPersonal.Resumes.Resume
 
     timestamps(type: :utc_datetime)
   end
@@ -49,9 +53,10 @@ defmodule BemedaPersonal.Accounts.User do
   @spec registration_changeset(t() | changeset(), attrs(), opts()) :: changeset()
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :first_name, :last_name])
     |> validate_email(opts)
     |> validate_password(opts)
+    |> validate_name()
   end
 
   defp validate_email(changeset, opts) do
@@ -71,6 +76,13 @@ defmodule BemedaPersonal.Accounts.User do
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
     # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
     |> maybe_hash_password(opts)
+  end
+
+  defp validate_name(changeset) do
+    changeset
+    |> validate_required([:first_name, :last_name])
+    |> validate_length(:first_name, min: 1, max: 255)
+    |> validate_length(:last_name, min: 1, max: 255)
   end
 
   defp maybe_hash_password(changeset, opts) do
@@ -136,6 +148,16 @@ defmodule BemedaPersonal.Accounts.User do
     |> cast(attrs, [:password])
     |> validate_confirmation(:password, message: "does not match password")
     |> validate_password(opts)
+  end
+
+  @doc """
+  A user changeset for updating name fields.
+  """
+  @spec name_changeset(t() | changeset(), attrs()) :: changeset()
+  def name_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:first_name, :last_name])
+    |> validate_name()
   end
 
   @doc """

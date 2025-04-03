@@ -1,0 +1,50 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <nav class="flex mb-8" aria-label="Breadcrumb">
+    <ol class="flex items-center space-x-2">
+      <li>
+        <.link navigate={~p"/companies"} class="text-gray-500 hover:text-gray-700">
+          Dashboard
+        </.link>
+      </li>
+      <li class="flex items-center">
+        <.icon name="hero-chevron-right" class="h-5 w-5 text-gray-400" />
+        <.link
+          navigate={~p"/companies/#{@company.id}/applicants"}
+          class="ml-2 text-gray-500 hover:text-gray-700"
+        >
+          Applicants
+        </.link>
+      </li>
+      <li class="flex items-center">
+        <.icon name="hero-chevron-right" class="h-5 w-5 text-gray-400" />
+        <span class="ml-2 text-gray-700 font-medium">
+          {"#{@application.user.first_name} #{@application.user.last_name}"}
+        </span>
+      </li>
+    </ol>
+  </nav>
+
+  <div class="mb-8">
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold text-gray-900">
+        {"#{@application.user.first_name} #{@application.user.last_name}"}
+      </h1>
+      <div>
+        <.link
+          navigate={~p"/companies/#{@company.id}/applicants"}
+          class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+        >
+          Back to Applicants
+        </.link>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6">
+    <JobsComponents.applicant_detail
+      application={@application}
+      job={@job_posting}
+      resume={@resume}
+    />
+  </div>
+</div>
