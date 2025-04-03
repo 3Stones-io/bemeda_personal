@@ -1,6 +1,6 @@
 ---
-description: Installing npm packages
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
-Navigate to /assests/js before running any npm installation commands
+Navigate to /assets/js before running any npm installation commands
