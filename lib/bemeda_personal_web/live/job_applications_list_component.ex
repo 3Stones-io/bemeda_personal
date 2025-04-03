@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   @impl Phoenix.LiveComponent
   def render(assigns) do
     ~H"""
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div>
       <div
         :if={@list_type == :recruiter}
         id={@id}
@@ -20,14 +20,21 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
         phx-page-loading
         class="divide-y divide-gray-200"
       >
-        <div id="applicants-empty" class="only:block hidden px-4 py-5 sm:px-6 text-center">
+        <div
+          id="applicants-empty"
+          class="only:block hidden px-4 py-5 sm:px-6 text-center border-t border-gray-200"
+        >
           <p class="text-gray-500">No applicants found.</p>
           <p class="mt-2 text-sm text-gray-500">
             Applicants will appear here when they apply to your job postings.
           </p>
         </div>
 
-        <div :for={{dom_id, application} <- @streams.job_applications} id={dom_id}>
+        <div
+          :for={{dom_id, application} <- @streams.job_applications}
+          class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200"
+          id={dom_id}
+        >
           <JobsComponents.applicant_card
             applicant={application}
             id={"applicant-#{application.id}"}
@@ -40,7 +47,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
       <div
         :if={@list_type == :applicant}
         role="list"
-        class="mt-8 space-y-4"
+        class="space-y-4"
         phx-update="stream"
         phx-viewport-top={!@end_of_timeline? && JS.push("prev-page", target: "##{@id}")}
         phx-viewport-bottom={!@end_of_timeline? && JS.push("next-page", target: "##{@id}")}
@@ -48,18 +55,32 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
         id={@id}
       >
         <div
+          id="applications-empty"
+          class="only:block hidden px-4 py-5 sm:px-6 text-center border-t border-gray-200"
+        >
+          <p class="text-gray-500">You haven't applied for any jobs yet.</p>
+          <p class="mt-2 text-sm text-gray-500">
+            Start your job search by browsing available positions.
+          </p>
+          <.link
+            navigate={~p"/jobs"}
+            class="mt-4 inline-block px-4 py-2 bg-indigo-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Browse Jobs
+          </.link>
+        </div>
+
+        <div
           :for={{id, application} <- @streams.job_applications}
           role="listitem"
           id={id}
-          class="bg-white shadow rounded-lg overflow-hidden border border-gray-200"
+          class="rounded-lg overflow-hidden border border-gray-200"
+          phx-click={
+            JS.navigate(~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}")
+          }
         >
-          <div
-            class="p-6 hover:bg-gray-50 cursor-pointer relative"
-            phx-click={
-              JS.navigate(~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}")
-            }
-          >
-            <div class="flex justify-between">
+          <div class="p-6 hover:bg-gray-50 cursor-pointer relative">
+            <div class="flex flex-col md:flex-row justify-between">
               <div class="flex-1 pr-4">
                 <div>
                   <h3 class="text-lg font-semibold text-gray-900">{application.job_posting.title}</h3>
@@ -72,7 +93,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
                 </div>
               </div>
 
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-2 mt-4 md:mt-0 action">
                 <.link
                   navigate={
                     ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}/edit"

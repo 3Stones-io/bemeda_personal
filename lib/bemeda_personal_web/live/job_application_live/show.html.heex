@@ -32,50 +32,49 @@
     </div>
   </div>
 
-  <div class="bg-white overflow-hidden shadow rounded-lg mb-6">
-    <div class="px-4 py-5 sm:p-6">
-      <div class="flex justify-between items-center">
-        <div>
-          <h2 class="text-xl font-bold text-gray-900">
-            <.link navigate={~p"/jobs/#{@job_posting.id}"} class="hover:text-blue-600">
-              {@job_posting.title} at {@job_posting.company.name}
-            </.link>
-          </h2>
-          <p class="text-sm text-gray-500 mt-1">
-            Submitted on {Calendar.strftime(@job_application.inserted_at, "%B %d, %Y")}
-          </p>
-        </div>
-        <div class="flex space-x-2">
-          <.link
-            :if={@resume}
-            navigate={~p"/resume"}
-            class="inline-flex rounded-md items-center text-blue-700 bg-blue-100 hover:bg-blue-200 px-2"
-          >
-            <.icon name="hero-document" class="h-5 w-5 mr-2" /> Edit Your Resume
+  <div class="py-5">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">
+          <.link navigate={~p"/jobs/#{@job_posting.id}"} class="hover:text-blue-600">
+            {@job_posting.title} at {@job_posting.company.name}
           </.link>
+        </h2>
+        <p class="text-sm text-gray-500 mt-1">
+          Submitted on {Calendar.strftime(@job_application.inserted_at, "%B %d, %Y")}
+        </p>
+      </div>
+      <div class="flex gap-x-2 mt-4 md:mt-0">
+        <.link
+          :if={@resume}
+          navigate={~p"/resume"}
+          class="inline-flex rounded-md items-center text-blue-700 bg-blue-100 hover:bg-blue-200 px-2"
+        >
+          <.icon name="hero-document" class="h-5 w-5 mr-2" /> Edit Your Resume
+        </.link>
 
-          <.link navigate={
-            ~p"/jobs/#{@job_posting.id}/job_applications/#{@job_application.id}/edit"
-          }>
-            <.button>Edit application</.button>
-          </.link>
-        </div>
+        <.link navigate={
+          ~p"/jobs/#{@job_posting.id}/job_applications/#{@job_application.id}/edit"
+        }>
+          <.button>Edit application</.button>
+        </.link>
       </div>
     </div>
   </div>
 
-  <div class="bg-white overflow-hidden shadow rounded-lg">
-    <div :if={@job_application.mux_data && @job_application.mux_data.playback_id} class="mt-4">
-      <mux-player playback-id={@job_application.mux_data.playback_id} class="w-full aspect-video">
-      </mux-player>
-    </div>
+  <div
+    :if={@job_application.mux_data && @job_application.mux_data.playback_id}
+    class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
+  >
+    <mux-player playback-id={@job_application.mux_data.playback_id} class="aspect-video">
+    </mux-player>
+  </div>
 
-    <div class="px-4 py-5 sm:p-6">
-      <div class="mt-4 prose max-w-none">
-        <h3 class="text-lg font-medium text-gray-700">Cover Letter</h3>
-        <div class="mt-2 md-to-html">
-          {SharedHelpers.to_html(@job_application.cover_letter)}
-        </div>
+  <div class="px-4 py-5 sm:p-6">
+    <div class="mt-4 prose max-w-none">
+      <h3 class="text-xl font-medium text-gray-700">Cover Letter</h3>
+      <div class="mt-2 md-to-html">
+        {SharedHelpers.to_html(@job_application.cover_letter)}
       </div>
     </div>
   </div>

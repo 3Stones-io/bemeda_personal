@@ -336,6 +336,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
+  attr :class, :string, default: nil
+
   attr :employment_types, :list,
     default: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"]
 
@@ -347,7 +349,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
   @spec job_filters(assigns()) :: output()
   def job_filters(assigns) do
     ~H"""
-    <div class="mb-8">
+    <div class={[
+      "mb-8",
+      @class
+    ]}>
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold">Filters</h2>
         <div class="flex space-x-2">
@@ -572,7 +577,18 @@ defmodule BemedaPersonalWeb.JobsComponents do
   @spec video_preview_component(assigns()) :: output()
   def video_preview_component(assigns) do
     ~H"""
-    <div :if={@show_video_description} id="video-description">
+    <div
+      :if={@show_video_description}
+      id="video-description"
+      phx-click={
+        JS.toggle(
+          to: "#video-preview-player",
+          in: "transition-all duration-200 ease-in-out",
+          out: "transition-all duration-200 ease-in-out"
+        )
+      }
+      title="Show video"
+    >
       <p class="text-sm font-medium text-gray-900 mb-4">Video Description</p>
       <div
         class="relative w-full bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:bg-gray-50"
@@ -616,7 +632,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   def applicant_card(assigns) do
     ~H"""
     <div
-      class="px-8 py-6 relative group border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+      class="px-8 py-6 relative group cursor-pointer"
       phx-click={JS.navigate(~p"/companies/#{@job.company_id}/applicant/#{@applicant.id}")}
     >
       <div class="flex justify-between">
@@ -640,7 +656,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </div>
 
         <div :if={@show_job && @job} class="hidden sm:block">
-          <div class="text-sm">
+          <div class="text-sm text-start">
             <p class="font-medium text-gray-900">{@job.title}</p>
             <p class="text-gray-500">{@job.location || "Remote"}</p>
           </div>
@@ -703,9 +719,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </dl>
       </div>
 
-      <div :if={@application.mux_data && @application.mux_data.playback_id} class="my-4">
-        <mux-player playback-id={@application.mux_data.playback_id} class="w-full aspect-video">
-        </mux-player>
+      <div
+        :if={@application.mux_data && @application.mux_data.playback_id}
+        class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
+      >
+        <mux-player playback-id={@application.mux_data.playback_id} class="aspect-video"></mux-player>
       </div>
     </div>
 

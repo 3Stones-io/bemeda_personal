@@ -5,7 +5,6 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
 
   alias BemedaPersonal.Resumes
   alias BemedaPersonal.Resumes.Resume
-  alias BemedaPersonalWeb.Components.ResumeComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -42,7 +41,7 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
           label="Location"
           placeholder="e.g., Mountain View, CA"
         />
-        <ResumeComponents.date_input field={@form[:start_date]} label="Start Date" required={true} />
+        <.input field={@form[:start_date]} type="date" label="Start Date" required={true} />
         <.input
           field={@form[:current]}
           type="checkbox"
@@ -50,11 +49,12 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
           phx-hook="CurrentCheckbox"
           data-end-date-id={@form[:end_date].id}
         />
-        <ResumeComponents.date_input
+        <.input
           field={@form[:end_date]}
+          type="date"
           label="End Date"
-          disabled={Phoenix.HTML.Form.input_value(@form, :current)}
-          label_class={Phoenix.HTML.Form.input_value(@form, :current) && "opacity-50"}
+          disabled={@form[:current].value}
+          label_class={@form[:current].value && "opacity-50"}
         />
         <.input
           field={@form[:description]}

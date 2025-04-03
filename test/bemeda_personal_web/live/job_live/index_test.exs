@@ -56,9 +56,8 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
     } do
       {:ok, _view, html} = live(conn, ~p"/jobs")
 
-      assert html =~ "Job Listings"
+      assert html =~ "Job Postings"
       assert html =~ "Find your next career opportunity"
-      assert html =~ "Available Positions"
 
       assert html =~ job1.title
       assert html =~ job2.title

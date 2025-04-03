@@ -71,7 +71,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       {:ok, _view, html} =
         view
-        |> element("[role=listitem]:first-child .p-6")
+        |> element("#job_applications-#{job_application.id}")
         |> render_click()
         |> follow_redirect(
           conn,

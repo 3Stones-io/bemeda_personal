@@ -9,10 +9,14 @@ defmodule BemedaPersonalWeb.JobListComponent do
   @impl Phoenix.LiveComponent
   def render(assigns) do
     ~H"""
-    <section>
-      <JobsComponents.job_filters target={"##{@id}"} />
+    <section class="group">
+      <JobsComponents.job_filters
+        class="group-has-[#empty-job-postings.block]:hidden"
+        target={"##{@id}"}
+      />
+
       <div
-        class="border-t border-gray-200"
+        class="border-t border-gray-200 group-has-[#empty-job-postings.hidden]:border-0"
         id={@id}
         phx-update="stream"
         phx-viewport-top={!@end_of_timeline? && JS.push("prev-page", target: "##{@id}")}
@@ -27,7 +31,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
         </div>
         <div
           :for={{job_id, job} <- @streams.job_postings}
-          class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200 rounded-md"
+          class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200"
           id={job_id}
           role="list"
         >

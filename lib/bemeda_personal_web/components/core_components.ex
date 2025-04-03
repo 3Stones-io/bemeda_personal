@@ -375,6 +375,33 @@ defmodule BemedaPersonalWeb.CoreComponents do
     """
   end
 
+  def input(%{type: "date"} = assigns) do
+    ~H"""
+    <div>
+      <.label for={@id} class={@label_class}>{@label}</.label>
+      <div class="mt-2 relative">
+        <input
+          type="date"
+          name={@name}
+          id={@id}
+          value={Phoenix.HTML.Form.normalize_value("date", @value)}
+          class={[
+            "block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 pr-10",
+            @input_class,
+            @errors == [] && "border-zinc-300 focus:border-zinc-400",
+            @errors != [] && "border-rose-400 focus:border-rose-400"
+          ]}
+          {@rest}
+        />
+        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <.icon name="hero-calendar" class="h-5 w-5 text-gray-400" />
+        </div>
+      </div>
+      <.error :for={msg <- @errors}>{msg}</.error>
+    </div>
+    """
+  end
+
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
@@ -393,6 +420,71 @@ defmodule BemedaPersonalWeb.CoreComponents do
         ]}
         {@rest}
       />
+      <.error :for={msg <- @errors}>{msg}</.error>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a date input with calendar icon and styling.
+
+  ## Examples
+
+      <.date_input field={@form[:start_date]} label="Start Date" />
+      <.date_input field={@form[:end_date]} label="End Date" disabled={true} />
+  """
+  attr :id, :any, default: nil
+  attr :name, :any
+  attr :label, :string, default: nil
+  attr :value, :any
+  attr :required, :boolean, default: false
+  attr :disabled, :boolean, default: false
+  attr :label_class, :string, default: nil
+  attr :input_class, :string, default: nil
+  attr :errors, :list, default: []
+
+  attr :field, Phoenix.HTML.FormField,
+    doc: "a form field struct retrieved from the form, for example: @form[:start_date]"
+
+  attr :rest, :global,
+    include: ~w(autocomplete min max pattern placeholder readonly required step)
+
+  def date_input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns.id || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign_new(:name, fn -> field.name end)
+    |> assign_new(:value, fn -> field.value end)
+    |> date_input()
+  end
+
+  def date_input(assigns) do
+    ~H"""
+    <div>
+      <.label for={@id} class={@label_class}>{@label}</.label>
+      <div class="mt-2 relative">
+        <input
+          type="date"
+          name={@name}
+          id={@id}
+          value={Phoenix.HTML.Form.normalize_value("date", @value)}
+          class={[
+            "block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 border-zinc-300 focus:border-zinc-400 pr-10",
+            @disabled && "opacity-50 pointer-events-none",
+            @errors == [] && "border-zinc-300 focus:border-zinc-400",
+            @errors != [] && "border-rose-400 focus:border-rose-400",
+            @input_class
+          ]}
+          required={@required}
+          disabled={@disabled}
+          {@rest}
+        />
+        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <.icon name="hero-calendar" class="h-5 w-5 text-gray-400" />
+        </div>
+      </div>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """

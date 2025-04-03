@@ -167,7 +167,7 @@ health_jobs = [
 ]
 
 more_tech_jobs =
-  for idx <- 6..50 do
+  for _idx <- 6..50 do
     job_type =
       Enum.random([
         "Software Engineer",
@@ -195,7 +195,7 @@ more_tech_jobs =
   end
 
 more_health_jobs =
-  for idx <- 6..50 do
+  for _idx <- 6..50 do
     job_type =
       Enum.random([
         "Healthcare Developer",

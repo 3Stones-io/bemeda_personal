@@ -86,20 +86,20 @@
           {String.replace(@company.website_url, ~r{^https?://(www\.)?}, "")}
         </a>
       </div>
-      <div class="mb-2">
+      <div :if={@company.industry} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">Industry</h4>
         <p class="text-sm text-gray-600">{@company.industry}</p>
       </div>
-      <div class="mb-2">
+      <div :if={@company.size} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">Company Size</h4>
         <p class="text-sm text-gray-600">{@company.size}</p>
       </div>
-      <div class="mb-2">
+      <div :if={@company.location} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">Location</h4>
         <p class="text-sm text-gray-600">{@company.location}</p>
       </div>
 
-      <div class="mb-2">
+      <div :if={@job_count} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">Open Positions</h4>
         <p class="text-sm text-gray-600">{@job_count}</p>
       </div>
