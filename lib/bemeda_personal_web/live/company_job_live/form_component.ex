@@ -143,10 +143,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
-  def update(%{enable_submit?: enable_submit?, mux_data: mux_data}, socket) do
+  def update(%{mux_data: mux_data}, socket) do
     {:ok,
      socket
-     |> assign(:enable_submit?, enable_submit?)
+     |> assign(:enable_submit?, true)
      |> assign(:mux_data, Map.merge(socket.assigns.mux_data, mux_data))}
   end
 
