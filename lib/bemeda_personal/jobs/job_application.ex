@@ -6,6 +6,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.VideoMuxData
 
@@ -18,6 +19,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
 
   schema "job_applications" do
     field :cover_letter, :string
+    has_many :messages, Message
     embeds_one :mux_data, VideoMuxData, on_replace: :update
     belongs_to :job_posting, JobPosting
     belongs_to :user, User
