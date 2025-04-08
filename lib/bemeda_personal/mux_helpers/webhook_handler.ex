@@ -5,15 +5,15 @@ defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
 
   require Logger
 
-  @type upload_id :: String.t()
   @type changeset :: Ecto.Changeset.t()
   @type message :: Jobs.Message.t()
+  @type upload_id :: String.t()
 
   @registry_name BemedaPersonal.Registry
 
   @spec register(upload_id(), atom()) :: {:ok, pid()} | {:error, {:already_registered, pid()}}
   def register(upload_id, type) do
-    Registry.register(@registry_name, upload_id, type )
+    Registry.register(@registry_name, upload_id, type)
   end
 
   @spec handle_webhook_response(map()) :: :ok
@@ -33,10 +33,12 @@ defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
         Logger.error("Message with upload_id #{response.upload_id} not found")
 
       %Jobs.Message{} = message ->
-        Jobs.update_message(message, %{mux_data: %{
-          asset_id: response.asset_id,
-          playback_id: response.playback_id
-          }})
+        Jobs.update_message(message, %{
+          mux_data: %{
+            asset_id: response.asset_id,
+            playback_id: response.playback_id
+          }
+        })
     end
   end
 

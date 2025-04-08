@@ -12,8 +12,8 @@ defmodule BemedaPersonal.JobsFixtures do
   @type company :: Companies.Company.t()
   @type job_application :: Jobs.JobApplication.t()
   @type job_posting :: Jobs.JobPosting.t()
-  @type user :: User.t()
   @type message :: Jobs.Message.t()
+  @type user :: User.t()
 
   @spec job_posting_fixture(company(), attrs()) :: job_posting()
   def job_posting_fixture(%Companies.Company{} = company, attrs \\ %{}) do

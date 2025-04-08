@@ -589,8 +589,11 @@ defmodule BemedaPersonal.JobsTest do
     test "creates a job_application with valid data" do
       user = user_fixture()
       company = company_fixture(user)
-      job_posting = job_posting_fixture(company)
-      job_posting = Repo.preload(job_posting, :company)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
 
       valid_attrs = %{
         cover_letter: "some cover letter"
@@ -607,8 +610,11 @@ defmodule BemedaPersonal.JobsTest do
     test "creates chat messages when job application is created" do
       user = user_fixture()
       company = company_fixture(user)
-      job_posting = job_posting_fixture(company)
-      job_posting = Repo.preload(job_posting, :company)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
 
       cover_letter_attrs = %{
         cover_letter: "This is my cover letter"
@@ -650,8 +656,11 @@ defmodule BemedaPersonal.JobsTest do
     test "returns error changeset when data is invalid" do
       user = user_fixture()
       company = company_fixture(user)
-      job_posting = job_posting_fixture(company)
-      job_posting = Repo.preload(job_posting, :company)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
 
       invalid_attrs = %{
         cover_letter: nil
@@ -664,8 +673,11 @@ defmodule BemedaPersonal.JobsTest do
     test "broadcasts job_application_created event when creating a new job application" do
       user = user_fixture()
       company = company_fixture(user)
-      job_posting = job_posting_fixture(company)
-      job_posting = Repo.preload(job_posting, :company)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
 
       company_job_application_topic = "job_application:company:#{job_posting.company_id}"
       user_job_application_topic = "job_application:user:#{user.id}"
@@ -1050,6 +1062,20 @@ defmodule BemedaPersonal.JobsTest do
       assert message.job_application_id == job_application.id
       assert message.sender_id == user.id
     end
+
+    test "broadcasts new_message event when a message is created", %{
+      job_application: job_application,
+      user: user
+    } do
+      message_topic = "messages:job_application:#{job_application.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, message_topic)
+
+      valid_attrs = %{content: "new broadcast message"}
+
+      {:ok, message} = Jobs.create_message(user, job_application, valid_attrs)
+
+      assert_receive {:new_message, ^message}
+    end
   end
 
   describe "update_message/2" do
@@ -1060,6 +1086,20 @@ defmodule BemedaPersonal.JobsTest do
 
       assert {:ok, %Jobs.Message{} = updated} = Jobs.update_message(message, update_attrs)
       assert updated.content == "updated content"
+    end
+
+    test "broadcasts message_updated event when a message is updated", %{
+      message: message,
+      job_application: job_application
+    } do
+      message_topic = "messages:job_application:#{job_application.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, message_topic)
+
+      update_attrs = %{content: "updated broadcast content"}
+
+      {:ok, updated_message} = Jobs.update_message(message, update_attrs)
+
+      assert_receive {:message_updated, ^updated_message}
     end
   end
 
@@ -1091,6 +1131,44 @@ defmodule BemedaPersonal.JobsTest do
       changeset = Jobs.change_message(message, changes)
       assert changeset.valid?
       assert Ecto.Changeset.get_change(changeset, :content) == "new content"
+    end
+  end
+
+  describe "get_message_by_upload_id/1" do
+    setup do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      message =
+        message_fixture(user, job_application, %{
+          content: nil,
+          mux_data: %{
+            "upload_id" => "test_upload_123",
+            "asset_id" => "asset_123",
+            "playback_id" => "playback_123",
+            "type" => "video"
+          }
+        })
+
+      %{
+        user: user,
+        job_application: job_application,
+        message: message
+      }
+    end
+
+    test "returns the message with given upload id", %{message: message} do
+      result = Jobs.get_message_by_upload_id("test_upload_123")
+      assert result.id == message.id
+      assert result.mux_data.upload_id == "test_upload_123"
+      assert Ecto.assoc_loaded?(result.sender)
+      assert Ecto.assoc_loaded?(result.job_application)
+    end
+
+    test "returns nil when no message with the upload id exists" do
+      refute Jobs.get_message_by_upload_id("non_existent_upload_id")
     end
   end
 end

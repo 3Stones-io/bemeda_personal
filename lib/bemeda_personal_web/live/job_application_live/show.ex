@@ -55,14 +55,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
          {:ok, _pid} <- WebhookHandler.register(upload_id, :message_media_upload),
          {:ok, message} <-
            Jobs.create_message(
-            socket.assigns.current_user,
-            socket.assigns.job_application, %{
-             "mux_data" => %{
-               "file_name" => filename,
-               "type" => type,
-               "upload_id" => upload_id
+             socket.assigns.current_user,
+             socket.assigns.job_application,
+             %{
+               "mux_data" => %{
+                 "file_name" => filename,
+                 "type" => type,
+                 "upload_id" => upload_id
+               }
              }
-           }) do
+           ) do
       {:reply, %{upload_url: upload_url}, stream_insert(socket, :messages, message)}
     else
       {:error, _reason} ->
@@ -72,7 +74,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   @impl Phoenix.LiveView
   def handle_info({event, message}, socket)
-    when event in [:new_message, :message_updated] do
+      when event in [:new_message, :message_updated] do
     {:noreply, stream_insert(socket, :messages, message)}
   end
 

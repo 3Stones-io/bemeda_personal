@@ -1,4 +1,5 @@
 defmodule BemedaPersonalWeb.ChatComponents do
+  @moduledoc false
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.MuxData

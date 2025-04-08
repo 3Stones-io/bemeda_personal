@@ -307,8 +307,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
-
       applications = BemedaPersonal.Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
@@ -319,6 +317,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         end)
 
       assert created_application.job_posting_id == job.id
+      assert_redirect(view, ~p"/chat/#{created_application.id}")
 
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
@@ -349,8 +348,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
-
       applications = Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
@@ -361,6 +358,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         end)
 
       assert created_application.job_posting_id == job.id
+      assert_redirect(view, ~p"/chat/#{created_application.id}")
 
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
@@ -369,6 +367,21 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
                asset_id: "test-asset-id",
                playback_id: "test-playback-id"
              } = created_application.mux_data
+
+      messages = BemedaPersonal.Jobs.list_messages(created_application)
+      assert length(messages) == 2
+
+      assert Enum.any?(
+               messages,
+               &(&1.mux_data.playback_id ==
+                   created_application.mux_data.playback_id)
+             )
+
+      assert Enum.any?(
+               messages,
+               &(&1.content ==
+                   created_application.cover_letter)
+             )
     end
 
     test "updates existing job application successfully", %{
@@ -389,7 +402,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
+      assert_redirect(view, ~p"/chat/#{job_application.id}")
 
       updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
 
@@ -435,7 +448,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
+      assert_redirect(view, ~p"/chat/#{job_application.id}")
 
       updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
 

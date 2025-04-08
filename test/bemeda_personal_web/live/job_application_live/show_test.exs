@@ -218,4 +218,107 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       refute html =~ "<mux-player"
     end
   end
+
+  describe "/chat/:job_application_id" do
+    setup %{conn: conn} do
+      user = user_fixture()
+      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+
+      job =
+        job_posting_fixture(company, %{
+          title: "Senior Developer",
+          description: "Build amazing applications",
+          location: "Remote",
+          employment_type: "Full-time"
+        })
+
+      job_application =
+        job_application_fixture(user, job, %{
+          cover_letter:
+            "I am excited to apply for this position and believe my skills are a perfect match."
+        })
+
+      conn = log_in_user(conn, user)
+
+      %{
+        conn: conn,
+        user: user,
+        job: job,
+        job_application: job_application
+      }
+    end
+
+    test "shows the cover letter in chat messages when viewing chat", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, _view, html} =
+        live(conn, ~p"/chat/#{job_application.id}")
+
+      assert html =~ job_application.cover_letter
+
+      messages = BemedaPersonal.Jobs.list_messages(job_application)
+      assert length(messages) == 1
+      assert hd(messages).content == job_application.cover_letter
+    end
+
+    test "shows both video and cover letter when application has video", %{
+      conn: conn,
+      user: user,
+      job: job
+    } do
+      job_application =
+        job_application_fixture(
+          user,
+          job,
+          %{
+            cover_letter: "Application with video",
+            mux_data: %{
+              asset_id: "asset_123",
+              playback_id: "test-playback-id",
+              file_name: "test_video.mp4",
+              type: "video/mp4"
+            }
+          }
+        )
+
+      {:ok, _view, html} =
+        live(conn, ~p"/chat/#{job_application.id}")
+
+      assert html =~ "Application with video"
+      assert html =~ ~s(mux-player playback-id="test-playback-id")
+
+      messages = BemedaPersonal.Jobs.list_messages(job_application)
+      assert length(messages) == 2
+
+      video_message = Enum.find(messages, fn m -> m.mux_data != nil end)
+      text_message = Enum.find(messages, fn m -> m.content != nil end)
+
+      assert video_message.mux_data.playback_id == "test-playback-id"
+      assert text_message.content == "Application with video"
+    end
+
+    test "allows user to send new messages", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, view, _html} =
+        live(conn, ~p"/chat/#{job_application.id}")
+
+      message_content = "This is a new test message"
+
+      view
+      |> form("#chat-form", %{message: %{content: message_content}})
+      |> render_submit()
+
+      rendered_html = render(view)
+      assert rendered_html =~ message_content
+
+      messages = BemedaPersonal.Jobs.list_messages(job_application)
+      assert length(messages) == 2
+
+      new_message = Enum.find(messages, fn m -> m.content == message_content end)
+      assert new_message.content == message_content
+    end
+  end
 end

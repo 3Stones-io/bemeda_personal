@@ -505,8 +505,6 @@ defmodule BemedaPersonal.Jobs do
     |> Repo.preload([:sender, :job_application])
   end
 
-  # TODO: Add filters
-
   @doc """
   Gets a single message.
 
@@ -525,26 +523,6 @@ defmodule BemedaPersonal.Jobs do
   def get_message!(id) do
     Message
     |> Repo.get!(id)
-    |> Repo.preload([:sender, :job_application])
-  end
-
-  @doc """
-  Returns a message by job application id.
-
-  ## Examples
-
-      iex> get_message_by_job_application_id(123)
-      %Message{}
-
-      iex> get_message_by_job_application_id(456)
-      nil
-
-  """
-  @spec get_message_by_job_application_id(job_application_id()) :: message()
-  def get_message_by_job_application_id(job_application_id) do
-    Message
-    |> where([m], m.job_application_id == ^job_application_id)
-    |> Repo.one()
     |> Repo.preload([:sender, :job_application])
   end
 
@@ -623,7 +601,12 @@ defmodule BemedaPersonal.Jobs do
     case result do
       {:ok, updated_message} ->
         message_topic = "#{@message_topic}:job_application:#{updated_message.job_application_id}"
-        PubSub.broadcast(BemedaPersonal.PubSub, message_topic, {:message_updated, updated_message})
+
+        PubSub.broadcast(
+          BemedaPersonal.PubSub,
+          message_topic,
+          {:message_updated, updated_message}
+        )
 
         {:ok, updated_message}
 
