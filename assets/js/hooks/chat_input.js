@@ -23,8 +23,6 @@ export default ChatInput = {
             file: newFiles,
             chunkSize: 30720,
           })
-
-          // Only handle errors maybe?
         }
       )
     }

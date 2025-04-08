@@ -1,5 +1,6 @@
 defmodule BemedaPersonalWeb.JobsComponents do
   @moduledoc false
+
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonalWeb.SharedHelpers
@@ -662,6 +663,16 @@ defmodule BemedaPersonalWeb.JobsComponents do
           </div>
         </div>
       </div>
+
+      <div class="absolute bottom-4 right-6 flex space-x-2 z-10">
+        <.link
+          navigate={~p"/chat/#{@applicant.id}"}
+          class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center shadow-sm"
+          title="Chat with applicant"
+        >
+          <.icon name="hero-chat-bubble-left-right" class="w-4 h-4" />
+        </.link>
+      </div>
     </div>
     """
   end
@@ -677,9 +688,17 @@ defmodule BemedaPersonalWeb.JobsComponents do
     ~H"""
     <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
       <div class="px-4 py-5 sm:px-6">
-        <div>
-          <h2 class="text-xl font-semibold text-gray-900">Application Information</h2>
-          <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900">Application Information</h2>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+          </div>
+          <.link
+            navigate={~p"/chat/#{@application.id}"}
+            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <.icon name="hero-chat-bubble-left-right" class="w-4 h-4 mr-2" /> Chat with Applicant
+          </.link>
         </div>
       </div>
       <div class="border-t border-gray-200">

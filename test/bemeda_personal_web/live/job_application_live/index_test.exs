@@ -130,6 +130,28 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       assert html =~ job_application.job_posting.description
     end
 
+    test "provides link to chat with employer", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, view, _html} =
+        live(conn, ~p"/job_applications")
+
+      chat_link_selector = "a[href='/chat/#{job_application.id}']"
+
+      assert view
+             |> element(chat_link_selector)
+             |> has_element?()
+
+      {:ok, _view, html} =
+        view
+        |> element(chat_link_selector)
+        |> render_click()
+        |> follow_redirect(conn, ~p"/chat/#{job_application.id}")
+
+      assert html =~ "Chat"
+    end
+
     test "displays application date", %{
       conn: conn,
       job_application: job_application

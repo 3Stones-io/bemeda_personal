@@ -113,5 +113,31 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
              |> element("a", "Back to Applicants")
              |> has_element?()
     end
+
+    test "provides a link to chat with the applicant", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      assert {:ok, view, html} =
+               live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert html =~ "Chat with Applicant"
+
+      assert view
+             |> element("a[href*='/chat/#{application.id}']")
+             |> has_element?()
+
+      {:ok, _view, html} =
+        view
+        |> element("a[href*='/chat/#{application.id}']")
+        |> render_click()
+        |> follow_redirect(conn, ~p"/chat/#{application.id}")
+
+      assert html =~ "Chat"
+    end
   end
 end
