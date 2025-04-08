@@ -181,8 +181,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
     save_job_posting(socket, socket.assigns.action, job_params)
   end
 
-  def handle_event("upload-video", %{"filename" => filename}, socket) do
-    SharedHelpers.create_video_upload(socket, filename, self())
+  def handle_event("upload-video", params, socket) do
+    SharedHelpers.create_video_upload(socket, params)
   end
 
   def handle_event("enable-submit", _params, socket) do

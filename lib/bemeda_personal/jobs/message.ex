@@ -1,12 +1,11 @@
-defmodule BemedaPersonal.Chat.Message do
-  @moduledoc false
-
+defmodule BemedaPersonal.Jobs.Message do
   use Ecto.Schema
 
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.MuxData
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -16,9 +15,9 @@ defmodule BemedaPersonal.Chat.Message do
   @foreign_key_type :binary_id
   schema "messages" do
     field :content, :string
-    field :media_type, :string, default: "text"
-    belongs_to :sender, User
     belongs_to :job_application, JobApplication
+    embeds_one :mux_data, MuxData, on_replace: :update
+    belongs_to :sender, User
 
     timestamps(type: :utc_datetime)
   end
@@ -26,9 +25,7 @@ defmodule BemedaPersonal.Chat.Message do
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:content, :media_type])
-    |> validate_required([:content])
-    |> validate_length(:content, min: 1, max: 5000)
-    |> validate_inclusion(:media_type, ["text", "image", "file", "video", "audio"])
+    |> cast(attrs, [:content])
+    |> cast_embed(:mux_data)
   end
 end

@@ -79,15 +79,15 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     end
   end
 
-  @spec create_video_upload(Phoenix.LiveView.Socket.t(), String.t(), pid()) ::
+  @spec create_video_upload(Phoenix.LiveView.Socket.t(), String.t()) ::
           {:reply, map(), Phoenix.LiveView.Socket.t()}
-  def create_video_upload(socket, filename, pid) do
+  def create_video_upload(socket, params) do
     with {:ok, upload_url, upload_id} <- Client.create_direct_upload(),
-         {:ok, _pid} <- WebhookHandler.register(upload_id, pid) do
+         {:ok, _pid} <- WebhookHandler.register(upload_id, :form_video_upload) do
       {:reply, %{upload_url: upload_url},
        socket
        |> assign(:enable_submit?, false)
-       |> assign(:mux_data, %{file_name: filename})}
+       |> assign(:mux_data, %{file_name: params["filename"], type: params["type"]})}
     else
       {:error, _reason} ->
         {:reply, %{error: "Failed to create upload URL"}, socket}

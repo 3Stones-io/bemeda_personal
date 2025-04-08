@@ -365,7 +365,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
 
-      assert %Jobs.VideoMuxData{
+      assert %Jobs.MuxData{
                asset_id: "test-asset-id",
                playback_id: "test-playback-id"
              } = created_application.mux_data
@@ -442,7 +442,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
 
-      assert %Jobs.VideoMuxData{
+      assert %Jobs.MuxData{
                asset_id: "updated_asset_123",
                playback_id: "updated_playback_123"
              } = updated_application.mux_data
