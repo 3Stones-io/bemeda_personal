@@ -50,24 +50,16 @@ defmodule BemedaPersonal.Jobs do
   """
   @spec list_job_postings(map(), non_neg_integer()) :: [job_posting()]
   def list_job_postings(filters \\ %{}, limit \\ 10) do
-    filter_query = apply_filters()
+    filter_query = fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_filter/2)
+    end
 
-    job_posting_query()
+    from(job_posting in JobPosting, as: :job_posting)
     |> where(^filter_query.(filters))
     |> order_by([j], desc: j.inserted_at)
     |> limit(^limit)
     |> Repo.all()
     |> Repo.preload(:company)
-  end
-
-  defp job_posting_query do
-    from job_posting in JobPosting, as: :job_posting
-  end
-
-  defp apply_filters do
-    fn filters ->
-      Enum.reduce(filters, dynamic(true), &apply_filter/2)
-    end
   end
 
   defp apply_filter({:company_id, company_id}, dynamic) do
@@ -257,7 +249,7 @@ defmodule BemedaPersonal.Jobs do
   """
   @spec company_jobs_count(Ecto.UUID.t()) :: non_neg_integer()
   def company_jobs_count(company_id) do
-    job_posting_query()
+    from(job_posting in JobPosting, as: :job_posting)
     |> where([j], j.company_id == ^company_id)
     |> select([j], count(j.id))
     |> Repo.one()

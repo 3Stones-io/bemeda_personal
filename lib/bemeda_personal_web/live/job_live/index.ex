@@ -2,19 +2,19 @@ defmodule BemedaPersonalWeb.JobLive.Index do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonalWeb.JobListComponent
-  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok,
-     socket
-     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
-     |> assign(:filters, %{})
-     |> assign(:page_title, "Job Listings")}
+    {:ok, assign(socket, :page_title, "Job Listings")}
   end
 
   @impl Phoenix.LiveView
-  def handle_event("filter_jobs", %{"filters" => filter_params}, socket) do
-    SharedHelpers.process_job_filters(filter_params, socket)
+  def handle_params(params, _uri, socket) do
+    {:noreply, assign(socket, :filter_params, params)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:filters_updated, filters}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/jobs?#{filters}")}
   end
 end

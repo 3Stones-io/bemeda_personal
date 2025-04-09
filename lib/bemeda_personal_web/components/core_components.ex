@@ -502,7 +502,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
     <label
       for={@for}
       class={[
-        "block text-sm font-semibold leading-6 text-zinc-800",
+        !@class && "block text-sm font-semibold leading-6 text-zinc-800",
         @class
       ]}
     >

@@ -23,10 +23,10 @@
 
   <.live_component
     module={JobListComponent}
-    company_job_view_url={:public}
-    empty_state_message="Please check back later for new opportunities."
-    filters={@filters}
     id="job-post-list"
+    empty_state_message="Please check back later for new opportunities."
+    filter_params={@filter_params}
+    job_view={:company_public_job}
     show_actions={false}
     show_company_name={false}
   />
