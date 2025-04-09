@@ -5,12 +5,20 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
 
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Jobs.JobApplicationFilter
   alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
     ~H"""
     <div>
+      <JobsComponents.job_application_filters
+        :if={@list_type == :recruiter}
+        form={@filters_form}
+        target={@myself}
+        show_job_title={!!@job_posting}
+      />
+
       <div
         :if={@list_type == :recruiter}
         id={@id}
@@ -118,16 +126,39 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   end
 
   @impl Phoenix.LiveComponent
+  def mount(socket) do
+    {:ok,
+     socket
+     |> assign(:end_of_timeline?, false)
+     |> assign(:filters_form, %JobApplicationFilter{})
+     |> stream(:job_applications, [], dom_id: &"job_applications-#{&1.id}")}
+  end
+
+  @impl Phoenix.LiveComponent
   def update(%{job_application: job_application}, socket) do
     {:ok, stream_insert(socket, :job_applications, job_application)}
   end
 
-  def update(assigns, socket) do
+  def update(%{filter_params: params} = assigns, socket) do
+    {:ok, socket} =
+      assigns
+      |> Map.delete(:filter_params)
+      |> update(socket)
+
+    changeset = JobApplicationFilter.changeset(%JobApplicationFilter{}, params)
+    filters = JobApplicationFilter.to_params(changeset)
+    filters_form = to_form(changeset)
+
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:end_of_timeline?, false)
+     |> assign(:filters, filters)
+     |> assign(:filters_form, filters_form)
      |> assign_job_applications()}
+  end
+
+  def update(assigns, socket) do
+    {:ok, assign(socket, assigns)}
   end
 
   @impl Phoenix.LiveComponent
@@ -153,6 +184,28 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
     }
   end
 
+  def handle_event("filter_applications", %{"job_application_filter" => params}, socket) do
+    changeset =
+      %JobApplicationFilter{}
+      |> JobApplicationFilter.changeset(params)
+      |> Map.put(:action, :insert)
+
+    if changeset.valid? do
+      filters = JobApplicationFilter.to_params(changeset)
+      send(self(), {:filters_updated, filters})
+
+      {:noreply, socket}
+    else
+      {:noreply, assign(socket, :filters_form, to_form(changeset))}
+    end
+  end
+
+  def handle_event("clear_filters", _params, socket) do
+    send(self(), {:filters_updated, %{}})
+
+    {:noreply, socket}
+  end
+
   defp assign_job_applications(socket) do
     job_applications = Jobs.list_job_applications(socket.assigns.filters)
 
@@ -165,7 +218,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
     |> assign(:last_job_application, last_job_application)
   end
 
-  defp maybe_insert_job_applications(socket, _filters, _first_or_last_job, _opts \\ [])
+  defp maybe_insert_job_applications(socket, filters, first_or_last_job, opts \\ [])
 
   defp maybe_insert_job_applications(socket, _filters, nil, _opts) do
     assign(socket, :end_of_timeline?, true)

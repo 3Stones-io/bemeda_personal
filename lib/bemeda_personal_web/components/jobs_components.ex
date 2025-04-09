@@ -700,4 +700,112 @@ defmodule BemedaPersonalWeb.JobsComponents do
     </div>
     """
   end
+
+  attr :class, :string, default: nil
+  attr :form, :map, required: true
+  attr :show_job_title, :boolean, default: false
+  attr :target, :any, default: nil
+
+  @spec job_application_filters(assigns()) :: output()
+  def job_application_filters(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-semibold text-gray-700">
+            Filter Applications
+          </h2>
+          <button
+            type="button"
+            class="text-indigo-600 hover:text-indigo-900 text-sm"
+            id="toggle-filters"
+            phx-click={
+              %JS{}
+              |> JS.toggle(to: "#job_application_filters")
+              |> JS.toggle(to: "#expand-icon", display: "inline-block")
+              |> JS.toggle(to: "#collapse-icon", display: "inline-block")
+            }
+          >
+            <span id="expand-icon" class="inline-block">
+              <.icon name="hero-plus-circle" class="w-5 h-5" /> Show Filters
+            </span>
+            <span id="collapse-icon" class="hidden">
+              <.icon name="hero-minus-circle" class="w-5 h-5" /> Hide Filters
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-hidden transition-all duration-300 hidden" id="job_application_filters">
+        <.form
+          :let={f}
+          for={@form}
+          id="job_application_filter_form"
+          phx-submit="filter_applications"
+          phx-target={@target}
+        >
+          <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div class="mt-1">
+                <.input
+                  field={f[:applicant_name]}
+                  label="Applicant Name"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="text"
+                  placeholder="Search by applicant name"
+                  class="w-full"
+                />
+              </div>
+
+              <div :if={@show_job_title} class="mt-1">
+                <.input
+                  field={f[:job_title]}
+                  label="Job Title"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="text"
+                  placeholder="Search by job title"
+                  class="w-full"
+                />
+              </div>
+
+              <div class="mt-1">
+                <.input
+                  field={f[:date_from]}
+                  label="Application Date From"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="date"
+                />
+              </div>
+
+              <div class="mt-1">
+                <.input
+                  field={f[:date_to]}
+                  label="Application Date To"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="date"
+                />
+              </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-x-2">
+              <button
+                type="button"
+                phx-click="clear_filters"
+                phx-target={@target}
+                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+              >
+                Clear All
+              </button>
+              <button
+                type="submit"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </.form>
+      </div>
+    </div>
+    """
+  end
 end

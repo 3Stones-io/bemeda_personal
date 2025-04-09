@@ -181,13 +181,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "loads filters from URL parameters", %{conn: conn, company: company} do
-      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
-
-      view
-      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{title: "Senior"}})
-      |> render_submit()
-
-      html = render(view)
+      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs?title=Senior")
 
       assert html =~ "Senior Software Engineer"
       refute html =~ "Junior Developer"

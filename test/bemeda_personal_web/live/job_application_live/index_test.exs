@@ -506,4 +506,64 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              |> has_element?()
     end
   end
+
+  describe "/job_applications" do
+    setup %{conn: conn} do
+      user = user_fixture()
+      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+
+      job1 = job_posting_fixture(company, %{title: "Frontend Developer"})
+      job2 = job_posting_fixture(company, %{title: "Backend Developer"})
+
+      today = Date.utc_today()
+      yesterday = Date.add(today, -1)
+      last_week = Date.add(today, -7)
+
+      application1 =
+        job_application_fixture(
+          user,
+          job1,
+          %{inserted_at: DateTime.new!(today, ~T[10:00:00], "Etc/UTC")}
+        )
+
+      application2 =
+        job_application_fixture(
+          user,
+          job2,
+          %{inserted_at: DateTime.new!(last_week, ~T[10:00:00], "Etc/UTC")}
+        )
+
+      conn = log_in_user(conn, user)
+
+      %{
+        conn: conn,
+        user: user,
+        job1: job1,
+        job2: job2,
+        application1: application1,
+        application2: application2,
+        today: today,
+        yesterday: yesterday,
+        last_week: last_week
+      }
+    end
+
+    test "shows all applications regardless of filter parameters", %{
+      conn: conn,
+      job1: job1,
+      job2: job2
+    } do
+      # Even with filter parameters in the URL, all applications should be shown
+      # because the applicant doesn't have a filter form
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/job_applications?job_title=#{job1.title}"
+        )
+
+      # Should show all applications
+      assert html =~ job1.title
+      assert html =~ job2.title
+    end
+  end
 end

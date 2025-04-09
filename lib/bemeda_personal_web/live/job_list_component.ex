@@ -138,7 +138,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
     |> assign(:last_job, last_job)
   end
 
-  defp maybe_insert_jobs(socket, _filters, _first_or_last_job, _opts \\ [])
+  defp maybe_insert_jobs(socket, filters, first_or_last_job, opts \\ [])
 
   defp maybe_insert_jobs(socket, _filters, nil, _opts) do
     assign(socket, :end_of_timeline?, true)

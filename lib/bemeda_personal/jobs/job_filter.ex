@@ -5,6 +5,8 @@ defmodule BemedaPersonal.Jobs.JobFilter do
 
   import Ecto.Changeset
 
+  alias BemedaPersonal.Jobs.FilterUtils
+
   @type changeset() :: Ecto.Changeset.t()
   @type t :: %__MODULE__{}
 
@@ -33,11 +35,6 @@ defmodule BemedaPersonal.Jobs.JobFilter do
 
   @spec to_params(changeset()) :: map()
   def to_params(%Ecto.Changeset{valid?: true} = changeset) do
-    changeset
-    |> apply_changes()
-    |> Map.from_struct()
-    |> Stream.reject(fn {_key, value} -> is_nil(value) end)
-    |> Stream.reject(fn {_key, value} -> value == "" end)
-    |> Enum.into(%{})
+    FilterUtils.changeset_to_params(changeset)
   end
 end
