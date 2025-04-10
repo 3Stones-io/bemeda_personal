@@ -6,24 +6,27 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
   import BemedaPersonal.JobsFixtures
   import Phoenix.LiveViewTest
 
+  @create_attrs %{
+    title: "Senior Software Engineer",
+    description: "This is a senior role",
+    location: "San Francisco",
+    remote_allowed: true
+  }
+
+  @create_attrs2 %{
+    title: "Junior Developer",
+    description: "This is a junior role",
+    location: "New York",
+    remote_allowed: false
+  }
+
   describe "Jobs" do
     setup %{conn: conn} do
       user = user_fixture()
       company = company_fixture(user)
 
-      job1 =
-        job_posting_fixture(company, %{
-          employment_type: "Full-time",
-          experience_level: "Mid-level",
-          title: "Software Engineer"
-        })
-
-      job2 =
-        job_posting_fixture(company, %{
-          employment_type: "Full-time",
-          experience_level: "Senior",
-          title: "Product Manager"
-        })
+      job1 = job_posting_fixture(company, @create_attrs)
+      job2 = job_posting_fixture(company, @create_attrs2)
 
       job3 =
         job_posting_fixture(company, %{
@@ -68,8 +71,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
 
       assert html =~ job1.title
-      assert html =~ job1.employment_type
-      assert html =~ job1.experience_level
+      assert html =~ job1.location
+      assert html =~ "This is a senior role"
     end
 
     test "shows website link if available", %{
@@ -119,6 +122,93 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       patterns = Regex.scan(~r/job_postings-[a-f0-9-]+/, html)
       job_count = length(patterns)
       assert job_count > 5, "Expected at least 5 job postings to be displayed"
+    end
+
+    test "shows company job page", %{conn: conn, company: company} do
+      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+
+      assert html =~ company.name
+      assert html =~ company.industry
+      assert html =~ "Jobs at #{company.name}"
+      assert html =~ "Filters"
+    end
+
+    test "lists all job postings", %{conn: conn, company: company} do
+      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+
+      assert html =~ "Jobs at #{company.name}"
+      assert html =~ "Senior Software Engineer"
+      assert html =~ "Junior Developer"
+    end
+
+    test "filters jobs by title", %{conn: conn, company: company} do
+      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+
+      view
+      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{title: "Senior"}})
+      |> render_submit()
+
+      html = render(view)
+
+      assert html =~ "Senior Software Engineer"
+      refute html =~ "Junior Developer"
+    end
+
+    test "filters by remote_allowed=true", %{conn: conn, company: company} do
+      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+
+      view
+      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{remote_allowed: "true"}})
+      |> render_submit()
+
+      html = render(view)
+
+      assert html =~ "Senior Software Engineer"
+      refute html =~ "Junior Developer"
+    end
+
+    test "filters by remote_allowed=false", %{conn: conn, company: company} do
+      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+
+      view
+      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{remote_allowed: "false"}})
+      |> render_submit()
+
+      html = render(view)
+
+      refute html =~ "Senior Software Engineer"
+      assert html =~ "Junior Developer"
+    end
+
+    test "loads filters from URL parameters", %{conn: conn, company: company} do
+      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs?title=Senior")
+
+      assert html =~ "Senior Software Engineer"
+      refute html =~ "Junior Developer"
+    end
+
+    test "clear filters button works", %{conn: conn, company: company} do
+      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+
+      view
+      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{title: "Senior"}})
+      |> render_submit()
+
+      filtered_html = render(view)
+
+      assert filtered_html =~ "Senior Software Engineer"
+      refute filtered_html =~ "Junior Developer"
+
+      view
+      |> element("button", "Clear All")
+      |> render_click()
+
+      assert_patch(view, ~p"/company/#{company.id}/jobs")
+
+      clear_html = render(view)
+
+      assert clear_html =~ "Senior Software Engineer"
+      assert clear_html =~ "Junior Developer"
     end
   end
 end

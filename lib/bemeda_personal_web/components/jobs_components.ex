@@ -3,14 +3,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   use BemedaPersonalWeb, :html
 
+  alias BemedaPersonal.Jobs.JobFilter
   alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
 
-  attr :company_id, :any, default: nil
   attr :id, :string, required: true
-  attr :job_view_url, :string
+  attr :job_view, :atom, required: true
   attr :job, :any, required: true
   attr :return_to, :string, default: nil
   attr :show_actions, :boolean, default: false
@@ -19,18 +19,24 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   @spec job_posting_card(assigns()) :: output()
   def job_posting_card(assigns) do
+    assigns =
+      assign_new(assigns, :job_view_path, fn
+        %{job: job, job_view: :company_job} -> ~p"/companies/#{job.company_id}/jobs/#{job}"
+        %{job: job, job_view: :job} -> ~p"/jobs/#{job}"
+      end)
+
     ~H"""
     <div class="px-8 py-6 relative group">
-      <div class="cursor-pointer" phx-click={JS.navigate(@job_view_url)}>
+      <div class="cursor-pointer" phx-click={JS.navigate(@job_view_path)}>
         <p class="text-lg font-medium mb-1">
-          <.link navigate={@job_view_url} class="text-indigo-600 hover:text-indigo-800 mb-2" id={@id}>
+          <.link navigate={@job_view_path} class="text-indigo-600 hover:text-indigo-800 mb-2" id={@id}>
             {@job.title}
           </.link>
         </p>
 
         <p :if={@show_company_name} class="text-sm mb-2">
           <.link
-            navigate={~p"/company/#{@job.company.id}"}
+            navigate={~p"/company/#{@job.company_id}"}
             class="text-indigo-600 hover:text-indigo-800"
           >
             {@job.company.name}
@@ -84,7 +90,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <.link
           href="#"
           phx-click={
-            JS.push("delete-job-posting", target: @target, value: %{id: @job.id})
+            JS.push("delete-job-posting", value: %{id: @job.id})
             |> JS.hide(to: "#job_postings-#{@job.id}")
           }
           data-confirm="Are you sure you want to delete this job posting? This action cannot be undone."
@@ -271,41 +277,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  attr :empty_subtext, :string, default: "Check back later for new opportunities."
-  attr :empty_text, :string, default: "No open positions at this time."
-  attr :streams_job_postings, :any, required: true
-  attr :title, :string, default: "Open Positions"
-
-  @spec job_listing_section(assigns()) :: output()
-  def job_listing_section(assigns) do
-    ~H"""
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-      <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-gray-900">{@title}</h2>
-      </div>
-      <div class="border-t border-gray-200">
-        <div id="job_postings" phx-update="stream" class="divide-y divide-gray-200">
-          <div id="job_postings-empty" class="only:block hidden px-4 py-5 sm:px-6 text-center">
-            <p class="text-gray-500">{@empty_text}</p>
-            <p class="mt-2 text-sm text-gray-500">
-              {@empty_subtext}
-            </p>
-          </div>
-
-          <ul>
-            <li
-              :for={{dom_id, job} <- @streams_job_postings}
-              class="odd:bg-gray-100 rounded-sm hover:bg-gray-200"
-            >
-              <.job_posting_card job={job} id={dom_id} />
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    """
-  end
-
   attr :back_link, :string, default: nil
   attr :back_text, :string, default: "Back to Jobs"
   attr :job, :any, required: true
@@ -338,14 +309,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :class, :string, default: nil
-
-  attr :employment_types, :list,
-    default: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"]
-
-  attr :experience_levels, :list,
-    default: ["Entry-level", "Mid-level", "Senior", "Lead", "Executive"]
-
-  attr :target, :string
+  attr :form, :map, required: true
+  attr :target, :any, default: nil
 
   @spec job_filters(assigns()) :: output()
   def job_filters(assigns) do
@@ -367,93 +332,71 @@ defmodule BemedaPersonalWeb.JobsComponents do
       </div>
 
       <div class="overflow-hidden transition-all duration-300 hidden" id="job_filters">
-        <.form :let={f} for={%{}} as={:filters} phx-submit="filter_jobs" phx-target={@target}>
+        <.form :let={f} for={@form} phx-submit="filter_jobs" phx-target={@target}>
           <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div>
-                <label for="filters_title" class="block text-sm font-medium text-gray-700">
-                  Job Title
-                </label>
-                <div class="mt-1">
-                  <.input
-                    field={f[:title]}
-                    type="text"
-                    placeholder="Search by job title"
-                    class="w-full"
-                  />
-                </div>
+              <div class="mt-1">
+                <.input
+                  field={f[:title]}
+                  label="Job Title"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="text"
+                  placeholder="Search by job title"
+                  class="w-full"
+                />
               </div>
 
-              <div>
-                <label for="filters_location" class="block text-sm font-medium text-gray-700">
-                  Location
-                </label>
-                <div class="mt-1">
-                  <.input
-                    field={f[:location]}
-                    type="text"
-                    placeholder="Enter location"
-                    class="w-full"
-                  />
-                </div>
+              <div class="mt-1">
+                <.input
+                  field={f[:location]}
+                  label="Location"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="text"
+                  placeholder="Enter location"
+                  class="w-full"
+                />
               </div>
 
-              <div>
-                <label for="filters_employment_type" class="block text-sm font-medium text-gray-700">
-                  Employment Type
-                </label>
-                <div class="mt-1">
-                  <select
-                    name="filters[employment_type]"
-                    id="filters_employment_type"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  >
-                    <option value="">Select employment type</option>
-                    <option :for={type <- @employment_types} value={type}>
-                      {type}
-                    </option>
-                  </select>
-                </div>
+              <div class="mt-1">
+                <.input
+                  field={f[:employment_type]}
+                  label="Employment Type"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="select"
+                  prompt="Select employment type"
+                  options={Ecto.Enum.values(JobFilter, :employment_type)}
+                  class="w-full"
+                />
               </div>
 
-              <div>
-                <label for="filters_experience_level" class="block text-sm font-medium text-gray-700">
-                  Experience Level
-                </label>
-                <div class="mt-1">
-                  <select
-                    name="filters[experience_level]"
-                    id="filters_experience_level"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  >
-                    <option value="">Select experience level</option>
-                    <option :for={level <- @experience_levels} value={level}>
-                      {level}
-                    </option>
-                  </select>
-                </div>
+              <div class="mt-1">
+                <.input
+                  field={f[:experience_level]}
+                  label="Experience Level"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="select"
+                  prompt="Select experience level"
+                  options={Ecto.Enum.values(JobFilter, :experience_level)}
+                  class="w-full"
+                />
               </div>
 
-              <div>
-                <label for="filters_remote_allowed" class="block text-sm font-medium text-gray-700">
-                  Remote Work
-                </label>
-                <div class="mt-1">
-                  <select
-                    name="filters[remote_allowed]"
-                    id="filters_remote_allowed"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  >
-                    <option value="">Any</option>
-                    <option value="true">Remote Only</option>
-                    <option value="false">On-site Only</option>
-                  </select>
-                </div>
+              <div class="mt-1">
+                <.input
+                  field={f[:remote_allowed]}
+                  label="Remote Work"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="select"
+                  options={[{"Any", ""}, {"Remote Only", "true"}, {"On-site Only", "false"}]}
+                  class="w-full"
+                />
               </div>
             </div>
             <div class="mt-6 flex justify-end gap-x-2">
               <button
-                type="reset"
+                type="button"
+                phx-click="clear_filters"
+                phx-target={@target}
                 class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
               >
                 Clear All
@@ -770,6 +713,114 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </dd>
           </div>
         </dl>
+      </div>
+    </div>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :form, :map, required: true
+  attr :show_job_title, :boolean, default: false
+  attr :target, :any, default: nil
+
+  @spec job_application_filters(assigns()) :: output()
+  def job_application_filters(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-semibold text-gray-700">
+            Filter Applications
+          </h2>
+          <button
+            type="button"
+            class="text-indigo-600 hover:text-indigo-900 text-sm"
+            id="toggle-filters"
+            phx-click={
+              %JS{}
+              |> JS.toggle(to: "#job_application_filters")
+              |> JS.toggle(to: "#expand-icon", display: "inline-block")
+              |> JS.toggle(to: "#collapse-icon", display: "inline-block")
+            }
+          >
+            <span id="expand-icon" class="inline-block">
+              <.icon name="hero-plus-circle" class="w-5 h-5" /> Show Filters
+            </span>
+            <span id="collapse-icon" class="hidden">
+              <.icon name="hero-minus-circle" class="w-5 h-5" /> Hide Filters
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-hidden transition-all duration-300 hidden" id="job_application_filters">
+        <.form
+          :let={f}
+          for={@form}
+          id="job_application_filter_form"
+          phx-submit="filter_applications"
+          phx-target={@target}
+        >
+          <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div class="mt-1">
+                <.input
+                  field={f[:applicant_name]}
+                  label="Applicant Name"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="text"
+                  placeholder="Search by applicant name"
+                  class="w-full"
+                />
+              </div>
+
+              <div :if={@show_job_title} class="mt-1">
+                <.input
+                  field={f[:job_title]}
+                  label="Job Title"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="text"
+                  placeholder="Search by job title"
+                  class="w-full"
+                />
+              </div>
+
+              <div class="mt-1">
+                <.input
+                  field={f[:date_from]}
+                  label="Application Date From"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="date"
+                />
+              </div>
+
+              <div class="mt-1">
+                <.input
+                  field={f[:date_to]}
+                  label="Application Date To"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="date"
+                />
+              </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-x-2">
+              <button
+                type="button"
+                phx-click="clear_filters"
+                phx-target={@target}
+                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+              >
+                Clear All
+              </button>
+              <button
+                type="submit"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </.form>
       </div>
     </div>
     """

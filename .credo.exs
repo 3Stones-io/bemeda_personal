@@ -237,7 +237,7 @@
            max_deps: 20},
           {Credo.Check.Refactor.NegatedIsNil, []},
           {Credo.Check.Refactor.PassAsyncInTestCases, []},
-          {Credo.Check.Refactor.PipeChainStart, []},
+          {Credo.Check.Refactor.PipeChainStart, excluded_functions: ["from"]},
           {Credo.Check.Refactor.RejectFilter, []},
           {Credo.Check.Refactor.VariableRebinding, []},
           {Credo.Check.Warning.LeakyEnvironment, []},
