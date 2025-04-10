@@ -4,6 +4,8 @@ defmodule BemedaPersonal.JobsFixtures do
   entities via the `BemedaPersonal.Jobs` context.
   """
 
+  import Ecto.Query, only: [from: 2]
+
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
@@ -36,13 +38,21 @@ defmodule BemedaPersonal.JobsFixtures do
 
   @spec job_application_fixture(user(), job_posting(), attrs()) :: job_application()
   def job_application_fixture(%User{} = user, %Jobs.JobPosting{} = job_posting, attrs \\ %{}) do
-    job_application_attrs =
-      Enum.into(attrs, %{
-        cover_letter: "some cover letter"
-      })
+    {inserted_at, attrs_without_inserted_at} = Map.pop(attrs, :inserted_at)
+    cover_letter_attrs = %{cover_letter: "some cover letter"}
+    job_application_attrs = Map.merge(cover_letter_attrs, attrs_without_inserted_at)
 
     {:ok, job_application} = Jobs.create_job_application(user, job_posting, job_application_attrs)
 
-    job_application
+    if inserted_at do
+      query = from(a in Jobs.JobApplication, where: a.id == ^job_application.id)
+      BemedaPersonal.Repo.update_all(query, set: [inserted_at: inserted_at])
+
+      Jobs.JobApplication
+      |> BemedaPersonal.Repo.get!(job_application.id)
+      |> BemedaPersonal.Repo.preload([:user, job_posting: [:company]])
+    else
+      job_application
+    end
   end
 end

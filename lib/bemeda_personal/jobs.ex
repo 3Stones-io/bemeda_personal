@@ -50,24 +50,16 @@ defmodule BemedaPersonal.Jobs do
   """
   @spec list_job_postings(map(), non_neg_integer()) :: [job_posting()]
   def list_job_postings(filters \\ %{}, limit \\ 10) do
-    filter_query = apply_filters()
+    filter_query = fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_filter/2)
+    end
 
-    job_posting_query()
+    from(job_posting in JobPosting, as: :job_posting)
     |> where(^filter_query.(filters))
     |> order_by([j], desc: j.inserted_at)
     |> limit(^limit)
     |> Repo.all()
     |> Repo.preload(:company)
-  end
-
-  defp job_posting_query do
-    from job_posting in JobPosting, as: :job_posting
-  end
-
-  defp apply_filters do
-    fn filters ->
-      Enum.reduce(filters, dynamic(true), &apply_filter/2)
-    end
   end
 
   defp apply_filter({:company_id, company_id}, dynamic) do
@@ -257,7 +249,7 @@ defmodule BemedaPersonal.Jobs do
   """
   @spec company_jobs_count(Ecto.UUID.t()) :: non_neg_integer()
   def company_jobs_count(company_id) do
-    job_posting_query()
+    from(job_posting in JobPosting, as: :job_posting)
     |> where([j], j.company_id == ^company_id)
     |> select([j], count(j.id))
     |> Repo.one()
@@ -298,9 +290,12 @@ defmodule BemedaPersonal.Jobs do
   defp list_applications(query, filters, limit) do
     filter_query = apply_job_application_filters()
 
-    query
+    query_with_joins =
+      if needs_job_posting_join?(filters), do: job_post_with_applications_query(), else: query
+
+    query_with_joins
     |> where(^filter_query.(filters))
-    |> order_by([ja], desc: ja.inserted_at)
+    |> order_by([job_application: ja], desc: ja.inserted_at)
     |> limit(^limit)
     |> Repo.all()
   end
@@ -335,6 +330,65 @@ defmodule BemedaPersonal.Jobs do
     dynamic([job_application: ja, job_posting: jp], ^dynamic and jp.company_id == ^company_id)
   end
 
+  defp apply_job_application_filter({:date_range, %{from: from_date, to: to_date}}, dynamic)
+       when is_nil(from_date) or is_nil(to_date),
+       do: dynamic
+
+  defp apply_job_application_filter({:date_range, %{from: from_date, to: to_date}}, dynamic) do
+    from_date = parse_date_if_string(from_date)
+    to_date = parse_date_if_string(to_date)
+
+    from_datetime = DateTime.new!(from_date, ~T[00:00:00.000], "Etc/UTC")
+    to_datetime = DateTime.new!(to_date, ~T[23:59:59.999], "Etc/UTC")
+
+    dynamic(
+      [job_application: ja],
+      ^dynamic and ja.inserted_at >= ^from_datetime and ja.inserted_at <= ^to_datetime
+    )
+  end
+
+  defp apply_job_application_filter({:date_from, from_date}, dynamic) when is_nil(from_date),
+    do: dynamic
+
+  defp apply_job_application_filter({:date_from, from_date}, dynamic) do
+    from_date = parse_date_if_string(from_date)
+    from_datetime = DateTime.new!(from_date, ~T[00:00:00.000], "Etc/UTC")
+
+    dynamic([job_application: ja], ^dynamic and ja.inserted_at >= ^from_datetime)
+  end
+
+  defp apply_job_application_filter({:date_to, to_date}, dynamic) when is_nil(to_date),
+    do: dynamic
+
+  defp apply_job_application_filter({:date_to, to_date}, dynamic) do
+    to_date = parse_date_if_string(to_date)
+    to_datetime = DateTime.new!(to_date, ~T[23:59:59.999], "Etc/UTC")
+
+    dynamic([job_application: ja], ^dynamic and ja.inserted_at <= ^to_datetime)
+  end
+
+  defp apply_job_application_filter({:applicant_name, name}, dynamic) do
+    pattern = "%#{name}%"
+
+    dynamic(
+      [job_application: ja],
+      ^dynamic and
+        exists(
+          from u in BemedaPersonal.Accounts.User,
+            where:
+              u.id == parent_as(:job_application).user_id and
+                (ilike(fragment("concat(?, ' ', ?)", u.first_name, u.last_name), ^pattern) or
+                   ilike(fragment("concat(?, ' ', ?)", u.last_name, u.first_name), ^pattern))
+        )
+    )
+  end
+
+  defp apply_job_application_filter({:job_title, title}, dynamic) do
+    pattern = "%#{title}%"
+
+    dynamic([job_application: ja, job_posting: jp], ^dynamic and ilike(jp.title, ^pattern))
+  end
+
   defp apply_job_application_filter({:newer_than, job_application}, dynamic) do
     dynamic([job_application: ja], ^dynamic and ja.inserted_at > ^job_application.inserted_at)
   end
@@ -344,6 +398,80 @@ defmodule BemedaPersonal.Jobs do
   end
 
   defp apply_job_application_filter(_other, dynamic), do: dynamic
+
+  defp parse_date_if_string(date) when is_binary(date) do
+    parsed_result = parse_date_formats(date)
+
+    case parsed_result do
+      {:ok, date} ->
+        date
+
+      {:error, _unused} ->
+        nil
+    end
+  end
+
+  defp parse_date_if_string(date), do: date
+
+  defp parse_date_formats(date_string) do
+    iso_result = Date.from_iso8601(date_string)
+
+    case iso_result do
+      {:ok, date} ->
+        {:ok, date}
+
+      {:error, _unused} ->
+        parse_date_ymd(date_string)
+    end
+  end
+
+  defp parse_date_ymd(date_string) do
+    cond do
+      String.match?(date_string, ~r/^\d{4}-\d{2}-\d{2}$/) ->
+        # ISO format YYYY-MM-DD
+        {:ok, parse_iso8601_format(date_string)}
+
+      String.match?(date_string, ~r/^\d{2} \/ \d{2} \/ \d{4}$/) ->
+        # DD / MM / YYYY format
+        parse_date_with_separator(date_string, " / ")
+
+      String.match?(date_string, ~r/^\d{2}\/\d{2}\/\d{4}$/) ->
+        # DD/MM/YYYY format
+        parse_date_with_separator(date_string, "/")
+
+      String.match?(date_string, ~r/^\d{2}-\d{2}-\d{4}$/) ->
+        # DD-MM-YYYY format
+        parse_date_with_separator(date_string, "-")
+
+      true ->
+        {:error, :invalid_format}
+    end
+  end
+
+  defp parse_iso8601_format(date_string) do
+    case Date.from_iso8601(date_string) do
+      {:ok, date} -> date
+      _error -> nil
+    end
+  end
+
+  defp parse_date_with_separator(date_string, separator) do
+    [day, month, year] = String.split(date_string, separator)
+    parse_date_components(year, month, day)
+  end
+
+  defp parse_date_components(year, month, day) do
+    with {y, _remainder_y} <- Integer.parse(year),
+         {m, _remainder_m} <- Integer.parse(month),
+         {d, _remainder_d} <- Integer.parse(day) do
+      case Date.new(y, m, d) do
+        {:ok, date} -> {:ok, date}
+        _error -> {:error, :invalid_date}
+      end
+    else
+      _error -> {:error, :invalid_components}
+    end
+  end
 
   @doc """
   Gets a single job application.
@@ -484,5 +612,11 @@ defmodule BemedaPersonal.Jobs do
       topic,
       message
     )
+  end
+
+  defp needs_job_posting_join?(filters) do
+    filters
+    |> Map.keys()
+    |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
   end
 end

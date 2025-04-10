@@ -94,7 +94,7 @@
         >
           <JobsComponents.job_posting_card
             id={"card-#{job_id}"}
-            job_view_url={~p"/companies/#{@company.id}/jobs/#{job.id}"}
+            job_view={:company_job}
             job={job}
             show_company_name={false}
           />

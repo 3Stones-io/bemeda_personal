@@ -19,7 +19,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
     {:ok,
      socket
-     |> assign(:filters, %{user_id: current_user.id})
      |> assign(:page_title, "My Job Applications")
      |> assign(:resume, Resumes.get_user_resume(current_user))}
   end
@@ -30,6 +29,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   end
 
   @impl Phoenix.LiveView
+  def handle_info({:filters_updated, filters}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/job_applications?#{filters}")}
+  end
+
   def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
     send_update(FormComponent,
       id: "job-application-form",
@@ -75,8 +78,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
+    # For applicants, we don't want to apply any filters from the URL
+    # since there's no filter form UI
+    filter_params = %{"user_id" => socket.assigns.current_user.id}
+
     socket
+    |> assign(:filter_params, filter_params)
     |> assign(:page_title, "My Job Applications")
-    |> assign(:filters, %{user_id: socket.assigns.current_user.id})
   end
 end

@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonalWeb.JobListComponent
-  alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.LiveView.JS
 
   @impl Phoenix.LiveView
@@ -16,15 +15,15 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
       )
     end
 
-    {:ok,
-     socket
-     |> assign(:filters, %{company_id: socket.assigns.company.id})
-     |> assign(:job_posting, %JobPosting{})}
+    {:ok, assign(socket, :job_posting, %JobPosting{})}
   end
 
   @impl Phoenix.LiveView
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    {:noreply,
+     socket
+     |> apply_action(socket.assigns.live_action, params)
+     |> assign_filter_params(params)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
@@ -51,12 +50,31 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     |> assign(:page_title, "Company Jobs")
   end
 
-  @impl Phoenix.LiveView
-  def handle_event("filter_jobs", %{"filters" => filter_params}, socket) do
-    SharedHelpers.process_job_filters(filter_params, socket)
+  defp assign_filter_params(socket, params) do
+    updated_params = Map.put(params, "company_id", socket.assigns.company.id)
+    assign(socket, :filter_params, updated_params)
   end
 
   @impl Phoenix.LiveView
+  def handle_event("delete-job-posting", %{"id" => id}, socket) do
+    job_posting = Jobs.get_job_posting!(id)
+
+    # Verify the job posting belongs to this company
+    if job_posting.company_id == socket.assigns.company.id do
+      {:ok, _deleted} = Jobs.delete_job_posting(job_posting)
+
+      {:noreply, put_flash(socket, :info, "Job posting deleted successfully")}
+    else
+      {:noreply, put_flash(socket, :error, "You are not authorized to delete this job posting")}
+    end
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:filters_updated, filters}, socket) do
+    company = socket.assigns.company
+    {:noreply, push_patch(socket, to: ~p"/companies/#{company}/jobs?#{filters}")}
+  end
+
   def handle_info({event, job_posting}, socket)
       when event in [:job_posting_created, :job_posting_updated] do
     send_update(JobListComponent, id: "job-post-list", job_posting: job_posting)
