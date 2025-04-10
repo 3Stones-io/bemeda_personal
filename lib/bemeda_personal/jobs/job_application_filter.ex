@@ -12,13 +12,13 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilter do
 
   @primary_key false
   embedded_schema do
+    field :applicant_name, :string
     field :company_id, Ecto.UUID
-    field :job_posting_id, Ecto.UUID
-    field :user_id, Ecto.UUID
     field :date_from, :date
     field :date_to, :date
-    field :applicant_name, :string
+    field :job_posting_id, Ecto.UUID
     field :job_title, :string
+    field :user_id, Ecto.UUID
   end
 
   @fields [

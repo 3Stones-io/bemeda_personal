@@ -6,13 +6,13 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilterTest do
   describe "changeset/2" do
     test "creates a changeset with valid attributes" do
       valid_attrs = %{
+        applicant_name: "John Doe",
         company_id: "550e8400-e29b-41d4-a716-446655440000",
-        job_posting_id: "550e8400-e29b-41d4-a716-446655440001",
-        user_id: "550e8400-e29b-41d4-a716-446655440002",
         date_from: ~D[2023-01-01],
         date_to: ~D[2023-12-31],
-        applicant_name: "John Doe",
-        job_title: "Software Engineer"
+        job_posting_id: "550e8400-e29b-41d4-a716-446655440001",
+        job_title: "Software Engineer",
+        user_id: "550e8400-e29b-41d4-a716-446655440002"
       }
 
       changeset = JobApplicationFilter.changeset(%JobApplicationFilter{}, valid_attrs)
@@ -44,11 +44,11 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilterTest do
     test "treats empty values as valid" do
       changeset =
         JobApplicationFilter.changeset(%JobApplicationFilter{}, %{
+          applicant_name: "",
           company_id: "",
           job_posting_id: "",
-          user_id: "",
-          applicant_name: "",
-          job_title: ""
+          job_title: "",
+          user_id: ""
         })
 
       assert changeset.valid?
@@ -58,9 +58,9 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilterTest do
   describe "to_params/1" do
     test "excludes nil and empty string values" do
       filter = %JobApplicationFilter{
+        applicant_name: "John Doe",
         company_id: "550e8400-e29b-41d4-a716-446655440000",
         job_posting_id: "550e8400-e29b-41d4-a716-446655440001",
-        applicant_name: "John Doe",
         job_title: "",
         user_id: nil
       }
