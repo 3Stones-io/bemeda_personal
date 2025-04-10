@@ -21,8 +21,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
     assigns =
       assign_new(assigns, :job_view_path, fn
         %{job: job, job_view: :company_job} -> ~p"/companies/#{job.company_id}/jobs/#{job}"
-        # FIXME: Change this once we have a company job public page
-        %{job: job, job_view: :company_public_job} -> ~p"/jobs/#{job.id}"
         %{job: job, job_view: :job} -> ~p"/jobs/#{job}"
       end)
 
