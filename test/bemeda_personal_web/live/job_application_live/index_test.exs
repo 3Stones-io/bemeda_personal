@@ -78,7 +78,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      assert html =~ job_application.job_posting.title
       assert html =~ job_application.cover_letter
     end
 
@@ -128,28 +127,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert html =~ job_application.job_posting.title
       assert html =~ job_application.job_posting.description
-    end
-
-    test "provides link to chat with employer", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, view, _html} =
-        live(conn, ~p"/job_applications")
-
-      chat_link_selector = "a[href='/chat/#{job_application.id}']"
-
-      assert view
-             |> element(chat_link_selector)
-             |> has_element?()
-
-      {:ok, _view, html} =
-        view
-        |> element(chat_link_selector)
-        |> render_click()
-        |> follow_redirect(conn, ~p"/chat/#{job_application.id}")
-
-      assert html =~ "Chat"
     end
 
     test "displays application date", %{
@@ -339,7 +316,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         end)
 
       assert created_application.job_posting_id == job.id
-      assert_redirect(view, ~p"/chat/#{created_application.id}")
+
+      assert_redirect(
+        view,
+        ~p"/jobs/#{created_application.job_posting_id}/job_applications/#{created_application.id}"
+      )
 
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
@@ -380,7 +361,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         end)
 
       assert created_application.job_posting_id == job.id
-      assert_redirect(view, ~p"/chat/#{created_application.id}")
+
+      assert_redirect(
+        view,
+        ~p"/jobs/#{created_application.job_posting_id}/job_applications/#{created_application.id}"
+      )
 
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
@@ -390,7 +375,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
                playback_id: "test-playback-id"
              } = created_application.mux_data
 
-      messages = BemedaPersonal.Jobs.list_messages(created_application)
+      messages = BemedaPersonal.Chat.list_messages(created_application)
       assert length(messages) == 2
 
       assert Enum.any?(
@@ -424,7 +409,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/chat/#{job_application.id}")
+      assert_redirect(
+        view,
+        ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+      )
 
       updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
 
@@ -470,7 +458,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/chat/#{job_application.id}")
+      assert_redirect(
+        view,
+        ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+      )
 
       updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
 

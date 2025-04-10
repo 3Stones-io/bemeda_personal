@@ -6,8 +6,8 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobPosting
-  alias BemedaPersonal.Jobs.Message
   alias BemedaPersonal.Jobs.MuxData
 
   @type attrs :: map()

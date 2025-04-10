@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.Message do
+defmodule BemedaPersonal.Chat.Message do
   @moduledoc false
 
   use Ecto.Schema

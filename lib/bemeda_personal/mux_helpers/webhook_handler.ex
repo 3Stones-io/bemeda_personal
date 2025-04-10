@@ -1,12 +1,11 @@
 defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
   @moduledoc false
 
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Chat
 
   require Logger
 
   @type changeset :: Ecto.Changeset.t()
-  @type message :: Jobs.Message.t()
   @type upload_id :: String.t()
 
   @registry_name BemedaPersonal.Registry
@@ -28,17 +27,17 @@ defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
   end
 
   defp process_webhook_response([{_pid, :message_media_upload}], response) do
-    case Jobs.get_message_by_upload_id(response.upload_id) do
-      nil ->
-        Logger.error("Message with upload_id #{response.upload_id} not found")
-
-      %Jobs.Message{} = message ->
-        Jobs.update_message(message, %{
+    case Chat.get_message_by_upload_id(response.upload_id) do
+      %Chat.Message{} = message ->
+        Chat.update_message(message, %{
           mux_data: %{
             asset_id: response.asset_id,
             playback_id: response.playback_id
           }
         })
+
+      nil ->
+        Logger.error("Message with upload_id #{response.upload_id} not found")
     end
   end
 

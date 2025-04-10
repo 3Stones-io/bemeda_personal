@@ -14,7 +14,6 @@ defmodule BemedaPersonal.JobsFixtures do
   @type company :: Companies.Company.t()
   @type job_application :: Jobs.JobApplication.t()
   @type job_posting :: Jobs.JobPosting.t()
-  @type message :: Jobs.Message.t()
   @type user :: User.t()
 
   @spec job_posting_fixture(company(), attrs()) :: job_posting()
@@ -55,17 +54,5 @@ defmodule BemedaPersonal.JobsFixtures do
     else
       job_application
     end
-  end
-
-  @spec message_fixture(user(), job_application(), attrs()) :: message()
-  def message_fixture(%User{} = user, %Jobs.JobApplication{} = job_application, attrs \\ %{}) do
-    message_attrs =
-      Enum.into(attrs, %{
-        content: "some test message content"
-      })
-
-    {:ok, message} = Jobs.create_message(user, job_application, message_attrs)
-
-    message
   end
 end

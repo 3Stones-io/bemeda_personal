@@ -609,7 +609,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
       <div class="absolute bottom-4 right-6 flex space-x-2 z-10">
         <.link
-          navigate={~p"/chat/#{@applicant.id}"}
+          navigate={~p"/jobs/#{@applicant.job_posting_id}/job_applications/#{@applicant.id}"}
           class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center shadow-sm"
           title="Chat with applicant"
         >
@@ -637,7 +637,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
             <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
           </div>
           <.link
-            navigate={~p"/chat/#{@application.id}"}
+            navigate={~p"/jobs/#{@application.job_posting_id}/job_applications/#{@application.id}"}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <.icon name="hero-chat-bubble-left-right" class="w-4 h-4 mr-2" /> Chat with Applicant

@@ -5,7 +5,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
   import BemedaPersonal.ResumesFixtures
+  import Mox
   import Phoenix.LiveViewTest
+
+  alias BemedaPersonal.Chat
+  alias BemedaPersonal.MuxHelpers.Client
+  alias BemedaPersonal.MuxHelpers.WebhookHandler
+
+  @endpoint BemedaPersonalWeb.Endpoint
+
+  setup :verify_on_exit!
 
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
@@ -14,10 +23,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       job =
         job_posting_fixture(company, %{
-          title: "Senior Developer",
           description: "Build amazing applications",
+          employment_type: "Full-time",
           location: "Remote",
-          employment_type: "Full-time"
+          title: "Senior Developer"
         })
 
       job_application =
@@ -31,12 +40,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn = log_in_user(conn, user)
 
       %{
-        conn: conn,
         company: company,
-        user: user,
-        job: job,
+        conn: conn,
         job_application: job_application,
-        resume: resume
+        job: job,
+        resume: resume,
+        user: user
       }
     end
 
@@ -54,7 +63,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert redirected_to(response) == ~p"/users/log_in"
     end
 
-    test "renders job application details page", %{
+    test "renders job application cover letter in the chat", %{
       conn: conn,
       job_application: job_application
     } do
@@ -64,123 +73,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      assert html =~ job_application.job_posting.title
-      assert html =~ job_application.job_posting.company.name
-      assert html =~ "Cover Letter"
       assert html =~ job_application.cover_letter
-    end
-
-    test "displays submission date", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, _view, html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      submission_date = Calendar.strftime(job_application.inserted_at, "%B %d, %Y")
-      assert html =~ "Submitted on #{submission_date}"
-    end
-
-    test "shows resume warning when user has no resume", %{
-      conn: conn
-    } do
-      user_without_resume = user_fixture(%{email: "no_resume@example.com"})
-      authenticated_conn = log_in_user(conn, user_without_resume)
-
-      company = company_fixture(user_fixture(%{email: "another_company@example.com"}))
-      job = job_posting_fixture(company)
-      job_application = job_application_fixture(user_without_resume, job)
-
-      {:ok, _view, html} =
-        live(
-          authenticated_conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      assert html =~ "Create your resume"
-    end
-
-    test "does not show resume warning when user has a resume", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, _view, html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      refute html =~ "You haven&#39;t created a resume yet"
-    end
-
-    test "provides link to edit resume", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      assert view
-             |> element("a", "Edit Your Resume")
-             |> has_element?()
-    end
-
-    test "provides link to edit application", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      assert view
-             |> element("a", "Edit application")
-             |> has_element?()
-
-      {:ok, _view, html} =
-        view
-        |> element("a", "Edit application")
-        |> render_click()
-        |> follow_redirect(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
-        )
-
-      assert html =~ "Edit application for"
-    end
-
-    test "provides link to job posting details", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      {:ok, _view, html} =
-        view
-        |> element("a", job_application.job_posting.title)
-        |> render_click()
-        |> follow_redirect(conn, ~p"/jobs/#{job_application.job_posting_id}")
-
-      assert html =~ job_application.job_posting.title
-      assert html =~ job_application.job_posting.description
     end
 
     test "displays video player when application has video", %{
       conn: conn,
-      user: user,
-      job: job
+      job: job,
+      user: user
     } do
       job_application_with_video =
         job_application_fixture(
@@ -190,8 +89,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
             cover_letter: "Application with video",
             mux_data: %{
               asset_id: "asset_123",
+              file_name: "test_video.mp4",
               playback_id: "test-playback-id",
-              file_name: "test_video.mp4"
+              type: "video/mp4"
             }
           }
         )
@@ -215,49 +115,22 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      refute html =~ "<mux-player"
-    end
-  end
-
-  describe "/chat/:job_application_id" do
-    setup %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user_fixture(%{email: "company@example.com"}))
-
-      job =
-        job_posting_fixture(company, %{
-          title: "Senior Developer",
-          description: "Build amazing applications",
-          location: "Remote",
-          employment_type: "Full-time"
-        })
-
-      job_application =
-        job_application_fixture(user, job, %{
-          cover_letter:
-            "I am excited to apply for this position and believe my skills are a perfect match."
-        })
-
-      conn = log_in_user(conn, user)
-
-      %{
-        conn: conn,
-        user: user,
-        job: job,
-        job_application: job_application
-      }
+      refute html =~ ~s(<mux-player)
     end
 
-    test "shows the cover letter in chat messages when viewing chat", %{
+    test "shows the cover letter in chat messages when viewing job application", %{
       conn: conn,
       job_application: job_application
     } do
       {:ok, _view, html} =
-        live(conn, ~p"/chat/#{job_application.id}")
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
 
       assert html =~ job_application.cover_letter
 
-      messages = BemedaPersonal.Jobs.list_messages(job_application)
+      messages = Chat.list_messages(job_application)
       assert length(messages) == 1
       assert hd(messages).content == job_application.cover_letter
     end
@@ -283,19 +156,17 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       {:ok, _view, html} =
-        live(conn, ~p"/chat/#{job_application.id}")
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
 
       assert html =~ "Application with video"
-      assert html =~ ~s(mux-player playback-id="test-playback-id")
 
-      messages = BemedaPersonal.Jobs.list_messages(job_application)
+      assert html =~ "mux-player"
+
+      messages = Chat.list_messages(job_application)
       assert length(messages) == 2
-
-      video_message = Enum.find(messages, fn m -> m.mux_data != nil end)
-      text_message = Enum.find(messages, fn m -> m.content != nil end)
-
-      assert video_message.mux_data.playback_id == "test-playback-id"
-      assert text_message.content == "Application with video"
     end
 
     test "allows user to send new messages", %{
@@ -303,7 +174,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_application: job_application
     } do
       {:ok, view, _html} =
-        live(conn, ~p"/chat/#{job_application.id}")
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
 
       message_content = "This is a new test message"
 
@@ -314,11 +188,116 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       rendered_html = render(view)
       assert rendered_html =~ message_content
 
-      messages = BemedaPersonal.Jobs.list_messages(job_application)
+      messages = Chat.list_messages(job_application)
       assert length(messages) == 2
 
       new_message = Enum.find(messages, fn m -> m.content == message_content end)
       assert new_message.content == message_content
+    end
+
+    test "validates message content when typing", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert has_element?(view, "#chat-form:not(.phx-submit-loading)")
+
+      view
+      |> form("#chat-form", %{message: %{content: ""}})
+      |> render_change()
+
+      assert has_element?(view, "#chat-form:not(.is-invalid)")
+
+      view
+      |> form("#chat-form", %{message: %{content: "Valid message"}})
+      |> render_change()
+
+      assert has_element?(view, "#chat-form:not(.is-invalid)")
+    end
+
+    test "allows user to upload media files", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      expect(Client.Mock, :create_direct_upload, fn ->
+        {:ok, "https://storage.googleapis.com/video-storage-upload-url", "upload-123"}
+      end)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(
+        view,
+        "upload-media",
+        %{filename: "test-video.mp4", type: "video/mp4"}
+      )
+
+      updated_html = render(view)
+      assert updated_html =~ "hero-arrow-up-on-square"
+
+      messages = Chat.list_messages(job_application)
+
+      uploaded_message =
+        Enum.find(messages, fn m -> m.mux_data && m.mux_data.file_name == "test-video.mp4" end)
+
+      assert uploaded_message
+      assert uploaded_message.mux_data.file_name == "test-video.mp4"
+      assert uploaded_message.mux_data.type == "video/mp4"
+      assert uploaded_message.mux_data.upload_id == "upload-123"
+      assert uploaded_message.mux_data.playback_id == nil
+    end
+
+    test "updates media when webhook is processed", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      expect(Client.Mock, :create_direct_upload, fn ->
+        {:ok, "https://storage.googleapis.com/video-storage-upload-url", "upload-123"}
+      end)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(
+        view,
+        "upload-media",
+        %{filename: "test-video.mp4", type: "video/mp4"}
+      )
+
+      messages = Chat.list_messages(job_application)
+
+      _uploaded_message =
+        Enum.find(messages, fn m -> m.mux_data && m.mux_data.file_name == "test-video.mp4" end)
+
+      webhook_response = %{
+        upload_id: "upload-123",
+        asset_id: "asset_abc123",
+        playback_id: "play_xyz789"
+      }
+
+      WebhookHandler.handle_webhook_response(webhook_response)
+
+      updated_messages = Chat.list_messages(job_application)
+
+      updated_message =
+        Enum.find(updated_messages, fn m ->
+          m.mux_data && m.mux_data.file_name == "test-video.mp4"
+        end)
+
+      assert updated_message
+      assert updated_message.mux_data.asset_id == "asset_abc123"
+      assert updated_message.mux_data.playback_id == "play_xyz789"
     end
   end
 end

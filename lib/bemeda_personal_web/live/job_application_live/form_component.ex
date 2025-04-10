@@ -127,7 +127,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Application updated successfully")
-         |> push_navigate(to: ~p"/chat/#{job_application.id}")}
+         |> push_navigate(
+           to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+         )}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
@@ -144,7 +146,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Application submitted successfully")
-         |> push_navigate(to: ~p"/chat/#{job_application.id}")}
+         |> push_navigate(
+           to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+         )}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
