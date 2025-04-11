@@ -3,6 +3,8 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   use BemedaPersonalWeb, :html
 
+  alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.MuxData
 
   @type assigns :: map()
@@ -51,8 +53,72 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
+  @spec chat_container(assigns()) :: output()
+  def chat_container(%{message: %JobApplication{}} = assigns) do
+    assigns =
+      assign_new(assigns, :class, fn %{message: message, current_user: current_user} ->
+        [
+          "w-[85%] md:w-[60%] lg:w-[40%] mb-3",
+          message.user_id == current_user.id && "ml-auto rounded-2xl rounded-br-none bg-blue-100",
+          message.user_id != current_user.id && "mr-auto rounded-2xl rounded-bl-none bg-gray-100"
+        ]
+      end)
+
+    ~H"""
+    <div id={@id} class="grid">
+      <div class={@class}>
+        <div
+          class={[
+            "text-sm text-zinc-900 py-2 px-4"
+          ]}
+          id={"cover-letter-#{@message.id}"}
+          data-truncate-length="250"
+          phx-hook="TextTruncate"
+        >
+          {@message.cover_letter}
+        </div>
+      </div>
+
+      <div :if={@message.mux_data && @message.mux_data.playback_id} class={@class}>
+        <mux-player playback-id={@message.mux_data.playback_id}></mux-player>
+      </div>
+
+      <.link
+        :if={@message.user_id == @current_user.id}
+        navigate={~p"/jobs/#{@message.job_posting_id}/job_applications/#{@message.id}/edit"}
+        class={[
+          "py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 transition-colors",
+          "ml-auto mb-3 inline-blockw-[85%] md:w-[60%] lg:w-[40%] flex items-center justify-center"
+        ]}
+      >
+        Edit Your Application
+      </.link>
+    </div>
+    """
+  end
+
+  @spec chat_container(assigns()) :: output()
+  def chat_container(%{message: %Message{}} = assigns) do
+    ~H"""
+    <div
+      id={@id}
+      class={[
+        "w-[85%] md:w-[60%] lg:w-[40%] mb-3",
+        @message.sender_id == @current_user.id && "ml-auto rounded-2xl rounded-br-none",
+        @message.sender_id != @current_user.id && "mr-auto rounded-2xl rounded-bl-none",
+        @message.content && @message.sender_id == @current_user.id && "bg-blue-100 ",
+        @message.content && @message.sender_id != @current_user.id && "bg-gray-100 "
+      ]}
+    >
+      <.chat_message message={@message} />
+    </div>
+    """
+  end
+
   attr :class, :string, default: nil
-  attr :message, :any, required: true
+  attr :message, :any
+  attr :job_application, :any, default: nil
+  attr :index, :string, default: nil
 
   @spec chat_message(assigns()) :: output()
   def chat_message(
@@ -110,8 +176,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
         @class
       ]}
       id={"message-content-#{@message.id}"}
-      data-truncate-length="250"
-      phx-hook="TextTruncate"
     >
       {@message.content}
     </div>

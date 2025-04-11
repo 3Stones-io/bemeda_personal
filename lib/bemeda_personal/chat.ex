@@ -32,11 +32,14 @@ defmodule BemedaPersonal.Chat do
   """
   @spec list_messages(job_application()) :: [message()]
   def list_messages(%JobApplication{} = job_application) do
-    Message
-    |> where([m], m.job_application_id == ^job_application.id)
-    |> order_by([m], asc: m.inserted_at)
-    |> Repo.all()
-    |> Repo.preload([:sender, :job_application])
+    messages =
+      Message
+      |> where([m], m.job_application_id == ^job_application.id)
+      |> order_by([m], asc: m.inserted_at)
+      |> Repo.all()
+      |> Repo.preload([:sender])
+
+    [job_application | messages]
   end
 
   @doc """
@@ -178,28 +181,5 @@ defmodule BemedaPersonal.Chat do
   @spec change_message(message(), attrs()) :: changeset()
   def change_message(%Message{} = message, attrs \\ %{}) do
     Message.changeset(message, attrs)
-  end
-
-  @doc """
-  Creates initial messages for a job application.
-  """
-  @spec create_job_application_chat(job_application(), user()) :: {:ok, message()}
-  def create_job_application_chat(%JobApplication{} = job_application, %User{} = user) do
-    job_application = Repo.preload(job_application, :job_posting)
-
-    if job_application.mux_data && job_application.mux_data.playback_id do
-      create_message(user, job_application, %{
-        mux_data: %{
-          asset_id: job_application.mux_data.asset_id,
-          file_name: job_application.mux_data.file_name,
-          playback_id: job_application.mux_data.playback_id,
-          type: job_application.mux_data.type
-        }
-      })
-    end
-
-    create_message(user, job_application, %{
-      content: job_application.cover_letter
-    })
   end
 end

@@ -10,7 +10,8 @@ defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
 
   @registry_name BemedaPersonal.Registry
 
-  @spec register(upload_id(), atom()) :: {:ok, pid()} | {:error, {:already_registered, pid()}}
+  @spec register(upload_id(), :form_video_upload | :message_media_upload) ::
+          {:ok, pid()} | {:error, {:already_registered, pid()}}
   def register(upload_id, type) do
     Registry.register(@registry_name, upload_id, type)
   end
@@ -39,10 +40,5 @@ defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
       nil ->
         Logger.error("Message with upload_id #{response.upload_id} not found")
     end
-  end
-
-  defp process_webhook_response(_other, response) do
-    Logger.error("No pid found for upload_id: #{response.upload_id}")
-    :ok
   end
 end

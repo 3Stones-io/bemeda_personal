@@ -605,52 +605,6 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.user_id == user.id
     end
 
-    test "creates chat messages when job application is created" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting =
-        company
-        |> job_posting_fixture()
-        |> Repo.preload(:company)
-
-      cover_letter_attrs = %{
-        cover_letter: "This is my cover letter"
-      }
-
-      assert {:ok, %Jobs.JobApplication{} = application_with_cover} =
-               Jobs.create_job_application(user, job_posting, cover_letter_attrs)
-
-      messages = BemedaPersonal.Chat.list_messages(application_with_cover)
-      assert length(messages) == 1
-      assert hd(messages).content == "This is my cover letter"
-      assert hd(messages).sender_id == user.id
-
-      application_with_video_attrs = %{
-        cover_letter: "Cover letter with video",
-        mux_data: %{
-          playback_id: "playback123",
-          asset_id: "asset123",
-          file_name: "my_video",
-          type: "video"
-        }
-      }
-
-      assert {:ok, %Jobs.JobApplication{} = application_with_video} =
-               Jobs.create_job_application(user, job_posting, application_with_video_attrs)
-
-      video_messages = BemedaPersonal.Chat.list_messages(application_with_video)
-      assert length(video_messages) == 2
-
-      assert Enum.at(video_messages, 1).content == "Cover letter with video"
-      assert Enum.at(video_messages, 1).sender_id == user.id
-
-      assert is_nil(Enum.at(video_messages, 0).content)
-      assert Enum.at(video_messages, 0).mux_data.playback_id == "playback123"
-      assert Enum.at(video_messages, 0).mux_data.asset_id == "asset123"
-      assert Enum.at(video_messages, 0).sender_id == user.id
-    end
-
     test "returns error changeset when data is invalid" do
       user = user_fixture()
       company = company_fixture(user)

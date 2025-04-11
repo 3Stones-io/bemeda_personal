@@ -374,21 +374,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
                asset_id: "test-asset-id",
                playback_id: "test-playback-id"
              } = created_application.mux_data
-
-      messages = BemedaPersonal.Chat.list_messages(created_application)
-      assert length(messages) == 2
-
-      assert Enum.any?(
-               messages,
-               &(&1.mux_data.playback_id ==
-                   created_application.mux_data.playback_id)
-             )
-
-      assert Enum.any?(
-               messages,
-               &(&1.content ==
-                   created_application.cover_letter)
-             )
     end
 
     test "updates existing job application successfully", %{

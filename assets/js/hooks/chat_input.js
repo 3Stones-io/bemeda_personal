@@ -13,7 +13,7 @@ export default ChatInput = {
       chatInput.classList.remove('border-indigo-600')
     }
 
-    const uploadFiles = (newFiles) => {
+    const uploadFile = (newFiles) => {
       hook.pushEvent(
         'upload-media',
         { filename: newFiles.name, type: newFiles.type },
@@ -44,7 +44,7 @@ export default ChatInput = {
 
       let newFiles = Array.from(event.dataTransfer.files || [])
 
-      uploadFiles(newFiles[0])
+      uploadFile(newFiles[0])
 
       restoreDropzoneStyles()
     })
@@ -55,7 +55,7 @@ export default ChatInput = {
     fileInput.addEventListener('change', () => {
       let newFiles = Array.from(fileInput.files || [])
 
-      uploadFiles(newFiles[0])
+      uploadFile(newFiles[0])
     })
   },
 }

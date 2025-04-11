@@ -6,7 +6,6 @@ defmodule BemedaPersonal.Jobs do
   import Ecto.Query, warn: false
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Chat
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.JobPosting
@@ -547,9 +546,6 @@ defmodule BemedaPersonal.Jobs do
             "#{@job_application_topic}:user:#{user.id}",
             {:user_job_application_created, job_application}
           )
-
-        {:ok, _message} =
-          Chat.create_job_application_chat(job_application, user)
 
         {:ok, job_application}
 

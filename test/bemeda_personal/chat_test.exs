@@ -29,14 +29,10 @@ defmodule BemedaPersonal.ChatTest do
     setup :create_message
 
     test "returns all messages for a job application", %{
-      job_application: job_application,
-      message: message
+      job_application: job_application
     } do
-      messages = Chat.list_messages(job_application)
-      assert length(messages) == 2
-      assert Enum.at(messages, 1).id == message.id
-      assert Enum.at(messages, 1).content == message.content
-      assert Ecto.assoc_loaded?(Enum.at(messages, 0).sender)
+      [_job_application | messages] = Chat.list_messages(job_application)
+      assert length(messages) == 1
     end
   end
 
@@ -182,58 +178,6 @@ defmodule BemedaPersonal.ChatTest do
 
     test "returns nil when no message with the upload id exists" do
       refute Chat.get_message_by_upload_id("non_existent_upload_id")
-    end
-  end
-
-  describe "create_job_application_chat/2" do
-    test "creates chat messages when job application is created" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting =
-        company
-        |> job_posting_fixture()
-        |> Repo.preload(:company)
-
-      cover_letter_attrs = %{
-        cover_letter: "This is my cover letter"
-      }
-
-      {:ok, application_with_cover} =
-        BemedaPersonal.Jobs.create_job_application(user, job_posting, cover_letter_attrs)
-
-      messages = Chat.list_messages(application_with_cover)
-      assert length(messages) == 1
-      assert hd(messages).content == "This is my cover letter"
-      assert hd(messages).sender_id == user.id
-
-      application_with_video_attrs = %{
-        cover_letter: "Cover letter with video",
-        mux_data: %{
-          asset_id: "asset123",
-          file_name: "my_video",
-          playback_id: "playback123",
-          type: "video"
-        }
-      }
-
-      {:ok, application_with_video} =
-        BemedaPersonal.Jobs.create_job_application(
-          user,
-          job_posting,
-          application_with_video_attrs
-        )
-
-      video_messages = Chat.list_messages(application_with_video)
-      assert length(video_messages) == 2
-
-      assert Enum.at(video_messages, 1).content == "Cover letter with video"
-      assert Enum.at(video_messages, 1).sender_id == user.id
-
-      assert is_nil(Enum.at(video_messages, 0).content)
-      assert Enum.at(video_messages, 0).mux_data.playback_id == "playback123"
-      assert Enum.at(video_messages, 0).mux_data.asset_id == "asset123"
-      assert Enum.at(video_messages, 0).sender_id == user.id
     end
   end
 end

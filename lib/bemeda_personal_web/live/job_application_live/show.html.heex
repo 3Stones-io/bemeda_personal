@@ -1,18 +1,11 @@
 <section class="px-4 w-full py-2 max-w-full min-h-screen">
   <div id="chat-messages" phx-update="stream" class="h-[80svh] overflow-y-scroll">
-    <div
+    <ChatComponents.chat_container
       :for={{dom_id, message} <- @streams.messages}
       id={dom_id}
-      class={[
-        "w-[85%] md:w-[60%] lg:w-[40%] mb-3",
-        message.sender_id == @current_user.id && "ml-auto rounded-2xl rounded-br-none",
-        message.sender_id != @current_user.id && "mr-auto rounded-2xl rounded-bl-none",
-        message.content && message.sender_id == @current_user.id && "bg-blue-100 ",
-        message.content && message.sender_id != @current_user.id && "bg-gray-100 "
-      ]}
-    >
-      <ChatComponents.chat_message message={message} />
-    </div>
+      current_user={@current_user}
+      message={message}
+    />
   </div>
 
   <ChatComponents.chat_form chat_form={@chat_form} class="fixed inset-x-[2%] bottom-[2%]" />
