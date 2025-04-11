@@ -5,12 +5,9 @@ defmodule BemedaPersonal.MuxHelpers.WebhookHandler do
 
   require Logger
 
-  @type changeset :: Ecto.Changeset.t()
-  @type upload_id :: String.t()
-
   @registry_name BemedaPersonal.Registry
 
-  @spec register(upload_id(), :form_video_upload | :message_media_upload) ::
+  @spec register(String.t(), :form_video_upload | :message_media_upload) ::
           {:ok, pid()} | {:error, {:already_registered, pid()}}
   def register(upload_id, type) do
     Registry.register(@registry_name, upload_id, type)

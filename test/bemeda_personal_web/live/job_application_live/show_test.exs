@@ -289,12 +289,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       updated_messages = Chat.list_messages(job_application)
 
-      updated_message =
-        Enum.find(updated_messages, fn m ->
-          m.mux_data && m.mux_data.file_name == "test-video.mp4"
-        end)
+      assert %Chat.Message{} =
+               updated_message =
+               Enum.find(updated_messages, fn m ->
+                 m.mux_data && m.mux_data.file_name == "test-video.mp4"
+               end)
 
-      assert updated_message
       assert updated_message.mux_data.asset_id == "asset_abc123"
       assert updated_message.mux_data.playback_id == "play_xyz789"
     end

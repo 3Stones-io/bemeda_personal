@@ -17,7 +17,6 @@ defmodule BemedaPersonal.Jobs do
   @type changeset :: Ecto.Changeset.t()
   @type company :: Company.t()
   @type job_application :: JobApplication.t()
-  @type job_application_id :: Ecto.UUID.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
   @type user :: User.t()
