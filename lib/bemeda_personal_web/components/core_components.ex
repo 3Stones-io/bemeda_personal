@@ -275,7 +275,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   attr :type, :string,
     default: "text",
-    values: ~w(checkbox color date datetime-local email file month number password
+    values: ~w(chat-input checkbox color date datetime-local email file month number password
                range search select tel text textarea time url week)
 
   attr :field, Phoenix.HTML.FormField,
@@ -371,6 +371,25 @@ defmodule BemedaPersonalWeb.CoreComponents do
         {@rest}
       >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
       <.error :for={msg <- @errors}>{msg}</.error>
+    </div>
+    """
+  end
+
+  def input(%{type: "chat-input"} = assigns) do
+    ~H"""
+    <div>
+      <.label for={@id}>
+        <textarea
+          id={@id}
+          name={@name}
+          class={[
+            "block w-full rounded-lg text-zinc-700 focus:ring-0 sm:text-sm sm:leading-6",
+            "border-none bg-[#ebedee] font-normal"
+          ]}
+          autofocus
+          {@rest}
+        >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
+      </.label>
     </div>
     """
   end

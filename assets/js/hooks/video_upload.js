@@ -51,9 +51,8 @@ export default VideoUpload = {
 
       hook.pushEventTo(
         `#${eventsTarget}`,
-
         'upload-video',
-        { filename: newFiles.name },
+        { filename: newFiles.name, type: newFiles.type },
         (response) => {
           if (response.error) {
             uploadProgressElement.classList.remove('hidden')

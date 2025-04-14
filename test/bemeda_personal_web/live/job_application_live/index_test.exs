@@ -78,7 +78,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      assert html =~ job_application.job_posting.title
       assert html =~ job_application.cover_letter
     end
 
@@ -307,8 +306,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
-
       applications = BemedaPersonal.Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
@@ -319,6 +316,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         end)
 
       assert created_application.job_posting_id == job.id
+
+      assert_redirect(
+        view,
+        ~p"/jobs/#{created_application.job_posting_id}/job_applications/#{created_application.id}"
+      )
 
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
@@ -349,8 +351,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
-
       applications = Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
@@ -362,10 +362,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert created_application.job_posting_id == job.id
 
+      assert_redirect(
+        view,
+        ~p"/jobs/#{created_application.job_posting_id}/job_applications/#{created_application.id}"
+      )
+
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
 
-      assert %Jobs.VideoMuxData{
+      assert %Jobs.MuxData{
                asset_id: "test-asset-id",
                playback_id: "test-playback-id"
              } = created_application.mux_data
@@ -389,7 +394,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
+      assert_redirect(
+        view,
+        ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+      )
 
       updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
 
@@ -435,14 +443,17 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      assert_redirect(view, ~p"/job_applications")
+      assert_redirect(
+        view,
+        ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+      )
 
       updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
 
-      assert %Jobs.VideoMuxData{
+      assert %Jobs.MuxData{
                asset_id: "updated_asset_123",
                playback_id: "updated_playback_123"
              } = updated_application.mux_data

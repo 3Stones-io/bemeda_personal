@@ -106,8 +106,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     save_job_application(socket, socket.assigns.action, job_application_params)
   end
 
-  def handle_event("upload-video", %{"filename" => filename}, socket) do
-    SharedHelpers.create_video_upload(socket, filename, self())
+  def handle_event("upload-video", params, socket) do
+    SharedHelpers.create_video_upload(socket, params)
   end
 
   def handle_event("enable-submit", _params, socket) do
@@ -123,11 +123,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
   defp save_job_application(socket, :edit, job_application_params) do
     case Jobs.update_job_application(socket.assigns.job_application, job_application_params) do
-      {:ok, _job_application} ->
+      {:ok, job_application} ->
         {:noreply,
          socket
          |> put_flash(:info, "Application updated successfully")
-         |> push_navigate(to: socket.assigns.return_to)}
+         |> push_navigate(
+           to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+         )}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
@@ -140,11 +142,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
            socket.assigns.job_posting,
            job_application_params
          ) do
-      {:ok, _job_application} ->
+      {:ok, job_application} ->
         {:noreply,
          socket
          |> put_flash(:info, "Application submitted successfully")
-         |> push_navigate(to: socket.assigns.return_to)}
+         |> push_navigate(
+           to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+         )}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}

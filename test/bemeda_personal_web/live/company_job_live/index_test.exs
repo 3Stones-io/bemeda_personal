@@ -164,7 +164,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       job_posting = List.first(job_postings)
 
-      assert %Jobs.VideoMuxData{
+      assert %Jobs.MuxData{
                asset_id: "test-asset-id",
                playback_id: "test-playback-id"
              } = job_posting.mux_data
@@ -290,7 +290,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       updated_job = Jobs.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
 
-      assert %Jobs.VideoMuxData{
+      assert %Jobs.MuxData{
                asset_id: "updated_test-asset-id",
                playback_id: "updated_test-playback-id"
              } = updated_job.mux_data

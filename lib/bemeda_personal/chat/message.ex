@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.JobApplication do
+defmodule BemedaPersonal.Chat.Message do
   @moduledoc false
 
   use Ecto.Schema
@@ -6,8 +6,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.MuxData
 
   @type attrs :: map()
@@ -16,22 +15,19 @@ defmodule BemedaPersonal.Jobs.JobApplication do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-
-  schema "job_applications" do
-    field :cover_letter, :string
-    has_many :messages, Message
+  schema "messages" do
+    field :content, :string
+    belongs_to :job_application, JobApplication
     embeds_one :mux_data, MuxData, on_replace: :update
-    belongs_to :job_posting, JobPosting
-    belongs_to :user, User
+    belongs_to :sender, User
 
     timestamps(type: :utc_datetime)
   end
 
   @spec changeset(t(), attrs()) :: changeset()
-  def changeset(job_application, attrs) do
-    job_application
-    |> cast(attrs, [:cover_letter])
+  def changeset(message, attrs) do
+    message
+    |> cast(attrs, [:content])
     |> cast_embed(:mux_data)
-    |> validate_required([:cover_letter])
   end
 end

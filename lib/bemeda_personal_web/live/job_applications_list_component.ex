@@ -104,6 +104,15 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
               <div class="flex items-center space-x-2 mt-4 md:mt-0 action">
                 <.link
                   navigate={
+                    ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}"
+                  }
+                  class="px-4 py-2 bg-indigo-100 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <.icon name="hero-chat-bubble-left-right" class="w-4 h-4" />
+                </.link>
+
+                <.link
+                  navigate={
                     ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}/edit"
                   }
                   class="px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

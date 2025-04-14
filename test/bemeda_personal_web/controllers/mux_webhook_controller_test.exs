@@ -17,7 +17,7 @@ defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
       playback_id = playback_ids["id"]
       upload_id = params["data"]["upload_id"]
 
-      WebhookHandler.register(upload_id, self())
+      WebhookHandler.register(upload_id, :form_video_upload)
 
       conn =
         conn

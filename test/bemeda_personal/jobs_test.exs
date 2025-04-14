@@ -234,7 +234,6 @@ defmodule BemedaPersonal.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      # Create job posts with controlled timestamps
       older_timestamp = DateTime.from_naive!(~N[2023-01-01 00:00:00], "Etc/UTC")
       middle_timestamp = DateTime.from_naive!(~N[2023-02-01 00:00:00], "Etc/UTC")
       newer_timestamp = DateTime.from_naive!(~N[2023-03-01 00:00:00], "Etc/UTC")
@@ -290,17 +289,14 @@ defmodule BemedaPersonal.JobsTest do
         |> Ecto.Changeset.put_change(:inserted_at, newer_timestamp)
         |> Repo.insert!()
 
-      # Test newer_than filter
       assert results = Jobs.list_job_postings(%{newer_than: middle_job})
       assert length(results) == 1
       assert hd(results).id == newer_job.id
 
-      # Test older_than filter
       assert results = Jobs.list_job_postings(%{older_than: middle_job})
       assert length(results) == 1
       assert hd(results).id == older_job.id
 
-      # Test combined filters
       another_older_job =
         %BemedaPersonal.Jobs.JobPosting{}
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
@@ -588,9 +584,15 @@ defmodule BemedaPersonal.JobsTest do
   end
 
   describe "create_job_application/3" do
-    setup [:create_job_posting]
+    test "creates a job_application with valid data" do
+      user = user_fixture()
+      company = company_fixture(user)
 
-    test "creates a job_application with valid data", %{job_posting: job_posting, user: user} do
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
+
       valid_attrs = %{
         cover_letter: "some cover letter"
       }
@@ -603,7 +605,15 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.user_id == user.id
     end
 
-    test "returns error changeset when data is invalid", %{job_posting: job_posting, user: user} do
+    test "returns error changeset when data is invalid" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
+
       invalid_attrs = %{
         cover_letter: nil
       }
@@ -612,10 +622,15 @@ defmodule BemedaPersonal.JobsTest do
                Jobs.create_job_application(user, job_posting, invalid_attrs)
     end
 
-    test "broadcasts job_application_created event when creating a new job application", %{
-      job_posting: job_posting,
-      user: user
-    } do
+    test "broadcasts job_application_created event when creating a new job application" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
+
       company_job_application_topic = "job_application:company:#{job_posting.company_id}"
       user_job_application_topic = "job_application:user:#{user.id}"
 
