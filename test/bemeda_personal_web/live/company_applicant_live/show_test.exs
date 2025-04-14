@@ -98,6 +98,26 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       assert html =~ "View Resume"
     end
 
+    test "allows user to navigate to the applicant chat page", %{
+      company_user: user,
+      company: company,
+      conn: conn,
+      job_application: application,
+      job: job
+    } do
+      conn = log_in_user(conn, user)
+
+      assert {:ok, view, _html} =
+               live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> element("a", "Chat with Applicant")
+               |> render_click()
+
+      assert path =~ ~p"/jobs/#{job.id}/job_applications/#{application.id}"
+    end
+
     test "provides a link back to applicants list", %{
       conn: conn,
       company_user: user,
