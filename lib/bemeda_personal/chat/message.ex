@@ -6,8 +6,8 @@ defmodule BemedaPersonal.Chat.Message do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Chat.MediaData
   alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.MuxData
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -18,7 +18,7 @@ defmodule BemedaPersonal.Chat.Message do
   schema "messages" do
     field :content, :string
     belongs_to :job_application, JobApplication
-    embeds_one :mux_data, MuxData, on_replace: :update
+    embeds_one :media_data, MediaData, on_replace: :update
     belongs_to :sender, User
 
     timestamps(type: :utc_datetime)
@@ -28,6 +28,6 @@ defmodule BemedaPersonal.Chat.Message do
   def changeset(message, attrs) do
     message
     |> cast(attrs, [:content])
-    |> cast_embed(:mux_data)
+    |> cast_embed(:media_data)
   end
 end

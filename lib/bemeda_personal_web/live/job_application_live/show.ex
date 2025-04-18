@@ -2,13 +2,25 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.Chat.MediaData
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.MuxHelpers.Client
-  alias BemedaPersonal.MuxHelpers.WebhookHandler
+  alias BemedaPersonal.S3Helper.Client
   alias BemedaPersonalWeb.ChatComponents
+  alias Mux.Video.Assets, as: MuxAssets, warn: false
+  alias BemedaPersonalWeb.Endpoint
+
+  require Logger
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(
+        BemedaPersonal.PubSub,
+        "media_upload"
+      )
+    end
+
     {:ok,
      socket
      |> stream_configure(:messages, dom_id: &"message-#{&1.id}")
@@ -28,6 +40,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       |> Map.put(:action, :validate)
 
     {:noreply, assign_chat_form(socket, changeset)}
+  end
+
+  def handle_event("validate", _params, socket) do
+    {:noreply, socket}
   end
 
   def handle_event("send-message", %{"message" => message_params}, socket) do
@@ -50,24 +66,73 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("upload-media", %{"filename" => filename, "type" => type}, socket) do
-    with {:ok, upload_url, upload_id} <- Client.create_direct_upload(),
-         {:ok, _pid} <- WebhookHandler.register(upload_id, :message_media_upload),
-         {:ok, message} <-
-           Chat.create_message(
-             socket.assigns.current_user,
-             socket.assigns.job_application,
-             %{
-               "mux_data" => %{
-                 "file_name" => filename,
-                 "type" => type,
-                 "upload_id" => upload_id
+    {:ok, message} =
+      Chat.create_message(
+               socket.assigns.current_user,
+               socket.assigns.job_application,
+               %{
+                 "media_data" => %{
+                   "file_name" => filename,
+                   "type" => type,
+                   "status" => :pending
+                 }
                }
-             }
-           ) do
-      {:reply, %{upload_url: upload_url}, stream_insert(socket, :messages, message)}
-    else
-      {:error, _reason} ->
-        {:reply, %{error: "Failed to create upload URL"}, socket}
+      )
+
+    url = Client.get_presigned_url(message.id, :put)
+
+    {:reply, %{upload_url: url, message_id: message.id}, stream_insert(socket, :messages, message)}
+  end
+
+  # TODO: Handle failure
+  def handle_event("update-message", %{"message_id" => message_id, "status" => "uploaded"}, socket) do
+    message = Chat.get_message!(message_id)
+    case Chat.update_message(message, %{"media_data" => %{"status" => :uploaded}}) do
+      {:ok, message} ->
+        maybe_perform_additional_processing(message)
+
+        {:noreply, stream_insert(socket, :messages, message)}
+      {:error, _changeset} ->
+        {:noreply, socket}
+    end
+  end
+
+  defp maybe_perform_additional_processing(
+    %Message{media_data: %MediaData{type: "video" <> _rest}} = message
+  ) do
+    additional_processing(message)
+  end
+
+  defp maybe_perform_additional_processing(
+    %Message{media_data: %MediaData{type: "audio" <> _rest}} = message
+  ) do
+    additional_processing(message)
+  end
+
+  defp maybe_perform_additional_processing(message), do: message
+
+  # Check for mux data events -> update playback id when event is received
+  defp additional_processing(message) do
+    file_url = Client.get_presigned_url(message.id, :get)
+
+    options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+
+    client = Mux.client()
+
+    case MuxAssets.create(client, options) do
+      {:ok, mux_asset, _client} ->
+
+        Chat.update_message(message, %{
+          "media_data" => %{
+            "asset_id" => mux_asset["id"]
+          }
+        })
+
+      response ->
+        Logger.error(
+          "message.additional_processing: " <>
+            inspect(response)
+        )
     end
   end
 
@@ -75,6 +140,21 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   def handle_info({event, message}, socket)
       when event in [:new_message, :message_updated] do
     {:noreply, stream_insert(socket, :messages, message)}
+  end
+
+  def handle_info({:media_upload, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
+    message = Chat.get_message_by_asset_id(asset_id)
+
+    if message do
+      Chat.update_message(message, %{
+        "media_data" => %{
+          "playback_id" => playback_id,
+          "status" => :uploaded
+        }
+      })
+    end
+
+    {:noreply, socket}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do

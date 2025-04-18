@@ -17,11 +17,28 @@ export default ChatInput = {
       hook.pushEvent(
         'upload-media',
         { filename: newFiles.name, type: newFiles.type },
-        ({ upload_url: uploadUrl }) => {
-          UpChunk.createUpload({
+        ({ upload_url: uploadUrl, message_id: messageId }) => {
+          console.log('uploadUrl', uploadUrl)
+          const upload = UpChunk.createUpload({
             endpoint: uploadUrl,
             file: newFiles,
             chunkSize: 30720,
+            method: 'PUT',
+            headers: {
+              'Content-Type': newFiles.type || 'application/octet-stream'
+            }
+          }) 
+
+          upload.on('error', (e) => {
+            console.log('error', e.detail)
+          })
+
+          upload.on('success', () => {
+            hook.pushEvent('update-message', { 
+                message_id: messageId, 
+                status: 'uploaded' 
+              }
+            )
           })
         }
       )

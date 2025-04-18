@@ -11,12 +11,12 @@ defmodule BemedaPersonal.Chat do
   alias BemedaPersonal.Repo
   alias Phoenix.PubSub
 
+  @type asset_id :: String.t()
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type job_application :: JobApplication.t()
   @type message :: Message.t()
   @type message_id :: Ecto.UUID.t()
-  @type upload_id :: String.t()
   @type user :: User.t()
 
   @message_topic "messages"
@@ -64,21 +64,21 @@ defmodule BemedaPersonal.Chat do
   end
 
   @doc """
-  Returns a message by upload id.
+  Returns a message by asset id.
 
   ## Examples
 
-      iex> get_message_by_upload_id(123)
+      iex> get_message_by_a_id(123)
       %Message{}
 
-      iex> get_message_by_upload_id(456)
+      iex> get_message_by_a_id(456)
       nil
 
   """
-  @spec get_message_by_upload_id(upload_id()) :: message() | nil
-  def get_message_by_upload_id(mux_upload_id) do
+  @spec get_message_by_asset_id(asset_id()) :: message() | nil
+  def get_message_by_asset_id(asset_id) do
     Message
-    |> where(fragment("mux_data->>'upload_id' = ?", ^mux_upload_id))
+    |> where(fragment("media_data->>'asset_id' = ?", ^asset_id))
     |> Repo.one()
     |> Repo.preload([:sender, :job_application])
   end

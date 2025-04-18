@@ -275,4 +275,41 @@ if config_env() == :prod do
     access_token_id: mux_token_id,
     access_token_secret: mux_token_secret,
     webhook_secret: mux_webhook_secret
+
+  aws_access_key_id =
+    System.get_env("AWS_ACCESS_KEY_ID") ||
+      raise """
+      environment variable AWS_ACCESS_KEY_ID is missing.
+      """
+
+  aws_bucket =
+    System.get_env("BUCKET_NAME") ||
+      raise """
+      environment variable AWS_BUCKET_NAME is missing.
+      """
+
+  aws_endpoint_url =
+    System.get_env("AWS_ENDPOINT_URL_S3") ||
+      raise """
+      environment variable AWS_ENDPOINT_URL_S3 is missing.
+      """
+
+  aws_region =
+    System.get_env("AWS_REGION") ||
+      raise """
+      environment variable AWS_REGION is missing.
+      """
+
+  aws_secret_access_key =
+    System.get_env("AWS_SECRET_ACCESS_KEY") ||
+      raise """
+      environment variable AWS_SECRET_ACCESS_KEY is missing.
+      """
+
+  config :bemeda_personal, :s3,
+    access_key_id: aws_access_key_id,
+    bucket: aws_bucket,
+    endpoint_url: aws_endpoint_url,
+    region: aws_region,
+    secret_access_key: aws_secret_access_key
 end
