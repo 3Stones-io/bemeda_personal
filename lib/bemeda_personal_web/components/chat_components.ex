@@ -214,7 +214,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
       >
         <.icon name="hero-document" class="h-6 w-6 text-[#075389] mr-3" />
         <p class="text-sm font-medium text-zinc-800">
-          <span >{@message.media_data.file_name}</span>
+          <span>{@message.media_data.file_name}</span>
         </p>
       </.link>
     </div>

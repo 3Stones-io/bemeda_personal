@@ -68,44 +68,51 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   def handle_event("upload-media", %{"filename" => filename, "type" => type}, socket) do
     {:ok, message} =
       Chat.create_message(
-               socket.assigns.current_user,
-               socket.assigns.job_application,
-               %{
-                 "media_data" => %{
-                   "file_name" => filename,
-                   "type" => type,
-                   "status" => :pending
-                 }
-               }
+        socket.assigns.current_user,
+        socket.assigns.job_application,
+        %{
+          "media_data" => %{
+            "file_name" => filename,
+            "type" => type,
+            "status" => :pending
+          }
+        }
       )
 
     url = Client.get_presigned_url(message.id, :put)
 
-    {:reply, %{upload_url: url, message_id: message.id}, stream_insert(socket, :messages, message)}
+    {:reply, %{upload_url: url, message_id: message.id},
+     stream_insert(socket, :messages, message)}
   end
 
   # TODO: Handle failure
-  def handle_event("update-message", %{"message_id" => message_id, "status" => "uploaded"}, socket) do
+  def handle_event(
+        "update-message",
+        %{"message_id" => message_id, "status" => "uploaded"},
+        socket
+      ) do
     message = Chat.get_message!(message_id)
+
     case Chat.update_message(message, %{"media_data" => %{"status" => :uploaded}}) do
       {:ok, message} ->
         maybe_perform_additional_processing(message)
 
         {:noreply, stream_insert(socket, :messages, message)}
+
       {:error, _changeset} ->
         {:noreply, socket}
     end
   end
 
   defp maybe_perform_additional_processing(
-    %Message{media_data: %MediaData{type: "video" <> _rest}} = message
-  ) do
+         %Message{media_data: %MediaData{type: "video" <> _rest}} = message
+       ) do
     additional_processing(message)
   end
 
   defp maybe_perform_additional_processing(
-    %Message{media_data: %MediaData{type: "audio" <> _rest}} = message
-  ) do
+         %Message{media_data: %MediaData{type: "audio" <> _rest}} = message
+       ) do
     additional_processing(message)
   end
 
@@ -121,7 +128,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
     case MuxAssets.create(client, options) do
       {:ok, mux_asset, _client} ->
-
         Chat.update_message(message, %{
           "media_data" => %{
             "asset_id" => mux_asset["id"]

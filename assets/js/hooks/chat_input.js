@@ -18,7 +18,7 @@ export default ChatInput = {
         'upload-media',
         { filename: newFiles.name, type: newFiles.type },
         ({ upload_url: uploadUrl, message_id: messageId }) => {
-          console.log('uploadUrl', uploadUrl)
+          
           const upload = UpChunk.createUpload({
             endpoint: uploadUrl,
             file: newFiles,
