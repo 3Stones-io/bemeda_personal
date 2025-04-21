@@ -15,7 +15,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"BemedaPersonal", "contact@example.com"})
+      |> from({"BemedaPersonal", "contact@bemeda-personal.optimum.ba"})
       |> subject(subject)
       |> text_body(body)
 
