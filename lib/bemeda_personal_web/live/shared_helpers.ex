@@ -4,8 +4,11 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.MuxHelpers.Client
-  alias BemedaPersonal.MuxHelpers.WebhookHandler
+  alias BemedaPersonal.MuxHelpers.Client, as: MuxClient, warn: false
+  alias BemedaPersonal.S3Helper.Client
+  alias BemedaPersonalWeb.Endpoint
+
+  require Logger
 
   @spec to_html(binary()) :: Phoenix.HTML.safe()
   def to_html(markdown) do
@@ -62,18 +65,60 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     end
   end
 
-  @spec create_video_upload(Phoenix.LiveView.Socket.t(), String.t()) ::
+  @spec create_video_upload(Phoenix.LiveView.Socket.t(), map()) ::
           {:reply, map(), Phoenix.LiveView.Socket.t()}
   def create_video_upload(socket, params) do
-    with {:ok, upload_url, upload_id} <- Client.create_direct_upload(),
-         {:ok, _pid} <- WebhookHandler.register(upload_id, :form_video_upload) do
-      {:reply, %{upload_url: upload_url},
+    upload_id = Ecto.UUID.generate()
+    upload_url = Client.get_presigned_url(upload_id, :put)
+
+    {:reply, %{upload_url: upload_url, upload_id: upload_id},
+     socket
+     |> assign(:enable_submit?, false)
+     |> assign(:mux_data, %{file_name: params["filename"], upload_id: upload_id})}
+  end
+
+  @spec upload_video_to_mux(Phoenix.LiveView.Socket.t(), map()) ::
+          {:noreply, Phoenix.LiveView.Socket.t()}
+  def upload_video_to_mux(socket, params) do
+    upload_id = Ecto.UUID.cast!(params["upload_id"])
+    file_url = Client.get_presigned_url(upload_id, :get)
+
+    options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+
+    client = Mux.client()
+
+    case MuxClient.create_asset(client, options) do
+      {:ok, mux_asset, _client} ->
+        {:noreply,
+         assign(
+           socket,
+           :mux_data,
+           Map.merge(socket.assigns.mux_data, %{
+             asset_id: mux_asset["id"]
+           })
+         )}
+
+      response ->
+        Logger.error(
+          "message.additional_processing: " <>
+            inspect(response)
+        )
+
+        {:noreply, socket}
+    end
+  end
+
+  @spec update_mux_data(map(), Phoenix.LiveView.Socket.t()) ::
+          {:ok, Phoenix.LiveView.Socket.t()}
+  def update_mux_data(mux_data, socket) do
+    if socket.assigns[:mux_data] && socket.assigns.mux_data[:asset_id] == mux_data[:asset_id] do
+      {:ok,
        socket
-       |> assign(:enable_submit?, false)
-       |> assign(:mux_data, %{file_name: params["filename"], type: params["type"]})}
+       |> assign(:enable_submit?, true)
+       |> assign(:mux_data, Map.merge(socket.assigns.mux_data, mux_data))
+       |> Phoenix.LiveView.push_event("video_upload_completed", %{})}
     else
-      {:error, _reason} ->
-        {:reply, %{error: "Failed to create upload URL"}, socket}
+      {:ok, socket}
     end
   end
 end

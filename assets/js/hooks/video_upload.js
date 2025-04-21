@@ -27,6 +27,8 @@ export default VideoUpload = {
     const progressElement =
       uploadProgressElement.querySelector('#upload-progress')
 
+    let uploadId
+
     let currentUpload
 
     const restoreDropzoneStyles = () => {
@@ -65,6 +67,8 @@ export default VideoUpload = {
             return
           }
 
+          uploadId = response.upload_id
+
           progressBar.classList.add('bg-indigo-600')
           progressBar.classList.remove('bg-green-600')
           uploadProgressElement.classList.remove('hidden')
@@ -96,8 +100,22 @@ export default VideoUpload = {
 
           currentUpload.on('success', (_entry) => {
             progressBar.classList.remove('bg-indigo-600')
-            progressBar.classList.add('bg-green-600')
-            percentageElement.textContent = 'Completed'
+            progressBar.classList.add('bg-blue-500')
+            progressBar.classList.add('processing-bar')
+            percentageElement.textContent = 'Processing...'
+
+            progressBar.style.width = '100%'
+
+            hook.pushEventTo(`#${eventsTarget}`, 'upload-completed', {
+              upload_id: uploadId,
+            })
+
+            hook.handleEvent('video_upload_completed', () => {
+              progressBar.classList.remove('bg-blue-500')
+              progressBar.classList.add('bg-green-600')
+              progressBar.classList.remove('processing-bar')
+              percentageElement.textContent = 'Completed'
+            })
           })
         }
       )

@@ -28,7 +28,11 @@ defmodule BemedaPersonal.S3Helper.UtilsTest do
       }
 
       one_week_plus_one_second = 60 * 60 * 24 * 7 + 1
-      result = Utils.presign_url(config, :get, "test-bucket", "test-object.txt", expires_in: one_week_plus_one_second)
+
+      result =
+        Utils.presign_url(config, :get, "test-bucket", "test-object.txt",
+          expires_in: one_week_plus_one_second
+        )
 
       assert result == {:error, "expires_in_exceeds_one_week"}
     end
@@ -41,7 +45,11 @@ defmodule BemedaPersonal.S3Helper.UtilsTest do
       }
 
       query_params = [{"response-content-type", "application/json"}]
-      {:ok, url} = Utils.presign_url(config, :get, "test-bucket", "test-object.txt", query_params: query_params)
+
+      {:ok, url} =
+        Utils.presign_url(config, :get, "test-bucket", "test-object.txt",
+          query_params: query_params
+        )
 
       assert url =~ "response-content-type=application%2Fjson"
     end
@@ -53,7 +61,8 @@ defmodule BemedaPersonal.S3Helper.UtilsTest do
         region: "us-east-1"
       }
 
-      {:ok, url} = Utils.presign_url(config, :get, "test-bucket", "test-object.txt", virtual_host: true)
+      {:ok, url} =
+        Utils.presign_url(config, :get, "test-bucket", "test-object.txt", virtual_host: true)
 
       assert url =~ "https://test-bucket.s3.amazonaws.com/test-object.txt"
     end
@@ -65,7 +74,8 @@ defmodule BemedaPersonal.S3Helper.UtilsTest do
         region: "us-east-1"
       }
 
-      {:ok, url} = Utils.presign_url(config, :get, "test-bucket", "test-object.txt", s3_accelerate: true)
+      {:ok, url} =
+        Utils.presign_url(config, :get, "test-bucket", "test-object.txt", s3_accelerate: true)
 
       assert url =~ "https://test-bucket.s3-accelerate.amazonaws.com/test-object.txt"
     end

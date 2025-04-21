@@ -15,6 +15,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
         BemedaPersonal.PubSub,
         "job_application:user:#{current_user.id}"
       )
+
+      Phoenix.PubSub.subscribe(
+        BemedaPersonal.PubSub,
+        "media_upload"
+      )
     end
 
     {:ok,
@@ -33,7 +38,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     {:noreply, push_patch(socket, to: ~p"/job_applications?#{filters}")}
   end
 
-  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
+  def handle_info({:media_upload, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
     send_update(FormComponent,
       id: "job-application-form",
       mux_data: %{asset_id: asset_id, playback_id: playback_id}

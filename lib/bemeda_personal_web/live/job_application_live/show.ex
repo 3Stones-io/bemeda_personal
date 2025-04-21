@@ -2,12 +2,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Chat
-  alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.Chat.MediaData
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.MuxHelpers.Client, as: MuxClient, warn: false
   alias BemedaPersonal.S3Helper.Client
   alias BemedaPersonalWeb.ChatComponents
-  alias Mux.Video.Assets, as: MuxAssets, warn: false
   alias BemedaPersonalWeb.Endpoint
 
   require Logger
@@ -92,33 +90,28 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         socket
       ) do
     message = Chat.get_message!(message_id)
+    maybe_perform_additional_processing(message)
 
-    case Chat.update_message(message, %{"media_data" => %{"status" => :uploaded}}) do
-      {:ok, message} ->
-        maybe_perform_additional_processing(message)
-
-        {:noreply, stream_insert(socket, :messages, message)}
-
-      {:error, _changeset} ->
-        {:noreply, socket}
-    end
+    {:noreply, socket}
   end
 
   defp maybe_perform_additional_processing(
-         %Message{media_data: %MediaData{type: "video" <> _rest}} = message
+         %Chat.Message{media_data: %Chat.MediaData{type: "video" <> _rest}} = message
        ) do
     additional_processing(message)
   end
 
   defp maybe_perform_additional_processing(
-         %Message{media_data: %MediaData{type: "audio" <> _rest}} = message
+         %Chat.Message{media_data: %Chat.MediaData{type: "audio" <> _rest}} = message
        ) do
     additional_processing(message)
   end
 
-  defp maybe_perform_additional_processing(message), do: message
+  defp maybe_perform_additional_processing(message) do
+    {:ok, _message} =
+      Chat.update_message(message, %{"media_data" => %{"status" => :uploaded}})
+  end
 
-  # Check for mux data events -> update playback id when event is received
   defp additional_processing(message) do
     file_url = Client.get_presigned_url(message.id, :get)
 
@@ -126,7 +119,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
     client = Mux.client()
 
-    case MuxAssets.create(client, options) do
+    case MuxClient.create_asset(client, options) do
       {:ok, mux_asset, _client} ->
         Chat.update_message(message, %{
           "media_data" => %{

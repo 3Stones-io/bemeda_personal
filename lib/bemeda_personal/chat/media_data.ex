@@ -15,11 +15,10 @@ defmodule BemedaPersonal.Chat.MediaData do
     field :playback_id, :string
     field :status, Ecto.Enum, values: [:pending, :uploaded, :failed]
     field :type, :string
-    field :upload_id, Ecto.UUID
   end
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(video_data, attrs) do
-    cast(video_data, attrs, [:asset_id, :file_name, :playback_id, :status, :type, :upload_id])
+    cast(video_data, attrs, [:asset_id, :file_name, :playback_id, :status, :type])
   end
 end

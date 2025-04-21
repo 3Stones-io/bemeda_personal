@@ -3,9 +3,9 @@ defmodule BemedaPersonal.S3Helper.Http do
 
   alias BemedaPersonal.S3Helper.Utils
 
-  @behaviour BemedaPersonal.S3Helper.Client
-
   require Logger
+
+  @behaviour BemedaPersonal.S3Helper.Client
 
   @impl BemedaPersonal.S3Helper.Client
   def get_presigned_url(upload_id, method) do

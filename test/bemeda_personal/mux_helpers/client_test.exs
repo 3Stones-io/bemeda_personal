@@ -7,25 +7,36 @@ defmodule BemedaPersonal.MuxHelpers.ClientTest do
 
   setup :verify_on_exit!
 
-  describe "create_direct_upload/0" do
-    test "returns a valid upload URL" do
+  describe "create_asset/2" do
+    test "returns successful response with asset data" do
+      client = %{api_key: "test_key"}
+      options = %{input: "http://example.com/test.mp4", playback_policy: "public"}
+
+      asset_response = %{"id" => "asset_123", "status" => "preparing"}
+      expected_result = {:ok, asset_response, client}
+
       expect(
-        Client.Mock,
-        :create_direct_upload,
-        fn -> {:ok, "https://example.com", "123"} end
+        BemedaPersonal.MuxHelpers.Client.Mock,
+        :create_asset,
+        fn _client, _options -> expected_result end
       )
 
-      assert {:ok, "https://example.com", "123"} = Client.create_direct_upload()
+      assert expected_result == Client.create_asset(client, options)
     end
 
-    test "returns an error " do
+    test "returns error response" do
+      client = %{api_key: "test_key"}
+      options = %{input: "invalid_url", playback_policy: "public"}
+
+      error_response = {:error, "Invalid input URL"}
+
       expect(
-        Client.Mock,
-        :create_direct_upload,
-        fn -> {:error, "Error creating direct upload url"} end
+        BemedaPersonal.MuxHelpers.Client.Mock,
+        :create_asset,
+        fn _client, _options -> error_response end
       )
 
-      assert {:error, "Error creating direct upload url"} = Client.create_direct_upload()
+      assert error_response == Client.create_asset(client, options)
     end
   end
 end

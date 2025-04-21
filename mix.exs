@@ -72,9 +72,7 @@ defmodule BemedaPersonal.MixProject do
       {:multipart, "~> 0.4"},
       {:mux, "~> 3.2"},
       {:number, "~> 1.0"},
-      {:plug, "~> 1.14"},
-      {:req_s3, "~> 0.2.3"},
-      {:req, "~> 0.5.10"}
+      {:plug, "~> 1.14"}
     ]
   end
 

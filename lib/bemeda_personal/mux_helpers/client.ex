@@ -3,13 +3,12 @@ defmodule BemedaPersonal.MuxHelpers.Client do
 
   alias BemedaPersonal.MuxHelpers.Http
 
-  @callback create_direct_upload() :: {:ok, upload_url()} | {:error, any()}
+  @callback create_asset(map(), map()) :: {:ok, map(), any()} | {:error, any()}
 
-  @type upload_id :: String.t()
-  @type upload_url :: String.t()
+  @spec create_asset(map(), map()) :: {:ok, map(), any()} | {:error, any()}
+  def create_asset(client, options) do
+    impl().create_asset(client, options)
+  end
 
-  @spec create_direct_upload() :: {:ok, upload_url(), upload_id()} | {:error, any()}
-  def create_direct_upload, do: impl().create_direct_upload()
-
-  defp impl, do: Application.get_env(:bemeda_personal, :mux_helpers_client, Http)
+  defp impl, do: Application.get_env(:bemeda_personal, :mux_helpers, Http)
 end

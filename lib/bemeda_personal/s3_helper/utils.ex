@@ -8,47 +8,50 @@ defmodule BemedaPersonal.S3Helper.Utils do
           {:ok, String.t()} | {:error, String.t()}
   def presign_url(config, http_method, bucket, object, opts \\ []) do
     expires_in = Keyword.get(opts, :expires_in, 3600)
-    query_params = Keyword.get(opts, :query_params, [])
+
+    if expires_in > @one_week do
+      {:error, "expires_in_exceeds_one_week"}
+    else
+      {updated_config, url} = prepare_url(config, bucket, object, opts)
+      datetime_value = prepare_datetime(opts)
+      updated_opts = Keyword.put(opts, :expires, expires_in)
+
+      presigned_url(
+        http_method,
+        url,
+        :s3,
+        datetime_value,
+        updated_config,
+        updated_opts
+      )
+    end
+  end
+
+  defp prepare_url(config, bucket, object, opts) do
     virtual_host = Keyword.get(opts, :virtual_host, false)
     s3_accelerate = Keyword.get(opts, :s3_accelerate, false)
     bucket_as_host = Keyword.get(opts, :bucket_as_host, false)
-    headers = Keyword.get(opts, :headers, [])
 
-    {config, updated_virtual_host} =
+    {updated_config, updated_virtual_host} =
       if s3_accelerate do
         {put_accelerate_host(config), true}
       else
         {config, virtual_host}
       end
 
-    case expires_in > @one_week do
-      true ->
-        {:error, "expires_in_exceeds_one_week"}
+    url = url_to_sign(bucket, object, updated_config, updated_virtual_host, bucket_as_host)
 
-      false ->
-        url = url_to_sign(bucket, object, config, updated_virtual_host, bucket_as_host)
+    {updated_config, url}
+  end
 
-        datetime_value =
-          case Keyword.get(opts, :start_datetime, NaiveDateTime.utc_now()) do
-            dt when is_struct(dt, DateTime) or is_struct(dt, NaiveDateTime) ->
-              NaiveDateTime.to_erl(dt)
+  defp prepare_datetime(opts) do
+    case Keyword.get(opts, :start_datetime, NaiveDateTime.utc_now()) do
+      dt when is_struct(dt, DateTime) or is_struct(dt, NaiveDateTime) ->
+        NaiveDateTime.to_erl(dt)
 
-            # assume :calendar.datetime()
-            dt ->
-              dt
-          end
-
-        presigned_url(
-          http_method,
-          url,
-          :s3,
-          datetime_value,
-          config,
-          expires_in,
-          query_params,
-          nil,
-          headers
-        )
+      # assume :calendar.datetime()
+      dt ->
+        dt
     end
   end
 
@@ -58,10 +61,7 @@ defmodule BemedaPersonal.S3Helper.Utils do
           atom(),
           :calendar.datetime(),
           map(),
-          integer(),
-          list(),
-          any(),
-          list()
+          keyword()
         ) :: {:ok, String.t()} | {:error, any()}
   defp presigned_url(
          http_method,
@@ -69,39 +69,32 @@ defmodule BemedaPersonal.S3Helper.Utils do
          service,
          datetime,
          config,
-         expires,
-         query_params,
-         body,
-         headers
+         opts
        ) do
+    expires = Keyword.get(opts, :expires, 3600)
+    query_params = Keyword.get(opts, :query_params, [])
+    body = Keyword.get(opts, :body)
+    headers = Keyword.get(opts, :headers, [])
+
     with {:ok, config} <- validate_config(config) do
       service_str = service_name(service)
       signed_headers = presigned_url_headers(url, headers)
-
       uri = URI.parse(url)
-      uri_query = query_from_parsed_uri(uri)
-
-      org_query_params =
-        Enum.reduce(query_params, uri_query, fn {k, v}, acc -> [{to_string(k), v} | acc] end)
-
-      amz_query_params =
-        build_amz_query_params(service_str, datetime, config, expires, signed_headers)
-
-      query_to_sign = canonical_query_params(org_query_params ++ amz_query_params)
-
-      amz_query_string = canonical_query_params(amz_query_params)
-
-      query_for_url =
-        if Enum.any?(org_query_params) do
-          canonical_query_params(org_query_params) <> "&" <> amz_query_string
-        else
-          amz_query_string
-        end
-
       path = uri_encode(get_path(url, service_str))
 
+      {query_to_sign, query_for_url} =
+        prepare_query_params(
+          query_params,
+          uri,
+          service_str,
+          datetime,
+          config,
+          expires,
+          signed_headers
+        )
+
       signature =
-        signature(
+        compute_signature(
           http_method,
           url,
           query_to_sign,
@@ -112,9 +105,65 @@ defmodule BemedaPersonal.S3Helper.Utils do
           config
         )
 
-      {:ok,
-       "#{uri.scheme}://#{uri.authority}#{path}?#{query_for_url}&X-Amz-Signature=#{signature}"}
+      {:ok, build_presigned_url(uri, path, query_for_url, signature)}
     end
+  end
+
+  defp prepare_query_params(
+         query_params,
+         uri,
+         service_str,
+         datetime,
+         config,
+         expires,
+         signed_headers
+       ) do
+    uri_query = query_from_parsed_uri(uri)
+
+    org_query_params =
+      Enum.reduce(query_params, uri_query, fn {k, v}, acc -> [{to_string(k), v} | acc] end)
+
+    amz_query_params =
+      build_amz_query_params(service_str, datetime, config, expires, signed_headers)
+
+    query_to_sign = canonical_query_params(org_query_params ++ amz_query_params)
+
+    amz_query_string = canonical_query_params(amz_query_params)
+
+    query_for_url =
+      if Enum.any?(org_query_params) do
+        canonical_query_params(org_query_params) <> "&" <> amz_query_string
+      else
+        amz_query_string
+      end
+
+    {query_to_sign, query_for_url}
+  end
+
+  defp compute_signature(
+         http_method,
+         url,
+         query_to_sign,
+         signed_headers,
+         body,
+         service_str,
+         datetime,
+         config
+       ) do
+    signature(
+      http_method,
+      url,
+      query_to_sign,
+      signed_headers,
+      body,
+      service_str,
+      datetime,
+      config
+    )
+  end
+
+  defp build_presigned_url(uri, path, query_for_url, signature) do
+    "#{uri.scheme}://#{uri.authority}#{path}?#{query_for_url}&X-Amz-Signature=#{signature}"
   end
 
   defp signature(http_method, url, query, headers, body, service, datetime, config) do
@@ -140,6 +189,7 @@ defmodule BemedaPersonal.S3Helper.Utils do
   end
 
   defp hash_sha256(nil), do: "UNSIGNED-PAYLOAD"
+
   defp hash_sha256(data) do
     bytes_to_hex(:crypto.hash(:sha256, data))
   end
@@ -154,7 +204,7 @@ defmodule BemedaPersonal.S3Helper.Utils do
       defp hmac_sha256(key, data), do: :crypto.hmac(:sha256, key, data)
   end
 
-  defp date({date, _}) do
+  defp date({date, _time}) do
     quasi_iso_format(date)
   end
 
@@ -169,13 +219,13 @@ defmodule BemedaPersonal.S3Helper.Utils do
       |> Map.put(:fragment, nil)
       |> URI.to_string()
 
-    [_, path_with_params] = String.split(url, base, parts: 2)
-    [path | _] = String.split(path_with_params, "?", parts: 2)
+    [_prefix, path_with_params] = String.split(url, base, parts: 2)
+    [path | _rest] = String.split(path_with_params, "?", parts: 2)
 
     path
   end
 
-  defp get_path(url, _), do: URI.parse(url).path || "/"
+  defp get_path(url, _service), do: URI.parse(url).path || "/"
 
   defp string_to_sign(request, service, datetime, config) do
     hashed_request = hash_sha256(request)
@@ -248,7 +298,7 @@ defmodule BemedaPersonal.S3Helper.Utils do
   defp remove_dup_spaces(str), do: remove_dup_spaces(str, "")
   defp remove_dup_spaces(str, str), do: str
 
-  defp remove_dup_spaces(str, _) do
+  defp remove_dup_spaces(str, _prev) do
     replaced = String.replace(str, "  ", " ")
     remove_dup_spaces(replaced, str)
   end
@@ -263,11 +313,11 @@ defmodule BemedaPersonal.S3Helper.Utils do
     |> Enum.map_join("&", &pair/1)
   end
 
-  defp pair({k, _}) when is_list(k) do
+  defp pair({k, _value}) when is_list(k) do
     raise ArgumentError, "encode_query/1 keys cannot be lists, got: #{inspect(k)}"
   end
 
-  defp pair({_, v}) when is_list(v) do
+  defp pair({_key, v}) when is_list(v) do
     raise ArgumentError, "encode_query/1 values cannot be lists, got: #{inspect(v)}"
   end
 
@@ -292,7 +342,7 @@ defmodule BemedaPersonal.S3Helper.Utils do
   defp hex(n), do: <<n + ?A - 10>>
 
   defp compare_query_params({key, value1}, {key, value2}), do: value1 < value2
-  defp compare_query_params({key_1, _}, {key_2, _}), do: key_1 < key_2
+  defp compare_query_params({key_1, _value1}, {key_2, _value2}), do: key_1 < key_2
 
   defp put_accelerate_host(config) do
     Map.put(config, :host, "s3-accelerate.amazonaws.com")
@@ -327,9 +377,9 @@ defmodule BemedaPersonal.S3Helper.Utils do
   defp sanitized_port_component(%{port: nil}), do: ""
   defp sanitized_port_component(%{port: port}) when port in @excluded_ports, do: ""
   defp sanitized_port_component(%{port: port}), do: ":#{port}"
-  defp sanitized_port_component(_), do: ""
+  defp sanitized_port_component(_config), do: ""
 
-  defp ensure_slash("/" <> _ = path), do: path
+  defp ensure_slash("/" <> _rest = path), do: path
   defp ensure_slash(path), do: "/" <> path
 
   defp validate_config(%{disable_headers_signature: true} = config),
@@ -370,20 +420,25 @@ defmodule BemedaPersonal.S3Helper.Utils do
 
   defp canonical_headers(headers) do
     headers
-    |> Enum.reduce([], fn
-      {k, _}, acc when k in @unsignable_headers_multi_case ->
-        acc
-      {k, v}, acc when is_binary(v) ->
-        k_str = to_string(k)
-        k_downcased = String.downcase(k_str)
-        v_trimmed = String.trim(v)
-        [{k_downcased, v_trimmed} | acc]
-      {k, v}, acc ->
-        k_str = to_string(k)
-        k_downcased = String.downcase(k_str)
-        [{k_downcased, v} | acc]
-    end)
-    |> Enum.sort(fn {k1, _}, {k2, _} -> k1 < k2 end)
+    |> Enum.reduce([], &process_header/2)
+    |> Enum.sort(fn {k1, _v1}, {k2, _v2} -> k1 < k2 end)
+  end
+
+  defp process_header({k, _value}, acc) when k in @unsignable_headers_multi_case do
+    acc
+  end
+
+  defp process_header({k, v}, acc) when is_binary(v) do
+    k_str = to_string(k)
+    k_downcased = String.downcase(k_str)
+    v_trimmed = String.trim(v)
+    [{k_downcased, v_trimmed} | acc]
+  end
+
+  defp process_header({k, v}, acc) do
+    k_str = to_string(k)
+    k_downcased = String.downcase(k_str)
+    [{k_downcased, v} | acc]
   end
 
   defp query_from_parsed_uri(%{query: nil}), do: []
@@ -427,6 +482,6 @@ defmodule BemedaPersonal.S3Helper.Utils do
     Enum.map(int_strings, &zero_pad/1)
   end
 
-  defp zero_pad(<<_>> = val), do: "0" <> val
+  defp zero_pad(<<_char>> = val), do: "0" <> val
   defp zero_pad(val), do: val
 end

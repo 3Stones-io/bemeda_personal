@@ -1,8 +1,6 @@
 defmodule BemedaPersonalWeb.MuxWebhookController do
   use BemedaPersonalWeb, :controller
 
-  # alias BemedaPersonal.MuxHelpers.WebhookHandler
-
   @type conn() :: Plug.Conn.t()
   @type params() :: map()
 

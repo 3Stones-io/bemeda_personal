@@ -144,10 +144,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def update(%{mux_data: mux_data}, socket) do
-    {:ok,
-     socket
-     |> assign(:enable_submit?, true)
-     |> assign(:mux_data, Map.merge(socket.assigns.mux_data, mux_data))}
+    SharedHelpers.update_mux_data(mux_data, socket)
   end
 
   def update(%{job_posting: job_posting} = assigns, socket) do
@@ -183,6 +180,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   def handle_event("upload-video", params, socket) do
     SharedHelpers.create_video_upload(socket, params)
+  end
+
+  def handle_event("upload-completed", params, socket) do
+    SharedHelpers.upload_video_to_mux(socket, params)
   end
 
   def handle_event("enable-submit", _params, socket) do

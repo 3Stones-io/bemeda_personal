@@ -143,7 +143,7 @@ defmodule BemedaPersonal.ChatTest do
     end
   end
 
-  describe "get_message_by_upload_id/1" do
+  describe "get_message_by_asset_id/1" do
     setup do
       user = user_fixture()
       company = company_fixture(user)
@@ -153,11 +153,10 @@ defmodule BemedaPersonal.ChatTest do
       message =
         message_fixture(user, job_application, %{
           content: nil,
-          mux_data: %{
+          media_data: %{
             "asset_id" => "asset_123",
             "playback_id" => "playback_123",
-            "type" => "video",
-            "upload_id" => "test_upload_123"
+            "type" => "video"
           }
         })
 
@@ -168,16 +167,18 @@ defmodule BemedaPersonal.ChatTest do
       }
     end
 
-    test "returns the message with given upload id", %{message: message} do
-      result = Chat.get_message_by_upload_id("test_upload_123")
+    test "returns the message with given asset id", %{
+      message: message
+    } do
+      result = Chat.get_message_by_asset_id("asset_123")
       assert result.id == message.id
-      assert result.mux_data.upload_id == "test_upload_123"
+      assert result.media_data.asset_id == "asset_123"
       assert Ecto.assoc_loaded?(result.sender)
       assert Ecto.assoc_loaded?(result.job_application)
     end
 
-    test "returns nil when no message with the upload id exists" do
-      refute Chat.get_message_by_upload_id("non_existent_upload_id")
+    test "returns nil when no message with the asset id exists" do
+      refute Chat.get_message_by_asset_id("non_existent_asset_id")
     end
   end
 end
