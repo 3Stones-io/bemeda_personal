@@ -179,7 +179,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  # Should be presigned url
   def chat_message(%{message: %{media_data: %MediaData{type: "image" <> _rest}}} = assigns) do
     ~H"""
     <div class="w-full overflow-hidden rounded-lg">

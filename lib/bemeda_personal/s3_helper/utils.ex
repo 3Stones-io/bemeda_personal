@@ -1,10 +1,18 @@
 defmodule BemedaPersonal.S3Helper.Utils do
   @moduledoc false
 
-  @unsignable_headers_multi_case ["x-amzn-trace-id", "X-Amzn-Trace-Id"]
-  @one_week 60 * 60 * 24 * 7
+  # From ex_aws and ex_aws_s3
 
-  @spec presign_url(map(), atom() | String.t(), String.t(), String.t() | nil, keyword()) ::
+  @one_week 60 * 60 * 24 * 7
+  @unsignable_headers_multi_case ["x-amzn-trace-id", "X-Amzn-Trace-Id"]
+
+  @type bucket :: String.t()
+  @type http_method :: atom() | String.t()
+  @type object :: String.t() | nil
+  @type presign_options :: keyword()
+  @type s3_config :: map()
+
+  @spec presign_url(s3_config(), http_method(), bucket(), object(), presign_options()) ::
           {:ok, String.t()} | {:error, String.t()}
   def presign_url(config, http_method, bucket, object, opts \\ []) do
     expires_in = Keyword.get(opts, :expires_in, 3600)
@@ -55,14 +63,6 @@ defmodule BemedaPersonal.S3Helper.Utils do
     end
   end
 
-  @spec presigned_url(
-          atom() | String.t(),
-          String.t(),
-          atom(),
-          :calendar.datetime(),
-          map(),
-          keyword()
-        ) :: {:ok, String.t()} | {:error, any()}
   defp presigned_url(
          http_method,
          url,

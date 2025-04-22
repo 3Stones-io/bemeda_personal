@@ -28,7 +28,6 @@ import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
 import TextTruncate from './hooks/text_truncate'
 import VideoUpload from './hooks/video_upload'
-import Uploaders from './uploaders'
 
 // Define hooks object
 const Hooks = {
@@ -46,7 +45,6 @@ let liveSocket = new LiveSocket('/live', Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   hooks: Hooks,
-  uploaders: Uploaders,
 })
 
 // Show progress bar on live navigation and form submits

@@ -83,7 +83,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      stream_insert(socket, :messages, message)}
   end
 
-  # TODO: Handle failure
   def handle_event(
         "update-message",
         %{"message_id" => message_id, "status" => "uploaded"},
