@@ -222,7 +222,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_application: job_application
     } do
       expect(S3Helper.Client.Mock, :get_presigned_url, fn _upload_id, :put ->
-        "https://storage.googleapis.com/video-storage-upload-url"
+        {:ok, "https://storage.googleapis.com/video-storage-upload-url"}
       end)
 
       {:ok, view, _html} =
@@ -249,7 +249,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
         assert id == uploaded_message.id
-        "https://storage.googleapis.com/video-storage-get-url"
+        {:ok, "https://storage.googleapis.com/video-storage-get-url"}
       end)
 
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, options ->
@@ -288,7 +288,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_application: job_application
     } do
       expect(S3Helper.Client.Mock, :get_presigned_url, fn _id, :put ->
-        "https://storage.googleapis.com/file-storage-url"
+        {:ok, "https://storage.googleapis.com/file-storage-url"}
       end)
 
       {:ok, view, _html} =
@@ -312,7 +312,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
         assert id == pdf_message.id
-        "https://storage.googleapis.com/file-storage-url"
+        {:ok, "https://storage.googleapis.com/file-storage-url"}
       end)
 
       render_hook(
@@ -330,7 +330,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert pdf_html =~ "document.pdf"
 
       expect(S3Helper.Client.Mock, :get_presigned_url, fn _id, :put ->
-        "https://storage.googleapis.com/file-storage-url"
+        {:ok, "https://storage.googleapis.com/file-storage-url"}
       end)
 
       render_hook(
@@ -349,7 +349,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
         assert id == image_message.id
-        "https://storage.googleapis.com/file-storage-url"
+        {:ok, "https://storage.googleapis.com/file-storage-url"}
       end)
 
       render_hook(

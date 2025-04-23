@@ -183,7 +183,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full overflow-hidden rounded-lg">
       <img
-        src={Client.get_presigned_url(@message.id, :get)}
+        src={get_presigned_url(@message.id)}
         alt="@media_data.file_name"
         class="w-full h-auto object-contain max-h-[400px]"
       />
@@ -207,7 +207,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
       <.link
-        href={Client.get_presigned_url(@message.id, :get)}
+        href={get_presigned_url(@message.id)}
         target="_blank"
         class="flex items-center hover:bg-[#d6e6f1] p-2 rounded-lg transition-colors"
       >
@@ -226,5 +226,10 @@ defmodule BemedaPersonalWeb.ChatComponents do
       <p class="text-sm">{@message.content}</p>
     </div>
     """
+  end
+
+  defp get_presigned_url(message_id) do
+    {:ok, url} = Client.get_presigned_url(message_id, :get)
+    url
   end
 end

@@ -288,7 +288,7 @@ if config_env() == :prod do
       environment variable AWS_BUCKET_NAME is missing.
       """
 
-  aws_endpoint_url =
+  aws_endpoint_url_s3 =
     System.get_env("AWS_ENDPOINT_URL_S3") ||
       raise """
       environment variable AWS_ENDPOINT_URL_S3 is missing.
@@ -306,10 +306,17 @@ if config_env() == :prod do
       environment variable AWS_SECRET_ACCESS_KEY is missing.
       """
 
+  aws_endpoint_url_iam =
+    System.get_env("AWS_ENDPOINT_URL_IAM") ||
+      raise """
+      environment variable AWS_ENDPOINT_URL_IAM is missing.
+      """
+
   config :bemeda_personal, :s3,
     access_key_id: aws_access_key_id,
     bucket: aws_bucket,
-    endpoint_url: aws_endpoint_url,
+    endpoint_url_iam: aws_endpoint_url_iam,
+    endpoint_url_s3: aws_endpoint_url_s3,
     region: aws_region,
     secret_access_key: aws_secret_access_key
 end

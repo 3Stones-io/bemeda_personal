@@ -69,41 +69,52 @@ defmodule BemedaPersonalWeb.SharedHelpers do
           {:reply, map(), Phoenix.LiveView.Socket.t()}
   def create_video_upload(socket, params) do
     upload_id = Ecto.UUID.generate()
-    upload_url = Client.get_presigned_url(upload_id, :put)
 
-    {:reply, %{upload_url: upload_url, upload_id: upload_id},
-     socket
-     |> assign(:enable_submit?, false)
-     |> assign(:mux_data, %{file_name: params["filename"], upload_id: upload_id})}
+    case Client.get_presigned_url(upload_id, :put) do
+      {:ok, upload_url} ->
+        {:reply, %{upload_url: upload_url, upload_id: upload_id},
+         socket
+         |> assign(:enable_submit?, false)
+         |> assign(:mux_data, %{file_name: params["filename"], upload_id: upload_id})}
+
+      {:error, reason} ->
+        Logger.error("Failed to get presigned URL for upload: #{inspect(reason)}")
+        {:reply, %{error: "Failed to create upload"}, socket}
+    end
   end
 
   @spec upload_video_to_mux(Phoenix.LiveView.Socket.t(), map()) ::
           {:noreply, Phoenix.LiveView.Socket.t()}
   def upload_video_to_mux(socket, params) do
     upload_id = Ecto.UUID.cast!(params["upload_id"])
-    file_url = Client.get_presigned_url(upload_id, :get)
 
-    options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+    case Client.get_presigned_url(upload_id, :get) do
+      {:ok, file_url} ->
+        options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+        client = Mux.client()
 
-    client = Mux.client()
+        case MuxClient.create_asset(client, options) do
+          {:ok, mux_asset, _client} ->
+            {:noreply,
+             assign(
+               socket,
+               :mux_data,
+               Map.merge(socket.assigns.mux_data, %{
+                 asset_id: mux_asset["id"]
+               })
+             )}
 
-    case MuxClient.create_asset(client, options) do
-      {:ok, mux_asset, _client} ->
-        {:noreply,
-         assign(
-           socket,
-           :mux_data,
-           Map.merge(socket.assigns.mux_data, %{
-             asset_id: mux_asset["id"]
-           })
-         )}
+          response ->
+            Logger.error(
+              "message.additional_processing: " <>
+                inspect(response)
+            )
 
-      response ->
-        Logger.error(
-          "message.additional_processing: " <>
-            inspect(response)
-        )
+            {:noreply, socket}
+        end
 
+      {:error, reason} ->
+        Logger.error("Failed to get presigned URL for video: #{inspect(reason)}")
         {:noreply, socket}
     end
   end

@@ -465,6 +465,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :id, :string, required: true
   attr :show_video_description, :boolean
   attr :events_target, :string
+  attr :myself, :any, required: true
 
   @spec video_upload_input_component(assigns()) :: output()
   def video_upload_input_component(assigns) do
@@ -476,6 +477,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         @show_video_description && "hidden"
       ]}
       phx-hook="VideoUpload"
+      phx-target={@myself}
       phx-update="ignore"
       data-events-target={@events_target}
     >

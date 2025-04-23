@@ -5,10 +5,11 @@ defmodule BemedaPersonal.S3Helper.Client do
 
   @type presigned_url :: String.t()
   @type upload_id :: Ecto.UUID.t()
+  @type method :: atom()
 
-  @callback get_presigned_url(upload_id(), atom()) :: presigned_url()
+  @callback get_presigned_url(upload_id(), method()) :: {:ok, presigned_url()} | {:error, any()}
 
-  @spec get_presigned_url(upload_id(), atom()) :: presigned_url()
+  @spec get_presigned_url(upload_id(), method()) :: {:ok, presigned_url()} | {:error, any()}
   def get_presigned_url(upload_id, method) do
     impl().get_presigned_url(upload_id, method)
   end

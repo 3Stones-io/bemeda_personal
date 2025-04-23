@@ -68,10 +68,10 @@ defmodule BemedaPersonal.Chat do
 
   ## Examples
 
-      iex> get_message_by_a_id(123)
+      iex> get_message_by_asset_id(123)
       %Message{}
 
-      iex> get_message_by_a_id(456)
+      iex> get_message_by_asset_id(456)
       nil
 
   """

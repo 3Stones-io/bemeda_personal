@@ -77,10 +77,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         }
       )
 
-    url = Client.get_presigned_url(message.id, :put)
+    case Client.get_presigned_url(message.id, :put) do
+      {:ok, url} ->
+        {:reply, %{upload_url: url, message_id: message.id},
+         stream_insert(socket, :messages, message)}
 
-    {:reply, %{upload_url: url, message_id: message.id},
-     stream_insert(socket, :messages, message)}
+      {:error, reason} ->
+        Logger.error("Failed to get presigned URL for upload: #{inspect(reason)}")
+        {:reply, %{error: "Failed to create upload"}, socket}
+    end
   end
 
   def handle_event(
@@ -112,25 +117,30 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   defp additional_processing(message) do
-    file_url = Client.get_presigned_url(message.id, :get)
+    case Client.get_presigned_url(message.id, :get) do
+      {:ok, file_url} ->
+        options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
 
-    options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+        client = Mux.client()
 
-    client = Mux.client()
+        case MuxClient.create_asset(client, options) do
+          {:ok, mux_asset, _client} ->
+            Chat.update_message(message, %{
+              "media_data" => %{
+                "asset_id" => mux_asset["id"]
+              }
+            })
 
-    case MuxClient.create_asset(client, options) do
-      {:ok, mux_asset, _client} ->
-        Chat.update_message(message, %{
-          "media_data" => %{
-            "asset_id" => mux_asset["id"]
-          }
-        })
+          response ->
+            Logger.error(
+              "message.additional_processing: " <>
+                inspect(response)
+            )
+        end
 
-      response ->
-        Logger.error(
-          "message.additional_processing: " <>
-            inspect(response)
-        )
+      {:error, reason} ->
+        Logger.error("Failed to get presigned URL for media: #{inspect(reason)}")
+        {:error, reason}
     end
   end
 

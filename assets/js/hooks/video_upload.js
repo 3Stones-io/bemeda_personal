@@ -9,6 +9,7 @@ export default VideoUpload = {
       '#video-upload-inputs-container'
     )
     const eventsTarget = videoUploadInput.dataset.eventsTarget
+    console.log(eventsTarget)
 
     const input = videoUploadInput.querySelector('#hidden-file-input')
     const videoDescription = document.querySelector('#video-description')
@@ -27,9 +28,8 @@ export default VideoUpload = {
     const progressElement =
       uploadProgressElement.querySelector('#upload-progress')
 
-    let uploadId
-
     let currentUpload
+    let uploadId
 
     const restoreDropzoneStyles = () => {
       videoUploadInputsContainer.classList.remove('border-indigo-600')

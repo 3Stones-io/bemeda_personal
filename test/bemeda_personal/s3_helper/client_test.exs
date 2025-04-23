@@ -14,10 +14,10 @@ defmodule BemedaPersonal.S3Helper.ClientTest do
       expect(
         BemedaPersonal.S3Helper.Client.Mock,
         :get_presigned_url,
-        fn ^upload_id, :get -> expected_url end
+        fn ^upload_id, :get -> {:ok, expected_url} end
       )
 
-      assert expected_url == Client.get_presigned_url(upload_id, :get)
+      assert {:ok, ^expected_url} = Client.get_presigned_url(upload_id, :get)
     end
 
     test "works with different HTTP methods" do
@@ -27,10 +27,23 @@ defmodule BemedaPersonal.S3Helper.ClientTest do
       expect(
         BemedaPersonal.S3Helper.Client.Mock,
         :get_presigned_url,
-        fn ^upload_id, :put -> expected_url end
+        fn ^upload_id, :put -> {:ok, expected_url} end
       )
 
-      assert expected_url == Client.get_presigned_url(upload_id, :put)
+      assert {:ok, ^expected_url} = Client.get_presigned_url(upload_id, :put)
+    end
+
+    test "handles error cases" do
+      upload_id = Ecto.UUID.generate()
+      error_reason = "Missing endpoint url"
+
+      expect(
+        BemedaPersonal.S3Helper.Client.Mock,
+        :get_presigned_url,
+        fn ^upload_id, :get -> {:error, error_reason} end
+      )
+
+      assert {:error, ^error_reason} = Client.get_presigned_url(upload_id, :get)
     end
   end
 end

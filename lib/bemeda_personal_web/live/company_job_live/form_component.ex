@@ -119,6 +119,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           id="job_posting-video"
           show_video_description={@show_video_description}
           events_target={@id}
+          myself={@myself}
         />
 
         <JobsComponents.video_upload_progress
