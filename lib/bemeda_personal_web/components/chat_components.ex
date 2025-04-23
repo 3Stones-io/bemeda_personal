@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.Chat.MediaData
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.S3Helper.Client
+  alias BemedaPersonal.TigrisHelper
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
@@ -229,7 +229,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
   end
 
   defp get_presigned_url(message_id) do
-    {:ok, url} = Client.get_presigned_url(message_id, :get)
-    url
+    TigrisHelper.get_presigned_download_url(message_id)
   end
 end

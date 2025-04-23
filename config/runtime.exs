@@ -276,47 +276,26 @@ if config_env() == :prod do
     access_token_secret: mux_token_secret,
     webhook_secret: mux_webhook_secret
 
-  aws_access_key_id =
-    System.get_env("AWS_ACCESS_KEY_ID") ||
+  tigris_access_key_id =
+    System.get_env("TIGRIS_ACCESS_KEY_ID") ||
       raise """
-      environment variable AWS_ACCESS_KEY_ID is missing.
+      environment variable TIGRIS_ACCESS_KEY_ID is missing.
       """
 
-  aws_bucket =
-    System.get_env("BUCKET_NAME") ||
+  tigris_bucket =
+    System.get_env("TIGRIS_BUCKET") ||
       raise """
-      environment variable AWS_BUCKET_NAME is missing.
+      environment variable TIGRIS_BUCKET is missing.
       """
 
-  aws_endpoint_url_s3 =
-    System.get_env("AWS_ENDPOINT_URL_S3") ||
+  tigris_secret_access_key =
+    System.get_env("TIGRIS_SECRET_ACCESS_KEY") ||
       raise """
-      environment variable AWS_ENDPOINT_URL_S3 is missing.
+      environment variable TIGRIS_SECRET_ACCESS_KEY is missing.
       """
 
-  aws_region =
-    System.get_env("AWS_REGION") ||
-      raise """
-      environment variable AWS_REGION is missing.
-      """
-
-  aws_secret_access_key =
-    System.get_env("AWS_SECRET_ACCESS_KEY") ||
-      raise """
-      environment variable AWS_SECRET_ACCESS_KEY is missing.
-      """
-
-  aws_endpoint_url_iam =
-    System.get_env("AWS_ENDPOINT_URL_IAM") ||
-      raise """
-      environment variable AWS_ENDPOINT_URL_IAM is missing.
-      """
-
-  config :bemeda_personal, :s3,
-    access_key_id: aws_access_key_id,
-    bucket: aws_bucket,
-    endpoint_url_iam: aws_endpoint_url_iam,
-    endpoint_url_s3: aws_endpoint_url_s3,
-    region: aws_region,
-    secret_access_key: aws_secret_access_key
+  config :bemeda_personal, :tigris,
+    access_key_id: tigris_access_key_id,
+    bucket: tigris_bucket,
+    secret_access_key: tigris_secret_access_key
 end

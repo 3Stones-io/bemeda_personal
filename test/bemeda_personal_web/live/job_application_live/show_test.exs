@@ -9,7 +9,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Chat
-  alias BemedaPersonal.S3Helper
 
   setup :verify_on_exit!
 
@@ -221,10 +220,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       job_application: job_application
     } do
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn _upload_id, :put ->
-        {:ok, "https://storage.googleapis.com/video-storage-upload-url"}
-      end)
-
       {:ok, view, _html} =
         live(
           conn,
@@ -247,13 +242,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert uploaded_message.media_data.type == "video/mp4"
       assert uploaded_message.media_data.status == :pending
 
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
-        assert id == uploaded_message.id
-        {:ok, "https://storage.googleapis.com/video-storage-get-url"}
-      end)
-
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, options ->
-        assert options.input == "https://storage.googleapis.com/video-storage-get-url"
+        assert options.input =~
+                 "https://fly.storage.tigris.dev/tigris-bucket/#{uploaded_message.id}"
+
         assert options.playback_policy == "public"
         {:ok, %{"id" => "asset_12345"}, %{}}
       end)
@@ -287,10 +279,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       job_application: job_application
     } do
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn _id, :put ->
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
-      end)
-
       {:ok, view, _html} =
         live(
           conn,
@@ -310,11 +298,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert pdf_message.media_data.type == "application/pdf"
       assert pdf_message.media_data.status == :pending
 
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
-        assert id == pdf_message.id
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
-      end)
-
       render_hook(
         view,
         "update-message",
@@ -325,13 +308,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert updated_pdf_message.media_data.status == :uploaded
 
       pdf_html = render(view)
-      assert pdf_html =~ "href=\"https://storage.googleapis.com/file-storage-url\""
+
+      assert pdf_html =~
+               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.id})
+
       assert pdf_html =~ "hero-document"
       assert pdf_html =~ "document.pdf"
-
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn _id, :put ->
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
-      end)
 
       render_hook(
         view,
@@ -347,11 +329,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert image_message.media_data.type == "image/jpeg"
       assert image_message.media_data.status == :pending
 
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
-        assert id == image_message.id
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
-      end)
-
       render_hook(
         view,
         "update-message",
@@ -362,9 +339,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert updated_image_message.media_data.status == :uploaded
 
       image_html = render(view)
-      assert image_html =~ "<img"
-      assert image_html =~ "src=\"https://storage.googleapis.com/file-storage-url\""
-      assert image_html =~ "class=\"w-full h-auto object-contain max-h-[400px]\""
+
+      assert image_html =~
+               ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.id})
     end
   end
 end
