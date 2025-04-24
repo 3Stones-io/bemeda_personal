@@ -1,0 +1,6 @@
+[submodule ".cursor/rules"]
+	path = .cursor/rules
+	url = https://github.com/optimumBA/cursor_rules
+[submodule "priv/templates"]
+	path = priv/templates
+	url = https://github.com/optimumBA/optimum_templates
