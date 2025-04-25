@@ -10,7 +10,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Media
-  alias BemedaPersonal.S3Helper
 
   setup :verify_on_exit!
 
@@ -222,10 +221,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       job_application: job_application
     } do
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn _upload_id, :put ->
-        {:ok, "https://fly.storage.tigris.dev/bemeda-personal-staging/video-storage-upload-url"}
-      end)
-
       {:ok, view, _html} =
         live(
           conn,
@@ -248,14 +243,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert uploaded_message.media_asset.type == "video/mp4"
       assert uploaded_message.media_asset.status == :pending
 
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
-        assert id == uploaded_message.id
-        {:ok, "https://fly.storage.tigris.dev/bemeda-personal-staging/video-storage-get-url"}
-      end)
-
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, options ->
-        assert options.input ==
-                 "https://fly.storage.tigris.dev/bemeda-personal-staging/video-storage-get-url"
+        assert options.input =~
+                 "https://fly.storage.tigris.dev/tigris-bucket/#{uploaded_message.id}"
 
         assert options.playback_policy == "public"
         {:ok, %{"id" => "asset_12345"}, %{}}
@@ -285,10 +275,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       job_application: job_application
     } do
-      stub(S3Helper.Client.Mock, :get_presigned_url, fn _id, _action ->
-        {:ok, "https://fly.storage.tigris.dev/bemeda-personal-staging/file-storage-url"}
-      end)
-
       {:ok, view, _html} =
         live(
           conn,
@@ -303,10 +289,54 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       [_job_application_message, pdf_message] = Chat.list_messages(job_application)
 
-      assert pdf_message
       assert pdf_message.media_asset.file_name == "document.pdf"
       assert pdf_message.media_asset.type == "application/pdf"
       assert pdf_message.media_asset.status == :pending
+
+      render_hook(
+        view,
+        "update-message",
+        %{message_id: pdf_message.id, status: "uploaded"}
+      )
+
+      updated_pdf_message = Chat.get_message!(pdf_message.id)
+      assert updated_pdf_message.media_asset.status == :uploaded
+
+      pdf_html = render(view)
+
+      assert pdf_html =~
+               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.id})
+
+      assert pdf_html =~ "hero-document"
+      assert pdf_html =~ "document.pdf"
+
+      render_hook(
+        view,
+        "upload-media",
+        %{filename: "profile.jpg", type: "image/jpeg"}
+      )
+
+      [_job_application_message, _pdf_message, image_message] =
+        Chat.list_messages(job_application)
+
+      assert image_message
+      assert image_message.media_asset.file_name == "profile.jpg"
+      assert image_message.media_asset.type == "image/jpeg"
+      assert image_message.media_asset.status == :pending
+
+      render_hook(
+        view,
+        "update-message",
+        %{message_id: image_message.id, status: "uploaded"}
+      )
+
+      updated_image_message = Chat.get_message!(image_message.id)
+      assert updated_image_message.media_asset.status == :uploaded
+
+      image_html = render(view)
+
+      assert image_html =~
+               ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.id})
     end
   end
 end

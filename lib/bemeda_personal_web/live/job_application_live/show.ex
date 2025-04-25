@@ -5,7 +5,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
   alias BemedaPersonal.MuxHelpers.Client, as: MuxClient, warn: false
-  alias BemedaPersonal.S3Helper.Client
+  alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
   alias BemedaPersonalWeb.Endpoint
 
@@ -71,15 +71,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         }
       )
 
-    case Client.get_presigned_url(message.id, :put) do
-      {:ok, url} ->
-        {:reply, %{upload_url: url, message_id: message.id},
-         stream_insert(socket, :messages, message)}
+    upload_url = TigrisHelper.get_presigned_upload_url(message.id)
 
-      {:error, reason} ->
-        Logger.error("Failed to get presigned URL for upload: #{inspect(reason)}")
-        {:reply, %{error: "Failed to create upload"}, socket}
-    end
+    {:reply, %{upload_url: upload_url, message_id: message.id},
+     stream_insert(socket, :messages, message)}
   end
 
   def handle_event(
@@ -116,15 +111,22 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   defp additional_processing(message) do
     media_asset = Media.get_media_asset_by_message_id(message.id)
 
-    case Client.get_presigned_url(message.id, :get) do
-      {:ok, file_url} ->
-        options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+    file_url = TigrisHelper.get_presigned_download_url(message.id)
+    options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+    client = Mux.client()
 
-        create_mux_asset(media_asset, options)
+    case MuxClient.create_asset(client, options) do
+      {:ok, mux_asset, _client} ->
+        Media.update_media_asset(media_asset, %{
+          "asset_id" => mux_asset["id"],
+          "status" => :uploaded
+        })
 
-      {:error, reason} ->
-        Logger.error("Failed to get presigned URL for media: #{inspect(reason)}")
-        {:error, reason}
+      response ->
+        Logger.error(
+          "message.additional_processing: " <>
+            inspect(response)
+        )
     end
   end
 
@@ -175,23 +177,5 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   defp assign_chat_form(socket, changeset) do
     assign(socket, :chat_form, to_form(changeset))
-  end
-
-  defp create_mux_asset(media_asset, options) do
-    client = Mux.client()
-
-    case MuxClient.create_asset(client, options) do
-      {:ok, mux_asset, _client} ->
-        Media.update_media_asset(media_asset, %{
-          "asset_id" => mux_asset["id"],
-          "status" => :uploaded
-        })
-
-      response ->
-        Logger.error(
-          "message.additional_processing: " <>
-            inspect(response)
-        )
-    end
   end
 end

@@ -45,7 +45,7 @@ export default VideoUpload = {
       return `${decimal} ${exponent ? `${'kMGTPEZY'[exponent - 1]}B` : 'B'}`
     }
 
-    const uploadVideo = (newFiles) => {
+    const uploadVideo = (file) => {
       if (currentUpload) {
         currentUpload.abort()
         currentUpload = null
@@ -54,7 +54,7 @@ export default VideoUpload = {
       hook.pushEventTo(
         `#${eventsTarget}`,
         'upload-video',
-        { filename: newFiles.name, type: newFiles.type },
+        { filename: file.name, type: file.type },
         (response) => {
           if (response.error) {
             uploadProgressElement.classList.remove('hidden')
@@ -72,13 +72,17 @@ export default VideoUpload = {
           progressBar.classList.add('bg-indigo-600')
           progressBar.classList.remove('bg-green-600')
           uploadProgressElement.classList.remove('hidden')
-          filenameElement.textContent = newFiles.name
-          fileSizeElement.textContent = fileSizeSI(newFiles.size)
+          filenameElement.textContent = file.name
+          fileSizeElement.textContent = fileSizeSI(file.size)
 
           currentUpload = UpChunk.createUpload({
             endpoint: response.upload_url,
-            file: newFiles,
+            file: file,
             chunkSize: 30720,
+            method: 'PUT',
+            headers: {
+              'Content-Type': file.type,
+            },
           })
 
           currentUpload.on('progress', (entry) => {

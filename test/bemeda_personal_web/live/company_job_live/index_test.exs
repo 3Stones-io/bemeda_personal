@@ -137,20 +137,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
 
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        2,
-        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
-      )
-
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        2,
-        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
-      )
-
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
         {:ok, %{"id" => "test-asset-id"}, %{}}
       end)
@@ -291,20 +277,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         conn
         |> log_in_user(user)
         |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
-
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        2,
-        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
-      )
-
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        2,
-        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
-      )
 
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
         {:ok, %{"id" => "updated_test-asset-id"}, %{}}

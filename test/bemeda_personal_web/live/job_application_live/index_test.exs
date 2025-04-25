@@ -333,20 +333,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     } do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        2,
-        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
-      )
-
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        2,
-        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
-      )
-
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
         {:ok, %{"id" => "test-asset-id"}, %{}}
       end)
@@ -432,16 +418,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       job: job,
       user: user
     } do
-      # Set up mocks for the initial view load (for the existing video)
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        fn upload_id, _method ->
-          assert upload_id != nil
-          {:ok, "https://example.com/video-url"}
-        end
-      )
-
       job_application =
         job_application_fixture(user, job, %{
           media_data: %{
@@ -457,22 +433,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           conn,
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
         )
-
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        fn _upload_id, _method ->
-          {:ok, "https://example.com/upload-url"}
-        end
-      )
-
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        fn _upload_id, _method ->
-          {:ok, "https://example.com/upload-url"}
-        end
-      )
 
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
         {:ok, %{"id" => "updated_asset_123"}, %{}}
@@ -541,13 +501,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       conn: conn,
       application_with_video: application
     } do
-      expect(
-        BemedaPersonal.S3Helper.Client.Mock,
-        :get_presigned_url,
-        2,
-        fn _upload_id, :get -> {:ok, "https://example.com/upload-url"} end
-      )
-
       {:ok, _view, html} =
         live(
           conn,

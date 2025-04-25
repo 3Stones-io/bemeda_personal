@@ -5,7 +5,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.MuxHelpers.Client, as: MuxClient, warn: false
-  alias BemedaPersonal.S3Helper.Client
+  alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Endpoint
 
   require Logger
@@ -82,38 +82,23 @@ defmodule BemedaPersonalWeb.SharedHelpers do
           {:reply, map(), Phoenix.LiveView.Socket.t()}
   def create_video_upload(socket, params) do
     upload_id = Ecto.UUID.generate()
+    upload_url = TigrisHelper.get_presigned_upload_url(upload_id)
 
-    case Client.get_presigned_url(upload_id, :put) do
-      {:ok, upload_url} ->
-        {:reply, %{upload_url: upload_url, upload_id: upload_id},
-         socket
-         |> assign(:enable_submit?, false)
-         |> assign(:media_data, %{file_name: params["filename"], upload_id: upload_id})}
-
-      {:error, reason} ->
-        Logger.error("Failed to get presigned URL for upload: #{inspect(reason)}")
-        {:reply, %{error: "Failed to create upload"}, socket}
-    end
+    {:reply, %{upload_url: upload_url, upload_id: upload_id},
+     socket
+     |> assign(:enable_submit?, false)
+     |> assign(:mux_data, %{file_name: params["filename"], upload_id: upload_id})}
   end
 
   @spec upload_video_to_mux(Phoenix.LiveView.Socket.t(), map()) ::
           {:noreply, Phoenix.LiveView.Socket.t()}
   def upload_video_to_mux(socket, params) do
     upload_id = Ecto.UUID.cast!(params["upload_id"])
+    file_url = TigrisHelper.get_presigned_download_url(upload_id)
 
-    case Client.get_presigned_url(upload_id, :get) do
-      {:ok, file_url} ->
-        options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
-        client = Mux.client()
-        create_asset(client, options, socket)
+    options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
+    client = Mux.client()
 
-      {:error, reason} ->
-        Logger.error("Failed to get presigned URL for video: #{inspect(reason)}")
-        {:noreply, socket}
-    end
-  end
-
-  defp create_asset(client, options, socket) do
     case MuxClient.create_asset(client, options) do
       {:ok, mux_asset, _client} ->
         {:noreply,
@@ -152,7 +137,6 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   @spec get_presigned_url(String.t()) :: String.t()
   def get_presigned_url(upload_id) do
-    {:ok, url} = Client.get_presigned_url(upload_id, :get)
-    url
+    TigrisHelper.get_presigned_download_url(upload_id)
   end
 end
