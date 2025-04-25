@@ -12,7 +12,18 @@
           {String.first(@company.name)}
         </div>
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">{@company.name}</h1>
+      <div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">{@company.name}</h1>
+        <RatingComponents.rating_display
+          id={"rating-display-header-#{@company.id}"}
+          entity_id={@company.id}
+          entity_type="Company"
+          average_rating={@company.average_rating}
+          can_rate={@can_rate}
+          current_user_rating={@current_user_rating}
+          class="mb-2"
+        />
+      </div>
     </div>
 
     <div :if={@company.industry} class="flex items-center text-gray-700">
@@ -103,6 +114,18 @@
         <h4 class="uppercase text-xs font-semibold mb-1">Open Positions</h4>
         <p class="text-sm text-gray-600">{@job_count}</p>
       </div>
+
+      <div class="mb-2">
+        <h4 class="uppercase text-xs font-semibold mb-1">Rating</h4>
+        <RatingComponents.rating_display
+          id={"rating-display-sidebar-#{@company.id}"}
+          entity_id={@company.id}
+          entity_type="Company"
+          average_rating={@company.average_rating}
+          size="sm"
+          show_count={false}
+        />
+      </div>
     </div>
   </div>
 
@@ -142,3 +165,19 @@
     </div>
   </div>
 </section>
+
+<.modal
+  :if={@rating_modal_open}
+  id="rating-modal"
+  show={@rating_modal_open}
+  on_cancel={JS.push("close-rating-modal")}
+>
+  <RatingComponents.rating_form
+    entity_id={@entity_id}
+    entity_type={@entity_type}
+    entity_name={@entity_name}
+    current_rating={@current_user_rating}
+    on_submit={JS.push("submit-rating")}
+    on_cancel={JS.push("close-rating-modal")}
+  />
+</.modal>

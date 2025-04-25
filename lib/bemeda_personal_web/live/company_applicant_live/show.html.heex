@@ -45,6 +45,25 @@
       application={@application}
       job={@job_posting}
       resume={@resume}
+      can_rate={@can_rate}
+      current_user_rating={@current_user_rating}
     />
   </div>
 </div>
+
+<.modal
+  :if={@rating_modal_open}
+  id={"rating-modal-#{@application.id}"}
+  show={@rating_modal_open}
+  on_cancel={JS.push("close-rating-modal")}
+>
+  <RatingComponents.rating_form
+    id={"job-seeker-rating-form-#{@application.id}"}
+    entity_id={@application.user.id}
+    entity_type="User"
+    entity_name={"#{@application.user.first_name} #{@application.user.last_name}"}
+    current_rating={@current_user_rating}
+    on_submit={JS.push("submit-rating")}
+    on_cancel={JS.push("close-rating-modal")}
+  />
+</.modal>

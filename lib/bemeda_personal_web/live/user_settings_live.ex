@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonalWeb.RatingComponents
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -13,6 +14,26 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
 
     <div class="space-y-12 divide-y">
       <div>
+        <div class="mb-6 bg-white shadow overflow-hidden sm:rounded-lg">
+          <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Your Rating</h2>
+              <p class="mt-1 text-sm text-gray-500">
+                How companies have rated your applications
+              </p>
+            </div>
+          </div>
+          <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+            <RatingComponents.rating_display
+              id={"rating-display-user-settings-#{@current_user.id}"}
+              entity_id={@current_user.id}
+              entity_type="User"
+              average_rating={@current_user.average_rating}
+              class="mb-2"
+            />
+          </div>
+        </div>
+
         <.simple_form
           for={@name_form}
           id="name_form"

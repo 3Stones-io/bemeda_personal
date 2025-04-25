@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
+  import BemedaPersonal.CompaniesFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Accounts
@@ -258,6 +259,69 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
 
       assert result =~ "Update Name"
       assert result =~ "can&#39;t be blank"
+    end
+  end
+
+  describe "user rating display" do
+    setup %{conn: conn} do
+      user = user_fixture(%{confirmed: true})
+      company = company_fixture(user_fixture())
+      %{conn: log_in_user(conn, user), user: user, company: company}
+    end
+
+    test "displays rating component with no ratings", %{conn: conn} do
+      {:ok, _lv, html} = live(conn, ~p"/users/settings")
+
+      # Check that rating section is displayed
+      assert html =~ "Your Rating"
+      assert html =~ "How companies have rated your applications"
+
+      # Rating component should be rendered (no ratings yet)
+      assert html =~ "<div class=\"star-rating flex\">"
+      assert html =~ "hero-star"
+    end
+
+    test "displays user rating correctly when rated", %{conn: conn, user: user, company: company} do
+      # Add a rating for the user
+      BemedaPersonal.Ratings.create_rating(%{
+        rater_type: "Company",
+        rater_id: company.id,
+        ratee_type: "User",
+        ratee_id: user.id,
+        score: 5,
+        comment: "Great candidate!"
+      })
+
+      {:ok, _lv, html} = live(conn, ~p"/users/settings")
+
+      # Verify rating is displayed
+      assert html =~ "Your Rating"
+      assert html =~ "5.0"
+
+      # Should have 5 filled stars
+      assert html =~ "fill-current"
+    end
+
+    test "displays partial rating correctly", %{conn: conn, user: user, company: company} do
+      # Add a rating with partial stars
+      BemedaPersonal.Ratings.create_rating(%{
+        rater_type: "Company",
+        rater_id: company.id,
+        ratee_type: "User",
+        ratee_id: user.id,
+        score: 3,
+        comment: "Average candidate"
+      })
+
+      {:ok, _lv, html} = live(conn, ~p"/users/settings")
+
+      # Verify rating is displayed
+      assert html =~ "Your Rating"
+      assert html =~ "3.0"
+
+      # Should have mix of filled and empty stars
+      assert html =~ "fill-current"
+      assert html =~ "text-gray-300"
     end
   end
 end

@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.RatingsFixtures
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
@@ -132,6 +133,172 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       assert view
              |> element("a", "Back to Applicants")
              |> has_element?()
+    end
+
+    test "displays rating component and allows rating an applicant", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      # Check that rating component is displayed
+      assert html =~ "Rating"
+      assert html =~ "Rate"
+
+      # Click the Rate button
+      view
+      |> element("button", "Rate")
+      |> render_click()
+
+      # Verify the rating modal is shown
+      assert has_element?(view, "#rating-modal-#{application.id}")
+      assert has_element?(view, "h3", "Rate Jane Applicant")
+
+      # Submit a rating
+      view
+      |> form("#job-seeker-rating-form-#{application.id} form", %{
+        "score" => "5",
+        "comment" => "Excellent candidate"
+      })
+      |> render_submit()
+
+      # Check for success message
+      assert render(view) =~ "Rating submitted successfully"
+
+      # Verify the modal is closed
+      refute has_element?(view, "#rating-modal-#{application.id}")
+
+      # Verify the rating is now shown (button should show "Update Rating" instead of "Rate")
+      assert render(view) =~ "Update Rating"
+      refute render(view) =~ ">Rate<"
+    end
+
+    test "updates UI when existing rating is updated", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application,
+      applicant: applicant
+    } do
+      # Create an initial rating
+      rating_fixture(%{
+        rater_type: "User",
+        rater_id: user.id,
+        ratee_type: "User",
+        ratee_id: applicant.id,
+        score: 3,
+        comment: "Good candidate"
+      })
+
+      conn = log_in_user(conn, user)
+
+      {:ok, view, html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      # Verify initial rating state - should show "Update Rating" instead of "Rate"
+      assert html =~ "Update Rating"
+      refute html =~ ">Rate<"
+
+      # Click the Update Rating button
+      view
+      |> element("button", "Update Rating")
+      |> render_click()
+
+      # Verify the rating modal is shown with existing rating
+      assert has_element?(view, "#rating-modal-#{application.id}")
+
+      # Submit an updated rating
+      view
+      |> form("#job-seeker-rating-form-#{application.id} form", %{
+        "score" => "5",
+        "comment" => "Outstanding candidate"
+      })
+      |> render_submit()
+
+      # Check for success message
+      assert render(view) =~ "Rating submitted successfully"
+
+      # Verify the rating is updated
+      assert render(view) =~ "Update Rating"
+      assert render(view) =~ "5.0"
+    end
+
+    test "updates ratings in real-time via PubSub", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application,
+      applicant: applicant
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, _html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      # Create another user
+      other_user = user_fixture()
+
+      # Simulate other_user submitting a rating through PubSub
+      rating =
+        rating_fixture(%{
+          rater_type: "User",
+          rater_id: other_user.id,
+          ratee_type: "User",
+          ratee_id: applicant.id,
+          score: 5,
+          comment: "Excellent candidate"
+        })
+
+      # Manually send a PubSub message to simulate the rating being created
+      Phoenix.PubSub.broadcast(
+        BemedaPersonal.PubSub,
+        "rating:User:#{applicant.id}",
+        {:rating_created, rating}
+      )
+
+      # Wait a brief moment for the event to be processed
+      Process.sleep(100)
+
+      # The page should update without refreshing
+      html = render(view)
+
+      # The rating display component should update
+      assert html =~ "star-rating"
+      assert html =~ "fill-current"
+      assert html =~ "5.0"
+    end
+
+    test "closes rating modal when cancel button is clicked", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, _html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      # Click the Rate button to open modal
+      view
+      |> element("button", "Rate")
+      |> render_click()
+
+      # Verify modal is shown
+      assert has_element?(view, "#rating-modal-#{application.id}")
+
+      # Click cancel button
+      view
+      |> element("button", "Cancel")
+      |> render_click()
+
+      # Verify modal is closed
+      refute has_element?(view, "#rating-modal-#{application.id}")
     end
   end
 end

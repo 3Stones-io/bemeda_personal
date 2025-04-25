@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.RatingsFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Companies
@@ -35,6 +36,57 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ company.size
 
       assert html =~ company.website_url
+
+      # Rating component should be present with no ratings yet
+      assert html =~ "hero-star"
+    end
+
+    test "displays company rating correctly when rated", %{conn: conn} do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      # Create a rating for the company
+      rating_fixture(%{
+        ratee_type: "Company",
+        ratee_id: company.id,
+        score: 4
+      })
+
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies")
+
+      # Verify correct rating is displayed
+      assert html =~ "4.0"
+
+      # Should have 4 filled stars and 1 empty
+      assert html =~ "fill-current"
+      assert html =~ "text-gray-300"
+    end
+
+    test "displays full rating with all stars filled", %{conn: conn} do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      # Create a perfect rating
+      rating_fixture(%{
+        ratee_type: "Company",
+        ratee_id: company.id,
+        score: 5
+      })
+
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies")
+
+      # Verify 5.0 rating is displayed
+      assert html =~ "5.0"
+
+      # Should have all stars filled and properly sized (default size)
+      assert html =~ "fill-current"
+      assert html =~ "w-5 h-5"
     end
 
     test "shows job count correctly", %{conn: conn} do

@@ -624,6 +624,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :job, :any, required: true
   attr :resume, :any, default: nil
   attr :show_actions, :boolean, default: false
+  attr :can_rate, :boolean, default: false
+  attr :current_user_rating, :map, default: nil
   attr :target, :string, default: nil
 
   @spec applicant_detail(assigns()) :: output()
@@ -659,6 +661,21 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </dd>
           </div>
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Rating</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <BemedaPersonalWeb.RatingComponents.rating_display
+                id={"rating-display-applicant-#{@application.user.id}"}
+                entity_id={@application.user.id}
+                entity_type="User"
+                average_rating={@application.user.average_rating}
+                can_rate={@can_rate}
+                current_user_rating={@current_user_rating}
+                size="md"
+                show_count={true}
+              />
+            </dd>
+          </div>
+          <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">Applied for</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {@job.title}

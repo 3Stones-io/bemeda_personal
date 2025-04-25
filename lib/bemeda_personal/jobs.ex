@@ -606,6 +606,23 @@ defmodule BemedaPersonal.Jobs do
     JobApplication.changeset(job_application, attrs)
   end
 
+  @doc """
+  Checks if a user has applied to any job of a specific company.
+
+  This is used to determine if a user can rate a company.
+  """
+  @spec user_has_applied_to_company_job?(binary(), binary()) :: boolean()
+  def user_has_applied_to_company_job?(user_id, company_id) do
+    query =
+      from ja in JobApplication,
+        join: jp in assoc(ja, :job_posting),
+        where: ja.user_id == ^user_id and jp.company_id == ^company_id,
+        limit: 1,
+        select: 1
+
+    Repo.exists?(query)
+  end
+
   defp broadcast_event(topic, message) do
     PubSub.broadcast(
       BemedaPersonal.PubSub,

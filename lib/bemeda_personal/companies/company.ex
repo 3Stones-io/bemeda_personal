@@ -23,6 +23,7 @@ defmodule BemedaPersonal.Companies.Company do
     field :name, :string
     field :size, :string
     field :website_url, :string
+    field :average_rating, :decimal
 
     timestamps(type: :utc_datetime)
   end
@@ -42,5 +43,13 @@ defmodule BemedaPersonal.Companies.Company do
     |> validate_required([:name])
     |> validate_length(:name, min: 1, max: 255)
     |> unique_constraint(:name)
+  end
+
+  @doc """
+  A company changeset for updating the average rating.
+  """
+  @spec average_rating_changeset(t() | changeset(), attrs()) :: changeset()
+  def average_rating_changeset(company, attrs) do
+    cast(company, attrs, [:average_rating])
   end
 end

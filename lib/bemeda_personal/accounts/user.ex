@@ -21,6 +21,7 @@ defmodule BemedaPersonal.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+    field :average_rating, :decimal
 
     has_one :resume, BemedaPersonal.Resumes.Resume
 
@@ -198,5 +199,13 @@ defmodule BemedaPersonal.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  @doc """
+  A user changeset for updating the average rating.
+  """
+  @spec average_rating_changeset(t() | changeset(), attrs()) :: changeset()
+  def average_rating_changeset(user, attrs) do
+    cast(user, attrs, [:average_rating])
   end
 end
