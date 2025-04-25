@@ -9,7 +9,6 @@ export default VideoUpload = {
       '#video-upload-inputs-container'
     )
     const eventsTarget = videoUploadInput.dataset.eventsTarget
-    console.log(eventsTarget)
 
     const input = videoUploadInput.querySelector('#hidden-file-input')
     const videoDescription = document.querySelector('#video-description')
