@@ -13,11 +13,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
         BemedaPersonal.PubSub,
         "job_posting:company:#{socket.assigns.company.id}"
       )
-
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "media_upload"
-      )
     end
 
     {:ok, assign(socket, :job_posting, %JobPosting{})}
@@ -83,15 +78,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   def handle_info({event, job_posting}, socket)
       when event in [:job_posting_created, :job_posting_updated] do
     send_update(JobListComponent, id: "job-post-list", job_posting: job_posting)
-    {:noreply, socket}
-  end
-
-  def handle_info({:media_upload, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
-    send_update(BemedaPersonalWeb.CompanyJobLive.FormComponent,
-      id: "company-job-form",
-      mux_data: %{asset_id: asset_id, playback_id: playback_id}
-    )
-
     {:noreply, socket}
   end
 

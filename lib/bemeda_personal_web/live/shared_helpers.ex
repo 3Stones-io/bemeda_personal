@@ -43,11 +43,24 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def assign_job_posting(socket, job_id) do
     job_posting = Jobs.get_job_posting!(job_id)
 
+    if Phoenix.LiveView.connected?(socket) do
+      Phoenix.PubSub.subscribe(
+        BemedaPersonal.PubSub,
+        "job_posting_assets_#{job_posting.id}"
+      )
+    end
+
     {:noreply,
      socket
      |> assign(:job_posting, job_posting)
      |> assign(:page_title, job_posting.title)
      |> assign_current_user_application()}
+  end
+
+  @spec reassign_job_posting(Phoenix.LiveView.Socket.t(), map()) ::
+          {:noreply, Phoenix.LiveView.Socket.t()}
+  def reassign_job_posting(socket, %{media_asset_updated: _media_asset, job_posting: job_posting}) do
+    {:noreply, assign(socket, :job_posting, job_posting)}
   end
 
   defp assign_current_user_application(socket) do
@@ -75,7 +88,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
         {:reply, %{upload_url: upload_url, upload_id: upload_id},
          socket
          |> assign(:enable_submit?, false)
-         |> assign(:mux_data, %{file_name: params["filename"], upload_id: upload_id})}
+         |> assign(:media_data, %{file_name: params["filename"], upload_id: upload_id})}
 
       {:error, reason} ->
         Logger.error("Failed to get presigned URL for upload: #{inspect(reason)}")
@@ -92,29 +105,33 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       {:ok, file_url} ->
         options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
         client = Mux.client()
-
-        case MuxClient.create_asset(client, options) do
-          {:ok, mux_asset, _client} ->
-            {:noreply,
-             assign(
-               socket,
-               :mux_data,
-               Map.merge(socket.assigns.mux_data, %{
-                 asset_id: mux_asset["id"]
-               })
-             )}
-
-          response ->
-            Logger.error(
-              "message.additional_processing: " <>
-                inspect(response)
-            )
-
-            {:noreply, socket}
-        end
+        create_asset(client, options, socket)
 
       {:error, reason} ->
         Logger.error("Failed to get presigned URL for video: #{inspect(reason)}")
+        {:noreply, socket}
+    end
+  end
+
+  defp create_asset(client, options, socket) do
+    case MuxClient.create_asset(client, options) do
+      {:ok, mux_asset, _client} ->
+        {:noreply,
+         socket
+         |> assign(:enable_submit?, true)
+         |> assign(
+           :media_data,
+           Map.merge(socket.assigns.media_data, %{
+             asset_id: mux_asset["id"]
+           })
+         )}
+
+      response ->
+        Logger.error(
+          "message.additional_processing: " <>
+            inspect(response)
+        )
+
         {:noreply, socket}
     end
   end
@@ -131,5 +148,11 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     else
       {:ok, socket}
     end
+  end
+
+  @spec get_presigned_url(String.t()) :: String.t()
+  def get_presigned_url(upload_id) do
+    {:ok, url} = Client.get_presigned_url(upload_id, :get)
+    url
   end
 end

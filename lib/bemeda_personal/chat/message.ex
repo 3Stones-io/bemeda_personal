@@ -6,8 +6,8 @@ defmodule BemedaPersonal.Chat.Message do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Chat.MediaData
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Media.MediaAsset
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -18,16 +18,14 @@ defmodule BemedaPersonal.Chat.Message do
   schema "messages" do
     field :content, :string
     belongs_to :job_application, JobApplication
-    embeds_one :media_data, MediaData, on_replace: :update
+    has_one :media_asset, MediaAsset
     belongs_to :sender, User
 
     timestamps(type: :utc_datetime)
   end
 
   @spec changeset(t(), attrs()) :: changeset()
-  def changeset(message, attrs) do
-    message
-    |> cast(attrs, [:content])
-    |> cast_embed(:media_data)
+  def changeset(%__MODULE__{} = message, attrs) do
+    cast(message, attrs, [:content])
   end
 end

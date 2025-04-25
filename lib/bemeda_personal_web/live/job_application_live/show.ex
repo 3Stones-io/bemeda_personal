@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Media
   alias BemedaPersonal.MuxHelpers.Client, as: MuxClient, warn: false
   alias BemedaPersonal.S3Helper.Client
   alias BemedaPersonalWeb.ChatComponents
@@ -12,13 +13,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "media_upload"
-      )
-    end
-
     {:ok,
      socket
      |> stream_configure(:messages, dom_id: &"message-#{&1.id}")
@@ -65,7 +59,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   def handle_event("upload-media", %{"filename" => filename, "type" => type}, socket) do
     {:ok, message} =
-      Chat.create_message(
+      Chat.create_message_with_media(
         socket.assigns.current_user,
         socket.assigns.job_application,
         %{
@@ -100,43 +94,33 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   defp maybe_perform_additional_processing(
-         %Chat.Message{media_data: %Chat.MediaData{type: "video" <> _rest}} = message
+         %Chat.Message{media_asset: %Media.MediaAsset{type: "video" <> _rest}} = message
        ) do
     additional_processing(message)
   end
 
   defp maybe_perform_additional_processing(
-         %Chat.Message{media_data: %Chat.MediaData{type: "audio" <> _rest}} = message
+         %Chat.Message{media_asset: %Media.MediaAsset{type: "audio" <> _rest}} = message
        ) do
     additional_processing(message)
   end
 
   defp maybe_perform_additional_processing(message) do
-    {:ok, _message} =
-      Chat.update_message(message, %{"media_data" => %{"status" => :uploaded}})
+    media_asset =
+      Media.get_media_asset_by_message_id(message.id)
+
+    {:ok, _media_asset} =
+      Media.update_media_asset(media_asset, %{status: :uploaded})
   end
 
   defp additional_processing(message) do
+    media_asset = Media.get_media_asset_by_message_id(message.id)
+
     case Client.get_presigned_url(message.id, :get) do
       {:ok, file_url} ->
         options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
 
-        client = Mux.client()
-
-        case MuxClient.create_asset(client, options) do
-          {:ok, mux_asset, _client} ->
-            Chat.update_message(message, %{
-              "media_data" => %{
-                "asset_id" => mux_asset["id"]
-              }
-            })
-
-          response ->
-            Logger.error(
-              "message.additional_processing: " <>
-                inspect(response)
-            )
-        end
+        create_mux_asset(media_asset, options)
 
       {:error, reason} ->
         Logger.error("Failed to get presigned URL for media: #{inspect(reason)}")
@@ -150,19 +134,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     {:noreply, stream_insert(socket, :messages, message)}
   end
 
-  def handle_info({:media_upload, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
-    message = Chat.get_message_by_asset_id(asset_id)
+  def handle_info(%{message: message}, socket) do
+    {:noreply, stream_insert(socket, :messages, message)}
+  end
 
-    if message do
-      Chat.update_message(message, %{
-        "media_data" => %{
-          "playback_id" => playback_id,
-          "status" => :uploaded
-        }
-      })
-    end
-
-    {:noreply, socket}
+  def handle_info(%{job_application: job_application}, socket) do
+    {:noreply, assign(socket, :job_application, job_application)}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
@@ -170,13 +147,22 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     messages = Chat.list_messages(job_application)
     changeset = Chat.change_message(%Chat.Message{})
 
-    # Get the job posting
     job_posting = Jobs.get_job_posting!(job_application.job_posting_id)
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(
         BemedaPersonal.PubSub,
         "messages:job_application:#{job_application_id}"
+      )
+
+      Phoenix.PubSub.subscribe(
+        BemedaPersonal.PubSub,
+        "job_application_messages_assets_#{job_application_id}"
+      )
+
+      Phoenix.PubSub.subscribe(
+        BemedaPersonal.PubSub,
+        "job_application_assets_#{job_application_id}"
       )
     end
 
@@ -189,5 +175,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   defp assign_chat_form(socket, changeset) do
     assign(socket, :chat_form, to_form(changeset))
+  end
+
+  defp create_mux_asset(media_asset, options) do
+    client = Mux.client()
+
+    case MuxClient.create_asset(client, options) do
+      {:ok, mux_asset, _client} ->
+        Media.update_media_asset(media_asset, %{
+          "asset_id" => mux_asset["id"],
+          "status" => :uploaded
+        })
+
+      response ->
+        Logger.error(
+          "message.additional_processing: " <>
+            inspect(response)
+        )
+    end
   end
 end

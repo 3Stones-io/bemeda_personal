@@ -1,10 +1,19 @@
 defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
+  import BemedaPersonal.AccountsFixtures
+  import BemedaPersonal.CompaniesFixtures
+  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.MediaFixtures
+
+  alias BemedaPersonal.Media
+
   @payload_path "test/support/payloads/mux_event_controller/video.asset.ready.json"
 
   describe "POST /webhooks/mux" do
-    test "broadcasts a video ready event", %{conn: conn} do
+    test "updates media asset with playback_id when receiving video.asset.ready event", %{
+      conn: conn
+    } do
       params =
         @payload_path
         |> File.read!()
@@ -14,7 +23,19 @@ defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
       [playback_ids] = params["data"]["playback_ids"]
       playback_id = playback_ids["id"]
 
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "media_upload")
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+
+      media_asset =
+        media_asset_fixture(job_posting, %{
+          asset_id: asset_id,
+          file_name: "test_video.mp4",
+          type: "video/mp4",
+          playback_id: nil
+        })
+
+      assert media_asset.playback_id == nil
 
       conn =
         conn
@@ -23,7 +44,9 @@ defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
 
       assert conn.status == 200
 
-      assert_received {:media_upload, %{asset_id: ^asset_id, playback_id: ^playback_id}}
+      updated_asset = Media.get_media_asset_by_asset_id(asset_id)
+      assert updated_asset != nil
+      assert updated_asset.playback_id == playback_id
     end
   end
 end

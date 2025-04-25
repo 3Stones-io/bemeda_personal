@@ -31,10 +31,11 @@ defmodule BemedaPersonal.S3Helper.Http do
     if endpoint_url do
       uri = URI.parse(endpoint_url)
 
-      updated_config = config
-      |> Map.put(:scheme, "#{uri.scheme}://")
-      |> Map.put(:host, uri.host)
-      |> Map.put_new(:port, uri.port)
+      updated_config =
+        config
+        |> Map.put(:scheme, "#{uri.scheme}://")
+        |> Map.put(:host, uri.host)
+        |> Map.put_new(:port, uri.port)
 
       {:ok, updated_config}
     else

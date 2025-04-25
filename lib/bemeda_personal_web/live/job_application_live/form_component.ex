@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Media
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -24,7 +25,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
         <JobsComponents.video_preview_component
           show_video_description={@show_video_description}
-          mux_data={@job_application.mux_data}
+          media_asset={@job_application.media_asset}
         />
 
         <div
@@ -32,8 +33,24 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
           id="video-preview-player"
           class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6 hidden"
         >
-          <mux-player playback-id={@job_application.mux_data.playback_id} class="aspect-video">
+          <mux-player
+            :if={@job_application.media_asset.playback_id}
+            playback-id={@job_application.media_asset.playback_id}
+            class="aspect-video"
+          >
           </mux-player>
+
+          <div
+            :if={@job_application.media_asset && !@job_application.media_asset.upload_id}
+            class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
+          >
+            <video controls>
+              <source
+                src={SharedHelpers.get_presigned_url(@job_application.media_asset.upload_id)}
+                type="video/mp4"
+              />
+            </video>
+          </div>
         </div>
 
         <JobsComponents.video_upload_input_component
@@ -66,10 +83,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
-  def update(%{mux_data: mux_data}, socket) do
-    SharedHelpers.update_mux_data(mux_data, socket)
-  end
-
   def update(%{job_application: job_application} = assigns, socket) do
     changeset = Jobs.change_job_application(job_application)
 
@@ -77,17 +90,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:enable_submit?, true)
-     |> assign(:mux_data, %{})
-     |> assign(
-       :show_video_description,
-       job_application.mux_data && job_application.mux_data.playback_id
-     )
+     |> assign(:media_data, %{})
+     |> assign(:show_video_description, has_media_asset?(job_application))
      |> assign_form(changeset)}
   end
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"job_application" => job_application_params}, socket) do
-    job_application_params = update_mux_data_params(socket, job_application_params)
+    job_application_params = update_media_data_params(socket, job_application_params)
 
     changeset =
       socket.assigns.job_application
@@ -99,7 +109,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def handle_event("save", %{"job_application" => job_application_params}, socket) do
-    job_application_params = update_mux_data_params(socket, job_application_params)
+    job_application_params = update_media_data_params(socket, job_application_params)
 
     save_job_application(socket, socket.assigns.action, job_application_params)
   end
@@ -116,11 +126,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     {:noreply, assign(socket, :enable_submit?, true)}
   end
 
-  def handle_event("edit-video", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:mux_data, %{asset_id: nil, playback_id: nil, file_name: nil})
-     |> assign(:show_video_description, false)}
+  def handle_event("delete-video", _params, socket) do
+    {:ok, _asset} = Media.delete_media_asset(socket.assigns.job_application.media_asset)
+
+    {:noreply, assign(socket, :show_video_description, false)}
   end
 
   defp save_job_application(socket, :edit, job_application_params) do
@@ -161,7 +170,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     assign(socket, :form, to_form(changeset))
   end
 
-  defp update_mux_data_params(socket, params) do
-    Map.put(params, "mux_data", socket.assigns.mux_data)
+  defp update_media_data_params(socket, params) do
+    Map.put(params, "media_data", socket.assigns.media_data)
+  end
+
+  defp has_media_asset?(job_application) do
+    case job_application.media_asset do
+      %Media.MediaAsset{} = _asset -> true
+      _other -> false
+    end
   end
 end

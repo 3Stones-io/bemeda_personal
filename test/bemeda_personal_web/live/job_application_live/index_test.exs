@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
   import BemedaPersonal.ResumesFixtures
+  import Mox
   import Phoenix.LiveViewTest
 
   # alias BemedaPersonal.Jobs
@@ -326,55 +327,76 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
                "I am very interested in this position. Please consider my application."
     end
 
-    # test "submits new job application successfully with video", %{
-    #   conn: conn,
-    #   job: job
-    # } do
-    #   {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
+    test "submits new job application successfully with video", %{
+      conn: conn,
+      job: job
+    } do
+      {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
-    #   send(
-    #     view.pid,
-    #     {:video_ready,
-    #      %{
-    #        asset_id: "test-asset-id",
-    #        playback_id: "test-playback-id",
-    #        upload_id: "test-upload-id"
-    #      }}
-    #   )
+      expect(
+        BemedaPersonal.S3Helper.Client.Mock,
+        :get_presigned_url,
+        2,
+        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
+      )
 
-    #   assert view
-    #          |> form("#job-application-form", %{
-    #            "job_application" => %{
-    #              "cover_letter" =>
-    #                "I am very interested in this position. Please consider my application."
-    #            }
-    #          })
-    #          |> render_submit()
+      expect(
+        BemedaPersonal.S3Helper.Client.Mock,
+        :get_presigned_url,
+        2,
+        fn _upload_id, _method -> {:ok, "https://example.com/upload-url"} end
+      )
 
-    #   applications = Jobs.list_job_applications(%{job_posting_id: job.id})
-    #   assert length(applications) > 0
+      expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
+        {:ok, %{"id" => "test-asset-id"}, %{}}
+      end)
 
-    #   created_application =
-    #     Enum.find(applications, fn app ->
-    #       app.cover_letter ==
-    #         "I am very interested in this position. Please consider my application."
-    #     end)
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-video", %{
+        "filename" => "test_video.mp4",
+        "type" => "video/mp4"
+      })
 
-    #   assert created_application.job_posting_id == job.id
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-completed", %{
+        "asset_id" => "test-asset-id",
+        "upload_id" => Ecto.UUID.generate()
+      })
 
-    #   assert_redirect(
-    #     view,
-    #     ~p"/jobs/#{created_application.job_posting_id}/job_applications/#{created_application.id}"
-    #   )
+      assert view
+             |> form("#job-application-form", %{
+               "job_application" => %{
+                 "cover_letter" =>
+                   "I am very interested in this position. Please consider my application."
+               }
+             })
+             |> render_submit()
 
-    #   assert created_application.cover_letter ==
-    #            "I am very interested in this position. Please consider my application."
+      applications = BemedaPersonal.Jobs.list_job_applications(%{job_posting_id: job.id})
+      assert length(applications) > 0
 
-    #   assert %Jobs.MuxData{
-    #            asset_id: "test-asset-id",
-    #            playback_id: "test-playback-id"
-    #          } = created_application.mux_data
-    # end
+      created_application =
+        Enum.find(applications, fn app ->
+          app.cover_letter ==
+            "I am very interested in this position. Please consider my application."
+        end)
+
+      assert created_application.job_posting_id == job.id
+
+      assert_redirect(
+        view,
+        ~p"/jobs/#{created_application.job_posting_id}/job_applications/#{created_application.id}"
+      )
+
+      assert created_application.cover_letter ==
+               "I am very interested in this position. Please consider my application."
+
+      assert %BemedaPersonal.Media.MediaAsset{
+               asset_id: "test-asset-id"
+             } = created_application.media_asset
+    end
 
     test "updates existing job application successfully", %{
       conn: conn,
@@ -405,59 +427,93 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
                "Updated cover letter with more details about my experience."
     end
 
-    #   test "updates existing job application with video", %{
-    #     conn: conn,
-    #     job: job,
-    #     user: user
-    #   } do
-    #     job_application =
-    #       job_application_fixture(user, job, %{
-    #         mux_data: %{
-    #           asset_id: "asset_123",
-    #           playback_id: "playback_123",
-    #           file_name: "test_video.mp4"
-    #         }
-    #       })
+    test "updates existing job application with video", %{
+      conn: conn,
+      job: job,
+      user: user
+    } do
+      # Set up mocks for the initial view load (for the existing video)
+      expect(
+        BemedaPersonal.S3Helper.Client.Mock,
+        :get_presigned_url,
+        fn upload_id, _method ->
+          assert upload_id != nil
+          {:ok, "https://example.com/video-url"}
+        end
+      )
 
-    #     {:ok, view, _html} =
-    #       live(
-    #         conn,
-    #         ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
-    #       )
+      job_application =
+        job_application_fixture(user, job, %{
+          media_data: %{
+            asset_id: "asset_123",
+            playback_id: "playback_123",
+            file_name: "test_video.mp4",
+            upload_id: Ecto.UUID.generate()
+          }
+        })
 
-    #     send(
-    #       view.pid,
-    #       {:video_ready,
-    #        %{
-    #          asset_id: "updated_asset_123",
-    #          playback_id: "updated_playback_123",
-    #          upload_id: "updated_upload_123"
-    #        }}
-    #     )
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
+        )
 
-    #     assert view
-    #            |> form("#job-application-form", %{
-    #              "job_application" => %{
-    #                "cover_letter" => "Updated cover letter with more details about my experience."
-    #              }
-    #            })
-    #            |> render_submit()
+      expect(
+        BemedaPersonal.S3Helper.Client.Mock,
+        :get_presigned_url,
+        fn _upload_id, _method ->
+          {:ok, "https://example.com/upload-url"}
+        end
+      )
 
-    #     assert_redirect(
-    #       view,
-    #       ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-    #     )
+      expect(
+        BemedaPersonal.S3Helper.Client.Mock,
+        :get_presigned_url,
+        fn _upload_id, _method ->
+          {:ok, "https://example.com/upload-url"}
+        end
+      )
 
-    #     updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
+      expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
+        {:ok, %{"id" => "updated_asset_123"}, %{}}
+      end)
 
-    #     assert updated_application.cover_letter ==
-    #              "Updated cover letter with more details about my experience."
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-video", %{
+        "filename" => "updated_test_video.mp4",
+        "type" => "video/mp4"
+      })
 
-    #     assert %Jobs.MuxData{
-    #              asset_id: "updated_asset_123",
-    #              playback_id: "updated_playback_123"
-    #            } = updated_application.mux_data
-    #   end
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-completed", %{
+        "asset_id" => "updated_asset_123",
+        "upload_id" => Ecto.UUID.generate()
+      })
+
+      assert view
+             |> form("#job-application-form", %{
+               "job_application" => %{
+                 "cover_letter" => "Updated cover letter with more details about my experience."
+               }
+             })
+             |> render_submit()
+
+      assert_redirect(
+        view,
+        ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+      )
+
+      updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
+
+      assert updated_application.cover_letter ==
+               "Updated cover letter with more details about my experience."
+
+      assert %BemedaPersonal.Media.MediaAsset{
+               asset_id: "updated_asset_123"
+             } = updated_application.media_asset
+    end
   end
 
   describe "job application form with video" do
@@ -470,7 +526,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           base_data.job,
           %{
             cover_letter: "Application with video",
-            mux_data: %{
+            media_data: %{
               asset_id: "asset_123",
               playback_id: "playback_123",
               file_name: "test_video.mp4"
@@ -485,6 +541,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       conn: conn,
       application_with_video: application
     } do
+      expect(
+        BemedaPersonal.S3Helper.Client.Mock,
+        :get_presigned_url,
+        2,
+        fn _upload_id, :get -> {:ok, "https://example.com/upload-url"} end
+      )
+
       {:ok, _view, html} =
         live(
           conn,

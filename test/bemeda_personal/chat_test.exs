@@ -143,42 +143,62 @@ defmodule BemedaPersonal.ChatTest do
     end
   end
 
-  describe "get_message_by_asset_id/1" do
-    setup do
-      user = user_fixture()
-      company = company_fixture(user)
-      job_posting = job_posting_fixture(company)
-      job_application = job_application_fixture(user, job_posting)
+  describe "create_message_with_media/3" do
+    setup [:create_message]
 
-      message =
-        message_fixture(user, job_application, %{
-          content: nil,
-          media_data: %{
-            "asset_id" => "asset_123",
-            "playback_id" => "playback_123",
-            "type" => "video"
-          }
-        })
-
-      %{
-        job_application: job_application,
-        message: message,
-        user: user
-      }
-    end
-
-    test "returns the message with given asset id", %{
-      message: message
+    test "with valid data creates a message with media asset", %{
+      job_application: job_application,
+      user: user
     } do
-      result = Chat.get_message_by_asset_id("asset_123")
-      assert result.id == message.id
-      assert result.media_data.asset_id == "asset_123"
-      assert Ecto.assoc_loaded?(result.sender)
-      assert Ecto.assoc_loaded?(result.job_application)
+      media_data = %{
+        "file_name" => "test.mp4",
+        "type" => "video/mp4",
+        "upload_id" => Ecto.UUID.generate()
+      }
+
+      attrs = %{"media_data" => media_data}
+
+      assert {:ok, %Chat.Message{} = message} =
+               Chat.create_message_with_media(user, job_application, attrs)
+
+      assert message.media_asset != nil
+      assert message.media_asset.file_name == "test.mp4"
+      assert message.media_asset.type == "video/mp4"
+      assert message.media_asset.upload_id == media_data["upload_id"]
     end
 
-    test "returns nil when no message with the asset id exists" do
-      refute Chat.get_message_by_asset_id("non_existent_asset_id")
+    test "creates a message without media asset when media_data is nil", %{
+      job_application: job_application,
+      user: user
+    } do
+      attrs = %{}
+
+      assert {:ok, %Chat.Message{} = message} =
+               Chat.create_message_with_media(user, job_application, attrs)
+
+      assert message.media_asset == nil
+    end
+
+    test "broadcasts new_message event when a message with media is created", %{
+      job_application: job_application,
+      user: user
+    } do
+      message_topic = "messages:job_application:#{job_application.id}"
+      PubSub.subscribe(BemedaPersonal.PubSub, message_topic)
+
+      media_data = %{
+        "file_name" => "broadcast_test.mp4",
+        "type" => "video/mp4",
+        "upload_id" => Ecto.UUID.generate()
+      }
+
+      attrs = %{"media_data" => media_data}
+
+      {:ok, message} = Chat.create_message_with_media(user, job_application, attrs)
+
+      assert_receive {:new_message, received_message}
+      assert received_message.id == message.id
+      assert received_message.media_asset.file_name == "broadcast_test.mp4"
     end
   end
 end

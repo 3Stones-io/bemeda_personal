@@ -3,9 +3,9 @@ defmodule BemedaPersonal.S3Helper.Client do
 
   alias BemedaPersonal.S3Helper.Http
 
+  @type method :: atom()
   @type presigned_url :: String.t()
   @type upload_id :: Ecto.UUID.t()
-  @type method :: atom()
 
   @callback get_presigned_url(upload_id(), method()) :: {:ok, presigned_url()} | {:error, any()}
 

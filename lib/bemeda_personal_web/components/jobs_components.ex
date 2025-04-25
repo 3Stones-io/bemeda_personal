@@ -518,7 +518,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :show_video_description, :boolean, default: true
-  attr :mux_data, :any, required: true
+  attr :media_asset, :any, required: true
 
   @spec video_preview_component(assigns()) :: output()
   def video_preview_component(assigns) do
@@ -553,7 +553,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-gray-900 truncate">
-              {@mux_data.file_name}
+              {@media_asset.file_name}
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -684,10 +684,23 @@ defmodule BemedaPersonalWeb.JobsComponents do
       </div>
 
       <div
-        :if={@application.mux_data && @application.mux_data.playback_id}
+        :if={@application.media_asset && @application.media_asset.playback_id}
         class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
       >
-        <mux-player playback-id={@application.mux_data.playback_id} class="aspect-video"></mux-player>
+        <mux-player playback-id={@application.media_asset.playback_id} class="aspect-video">
+        </mux-player>
+      </div>
+
+      <div
+        :if={@application.media_asset && !@application.media_asset.upload_id}
+        class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
+      >
+        <video controls>
+          <source
+            src={SharedHelpers.get_presigned_url(@application.media_asset.upload_id)}
+            type="video/mp4"
+          />
+        </video>
       </div>
     </div>
 

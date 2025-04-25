@@ -1,6 +1,8 @@
 defmodule BemedaPersonalWeb.MuxWebhookController do
   use BemedaPersonalWeb, :controller
 
+  alias BemedaPersonal.Media
+
   @type conn() :: Plug.Conn.t()
   @type params() :: map()
 
@@ -17,11 +19,11 @@ defmodule BemedaPersonalWeb.MuxWebhookController do
       ) do
     playback_id = get_playback(event)
 
-    Phoenix.PubSub.broadcast(
-      BemedaPersonal.PubSub,
-      "media_upload",
-      {:media_upload, %{asset_id: asset_id, playback_id: playback_id}}
-    )
+    media_asset = Media.get_media_asset_by_asset_id(asset_id)
+
+    if media_asset do
+      Media.update_media_asset(media_asset, %{playback_id: playback_id})
+    end
 
     conn_response(conn)
   end

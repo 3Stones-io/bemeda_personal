@@ -102,7 +102,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
     test "displays video player for job posting with video", %{conn: conn, job: job} do
       {:ok, job} =
         BemedaPersonal.Jobs.update_job_posting(job, %{
-          mux_data: %{
+          media_data: %{
             file_name: "test_video.mp4",
             playback_id: "test-playback-id",
             asset_id: "test-asset-id"

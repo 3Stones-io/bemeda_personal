@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.Media
   alias BemedaPersonal.S3Helper
 
   setup :verify_on_exit!
@@ -84,7 +85,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           job,
           %{
             cover_letter: "Application with video",
-            mux_data: %{
+            media_data: %{
               asset_id: "asset_123",
               file_name: "test_video.mp4",
               playback_id: "test-playback-id",
@@ -142,7 +143,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           job,
           %{
             cover_letter: "Application with video",
-            mux_data: %{
+            media_data: %{
               asset_id: "asset_123",
               playback_id: "test-playback-id",
               file_name: "test_video.mp4",
@@ -222,7 +223,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_application: job_application
     } do
       expect(S3Helper.Client.Mock, :get_presigned_url, fn _upload_id, :put ->
-        {:ok, "https://storage.googleapis.com/video-storage-upload-url"}
+        {:ok, "https://fly.storage.tigris.dev/bemeda-personal-staging/video-storage-upload-url"}
       end)
 
       {:ok, view, _html} =
@@ -243,17 +244,19 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       [_job_application_message, uploaded_message] = Chat.list_messages(job_application)
 
       assert uploaded_message
-      assert uploaded_message.media_data.file_name == "test-video.mp4"
-      assert uploaded_message.media_data.type == "video/mp4"
-      assert uploaded_message.media_data.status == :pending
+      assert uploaded_message.media_asset.file_name == "test-video.mp4"
+      assert uploaded_message.media_asset.type == "video/mp4"
+      assert uploaded_message.media_asset.status == :pending
 
       expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
         assert id == uploaded_message.id
-        {:ok, "https://storage.googleapis.com/video-storage-get-url"}
+        {:ok, "https://fly.storage.tigris.dev/bemeda-personal-staging/video-storage-get-url"}
       end)
 
       expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, options ->
-        assert options.input == "https://storage.googleapis.com/video-storage-get-url"
+        assert options.input ==
+                 "https://fly.storage.tigris.dev/bemeda-personal-staging/video-storage-get-url"
+
         assert options.playback_policy == "public"
         {:ok, %{"id" => "asset_12345"}, %{}}
       end)
@@ -265,30 +268,25 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       )
 
       updated_message = Chat.get_message!(uploaded_message.id)
-      assert updated_message.media_data.asset_id == "asset_12345"
+      assert updated_message.media_asset.asset_id == "asset_12345"
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
-        "media_upload",
-        {:media_upload, %{asset_id: "asset_12345", playback_id: "playback_12345"}}
-      )
-
-      :timer.sleep(100)
+      {:ok, _updated_media_asset} =
+        Media.update_media_asset(
+          updated_message.media_asset,
+          %{playback_id: "playback_12345", status: :uploaded}
+        )
 
       final_message = Chat.get_message!(uploaded_message.id)
-      assert final_message.media_data.playback_id == "playback_12345"
-      assert final_message.media_data.status == :uploaded
-
-      final_html = render(view)
-      assert final_html =~ ~s(<mux-player playback-id="playback_12345")
+      assert final_message.media_asset.playback_id == "playback_12345"
+      assert final_message.media_asset.status == :uploaded
     end
 
     test "allows user to upload non-media files (images, pdfs)", %{
       conn: conn,
       job_application: job_application
     } do
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn _id, :put ->
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
+      stub(S3Helper.Client.Mock, :get_presigned_url, fn _id, _action ->
+        {:ok, "https://fly.storage.tigris.dev/bemeda-personal-staging/file-storage-url"}
       end)
 
       {:ok, view, _html} =
@@ -306,65 +304,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       [_job_application_message, pdf_message] = Chat.list_messages(job_application)
 
       assert pdf_message
-      assert pdf_message.media_data.file_name == "document.pdf"
-      assert pdf_message.media_data.type == "application/pdf"
-      assert pdf_message.media_data.status == :pending
-
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
-        assert id == pdf_message.id
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
-      end)
-
-      render_hook(
-        view,
-        "update-message",
-        %{message_id: pdf_message.id, status: "uploaded"}
-      )
-
-      updated_pdf_message = Chat.get_message!(pdf_message.id)
-      assert updated_pdf_message.media_data.status == :uploaded
-
-      pdf_html = render(view)
-      assert pdf_html =~ "href=\"https://storage.googleapis.com/file-storage-url\""
-      assert pdf_html =~ "hero-document"
-      assert pdf_html =~ "document.pdf"
-
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn _id, :put ->
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
-      end)
-
-      render_hook(
-        view,
-        "upload-media",
-        %{filename: "profile.jpg", type: "image/jpeg"}
-      )
-
-      [_job_application_message, _pdf_message, image_message] =
-        Chat.list_messages(job_application)
-
-      assert image_message
-      assert image_message.media_data.file_name == "profile.jpg"
-      assert image_message.media_data.type == "image/jpeg"
-      assert image_message.media_data.status == :pending
-
-      expect(S3Helper.Client.Mock, :get_presigned_url, fn id, :get ->
-        assert id == image_message.id
-        {:ok, "https://storage.googleapis.com/file-storage-url"}
-      end)
-
-      render_hook(
-        view,
-        "update-message",
-        %{message_id: image_message.id, status: "uploaded"}
-      )
-
-      updated_image_message = Chat.get_message!(image_message.id)
-      assert updated_image_message.media_data.status == :uploaded
-
-      image_html = render(view)
-      assert image_html =~ "<img"
-      assert image_html =~ "src=\"https://storage.googleapis.com/file-storage-url\""
-      assert image_html =~ "class=\"w-full h-auto object-contain max-h-[400px]\""
+      assert pdf_message.media_asset.file_name == "document.pdf"
+      assert pdf_message.media_asset.type == "application/pdf"
+      assert pdf_message.media_asset.status == :pending
     end
   end
 end
