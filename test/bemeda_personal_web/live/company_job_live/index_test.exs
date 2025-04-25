@@ -151,7 +151,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       view
       |> element("#job_posting-video-video-upload")
       |> render_hook("upload-completed", %{
-        "asset_id" => "test-asset-id",
         "upload_id" => Ecto.UUID.generate()
       })
 
@@ -175,7 +174,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       job_posting = List.first(job_postings)
 
       assert %MediaAsset{
-               asset_id: "test-asset-id"
+               mux_asset_id: "test-asset-id"
              } = job_posting.media_asset
     end
 
@@ -222,8 +221,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         Jobs.update_job_posting(job_posting, %{
           media_data: %{
             file_name: "test_video.mp4",
-            playback_id: "test-playback-id",
-            asset_id: "test-asset-id"
+            mux_asset_id: "test-asset-id",
+            mux_playback_id: "test-playback-id"
           }
         })
 
@@ -268,8 +267,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         job_posting_fixture(company, %{
           media_data: %{
             file_name: "test_video.mp4",
-            playback_id: "test-playback-id",
-            asset_id: "test-asset-id"
+            mux_asset_id: "test-asset-id",
+            mux_playback_id: "test-playback-id"
           }
         })
 
@@ -292,7 +291,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       view
       |> element("#job_posting-video-video-upload")
       |> render_hook("upload-completed", %{
-        "asset_id" => "updated_test-asset-id",
+        "mux_asset_id" => "updated_test-asset-id",
         "upload_id" => Ecto.UUID.generate()
       })
 
@@ -308,7 +307,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert updated_job.title == "Updated Job Title"
 
       assert %MediaAsset{
-               asset_id: "updated_test-asset-id"
+               mux_asset_id: "updated_test-asset-id"
              } = updated_job.media_asset
     end
 

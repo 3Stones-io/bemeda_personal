@@ -4,9 +4,9 @@ defmodule BemedaPersonal.Repo.Migrations.CreateMediaAssets do
   def change do
     create table(:media_assets, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :asset_id, :string
+      add :mux_asset_id, :string
       add :file_name, :string
-      add :playback_id, :string
+      add :mux_playback_id, :string
       add :status, :string
       add :type, :string
       add :upload_id, :uuid
@@ -20,7 +20,7 @@ defmodule BemedaPersonal.Repo.Migrations.CreateMediaAssets do
       timestamps(type: :utc_datetime)
     end
 
-    create index(:media_assets, [:asset_id])
+    create index(:media_assets, [:mux_asset_id])
     create index(:media_assets, [:job_application_id])
     create index(:media_assets, [:job_posting_id])
     create index(:media_assets, [:message_id])

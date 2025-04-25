@@ -23,24 +23,10 @@
           </.link>
         </div>
 
-        <div
-          :if={@job_posting.media_asset && @job_posting.media_asset.playback_id}
-          class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
-        >
-          <mux-player playback-id={@job_posting.media_asset.playback_id}></mux-player>
-        </div>
-
-        <div
-          :if={@job_posting.media_asset && !@job_posting.media_asset.playback_id}
-          class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
-        >
-          <video controls>
-            <source
-              src={SharedHelpers.get_presigned_url(@job_posting.media_asset.upload_id)}
-              type="video/mp4"
-            />
-          </video>
-        </div>
+        <SharedComponents.video_player
+          media_asset={@job_posting.media_asset}
+          url_key={@job_posting.media_asset && @job_posting.media_asset.upload_id}
+        />
 
         <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
           {SharedHelpers.to_html(@job_posting.description)}

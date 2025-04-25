@@ -532,7 +532,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:job_posting, :user, :media_asset])
+    |> Repo.preload([:job_posting, :media_asset, :user])
   end
 
   @doc """

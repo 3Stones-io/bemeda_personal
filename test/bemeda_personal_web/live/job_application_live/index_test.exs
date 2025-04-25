@@ -8,7 +8,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import Mox
   import Phoenix.LiveViewTest
 
-  # alias BemedaPersonal.Jobs
+  alias BemedaPersonal.DateUtils
+  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonal.MuxHelpers.Client
 
   defp create_test_data(conn) do
     user = user_fixture()
@@ -138,7 +141,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         live(conn, ~p"/job_applications")
 
       application_date = DateTime.to_date(job_application.inserted_at)
-      formatted_date = BemedaPersonal.DateUtils.format_date(application_date)
+      formatted_date = DateUtils.format_date(application_date)
 
       assert html =~ "Applied on #{formatted_date}"
     end
@@ -307,7 +310,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      applications = BemedaPersonal.Jobs.list_job_applications(%{job_posting_id: job.id})
+      applications = Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
       created_application =
@@ -333,7 +336,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     } do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
-      expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
+      expect(Client.Mock, :create_asset, fn _client, _options ->
         {:ok, %{"id" => "test-asset-id"}, %{}}
       end)
 
@@ -347,7 +350,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       view
       |> element("#job_application-video-video-upload")
       |> render_hook("upload-completed", %{
-        "asset_id" => "test-asset-id",
+        "mux_asset_id" => "test-asset-id",
         "upload_id" => Ecto.UUID.generate()
       })
 
@@ -379,8 +382,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
 
-      assert %BemedaPersonal.Media.MediaAsset{
-               asset_id: "test-asset-id"
+      assert %MediaAsset{
+               mux_asset_id: "test-asset-id"
              } = created_application.media_asset
     end
 
@@ -407,7 +410,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
       )
 
-      updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
+      updated_application = Jobs.get_job_application!(job_application.id)
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
@@ -421,9 +424,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       job_application =
         job_application_fixture(user, job, %{
           media_data: %{
-            asset_id: "asset_123",
-            playback_id: "playback_123",
             file_name: "test_video.mp4",
+            mux_asset_id: "asset_123",
+            mux_playback_id: "playback_123",
             upload_id: Ecto.UUID.generate()
           }
         })
@@ -434,7 +437,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
         )
 
-      expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
+      expect(Client.Mock, :create_asset, fn _client, _options ->
         {:ok, %{"id" => "updated_asset_123"}, %{}}
       end)
 
@@ -448,7 +451,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       view
       |> element("#job_application-video-video-upload")
       |> render_hook("upload-completed", %{
-        "asset_id" => "updated_asset_123",
+        "mux_asset_id" => "updated_asset_123",
         "upload_id" => Ecto.UUID.generate()
       })
 
@@ -465,13 +468,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
       )
 
-      updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
+      updated_application = Jobs.get_job_application!(job_application.id)
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
 
-      assert %BemedaPersonal.Media.MediaAsset{
-               asset_id: "updated_asset_123"
+      assert %MediaAsset{
+               mux_asset_id: "updated_asset_123"
              } = updated_application.media_asset
     end
   end
@@ -487,9 +490,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           %{
             cover_letter: "Application with video",
             media_data: %{
-              asset_id: "asset_123",
-              playback_id: "playback_123",
-              file_name: "test_video.mp4"
+              file_name: "test_video.mp4",
+              mux_asset_id: "asset_123",
+              mux_playback_id: "playback_123"
             }
           }
         )

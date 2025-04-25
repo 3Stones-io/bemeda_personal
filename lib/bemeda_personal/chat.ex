@@ -13,7 +13,6 @@ defmodule BemedaPersonal.Chat do
   alias Ecto.Multi
   alias Phoenix.PubSub
 
-  @type asset_id :: String.t()
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type job_application :: JobApplication.t()

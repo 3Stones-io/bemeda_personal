@@ -29,13 +29,13 @@ defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
 
       media_asset =
         media_asset_fixture(job_posting, %{
-          asset_id: asset_id,
           file_name: "test_video.mp4",
-          type: "video/mp4",
-          playback_id: nil
+          mux_asset_id: asset_id,
+          mux_playback_id: nil,
+          type: "video/mp4"
         })
 
-      assert media_asset.playback_id == nil
+      assert media_asset.mux_playback_id == nil
 
       conn =
         conn
@@ -44,9 +44,9 @@ defmodule BemedaPersonalWeb.MuxWebhookControllerTest do
 
       assert conn.status == 200
 
-      updated_asset = Media.get_media_asset_by_asset_id(asset_id)
-      assert updated_asset != nil
-      assert updated_asset.playback_id == playback_id
+      updated_asset = Media.get_media_asset_by_mux_asset_id(asset_id)
+      assert updated_asset
+      assert updated_asset.mux_playback_id == playback_id
     end
   end
 end

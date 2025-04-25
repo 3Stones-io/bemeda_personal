@@ -104,8 +104,8 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         BemedaPersonal.Jobs.update_job_posting(job, %{
           media_data: %{
             file_name: "test_video.mp4",
-            playback_id: "test-playback-id",
-            asset_id: "test-asset-id"
+            mux_asset_id: "test-asset-id",
+            mux_playback_id: "test-playback-id"
           }
         })
 

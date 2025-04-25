@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
@@ -112,24 +113,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           id="video-preview-player"
           class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6 hidden"
         >
-          <mux-player
-            :if={@job_posting.media_asset.playback_id}
-            playback-id={@job_posting.media_asset.playback_id}
-            class="aspect-video"
-          >
-          </mux-player>
-
-          <div
-            :if={@job_posting.media_asset && !@job_posting.media_asset.playback_id}
+          <SharedComponents.video_player
             class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
-          >
-            <video controls class="w-full h-full object-cover">
-              <source
-                src={SharedHelpers.get_presigned_url(@job_posting.media_asset.upload_id)}
-                type="video/mp4"
-              />
-            </video>
-          </div>
+            media_asset={@job_posting.media_asset}
+            url_key={@job_posting.media_asset && @job_posting.media_asset.upload_id}
+          />
         </div>
 
         <JobsComponents.video_upload_input_component

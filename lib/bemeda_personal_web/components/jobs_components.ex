@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
@@ -683,25 +684,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </dl>
       </div>
 
-      <div
-        :if={@application.media_asset && @application.media_asset.playback_id}
-        class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
-      >
-        <mux-player playback-id={@application.media_asset.playback_id} class="aspect-video">
-        </mux-player>
-      </div>
 
-      <div
-        :if={@application.media_asset && !@application.media_asset.upload_id}
-        class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
-      >
-        <video controls>
-          <source
-            src={SharedHelpers.get_presigned_url(@application.media_asset.upload_id)}
-            type="video/mp4"
-          />
-        </video>
-      </div>
+      <SharedComponents.video_player
+        media_asset={@application.media_asset}
+        url_key={@application.media_asset && @application.media_asset.upload_id}
+      />
     </div>
 
     <div :if={@resume} class="bg-white shadow overflow-hidden sm:rounded-lg">

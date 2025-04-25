@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.Resume.SharedHelpers do
   """
 
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Endpoint
   alias Phoenix.LiveView
 
   @doc """
@@ -15,9 +16,9 @@ defmodule BemedaPersonalWeb.Resume.SharedHelpers do
     work_experiences = Resumes.list_work_experiences(resume.id)
 
     if LiveView.connected?(socket) do
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "resume:#{resume.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "education:#{resume.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "work_experience:#{resume.id}")
+      Endpoint.subscribe("resume:#{resume.id}")
+      Endpoint.subscribe("education:#{resume.id}")
+      Endpoint.subscribe("work_experience:#{resume.id}")
     end
 
     socket

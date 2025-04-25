@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
@@ -15,10 +16,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     full_name = "#{application.user.first_name} #{application.user.last_name}"
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_application_assets_#{application.id}"
-      )
+      Endpoint.subscribe("job_application_assets_#{application.id}")
     end
 
     {:noreply,

@@ -10,6 +10,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   require Logger
 
+  @type socket :: Phoenix.LiveView.Socket.t()
+
   @spec to_html(binary()) :: Phoenix.HTML.safe()
   def to_html(markdown) do
     markdown
@@ -38,16 +40,13 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     |> Phoenix.HTML.raw()
   end
 
-  @spec assign_job_posting(Phoenix.LiveView.Socket.t(), String.t()) ::
-          {:noreply, Phoenix.LiveView.Socket.t()}
+  @spec assign_job_posting(socket(), String.t()) ::
+          {:noreply, socket()}
   def assign_job_posting(socket, job_id) do
     job_posting = Jobs.get_job_posting!(job_id)
 
     if Phoenix.LiveView.connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_posting_assets_#{job_posting.id}"
-      )
+      Endpoint.subscribe("job_posting_assets_#{job_posting.id}")
     end
 
     {:noreply,
@@ -57,8 +56,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
      |> assign_current_user_application()}
   end
 
-  @spec reassign_job_posting(Phoenix.LiveView.Socket.t(), map()) ::
-          {:noreply, Phoenix.LiveView.Socket.t()}
+  @spec reassign_job_posting(socket(), map()) ::
+          {:noreply, socket()}
   def reassign_job_posting(socket, %{media_asset_updated: _media_asset, job_posting: job_posting}) do
     {:noreply, assign(socket, :job_posting, job_posting)}
   end
@@ -78,8 +77,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     end
   end
 
-  @spec create_video_upload(Phoenix.LiveView.Socket.t(), map()) ::
-          {:reply, map(), Phoenix.LiveView.Socket.t()}
+  @spec create_video_upload(socket(), map()) ::
+          {:reply, map(), socket()}
   def create_video_upload(socket, params) do
     upload_id = Ecto.UUID.generate()
     upload_url = TigrisHelper.get_presigned_upload_url(upload_id)
@@ -90,8 +89,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
      |> assign(:mux_data, %{file_name: params["filename"], upload_id: upload_id})}
   end
 
-  @spec upload_video_to_mux(Phoenix.LiveView.Socket.t(), map()) ::
-          {:noreply, Phoenix.LiveView.Socket.t()}
+  @spec upload_video_to_mux(socket(), map()) ::
+          {:noreply, socket()}
   def upload_video_to_mux(socket, params) do
     upload_id = Ecto.UUID.cast!(params["upload_id"])
     file_url = TigrisHelper.get_presigned_download_url(upload_id)
@@ -107,7 +106,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
          |> assign(
            :media_data,
            Map.merge(socket.assigns.media_data, %{
-             asset_id: mux_asset["id"]
+             mux_asset_id: mux_asset["id"]
            })
          )}
 
@@ -121,8 +120,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     end
   end
 
-  @spec update_mux_data(map(), Phoenix.LiveView.Socket.t()) ::
-          {:ok, Phoenix.LiveView.Socket.t()}
+  @spec update_mux_data(map(), socket()) ::
+          {:ok, socket()}
   def update_mux_data(mux_data, socket) do
     if socket.assigns[:mux_data] && socket.assigns.mux_data[:asset_id] == mux_data[:asset_id] do
       {:ok,

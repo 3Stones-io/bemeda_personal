@@ -5,16 +5,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.JobApplicationLive.FormComponent
   alias BemedaPersonalWeb.JobApplicationsListComponent
+  alias BemedaPersonalWeb.Endpoint
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_application:user:#{current_user.id}"
-      )
+      Endpoint.subscribe("job_application:user:#{current_user.id}")
     end
 
     {:ok,

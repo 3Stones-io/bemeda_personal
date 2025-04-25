@@ -391,9 +391,9 @@ jobs:
           MUX_TOKEN_ID=${{ secrets.MUX_TOKEN_ID }}
           MUX_TOKEN_SECRET=${{ secrets.MUX_TOKEN_SECRET }}
           MUX_WEBHOOK_SECRET=${{ secrets.MUX_WEBHOOK_SECRET }}
-          TIGRIS_PROJECT=${{ secrets.TIGRIS_PROJECT }}
-          TIGRIS_CLIENT_ID=${{ secrets.TIGRIS_CLIENT_ID }}
-          TIGRIS_CLIENT_SECRET=${{ secrets.TIGRIS_CLIENT_SECRET }}
+          TIGRIS_ACCESS_KEY_ID=${{ secrets.TIGRIS_ACCESS_KEY_ID }}
+          TIGRIS_BUCKET=${{ secrets.TIGRIS_BUCKET }}
+          TIGRIS_SECRET_ACCESS_KEY=${{ secrets.TIGRIS_SECRET_ACCESS_KEY }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}
           EOL

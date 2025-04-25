@@ -161,7 +161,7 @@ defmodule BemedaPersonal.ChatTest do
       assert {:ok, %Chat.Message{} = message} =
                Chat.create_message_with_media(user, job_application, attrs)
 
-      assert message.media_asset != nil
+      assert message.media_asset
       assert message.media_asset.file_name == "test.mp4"
       assert message.media_asset.type == "video/mp4"
       assert message.media_asset.upload_id == media_data["upload_id"]

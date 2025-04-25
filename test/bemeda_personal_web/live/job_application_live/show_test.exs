@@ -85,9 +85,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           %{
             cover_letter: "Application with video",
             media_data: %{
-              asset_id: "asset_123",
               file_name: "test_video.mp4",
-              playback_id: "test-playback-id",
+              mux_asset_id: "asset_123",
+              mux_playback_id: "test-playback-id",
               type: "video/mp4"
             }
           }
@@ -143,9 +143,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           %{
             cover_letter: "Application with video",
             media_data: %{
-              asset_id: "asset_123",
-              playback_id: "test-playback-id",
               file_name: "test_video.mp4",
+              mux_asset_id: "asset_123",
+              mux_playback_id: "test-playback-id",
               type: "video/mp4"
             }
           }
@@ -258,16 +258,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       )
 
       updated_message = Chat.get_message!(uploaded_message.id)
-      assert updated_message.media_asset.asset_id == "asset_12345"
+      assert updated_message.media_asset.mux_asset_id == "asset_12345"
 
       {:ok, _updated_media_asset} =
         Media.update_media_asset(
           updated_message.media_asset,
-          %{playback_id: "playback_12345", status: :uploaded}
+          %{mux_playback_id: "playback_12345", status: :uploaded}
         )
 
       final_message = Chat.get_message!(uploaded_message.id)
-      assert final_message.media_asset.playback_id == "playback_12345"
+      assert final_message.media_asset.mux_playback_id == "playback_12345"
       assert final_message.media_asset.status == :uploaded
     end
 

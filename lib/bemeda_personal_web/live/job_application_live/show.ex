@@ -118,7 +118,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     case MuxClient.create_asset(client, options) do
       {:ok, mux_asset, _client} ->
         Media.update_media_asset(media_asset, %{
-          "asset_id" => mux_asset["id"],
+          "mux_asset_id" => mux_asset["id"],
           "status" => :uploaded
         })
 
@@ -152,20 +152,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     job_posting = Jobs.get_job_posting!(job_application.job_posting_id)
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "messages:job_application:#{job_application_id}"
-      )
+      Endpoint.subscribe("messages:job_application:#{job_application_id}")
 
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_application_messages_assets_#{job_application_id}"
-      )
+      Endpoint.subscribe("job_application_messages_assets_#{job_application_id}")
 
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_application_assets_#{job_application_id}"
-      )
+      Endpoint.subscribe("job_application_assets_#{job_application_id}")
     end
 
     socket

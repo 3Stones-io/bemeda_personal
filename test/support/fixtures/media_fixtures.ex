@@ -19,9 +19,9 @@ defmodule BemedaPersonal.MediaFixtures do
   def media_asset_fixture(parent, attrs \\ %{}) do
     media_asset_attrs =
       Enum.into(attrs, %{
-        asset_id: "asset_#{System.unique_integer([:positive])}",
         file_name: "test_file.mp4",
-        playback_id: "playback_#{System.unique_integer([:positive])}",
+        mux_asset_id: "asset_#{System.unique_integer([:positive])}",
+        mux_playback_id: "playback_#{System.unique_integer([:positive])}",
         status: :uploaded,
         type: "video/mp4"
       })

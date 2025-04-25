@@ -3,16 +3,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobListComponent
-  alias Phoenix.LiveView.JS
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_posting:company:#{socket.assigns.company.id}"
-      )
+      Endpoint.subscribe("job_posting:company:#{socket.assigns.company.id}")
     end
 
     {:ok, assign(socket, :job_posting, %JobPosting{})}

@@ -399,7 +399,7 @@ defmodule BemedaPersonal.JobsTest do
         "title" => "some valid title",
         "media_data" => %{
           "file_name" => "test_file.jpg",
-          "asset_id" => "test_asset_id",
+          "mux_asset_id" => "test_asset_id",
           "upload_id" => upload_id
         }
       }
@@ -412,7 +412,7 @@ defmodule BemedaPersonal.JobsTest do
       assert job_posting.company_id == company.id
       assert job_posting.media_asset != nil
       assert job_posting.media_asset.file_name == "test_file.jpg"
-      assert job_posting.media_asset.asset_id == "test_asset_id"
+      assert job_posting.media_asset.mux_asset_id == "test_asset_id"
       assert job_posting.media_asset.upload_id == upload_id
     end
 
@@ -522,7 +522,7 @@ defmodule BemedaPersonal.JobsTest do
         "remote_allowed" => false,
         "media_data" => %{
           "file_name" => "updated_file.jpg",
-          "asset_id" => "updated_asset_id"
+          "mux_asset_id" => "updated_asset_id"
         }
       }
 
@@ -533,7 +533,7 @@ defmodule BemedaPersonal.JobsTest do
       assert updated_job_posting.title == "some updated valid title"
       assert updated_job_posting.remote_allowed == false
       assert updated_job_posting.media_asset.file_name == "updated_file.jpg"
-      assert updated_job_posting.media_asset.asset_id == "updated_asset_id"
+      assert updated_job_posting.media_asset.mux_asset_id == "updated_asset_id"
     end
 
     test "with valid data updates existing media asset when present", %{job_posting: job_posting} do
@@ -542,7 +542,7 @@ defmodule BemedaPersonal.JobsTest do
       initial_media_attrs = %{
         "media_data" => %{
           "file_name" => "initial_file.jpg",
-          "asset_id" => "initial_asset_id",
+          "mux_asset_id" => "initial_asset_id",
           "upload_id" => upload_id
         }
       }
@@ -554,7 +554,7 @@ defmodule BemedaPersonal.JobsTest do
         "description" => "some updated description that is long enough",
         "media_data" => %{
           "file_name" => "updated_file.jpg",
-          "asset_id" => "updated_asset_id",
+          "mux_asset_id" => "updated_asset_id",
           "upload_id" => upload_id
         }
       }
@@ -564,7 +564,7 @@ defmodule BemedaPersonal.JobsTest do
 
       assert updated_job_posting.media_asset != nil
       assert updated_job_posting.media_asset.file_name == "updated_file.jpg"
-      assert updated_job_posting.media_asset.asset_id == "updated_asset_id"
+      assert updated_job_posting.media_asset.mux_asset_id == "updated_asset_id"
       assert updated_job_posting.media_asset.upload_id == upload_id
     end
 
@@ -685,9 +685,9 @@ defmodule BemedaPersonal.JobsTest do
       valid_attrs = %{
         "cover_letter" => "some cover letter",
         "media_data" => %{
-          "asset_id" => "app_asset_id",
           "file_name" => "app_file.mp4",
-          "playback_id" => "app_playback_id",
+          "mux_asset_id" => "app_asset_id",
+          "mux_playback_id" => "app_playback_id",
           "status" => "uploaded",
           "type" => "video/mp4"
         }
@@ -714,9 +714,9 @@ defmodule BemedaPersonal.JobsTest do
       valid_attrs = %{
         "cover_letter" => "some cover letter",
         "media_data" => %{
-          "asset_id" => "app_asset_id",
           "file_name" => "app_file.mp4",
-          "playback_id" => "app_playback_id",
+          "mux_asset_id" => "app_asset_id",
+          "mux_playback_id" => "app_playback_id",
           "status" => "uploaded",
           "type" => "video/mp4"
         }
@@ -729,7 +729,7 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.job_posting_id == job_posting.id
       assert job_application.user_id == user.id
       assert job_application.media_asset != nil
-      assert job_application.media_asset.asset_id == "app_asset_id"
+      assert job_application.media_asset.mux_asset_id == "app_asset_id"
       assert job_application.media_asset.file_name == "app_file.mp4"
     end
 
@@ -768,9 +768,9 @@ defmodule BemedaPersonal.JobsTest do
       valid_attrs = %{
         "cover_letter" => "some cover letter",
         "media_data" => %{
-          "asset_id" => "app_asset_id",
           "file_name" => "app_file.mp4",
-          "playback_id" => "app_playback_id",
+          "mux_asset_id" => "app_asset_id",
+          "mux_playback_id" => "app_playback_id",
           "status" => "uploaded",
           "type" => "video/mp4"
         }
@@ -819,9 +819,9 @@ defmodule BemedaPersonal.JobsTest do
       update_attrs = %{
         "cover_letter" => "updated cover letter",
         "media_data" => %{
-          "asset_id" => "updated_asset_id",
           "file_name" => "updated_file.mp4",
-          "playback_id" => "updated_playback_id",
+          "mux_asset_id" => "updated_asset_id",
+          "mux_playback_id" => "updated_playback_id",
           "status" => "uploaded",
           "type" => "video/mp4"
         }
@@ -833,7 +833,7 @@ defmodule BemedaPersonal.JobsTest do
       assert updated_job_application.cover_letter == "updated cover letter"
       assert updated_job_application.id == job_application.id
       assert updated_job_application.media_asset != nil
-      assert updated_job_application.media_asset.asset_id == "updated_asset_id"
+      assert updated_job_application.media_asset.mux_asset_id == "updated_asset_id"
       assert updated_job_application.media_asset.file_name == "updated_file.mp4"
     end
 
@@ -890,11 +890,10 @@ defmodule BemedaPersonal.JobsTest do
 
       job_application = job_application_fixture(user, job_posting)
 
-      # Create a media asset for the job application
       media_data = %{
-        "asset_id" => "test_asset_id",
         "file_name" => "test_file.mp4",
-        "playback_id" => "test_playback_id",
+        "mux_asset_id" => "test_asset_id",
+        "mux_playback_id" => "test_playback_id",
         "status" => "uploaded",
         "type" => "video/mp4"
       }
@@ -905,7 +904,7 @@ defmodule BemedaPersonal.JobsTest do
       result = Jobs.get_job_application!(job_application.id)
       assert result.id == job_application.id
       assert result.media_asset != nil
-      assert result.media_asset.asset_id == "test_asset_id"
+      assert result.media_asset.mux_asset_id == "test_asset_id"
       assert result.media_asset.file_name == "test_file.mp4"
     end
 
@@ -938,9 +937,9 @@ defmodule BemedaPersonal.JobsTest do
 
       # Create a media asset for the job application
       media_data = %{
-        "asset_id" => "list_asset_id",
         "file_name" => "list_file.mp4",
-        "playback_id" => "list_playback_id",
+        "mux_asset_id" => "list_asset_id",
+        "mux_playback_id" => "list_playback_id",
         "status" => "uploaded",
         "type" => "video/mp4"
       }
@@ -951,7 +950,7 @@ defmodule BemedaPersonal.JobsTest do
       assert [result] = Jobs.list_job_applications(%{job_posting_id: job_posting.id})
       assert result.id == job_application.id
       assert result.media_asset != nil
-      assert result.media_asset.asset_id == "list_asset_id"
+      assert result.media_asset.mux_asset_id == "list_asset_id"
       assert result.media_asset.file_name == "list_file.mp4"
     end
 
@@ -1179,9 +1178,9 @@ defmodule BemedaPersonal.JobsTest do
       job_application = job_application_fixture(user, job_posting)
 
       media_data = %{
-        "asset_id" => "user_app_asset_id",
         "file_name" => "user_app_file.mp4",
-        "playback_id" => "user_app_playback_id",
+        "mux_asset_id" => "user_app_asset_id",
+        "mux_playback_id" => "user_app_playback_id",
         "status" => "uploaded",
         "type" => "video/mp4"
       }
@@ -1191,8 +1190,8 @@ defmodule BemedaPersonal.JobsTest do
 
       result = Jobs.get_user_job_application(user, job_posting)
       assert result.id == job_application.id
-      assert result.media_asset != nil
-      assert result.media_asset.asset_id == "user_app_asset_id"
+      assert result.media_asset
+      assert result.media_asset.mux_asset_id == "user_app_asset_id"
       assert result.media_asset.file_name == "user_app_file.mp4"
     end
 

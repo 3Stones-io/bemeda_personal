@@ -19,10 +19,10 @@ defmodule BemedaPersonalWeb.MuxWebhookController do
       ) do
     playback_id = get_playback(event)
 
-    media_asset = Media.get_media_asset_by_asset_id(asset_id)
+    media_asset = Media.get_media_asset_by_mux_asset_id(asset_id)
 
     if media_asset do
-      Media.update_media_asset(media_asset, %{playback_id: playback_id})
+      Media.update_media_asset(media_asset, %{mux_playback_id: playback_id})
     end
 
     conn_response(conn)

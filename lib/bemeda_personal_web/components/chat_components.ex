@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
@@ -80,15 +81,10 @@ defmodule BemedaPersonalWeb.ChatComponents do
         </div>
       </div>
 
-      <div :if={@message.media_asset && @message.media_asset.playback_id} class={@class}>
-        <mux-player playback-id={@message.media_asset.playback_id}></mux-player>
-      </div>
-
-      <div :if={@message.media_asset && !@message.media_asset.playback_id} class={@class}>
-        <video controls>
-          <source src={SharedHelpers.get_presigned_url(@message.id)} type="video/mp4" />
-        </video>
-      </div>
+      <SharedComponents.video_player
+        media_asset={@message.media_asset}
+        url_key={@message.media_asset && @message.id}
+      />
 
       <.link
         :if={@message.user_id == @current_user.id}
@@ -142,7 +138,11 @@ defmodule BemedaPersonalWeb.ChatComponents do
   def chat_message(
         %{
           message: %{
-            media_asset: %MediaAsset{type: "video" <> _rest, status: :uploaded, playback_id: nil}
+            media_asset: %MediaAsset{
+              type: "video" <> _rest,
+              mux_playback_id: nil,
+              status: :uploaded
+            }
           }
         } = assigns
       ) do
@@ -155,7 +155,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   def chat_message(%{message: %{media_asset: %MediaAsset{type: "video" <> _rest}}} = assigns) do
     ~H"""
-    <mux-player playback-id={@message.media_asset.playback_id}></mux-player>
+    <mux-player playback-id={@message.media_asset.mux_playback_id}></mux-player>
     """
   end
 
@@ -182,7 +182,11 @@ defmodule BemedaPersonalWeb.ChatComponents do
   def chat_message(
         %{
           message: %{
-            media_asset: %MediaAsset{type: "audio" <> _rest, status: :uploaded, playback_id: nil}
+            media_asset: %MediaAsset{
+              type: "audio" <> _rest,
+              status: :uploaded,
+              mux_playback_id: nil
+            }
           }
         } = assigns
       ) do
@@ -196,7 +200,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   def chat_message(%{message: %{media_asset: %MediaAsset{type: "audio" <> _rest}}} = assigns) do
     ~H"""
     <mux-player
-      playback-id={@message.media_asset.playback_id}
+      playback-id={@message.media_asset.mux_playback_id}
       audio
       primary-color="#075389"
       secondary-color="#d6e6f1"
