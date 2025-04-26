@@ -7,8 +7,10 @@ defmodule BemedaPersonal.Jobs.JobApplication do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.MuxData
+  alias BemedaPersonal.Jobs.Tag
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -22,6 +24,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
     has_many :messages, Message
     embeds_one :mux_data, MuxData, on_replace: :update
     belongs_to :job_posting, JobPosting
+    many_to_many :tags, Tag, join_through: JobApplicationTag, on_replace: :delete
     belongs_to :user, User
 
     timestamps(type: :utc_datetime)

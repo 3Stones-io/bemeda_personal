@@ -278,13 +278,13 @@ defmodule BemedaPersonal.Jobs do
   def list_job_applications(%{company_id: _company_id} = filters, limit) do
     job_post_with_applications_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, job_posting: [:company]])
+    |> Repo.preload([:user, :tags, job_posting: [:company]])
   end
 
   def list_job_applications(filters, limit) do
     job_application_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, job_posting: [:company]])
+    |> Repo.preload([:user, :tags, job_posting: [:company]])
   end
 
   defp list_applications(query, filters, limit) do
@@ -491,7 +491,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:job_posting, :user])
+    |> Repo.preload([:job_posting, :tags, :user])
   end
 
   @doc """
@@ -503,7 +503,7 @@ defmodule BemedaPersonal.Jobs do
       %JobApplication{}
 
   """
-  @spec get_user_job_application(user(), job_posting()) :: job_application() | no_return()
+  @spec get_user_job_application(user(), job_posting()) :: job_application() | nil
   def get_user_job_application(%User{} = user, %JobPosting{} = job) do
     JobApplication
     |> where([ja], ja.user_id == ^user.id and ja.job_posting_id == ^job.id)
@@ -618,5 +618,147 @@ defmodule BemedaPersonal.Jobs do
     filters
     |> Map.keys()
     |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
+  end
+
+
+  @doc """
+  Removes a tag from a job application and returns the job application with updated tags preloaded.
+
+  ## Examples
+
+      iex> remove_tag_from_job_application(job_application, "tag-id")
+      {:ok, %JobApplication{}}
+
+  """
+  @spec remove_tag_from_job_application(job_application(), String.t()) ::
+    {:ok, job_application()} | {:error, any()}
+  def remove_tag_from_job_application(%JobApplication{} = job_application, tag_id) when is_binary(tag_id) do
+    Repo.transaction(fn ->
+      # Delete the association directly using the tag ID
+      Repo.delete_all(
+        from jat in BemedaPersonal.Jobs.JobApplicationTag,
+        where: jat.job_application_id == ^job_application.id and jat.tag_id == ^tag_id
+      )
+
+      # Return the job application with updated tags
+      job_application |> Repo.preload(:tags, force: true)
+    end)
+  end
+
+  @doc """
+  Adds tags to a job application, creating any tags that don't exist.
+  Uses upsert to efficiently create tags and returns the job application with tags preloaded.
+
+  ## Examples
+
+      iex> add_tags_to_job_application(job_application, ["urgent", "qualified"])
+      {:ok, %JobApplication{}}
+
+  """
+  @spec add_tags_to_job_application(job_application(), [String.t()]) ::
+    {:ok, job_application()} | {:error, any()}
+  def add_tags_to_job_application(%JobApplication{} = job_application, tag_names) when is_list(tag_names) do
+    tag_names
+    |> normalize_tag_names()
+    |> process_tags(job_application)
+  end
+
+  defp normalize_tag_names(tag_names) do
+    tag_names
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
+  end
+
+  defp process_tags([], job_application) do
+    {:ok, Repo.preload(job_application, :tags)}
+  end
+
+  defp process_tags(tag_names, job_application) do
+    timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    tag_names
+    |> create_tag_entries(timestamp)
+    |> insert_tags(timestamp)
+    |> associate_tags_with_application(job_application, timestamp)
+  end
+
+  defp create_tag_entries(tag_names, timestamp) do
+    maps = Enum.map(tag_names, &%{
+      name: &1,
+      inserted_at: timestamp,
+      updated_at: timestamp
+    })
+
+    {tag_names, maps, timestamp}
+  end
+
+  defp insert_tags({tag_names, maps, timestamp}, timestamp) do
+    Repo.insert_all(
+      BemedaPersonal.Jobs.Tag,
+      maps,
+      on_conflict: :nothing
+    )
+
+    tags = Repo.all(from t in BemedaPersonal.Jobs.Tag, where: t.name in ^tag_names)
+
+    {tag_names, tags, timestamp}
+  end
+
+  defp associate_tags_with_application({_tag_names, tags, timestamp}, job_application, timestamp) do
+    Repo.transaction(fn ->
+      existing_tag_ids = get_existing_tag_ids(job_application.id)
+
+      tags
+      |> filter_new_tags(existing_tag_ids)
+      |> create_association_entries(job_application.id, timestamp)
+      |> insert_associations()
+
+      job_application |> Repo.preload(:tags, force: true)
+    end)
+  end
+
+  defp get_existing_tag_ids(job_application_id) do
+    from(jat in BemedaPersonal.Jobs.JobApplicationTag,
+      where: jat.job_application_id == ^job_application_id,
+      select: jat.tag_id
+    )
+    |> Repo.all()
+    |> MapSet.new()
+  end
+
+  defp filter_new_tags(tags, existing_tag_ids) do
+    Enum.reject(tags, fn tag -> MapSet.member?(existing_tag_ids, tag.id) end)
+  end
+
+  defp create_association_entries(new_tags, job_application_id, timestamp) do
+    Enum.map(new_tags, fn tag ->
+      %{
+        job_application_id: job_application_id,
+        tag_id: tag.id,
+        inserted_at: timestamp,
+        updated_at: timestamp
+      }
+    end)
+  end
+
+  defp insert_associations([]), do: :ok
+  defp insert_associations(tag_entries) do
+    Repo.insert_all(BemedaPersonal.Jobs.JobApplicationTag, tag_entries)
+  end
+
+  @doc """
+  Adds a single tag to a job application, creating the tag if it doesn't exist.
+  Uses upsert to efficiently create the tag and returns the job application with tags preloaded.
+
+  ## Examples
+
+      iex> add_tag_to_job_application(job_application, "urgent")
+      {:ok, %JobApplication{}}
+
+  """
+  @spec add_tag_to_job_application(job_application(), String.t()) ::
+    {:ok, job_application()} | {:error, any()}
+  def add_tag_to_job_application(%JobApplication{} = job_application, tag_name) when is_binary(tag_name) do
+    add_tags_to_job_application(job_application, [tag_name])
   end
 end

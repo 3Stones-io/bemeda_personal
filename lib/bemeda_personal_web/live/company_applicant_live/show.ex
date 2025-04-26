@@ -22,4 +22,35 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
      |> assign(:page_title, "Applicant: #{full_name}")
      |> assign(:resume, resume)}
   end
+
+  @impl Phoenix.LiveView
+  def handle_event("add-tag", %{"name" => name}, socket) do
+    application = socket.assigns.application
+    tag_name = String.trim(name)
+
+    if tag_name != "" do
+      case Jobs.add_tag_to_job_application(application, tag_name) do
+        {:ok, updated_application} ->
+          {:noreply, assign(socket, :application, updated_application)}
+
+        _error ->
+          {:noreply, socket}
+      end
+    else
+      {:noreply, socket}
+    end
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("remove-tag", %{"tag-id" => tag_id}, socket) do
+    application = socket.assigns.application
+
+    case Jobs.remove_tag_from_job_application(application, tag_id) do
+      {:ok, updated_application} ->
+        {:noreply, assign(socket, :application, updated_application)}
+
+      _error ->
+        {:noreply, socket}
+    end
+  end
 end

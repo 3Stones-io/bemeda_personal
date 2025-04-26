@@ -133,5 +133,64 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
              |> element("a", "Back to Applicants")
              |> has_element?()
     end
+
+    test "allows adding tags to the application", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, _html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert view |> has_element?("#applicant-tags")
+
+      view
+      |> element("#applicant-tags form")
+      |> render_change(%{name: "qualified"})
+
+      view
+      |> element("#applicant-tags form")
+      |> render_submit(%{name: "qualified"})
+
+      html = render(view)
+      assert html =~ "qualified"
+    end
+
+    test "allows removing tags from the application", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      # First, add a tag
+      {:ok, view, _html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      view
+      |> element("#applicant-tags form")
+      |> render_submit(%{name: "qualified"})
+
+      # Then get the tag's ID from the rendered view
+      html = render(view)
+      assert html =~ "qualified"
+
+      # Find and click the remove button for the tag
+      [{tag_id, _}] =
+        Regex.scan(~r/data-tag-id="([^"]+)"/, html)
+        |> Enum.map(fn [_, id] -> {id, nil} end)
+
+      view
+      |> element("button[phx-click='remove-tag'][phx-value-tag-id='#{tag_id}']")
+      |> render_click()
+
+      # Verify the tag is gone
+      html = render(view)
+      refute html =~ "qualified"
+    end
   end
 end

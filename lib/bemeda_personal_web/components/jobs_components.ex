@@ -574,6 +574,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   @spec applicant_card(assigns()) :: output()
   def applicant_card(assigns) do
+    assigns = assign_new(assigns, :tag_limit, fn -> 3 end)
+    visible_tags = if assigns.applicant.tags, do: Enum.take(assigns.applicant.tags, assigns.tag_limit), else: []
+    remaining_count = if assigns.applicant.tags, do: max(length(assigns.applicant.tags) - assigns.tag_limit, 0), else: 0
+
+    assigns = assign(assigns, :visible_tags, visible_tags)
+    assigns = assign(assigns, :remaining_count, remaining_count)
+
     ~H"""
     <div
       class="px-8 py-6 relative group cursor-pointer"
@@ -595,6 +602,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   {@applicant.user.email}
                 </span>
               </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mt-2">
+              <div :for={tag <- @visible_tags} class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">
+                {tag.name}
+              </div>
+              <div :if={@remaining_count > 0} class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full">
+                +{@remaining_count} more
+              </div>
             </div>
           </div>
         </div>
@@ -670,6 +686,17 @@ defmodule BemedaPersonalWeb.JobsComponents do
               {Calendar.strftime(@application.inserted_at, "%B %d, %Y")}
             </dd>
           </div>
+          <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Tags</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <.tags_input
+                id="applicant-tags"
+                tags={@application.tags || []}
+                on_add_tag="add-tag"
+                on_remove_tag="remove-tag"
+              />
+            </dd>
+          </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">Cover letter</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 prose max-w-none">
@@ -722,11 +749,12 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :form, :map, required: true
   attr :show_job_title, :boolean, default: false
   attr :target, :any, default: nil
+  attr :id, :string, default: "job-application-filters"
 
   @spec job_application_filters(assigns()) :: output()
   def job_application_filters(assigns) do
     ~H"""
-    <div class={@class}>
+    <div class={@class} id={@id}>
       <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-semibold text-gray-700">
@@ -821,6 +849,51 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </div>
           </div>
         </.form>
+      </div>
+    </div>
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :tags, :list, default: []
+  attr :on_add_tag, :any, required: true
+  attr :on_remove_tag, :any, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(data-filter data-target-input)
+
+  @spec tags_input(assigns()) :: output()
+  def tags_input(assigns) do
+    ~H"""
+    <div
+      class={[
+        "relative w-full border border-gray-300 rounded-lg p-4",
+        @class
+      ]}
+      id={@id}
+      phx-hook="TagsInput"
+      {@rest}
+    >
+      <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+        <div :for={tag <- @tags} class="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center gap-2 flex-shrink-0">
+          <span><%= tag.name %></span>
+          <button
+            type="button"
+            phx-click={@on_remove_tag}
+            phx-value-tag-id={tag.id}
+            class="text-white hover:text-red-200"
+          >
+            <.icon name="hero-x-mark" class="w-4 h-4" />
+          </button>
+        </div>
+        <div class="relative flex-shrink-0">
+          <input
+            type="text"
+            id="tag-input"
+            placeholder="Add a tag"
+            class="border-0 focus:ring-0 bg-transparent text-gray-500 placeholder-gray-400 py-2 px-2 w-full"
+            autocomplete="off"
+          />
+        </div>
       </div>
     </div>
     """
