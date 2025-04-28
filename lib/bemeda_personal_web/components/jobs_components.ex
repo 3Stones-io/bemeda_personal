@@ -954,24 +954,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
       phx-hook="TagsInput"
       {@rest}
     >
-      <template id="tag-item-template">
-        <div class="bg-blue-500 text-white px-3 py-1 text-sm rounded-full flex items-center gap-2 flex-shrink-0">
-          <span class="tag-name"></span>
-          <button type="button" class="text-white hover:text-red-200 remove-tag-btn">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </template>
-
       <div class="flex flex-wrap gap-2 mt-1 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]">
         <div
           :for={tag <- @tags}
