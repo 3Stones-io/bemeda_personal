@@ -644,7 +644,6 @@ defmodule BemedaPersonal.Jobs do
 
   @doc """
   Adds tags to a job application, creating any tags that don't exist.
-  Uses Ecto.Multi for transaction management.
 
   ## Examples
 
@@ -766,7 +765,7 @@ defmodule BemedaPersonal.Jobs do
   end
 
   @doc """
-  Removes a tag from a job application and returns the job application with updated tags preloaded.
+  Removes a tag from a job application.
 
   ## Examples
 
