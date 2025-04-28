@@ -406,7 +406,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 type="submit"
                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                t
+                Apply Filters
               </button>
             </div>
           </div>
@@ -575,8 +575,16 @@ defmodule BemedaPersonalWeb.JobsComponents do
   @spec applicant_card(assigns()) :: output()
   def applicant_card(assigns) do
     assigns = assign_new(assigns, :tag_limit, fn -> 3 end)
-    visible_tags = if assigns.applicant.tags, do: Enum.take(assigns.applicant.tags, assigns.tag_limit), else: []
-    remaining_count = if assigns.applicant.tags, do: max(length(assigns.applicant.tags) - assigns.tag_limit, 0), else: 0
+
+    visible_tags =
+      if assigns.applicant.tags,
+        do: Enum.take(assigns.applicant.tags, assigns.tag_limit),
+        else: []
+
+    remaining_count =
+      if assigns.applicant.tags,
+        do: max(length(assigns.applicant.tags) - assigns.tag_limit, 0),
+        else: 0
 
     assigns = assign(assigns, :visible_tags, visible_tags)
     assigns = assign(assigns, :remaining_count, remaining_count)
@@ -605,10 +613,16 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </div>
 
             <div class="flex flex-wrap gap-2 mt-2">
-              <div :for={tag <- @visible_tags} class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">
+              <div
+                :for={tag <- @visible_tags}
+                class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full"
+              >
                 {tag.name}
               </div>
-              <div :if={@remaining_count > 0} class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full">
+              <div
+                :if={@remaining_count > 0}
+                class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
+              >
                 +{@remaining_count} more
               </div>
             </div>
@@ -747,9 +761,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   attr :class, :string, default: nil
   attr :form, :map, required: true
+  attr :id, :string, default: "job-application-filters"
   attr :show_job_title, :boolean, default: false
   attr :target, :any, default: nil
-  attr :id, :string, default: "job-application-filters"
 
   @spec job_application_filters(assigns()) :: output()
   def job_application_filters(assigns) do
@@ -863,22 +877,18 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  attr :field, Phoenix.HTML.FormField
-  attr :label, :string, default: nil
-  attr :label_class, :string, default: nil
   attr :class, :string, default: nil
+  attr :field, Phoenix.HTML.FormField
+  attr :label_class, :string, default: nil
+  attr :label, :string, default: nil
   attr :name, :string, default: nil
 
-  def tag_filter_input(assigns) do
-    assigns = assign_new(assigns, :value, fn ->
-      Phoenix.HTML.Form.input_value(assigns.field.form, assigns.field.field) || ""
-    end)
-
+  defp tag_filter_input(assigns) do
     ~H"""
     <div class="w-full">
       <div class="flex items-center justify-between mb-1">
         <label :if={@label} for={@field.id} class={[@label_class]}>
-          <%= @label %>
+          {@label}
         </label>
         <div class="group relative">
           <div class="text-gray-400 text-xs hover:text-indigo-600 cursor-pointer">
@@ -899,7 +909,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           type="hidden"
           name={@name || @field.name}
           id={@field.id}
-          value={@value}
+          value={Phoenix.HTML.Form.input_value(assigns.field.form, assigns.field.field) || ""}
         />
 
         <div class="tag-container flex flex-wrap gap-2"></div>
@@ -936,9 +946,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
       {@rest}
     >
       <div class="flex flex-wrap gap-2 mt-1 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]">
-        <div :for={tag <- @tags} class="bg-blue-500 text-white px-3 py-1 text-sm rounded-full flex items-center gap-2 flex-shrink-0">
-          <span><%= tag.name %></span>
+        <div
+          :for={tag <- @tags}
+          class="bg-blue-500 text-white px-3 py-1 text-sm rounded-full flex items-center gap-2 flex-shrink-0"
+        >
+          <span>{tag.name}</span>
           <button
+            id={"remove-tag-#{tag.id}"}
             type="button"
             phx-click={@on_remove_tag}
             phx-value-tag-id={tag.id}

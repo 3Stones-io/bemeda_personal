@@ -7,6 +7,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Jobs
+
   setup %{conn: conn} do
     company_user = user_fixture(%{email: "company@example.com"})
     company = company_fixture(company_user)
@@ -148,15 +150,14 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       assert has_element?(view, "#applicant-tags")
 
       view
-      |> element("#applicant-tags form")
-      |> render_change(%{name: "qualified"})
-
-      view
-      |> element("#applicant-tags form")
-      |> render_submit(%{name: "qualified"})
+      |> element("#applicant-tags")
+      |> render_hook("add-tag", %{name: "qualified"})
 
       html = render(view)
       assert html =~ "qualified"
+
+      job_application = Jobs.get_job_application!(application.id)
+      assert "qualified" in Enum.map(job_application.tags, & &1.name)
     end
 
     test "allows removing tags from the application", %{
@@ -167,29 +168,30 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     } do
       conn = log_in_user(conn, user)
 
-      # First, add a tag
-      {:ok, view, _html} =
+      {:ok, application} =
+        Jobs.add_tags_to_job_application(application, ["qualified", "urgent"])
+
+      tag_id =
+        application.tags
+        |> Enum.find(&(&1.name == "qualified"))
+        |> Map.get(:id)
+
+      {:ok, view, html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
-      view
-      |> element("#applicant-tags form")
-      |> render_submit(%{name: "qualified"})
-
-      # Then get the tag's ID from the rendered view
-      html = render(view)
       assert html =~ "qualified"
+      assert html =~ "urgent"
 
-      # Find and click the remove button for the tag
-      [{tag_id, _}] =
-        Regex.scan(~r/data-tag-id="([^"]+)"/, html)
-        |> Enum.map(fn [_, id] -> {id, nil} end)
+      html =
+        view
+        |> element("#remove-tag-#{tag_id}")
+        |> render_click()
 
-      view
-      |> element("button[phx-click='remove-tag'][phx-value-tag-id='#{tag_id}']")
-      |> render_click()
-
-      html = render(view)
       refute html =~ "qualified"
+      assert html =~ "urgent"
+
+      job_application = Jobs.get_job_application!(application.id)
+      refute "qualified" in Enum.map(job_application.tags, & &1.name)
     end
   end
 end

@@ -194,7 +194,6 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   end
 
   def handle_event("filter_applications", %{"job_application_filter" => params}, socket) do
-    IO.inspect(params, label: "FILTER PARAMS")
     changeset =
       %JobApplicationFilter{}
       |> JobApplicationFilter.changeset(params)

@@ -1,6 +1,8 @@
 defmodule BemedaPersonal.Jobs.JobApplicationTag do
   @moduledoc false
+
   use Ecto.Schema
+
   import Ecto.Changeset
 
   alias BemedaPersonal.Jobs.JobApplication
