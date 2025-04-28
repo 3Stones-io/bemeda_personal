@@ -679,19 +679,11 @@ defmodule BemedaPersonal.Jobs do
          |> Repo.all()}
       end)
       |> Ecto.Multi.run(:update_job_application, fn _repo, %{all_tags: all_tags} ->
-        update_application_with_tags(job_application, all_tags)
+        application_tags = job_application_tags(job_application, all_tags)
+        update_job_application_tags(job_application, application_tags)
       end)
 
     Repo.transaction(multi)
-  end
-
-  defp update_application_with_tags(job_application, all_tags) do
-    application_tags = job_application_tags(job_application, all_tags)
-
-    job_application
-    |> change_job_application()
-    |> Changeset.put_assoc(:tags, application_tags)
-    |> Repo.update()
   end
 
   defp handle_tag_application_result({:ok, %{update_job_application: updated_job_application}}) do
@@ -789,15 +781,7 @@ defmodule BemedaPersonal.Jobs do
 
     updated_tags = Enum.reject(job_application.tags, &(&1.id == tag_id))
 
-    update_job_application_tags(job_application, updated_tags)
-  end
-
-  defp update_job_application_tags(job_application, tags) do
-    result =
-      job_application
-      |> change_job_application()
-      |> Changeset.put_assoc(:tags, tags)
-      |> Repo.update()
+    result = update_job_application_tags(job_application, updated_tags)
 
     case result do
       {:ok, updated_job_application} ->
@@ -807,5 +791,12 @@ defmodule BemedaPersonal.Jobs do
       error ->
         error
     end
+  end
+
+  defp update_job_application_tags(job_application, tags) do
+    job_application
+    |> change_job_application()
+    |> Changeset.put_assoc(:tags, tags)
+    |> Repo.update()
   end
 end
