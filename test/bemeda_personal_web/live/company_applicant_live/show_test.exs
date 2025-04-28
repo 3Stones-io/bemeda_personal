@@ -182,13 +182,13 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       assert html =~ "qualified"
       assert html =~ "urgent"
 
-      html =
+      html2 =
         view
         |> element("#remove-tag-#{tag_id}")
         |> render_click()
 
-      refute html =~ "qualified"
-      assert html =~ "urgent"
+      refute html2 =~ "qualified"
+      assert html2 =~ "urgent"
 
       job_application = Jobs.get_job_application!(application.id)
       refute "qualified" in Enum.map(job_application.tags, & &1.name)

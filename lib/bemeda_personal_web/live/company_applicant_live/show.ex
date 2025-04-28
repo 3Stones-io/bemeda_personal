@@ -29,7 +29,21 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
     case Jobs.add_tags_to_job_application(application, [name]) do
       {:ok, updated_application} ->
-        {:noreply, assign(socket, :application, updated_application)}
+        # Find the newly added tag to send back to the client
+        new_tag =
+          Enum.find(updated_application.tags, fn tag ->
+            String.downcase(tag.name) == String.downcase(name)
+          end)
+
+        if new_tag do
+          # Push the tag-added event back to the client
+          {:noreply,
+           socket
+           |> assign(:application, updated_application)
+           |> push_event("tag-added", %{id: new_tag.id, name: new_tag.name})}
+        else
+          {:noreply, assign(socket, :application, updated_application)}
+        end
 
       _error ->
         {:noreply, socket}

@@ -1,7 +1,7 @@
 const TagsInput = {
   mounted() {
     const tagInput = this.el.querySelector('#tag-input')
-    
+
     const addTag = (tagValue) => {
       if (tagValue && tagValue.length > 0) {
         this.pushEvent('add-tag', { name: tagValue })
@@ -16,7 +16,6 @@ const TagsInput = {
       }
     })
   },
-
 }
 
-export default TagsInput 
+export default TagsInput

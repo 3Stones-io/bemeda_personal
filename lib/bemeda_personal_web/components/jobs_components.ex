@@ -570,25 +570,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :job, :any, default: nil
   attr :show_actions, :boolean, default: false
   attr :show_job, :boolean, default: false
+  attr :tag_limit, :integer, default: 3
   attr :target, :string, default: nil
 
   @spec applicant_card(assigns()) :: output()
   def applicant_card(assigns) do
-    assigns = assign_new(assigns, :tag_limit, fn -> 3 end)
-
-    visible_tags =
-      if assigns.applicant.tags,
-        do: Enum.take(assigns.applicant.tags, assigns.tag_limit),
-        else: []
-
-    remaining_count =
-      if assigns.applicant.tags,
-        do: max(length(assigns.applicant.tags) - assigns.tag_limit, 0),
-        else: 0
-
-    assigns = assign(assigns, :visible_tags, visible_tags)
-    assigns = assign(assigns, :remaining_count, remaining_count)
-
     ~H"""
     <div
       class="px-8 py-6 relative group cursor-pointer"
@@ -614,16 +600,16 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
             <div class="flex flex-wrap gap-2 mt-2">
               <div
-                :for={tag <- @visible_tags}
+                :for={tag <- @applicant.tags |> Enum.take(@tag_limit)}
                 class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full"
               >
                 {tag.name}
               </div>
               <div
-                :if={@remaining_count > 0}
+                :if={@applicant.tags && length(@applicant.tags) > @tag_limit}
                 class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
               >
-                +{@remaining_count} more
+                +{length(@applicant.tags) - @tag_limit} more
               </div>
             </div>
           </div>
@@ -905,6 +891,29 @@ defmodule BemedaPersonalWeb.JobsComponents do
         phx-hook="TagFilterInput"
         phx-update="ignore"
       >
+        <template id="tag-template">
+          <div class="tag inline-flex items-center gap-1 bg-indigo-100 text-indigo-800 text-xs rounded-full px-3 py-1">
+            <span class="tag-text"></span>
+            <button
+              type="button"
+              class="remove-tag text-indigo-500 hover:text-indigo-700 focus:outline-none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-3.5 w-3.5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </template>
+
         <.input
           type="hidden"
           name={@name || @field.name}
@@ -945,6 +954,24 @@ defmodule BemedaPersonalWeb.JobsComponents do
       phx-hook="TagsInput"
       {@rest}
     >
+      <template id="tag-item-template">
+        <div class="bg-blue-500 text-white px-3 py-1 text-sm rounded-full flex items-center gap-2 flex-shrink-0">
+          <span class="tag-name"></span>
+          <button type="button" class="text-white hover:text-red-200 remove-tag-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-4 h-4"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </template>
+
       <div class="flex flex-wrap gap-2 mt-1 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]">
         <div
           :for={tag <- @tags}

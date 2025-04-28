@@ -20,8 +20,8 @@ defmodule BemedaPersonal.Jobs do
   @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
-  @type tags :: [String.t()]
   @type tag_id :: Ecto.UUID.t()
+  @type tags :: [String.t()]
   @type user :: User.t()
 
   @job_application_topic "job_application"
@@ -655,6 +655,7 @@ defmodule BemedaPersonal.Jobs do
           {:ok, job_application()} | {:error, any()}
   def add_tags_to_job_application(%JobApplication{} = job_application, tags) do
     job_application = Repo.preload(job_application, :tags)
+
     tags =
       tags
       |> normalize_tags()
@@ -667,8 +668,11 @@ defmodule BemedaPersonal.Jobs do
 
   defp normalize_tags(tags) do
     tags
-    |> Enum.map(&String.trim/1)
-    |> Enum.map(&String.downcase/1)
+    |> Enum.map(fn tag ->
+      tag
+      |> String.trim()
+      |> String.downcase()
+    end)
     |> Enum.reject(&(&1 == ""))
   end
 
@@ -676,11 +680,15 @@ defmodule BemedaPersonal.Jobs do
     existing_tags = find_existing_tags(tag_names)
     create_missing_tags(tag_names, existing_tags)
 
-    Repo.all(from t in Tag, where: t.name in ^tag_names)
+    Tag
+    |> where([t], t.name in ^tag_names)
+    |> Repo.all()
   end
 
   defp find_existing_tags(tag_names) do
-    Repo.all(from t in Tag, where: t.name in ^tag_names)
+    Tag
+    |> where([t], t.name in ^tag_names)
+    |> Repo.all()
   end
 
   defp create_missing_tags(tag_names, existing_tags) do
@@ -717,9 +725,10 @@ defmodule BemedaPersonal.Jobs do
   defp job_application_tags(job_application, tags) do
     existing_tag_names = MapSet.new(job_application.tags, & &1.name)
 
-    filtered_new_tags = Enum.reject(tags, fn tag ->
-      MapSet.member?(existing_tag_names, tag.name)
-    end)
+    filtered_new_tags =
+      Enum.reject(tags, fn tag ->
+        MapSet.member?(existing_tag_names, tag.name)
+      end)
 
     [filtered_new_tags | job_application.tags]
     |> List.flatten()
