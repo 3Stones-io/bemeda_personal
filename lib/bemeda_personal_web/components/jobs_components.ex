@@ -406,7 +406,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 type="submit"
                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Apply Filters
+                t
               </button>
             </div>
           </div>
@@ -830,6 +830,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   type="date"
                 />
               </div>
+
+              <div class="mt-1">
+                <.tag_filter_input
+                  field={f[:tags]}
+                  name="job_application_filter[tags][]"
+                  label="Filter by Tags"
+                  label_class="block text-sm font-medium text-gray-700"
+                />
+              </div>
             </div>
             <div class="mt-6 flex justify-end gap-x-2">
               <button
@@ -854,6 +863,59 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
+  attr :field, Phoenix.HTML.FormField
+  attr :label, :string, default: nil
+  attr :label_class, :string, default: nil
+  attr :class, :string, default: nil
+  attr :name, :string, default: nil
+
+  def tag_filter_input(assigns) do
+    assigns = assign_new(assigns, :value, fn ->
+      Phoenix.HTML.Form.input_value(assigns.field.form, assigns.field.field) || ""
+    end)
+
+    ~H"""
+    <div class="w-full">
+      <div class="flex items-center justify-between mb-1">
+        <label :if={@label} for={@field.id} class={[@label_class]}>
+          <%= @label %>
+        </label>
+        <div class="group relative">
+          <div class="text-gray-400 text-xs hover:text-indigo-600 cursor-pointer">
+            <.icon name="hero-question-mark-circle" class="h-4 w-4" />
+          </div>
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 bg-gray-800 text-white text-xs rounded py-1 px-2 right-0 w-52">
+            Enter tag names and press Enter to add multiple tags.
+          </div>
+        </div>
+      </div>
+      <div
+        id={"tag-filter-input-#{@field.id}"}
+        class="mt-1 tag-filter-input flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]"
+        phx-hook="TagFilterInput"
+        phx-update="ignore"
+      >
+        <.input
+          type="hidden"
+          name={@name || @field.name}
+          id={@field.id}
+          value={@value}
+        />
+
+        <div class="tag-container flex flex-wrap gap-2"></div>
+
+        <div class="flex-1 min-w-[100px]">
+          <input
+            type="text"
+            class="tag-input w-full border-none p-0 focus:ring-0 text-sm"
+            placeholder="Type tag name and press Enter"
+          />
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   attr :id, :string, required: true
   attr :tags, :list, default: []
   attr :on_add_tag, :any, required: true
@@ -866,15 +928,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
     ~H"""
     <div
       class={[
-        "relative w-full border border-gray-300 rounded-lg p-4",
+        "relative w-full",
         @class
       ]}
       id={@id}
       phx-hook="TagsInput"
       {@rest}
     >
-      <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-        <div :for={tag <- @tags} class="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center gap-2 flex-shrink-0">
+      <div class="flex flex-wrap gap-2 mt-1 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]">
+        <div :for={tag <- @tags} class="bg-blue-500 text-white px-3 py-1 text-sm rounded-full flex items-center gap-2 flex-shrink-0">
           <span><%= tag.name %></span>
           <button
             type="button"
@@ -890,7 +952,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
             type="text"
             id="tag-input"
             placeholder="Add a tag"
-            class="border-0 focus:ring-0 bg-transparent text-gray-500 placeholder-gray-400 py-2 px-2 w-full"
+            class="border-0 focus:ring-0 bg-transparent text-gray-500 placeholder-gray-400 py-1 px-1 w-full text-sm"
             autocomplete="off"
           />
         </div>

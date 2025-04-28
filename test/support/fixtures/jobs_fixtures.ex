@@ -9,7 +9,6 @@ defmodule BemedaPersonal.JobsFixtures do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.Repo
 
   @type attrs :: map()
   @type company :: Companies.Company.t()

@@ -942,6 +942,40 @@ defmodule BemedaPersonal.JobsTest do
       assert length(results) == 1
       assert hd(results).id == another_older_application.id
     end
+
+    test "can filter job applications by tags", %{
+      job_posting: job_posting,
+      user: user
+     } do
+     application_1 = job_application_fixture(user, job_posting)
+     application_2 = job_application_fixture(user, job_posting)
+     application_3 = job_application_fixture(user, job_posting)
+
+     Jobs.add_tags_to_job_application(application_1, ["urgent", "qualified"])
+     Jobs.add_tags_to_job_application(application_2, ["urgent", "qualified", "interview"])
+     Jobs.add_tags_to_job_application(application_3, ["not_urgent", "not_qualified"])
+
+     result_ids =
+      %{tags: ["urgent", "qualified", "interview"]}
+      |> Jobs.list_job_applications()
+      |> Enum.map(&(&1.id))
+
+     assert result_ids == [application_1.id, application_2.id]
+
+     result_ids =
+      %{tags: ["not_urgent"]}
+      |> Jobs.list_job_applications()
+      |> Enum.map(&(&1.id))
+
+     assert result_ids == [application_3.id]
+
+     result_ids =
+      %{tags: ["new_tag"]}
+      |> Jobs.list_job_applications()
+      |> Enum.map(&(&1.id))
+
+     assert Enum.empty?(result_ids)
+   end
   end
 
   describe "get_user_job_application/2" do

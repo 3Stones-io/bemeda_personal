@@ -145,7 +145,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       {:ok, view, _html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
-      assert view |> has_element?("#applicant-tags")
+      assert has_element?(view, "#applicant-tags")
 
       view
       |> element("#applicant-tags form")
@@ -188,7 +188,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       |> element("button[phx-click='remove-tag'][phx-value-tag-id='#{tag_id}']")
       |> render_click()
 
-      # Verify the tag is gone
       html = render(view)
       refute html =~ "qualified"
     end

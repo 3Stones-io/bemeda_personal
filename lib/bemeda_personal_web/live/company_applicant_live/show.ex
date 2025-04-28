@@ -28,16 +28,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     application = socket.assigns.application
     tag_name = String.trim(name)
 
-    if tag_name != "" do
-      case Jobs.add_tag_to_job_application(application, tag_name) do
-        {:ok, updated_application} ->
-          {:noreply, assign(socket, :application, updated_application)}
+    case Jobs.add_tags_to_job_application(application, [tag_name]) do
+      {:ok, updated_application} ->
+        {:noreply, assign(socket, :application, updated_application)}
 
-        _error ->
-          {:noreply, socket}
-      end
-    else
-      {:noreply, socket}
+      _error ->
+        {:noreply, socket}
     end
   end
 
