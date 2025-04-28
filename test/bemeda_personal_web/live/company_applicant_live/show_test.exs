@@ -137,9 +137,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "allows adding tags to the application", %{
-      conn: conn,
       company_user: user,
       company: company,
+      conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, user)
@@ -161,9 +161,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "allows removing tags from the application", %{
-      conn: conn,
       company_user: user,
       company: company,
+      conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, user)

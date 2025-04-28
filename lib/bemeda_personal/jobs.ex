@@ -8,6 +8,7 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.Tag
   alias BemedaPersonal.Repo
@@ -408,8 +409,8 @@ defmodule BemedaPersonal.Jobs do
       [job_application: ja],
       ^dynamic and
         ja.id in subquery(
-          from jat in BemedaPersonal.Jobs.JobApplicationTag,
-            join: t in BemedaPersonal.Jobs.Tag,
+          from jat in JobApplicationTag,
+            join: t in Tag,
             on: t.id == jat.tag_id,
             where: t.name in ^tags,
             group_by: jat.job_application_id,
@@ -643,7 +644,7 @@ defmodule BemedaPersonal.Jobs do
 
   @doc """
   Adds tags to a job application, creating any tags that don't exist.
-  Uses put_assoc to efficiently manage the relationship.
+  Uses Ecto.Multi for transaction management.
 
   ## Examples
 
@@ -655,15 +656,84 @@ defmodule BemedaPersonal.Jobs do
           {:ok, job_application()} | {:error, any()}
   def add_tags_to_job_application(%JobApplication{} = job_application, tags) do
     job_application = Repo.preload(job_application, :tags)
+    normalized_tags = normalize_tags(tags)
 
-    tags =
-      tags
-      |> normalize_tags()
-      |> get_or_create_tags()
+    result = execute_tag_application_transaction(job_application, normalized_tags)
 
-    application_tags = job_application_tags(job_application, tags)
+    handle_tag_application_result(result)
+  end
 
-    update_job_application_tags(job_application, application_tags)
+  defp execute_tag_application_transaction(job_application, normalized_tags) do
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.run(:existing_tags, fn _repo, _changes ->
+        {:ok, find_existing_tags(normalized_tags)}
+      end)
+      |> Ecto.Multi.run(:create_tags, fn _repo, %{existing_tags: existing_tags} ->
+        create_tags_transaction(normalized_tags, existing_tags)
+      end)
+      |> Ecto.Multi.run(:all_tags, fn _repo, _changes ->
+        {:ok,
+         Tag
+         |> where([t], t.name in ^normalized_tags)
+         |> Repo.all()}
+      end)
+      |> Ecto.Multi.run(:update_job_application, fn _repo, %{all_tags: all_tags} ->
+        update_application_with_tags(job_application, all_tags)
+      end)
+
+    Repo.transaction(multi)
+  end
+
+  defp update_application_with_tags(job_application, all_tags) do
+    application_tags = job_application_tags(job_application, all_tags)
+
+    job_application
+    |> change_job_application()
+    |> Changeset.put_assoc(:tags, application_tags)
+    |> Repo.update()
+  end
+
+  defp handle_tag_application_result({:ok, %{update_job_application: updated_job_application}}) do
+    broadcast_job_application_update(updated_job_application)
+    {:ok, updated_job_application}
+  end
+
+  defp handle_tag_application_result({:error, _operation, changeset, _changes}) do
+    {:error, changeset}
+  end
+
+  defp broadcast_job_application_update(job_application) do
+    broadcast_event(
+      "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
+      {:company_job_application_updated, job_application}
+    )
+
+    broadcast_event(
+      "#{@job_application_topic}:user:#{job_application.user_id}",
+      {:user_job_application_updated, job_application}
+    )
+  end
+
+  defp create_tags_transaction(tag_names, existing_tags) do
+    existing_names =
+      existing_tags
+      |> Enum.map(& &1.name)
+      |> MapSet.new()
+
+    new_tag_entries =
+      tag_names
+      |> Enum.reject(&MapSet.member?(existing_names, &1))
+      |> create_tag_entries()
+
+    case new_tag_entries do
+      [] ->
+        {:ok, []}
+
+      entries ->
+        {count, _other} = Repo.insert_all(Tag, entries, on_conflict: :nothing)
+        {:ok, count}
+    end
   end
 
   defp normalize_tags(tags) do
@@ -676,33 +746,10 @@ defmodule BemedaPersonal.Jobs do
     |> Enum.reject(&(&1 == ""))
   end
 
-  defp get_or_create_tags(tag_names) do
-    existing_tags = find_existing_tags(tag_names)
-    create_missing_tags(tag_names, existing_tags)
-
-    Tag
-    |> where([t], t.name in ^tag_names)
-    |> Repo.all()
-  end
-
   defp find_existing_tags(tag_names) do
     Tag
     |> where([t], t.name in ^tag_names)
     |> Repo.all()
-  end
-
-  defp create_missing_tags(tag_names, existing_tags) do
-    existing_names =
-      existing_tags
-      |> Enum.map(& &1.name)
-      |> MapSet.new()
-
-    new_tag_entries =
-      tag_names
-      |> Enum.reject(&MapSet.member?(existing_names, &1))
-      |> create_tag_entries()
-
-    Repo.insert_all(Tag, new_tag_entries, on_conflict: :nothing)
   end
 
   defp create_tag_entries(tag_names) do
@@ -711,15 +758,6 @@ defmodule BemedaPersonal.Jobs do
     Enum.map(tag_names, fn name ->
       %{name: name, inserted_at: now, updated_at: now}
     end)
-  end
-
-  defp update_job_application_tags(job_application, tags) do
-    job_application = Repo.preload(job_application, :tags)
-
-    job_application
-    |> change_job_application()
-    |> Changeset.put_assoc(:tags, tags)
-    |> Repo.update()
   end
 
   defp job_application_tags(job_application, tags) do
@@ -752,5 +790,22 @@ defmodule BemedaPersonal.Jobs do
     updated_tags = Enum.reject(job_application.tags, &(&1.id == tag_id))
 
     update_job_application_tags(job_application, updated_tags)
+  end
+
+  defp update_job_application_tags(job_application, tags) do
+    result =
+      job_application
+      |> change_job_application()
+      |> Changeset.put_assoc(:tags, tags)
+      |> Repo.update()
+
+    case result do
+      {:ok, updated_job_application} ->
+        broadcast_job_application_update(updated_job_application)
+        {:ok, updated_job_application}
+
+      error ->
+        error
+    end
   end
 end
