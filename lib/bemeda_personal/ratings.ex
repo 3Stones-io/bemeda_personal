@@ -15,8 +15,9 @@ defmodule BemedaPersonal.Ratings do
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type company :: Company.t()
-  @type id :: binary()
+  @type id :: Ecto.UUID.t()
   @type rating :: Rating.t()
+  @type type :: String.t()
   @type user :: User.t()
 
   @rating_topic "rating"
@@ -65,8 +66,7 @@ defmodule BemedaPersonal.Ratings do
       iex> get_rating_by_rater_and_ratee("User", user_id, "Company", non_existent_id)
       nil
   """
-  @spec get_rating_by_rater_and_ratee(String.t(), binary(), String.t(), binary()) ::
-          rating() | nil
+  @spec get_rating_by_rater_and_ratee(type(), id(), type(), id()) :: rating() | nil
   def get_rating_by_rater_and_ratee(rater_type, rater_id, ratee_type, ratee_id) do
     Rating
     |> where(
@@ -90,7 +90,7 @@ defmodule BemedaPersonal.Ratings do
       iex> get_ratings_for_ratee("Company", company_id)
       [%Rating{}, ...]
   """
-  @spec get_ratings_for_ratee(String.t(), binary()) :: [rating()]
+  @spec get_ratings_for_ratee(type(), id()) :: [rating()]
   def get_ratings_for_ratee(ratee_type, ratee_id) do
     Rating
     |> where([r], r.ratee_type == ^ratee_type and r.ratee_id == ^ratee_id)
@@ -108,7 +108,7 @@ defmodule BemedaPersonal.Ratings do
       iex> get_ratings_by_rater("Company", company_id)
       [%Rating{}, ...]
   """
-  @spec get_ratings_by_rater(String.t(), binary()) :: [rating()]
+  @spec get_ratings_by_rater(type(), id()) :: [rating()]
   def get_ratings_by_rater(rater_type, rater_id) do
     Rating
     |> where([r], r.rater_type == ^rater_type and r.rater_id == ^rater_id)
@@ -126,7 +126,7 @@ defmodule BemedaPersonal.Ratings do
       iex> get_average_rating("Company", company_id)
       #Decimal<3.0>
   """
-  @spec get_average_rating(String.t(), binary()) :: Decimal.t() | nil
+  @spec get_average_rating(type(), id()) :: Decimal.t() | nil
   def get_average_rating(ratee_type, ratee_id) do
     query =
       from r in Rating,
@@ -161,11 +161,6 @@ defmodule BemedaPersonal.Ratings do
       {:ok, rating} ->
         broadcast_event(
           "#{@rating_topic}:#{rating.ratee_type}:#{rating.ratee_id}",
-          {:rating_created, rating}
-        )
-
-        broadcast_event(
-          "#{@rating_topic}:#{rating.rater_type}:#{rating.rater_id}",
           {:rating_created, rating}
         )
 
@@ -273,11 +268,6 @@ defmodule BemedaPersonal.Ratings do
           {:rating_updated, updated_rating}
         )
 
-        broadcast_event(
-          "#{@rating_topic}:#{rating.rater_type}:#{rating.rater_id}",
-          {:rating_updated, updated_rating}
-        )
-
         update_average_rating(rating.ratee_type, rating.ratee_id)
         {:ok, updated_rating}
 
@@ -302,44 +292,26 @@ defmodule BemedaPersonal.Ratings do
   @doc """
   Updates the average rating for a user or company based on their received ratings.
   """
-  @spec update_average_rating(String.t(), binary()) ::
-          {:ok, any()} | {:error, atom() | changeset()}
-  def update_average_rating(type, id) do
-    average = get_average_rating(type, id)
+  @spec update_average_rating(type(), id()) :: {:ok, any()} | {:error, atom() | changeset()}
+  def update_average_rating("Company", id) do
+    average = get_average_rating("Company", id)
 
-    case type do
-      "User" ->
-        case Repo.get(User, id) do
-          nil ->
-            {:error, :not_found}
-
-          user ->
-            user
-            |> User.average_rating_changeset(%{average_rating: average})
-            |> Repo.update()
-        end
-
-      "Company" ->
-        case Repo.get(Company, id) do
-          nil ->
-            {:error, :not_found}
-
-          company ->
-            company
-            |> Company.average_rating_changeset(%{average_rating: average})
-            |> Repo.update()
-        end
-
-      _type ->
-        # For test fixtures with arbitrary types
-        {:ok, nil}
-    end
+    Company
+    |> Repo.get!(id)
+    |> Company.average_rating_changeset(%{average_rating: average})
+    |> Repo.update()
   end
 
-  # Private functions
+  def update_average_rating("User", id) do
+    average = get_average_rating("User", id)
+
+    User
+    |> Repo.get!(id)
+    |> User.average_rating_changeset(%{average_rating: average})
+    |> Repo.update()
+  end
 
   defp user_has_interacted_with_company?(user, company) do
-    # Check if user has applied to any job from this company
     from(ja in JobApplication)
     |> join(:inner, [ja], jp in assoc(ja, :job_posting))
     |> where([ja, jp], ja.user_id == ^user.id and jp.company_id == ^company.id)
@@ -347,7 +319,6 @@ defmodule BemedaPersonal.Ratings do
   end
 
   defp company_has_interacted_with_user?(company, user) do
-    # Reuse the same query logic as user_has_interacted_with_company
     user_has_interacted_with_company?(user, company)
   end
 

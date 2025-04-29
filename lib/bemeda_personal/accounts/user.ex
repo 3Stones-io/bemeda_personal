@@ -14,14 +14,14 @@ defmodule BemedaPersonal.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
+    field :average_rating, :decimal
+    field :confirmed_at, :utc_datetime
+    field :current_password, :string, virtual: true, redact: true
     field :email, :string
     field :first_name, :string
+    field :hashed_password, :string, redact: true
     field :last_name, :string
     field :password, :string, virtual: true, redact: true
-    field :hashed_password, :string, redact: true
-    field :current_password, :string, virtual: true, redact: true
-    field :confirmed_at, :utc_datetime
-    field :average_rating, :decimal
 
     has_one :resume, BemedaPersonal.Resumes.Resume
 

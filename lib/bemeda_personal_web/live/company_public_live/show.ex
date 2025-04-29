@@ -1,6 +1,7 @@
 defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
@@ -60,8 +61,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
           entity_type,
           entity_id
         )
-      else
-        nil
       end
 
     {:noreply,
@@ -81,45 +80,48 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
     current_user = socket.assigns.current_user
     company = socket.assigns.company
 
-    if current_user do
-      attrs = %{
-        score: String.to_integer(params["score"]),
-        comment: params["comment"]
-      }
+    attrs = %{
+      score: String.to_integer(params["score"]),
+      comment: params["comment"]
+    }
 
-      case Ratings.rate_company(current_user, company, attrs) do
-        {:ok, _rating} ->
-          updated_rating =
-            Ratings.get_rating_by_rater_and_ratee(
-              "User",
-              current_user.id,
-              "Company",
-              company.id
-            )
+    with :ok <- authorize(socket),
+         {:ok, _rating} <- rate_company(current_user, company, attrs) do
+      updated_rating =
+        Ratings.get_rating_by_rater_and_ratee(
+          "User",
+          current_user.id,
+          "Company",
+          company.id
+        )
 
-          {:noreply,
-           socket
-           |> put_flash(:info, "Rating submitted successfully.")
-           |> assign(:rating_modal_open, false)
-           |> assign(:current_user_rating, updated_rating)}
-
-        {:error, :no_interaction} ->
-          {:noreply,
-           socket
-           |> put_flash(:error, "You need to apply to a job before rating this company.")
-           |> assign(:rating_modal_open, false)}
-
-        {:error, _changeset} ->
-          {:noreply,
-           socket
-           |> put_flash(:error, "Error submitting rating.")
-           |> assign(:rating_modal_open, false)}
-      end
-    else
       {:noreply,
        socket
-       |> put_flash(:error, "You must be logged in to rate.")
+       |> put_flash(:info, "Rating submitted successfully.")
+       |> assign(:current_user_rating, updated_rating)
        |> assign(:rating_modal_open, false)}
+    else
+      {:error, reason} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, reason)
+         |> assign(:rating_modal_open, false)}
+    end
+  end
+
+  defp authorize(%{assigns: %{current_user: %Accounts.User{}}}), do: :ok
+  defp authorize(%{assigns: %{current_user: nil}}), do: {:error, "You must be logged in to rate."}
+
+  defp rate_company(current_user, company, attrs) do
+    case Ratings.rate_company(current_user, company, attrs) do
+      {:ok, rating} ->
+        {:ok, rating}
+
+      {:error, :no_interaction} ->
+        {:error, "You need to apply to a job before rating this company."}
+
+      {:error, _changeset} ->
+        {:error, "Error submitting rating."}
     end
   end
 
@@ -132,30 +134,31 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
     handle_rating_update(rating, socket)
   end
 
-  defp handle_rating_update(rating, socket) do
-    # Only process relevant rating events (for our company)
-    company = socket.assigns.company
+  defp handle_rating_update(
+         %{ratee_type: "Company", ratee_id: ratee_id} = rating,
+         %{
+           assigns: %{company: %{id: company_id}}
+         } = socket
+       )
+       when ratee_id == company_id do
     current_user = socket.assigns.current_user
+    updated_company = Companies.get_company!(company_id)
 
-    if rating.ratee_type == "Company" && rating.ratee_id == company.id do
-      # Refresh current user's rating if they were the rater
-      current_user_rating =
-        if current_user && rating.rater_type == "User" && rating.rater_id == current_user.id do
-          rating
-        else
-          socket.assigns.current_user_rating
-        end
+    current_user_rating =
+      if current_user && rating.rater_type == "User" && rating.rater_id == current_user.id do
+        rating
+      else
+        socket.assigns.current_user_rating
+      end
 
-      # Refresh company with updated average rating
-      updated_company = Companies.get_company!(company.id)
+    {:noreply,
+     socket
+     |> assign(:company, updated_company)
+     |> assign(:current_user_rating, current_user_rating)}
+  end
 
-      {:noreply,
-       socket
-       |> assign(:company, updated_company)
-       |> assign(:current_user_rating, current_user_rating)}
-    else
-      {:noreply, socket}
-    end
+  defp handle_rating_update(_rating, socket) do
+    {:noreply, socket}
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
@@ -166,23 +169,16 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
     current_user_rating =
       if current_user do
         Ratings.get_rating_by_rater_and_ratee("User", current_user.id, "Company", company.id)
-      else
-        nil
       end
 
-    can_rate =
-      if current_user do
-        Jobs.user_has_applied_to_company_job?(current_user.id, company.id)
-      else
-        false
-      end
+    can_rate = current_user && Jobs.user_has_applied_to_company_job?(current_user.id, company.id)
 
     socket
-    |> assign(:page_title, company.name)
-    |> assign(:company, company)
-    |> assign(:job_count, Jobs.company_jobs_count(company.id))
-    |> assign(:current_user_rating, current_user_rating)
     |> assign(:can_rate, can_rate)
+    |> assign(:company, company)
+    |> assign(:current_user_rating, current_user_rating)
+    |> assign(:job_count, Jobs.company_jobs_count(company.id))
+    |> assign(:page_title, company.name)
     |> stream(:job_postings, job_postings)
   end
 end

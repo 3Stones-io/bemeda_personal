@@ -272,17 +272,14 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     test "displays rating component with no ratings", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/settings")
 
-      # Check that rating section is displayed
       assert html =~ "Your Rating"
       assert html =~ "How companies have rated your applications"
 
-      # Rating component should be rendered (no ratings yet)
       assert html =~ "<div class=\"star-rating flex\">"
       assert html =~ "hero-star"
     end
 
     test "displays user rating correctly when rated", %{conn: conn, user: user, company: company} do
-      # Add a rating for the user
       BemedaPersonal.Ratings.create_rating(%{
         rater_type: "Company",
         rater_id: company.id,
@@ -294,16 +291,13 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
 
       {:ok, _lv, html} = live(conn, ~p"/users/settings")
 
-      # Verify rating is displayed
       assert html =~ "Your Rating"
       assert html =~ "5.0"
 
-      # Should have 5 filled stars
       assert html =~ "fill-current"
     end
 
     test "displays partial rating correctly", %{conn: conn, user: user, company: company} do
-      # Add a rating with partial stars
       BemedaPersonal.Ratings.create_rating(%{
         rater_type: "Company",
         rater_id: company.id,
@@ -315,11 +309,8 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
 
       {:ok, _lv, html} = live(conn, ~p"/users/settings")
 
-      # Verify rating is displayed
       assert html =~ "Your Rating"
       assert html =~ "3.0"
-
-      # Should have mix of filled and empty stars
       assert html =~ "fill-current"
       assert html =~ "text-gray-300"
     end

@@ -2,23 +2,26 @@ defmodule BemedaPersonalWeb.RatingComponents do
   @moduledoc """
   Provides UI components for displaying and creating ratings.
   """
+
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Ratings
   alias Phoenix.LiveView.JS
 
-  attr :id, :string, default: nil
+  @type assigns :: map()
+  @type rendered :: Phoenix.LiveView.Rendered.t()
+
+  attr :average_rating, :any, default: nil
+  attr :can_rate, :boolean, default: false
+  attr :class, :string, default: ""
+  attr :current_user_rating, :map, default: nil
   attr :entity_id, :string, required: true
   attr :entity_type, :string, required: true
-  attr :class, :string, default: ""
+  attr :id, :string, default: nil
   attr :show_count, :boolean, default: true
-  # sm, md, lg
   attr :size, :string, default: "md"
-  attr :can_rate, :boolean, default: false
-  attr :current_user_rating, :map, default: nil
-  attr :average_rating, :any, default: nil
 
-  @spec rating_display(map()) :: Phoenix.LiveView.Rendered.t()
+  @spec rating_display(assigns()) :: rendered()
   def rating_display(assigns) do
     assigns =
       assigns
@@ -26,7 +29,6 @@ defmodule BemedaPersonalWeb.RatingComponents do
         Ratings.get_average_rating(type, id)
       end)
       |> assign_new(:id, fn ->
-        # Set a predictable ID based on entity type and ID if none provided
         "rating-display-#{assigns.entity_type}-#{assigns.entity_id}"
       end)
 
@@ -52,32 +54,30 @@ defmodule BemedaPersonalWeb.RatingComponents do
         ({@entity_type})
       </div>
 
-      <%= if @can_rate do %>
-        <div class="ml-4">
-          <.button
-            type="button"
-            phx-click={
-              JS.push("open-rating-modal", value: %{entity_id: @entity_id, entity_type: @entity_type})
-            }
-            class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1 rounded"
-          >
-            {if @current_user_rating, do: "Update Rating", else: "Rate"}
-          </.button>
-        </div>
-      <% end %>
+      <div :if={@can_rate} class="ml-4">
+        <.button
+          type="button"
+          phx-click={
+            JS.push("open-rating-modal", value: %{entity_id: @entity_id, entity_type: @entity_type})
+          }
+          class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1 rounded"
+        >
+          {if @current_user_rating, do: "Update Rating", else: "Rate"}
+        </.button>
+      </div>
     </div>
     """
   end
 
-  attr :id, :string, default: "rating-form"
-  attr :entity_id, :string, required: true
-  attr :entity_type, :string, required: true
-  attr :entity_name, :string, required: true
   attr :current_rating, :any, default: nil
-  attr :on_submit, JS, default: %JS{}
+  attr :entity_id, :string, required: true
+  attr :entity_name, :string, required: true
+  attr :entity_type, :string, required: true
+  attr :id, :string, default: "rating-form"
   attr :on_cancel, JS, default: %JS{}
+  attr :on_submit, JS, default: %JS{}
 
-  @spec rating_form(map()) :: Phoenix.LiveView.Rendered.t()
+  @spec rating_form(assigns()) :: rendered()
   def rating_form(assigns) do
     assigns =
       assign_new(assigns, :form, fn ->
@@ -101,19 +101,17 @@ defmodule BemedaPersonalWeb.RatingComponents do
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">Score</label>
           <div class="flex space-x-4">
-            <%= for score <- 1..5 do %>
-              <div class="flex flex-col items-center">
-                <input
-                  type="radio"
-                  name="score"
-                  id={"score-#{score}"}
-                  value={score}
-                  checked={score == @form[:score].value}
-                  class="h-5 w-5 text-indigo-600"
-                />
-                <label for={"score-#{score}"} class="mt-1 text-sm text-gray-700">{score}</label>
-              </div>
-            <% end %>
+            <div :for={score <- 1..5} class="flex flex-col items-center">
+              <input
+                type="radio"
+                name="score"
+                id={"score-#{score}"}
+                value={score}
+                checked={score == @form[:score].value}
+                class="h-5 w-5 text-indigo-600"
+              />
+              <label for={"score-#{score}"} class="mt-1 text-sm text-gray-700">{score}</label>
+            </div>
           </div>
         </div>
 
@@ -145,7 +143,6 @@ defmodule BemedaPersonalWeb.RatingComponents do
     """
   end
 
-  # Helper functions
   defp star_class(size, _index_param, _rating_param) do
     base_class = "text-yellow-400"
 

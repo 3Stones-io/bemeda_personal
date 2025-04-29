@@ -36,68 +36,64 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ company.size
 
       assert html =~ company.website_url
-
-      # Rating component should be present with no ratings yet
       assert html =~ "hero-star"
     end
 
     test "displays company rating correctly when rated", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      user = user_fixture(confirmed: true)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
 
-      # Create a rating for the company
       rating_fixture(%{
         ratee_type: "Company",
         ratee_id: company.id,
+        rater_type: "User",
+        rater_id: user.id,
         score: 4
       })
 
       {:ok, _view, html} =
         conn
-        |> log_in_user(user)
+        |> log_in_user(company_admin)
         |> live(~p"/companies")
 
-      # Verify correct rating is displayed
       assert html =~ "4.0"
-
-      # Should have 4 filled stars and 1 empty
       assert html =~ "fill-current"
       assert html =~ "text-gray-300"
     end
 
     test "displays full rating with all stars filled", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      user = user_fixture(confirmed: true)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
 
-      # Create a perfect rating
       rating_fixture(%{
         ratee_type: "Company",
         ratee_id: company.id,
+        rater_type: "User",
+        rater_id: user.id,
         score: 5
       })
 
       {:ok, _view, html} =
         conn
-        |> log_in_user(user)
+        |> log_in_user(company_admin)
         |> live(~p"/companies")
 
-      # Verify 5.0 rating is displayed
       assert html =~ "5.0"
-
-      # Should have all stars filled and properly sized (default size)
       assert html =~ "fill-current"
       assert html =~ "w-5 h-5"
     end
 
     test "shows job count correctly", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
       job_posting_fixture(company)
       job_posting_fixture(company)
 
       {:ok, _view, html} =
         conn
-        |> log_in_user(user)
+        |> log_in_user(company_admin)
         |> live(~p"/companies")
 
       assert html =~ "Open Positions"
@@ -105,12 +101,12 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "users can edit their company", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
 
       {:ok, view, _html} =
         conn
-        |> log_in_user(user)
+        |> log_in_user(company_admin)
         |> live(~p"/companies")
 
       assert view

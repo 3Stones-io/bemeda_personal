@@ -1,5 +1,6 @@
 defmodule BemedaPersonalWeb.RatingComponentsTest do
   use BemedaPersonalWeb.ConnCase, async: true
+
   import Phoenix.LiveViewTest
 
   alias BemedaPersonalWeb.RatingComponents
@@ -48,7 +49,6 @@ defmodule BemedaPersonalWeb.RatingComponentsTest do
     end
 
     test "renders rating with different size options" do
-      # Small size
       small_html =
         render_component(&RatingComponents.rating_display/1, %{
           id: "test-rating-sm",
@@ -61,7 +61,6 @@ defmodule BemedaPersonalWeb.RatingComponentsTest do
       assert small_html =~ "test-rating-sm"
       assert small_html =~ "w-4 h-4"
 
-      # Large size
       large_html =
         render_component(&RatingComponents.rating_display/1, %{
           id: "test-rating-lg",
@@ -74,7 +73,6 @@ defmodule BemedaPersonalWeb.RatingComponentsTest do
       assert large_html =~ "test-rating-lg"
       assert large_html =~ "w-6 h-6"
 
-      # Default (medium) size
       medium_html =
         render_component(&RatingComponents.rating_display/1, %{
           id: "test-rating-md",
@@ -158,7 +156,6 @@ defmodule BemedaPersonalWeb.RatingComponentsTest do
 
       assert html =~ "test-form"
       assert html =~ "Rate Test Entity"
-      # Default score should be 5
       assert html =~ "score-5"
     end
   end

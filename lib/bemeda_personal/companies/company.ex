@@ -16,6 +16,7 @@ defmodule BemedaPersonal.Companies.Company do
 
   schema "companies" do
     belongs_to :admin_user, User
+    field :average_rating, :decimal
     field :description, :string
     field :industry, :string
     field :location, :string
@@ -23,7 +24,6 @@ defmodule BemedaPersonal.Companies.Company do
     field :name, :string
     field :size, :string
     field :website_url, :string
-    field :average_rating, :decimal
 
     timestamps(type: :utc_datetime)
   end

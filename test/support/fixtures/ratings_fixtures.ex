@@ -10,10 +10,6 @@ defmodule BemedaPersonal.RatingsFixtures do
       attrs
       |> Enum.into(%{
         comment: "some comment",
-        ratee_id: "7488a646-e31f-11e4-aace-600308960662",
-        ratee_type: "some ratee_type",
-        rater_id: "7488a646-e31f-11e4-aace-600308960662",
-        rater_type: "some rater_type",
         score: 5
       })
       |> BemedaPersonal.Ratings.create_rating()

@@ -621,11 +621,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :application, :any, required: true
+  attr :can_rate, :boolean, default: false
+  attr :current_user_rating, :map, default: nil
   attr :job, :any, required: true
   attr :resume, :any, default: nil
   attr :show_actions, :boolean, default: false
-  attr :can_rate, :boolean, default: false
-  attr :current_user_rating, :map, default: nil
   attr :target, :string, default: nil
 
   @spec applicant_detail(assigns()) :: output()
