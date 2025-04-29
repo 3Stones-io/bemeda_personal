@@ -143,9 +143,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       application2 = job_application_fixture(user, job)
       application3 = job_application_fixture(user, job)
 
-      Jobs.add_tags_to_job_application(application1, ["urgent", "qualified"])
-      Jobs.add_tags_to_job_application(application2, ["urgent"])
-      Jobs.add_tags_to_job_application(application3, ["another"])
+      Jobs.update_job_application_tags(application1, "urgent,qualified")
+      Jobs.update_job_application_tags(application2, "urgent")
+      Jobs.update_job_application_tags(application3, "another")
 
       {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
 
@@ -153,7 +153,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       |> element("#job_application_filter_form")
       |> render_submit(%{
         "job_application_filter" => %{
-          "tags" => ["urgent"]
+          "tags" => "urgent"
         }
       })
 
@@ -167,7 +167,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       |> element("#job_application_filter_form")
       |> render_submit(%{
         "job_application_filter" => %{
-          "tags" => ["another"]
+          "tags" => "another"
         }
       })
 

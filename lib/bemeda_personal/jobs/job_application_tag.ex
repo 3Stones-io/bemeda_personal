@@ -25,8 +25,6 @@ defmodule BemedaPersonal.Jobs.JobApplicationTag do
   def changeset(%__MODULE__{} = job_application_tag, attrs) do
     job_application_tag
     |> cast(attrs, [:job_application_id, :tag_id])
-    |> validate_required([:job_application_id, :tag_id])
-    |> foreign_key_constraint(:job_application_id)
-    |> foreign_key_constraint(:tag_id)
+    |> unique_constraint([:job_application_id, :tag_id])
   end
 end

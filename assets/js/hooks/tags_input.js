@@ -1,20 +1,115 @@
 const TagsInput = {
   mounted() {
-    const tagInput = this.el.querySelector('#tag-input')
+    const tagContainer = this.el.querySelector('.tag-container')
+    const tagInput = this.el.querySelector('.tag-input')
+    const hiddenInput = this.el.querySelector('input[type="hidden"]')
+    const hook = this
+    const inputContainer = hook.el
+    const tagTemplate = this.el.querySelector('#tag-template')
 
-    const addTag = (tagValue) => {
-      if (tagValue && tagValue.length > 0) {
-        this.pushEvent('add-tag', { name: tagValue })
-        tagInput.value = ''
+    const submitButton = this.el.querySelector('#submit-tag-button')
+
+    let tags = []
+
+    const renderTags = () => {
+      tagContainer.innerHTML = ''
+
+      tags.forEach((tag) => {
+        const tagElement = document.importNode(tagTemplate.content, true)
+        tagElement.querySelector('.tag').setAttribute('data-value', tag)
+        tagElement.querySelector('.tag-text').textContent = tag
+        tagContainer.appendChild(tagElement)
+      })
+    }
+
+    const updateTagsFromInput = () => {
+      tags = hiddenInput.value
+        ? hiddenInput.value.split(',').filter((tag) => tag.trim() !== '')
+        : []
+      renderTags()
+    }
+
+    const updateHiddenInput = () => {
+      hiddenInput.value = tags.join(',')
+      updateTagsFromInput()
+    }
+
+    const addTag = (value) => {
+      if (!value || tags.includes(value)) return
+
+      tags.push(value)
+      updateHiddenInput()
+
+      tagInput.focus()
+    }
+
+    const removeTag = (value) => {
+      const index = tags.indexOf(value)
+      if (index !== -1) {
+        tags.splice(index, 1)
+        updateHiddenInput()
+      }
+
+      tagInput.focus()
+    }
+
+    const loadExistingTags = () => {
+      updateTagsFromInput()
+    }
+
+    const setupEventListeners = () => {
+      tagInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ',') {
+          e.preventDefault()
+          const tagValue = e.target.value.trim()
+          if (tagValue) {
+            addTag(tagValue)
+            e.target.value = ''
+          }
+        } else if (
+          e.key === 'Backspace' &&
+          e.target.value === '' &&
+          tags.length > 0
+        ) {
+          removeTag(tags[tags.length - 1])
+        }
+      })
+
+      inputContainer.addEventListener('click', (e) => {
+        if (
+          e.target === inputContainer ||
+          e.target.classList.contains('tag-container')
+        ) {
+          tagInput.focus()
+        }
+      })
+
+      tagContainer.addEventListener('click', (e) => {
+        if (
+          e.target.classList.contains('remove-tag') ||
+          e.target.closest('.remove-tag')
+        ) {
+          const tagElement = e.target.closest('.tag')
+          if (tagElement) {
+            const tagValue = tagElement.getAttribute('data-value')
+            removeTag(tagValue)
+          }
+        }
+      })
+
+      hiddenInput.addEventListener('change', updateTagsFromInput)
+
+      if (submitButton) {
+        submitButton.addEventListener('click', () => {
+          hook.pushEvent('update_tags', {
+            tags: hiddenInput.value,
+          })
+        })
       }
     }
 
-    tagInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ',') {
-        e.preventDefault()
-        addTag(e.target.value)
-      }
-    })
+    loadExistingTags()
+    setupEventListeners()
   },
 }
 

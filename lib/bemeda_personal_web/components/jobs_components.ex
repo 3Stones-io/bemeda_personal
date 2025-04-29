@@ -689,12 +689,23 @@ defmodule BemedaPersonalWeb.JobsComponents do
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">Tags</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <.tags_input
-                id="applicant-tags"
-                tags={@application.tags || []}
-                on_add_tag="add-tag"
-                on_remove_tag="remove-tag"
-              />
+              <.tags_input>
+                <:hidden_input>
+                  <input
+                    type="hidden"
+                    value={Enum.map_join(@application.tags, ",", & &1.name)}
+                    id="application-tags-input"
+                  />
+                </:hidden_input>
+                <:submit_button>
+                  <button
+                    id="submit-tag-button"
+                    class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Update Tags
+                  </button>
+                </:submit_button>
+              </.tags_input>
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -832,12 +843,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
               </div>
 
               <div class="mt-1">
-                <.tag_filter_input
-                  field={f[:tags]}
-                  name="job_application_filter[tags][]"
+                <.tags_input
                   label="Filter by Tags"
                   label_class="block text-sm font-medium text-gray-700"
-                />
+                >
+                  <:hidden_input>
+                    <.input field={f[:tags]} type="hidden" />
+                  </:hidden_input>
+                </.tags_input>
               </div>
             </div>
             <div class="mt-6 flex justify-end gap-x-2">
@@ -864,31 +877,28 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :class, :string, default: nil
-  attr :field, Phoenix.HTML.FormField
   attr :label_class, :string, default: nil
   attr :label, :string, default: nil
-  attr :name, :string, default: nil
 
-  defp tag_filter_input(assigns) do
+  slot :hidden_input
+  slot :submit_button
+
+  defp tags_input(assigns) do
     ~H"""
     <div class="w-full">
       <div class="flex items-center justify-between mb-1">
-        <label :if={@label} for={@field.id} class={[@label_class]}>
+        <div :if={@label} class={[@label_class]}>
           {@label}
-        </label>
-        <div class="group relative">
-          <div class="text-gray-400 text-xs hover:text-indigo-600 cursor-pointer">
-            <.icon name="hero-question-mark-circle" class="h-4 w-4" />
-          </div>
-          <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 bg-gray-800 text-white text-xs rounded py-1 px-2 right-0 w-52">
-            Enter tag names and press Enter to add multiple tags.
-          </div>
+        </div>
+
+        <div class="ml-auto mb-2">
+          {render_slot(@submit_button)}
         </div>
       </div>
       <div
-        id={"tag-filter-input-#{@field.id}"}
+        id="tags-input"
         class="mt-1 tag-filter-input flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]"
-        phx-hook="TagFilterInput"
+        phx-hook="TagsInput"
         phx-update="ignore"
       >
         <template id="tag-template">
@@ -898,28 +908,12 @@ defmodule BemedaPersonalWeb.JobsComponents do
               type="button"
               class="remove-tag text-indigo-500 hover:text-indigo-700 focus:outline-none"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-3.5 w-3.5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clip-rule="evenodd"
-                />
-              </svg>
+              <.icon name="hero-x-mark" class="w-3 h-3" />
             </button>
           </div>
         </template>
 
-        <.input
-          type="hidden"
-          name={@name || @field.name}
-          id={@field.id}
-          value={Phoenix.HTML.Form.input_value(assigns.field.form, assigns.field.field) || ""}
-        />
+        {render_slot(@hidden_input)}
 
         <div class="tag-container flex flex-wrap gap-2"></div>
 
@@ -928,55 +922,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
             type="text"
             class="tag-input w-full border-none p-0 focus:ring-0 text-sm"
             placeholder="Type tag name and press Enter"
-          />
-        </div>
-      </div>
-    </div>
-    """
-  end
-
-  attr :id, :string, required: true
-  attr :tags, :list, default: []
-  attr :on_add_tag, :any, required: true
-  attr :on_remove_tag, :any, required: true
-  attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(data-filter data-target-input)
-
-  @spec tags_input(assigns()) :: output()
-  def tags_input(assigns) do
-    ~H"""
-    <div
-      class={[
-        "relative w-full",
-        @class
-      ]}
-      id={@id}
-      phx-hook="TagsInput"
-      {@rest}
-    >
-      <div class="flex flex-wrap gap-2 mt-1 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]">
-        <div
-          :for={tag <- @tags}
-          class="bg-blue-500 text-white px-3 py-1 text-sm rounded-full flex items-center gap-2 flex-shrink-0"
-        >
-          <span>{tag.name}</span>
-          <button
-            id={"remove-tag-#{tag.id}"}
-            type="button"
-            phx-click={@on_remove_tag}
-            phx-value-tag-id={tag.id}
-            class="text-white hover:text-red-200"
-          >
-            <.icon name="hero-x-mark" class="w-4 h-4" />
-          </button>
-        </div>
-        <div class="relative flex-shrink-0">
-          <input
-            type="text"
-            id="tag-input"
-            placeholder="Add a tag"
-            class="border-0 focus:ring-0 bg-transparent text-gray-500 placeholder-gray-400 py-1 px-1 w-full text-sm"
-            autocomplete="off"
           />
         </div>
       </div>

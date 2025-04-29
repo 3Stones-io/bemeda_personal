@@ -951,9 +951,9 @@ defmodule BemedaPersonal.JobsTest do
       application_2 = job_application_fixture(user, job_posting)
       application_3 = job_application_fixture(user, job_posting)
 
-      Jobs.add_tags_to_job_application(application_1, ["urgent", "qualified"])
-      Jobs.add_tags_to_job_application(application_2, ["urgent", "qualified", "interview"])
-      Jobs.add_tags_to_job_application(application_3, ["not_urgent", "not_qualified"])
+      Jobs.update_job_application_tags(application_1, "urgent,qualified")
+      Jobs.update_job_application_tags(application_2, "urgent,qualified,interview")
+      Jobs.update_job_application_tags(application_3, "not_urgent,not_qualified")
 
       result_ids =
         %{tags: ["urgent", "qualified", "interview"]}
@@ -998,12 +998,12 @@ defmodule BemedaPersonal.JobsTest do
     end
   end
 
-  describe "add_tags_to_job_application/2" do
+  describe "update_job_application_tags/2" do
     setup [:create_job_posting]
 
     test "adds tags to a job application", %{job_application: job_application} do
       assert {:ok, updated_application} =
-               Jobs.add_tags_to_job_application(job_application, ["urgent", "qualified"])
+               Jobs.update_job_application_tags(job_application, "urgent,qualified")
 
       tag_names = Enum.map(updated_application.tags, & &1.name)
       assert ["qualified", "urgent"] = tag_names
@@ -1012,29 +1012,24 @@ defmodule BemedaPersonal.JobsTest do
 
     test "handles duplicate tags", %{job_application: job_application} do
       assert {:ok, application_with_tags} =
-               Jobs.add_tags_to_job_application(job_application, ["urgent", "qualified"])
+               Jobs.update_job_application_tags(job_application, "urgent,qualified")
 
       assert {:ok, updated_application} =
-               Jobs.add_tags_to_job_application(application_with_tags, ["urgent", "qualified"])
+               Jobs.update_job_application_tags(application_with_tags, "urgent,qualified")
 
       assert length(updated_application.tags) == 2
 
       assert {:ok, application_with_new_tag} =
-               Jobs.add_tags_to_job_application(updated_application, ["urgent", "interview"])
+               Jobs.update_job_application_tags(updated_application, "urgent,interview")
 
       tag_names = Enum.map(application_with_new_tag.tags, & &1.name)
-      assert ["urgent", "qualified", "interview"] = tag_names
+      assert ["interview", "qualified", "urgent"] = Enum.sort(tag_names)
       assert length(application_with_new_tag.tags) == 3
     end
 
     test "trims and filters empty tags", %{job_application: job_application} do
       assert {:ok, updated_application} =
-               Jobs.add_tags_to_job_application(job_application, [
-                 "  urgent  ",
-                 "",
-                 "  ",
-                 "qualified  "
-               ])
+               Jobs.update_job_application_tags(job_application, "  urgent  ,,  ,qualified  ")
 
       tag_names = Enum.map(updated_application.tags, & &1.name)
       assert ["qualified", "urgent"] = tag_names
@@ -1045,43 +1040,27 @@ defmodule BemedaPersonal.JobsTest do
       job_application: job_application
     } do
       assert {:ok, updated_application} =
-               Jobs.add_tags_to_job_application(job_application, ["", "  "])
+               Jobs.update_job_application_tags(job_application, ",  ,")
 
       assert updated_application.tags == []
     end
-  end
 
-  describe "remove_tag_from_job_application/2" do
-    setup [:create_job_posting]
+    test "broadcasts update event when adding tags", %{
+      job_application: job_application,
+      user: user,
+      job_posting: job_posting
+    } do
+      company_topic = "job_application:company:#{job_posting.company_id}"
+      user_topic = "job_application:user:#{user.id}"
 
-    test "removes a tag from a job application", %{job_application: job_application} do
-      {:ok, application_with_tags} =
-        Jobs.add_tags_to_job_application(job_application, ["urgent", "qualified"])
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+      PubSub.subscribe(BemedaPersonal.PubSub, user_topic)
 
-      urgent_tag =
-        Enum.find(application_with_tags.tags, fn tag -> tag.name == "urgent" end)
+      {:ok, updated_job_application} =
+        Jobs.update_job_application_tags(job_application, "urgent,qualified")
 
-      assert {:ok, updated_application} =
-               Jobs.remove_tag_from_job_application(application_with_tags, urgent_tag.id)
-
-      tag_names = Enum.map(updated_application.tags, & &1.name)
-      refute "urgent" in tag_names
-      assert "qualified" in tag_names
-      assert length(updated_application.tags) == 1
-    end
-
-    test "silently handles non-existent tag IDs", %{job_application: job_application} do
-      {:ok, application_with_tag} =
-        Jobs.add_tags_to_job_application(job_application, ["urgent"])
-
-      fake_id = Ecto.UUID.generate()
-
-      assert {:ok, updated_application} =
-               Jobs.remove_tag_from_job_application(application_with_tag, fake_id)
-
-      tag_names = Enum.map(updated_application.tags, & &1.name)
-      assert "urgent" in tag_names
-      assert length(updated_application.tags) == 1
+      assert_receive {:company_job_application_updated, ^updated_job_application}
+      assert_receive {:user_job_application_updated, ^updated_job_application}
     end
   end
 end

@@ -24,23 +24,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("add-tag", %{"name" => name}, socket) do
+  def handle_event("update_tags", %{"tags" => tags}, socket) do
     application = socket.assigns.application
 
-    case Jobs.add_tags_to_job_application(application, [name]) do
-      {:ok, updated_application} ->
-        {:noreply, assign(socket, :application, updated_application)}
-
-      _error ->
-        {:noreply, socket}
-    end
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("remove-tag", %{"tag-id" => tag_id}, socket) do
-    application = socket.assigns.application
-
-    case Jobs.remove_tag_from_job_application(application, tag_id) do
+    case Jobs.update_job_application_tags(application, tags) do
       {:ok, updated_application} ->
         {:noreply, assign(socket, :application, updated_application)}
 

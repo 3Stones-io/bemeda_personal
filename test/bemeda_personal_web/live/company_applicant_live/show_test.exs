@@ -136,7 +136,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
              |> has_element?()
     end
 
-    test "allows adding tags to the application", %{
+    test "allows updating tags for the application", %{
       company_user: user,
       company: company,
       conn: conn,
@@ -147,51 +147,15 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       {:ok, view, _html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
-      assert has_element?(view, "#applicant-tags")
+      assert has_element?(view, "#tags-input")
 
       view
-      |> element("#applicant-tags")
-      |> render_hook("add-tag", %{name: "qualified"})
-
-      html = render(view)
-      assert html =~ "qualified"
+      |> element("#tags-input")
+      |> render_hook("update_tags", %{tags: "qualified,urgent"})
 
       job_application = Jobs.get_job_application!(application.id)
       assert "qualified" in Enum.map(job_application.tags, & &1.name)
-    end
-
-    test "allows removing tags from the application", %{
-      company_user: user,
-      company: company,
-      conn: conn,
-      job_application: application
-    } do
-      conn = log_in_user(conn, user)
-
-      {:ok, application} =
-        Jobs.add_tags_to_job_application(application, ["qualified", "urgent"])
-
-      tag_id =
-        application.tags
-        |> Enum.find(&(&1.name == "qualified"))
-        |> Map.get(:id)
-
-      {:ok, view, html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
-
-      assert html =~ "qualified"
-      assert html =~ "urgent"
-
-      html2 =
-        view
-        |> element("#remove-tag-#{tag_id}")
-        |> render_click()
-
-      refute html2 =~ "qualified"
-      assert html2 =~ "urgent"
-
-      job_application = Jobs.get_job_application!(application.id)
-      refute "qualified" in Enum.map(job_application.tags, & &1.name)
+      assert "urgent" in Enum.map(job_application.tags, & &1.name)
     end
   end
 end

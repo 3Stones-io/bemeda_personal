@@ -22,7 +22,7 @@ defmodule BemedaPersonal.Jobs do
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
   @type tag_id :: Ecto.UUID.t()
-  @type tags :: [String.t()]
+  @type tags :: String.t()
   @type user :: User.t()
 
   @job_application_topic "job_application"
@@ -647,13 +647,13 @@ defmodule BemedaPersonal.Jobs do
 
   ## Examples
 
-      iex> add_tags_to_job_application(job_application, ["urgent", "qualified"])
+      iex> update_job_application_tags(job_application, ["urgent", "qualified"])
       {:ok, %JobApplication{}}
 
   """
-  @spec add_tags_to_job_application(job_application(), tags) ::
+  @spec update_job_application_tags(job_application(), tags()) ::
           {:ok, job_application()} | {:error, any()}
-  def add_tags_to_job_application(%JobApplication{} = job_application, tags) do
+  def update_job_application_tags(%JobApplication{} = job_application, tags) do
     job_application = Repo.preload(job_application, :tags)
     normalized_tags = normalize_tags(tags)
 
@@ -665,11 +665,8 @@ defmodule BemedaPersonal.Jobs do
   defp execute_tag_application_transaction(job_application, normalized_tags) do
     multi =
       Ecto.Multi.new()
-      |> Ecto.Multi.run(:existing_tags, fn _repo, _changes ->
-        {:ok, find_existing_tags(normalized_tags)}
-      end)
-      |> Ecto.Multi.run(:create_tags, fn _repo, %{existing_tags: existing_tags} ->
-        create_tags_transaction(normalized_tags, existing_tags)
+      |> Ecto.Multi.run(:create_tags, fn _repo, _changes ->
+        create_tags_transaction(normalized_tags)
       end)
       |> Ecto.Multi.run(:all_tags, fn _repo, _changes ->
         {:ok,
@@ -679,10 +676,70 @@ defmodule BemedaPersonal.Jobs do
       end)
       |> Ecto.Multi.run(:update_job_application, fn _repo, %{all_tags: all_tags} ->
         application_tags = job_application_tags(job_application, all_tags)
-        update_job_application_tags(job_application, application_tags)
+        add_tags_to_job_application(job_application, application_tags)
       end)
 
     Repo.transaction(multi)
+  end
+
+  defp create_tags_transaction([]) do
+    {:ok, []}
+  end
+
+  defp create_tags_transaction(tag_names) do
+    timestamp = DateTime.utc_now(:second)
+
+    placeholders = %{timestamp: timestamp}
+
+    maps =
+      Enum.map(
+        tag_names,
+        &%{
+          name: &1,
+          inserted_at: {:placeholder, :timestamp},
+          updated_at: {:placeholder, :timestamp}
+        }
+      )
+
+    Repo.insert_all(
+      Tag,
+      maps,
+      placeholders: placeholders,
+      on_conflict: :nothing
+    )
+
+    {:ok, tag_names}
+  end
+
+  defp normalize_tags(tags) do
+    tags
+    |> String.split(",")
+    |> Enum.map(fn tag ->
+      tag
+      |> String.trim()
+      |> String.downcase()
+    end)
+    |> Enum.reject(&(&1 == ""))
+  end
+
+  defp job_application_tags(job_application, tags) do
+    existing_tag_names = MapSet.new(job_application.tags, & &1.name)
+
+    filtered_new_tags =
+      Enum.reject(tags, fn tag ->
+        MapSet.member?(existing_tag_names, tag.name)
+      end)
+
+    [filtered_new_tags | job_application.tags]
+    |> List.flatten()
+    |> Enum.reverse()
+  end
+
+  defp add_tags_to_job_application(job_application, tags) do
+    job_application
+    |> change_job_application()
+    |> Changeset.put_assoc(:tags, tags)
+    |> Repo.update()
   end
 
   defp handle_tag_application_result({:ok, %{update_job_application: updated_job_application}}) do
@@ -704,98 +761,5 @@ defmodule BemedaPersonal.Jobs do
       "#{@job_application_topic}:user:#{job_application.user_id}",
       {:user_job_application_updated, job_application}
     )
-  end
-
-  defp create_tags_transaction(tag_names, existing_tags) do
-    existing_names =
-      existing_tags
-      |> Enum.map(& &1.name)
-      |> MapSet.new()
-
-    new_tag_entries =
-      tag_names
-      |> Enum.reject(&MapSet.member?(existing_names, &1))
-      |> create_tag_entries()
-
-    case new_tag_entries do
-      [] ->
-        {:ok, []}
-
-      entries ->
-        {count, _other} = Repo.insert_all(Tag, entries, on_conflict: :nothing)
-        {:ok, count}
-    end
-  end
-
-  defp normalize_tags(tags) do
-    tags
-    |> Enum.map(fn tag ->
-      tag
-      |> String.trim()
-      |> String.downcase()
-    end)
-    |> Enum.reject(&(&1 == ""))
-  end
-
-  defp find_existing_tags(tag_names) do
-    Tag
-    |> where([t], t.name in ^tag_names)
-    |> Repo.all()
-  end
-
-  defp create_tag_entries(tag_names) do
-    now = DateTime.utc_now(:second)
-
-    Enum.map(tag_names, fn name ->
-      %{name: name, inserted_at: now, updated_at: now}
-    end)
-  end
-
-  defp job_application_tags(job_application, tags) do
-    existing_tag_names = MapSet.new(job_application.tags, & &1.name)
-
-    filtered_new_tags =
-      Enum.reject(tags, fn tag ->
-        MapSet.member?(existing_tag_names, tag.name)
-      end)
-
-    [filtered_new_tags | job_application.tags]
-    |> List.flatten()
-    |> Enum.reverse()
-  end
-
-  @doc """
-  Removes a tag from a job application.
-
-  ## Examples
-
-      iex> remove_tag_from_job_application(job_application, "tag-id")
-      {:ok, %JobApplication{}}
-
-  """
-  @spec remove_tag_from_job_application(job_application(), tag_id()) ::
-          {:ok, job_application()} | {:error, any()}
-  def remove_tag_from_job_application(%JobApplication{} = job_application, tag_id) do
-    job_application = Repo.preload(job_application, :tags)
-
-    updated_tags = Enum.reject(job_application.tags, &(&1.id == tag_id))
-
-    result = update_job_application_tags(job_application, updated_tags)
-
-    case result do
-      {:ok, updated_job_application} ->
-        broadcast_job_application_update(updated_job_application)
-        {:ok, updated_job_application}
-
-      error ->
-        error
-    end
-  end
-
-  defp update_job_application_tags(job_application, tags) do
-    job_application
-    |> change_job_application()
-    |> Changeset.put_assoc(:tags, tags)
-    |> Repo.update()
   end
 end
