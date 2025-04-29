@@ -72,7 +72,8 @@ defmodule BemedaPersonal.MixProject do
       {:multipart, "~> 0.4"},
       {:mux, "~> 3.2"},
       {:number, "~> 1.0"},
-      {:plug, "~> 1.14"}
+      {:plug, "~> 1.17"},
+      {:tidewave, "~> 0.1"}
     ]
   end
 
