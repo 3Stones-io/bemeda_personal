@@ -31,9 +31,6 @@ defmodule BemedaPersonal.Media.MediaAsset do
   def changeset(%__MODULE__{} = media_asset, attrs) do
     cast(media_asset, attrs, [
       :file_name,
-      :job_application_id,
-      :job_posting_id,
-      :message_id,
       :status,
       :type,
       :upload_id

@@ -157,9 +157,11 @@ defmodule BemedaPersonal.Jobs do
     case Repo.transaction(multi) do
       {:ok, %{job_posting: job_posting}} ->
         job_posting =
-          job_posting
-          |> Repo.reload()
-          |> Repo.preload([:company, :media_asset])
+          Repo.preload(
+            job_posting,
+            [:company, :media_asset],
+            force: true
+          )
 
         broadcast_event(
           "#{@job_posting_topic}:company:#{company.id}",
@@ -583,9 +585,10 @@ defmodule BemedaPersonal.Jobs do
     case Repo.transaction(multi) do
       {:ok, %{job_application: job_application}} ->
         job_application =
-          job_application
-          |> Repo.reload()
-          |> Repo.preload([:job_posting, :user, :media_asset])
+          Repo.preload(
+            job_application,
+            [:job_posting, :user, :media_asset]
+          )
 
         broadcast_event(
           "#{@job_application_topic}:company:#{job_posting.company_id}",
@@ -631,9 +634,11 @@ defmodule BemedaPersonal.Jobs do
     case Repo.transaction(multi) do
       {:ok, %{job_application: updated_job_application}} ->
         updated_job_application =
-          updated_job_application
-          |> Repo.reload()
-          |> Repo.preload([:job_posting, :user, :media_asset])
+          Repo.preload(
+            updated_job_application,
+            [:job_posting, :user, :media_asset],
+            force: true
+          )
 
         broadcast_event(
           "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",

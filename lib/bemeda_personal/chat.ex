@@ -38,7 +38,7 @@ defmodule BemedaPersonal.Chat do
       |> where([m], m.job_application_id == ^job_application.id)
       |> order_by([m], asc: m.inserted_at)
       |> Repo.all()
-      |> Repo.preload([:sender, :media_asset])
+      |> Repo.preload([:media_asset, :sender])
 
     [job_application | messages]
   end
@@ -61,7 +61,7 @@ defmodule BemedaPersonal.Chat do
   def get_message!(id) do
     Message
     |> Repo.get!(id)
-    |> Repo.preload([:sender, :job_application, :media_asset])
+    |> Repo.preload([:job_application, :media_asset, :sender])
   end
 
   @doc """
@@ -129,11 +129,13 @@ defmodule BemedaPersonal.Chat do
       end)
 
     case Repo.transaction(multi) do
-      {:ok, %{message: message, media_asset: media_asset}} ->
+      {:ok, %{message: message}} ->
         message =
-          message
-          |> Repo.preload([:sender, :job_application])
-          |> Map.put(:media_asset, media_asset)
+          Repo.preload(
+            message,
+            [:sender, :job_application, :media_asset],
+            force: true
+          )
 
         message_topic = "#{@message_topic}:job_application:#{job_application.id}"
         PubSub.broadcast(BemedaPersonal.PubSub, message_topic, {:new_message, message})
