@@ -1,10 +1,10 @@
-defmodule BemedaPersonal.Repo.Migrations.RemoveMuxDataFromJobPostings do
+defmodule BemedaPersonal.Repo.Migrations.RemoveMuxDataFromMessages do
   use Ecto.Migration
 
   def up do
     execute """
     INSERT INTO media_assets (
-      id, file_name, type, upload_id, job_posting_id, status, inserted_at, updated_at
+      id, file_name, type, upload_id, message_id, status, inserted_at, updated_at
     )
     SELECT
       gen_random_uuid(),
@@ -15,29 +15,29 @@ defmodule BemedaPersonal.Repo.Migrations.RemoveMuxDataFromJobPostings do
       'uploaded',
       NOW(),
       NOW()
-    FROM job_postings
+    FROM messages
     WHERE mux_data IS NOT NULL AND mux_data->>'file_name' IS NOT NULL
     """
 
-    alter table(:job_postings) do
+    alter table(:messages) do
       remove :mux_data
     end
   end
 
   def down do
-    alter table(:job_postings) do
+    alter table(:messages) do
       add :mux_data, :map
     end
 
     execute """
-    UPDATE job_postings
+    UPDATE messages
     SET mux_data = jsonb_build_object(
       'file_name', ma.file_name,
       'type', ma.type,
       'upload_id', ma.upload_id
     )
     FROM media_assets ma
-    WHERE ma.job_posting_id = job_postings.id
+    WHERE ma.message_id = messages.id
     AND ma.status = 'uploaded'
     """
   end

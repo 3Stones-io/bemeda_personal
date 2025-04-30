@@ -18,6 +18,14 @@ defmodule BemedaPersonal.Repo.Migrations.CreateMediaAssets do
       timestamps(type: :utc_datetime)
     end
 
+    create(
+      constraint(
+        :media_assets,
+        :exactly_one_parent,
+        check: "num_nonnulls(job_application_id, job_posting_id, message_id) = 1"
+      )
+    )
+
     create index(:media_assets, [:job_application_id])
     create index(:media_assets, [:job_posting_id])
     create index(:media_assets, [:message_id])
