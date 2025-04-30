@@ -5,13 +5,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
   import BemedaPersonal.ResumesFixtures
-  import Mox
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media.MediaAsset
-  alias BemedaPersonal.MuxHelpers.Client
 
   defp create_test_data(conn) do
     user = user_fixture()
@@ -336,10 +334,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     } do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
-      expect(Client.Mock, :create_asset, fn _client, _options ->
-        {:ok, %{"id" => "test-asset-id"}, %{}}
-      end)
-
       view
       |> element("#job_application-video-video-upload")
       |> render_hook("upload-video", %{
@@ -350,7 +344,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       view
       |> element("#job_application-video-video-upload")
       |> render_hook("upload-completed", %{
-        "mux_asset_id" => "test-asset-id",
         "upload_id" => Ecto.UUID.generate()
       })
 
@@ -383,7 +376,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
                "I am very interested in this position. Please consider my application."
 
       assert %MediaAsset{
-               mux_asset_id: "test-asset-id"
+               file_name: "test_video.mp4"
              } = created_application.media_asset
     end
 
@@ -425,8 +418,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         job_application_fixture(user, job, %{
           media_data: %{
             file_name: "test_video.mp4",
-            mux_asset_id: "asset_123",
-            mux_playback_id: "playback_123",
             upload_id: Ecto.UUID.generate()
           }
         })
@@ -436,10 +427,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           conn,
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
         )
-
-      expect(Client.Mock, :create_asset, fn _client, _options ->
-        {:ok, %{"id" => "updated_asset_123"}, %{}}
-      end)
 
       view
       |> element("#job_application-video-video-upload")
@@ -451,7 +438,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       view
       |> element("#job_application-video-video-upload")
       |> render_hook("upload-completed", %{
-        "mux_asset_id" => "updated_asset_123",
         "upload_id" => Ecto.UUID.generate()
       })
 
@@ -474,7 +460,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
                "Updated cover letter with more details about my experience."
 
       assert %MediaAsset{
-               mux_asset_id: "updated_asset_123"
+               file_name: "updated_test_video.mp4"
              } = updated_application.media_asset
     end
   end
@@ -490,9 +476,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           %{
             cover_letter: "Application with video",
             media_data: %{
-              file_name: "test_video.mp4",
-              mux_asset_id: "asset_123",
-              mux_playback_id: "playback_123"
+              file_name: "test_video.mp4"
             }
           }
         )

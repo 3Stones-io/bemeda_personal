@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
-  import Mox
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Jobs
@@ -137,10 +136,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
 
-      expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
-        {:ok, %{"id" => "test-asset-id"}, %{}}
-      end)
-
       view
       |> element("#job_posting-video-video-upload")
       |> render_hook("upload-video", %{
@@ -174,7 +169,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       job_posting = List.first(job_postings)
 
       assert %MediaAsset{
-               mux_asset_id: "test-asset-id"
+               file_name: "test_video.mp4"
              } = job_posting.media_asset
     end
 
@@ -277,10 +272,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
 
-      expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, _options ->
-        {:ok, %{"id" => "updated_test-asset-id"}, %{}}
-      end)
-
       view
       |> element("#job_posting-video-video-upload")
       |> render_hook("upload-video", %{
@@ -291,7 +282,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       view
       |> element("#job_posting-video-video-upload")
       |> render_hook("upload-completed", %{
-        "mux_asset_id" => "updated_test-asset-id",
         "upload_id" => Ecto.UUID.generate()
       })
 
@@ -307,7 +297,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert updated_job.title == "Updated Job Title"
 
       assert %MediaAsset{
-               mux_asset_id: "updated_test-asset-id"
+               file_name: "updated_test_video.mp4"
              } = updated_job.media_asset
     end
 

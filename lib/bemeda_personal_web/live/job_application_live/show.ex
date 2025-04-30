@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
-  alias BemedaPersonal.MuxHelpers.Client, as: MuxClient, warn: false
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
   alias BemedaPersonalWeb.Endpoint
@@ -83,51 +82,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         socket
       ) do
     message = Chat.get_message!(message_id)
-    maybe_perform_additional_processing(message)
 
-    {:noreply, socket}
-  end
-
-  defp maybe_perform_additional_processing(
-         %Chat.Message{media_asset: %Media.MediaAsset{type: "video" <> _rest}} = message
-       ) do
-    additional_processing(message)
-  end
-
-  defp maybe_perform_additional_processing(
-         %Chat.Message{media_asset: %Media.MediaAsset{type: "audio" <> _rest}} = message
-       ) do
-    additional_processing(message)
-  end
-
-  defp maybe_perform_additional_processing(message) do
     media_asset =
       Media.get_media_asset_by_message_id(message.id)
 
     {:ok, _media_asset} =
       Media.update_media_asset(media_asset, %{status: :uploaded})
-  end
 
-  defp additional_processing(message) do
-    media_asset = Media.get_media_asset_by_message_id(message.id)
-
-    file_url = TigrisHelper.get_presigned_download_url(message.id)
-    options = %{cors_origin: Endpoint.url(), input: file_url, playback_policy: "public"}
-    client = Mux.client()
-
-    case MuxClient.create_asset(client, options) do
-      {:ok, mux_asset, _client} ->
-        Media.update_media_asset(media_asset, %{
-          "mux_asset_id" => mux_asset["id"],
-          "status" => :uploaded
-        })
-
-      response ->
-        Logger.error(
-          "message.additional_processing: " <>
-            inspect(response)
-        )
-    end
+    {:noreply, socket}
   end
 
   @impl Phoenix.LiveView

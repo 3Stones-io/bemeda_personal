@@ -105,8 +105,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     SharedHelpers.create_video_upload(socket, params)
   end
 
-  def handle_event("upload-completed", params, socket) do
-    SharedHelpers.upload_video_to_mux(socket, params)
+  def handle_event("upload-completed", _params, socket) do
+    {:noreply, assign(socket, :enable_submit?, true)}
   end
 
   def handle_event("enable-submit", _params, socket) do

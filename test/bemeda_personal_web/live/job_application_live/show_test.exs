@@ -5,13 +5,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
   import BemedaPersonal.ResumesFixtures
-  import Mox
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Media
-
-  setup :verify_on_exit!
 
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
@@ -86,9 +83,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
             cover_letter: "Application with video",
             media_data: %{
               file_name: "test_video.mp4",
-              mux_asset_id: "asset_123",
-              mux_playback_id: "test-playback-id",
-              type: "video/mp4"
+              type: "video/mp4",
+              upload_id: Ecto.UUID.generate()
             }
           }
         )
@@ -99,7 +95,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application_with_video.job_posting_id}/job_applications/#{job_application_with_video.id}"
         )
 
-      assert html =~ ~s(<mux-player playback-id="test-playback-id")
+      assert html =~ ~s(<video controls)
     end
 
     test "does not display video player when application has no video", %{
@@ -144,9 +140,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
             cover_letter: "Application with video",
             media_data: %{
               file_name: "test_video.mp4",
-              mux_asset_id: "asset_123",
-              mux_playback_id: "test-playback-id",
-              type: "video/mp4"
+              status: :uploaded,
+              type: "video/mp4",
+              upload_id: Ecto.UUID.generate()
             }
           }
         )
@@ -157,8 +153,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      assert html =~ "test-playback-id"
-      assert html =~ "mux-player"
+      assert html =~ ~s(<video controls)
       assert html =~ "Application with video"
 
       messages = Chat.list_messages(job_application)
@@ -243,22 +238,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert uploaded_message.media_asset.type == "video/mp4"
       assert uploaded_message.media_asset.status == :pending
 
-      expect(BemedaPersonal.MuxHelpers.Client.Mock, :create_asset, fn _client, options ->
-        assert options.input =~
-                 "https://fly.storage.tigris.dev/tigris-bucket/#{uploaded_message.id}"
-
-        assert options.playback_policy == "public"
-        {:ok, %{"id" => "asset_12345"}, %{}}
-      end)
-
       render_hook(
         view,
         "update-message",
         %{message_id: uploaded_message.id, status: "uploaded"}
       )
 
+      # Check new logic >>>>> START HERE
+
       updated_message = Chat.get_message!(uploaded_message.id)
-      assert updated_message.media_asset.mux_asset_id == "asset_12345"
 
       {:ok, _updated_media_asset} =
         Media.update_media_asset(
@@ -267,7 +255,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       final_message = Chat.get_message!(uploaded_message.id)
-      assert final_message.media_asset.mux_playback_id == "playback_12345"
       assert final_message.media_asset.status == :uploaded
     end
 

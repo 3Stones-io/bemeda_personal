@@ -3,9 +3,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationLive.FormComponent
   alias BemedaPersonalWeb.JobApplicationsListComponent
-  alias BemedaPersonalWeb.Endpoint
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do

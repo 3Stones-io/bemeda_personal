@@ -54,25 +54,6 @@ defmodule BemedaPersonal.Media do
   end
 
   @doc """
-  Gets a media asset by asset_id.
-
-  ## Examples
-
-      iex> get_media_asset_by_mux_asset_id("abc123")
-      %MediaAsset{}
-
-      iex> get_media_asset_by_mux_asset_id("xyz789")
-      nil
-
-  """
-  @spec get_media_asset_by_mux_asset_id(String.t()) :: media_asset() | nil
-  def get_media_asset_by_mux_asset_id(mux_asset_id) do
-    MediaAsset
-    |> where([m], m.mux_asset_id == ^mux_asset_id)
-    |> Repo.one()
-  end
-
-  @doc """
   Gets a media asset by message_id.
 
   ## Examples

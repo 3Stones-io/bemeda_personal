@@ -20,8 +20,6 @@ defmodule BemedaPersonal.Media.MediaAsset do
     belongs_to :job_application, Jobs.JobApplication
     belongs_to :job_posting, Jobs.JobPosting
     belongs_to :message, Message
-    field :mux_asset_id, :string
-    field :mux_playback_id, :string
     field :status, Ecto.Enum, values: [:pending, :uploaded, :failed]
     field :type, :string
     field :upload_id, Ecto.UUID
@@ -36,8 +34,6 @@ defmodule BemedaPersonal.Media.MediaAsset do
       :job_application_id,
       :job_posting_id,
       :message_id,
-      :mux_asset_id,
-      :mux_playback_id,
       :status,
       :type,
       :upload_id

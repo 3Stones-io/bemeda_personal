@@ -53,7 +53,6 @@ defmodule BemedaPersonal.MediaTest do
       media_asset = media_asset_fixture(job_application, %{})
       fetched_asset = Media.get_media_asset!(media_asset.id)
       assert fetched_asset.id == media_asset.id
-      assert fetched_asset.mux_asset_id == media_asset.mux_asset_id
       assert fetched_asset.file_name == media_asset.file_name
     end
 
@@ -61,22 +60,6 @@ defmodule BemedaPersonal.MediaTest do
       assert_raise Ecto.NoResultsError, fn ->
         Media.get_media_asset!(Ecto.UUID.generate())
       end
-    end
-  end
-
-  describe "get_media_asset_by_mux_asset_id/1" do
-    setup [:create_test_data]
-
-    test "returns the media asset with given asset_id", %{job_posting: job_posting} do
-      media_asset = media_asset_fixture(job_posting, %{})
-      fetched_asset = Media.get_media_asset_by_mux_asset_id(media_asset.mux_asset_id)
-      assert fetched_asset.id == media_asset.id
-      assert fetched_asset.mux_asset_id == media_asset.mux_asset_id
-      assert fetched_asset.job_posting_id == job_posting.id
-    end
-
-    test "returns nil when asset_id does not exist" do
-      assert Media.get_media_asset_by_mux_asset_id("non_existent_asset_id") == nil
     end
   end
 
@@ -88,8 +71,6 @@ defmodule BemedaPersonal.MediaTest do
     } do
       valid_attrs = %{
         file_name: "app_file.mp4",
-        mux_asset_id: "app_asset_id",
-        mux_playback_id: "app_playback_id",
         status: :uploaded,
         type: "video/mp4"
       }
@@ -97,9 +78,7 @@ defmodule BemedaPersonal.MediaTest do
       assert {:ok, %MediaAsset{} = media_asset} =
                Media.create_media_asset(job_application, valid_attrs)
 
-      assert media_asset.mux_asset_id == "app_asset_id"
       assert media_asset.file_name == "app_file.mp4"
-      assert media_asset.mux_playback_id == "app_playback_id"
       assert media_asset.status == :uploaded
       assert media_asset.type == "video/mp4"
       assert media_asset.job_application_id == job_application.id
@@ -108,8 +87,6 @@ defmodule BemedaPersonal.MediaTest do
     test "with valid data creates a media asset for job posting", %{job_posting: job_posting} do
       valid_attrs = %{
         file_name: "posting_file.pdf",
-        mux_asset_id: "posting_asset_id",
-        mux_playback_id: "posting_playback_id",
         status: :uploaded,
         type: "application/pdf"
       }
@@ -117,9 +94,7 @@ defmodule BemedaPersonal.MediaTest do
       assert {:ok, %MediaAsset{} = media_asset} =
                Media.create_media_asset(job_posting, valid_attrs)
 
-      assert media_asset.mux_asset_id == "posting_asset_id"
       assert media_asset.file_name == "posting_file.pdf"
-      assert media_asset.mux_playback_id == "posting_playback_id"
       assert media_asset.status == :uploaded
       assert media_asset.type == "application/pdf"
       assert media_asset.job_posting_id == job_posting.id
@@ -128,28 +103,15 @@ defmodule BemedaPersonal.MediaTest do
     test "with valid data creates a media asset for message", %{message: message} do
       valid_attrs = %{
         file_name: "message_file.png",
-        mux_asset_id: "message_asset_id",
-        mux_playback_id: "message_playback_id",
         status: :uploaded,
         type: "image/png"
       }
 
       assert {:ok, %MediaAsset{} = media_asset} = Media.create_media_asset(message, valid_attrs)
-      assert media_asset.mux_asset_id == "message_asset_id"
       assert media_asset.file_name == "message_file.png"
-      assert media_asset.mux_playback_id == "message_playback_id"
       assert media_asset.status == :uploaded
       assert media_asset.type == "image/png"
       assert media_asset.message_id == message.id
-    end
-
-    test "handles nil values in attributes", %{job_application: job_application} do
-      invalid_attrs = %{mux_asset_id: nil, file_name: nil, type: nil}
-      {:ok, media_asset} = Media.create_media_asset(job_application, invalid_attrs)
-      assert media_asset.mux_asset_id == nil
-      assert media_asset.file_name == nil
-      assert media_asset.type == nil
-      assert media_asset.job_application_id == job_application.id
     end
   end
 
@@ -161,8 +123,6 @@ defmodule BemedaPersonal.MediaTest do
 
       update_attrs = %{
         file_name: "updated_file.mp4",
-        mux_asset_id: "updated_asset_id",
-        mux_playback_id: "updated_playback_id",
         status: :failed,
         type: "video/mpeg"
       }
@@ -170,23 +130,20 @@ defmodule BemedaPersonal.MediaTest do
       assert {:ok, %MediaAsset{} = updated_media_asset} =
                Media.update_media_asset(media_asset, update_attrs)
 
-      assert updated_media_asset.mux_asset_id == "updated_asset_id"
       assert updated_media_asset.file_name == "updated_file.mp4"
-      assert updated_media_asset.mux_playback_id == "updated_playback_id"
       assert updated_media_asset.status == :failed
       assert updated_media_asset.type == "video/mpeg"
     end
 
     test "allows updating fields with nil values", %{job_application: job_application} do
       media_asset = media_asset_fixture(job_application, %{})
-      invalid_attrs = %{mux_asset_id: nil, file_name: nil, type: nil}
+      invalid_attrs = %{file_name: nil, type: nil}
 
       {:ok, updated_media_asset} = Media.update_media_asset(media_asset, invalid_attrs)
-      assert updated_media_asset.mux_asset_id == nil
       assert updated_media_asset.file_name == nil
       fetched_media_asset = Media.get_media_asset!(media_asset.id)
       assert fetched_media_asset.id == updated_media_asset.id
-      assert fetched_media_asset.mux_asset_id == nil
+      assert fetched_media_asset.file_name == nil
     end
 
     test "broadcasts to job_application topic when updating job application media asset", %{
@@ -259,7 +216,7 @@ defmodule BemedaPersonal.MediaTest do
 
     test "returns a changeset even with nil values", %{message: message} do
       media_asset = media_asset_fixture(message, %{})
-      changeset = Media.change_media_asset(media_asset, %{mux_asset_id: nil})
+      changeset = Media.change_media_asset(media_asset, %{file_name: nil})
       assert %Ecto.Changeset{} = changeset
       assert changeset.valid?
     end

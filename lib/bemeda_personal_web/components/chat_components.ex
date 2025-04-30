@@ -81,10 +81,12 @@ defmodule BemedaPersonalWeb.ChatComponents do
         </div>
       </div>
 
-      <SharedComponents.video_player
-        media_asset={@message.media_asset}
-        url_key={@message.media_asset && @message.id}
-      />
+      <div class={@class}>
+        <SharedComponents.video_player
+          media_asset={@message.media_asset}
+          url_key={@message.media_asset && @message.media_asset.upload_id}
+        />
+      </div>
 
       <.link
         :if={@message.user_id == @current_user.id}
@@ -140,7 +142,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
           message: %{
             media_asset: %MediaAsset{
               type: "video" <> _rest,
-              mux_playback_id: nil,
               status: :uploaded
             }
           }
@@ -150,12 +151,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
     <video controls class="w-full">
       <source src={SharedHelpers.get_presigned_url(@message.id)} type="video/mp4" />
     </video>
-    """
-  end
-
-  def chat_message(%{message: %{media_asset: %MediaAsset{type: "video" <> _rest}}} = assigns) do
-    ~H"""
-    <mux-player playback-id={@message.media_asset.mux_playback_id}></mux-player>
     """
   end
 
@@ -184,8 +179,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
           message: %{
             media_asset: %MediaAsset{
               type: "audio" <> _rest,
-              status: :uploaded,
-              mux_playback_id: nil
+              status: :uploaded
             }
           }
         } = assigns
@@ -194,18 +188,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
     <audio class="w-full" controls>
       <source src={SharedHelpers.get_presigned_url(@message.id)} type="audio/mp3" />
     </audio>
-    """
-  end
-
-  def chat_message(%{message: %{media_asset: %MediaAsset{type: "audio" <> _rest}}} = assigns) do
-    ~H"""
-    <mux-player
-      playback-id={@message.media_asset.mux_playback_id}
-      audio
-      primary-color="#075389"
-      secondary-color="#d6e6f1"
-    >
-    </mux-player>
     """
   end
 
