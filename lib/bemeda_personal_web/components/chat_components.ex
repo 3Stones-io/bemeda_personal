@@ -82,10 +82,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
       </div>
 
       <div class={@class}>
-        <SharedComponents.video_player
-          media_asset={@message.media_asset}
-          url_key={@message.media_asset && @message.media_asset.upload_id}
-        />
+        <SharedComponents.video_player media_asset={@message.media_asset} />
       </div>
 
       <.link
@@ -148,9 +145,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
         } = assigns
       ) do
     ~H"""
-    <video controls class="w-full">
-      <source src={SharedHelpers.get_presigned_url(@message.id)} type="video/mp4" />
-    </video>
+    <SharedComponents.video_player class="w-full" media_asset={@message.media_asset} />
     """
   end
 

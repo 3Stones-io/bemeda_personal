@@ -11,14 +11,16 @@ defmodule BemedaPersonalWeb.SharedComponents do
 
   attr :class, :string, default: "w-full h-full"
   attr :media_asset, MediaAsset
-  attr :url_key, :string, default: nil
 
   @spec video_player(assigns()) :: output()
   def video_player(assigns) do
     ~H"""
-    <div :if={@media_asset && @url_key} class={@class}>
+    <div :if={@media_asset} class={@class}>
       <video controls>
-        <source src={SharedHelpers.get_presigned_url(@url_key)} type="video/mp4" />
+        <source
+          src={SharedHelpers.get_presigned_url(@media_asset.message_id || @media_asset.upload_id)}
+          type="video/mp4"
+        />
       </video>
     </div>
     """

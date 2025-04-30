@@ -116,7 +116,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <SharedComponents.video_player
             class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
             media_asset={@job_posting.media_asset}
-            url_key={@job_posting.media_asset && @job_posting.media_asset.upload_id}
           />
         </div>
 

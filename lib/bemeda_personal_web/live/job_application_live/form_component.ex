@@ -34,10 +34,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
           id="video-preview-player"
           class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6 hidden"
         >
-          <SharedComponents.video_player
-            media_asset={@job_application.media_asset}
-            url_key={@job_application.media_asset && @job_application.media_asset.upload_id}
-          />
+          <SharedComponents.video_player media_asset={@job_application.media_asset} />
         </div>
 
         <JobsComponents.video_upload_input_component

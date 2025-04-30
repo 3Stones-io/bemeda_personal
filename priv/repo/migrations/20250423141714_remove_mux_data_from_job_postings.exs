@@ -29,6 +29,8 @@ defmodule BemedaPersonal.Repo.Migrations.RemoveMuxDataFromJobPostings do
       add :mux_data, :map
     end
 
+    flush()
+
     execute """
     UPDATE job_postings
     SET mux_data = jsonb_build_object(

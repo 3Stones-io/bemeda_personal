@@ -684,10 +684,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </dl>
       </div>
 
-      <SharedComponents.video_player
-        media_asset={@application.media_asset}
-        url_key={@application.media_asset && @application.media_asset.upload_id}
-      />
+      <SharedComponents.video_player media_asset={@application.media_asset} />
     </div>
 
     <div :if={@resume} class="bg-white shadow overflow-hidden sm:rounded-lg">
