@@ -235,8 +235,16 @@ defmodule BemedaPersonal.MediaTest do
       message_media = media_asset_fixture(message, %{})
 
       assert app_media.job_application_id == job_application.id
+      refute app_media.job_posting_id
+      refute app_media.message_id
+
       assert posting_media.job_posting_id == job_posting.id
+      refute posting_media.job_application_id
+      refute posting_media.message_id
+
       assert message_media.message_id == message.id
+      refute message_media.job_application_id
+      refute message_media.job_posting_id
     end
   end
 end

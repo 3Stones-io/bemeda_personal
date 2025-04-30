@@ -8,7 +8,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Chat
-  alias BemedaPersonal.Media
 
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
@@ -108,7 +107,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      refute html =~ ~s(<mux-player)
+      refute html =~ ~s(<video controls)
     end
 
     test "shows the cover letter in chat messages when viewing job application", %{
@@ -244,18 +243,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{message_id: uploaded_message.id, status: "uploaded"}
       )
 
-      # Check new logic >>>>> START HERE
-
       updated_message = Chat.get_message!(uploaded_message.id)
 
-      {:ok, _updated_media_asset} =
-        Media.update_media_asset(
-          updated_message.media_asset,
-          %{mux_playback_id: "playback_12345", status: :uploaded}
-        )
-
-      final_message = Chat.get_message!(uploaded_message.id)
-      assert final_message.media_asset.status == :uploaded
+      assert updated_message.media_asset.status == :uploaded
     end
 
     test "allows user to upload non-media files (images, pdfs)", %{

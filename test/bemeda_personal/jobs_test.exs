@@ -409,7 +409,7 @@ defmodule BemedaPersonal.JobsTest do
       assert job_posting.description == "some description that is long enough"
       assert job_posting.title == "some valid title"
       assert job_posting.company_id == company.id
-      assert job_posting.media_asset != nil
+      assert job_posting.media_asset
       assert job_posting.media_asset.file_name == "test_file.jpg"
       assert job_posting.media_asset.upload_id == upload_id
     end
@@ -556,7 +556,7 @@ defmodule BemedaPersonal.JobsTest do
       assert {:ok, %Jobs.JobPosting{} = updated_job_posting} =
                Jobs.update_job_posting(job_posting_with_media, update_attrs)
 
-      assert updated_job_posting.media_asset != nil
+      assert updated_job_posting.media_asset
       assert updated_job_posting.media_asset.file_name == "updated_file.jpg"
       assert updated_job_posting.media_asset.upload_id == upload_id
     end
@@ -690,7 +690,7 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.cover_letter == "some cover letter"
       assert job_application.job_posting_id == job_posting.id
       assert job_application.user_id == user.id
-      assert job_application.media_asset != nil
+      assert job_application.media_asset
     end
 
     test "creates a job_application with media asset" do
@@ -717,7 +717,7 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.cover_letter == "some cover letter"
       assert job_application.job_posting_id == job_posting.id
       assert job_application.user_id == user.id
-      assert job_application.media_asset != nil
+      assert job_application.media_asset
       assert job_application.media_asset.file_name == "app_file.mp4"
     end
 
@@ -816,7 +816,7 @@ defmodule BemedaPersonal.JobsTest do
 
       assert updated_job_application.cover_letter == "updated cover letter"
       assert updated_job_application.id == job_application.id
-      assert updated_job_application.media_asset != nil
+      assert updated_job_application.media_asset
       assert updated_job_application.media_asset.file_name == "updated_file.mp4"
     end
 
@@ -884,7 +884,7 @@ defmodule BemedaPersonal.JobsTest do
 
       result = Jobs.get_job_application!(job_application.id)
       assert result.id == job_application.id
-      assert result.media_asset != nil
+      assert result.media_asset
       assert result.media_asset.file_name == "test_file.mp4"
     end
 
@@ -927,7 +927,7 @@ defmodule BemedaPersonal.JobsTest do
 
       assert [result] = Jobs.list_job_applications(%{job_posting_id: job_posting.id})
       assert result.id == job_application.id
-      assert result.media_asset != nil
+      assert result.media_asset
       assert result.media_asset.file_name == "list_file.mp4"
     end
 

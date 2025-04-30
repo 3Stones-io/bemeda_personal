@@ -253,29 +253,6 @@ if config_env() == :prod do
     base_url: "https://api.eu.mailgun.net/v3",
     domain: mailgun_domain
 
-  mux_token_id =
-    System.get_env("MUX_TOKEN_ID") ||
-      raise """
-      environment variable MUX_TOKEN_ID is missing.
-      """
-
-  mux_token_secret =
-    System.get_env("MUX_TOKEN_SECRET") ||
-      raise """
-      environment variable MUX_TOKEN_SECRET is missing.
-      """
-
-  mux_webhook_secret =
-    System.get_env("MUX_WEBHOOK_SECRET") ||
-      raise """
-      environment variable MUX_WEBHOOK_SECRET is missing.
-      """
-
-  config :mux,
-    access_token_id: mux_token_id,
-    access_token_secret: mux_token_secret,
-    webhook_secret: mux_webhook_secret
-
   tigris_access_key_id =
     System.get_env("TIGRIS_ACCESS_KEY_ID") ||
       raise """

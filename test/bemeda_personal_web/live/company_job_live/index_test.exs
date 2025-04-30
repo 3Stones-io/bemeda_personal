@@ -216,8 +216,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         Jobs.update_job_posting(job_posting, %{
           media_data: %{
             file_name: "test_video.mp4",
-            mux_asset_id: "test-asset-id",
-            mux_playback_id: "test-playback-id"
+            upload_id: Ecto.UUID.generate()
           }
         })
 
@@ -262,8 +261,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         job_posting_fixture(company, %{
           media_data: %{
             file_name: "test_video.mp4",
-            mux_asset_id: "test-asset-id",
-            mux_playback_id: "test-playback-id"
+            upload_id: Ecto.UUID.generate()
           }
         })
 

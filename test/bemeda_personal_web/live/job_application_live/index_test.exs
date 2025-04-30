@@ -34,7 +34,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     setup %{conn: conn} do
       base_data = create_test_data(conn)
 
-      # Add additional data specific to this test group
       job2 = job_posting_fixture(base_data.company, %{title: "Another Job"})
       job_application2 = job_application_fixture(base_data.user, job2)
 
@@ -356,7 +355,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      applications = BemedaPersonal.Jobs.list_job_applications(%{job_posting_id: job.id})
+      applications = Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
       created_application =

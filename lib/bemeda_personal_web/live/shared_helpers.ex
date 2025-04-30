@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.MuxHelpers.Client, as: MuxClient, warn: false
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Endpoint
 
@@ -40,7 +39,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     |> Phoenix.HTML.raw()
   end
 
-  @spec assign_job_posting(socket(), String.t()) ::
+  @spec assign_job_posting(socket(), Ecto.UUID.t()) ::
           {:noreply, socket()}
   def assign_job_posting(socket, job_id) do
     job_posting = Jobs.get_job_posting!(job_id)
