@@ -73,7 +73,7 @@ defmodule BemedaPersonal.MixProject do
       {:mux, "~> 3.2"},
       {:number, "~> 1.0"},
       {:plug, "~> 1.17"},
-      {:tidewave, "~> 0.1"}
+      {:tidewave, "~> 0.1", only: :dev}
     ]
   end
 
