@@ -1006,21 +1006,16 @@ defmodule BemedaPersonal.JobsTest do
                Jobs.update_job_application_tags(job_application, "urgent,qualified")
 
       tag_names = Enum.map(updated_application.tags, & &1.name)
-      assert ["qualified", "urgent"] = tag_names
+      assert ["urgent", "qualified"] = tag_names
       assert length(updated_application.tags) == 2
     end
 
     test "handles duplicate tags", %{job_application: job_application} do
-      assert {:ok, application_with_tags} =
-               Jobs.update_job_application_tags(job_application, "urgent,qualified")
-
-      assert {:ok, updated_application} =
-               Jobs.update_job_application_tags(application_with_tags, "urgent,qualified")
-
-      assert length(updated_application.tags) == 2
-
       assert {:ok, application_with_new_tag} =
-               Jobs.update_job_application_tags(updated_application, "urgent,interview")
+               Jobs.update_job_application_tags(
+                 job_application,
+                 "urgent,urgent,qualified,interview"
+               )
 
       tag_names = Enum.map(application_with_new_tag.tags, & &1.name)
       assert ["interview", "qualified", "urgent"] = Enum.sort(tag_names)
@@ -1032,7 +1027,7 @@ defmodule BemedaPersonal.JobsTest do
                Jobs.update_job_application_tags(job_application, "  urgent  ,,  ,qualified  ")
 
       tag_names = Enum.map(updated_application.tags, & &1.name)
-      assert ["qualified", "urgent"] = tag_names
+      assert ["urgent", "qualified"] = tag_names
       assert length(updated_application.tags) == 2
     end
 

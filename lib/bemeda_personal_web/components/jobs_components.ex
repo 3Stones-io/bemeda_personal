@@ -848,7 +848,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   label_class="block text-sm font-medium text-gray-700"
                 >
                   <:hidden_input>
-                    <.input field={f[:tags]} type="hidden" />
+                    <.input field={f[:tags]} type="hidden" data-input-type="filters" />
                   </:hidden_input>
                 </.tags_input>
               </div>
@@ -856,8 +856,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
             <div class="mt-6 flex justify-end gap-x-2">
               <button
                 type="button"
-                phx-click="clear_filters"
-                phx-target={@target}
+                phx-click={
+                  %JS{}
+                  |> JS.push("clear_filters", target: @target)
+                  |> JS.dispatch("clear_filters", to: "#tags-input")
+                }
                 class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
               >
                 Clear All

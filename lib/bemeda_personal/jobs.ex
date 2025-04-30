@@ -675,16 +675,13 @@ defmodule BemedaPersonal.Jobs do
          |> Repo.all()}
       end)
       |> Ecto.Multi.run(:update_job_application, fn _repo, %{all_tags: all_tags} ->
-        application_tags = job_application_tags(job_application, all_tags)
-        add_tags_to_job_application(job_application, application_tags)
+        add_tags_to_job_application(job_application, all_tags)
       end)
 
     Repo.transaction(multi)
   end
 
-  defp create_tags_transaction([]) do
-    {:ok, []}
-  end
+  defp create_tags_transaction([]), do: {:ok, []}
 
   defp create_tags_transaction(tag_names) do
     timestamp = DateTime.utc_now(:second)
@@ -720,19 +717,6 @@ defmodule BemedaPersonal.Jobs do
       |> String.downcase()
     end)
     |> Enum.reject(&(&1 == ""))
-  end
-
-  defp job_application_tags(job_application, tags) do
-    existing_tag_names = MapSet.new(job_application.tags, & &1.name)
-
-    filtered_new_tags =
-      Enum.reject(tags, fn tag ->
-        MapSet.member?(existing_tag_names, tag.name)
-      end)
-
-    [filtered_new_tags | job_application.tags]
-    |> List.flatten()
-    |> Enum.reverse()
   end
 
   defp add_tags_to_job_application(job_application, tags) do

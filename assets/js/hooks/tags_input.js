@@ -7,7 +7,7 @@ const TagsInput = {
     const inputContainer = hook.el
     const tagTemplate = this.el.querySelector('#tag-template')
 
-    const submitButton = this.el.querySelector('#submit-tag-button')
+    const submitButton = document.querySelector('#submit-tag-button')
 
     let tags = []
 
@@ -98,6 +98,15 @@ const TagsInput = {
       })
 
       hiddenInput.addEventListener('change', updateTagsFromInput)
+
+      if (hiddenInput.getAttribute('data-input-type') === 'filters') {
+        hook.el.addEventListener('clear_filters', () => {
+          tags = []
+          renderTags()
+          updateHiddenInput()
+          tagInput.value = ''
+        })
+      }
 
       if (submitButton) {
         submitButton.addEventListener('click', () => {
