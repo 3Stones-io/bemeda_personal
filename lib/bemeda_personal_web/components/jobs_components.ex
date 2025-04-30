@@ -640,6 +640,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :job, :any, required: true
   attr :resume, :any, default: nil
   attr :show_actions, :boolean, default: false
+  attr :tags_form, Phoenix.HTML.Form, required: true
   attr :target, :string, default: nil
 
   @spec applicant_detail(assigns()) :: output()
@@ -689,23 +690,31 @@ defmodule BemedaPersonalWeb.JobsComponents do
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">Tags</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <.tags_input>
-                <:hidden_input>
-                  <input
-                    type="hidden"
-                    value={Enum.map_join(@application.tags, ",", & &1.name)}
-                    id="application-tags-input"
-                  />
-                </:hidden_input>
-                <:submit_button>
-                  <button
-                    id="submit-tag-button"
-                    class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Update Tags
-                  </button>
-                </:submit_button>
-              </.tags_input>
+              <.form :let={f} for={@tags_form} phx-submit="update_tags" class="tags-input-form">
+                <.tags_input>
+                  <:hidden_input>
+                    <.input
+                      field={f[:tags]}
+                      type="hidden"
+                      value={Enum.map_join(@application.tags, ",", & &1.name)}
+                      id="application-tags-input"
+                    />
+                  </:hidden_input>
+
+                  <:submit_button>
+                    <button
+                      type="submit"
+                      class={[
+                        "inline-flex items-center px-2 py-1 border border-transparent",
+                        "text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600",
+                        "hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      ]}
+                    >
+                      Update Tags
+                    </button>
+                  </:submit_button>
+                </.tags_input>
+              </.form>
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -893,14 +902,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <div :if={@label} class={[@label_class]}>
           {@label}
         </div>
-
-        <div class="ml-auto mb-2">
-          {render_slot(@submit_button)}
-        </div>
       </div>
+
       <div
         id="tags-input"
-        class="mt-1 tag-filter-input flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px]"
+        class="mt-1 tag-filter-input flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px] w-full"
         phx-hook="TagsInput"
         phx-update="ignore"
       >
@@ -920,12 +926,17 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
         <div class="tag-container flex flex-wrap gap-2"></div>
 
-        <div class="flex-1 min-w-[100px]">
+        <div class={[
+          "min-w-[100px] w-full flex-1",
+          @submit_button && "flex justify-between"
+        ]}>
           <input
             type="text"
-            class="tag-input w-full border-none p-0 focus:ring-0 text-sm"
+            class="grow tag-input border-none p-0 focus:ring-0 text-sm"
             placeholder="Type tag name and press Enter"
           />
+
+          {render_slot(@submit_button)}
         </div>
       </div>
     </div>

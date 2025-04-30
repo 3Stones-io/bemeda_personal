@@ -13,6 +13,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     job_posting = application.job_posting
     resume = Resumes.get_user_resume(application.user)
     full_name = "#{application.user.first_name} #{application.user.last_name}"
+    tags_form_fields = %{"tags" => ""}
 
     {:noreply,
      socket
@@ -20,7 +21,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
      |> assign(:company, company)
      |> assign(:job_posting, job_posting)
      |> assign(:page_title, "Applicant: #{full_name}")
-     |> assign(:resume, resume)}
+     |> assign(:resume, resume)
+     |> assign(:tags_form, to_form(tags_form_fields))}
   end
 
   @impl Phoenix.LiveView

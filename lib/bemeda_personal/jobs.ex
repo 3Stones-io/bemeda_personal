@@ -628,20 +628,6 @@ defmodule BemedaPersonal.Jobs do
     JobApplication.changeset(job_application, attrs)
   end
 
-  defp broadcast_event(topic, message) do
-    PubSub.broadcast(
-      BemedaPersonal.PubSub,
-      topic,
-      message
-    )
-  end
-
-  defp needs_job_posting_join?(filters) do
-    filters
-    |> Map.keys()
-    |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
-  end
-
   @doc """
   Adds tags to a job application, creating any tags that don't exist.
 
@@ -654,19 +640,30 @@ defmodule BemedaPersonal.Jobs do
   @spec update_job_application_tags(job_application(), tags()) ::
           {:ok, job_application()} | {:error, any()}
   def update_job_application_tags(%JobApplication{} = job_application, tags) do
-    job_application = Repo.preload(job_application, :tags)
     normalized_tags = normalize_tags(tags)
 
-    result = execute_tag_application_transaction(job_application, normalized_tags)
+    job_application
+    |> Repo.preload(:tags)
+    |> execute_tag_application_transaction(normalized_tags)
+    |> handle_tag_application_result()
+  end
 
-    handle_tag_application_result(result)
+  defp normalize_tags(tags) do
+    tags
+    |> String.split(",")
+    |> Stream.map(fn tag ->
+      tag
+      |> String.trim()
+      |> String.downcase()
+    end)
+    |> Enum.reject(&(&1 == ""))
   end
 
   defp execute_tag_application_transaction(job_application, normalized_tags) do
     multi =
       Ecto.Multi.new()
       |> Ecto.Multi.run(:create_tags, fn _repo, _changes ->
-        create_tags_transaction(normalized_tags)
+        create_tags_query(normalized_tags)
       end)
       |> Ecto.Multi.run(:all_tags, fn _repo, _changes ->
         {:ok,
@@ -681,9 +678,9 @@ defmodule BemedaPersonal.Jobs do
     Repo.transaction(multi)
   end
 
-  defp create_tags_transaction([]), do: {:ok, []}
+  defp create_tags_query([]), do: {:ok, []}
 
-  defp create_tags_transaction(tag_names) do
+  defp create_tags_query(tag_names) do
     timestamp = DateTime.utc_now(:second)
 
     placeholders = %{timestamp: timestamp}
@@ -706,17 +703,6 @@ defmodule BemedaPersonal.Jobs do
     )
 
     {:ok, tag_names}
-  end
-
-  defp normalize_tags(tags) do
-    tags
-    |> String.split(",")
-    |> Enum.map(fn tag ->
-      tag
-      |> String.trim()
-      |> String.downcase()
-    end)
-    |> Enum.reject(&(&1 == ""))
   end
 
   defp add_tags_to_job_application(job_application, tags) do
@@ -745,5 +731,19 @@ defmodule BemedaPersonal.Jobs do
       "#{@job_application_topic}:user:#{job_application.user_id}",
       {:user_job_application_updated, job_application}
     )
+  end
+
+  defp broadcast_event(topic, message) do
+    PubSub.broadcast(
+      BemedaPersonal.PubSub,
+      topic,
+      message
+    )
+  end
+
+  defp needs_job_posting_join?(filters) do
+    filters
+    |> Map.keys()
+    |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
   end
 end

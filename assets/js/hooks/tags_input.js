@@ -7,8 +7,6 @@ const TagsInput = {
     const inputContainer = hook.el
     const tagTemplate = this.el.querySelector('#tag-template')
 
-    const submitButton = document.querySelector('#submit-tag-button')
-
     let tags = []
 
     const renderTags = () => {
@@ -105,14 +103,6 @@ const TagsInput = {
           renderTags()
           updateHiddenInput()
           tagInput.value = ''
-        })
-      }
-
-      if (submitButton) {
-        submitButton.addEventListener('click', () => {
-          hook.pushEvent('update_tags', {
-            tags: hiddenInput.value,
-          })
         })
       }
     }
