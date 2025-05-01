@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
   alias Phoenix.LiveView.JS
 
@@ -13,9 +14,9 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     company = Companies.get_company_by_user(current_user)
 
     if connected?(socket) && company do
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "company:#{current_user.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_application:company:#{company.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "job_posting:company:#{company.id}")
+      Endpoint.subscribe("company:#{current_user.id}")
+      Endpoint.subscribe("job_application:company:#{company.id}")
+      Endpoint.subscribe("job_posting:company:#{company.id}")
     end
 
     {:ok,

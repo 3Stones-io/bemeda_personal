@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
@@ -465,6 +466,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :id, :string, required: true
   attr :show_video_description, :boolean
   attr :events_target, :string
+  attr :myself, :any, required: true
 
   @spec video_upload_input_component(assigns()) :: output()
   def video_upload_input_component(assigns) do
@@ -476,6 +478,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         @show_video_description && "hidden"
       ]}
       phx-hook="VideoUpload"
+      phx-target={@myself}
       phx-update="ignore"
       data-events-target={@events_target}
     >
@@ -516,7 +519,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :show_video_description, :boolean, default: true
-  attr :mux_data, :any, required: true
+  attr :media_asset, :any, required: true
 
   @spec video_preview_component(assigns()) :: output()
   def video_preview_component(assigns) do
@@ -551,7 +554,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-gray-900 truncate">
-              {@mux_data.file_name}
+              {@media_asset.file_name}
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -681,12 +684,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </dl>
       </div>
 
-      <div
-        :if={@application.mux_data && @application.mux_data.playback_id}
-        class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
-      >
-        <mux-player playback-id={@application.mux_data.playback_id} class="aspect-video"></mux-player>
-      </div>
+      <SharedComponents.video_player media_asset={@application.media_asset} />
     </div>
 
     <div :if={@resume} class="bg-white shadow overflow-hidden sm:rounded-lg">

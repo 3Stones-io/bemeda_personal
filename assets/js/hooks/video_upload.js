@@ -28,6 +28,7 @@ export default VideoUpload = {
       uploadProgressElement.querySelector('#upload-progress')
 
     let currentUpload
+    let uploadId
 
     const restoreDropzoneStyles = () => {
       videoUploadInputsContainer.classList.remove('border-indigo-600')
@@ -43,7 +44,7 @@ export default VideoUpload = {
       return `${decimal} ${exponent ? `${'kMGTPEZY'[exponent - 1]}B` : 'B'}`
     }
 
-    const uploadVideo = (newFiles) => {
+    const uploadVideo = (file) => {
       if (currentUpload) {
         currentUpload.abort()
         currentUpload = null
@@ -52,7 +53,7 @@ export default VideoUpload = {
       hook.pushEventTo(
         `#${eventsTarget}`,
         'upload-video',
-        { filename: newFiles.name, type: newFiles.type },
+        { filename: file.name, type: file.type },
         (response) => {
           if (response.error) {
             uploadProgressElement.classList.remove('hidden')
@@ -65,16 +66,22 @@ export default VideoUpload = {
             return
           }
 
+          uploadId = response.upload_id
+
           progressBar.classList.add('bg-indigo-600')
           progressBar.classList.remove('bg-green-600')
           uploadProgressElement.classList.remove('hidden')
-          filenameElement.textContent = newFiles.name
-          fileSizeElement.textContent = fileSizeSI(newFiles.size)
+          filenameElement.textContent = file.name
+          fileSizeElement.textContent = fileSizeSI(file.size)
 
           currentUpload = UpChunk.createUpload({
             endpoint: response.upload_url,
-            file: newFiles,
+            file: file,
             chunkSize: 30720,
+            method: 'PUT',
+            headers: {
+              'Content-Type': file.type,
+            },
           })
 
           currentUpload.on('progress', (entry) => {
@@ -95,9 +102,14 @@ export default VideoUpload = {
           })
 
           currentUpload.on('success', (_entry) => {
-            progressBar.classList.remove('bg-indigo-600')
+            progressBar.classList.remove('bg-blue-500')
             progressBar.classList.add('bg-green-600')
+            progressBar.classList.remove('processing-bar')
             percentageElement.textContent = 'Completed'
+
+            hook.pushEventTo(`#${eventsTarget}`, 'upload-completed', {
+              upload_id: uploadId,
+            })
           })
         }
       )
@@ -110,7 +122,7 @@ export default VideoUpload = {
       deleteButton.addEventListener('click', () => {
         videoUploadInput.classList.remove('hidden')
         videoDescription.classList.add('hidden')
-        hook.pushEventTo(`#${eventsTarget}`, 'edit-video')
+        hook.pushEventTo(`#${eventsTarget}`, 'delete-video')
       })
     }
 

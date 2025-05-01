@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationsListComponent
 
   @impl Phoenix.LiveView
@@ -10,10 +11,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     company = socket.assigns.company
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_application:company:#{company.id}"
-      )
+      Endpoint.subscribe("job_application:company:#{company.id}")
     end
 
     {:ok,

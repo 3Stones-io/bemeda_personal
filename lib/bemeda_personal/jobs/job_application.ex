@@ -8,7 +8,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobPosting
-  alias BemedaPersonal.Jobs.MuxData
+  alias BemedaPersonal.Media.MediaAsset
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -20,7 +20,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   schema "job_applications" do
     field :cover_letter, :string
     has_many :messages, Message
-    embeds_one :mux_data, MuxData, on_replace: :update
+    has_one :media_asset, MediaAsset
     belongs_to :job_posting, JobPosting
     belongs_to :user, User
 
@@ -31,7 +31,6 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   def changeset(job_application, attrs) do
     job_application
     |> cast(attrs, [:cover_letter])
-    |> cast_embed(:mux_data)
     |> validate_required([:cover_letter])
   end
 end

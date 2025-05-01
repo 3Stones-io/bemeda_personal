@@ -8,6 +8,7 @@ defmodule BemedaPersonal.ResumesTest do
   alias BemedaPersonal.Resumes.Education
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonal.Resumes.WorkExperience
+  alias BemedaPersonalWeb.Endpoint
 
   describe "get_or_create_resume_by_user/1" do
     test "returns existing resume" do
@@ -31,7 +32,7 @@ defmodule BemedaPersonal.ResumesTest do
       resume = Resumes.get_or_create_resume_by_user(user)
 
       topic = "resume"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       new_user = user_fixture()
       new_resume = Resumes.get_or_create_resume_by_user(new_user)
@@ -89,7 +90,7 @@ defmodule BemedaPersonal.ResumesTest do
       resume = resume_fixture(user)
 
       topic = "resume"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
 
@@ -258,7 +259,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "broadcasts education update event", %{resume: resume} do
       topic = "education:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       attrs = %{
         institution: "University of Example",
@@ -290,7 +291,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "broadcasts education delete event", %{education: education, resume: resume} do
       topic = "education:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       {:ok, deleted_education} = Resumes.delete_education(education)
 
@@ -487,7 +488,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "broadcasts work experience update event", %{resume: resume} do
       topic = "work_experience:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       attrs = %{
         company_name: "Example Corp",
@@ -522,7 +523,7 @@ defmodule BemedaPersonal.ResumesTest do
       resume: resume
     } do
       topic = "work_experience:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       {:ok, deleted_work_experience} = Resumes.delete_work_experience(work_experience)
 

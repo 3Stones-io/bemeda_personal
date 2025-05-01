@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationLive.FormComponent
   alias BemedaPersonalWeb.JobApplicationsListComponent
 
@@ -11,10 +12,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     current_user = socket.assigns.current_user
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_application:user:#{current_user.id}"
-      )
+      Endpoint.subscribe("job_application:user:#{current_user.id}")
     end
 
     {:ok,
@@ -31,15 +29,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   @impl Phoenix.LiveView
   def handle_info({:filters_updated, filters}, socket) do
     {:noreply, push_patch(socket, to: ~p"/job_applications?#{filters}")}
-  end
-
-  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
-    send_update(FormComponent,
-      id: "job-application-form",
-      mux_data: %{asset_id: asset_id, playback_id: playback_id}
-    )
-
-    {:noreply, socket}
   end
 
   def handle_info({event, job_application}, socket)
