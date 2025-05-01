@@ -90,6 +90,25 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     {:noreply, assign(socket, :rating_modal_open, false)}
   end
 
+  def handle_info({:rating_updated, %{ratee_type: "User", ratee_id: ratee_id} = rating}, socket) do
+    if socket.assigns.application.user.id == ratee_id do
+      socket =
+        if socket.assigns.company && rating.rater_type == "Company" &&
+             rating.rater_id == socket.assigns.company.id do
+          socket
+          |> assign(:current_user_rating, rating)
+          |> assign(:rating_modal_open, false)
+        else
+          assign(socket, :rating_modal_open, false)
+        end
+
+      updated_application = Jobs.get_job_application!(socket.assigns.application.id)
+      {:noreply, assign(socket, :application, updated_application)}
+    else
+      {:noreply, socket}
+    end
+  end
+
   @impl Phoenix.LiveView
   def handle_info(
         {:submit_rating,
@@ -114,6 +133,18 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     with true <- can_rate?(socket),
          {:ok, rating} <- create_or_update_rating(current_user_rating, attrs) do
       updated_application = Jobs.get_job_application!(application.id)
+
+      Phoenix.PubSub.broadcast(
+        BemedaPersonal.PubSub,
+        "rating:#{entity_type}:#{entity_id}",
+        {:rating_updated, rating}
+      )
+
+      Phoenix.PubSub.broadcast(
+        BemedaPersonal.PubSub,
+        "rating:#{entity_type}:#{entity_id}",
+        {:rating_updated, entity_type, entity_id}
+      )
 
       {:noreply,
        socket

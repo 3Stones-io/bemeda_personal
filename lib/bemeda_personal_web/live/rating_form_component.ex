@@ -69,7 +69,7 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
   end
 
   @impl Phoenix.LiveComponent
-  def handle_event("submit", params, socket) do
+  def handle_event(event, params, socket) when event in ["submit", "submit-rating"] do
     send(
       self(),
       {:submit_rating,

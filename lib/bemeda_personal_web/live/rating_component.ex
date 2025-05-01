@@ -36,7 +36,42 @@ defmodule BemedaPersonalWeb.RatingComponent do
   end
 
   def handle_event("submit-rating", params, socket) do
-    process_rating_submission(params, socket)
+    %{
+      "score" => score,
+      "comment" => comment
+    } = params
+
+    {rater_type, rater_id} =
+      cond do
+        socket.assigns[:company] && Map.has_key?(socket.assigns.company, :id) ->
+          {"Company", socket.assigns.company.id}
+
+        socket.assigns.current_user && Map.get(socket.assigns.current_user, :company_id) ->
+          {"Company", socket.assigns.current_user.company_id}
+
+        true ->
+          {"User", socket.assigns.current_user.id}
+      end
+
+    attrs = %{
+      rater_type: rater_type,
+      rater_id: rater_id,
+      ratee_type: socket.assigns.entity_type,
+      ratee_id: socket.assigns.entity_id,
+      score: String.to_integer(score),
+      comment: comment
+    }
+
+    process_rating_submission(
+      %{
+        attrs: attrs,
+        score: score,
+        comment: comment,
+        entity_id: socket.assigns.entity_id,
+        entity_type: socket.assigns.entity_type
+      },
+      socket
+    )
   end
 
   @impl Phoenix.LiveComponent
@@ -145,7 +180,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
           entity_type={@entity_type}
           entity_name={@entity_name}
           current_rating={@current_user_rating}
-          on_submit={JS.push("submit", target: "##{@rating_form_id}")}
+          on_submit={JS.push("submit-rating", target: @myself)}
           on_cancel={JS.push("close-rating-modal", target: @myself)}
         />
       </.modal>
@@ -219,25 +254,21 @@ defmodule BemedaPersonalWeb.RatingComponent do
   end
 
   defp process_rating_submission(
-         %{score: score, comment: comment, entity_id: entity_id, entity_type: entity_type},
+         %{attrs: attrs, entity_id: entity_id, entity_type: entity_type},
          socket
        ) do
-    attrs = %{
-      rater_type: "Company",
-      rater_id: socket.assigns.current_user.company_id,
-      ratee_type: entity_type,
-      ratee_id: entity_id,
-      score: String.to_integer(score),
-      comment: comment
-    }
-
     with true <- can_rate?(socket),
          {:ok, rating} <- create_or_update_rating(socket.assigns.current_user_rating, attrs) do
-      # Broadcast to the pubsub to update all subscribers
       Phoenix.PubSub.broadcast(
         BemedaPersonal.PubSub,
         "rating:#{entity_type}:#{entity_id}",
         {:rating_updated, rating}
+      )
+
+      Phoenix.PubSub.broadcast(
+        BemedaPersonal.PubSub,
+        "rating:#{entity_type}:#{entity_id}",
+        {:rating_updated, entity_type, entity_id}
       )
 
       {:noreply,
