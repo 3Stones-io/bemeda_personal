@@ -84,8 +84,7 @@ config :phoenix_live_view,
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 
-# Configure MUX
-config :mux,
-  access_token_id: System.get_env("MUX_TOKEN_ID"),
-  access_token_secret: System.get_env("MUX_TOKEN_SECRET"),
-  webhook_secret: System.get_env("MUX_WEBHOOK_SECRET")
+config :bemeda_personal, :tigris,
+  access_key_id: System.get_env("TIGRIS_ACCESS_KEY_ID"),
+  bucket: System.get_env("TIGRIS_BUCKET"),
+  secret_access_key: System.get_env("TIGRIS_SECRET_ACCESS_KEY")

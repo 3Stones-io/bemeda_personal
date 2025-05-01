@@ -172,10 +172,6 @@ input[type='date'].unsupported {
   background-image: none;
 }
 
-mux-player {
-  @apply w-full flex items-center justify-center;
-}
-
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;

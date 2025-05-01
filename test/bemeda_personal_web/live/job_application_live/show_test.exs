@@ -5,16 +5,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
   import BemedaPersonal.ResumesFixtures
-  import Mox
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Chat
-  alias BemedaPersonal.MuxHelpers.Client
-  alias BemedaPersonal.MuxHelpers.WebhookHandler
-
-  @endpoint BemedaPersonalWeb.Endpoint
-
-  setup :verify_on_exit!
 
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
@@ -87,11 +80,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           job,
           %{
             cover_letter: "Application with video",
-            mux_data: %{
-              asset_id: "asset_123",
+            media_data: %{
               file_name: "test_video.mp4",
-              playback_id: "test-playback-id",
-              type: "video/mp4"
+              type: "video/mp4",
+              upload_id: Ecto.UUID.generate()
             }
           }
         )
@@ -102,7 +94,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application_with_video.job_posting_id}/job_applications/#{job_application_with_video.id}"
         )
 
-      assert html =~ ~s(<mux-player playback-id="test-playback-id")
+      assert html =~ ~s(<video controls)
     end
 
     test "does not display video player when application has no video", %{
@@ -115,7 +107,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      refute html =~ ~s(<mux-player)
+      refute html =~ ~s(<video controls)
     end
 
     test "shows the cover letter in chat messages when viewing job application", %{
@@ -145,11 +137,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           job,
           %{
             cover_letter: "Application with video",
-            mux_data: %{
-              asset_id: "asset_123",
-              playback_id: "test-playback-id",
+            media_data: %{
               file_name: "test_video.mp4",
-              type: "video/mp4"
+              status: :uploaded,
+              type: "video/mp4",
+              upload_id: Ecto.UUID.generate()
             }
           }
         )
@@ -160,8 +152,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      assert html =~ "test-playback-id"
-      assert html =~ "mux-player"
+      assert html =~ ~s(<video controls)
+      assert html =~ "Application with video"
 
       messages = Chat.list_messages(job_application)
       assert length(messages) == 1
@@ -219,14 +211,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert has_element?(view, "#chat-form:not(.is-invalid)")
     end
 
-    test "allows user to upload media files", %{
+    test "allows user to upload video(and audio) messages", %{
       conn: conn,
       job_application: job_application
     } do
-      expect(Client.Mock, :create_direct_upload, fn ->
-        {:ok, "https://storage.googleapis.com/video-storage-upload-url", "upload-123"}
-      end)
-
       {:ok, view, _html} =
         live(
           conn,
@@ -242,26 +230,28 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       updated_html = render(view)
       assert updated_html =~ "hero-arrow-up-on-square"
 
-      messages = Chat.list_messages(job_application)
-
-      uploaded_message =
-        Enum.find(messages, fn m -> m.mux_data && m.mux_data.file_name == "test-video.mp4" end)
+      [_job_application_message, uploaded_message] = Chat.list_messages(job_application)
 
       assert uploaded_message
-      assert uploaded_message.mux_data.file_name == "test-video.mp4"
-      assert uploaded_message.mux_data.type == "video/mp4"
-      assert uploaded_message.mux_data.upload_id == "upload-123"
-      assert uploaded_message.mux_data.playback_id == nil
+      assert uploaded_message.media_asset.file_name == "test-video.mp4"
+      assert uploaded_message.media_asset.type == "video/mp4"
+      assert uploaded_message.media_asset.status == :pending
+
+      render_hook(
+        view,
+        "update-message",
+        %{message_id: uploaded_message.id, status: "uploaded"}
+      )
+
+      updated_message = Chat.get_message!(uploaded_message.id)
+
+      assert updated_message.media_asset.status == :uploaded
     end
 
-    test "updates media when webhook is processed", %{
+    test "allows user to upload non-media files (images, pdfs)", %{
       conn: conn,
       job_application: job_application
     } do
-      expect(Client.Mock, :create_direct_upload, fn ->
-        {:ok, "https://storage.googleapis.com/video-storage-upload-url", "upload-123"}
-      end)
-
       {:ok, view, _html} =
         live(
           conn,
@@ -271,32 +261,59 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       render_hook(
         view,
         "upload-media",
-        %{filename: "test-video.mp4", type: "video/mp4"}
+        %{filename: "document.pdf", type: "application/pdf"}
       )
 
-      messages = Chat.list_messages(job_application)
+      [_job_application_message, pdf_message] = Chat.list_messages(job_application)
 
-      _uploaded_message =
-        Enum.find(messages, fn m -> m.mux_data && m.mux_data.file_name == "test-video.mp4" end)
+      assert pdf_message.media_asset.file_name == "document.pdf"
+      assert pdf_message.media_asset.type == "application/pdf"
+      assert pdf_message.media_asset.status == :pending
 
-      webhook_response = %{
-        upload_id: "upload-123",
-        asset_id: "asset_abc123",
-        playback_id: "play_xyz789"
-      }
+      render_hook(
+        view,
+        "update-message",
+        %{message_id: pdf_message.id, status: "uploaded"}
+      )
 
-      WebhookHandler.handle_webhook_response(webhook_response)
+      updated_pdf_message = Chat.get_message!(pdf_message.id)
+      assert updated_pdf_message.media_asset.status == :uploaded
 
-      updated_messages = Chat.list_messages(job_application)
+      pdf_html = render(view)
 
-      assert %Chat.Message{} =
-               updated_message =
-               Enum.find(updated_messages, fn m ->
-                 m.mux_data && m.mux_data.file_name == "test-video.mp4"
-               end)
+      assert pdf_html =~
+               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.id})
 
-      assert updated_message.mux_data.asset_id == "asset_abc123"
-      assert updated_message.mux_data.playback_id == "play_xyz789"
+      assert pdf_html =~ "hero-document"
+      assert pdf_html =~ "document.pdf"
+
+      render_hook(
+        view,
+        "upload-media",
+        %{filename: "profile.jpg", type: "image/jpeg"}
+      )
+
+      [_job_application_message, _pdf_message, image_message] =
+        Chat.list_messages(job_application)
+
+      assert image_message
+      assert image_message.media_asset.file_name == "profile.jpg"
+      assert image_message.media_asset.type == "image/jpeg"
+      assert image_message.media_asset.status == :pending
+
+      render_hook(
+        view,
+        "update-message",
+        %{message_id: image_message.id, status: "uploaded"}
+      )
+
+      updated_image_message = Chat.get_message!(image_message.id)
+      assert updated_image_message.media_asset.status == :uploaded
+
+      image_html = render(view)
+
+      assert image_html =~
+               ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.id})
     end
   end
 end

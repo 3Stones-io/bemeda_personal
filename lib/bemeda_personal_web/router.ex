@@ -17,10 +17,6 @@ defmodule BemedaPersonalWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :mux do
-    plug BemedaPersonalWeb.Plugs.MuxSignature
-  end
-
   scope "/", BemedaPersonalWeb do
     pipe_through [:browser, :assign_current_user]
 
@@ -33,13 +29,6 @@ defmodule BemedaPersonalWeb.Router do
       live "/company/:id", CompanyPublicLive.Show, :show
       live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
     end
-  end
-
-  # Mux webhook endpoint
-  scope "/", BemedaPersonalWeb do
-    pipe_through [:mux]
-
-    post "/webhooks/mux", MuxWebhookController, :handle
   end
 
   # Other scopes may use custom stacks.

@@ -55,10 +55,10 @@ env:
     - DATABASE_URL
     - MAILGUN_API_KEY
     - MAILGUN_DOMAIN
-    - MUX_TOKEN_ID
-    - MUX_TOKEN_SECRET
-    - MUX_WEBHOOK_SECRET
     - SECRET_KEY_BASE
+    - TIGRIS_ACCESS_KEY_ID
+    - TIGRIS_BUCKET
+    - TIGRIS_SECRET_ACCESS_KEY
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal app logs -r job" will tail logs from the first server in the job section.
