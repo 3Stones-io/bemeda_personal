@@ -38,3 +38,8 @@ config :phoenix, :plug_init_mode, :runtime
 # Enable helpful, but potentially expensive runtime checks
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
+
+config :bemeda_personal, :tigris,
+  access_key_id: "tigris_access_key_id",
+  secret_access_key: "tigris_secret_access_key",
+  bucket: "tigris-bucket"

@@ -9,9 +9,11 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
+  alias Ecto.Multi
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -59,7 +61,7 @@ defmodule BemedaPersonal.Jobs do
     |> order_by([j], desc: j.inserted_at)
     |> limit(^limit)
     |> Repo.all()
-    |> Repo.preload(:company)
+    |> Repo.preload([:company, :media_asset])
   end
 
   defp apply_filter({:company_id, company_id}, dynamic) do
@@ -122,7 +124,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_posting!(id) do
     JobPosting
     |> Repo.get!(id)
-    |> Repo.preload(:company)
+    |> Repo.preload([:company, :media_asset])
   end
 
   @doc """
@@ -140,14 +142,27 @@ defmodule BemedaPersonal.Jobs do
   @spec create_job_posting(company(), attrs()) ::
           {:ok, job_posting()} | {:error, changeset()}
   def create_job_posting(%Company{} = company, attrs \\ %{}) do
-    result =
+    changeset =
       %JobPosting{}
       |> JobPosting.changeset(attrs)
       |> Changeset.put_assoc(:company, company)
-      |> Repo.insert()
 
-    case result do
-      {:ok, job_posting} ->
+    multi =
+      Multi.new()
+      |> Multi.insert(:job_posting, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_posting: job_posting} ->
+        handle_media_asset(repo, nil, job_posting, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_posting: job_posting}} ->
+        job_posting =
+          Repo.preload(
+            job_posting,
+            [:company, :media_asset],
+            force: true
+          )
+
         broadcast_event(
           "#{@job_posting_topic}:company:#{company.id}",
           "job_posting_created",
@@ -162,8 +177,8 @@ defmodule BemedaPersonal.Jobs do
 
         {:ok, job_posting}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 
@@ -182,13 +197,22 @@ defmodule BemedaPersonal.Jobs do
   @spec update_job_posting(job_posting(), attrs()) ::
           {:ok, job_posting()} | {:error, changeset()}
   def update_job_posting(%JobPosting{} = job_posting, attrs \\ %{}) do
-    result =
-      job_posting
-      |> JobPosting.changeset(attrs)
-      |> Repo.update()
+    changeset = JobPosting.changeset(job_posting, attrs)
 
-    case result do
-      {:ok, updated_job_posting} ->
+    multi =
+      Multi.new()
+      |> Multi.update(:job_posting, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_posting: updated_job_posting} ->
+        handle_media_asset(repo, job_posting.media_asset, updated_job_posting, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_posting: updated_job_posting}} ->
+        updated_job_posting =
+          updated_job_posting
+          |> Repo.reload()
+          |> Repo.preload([:company, :media_asset])
+
         broadcast_event(
           "#{@job_posting_topic}:company:#{job_posting.company.id}",
           "job_posting_updated",
@@ -203,9 +227,28 @@ defmodule BemedaPersonal.Jobs do
 
         {:ok, updated_job_posting}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
+  end
+
+  defp handle_media_asset(repo, existing_media_asset, parent, attrs) do
+    media_data = Map.get(attrs, "media_data") || Map.get(attrs, :media_data)
+
+    process_media_data(media_data, repo, existing_media_asset, parent)
+  end
+
+  defp process_media_data(nil, _repo, nil, _parent), do: {:ok, nil}
+
+  defp process_media_data(nil, _repo, existing_media_asset, _parent),
+    do: {:ok, existing_media_asset}
+
+  defp process_media_data(media_data, _repo, nil, parent) do
+    Media.create_media_asset(parent, media_data)
+  end
+
+  defp process_media_data(media_data, _repo, existing_media_asset, _parent) do
+    Media.update_media_asset(existing_media_asset, media_data)
   end
 
   @doc """
@@ -293,13 +336,13 @@ defmodule BemedaPersonal.Jobs do
   def list_job_applications(%{company_id: _company_id} = filters, limit) do
     job_post_with_applications_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, job_posting: [:company]])
+    |> Repo.preload([:user, :media_asset, job_posting: [:company]])
   end
 
   def list_job_applications(filters, limit) do
     job_application_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, job_posting: [:company]])
+    |> Repo.preload([:user, :media_asset, job_posting: [:company]])
   end
 
   defp list_applications(query, filters, limit) do
@@ -506,7 +549,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:job_posting, :user])
+    |> Repo.preload([:job_posting, :media_asset, :user])
   end
 
   @doc """
@@ -522,6 +565,7 @@ defmodule BemedaPersonal.Jobs do
   def get_user_job_application(%User{} = user, %JobPosting{} = job) do
     JobApplication
     |> where([ja], ja.user_id == ^user.id and ja.job_posting_id == ^job.id)
+    |> preload([ja], [:media_asset])
     |> Repo.one()
   end
 
@@ -540,15 +584,27 @@ defmodule BemedaPersonal.Jobs do
   @spec create_job_application(user(), job_posting(), attrs()) ::
           {:ok, job_application()} | {:error, changeset()}
   def create_job_application(%User{} = user, %JobPosting{} = job_posting, attrs \\ %{}) do
-    result =
+    changeset =
       %JobApplication{}
       |> JobApplication.changeset(attrs)
       |> Changeset.put_assoc(:user, user)
       |> Changeset.put_assoc(:job_posting, job_posting)
-      |> Repo.insert()
 
-    case result do
-      {:ok, job_application} ->
+    multi =
+      Multi.new()
+      |> Multi.insert(:job_application, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_application: job_application} ->
+        handle_media_asset(repo, nil, job_application, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_application: job_application}} ->
+        job_application =
+          Repo.preload(
+            job_application,
+            [:job_posting, :media_asset, :user]
+          )
+
         :ok =
           broadcast_event(
             "#{@job_application_topic}:company:#{job_posting.company_id}",
@@ -565,8 +621,8 @@ defmodule BemedaPersonal.Jobs do
 
         {:ok, job_application}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 
@@ -585,13 +641,24 @@ defmodule BemedaPersonal.Jobs do
   @spec update_job_application(job_application(), attrs()) ::
           {:ok, job_application()} | {:error, changeset()}
   def update_job_application(%JobApplication{} = job_application, attrs) do
-    result =
-      job_application
-      |> JobApplication.changeset(attrs)
-      |> Repo.update()
+    changeset = JobApplication.changeset(job_application, attrs)
 
-    case result do
-      {:ok, updated_job_application} ->
+    multi =
+      Multi.new()
+      |> Multi.update(:job_application, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_application: updated_job_application} ->
+        handle_media_asset(repo, job_application.media_asset, updated_job_application, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_application: updated_job_application}} ->
+        updated_job_application =
+          Repo.preload(
+            updated_job_application,
+            [:job_posting, :user, :media_asset],
+            force: true
+          )
+
         broadcast_event(
           "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
           "company_job_application_updated",
@@ -606,8 +673,8 @@ defmodule BemedaPersonal.Jobs do
 
         {:ok, updated_job_application}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 

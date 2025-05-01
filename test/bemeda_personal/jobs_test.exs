@@ -380,6 +380,39 @@ defmodule BemedaPersonal.JobsTest do
       assert job_posting.description == "some description that is long enough"
       assert job_posting.title == "some valid title"
       assert job_posting.company_id == company.id
+      assert job_posting.media_asset == nil
+    end
+
+    test "with valid data including media_data creates a job_posting with media asset", %{
+      company: company
+    } do
+      upload_id = Ecto.UUID.generate()
+
+      valid_attrs = %{
+        "currency" => "some currency",
+        "description" => "some description that is long enough",
+        "employment_type" => "some employment_type",
+        "experience_level" => "some experience_level",
+        "location" => "some location",
+        "remote_allowed" => true,
+        "salary_max" => 42,
+        "salary_min" => 42,
+        "title" => "some valid title",
+        "media_data" => %{
+          "file_name" => "test_file.jpg",
+          "upload_id" => upload_id
+        }
+      }
+
+      assert {:ok, %Jobs.JobPosting{} = job_posting} =
+               Jobs.create_job_posting(company, valid_attrs)
+
+      assert job_posting.description == "some description that is long enough"
+      assert job_posting.title == "some valid title"
+      assert job_posting.company_id == company.id
+      assert job_posting.media_asset
+      assert job_posting.media_asset.file_name == "test_file.jpg"
+      assert job_posting.media_asset.upload_id == upload_id
     end
 
     test "with invalid data returns error changeset", %{company: company} do
@@ -438,7 +471,7 @@ defmodule BemedaPersonal.JobsTest do
                Jobs.create_job_posting(company, invalid_attrs)
     end
 
-    test "broadcasts job_posting_updated event when creating a new job posting", %{
+    test "broadcasts job_posting_created event when creating a new job posting", %{
       company: company
     } do
       company_topic = "job_posting:company:#{company.id}"
@@ -482,6 +515,55 @@ defmodule BemedaPersonal.JobsTest do
       assert updated_job_posting.description == "some updated description that is long enough"
       assert updated_job_posting.title == "some updated valid title"
       assert updated_job_posting.remote_allowed == false
+    end
+
+    test "with valid data including media_data updates the job_posting and creates a media asset",
+         %{job_posting: job_posting} do
+      update_attrs = %{
+        "description" => "some updated description that is long enough",
+        "title" => "some updated valid title",
+        "remote_allowed" => false,
+        "media_data" => %{
+          "file_name" => "updated_file.jpg"
+        }
+      }
+
+      assert {:ok, %Jobs.JobPosting{} = updated_job_posting} =
+               Jobs.update_job_posting(job_posting, update_attrs)
+
+      assert updated_job_posting.description == "some updated description that is long enough"
+      assert updated_job_posting.title == "some updated valid title"
+      assert updated_job_posting.remote_allowed == false
+      assert updated_job_posting.media_asset.file_name == "updated_file.jpg"
+    end
+
+    test "with valid data updates existing media asset when present", %{job_posting: job_posting} do
+      upload_id = Ecto.UUID.generate()
+
+      initial_media_attrs = %{
+        "media_data" => %{
+          "file_name" => "initial_file.jpg",
+          "upload_id" => upload_id
+        }
+      }
+
+      {:ok, job_posting_with_media} = Jobs.update_job_posting(job_posting, initial_media_attrs)
+      assert job_posting_with_media.media_asset.file_name == "initial_file.jpg"
+
+      update_attrs = %{
+        "description" => "some updated description that is long enough",
+        "media_data" => %{
+          "file_name" => "updated_file.jpg",
+          "upload_id" => upload_id
+        }
+      }
+
+      assert {:ok, %Jobs.JobPosting{} = updated_job_posting} =
+               Jobs.update_job_posting(job_posting_with_media, update_attrs)
+
+      assert updated_job_posting.media_asset
+      assert updated_job_posting.media_asset.file_name == "updated_file.jpg"
+      assert updated_job_posting.media_asset.upload_id == upload_id
     end
 
     test "with invalid data returns error changeset", %{job_posting: job_posting} do
@@ -607,7 +689,12 @@ defmodule BemedaPersonal.JobsTest do
         |> Repo.preload(:company)
 
       valid_attrs = %{
-        cover_letter: "some cover letter"
+        "cover_letter" => "some cover letter",
+        "media_data" => %{
+          "file_name" => "app_file.mp4",
+          "status" => "uploaded",
+          "type" => "video/mp4"
+        }
       }
 
       assert {:ok, %Jobs.JobApplication{} = job_application} =
@@ -616,6 +703,35 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.cover_letter == "some cover letter"
       assert job_application.job_posting_id == job_posting.id
       assert job_application.user_id == user.id
+      assert job_application.media_asset
+    end
+
+    test "creates a job_application with media asset" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
+
+      valid_attrs = %{
+        "cover_letter" => "some cover letter",
+        "media_data" => %{
+          "file_name" => "app_file.mp4",
+          "status" => "uploaded",
+          "type" => "video/mp4"
+        }
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = job_application} =
+               Jobs.create_job_application(user, job_posting, valid_attrs)
+
+      assert job_application.cover_letter == "some cover letter"
+      assert job_application.job_posting_id == job_posting.id
+      assert job_application.user_id == user.id
+      assert job_application.media_asset
+      assert job_application.media_asset.file_name == "app_file.mp4"
     end
 
     test "returns error changeset when data is invalid" do
@@ -628,7 +744,7 @@ defmodule BemedaPersonal.JobsTest do
         |> Repo.preload(:company)
 
       invalid_attrs = %{
-        cover_letter: nil
+        "cover_letter" => nil
       }
 
       assert {:error, %Ecto.Changeset{}} =
@@ -651,7 +767,12 @@ defmodule BemedaPersonal.JobsTest do
       Endpoint.subscribe(user_job_application_topic)
 
       valid_attrs = %{
-        cover_letter: "some cover letter"
+        "cover_letter" => "some cover letter",
+        "media_data" => %{
+          "file_name" => "app_file.mp4",
+          "status" => "uploaded",
+          "type" => "video/mp4"
+        }
       }
 
       {:ok, job_application} = Jobs.create_job_application(user, job_posting, valid_attrs)
@@ -691,7 +812,7 @@ defmodule BemedaPersonal.JobsTest do
 
     test "updates the job_application with valid data", %{job_application: job_application} do
       update_attrs = %{
-        cover_letter: "updated cover letter"
+        "cover_letter" => "updated cover letter"
       }
 
       assert {:ok, %Jobs.JobApplication{} = updated_job_application} =
@@ -699,11 +820,31 @@ defmodule BemedaPersonal.JobsTest do
 
       assert updated_job_application.cover_letter == "updated cover letter"
       assert updated_job_application.id == job_application.id
+      assert updated_job_application.media_asset == job_application.media_asset
+    end
+
+    test "updates the job_application with media asset", %{job_application: job_application} do
+      update_attrs = %{
+        "cover_letter" => "updated cover letter",
+        "media_data" => %{
+          "file_name" => "updated_file.mp4",
+          "status" => "uploaded",
+          "type" => "video/mp4"
+        }
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = updated_job_application} =
+               Jobs.update_job_application(job_application, update_attrs)
+
+      assert updated_job_application.cover_letter == "updated cover letter"
+      assert updated_job_application.id == job_application.id
+      assert updated_job_application.media_asset
+      assert updated_job_application.media_asset.file_name == "updated_file.mp4"
     end
 
     test "returns error changeset with invalid data", %{job_application: job_application} do
       invalid_attrs = %{
-        cover_letter: nil
+        "cover_letter" => nil
       }
 
       assert {:error, %Ecto.Changeset{}} =
@@ -725,7 +866,7 @@ defmodule BemedaPersonal.JobsTest do
       Endpoint.subscribe(user_job_application_topic)
 
       update_attrs = %{
-        cover_letter: "updated cover letter"
+        "cover_letter" => "updated cover letter"
       }
 
       {:ok, updated_job_application} = Jobs.update_job_application(job_application, update_attrs)
@@ -753,6 +894,29 @@ defmodule BemedaPersonal.JobsTest do
       assert result.cover_letter == job_application.cover_letter
       assert Ecto.assoc_loaded?(result.job_posting)
       assert Ecto.assoc_loaded?(result.user)
+      assert Ecto.assoc_loaded?(result.media_asset)
+    end
+
+    test "returns the job_application with media asset" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+
+      job_application = job_application_fixture(user, job_posting)
+
+      media_data = %{
+        "file_name" => "test_file.mp4",
+        "status" => "uploaded",
+        "type" => "video/mp4"
+      }
+
+      {:ok, _asset} =
+        BemedaPersonal.Media.create_media_asset(job_application, media_data)
+
+      result = Jobs.get_job_application!(job_application.id)
+      assert result.id == job_application.id
+      assert result.media_asset
+      assert result.media_asset.file_name == "test_file.mp4"
     end
 
     test "raises error when job application with id does not exist" do
@@ -772,6 +936,30 @@ defmodule BemedaPersonal.JobsTest do
       assert result.id == job_application.id
       assert Ecto.assoc_loaded?(result.job_posting)
       assert Ecto.assoc_loaded?(result.user)
+      assert Ecto.assoc_loaded?(result.media_asset)
+    end
+
+    test "returns job applications with media assets" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+
+      job_application = job_application_fixture(user, job_posting)
+
+      # Create a media asset for the job application
+      media_data = %{
+        "file_name" => "list_file.mp4",
+        "status" => "uploaded",
+        "type" => "video/mp4"
+      }
+
+      {:ok, _asset} =
+        BemedaPersonal.Media.create_media_asset(job_application, media_data)
+
+      assert [result] = Jobs.list_job_applications(%{job_posting_id: job_posting.id})
+      assert result.id == job_application.id
+      assert result.media_asset
+      assert result.media_asset.file_name == "list_file.mp4"
     end
 
     test "can filter job applications by user_id", %{job_application: job_application, user: user} do
@@ -987,6 +1175,29 @@ defmodule BemedaPersonal.JobsTest do
       assert result.id == job_application.id
       assert result.user_id == user.id
       assert result.job_posting_id == job_posting.id
+      assert Ecto.assoc_loaded?(result.media_asset)
+    end
+
+    test "returns the job_application with media asset" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+
+      job_application = job_application_fixture(user, job_posting)
+
+      media_data = %{
+        "file_name" => "user_app_file.mp4",
+        "status" => "uploaded",
+        "type" => "video/mp4"
+      }
+
+      {:ok, _asset} =
+        BemedaPersonal.Media.create_media_asset(job_application, media_data)
+
+      result = Jobs.get_user_job_application(user, job_posting)
+      assert result.id == job_application.id
+      assert result.media_asset
+      assert result.media_asset.file_name == "user_app_file.mp4"
     end
 
     test "returns nil when a user has not applied to a job posting", %{job_posting: job_posting} do

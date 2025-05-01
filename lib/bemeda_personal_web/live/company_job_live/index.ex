@@ -5,7 +5,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobListComponent
-  alias Phoenix.LiveView.JS
   alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
@@ -80,15 +79,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
              "job_posting_updated"
            ] do
     send_update(JobListComponent, id: "job-post-list", job_posting: payload.job_posting)
-
-    {:noreply, socket}
-  end
-
-  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
-    send_update(BemedaPersonalWeb.CompanyJobLive.FormComponent,
-      id: "company-job-form",
-      mux_data: %{asset_id: asset_id, playback_id: playback_id}
-    )
 
     {:noreply, socket}
   end

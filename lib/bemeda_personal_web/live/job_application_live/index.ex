@@ -32,15 +32,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     {:noreply, push_patch(socket, to: ~p"/job_applications?#{filters}")}
   end
 
-  def handle_info({:video_ready, %{asset_id: asset_id, playback_id: playback_id}}, socket) do
-    send_update(FormComponent,
-      id: "job-application-form",
-      mux_data: %{asset_id: asset_id, playback_id: playback_id}
-    )
-
-    {:noreply, socket}
-  end
-
   def handle_info(%Broadcast{event: event, payload: payload}, socket)
       when event in [
              "user_job_application_created",

@@ -7,7 +7,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Media.MediaAsset
 
   defp create_test_data(conn) do
     user = user_fixture()
@@ -32,7 +34,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     setup %{conn: conn} do
       base_data = create_test_data(conn)
 
-      # Add additional data specific to this test group
       job2 = job_posting_fixture(base_data.company, %{title: "Another Job"})
       job_application2 = job_application_fixture(base_data.user, job2)
 
@@ -137,7 +138,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         live(conn, ~p"/job_applications")
 
       application_date = DateTime.to_date(job_application.inserted_at)
-      formatted_date = BemedaPersonal.DateUtils.format_date(application_date)
+      formatted_date = DateUtils.format_date(application_date)
 
       assert html =~ "Applied on #{formatted_date}"
     end
@@ -306,7 +307,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      applications = BemedaPersonal.Jobs.list_job_applications(%{job_posting_id: job.id})
+      applications = Jobs.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
       created_application =
@@ -332,15 +333,18 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     } do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
-      send(
-        view.pid,
-        {:video_ready,
-         %{
-           asset_id: "test-asset-id",
-           playback_id: "test-playback-id",
-           upload_id: "test-upload-id"
-         }}
-      )
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-video", %{
+        "filename" => "test_video.mp4",
+        "type" => "video/mp4"
+      })
+
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-completed", %{
+        "upload_id" => Ecto.UUID.generate()
+      })
 
       assert view
              |> form("#job-application-form", %{
@@ -370,10 +374,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
 
-      assert %Jobs.MuxData{
-               asset_id: "test-asset-id",
-               playback_id: "test-playback-id"
-             } = created_application.mux_data
+      assert %MediaAsset{
+               file_name: "test_video.mp4"
+             } = created_application.media_asset
     end
 
     test "updates existing job application successfully", %{
@@ -399,7 +402,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
       )
 
-      updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
+      updated_application = Jobs.get_job_application!(job_application.id)
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
@@ -412,10 +415,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     } do
       job_application =
         job_application_fixture(user, job, %{
-          mux_data: %{
-            asset_id: "asset_123",
-            playback_id: "playback_123",
-            file_name: "test_video.mp4"
+          media_data: %{
+            file_name: "test_video.mp4",
+            upload_id: Ecto.UUID.generate()
           }
         })
 
@@ -425,15 +427,18 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/edit"
         )
 
-      send(
-        view.pid,
-        {:video_ready,
-         %{
-           asset_id: "updated_asset_123",
-           playback_id: "updated_playback_123",
-           upload_id: "updated_upload_123"
-         }}
-      )
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-video", %{
+        "filename" => "updated_test_video.mp4",
+        "type" => "video/mp4"
+      })
+
+      view
+      |> element("#job_application-video-video-upload")
+      |> render_hook("upload-completed", %{
+        "upload_id" => Ecto.UUID.generate()
+      })
 
       assert view
              |> form("#job-application-form", %{
@@ -448,15 +453,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
       )
 
-      updated_application = BemedaPersonal.Jobs.get_job_application!(job_application.id)
+      updated_application = Jobs.get_job_application!(job_application.id)
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
 
-      assert %Jobs.MuxData{
-               asset_id: "updated_asset_123",
-               playback_id: "updated_playback_123"
-             } = updated_application.mux_data
+      assert %MediaAsset{
+               file_name: "updated_test_video.mp4"
+             } = updated_application.media_asset
     end
   end
 
@@ -470,9 +474,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           base_data.job,
           %{
             cover_letter: "Application with video",
-            mux_data: %{
-              asset_id: "asset_123",
-              playback_id: "playback_123",
+            media_data: %{
               file_name: "test_video.mp4"
             }
           }

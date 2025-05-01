@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
@@ -14,6 +15,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     resume = Resumes.get_user_resume(application.user)
     full_name = "#{application.user.first_name} #{application.user.last_name}"
 
+    if connected?(socket) do
+      Endpoint.subscribe("job_application_assets_#{application.id}")
+    end
+
     {:noreply,
      socket
      |> assign(:application, application)
@@ -21,5 +26,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
      |> assign(:job_posting, job_posting)
      |> assign(:page_title, "Applicant: #{full_name}")
      |> assign(:resume, resume)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(%{job_application: job_application}, socket) do
+    {:noreply, assign(socket, :application, job_application)}
   end
 end
