@@ -85,6 +85,50 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ "w-5 h-5"
     end
 
+    test "displays empty rating when company has no ratings", %{conn: conn} do
+      company_admin = user_fixture(confirmed: true)
+      _company = company_fixture(company_admin)
+
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(company_admin)
+        |> live(~p"/companies")
+
+      assert html =~ "hero-star"
+      assert html =~ "text-gray-300"
+      refute html =~ "fill-current"
+    end
+
+    test "displays partial rating correctly with decimal value", %{conn: conn} do
+      user1 = user_fixture(confirmed: true)
+      user2 = user_fixture(confirmed: true)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
+
+      rating_fixture(%{
+        ratee_type: "Company",
+        ratee_id: company.id,
+        rater_type: "User",
+        rater_id: user1.id,
+        score: 3
+      })
+
+      rating_fixture(%{
+        ratee_type: "Company",
+        ratee_id: company.id,
+        rater_type: "User",
+        rater_id: user2.id,
+        score: 4
+      })
+
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(company_admin)
+        |> live(~p"/companies")
+
+      assert html =~ "3.5"
+    end
+
     test "shows job count correctly", %{conn: conn} do
       company_admin = user_fixture(confirmed: true)
       company = company_fixture(company_admin)

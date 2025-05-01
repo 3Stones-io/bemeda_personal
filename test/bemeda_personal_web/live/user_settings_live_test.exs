@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Ratings
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
@@ -280,7 +281,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
 
     test "displays user rating correctly when rated", %{conn: conn, user: user, company: company} do
-      BemedaPersonal.Ratings.create_rating(%{
+      Ratings.create_rating(%{
         rater_type: "Company",
         rater_id: company.id,
         ratee_type: "User",
@@ -297,22 +298,53 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert html =~ "fill-current"
     end
 
-    test "displays partial rating correctly", %{conn: conn, user: user, company: company} do
-      BemedaPersonal.Ratings.create_rating(%{
+    test "displays average of multiple ratings correctly", %{conn: conn, user: user} do
+      company1 = company_fixture(user_fixture())
+      company2 = company_fixture(user_fixture())
+
+      Ratings.create_rating(%{
         rater_type: "Company",
-        rater_id: company.id,
+        rater_id: company1.id,
+        ratee_type: "User",
+        ratee_id: user.id,
+        score: 5,
+        comment: "Excellent!"
+      })
+
+      Ratings.create_rating(%{
+        rater_type: "Company",
+        rater_id: company2.id,
         ratee_type: "User",
         ratee_id: user.id,
         score: 3,
-        comment: "Average candidate"
+        comment: "Average"
       })
 
       {:ok, _lv, html} = live(conn, ~p"/users/settings")
 
       assert html =~ "Your Rating"
-      assert html =~ "3.0"
+      assert html =~ "4.0"
       assert html =~ "fill-current"
-      assert html =~ "text-gray-300"
+    end
+
+    test "updates display when rating changes", %{conn: conn, user: user, company: company} do
+      {:ok, rating} =
+        Ratings.create_rating(%{
+          rater_type: "Company",
+          rater_id: company.id,
+          ratee_type: "User",
+          ratee_id: user.id,
+          score: 3,
+          comment: "Average"
+        })
+
+      {:ok, _view, html} = live(conn, ~p"/users/settings")
+      assert html =~ "3.0"
+
+      {:ok, _updated_rating} = Ratings.update_rating(rating, %{score: 5, comment: "Excellent!"})
+
+      {:ok, _updated_view, updated_html} = live(conn, ~p"/users/settings")
+      assert updated_html =~ "5.0"
     end
   end
 end

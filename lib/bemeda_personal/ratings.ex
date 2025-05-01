@@ -65,6 +65,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> get_rating_by_rater_and_ratee("User", user_id, "Company", non_existent_id)
       nil
+
   """
   @spec get_rating_by_rater_and_ratee(type(), id(), type(), id()) :: rating() | nil
   def get_rating_by_rater_and_ratee(rater_type, rater_id, ratee_type, ratee_id) do
@@ -89,6 +90,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> get_ratings_for_ratee("Company", company_id)
       [%Rating{}, ...]
+
   """
   @spec get_ratings_for_ratee(type(), id()) :: [rating()]
   def get_ratings_for_ratee(ratee_type, ratee_id) do
@@ -107,6 +109,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> get_ratings_by_rater("Company", company_id)
       [%Rating{}, ...]
+
   """
   @spec get_ratings_by_rater(type(), id()) :: [rating()]
   def get_ratings_by_rater(rater_type, rater_id) do
@@ -125,6 +128,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> get_average_rating("Company", company_id)
       #Decimal<3.0>
+
   """
   @spec get_average_rating(type(), id()) :: Decimal.t() | nil
   def get_average_rating(ratee_type, ratee_id) do
@@ -133,10 +137,7 @@ defmodule BemedaPersonal.Ratings do
         where: r.ratee_type == ^ratee_type and r.ratee_id == ^ratee_id,
         select: avg(r.score)
 
-    case Repo.one(query) do
-      nil -> nil
-      avg -> avg
-    end
+    Repo.one!(query)
   end
 
   @doc """
@@ -149,6 +150,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> create_rating(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
+
   """
   @spec create_rating(attrs()) :: {:ok, rating()} | {:error, changeset()}
   def create_rating(attrs \\ %{}) do
@@ -159,12 +161,13 @@ defmodule BemedaPersonal.Ratings do
 
     case result do
       {:ok, rating} ->
+        update_average_rating(rating.ratee_type, rating.ratee_id)
+
         broadcast_event(
           "#{@rating_topic}:#{rating.ratee_type}:#{rating.ratee_id}",
           {:rating_created, rating}
         )
 
-        update_average_rating(rating.ratee_type, rating.ratee_id)
         {:ok, rating}
 
       error ->
@@ -184,6 +187,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> rate_company(user, company, %{score: 5, comment: "Great company!"})
       {:error, :no_interaction}
+
   """
   @spec rate_company(user(), company(), attrs()) ::
           {:ok, rating()} | {:error, changeset() | atom()}
@@ -220,6 +224,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> rate_user(company, user, %{score: 5, comment: "Great candidate!"})
       {:error, :no_interaction}
+
   """
   @spec rate_user(company(), user(), attrs()) :: {:ok, rating()} | {:error, changeset() | atom()}
   def rate_user(%Company{} = company, %User{} = user, attrs) do
@@ -253,6 +258,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> update_rating(rating, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
+
   """
   @spec update_rating(rating(), attrs()) :: {:ok, rating()} | {:error, changeset()}
   def update_rating(%Rating{} = rating, attrs) do
@@ -263,12 +269,13 @@ defmodule BemedaPersonal.Ratings do
 
     case result do
       {:ok, updated_rating} ->
+        update_average_rating(rating.ratee_type, rating.ratee_id)
+
         broadcast_event(
           "#{@rating_topic}:#{rating.ratee_type}:#{rating.ratee_id}",
           {:rating_updated, updated_rating}
         )
 
-        update_average_rating(rating.ratee_type, rating.ratee_id)
         {:ok, updated_rating}
 
       error ->
@@ -283,6 +290,7 @@ defmodule BemedaPersonal.Ratings do
 
       iex> change_rating(rating)
       %Ecto.Changeset{data: %Rating{}}
+
   """
   @spec change_rating(rating(), attrs()) :: changeset()
   def change_rating(%Rating{} = rating, attrs \\ %{}) do
@@ -292,7 +300,8 @@ defmodule BemedaPersonal.Ratings do
   @doc """
   Updates the average rating for a user or company based on their received ratings.
   """
-  @spec update_average_rating(type(), id()) :: {:ok, any()} | {:error, atom() | changeset()}
+  @spec update_average_rating(type(), id()) ::
+          {:ok, company() | user()} | {:error, changeset()}
   def update_average_rating("Company", id) do
     average = get_average_rating("Company", id)
 
@@ -323,10 +332,6 @@ defmodule BemedaPersonal.Ratings do
   end
 
   defp broadcast_event(topic, message) do
-    PubSub.broadcast(
-      BemedaPersonal.PubSub,
-      topic,
-      message
-    )
+    PubSub.broadcast(BemedaPersonal.PubSub, topic, message)
   end
 end

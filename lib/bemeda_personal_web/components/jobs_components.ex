@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
@@ -621,7 +622,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :application, :any, required: true
-  attr :can_rate, :boolean, default: false
+  attr :can_rate?, :boolean, default: false
+  attr :current_user, :any, required: true
   attr :current_user_rating, :map, default: nil
   attr :job, :any, required: true
   attr :resume, :any, default: nil
@@ -663,15 +665,20 @@ defmodule BemedaPersonalWeb.JobsComponents do
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">Rating</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <BemedaPersonalWeb.RatingComponents.rating_display
+              <.live_component
+                module={RatingComponent}
                 id={"rating-display-applicant-#{@application.user.id}"}
                 entity_id={@application.user.id}
                 entity_type="User"
+                entity_name={"#{@application.user.first_name} #{@application.user.last_name}"}
                 average_rating={@application.user.average_rating}
-                can_rate={@can_rate}
+                can_rate?={@can_rate?}
+                current_user={@current_user}
                 current_user_rating={@current_user_rating}
                 size="md"
                 show_count={true}
+                rating_modal_id={"rating-modal-#{@application.id}"}
+                rating_form_id={"job-seeker-rating-form-#{@application.id}"}
               />
             </dd>
           </div>

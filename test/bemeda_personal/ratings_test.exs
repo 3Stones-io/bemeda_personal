@@ -26,12 +26,10 @@ defmodule BemedaPersonal.RatingsTest do
 
     rating =
       rating_fixture(
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
         ratee_id: user.id,
-        score: 4,
-        comment: "Great company!"
+        ratee_type: "User",
+        rater_id: company.id,
+        rater_type: "Company"
       )
 
     %{rating: rating}
@@ -125,11 +123,11 @@ defmodule BemedaPersonal.RatingsTest do
       job_application = job_application_fixture(user, job_posting)
 
       %{
-        user: user,
         company_admin: company_admin,
         company: company,
+        job_application: job_application,
         job_posting: job_posting,
-        job_application: job_application
+        user: user
       }
     end
 
@@ -182,11 +180,11 @@ defmodule BemedaPersonal.RatingsTest do
       job_application = job_application_fixture(user, job_posting)
 
       %{
-        user: user,
         company_admin: company_admin,
         company: company,
+        job_application: job_application,
         job_posting: job_posting,
-        job_application: job_application
+        user: user
       }
     end
 

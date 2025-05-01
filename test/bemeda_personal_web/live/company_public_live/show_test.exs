@@ -214,6 +214,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       })
       |> render_submit()
 
+      Process.sleep(100)
+
       updated_rating =
         Ratings.get_rating_by_rater_and_ratee("User", user.id, "Company", company.id)
 
@@ -338,8 +340,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         "rating:Company:#{company.id}",
         {:rating_created, rating}
       )
-
-      Process.sleep(100)
 
       html = render(view)
       assert html =~ "star-rating"

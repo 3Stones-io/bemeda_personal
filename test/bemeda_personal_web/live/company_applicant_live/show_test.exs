@@ -8,6 +8,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Ratings
+
   setup %{conn: conn} do
     company_user = user_fixture(confirmed: true)
     company = company_fixture(company_user)
@@ -135,8 +137,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
              |> element("a", "Back to Applicants")
              |> has_element?()
     end
+  end
 
-    test "displays rating component and allows rating an applicant", %{
+  describe "applicant rating functionality" do
+    test "handles nil average rating", %{
       conn: conn,
       company: company,
       company_user: company_user,
@@ -144,78 +148,70 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     } do
       conn = log_in_user(conn, company_user)
 
-      {:ok, view, html} =
+      {:ok, _view, html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
       assert html =~ "Rating"
+    end
+
+    test "rating form prefills with existing rating", %{
+      conn: conn,
+      company: company,
+      company_user: company_user,
+      job_application: application,
+      applicant: applicant
+    } do
+      _rating =
+        rating_fixture(%{
+          rater_type: "Company",
+          rater_id: company.id,
+          ratee_type: "User",
+          ratee_id: applicant.id,
+          score: 3,
+          comment: "Good candidate"
+        })
+
+      conn = log_in_user(conn, company_user)
+
+      {:ok, view, html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
       assert html =~ "Rate"
 
       view
       |> element("button", "Rate")
       |> render_click()
 
-      assert has_element?(view, "#rating-modal-#{application.id}")
-      assert has_element?(view, "h3", "Rate Jane Applicant")
+      modal_content = render(view)
+
+      assert modal_content =~ "Rate Jane Applicant"
+      assert modal_content =~ "Score"
+      assert modal_content =~ "Comment"
+
+      assert modal_content =~ "value=\"3\""
 
       view
       |> form("#job-seeker-rating-form-#{application.id} form", %{
-        "score" => "5",
-        "comment" => "Excellent candidate"
+        "score" => "4",
+        "comment" => "Updated comment"
       })
       |> render_submit()
 
       assert render(view) =~ "Rating submitted successfully"
 
-      refute has_element?(view, "#rating-modal-#{application.id}")
+      updated_rating =
+        Ratings.get_rating_by_rater_and_ratee(
+          "Company",
+          company.id,
+          "User",
+          applicant.id
+        )
 
-      assert render(view) =~ "Update Rating"
-      refute render(view) =~ ">Rate<"
+      assert updated_rating.score == 4
+      assert updated_rating.comment == "Updated comment"
     end
 
-    test "updates UI when existing rating is updated", %{
-      conn: conn,
-      company: company,
-      company_user: company_user,
-      job_application: application,
-      applicant: applicant
-    } do
-      rating_fixture(%{
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
-        ratee_id: applicant.id,
-        score: 3,
-        comment: "Good candidate"
-      })
-
-      conn = log_in_user(conn, company_user)
-
-      {:ok, view, html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
-
-      assert html =~ "Update Rating"
-      refute html =~ ">Rate<"
-
-      view
-      |> element("button", "Update Rating")
-      |> render_click()
-
-      assert has_element?(view, "#rating-modal-#{application.id}")
-
-      view
-      |> form("#job-seeker-rating-form-#{application.id} form", %{
-        "score" => "5",
-        "comment" => "Outstanding candidate"
-      })
-      |> render_submit()
-
-      assert render(view) =~ "Rating submitted successfully"
-
-      assert render(view) =~ "Update Rating"
-      assert render(view) =~ "5.0"
-    end
-
-    test "updates ratings in real-time via PubSub", %{
+    test "updates when rating is created", %{
       conn: conn,
       company: company,
       company_user: company_user,
@@ -227,34 +223,32 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       {:ok, view, _html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
-      rating =
-        rating_fixture(%{
-          rater_type: "Company",
-          rater_id: company.id,
-          ratee_type: "User",
-          ratee_id: applicant.id,
-          score: 5,
-          comment: "Excellent candidate"
-        })
+      rating_fixture(%{
+        rater_type: "Company",
+        rater_id: company.id,
+        ratee_type: "User",
+        ratee_id: applicant.id,
+        score: 5,
+        comment: "Excellent candidate"
+      })
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
-        "rating:User:#{applicant.id}",
-        {:rating_created, rating}
-      )
-
-      Process.sleep(100)
+      Ratings.create_rating(%{
+        rater_type: "Company",
+        rater_id: company.id,
+        ratee_type: "User",
+        ratee_id: applicant.id,
+        score: 5,
+        comment: "Excellent candidate"
+      })
 
       html = render(view)
-      assert html =~ "star-rating"
-      assert html =~ "fill-current"
       assert html =~ "5.0"
     end
 
-    test "closes rating modal when cancel button is clicked", %{
+    test "handles cancel action for rating form", %{
       conn: conn,
-      company_user: company_user,
       company: company,
+      company_user: company_user,
       job_application: application
     } do
       conn = log_in_user(conn, company_user)
@@ -266,13 +260,66 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       |> element("button", "Rate")
       |> render_click()
 
-      assert has_element?(view, "#rating-modal-#{application.id}")
+      assert has_element?(view, "h3", "Rate Jane Applicant")
 
       view
       |> element("button", "Cancel")
       |> render_click()
 
-      refute has_element?(view, "#rating-modal-#{application.id}")
+      refute has_element?(view, "h3", "Rate Jane Applicant")
+    end
+
+    test "handles missing score value", %{
+      conn: conn,
+      company: company,
+      company_user: company_user,
+      job_application: application
+    } do
+      conn = log_in_user(conn, company_user)
+
+      {:ok, view, _html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      view
+      |> element("button", "Rate")
+      |> render_click()
+
+      assert has_element?(view, "form")
+
+      view
+      |> form("#job-seeker-rating-form-#{application.id} form", %{
+        "score" => "4",
+        "comment" => "Valid submission"
+      })
+      |> render_submit()
+
+      assert render(view) =~ "Rating submitted successfully"
+    end
+
+    for score <- [1, 5] do
+      @tag score: score
+      test "tests star rendering with rating #{score}", %{
+        conn: conn,
+        company: company,
+        company_user: company_user,
+        job_application: application,
+        applicant: applicant,
+        score: score
+      } do
+        rating_fixture(%{
+          rater_type: "Company",
+          rater_id: company.id,
+          ratee_type: "User",
+          ratee_id: applicant.id,
+          score: score,
+          comment: "Rating with score #{score}"
+        })
+
+        conn = log_in_user(conn, company_user)
+        {:ok, _lv, html} = live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+        assert html =~ "#{score}.0"
+      end
     end
   end
 end

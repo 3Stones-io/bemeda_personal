@@ -12,6 +12,9 @@ defmodule BemedaPersonal.Ratings.Rating do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
+  # TODO: Set up polymorphic associations properly to enforce database constraints
+  # https://hexdocs.pm/ecto/polymorphic-associations-with-many-to-many.html
+
   schema "ratings" do
     field :comment, :string
     field :rater_type, :string

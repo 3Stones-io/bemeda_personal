@@ -11,11 +11,14 @@
       <div>
         <h2 class="text-xl font-semibold text-gray-900">{@company.name}</h2>
         <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
-        <RatingComponents.rating_display
+        <.live_component
+          module={RatingComponent}
           id={"rating-display-company-index-#{@company.id}"}
           entity_id={@company.id}
           entity_type="Company"
+          entity_name={@company.name}
           average_rating={@company.average_rating}
+          current_user={@current_user}
           class="mt-2"
         />
       </div>

@@ -3,11 +3,11 @@ defmodule BemedaPersonal.Repo.Migrations.AddAverageRatingToUsersAndCompanies do
 
   def change do
     alter table(:users) do
-      add :average_rating, :decimal, default: nil
+      add :average_rating, :decimal
     end
 
     alter table(:companies) do
-      add :average_rating, :decimal, default: nil
+      add :average_rating, :decimal
     end
   end
 end

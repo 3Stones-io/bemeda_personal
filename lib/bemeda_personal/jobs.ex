@@ -616,9 +616,7 @@ defmodule BemedaPersonal.Jobs do
     query =
       from ja in JobApplication,
         join: jp in assoc(ja, :job_posting),
-        where: ja.user_id == ^user_id and jp.company_id == ^company_id,
-        limit: 1,
-        select: 1
+        where: ja.user_id == ^user_id and jp.company_id == ^company_id
 
     Repo.exists?(query)
   end
