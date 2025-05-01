@@ -927,7 +927,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <div class="tag-container flex flex-wrap gap-2"></div>
 
         <div class={[
-          "min-w-[100px] w-full flex-1",
+          "w-full flex-1",
           @submit_button && "flex justify-between"
         ]}>
           <input
