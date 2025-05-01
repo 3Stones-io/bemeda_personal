@@ -100,26 +100,6 @@ defmodule BemedaPersonal.Ratings do
   end
 
   @doc """
-  Counts ratings for a specific entity as ratee.
-
-  ## Examples
-
-      iex> get_ratings_count_for_ratee("Company", company_id)
-      12
-
-      iex> get_ratings_count_for_ratee("User", user_id)
-      5
-
-  """
-  @spec get_ratings_count_for_ratee(type(), id()) :: integer()
-  def get_ratings_count_for_ratee(ratee_type, ratee_id) do
-    Rating
-    |> where([r], r.ratee_type == ^ratee_type and r.ratee_id == ^ratee_id)
-    |> select([r], count(r.id))
-    |> Repo.one()
-  end
-
-  @doc """
   Gets all ratings by a specific entity as rater.
 
   ## Examples

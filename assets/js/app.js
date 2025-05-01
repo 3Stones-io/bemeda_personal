@@ -26,6 +26,8 @@ import topbar from '../vendor/topbar'
 import ChatInput from './hooks/chat_input'
 import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
+import RatingsTooltip from './hooks/ratings_tooltip'
+import RatingsTooltipContent from './hooks/ratings_tooltip_content'
 import TextTruncate from './hooks/text_truncate'
 import VideoUpload from './hooks/video_upload'
 
@@ -34,6 +36,8 @@ const Hooks = {
   ChatInput,
   CopyToClipboard,
   CurrentCheckbox,
+  RatingsTooltip,
+  RatingsTooltipContent,
   TextTruncate,
   VideoUpload,
 }

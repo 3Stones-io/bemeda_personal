@@ -21,7 +21,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
      socket
      |> assign(assigns)
      |> assign_average_rating()
-     |> assign_ratings_count()
+     |> assign_all_ratings()
      |> assign_current_user_rating()
      |> assign_can_rate?()}
   end
@@ -48,7 +48,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
       |> assign_new(:size, fn -> "md" end)
       |> assign_new(:rating_modal_id, fn -> "rating-modal-#{assigns.entity_id}" end)
       |> assign_new(:rating_form_id, fn -> "job-seeker-rating-form-#{assigns.entity_id}" end)
-      |> assign_new(:ratings_count, fn -> 0 end)
+      |> assign_new(:ratings_tooltip_id, fn -> "ratings-tooltip-#{assigns.id}" end)
 
     ~H"""
     <div id={@id} class={@class}>
@@ -69,8 +69,56 @@ defmodule BemedaPersonalWeb.RatingComponent do
           {format_rating(@average_rating)}
         </div>
 
-        <div class="text-sm text-gray-500 ml-1">
-          ({@ratings_count})
+        <div class="text-sm text-gray-500 ml-1 relative">
+          <span
+            id={@ratings_tooltip_id <> "-trigger"}
+            class="cursor-pointer hover:text-indigo-600 hover:underline"
+            phx-hook="RatingsTooltip"
+            data-tooltip-target={@ratings_tooltip_id}
+          >
+            ({length(@all_ratings)})
+          </span>
+
+          <div
+            id={@ratings_tooltip_id}
+            class="hidden absolute bottom-full left-0 mb-2 bg-white shadow-lg rounded-lg p-4 z-50 w-80 max-h-80 overflow-y-auto"
+            phx-hook="RatingsTooltipContent"
+          >
+            <h3 class="font-medium text-gray-900 mb-2">All Ratings</h3>
+
+            <div :if={@all_ratings == []} class="text-gray-500 text-sm italic">
+              No ratings yet
+            </div>
+
+            <ul :if={@all_ratings != []} class="space-y-3">
+              <%= for rating <- @all_ratings do %>
+                <li class="border-b border-gray-100 pb-2">
+                  <div class="flex items-center mb-1">
+                    <div class="flex">
+                      <%= for i <- 1..5 do %>
+                        <.icon
+                          name="hero-star"
+                          class={
+                            if i <= rating.score,
+                              do: "w-4 h-4 text-yellow-400 fill-current",
+                              else: "w-4 h-4 text-gray-300"
+                          }
+                        />
+                      <% end %>
+                    </div>
+                    <span class="ml-2 text-xs text-gray-500">
+                      {format_date(rating.inserted_at)}
+                    </span>
+                  </div>
+                  <%= if rating.comment && rating.comment != "" do %>
+                    <p class="text-sm text-gray-700">{rating.comment}</p>
+                  <% else %>
+                    <p class="text-sm text-gray-500 italic">No comment</p>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         </div>
 
         <div :if={@can_rate?} class="ml-4">
@@ -114,13 +162,9 @@ defmodule BemedaPersonalWeb.RatingComponent do
     assign(socket, :average_rating, average_rating)
   end
 
-  defp assign_ratings_count(%{assigns: %{ratings_count: %Decimal{}}} = socket) do
-    socket
-  end
-
-  defp assign_ratings_count(%{assigns: %{entity_type: type, entity_id: id}} = socket) do
-    ratings_count = Ratings.get_ratings_count_for_ratee(type, id)
-    assign(socket, :ratings_count, ratings_count)
+  defp assign_all_ratings(%{assigns: %{entity_type: type, entity_id: id}} = socket) do
+    all_ratings = Ratings.get_ratings_for_ratee(type, id)
+    assign(socket, :all_ratings, all_ratings)
   end
 
   defp assign_current_user_rating(%{assigns: %{current_user: current_user}} = socket)
@@ -254,5 +298,9 @@ defmodule BemedaPersonalWeb.RatingComponent do
     else
       Ratings.create_rating(attrs)
     end
+  end
+
+  defp format_date(datetime) do
+    Calendar.strftime(datetime, "%b %d, %Y")
   end
 end
