@@ -7,6 +7,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Jobs
+
   setup %{conn: conn} do
     company_user = user_fixture(%{email: "company@example.com"})
     company = company_fixture(company_user)
@@ -132,6 +134,28 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       assert view
              |> element("a", "Back to Applicants")
              |> has_element?()
+    end
+
+    test "allows updating tags for the application", %{
+      company_user: user,
+      company: company,
+      conn: conn,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, _html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert has_element?(view, "#tags-input")
+
+      view
+      |> element("#tags-input")
+      |> render_hook("update_tags", %{tags: "qualified,urgent"})
+
+      job_application = Jobs.get_job_application!(application.id)
+      assert "qualified" in Enum.map(job_application.tags, & &1.name)
+      assert "urgent" in Enum.map(job_application.tags, & &1.name)
     end
   end
 end

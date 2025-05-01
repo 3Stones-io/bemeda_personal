@@ -1130,6 +1130,44 @@ defmodule BemedaPersonal.JobsTest do
       assert length(results) == 1
       assert hd(results).id == another_older_application.id
     end
+
+    test "can filter job applications by tags", %{
+      job_posting: job_posting,
+      user: user
+    } do
+      application_1 = job_application_fixture(user, job_posting)
+      application_2 = job_application_fixture(user, job_posting)
+      application_3 = job_application_fixture(user, job_posting)
+
+      Jobs.update_job_application_tags(application_1, "urgent,qualified")
+      Jobs.update_job_application_tags(application_2, "urgent,qualified,interview")
+      Jobs.update_job_application_tags(application_3, "not_urgent,not_qualified")
+
+      result_ids =
+        %{tags: ["urgent", "qualified", "interview"]}
+        |> Jobs.list_job_applications()
+        |> Enum.map(& &1.id)
+
+      assert application_1.id in result_ids
+      assert application_2.id in result_ids
+      assert application_3.id not in result_ids
+
+      result_ids_2 =
+        %{tags: ["not_urgent"]}
+        |> Jobs.list_job_applications()
+        |> Enum.map(& &1.id)
+
+      assert application_1.id not in result_ids_2
+      assert application_2.id not in result_ids_2
+      assert application_3.id in result_ids_2
+
+      result_ids_3 =
+        %{tags: ["new_tag"]}
+        |> Jobs.list_job_applications()
+        |> Enum.map(& &1.id)
+
+      assert Enum.empty?(result_ids_3)
+    end
   end
 
   describe "get_user_job_application/2" do
@@ -1172,6 +1210,67 @@ defmodule BemedaPersonal.JobsTest do
     test "returns nil when a user has not applied to a job posting", %{job_posting: job_posting} do
       another_user = user_fixture(%{email: "no_application@example.com"})
       refute Jobs.get_user_job_application(another_user, job_posting)
+    end
+  end
+
+  describe "update_job_application_tags/2" do
+    setup [:create_job_posting]
+
+    test "adds tags to a job application", %{job_application: job_application} do
+      assert {:ok, updated_application} =
+               Jobs.update_job_application_tags(job_application, "urgent,qualified")
+
+      tag_names = Enum.map(updated_application.tags, & &1.name)
+      assert ["urgent", "qualified"] = tag_names
+      assert length(updated_application.tags) == 2
+    end
+
+    test "handles duplicate tags", %{job_application: job_application} do
+      assert {:ok, application_with_new_tag} =
+               Jobs.update_job_application_tags(
+                 job_application,
+                 "urgent,urgent,qualified,interview"
+               )
+
+      tag_names = Enum.map(application_with_new_tag.tags, & &1.name)
+      assert ["interview", "qualified", "urgent"] = Enum.sort(tag_names)
+      assert length(application_with_new_tag.tags) == 3
+    end
+
+    test "trims and filters empty tags", %{job_application: job_application} do
+      assert {:ok, updated_application} =
+               Jobs.update_job_application_tags(job_application, "  urgent  ,,  ,qualified  ")
+
+      tag_names = Enum.map(updated_application.tags, & &1.name)
+      assert ["urgent", "qualified"] = tag_names
+      assert length(updated_application.tags) == 2
+    end
+
+    test "returns application with empty tags list when no valid tags", %{
+      job_application: job_application
+    } do
+      assert {:ok, updated_application} =
+               Jobs.update_job_application_tags(job_application, ",  ,")
+
+      assert updated_application.tags == []
+    end
+
+    test "broadcasts update event when adding tags", %{
+      job_application: job_application,
+      user: user,
+      job_posting: job_posting
+    } do
+      company_topic = "job_application:company:#{job_posting.company_id}"
+      user_topic = "job_application:user:#{user.id}"
+
+      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+      PubSub.subscribe(BemedaPersonal.PubSub, user_topic)
+
+      {:ok, updated_job_application} =
+        Jobs.update_job_application_tags(job_application, "urgent,qualified")
+
+      assert_receive {:company_job_application_updated, ^updated_job_application}
+      assert_receive {:user_job_application_updated, ^updated_job_application}
     end
   end
 end

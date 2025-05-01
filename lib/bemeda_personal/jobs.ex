@@ -8,7 +8,9 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.Jobs.Tag
   alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
   alias Ecto.Changeset
@@ -21,6 +23,8 @@ defmodule BemedaPersonal.Jobs do
   @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
+  @type tag_id :: Ecto.UUID.t()
+  @type tags :: String.t()
   @type user :: User.t()
 
   @job_application_topic "job_application"
@@ -314,6 +318,9 @@ defmodule BemedaPersonal.Jobs do
       iex> list_job_applications(%{job_posting_id: job_posting_id})
       [%JobApplication{}, ...]
 
+      iex> list_job_applications(%{tags: ["urgent", "qualified"]})
+      [%JobApplication{}, ...]
+
   """
   @spec list_job_applications(map(), non_neg_integer()) :: [job_application()]
   def list_job_applications(filters \\ %{}, limit \\ 10)
@@ -321,13 +328,13 @@ defmodule BemedaPersonal.Jobs do
   def list_job_applications(%{company_id: _company_id} = filters, limit) do
     job_post_with_applications_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, :media_asset, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
   end
 
   def list_job_applications(filters, limit) do
     job_application_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, :media_asset, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
   end
 
   defp list_applications(query, filters, limit) do
@@ -440,6 +447,21 @@ defmodule BemedaPersonal.Jobs do
     dynamic([job_application: ja], ^dynamic and ja.inserted_at < ^job_application.inserted_at)
   end
 
+  defp apply_job_application_filter({:tags, tags}, dynamic) do
+    dynamic(
+      [job_application: ja],
+      ^dynamic and
+        ja.id in subquery(
+          from jat in JobApplicationTag,
+            join: t in Tag,
+            on: t.id == jat.tag_id,
+            where: t.name in ^tags,
+            group_by: jat.job_application_id,
+            select: jat.job_application_id
+        )
+    )
+  end
+
   defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   defp parse_date_if_string(date) when is_binary(date) do
@@ -534,7 +556,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:job_posting, :media_asset, :user])
+    |> Repo.preload([:job_posting, :media_asset, :tags, :user])
   end
 
   @doc """
@@ -546,7 +568,7 @@ defmodule BemedaPersonal.Jobs do
       %JobApplication{}
 
   """
-  @spec get_user_job_application(user(), job_posting()) :: job_application() | no_return()
+  @spec get_user_job_application(user(), job_posting()) :: job_application() | nil
   def get_user_job_application(%User{} = user, %JobPosting{} = job) do
     JobApplication
     |> where([ja], ja.user_id == ^user.id and ja.job_posting_id == ^job.id)
@@ -669,6 +691,111 @@ defmodule BemedaPersonal.Jobs do
   @spec change_job_application(job_application(), attrs()) :: changeset()
   def change_job_application(%JobApplication{} = job_application, attrs \\ %{}) do
     JobApplication.changeset(job_application, attrs)
+  end
+
+  @doc """
+  Adds tags to a job application, creating any tags that don't exist.
+
+  ## Examples
+
+      iex> update_job_application_tags(job_application, ["urgent", "qualified"])
+      {:ok, %JobApplication{}}
+
+  """
+  @spec update_job_application_tags(job_application(), tags()) ::
+          {:ok, job_application()} | {:error, any()}
+  def update_job_application_tags(%JobApplication{} = job_application, tags) do
+    normalized_tags = normalize_tags(tags)
+
+    job_application
+    |> Repo.preload(:tags)
+    |> execute_tag_application_transaction(normalized_tags)
+    |> handle_tag_application_result()
+  end
+
+  defp normalize_tags(tags) do
+    tags
+    |> String.split(",")
+    |> Stream.map(fn tag ->
+      tag
+      |> String.trim()
+      |> String.downcase()
+    end)
+    |> Enum.reject(&(&1 == ""))
+  end
+
+  defp execute_tag_application_transaction(job_application, normalized_tags) do
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.run(:create_tags, fn _repo, _changes ->
+        create_tags_query(normalized_tags)
+      end)
+      |> Ecto.Multi.run(:all_tags, fn _repo, _changes ->
+        {:ok,
+         Tag
+         |> where([t], t.name in ^normalized_tags)
+         |> Repo.all()}
+      end)
+      |> Ecto.Multi.run(:update_job_application, fn _repo, %{all_tags: all_tags} ->
+        add_tags_to_job_application(job_application, all_tags)
+      end)
+
+    Repo.transaction(multi)
+  end
+
+  defp create_tags_query([]), do: {:ok, []}
+
+  defp create_tags_query(tag_names) do
+    timestamp = DateTime.utc_now(:second)
+
+    placeholders = %{timestamp: timestamp}
+
+    maps =
+      Enum.map(
+        tag_names,
+        &%{
+          name: &1,
+          inserted_at: {:placeholder, :timestamp},
+          updated_at: {:placeholder, :timestamp}
+        }
+      )
+
+    Repo.insert_all(
+      Tag,
+      maps,
+      placeholders: placeholders,
+      on_conflict: :nothing
+    )
+
+    {:ok, tag_names}
+  end
+
+  defp add_tags_to_job_application(job_application, tags) do
+    job_application
+    |> change_job_application()
+    |> Changeset.put_assoc(:tags, tags)
+    |> Repo.update()
+  end
+
+  defp handle_tag_application_result({:ok, %{update_job_application: updated_job_application}}) do
+    broadcast_job_application_update(updated_job_application)
+    {:ok, updated_job_application}
+  end
+
+  defp handle_tag_application_result({:error, _operation, changeset, _changes}) do
+    {:error, changeset}
+  end
+
+  defp broadcast_job_application_update(job_application) do
+    broadcast_event(
+      "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
+      {:company_job_application_updated, job_application}
+    )
+
+    broadcast_event(
+      "#{@job_application_topic}:user:#{job_application.user_id}",
+      {:user_job_application_updated, job_application}
+    )
   end
 
   defp broadcast_event(topic, message) do

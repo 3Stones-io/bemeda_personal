@@ -7,6 +7,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Jobs
+
   setup %{conn: conn} do
     company_user = user_fixture(%{email: "company@example.com"})
     company = company_fixture(company_user)
@@ -127,6 +129,53 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       assert filtered_html =~ applicant.first_name
       refute filtered_html =~ second_applicant.first_name
+    end
+
+    test "filters applicants by tag through form submission", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job: job
+    } do
+      conn = log_in_user(conn, user)
+
+      application1 = job_application_fixture(user, job)
+      application2 = job_application_fixture(user, job)
+      application3 = job_application_fixture(user, job)
+
+      Jobs.update_job_application_tags(application1, "urgent,qualified")
+      Jobs.update_job_application_tags(application2, "urgent")
+      Jobs.update_job_application_tags(application3, "another")
+
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+
+      view
+      |> element("#job_application_filter_form")
+      |> render_submit(%{
+        "job_application_filter" => %{
+          "tags" => "urgent"
+        }
+      })
+
+      filtered_html = render(view)
+
+      assert filtered_html =~ application1.user.first_name
+      assert filtered_html =~ application2.user.first_name
+      refute filtered_html =~ application3.id
+
+      view
+      |> element("#job_application_filter_form")
+      |> render_submit(%{
+        "job_application_filter" => %{
+          "tags" => "another"
+        }
+      })
+
+      filtered_html2 = render(view)
+
+      refute filtered_html2 =~ application1.id
+      refute filtered_html2 =~ application2.id
+      assert filtered_html2 =~ application3.user.first_name
     end
 
     test "filters applicants by date range through form submission", %{

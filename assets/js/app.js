@@ -26,6 +26,7 @@ import topbar from '../vendor/topbar'
 import ChatInput from './hooks/chat_input'
 import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
+import TagsInput from './hooks/tags_input'
 import TextTruncate from './hooks/text_truncate'
 import VideoUpload from './hooks/video_upload'
 
@@ -34,6 +35,7 @@ const Hooks = {
   ChatInput,
   CopyToClipboard,
   CurrentCheckbox,
+  TagsInput,
   TextTruncate,
   VideoUpload,
 }
