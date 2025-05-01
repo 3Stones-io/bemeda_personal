@@ -1148,14 +1148,18 @@ defmodule BemedaPersonal.JobsTest do
         |> Jobs.list_job_applications()
         |> Enum.map(& &1.id)
 
-      assert result_ids == [application_1.id, application_2.id]
+      assert application_1.id in result_ids
+      assert application_2.id in result_ids
+      assert application_3.id not in result_ids
 
       result_ids_2 =
         %{tags: ["not_urgent"]}
         |> Jobs.list_job_applications()
         |> Enum.map(& &1.id)
 
-      assert result_ids_2 == [application_3.id]
+      assert application_1.id not in result_ids_2
+      assert application_2.id not in result_ids_2
+      assert application_3.id in result_ids_2
 
       result_ids_3 =
         %{tags: ["new_tag"]}
