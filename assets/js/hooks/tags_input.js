@@ -9,6 +9,26 @@ const TagsInput = {
 
     let tags = []
 
+    const checkOverflow = () => {
+      if (tagContainer.children.length === 0) return false
+
+      return (
+        tagContainer.offsetHeight > tagContainer.children[0].offsetHeight * 1.5
+      )
+    }
+
+    const updateInputLayout = () => {
+      setTimeout(() => {
+        if (checkOverflow()) {
+          tagInput.classList.add('w-full', 'mt-2')
+          tagContainer.classList.add('w-full')
+        } else {
+          tagInput.classList.remove('w-full', 'mt-2')
+          tagContainer.classList.remove('w-full')
+        }
+      }, 10)
+    }
+
     const renderTags = () => {
       tagContainer.innerHTML = ''
 
@@ -18,6 +38,8 @@ const TagsInput = {
         tagElement.querySelector('.tag-text').textContent = tag
         tagContainer.appendChild(tagElement)
       })
+
+      updateInputLayout()
     }
 
     const updateTagsFromInput = () => {
@@ -92,6 +114,12 @@ const TagsInput = {
             const tagValue = tagElement.getAttribute('data-value')
             removeTag(tagValue)
           }
+        }
+      })
+
+      window.addEventListener('resize', () => {
+        if (tags.length > 0) {
+          updateInputLayout()
         }
       })
 
