@@ -13,7 +13,8 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:form, form)}
+     |> assign(:form, form)
+     |> assign(:current_score, current_score)}
   end
 
   @impl Phoenix.LiveComponent
@@ -22,17 +23,17 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
     <div id={@id} class="p-4">
       <h3 class="text-lg font-medium text-gray-900 mb-4">Rate {@entity_name}</h3>
 
-      <form phx-submit={@on_submit} phx-target={@myself}>
+      <.form :let={f} for={@form} phx-submit={@on_submit} phx-target={@myself}>
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Score</label>
-          <div class="flex space-x-4">
+          <.label>Score</.label>
+          <div class="flex space-x-4 mt-2">
             <div :for={score <- 1..5} class="flex flex-col items-center">
               <input
                 type="radio"
                 name="score"
                 id={"score-#{score}"}
                 value={score}
-                checked={score == @form[:score].value}
+                checked={score == @current_score}
                 class="h-5 w-5 text-indigo-600"
               />
               <label for={"score-#{score}"} class="mt-1 text-sm text-gray-700">{score}</label>
@@ -41,14 +42,8 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
         </div>
 
         <div class="mb-4">
-          <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Comment</label>
-          <textarea
-            id="comment"
-            name="comment"
-            rows="3"
-            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            placeholder="Share your experience..."
-          ><%= @form[:comment].value %></textarea>
+          <.label>Comment</.label>
+          <.input field={f[:comment]} type="textarea" rows="3" placeholder="Share your experience..." />
         </div>
 
         <div class="flex justify-end space-x-3">
@@ -63,7 +58,7 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
             Submit Rating
           </.button>
         </div>
-      </form>
+      </.form>
     </div>
     """
   end

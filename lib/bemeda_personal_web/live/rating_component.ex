@@ -90,11 +90,19 @@ defmodule BemedaPersonalWeb.RatingComponent do
       <div id={"rating-display-#{@id}"} class={["flex items-center", @display_class]}>
         <div class="star-rating flex">
           <%= for i <- 1..5 do %>
-            <div class={star_class(@size, i, @average_rating)}>
-              <%= if @average_rating && Decimal.lte?(Decimal.new(i), ceil_rating(@average_rating)) do %>
-                <.icon name="hero-star" class="fill-current" />
-              <% else %>
-                <.icon name="hero-star" class="text-gray-300" />
+            <div class={star_size_class(@size)}>
+              <%= case star_state(i, @average_rating) do %>
+                <% :full -> %>
+                  <.icon name="hero-star" class="text-yellow-400 fill-current" />
+                <% :half -> %>
+                  <div class="relative">
+                    <.icon name="hero-star" class="text-gray-300" />
+                    <div class="absolute inset-0 overflow-hidden w-3/5">
+                      <.icon name="hero-star" class="text-yellow-400 fill-current" />
+                    </div>
+                  </div>
+                <% :empty -> %>
+                  <.icon name="hero-star" class="text-gray-300" />
               <% end %>
             </div>
           <% end %>
@@ -131,14 +139,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
                   <div class="flex items-center mb-1">
                     <div class="flex">
                       <%= for i <- 1..5 do %>
-                        <.icon
-                          name="hero-star"
-                          class={
-                            if i <= rating.score,
-                              do: "w-4 h-4 text-yellow-400 fill-current",
-                              else: "w-4 h-4 text-gray-300"
-                          }
-                        />
+                        <.icon name="hero-star" class={star_display_class(i, rating.score)} />
                       <% end %>
                     </div>
                     <span class="ml-2 text-xs text-gray-500">
@@ -282,24 +283,45 @@ defmodule BemedaPersonalWeb.RatingComponent do
     end
   end
 
-  defp star_class(size, _index_param, _rating_param) do
-    base_class = "text-yellow-400"
-
-    size_class =
-      case size do
-        "sm" -> "w-4 h-4"
-        "lg" -> "w-6 h-6"
-        _size_param -> "w-5 h-5"
-      end
-
-    [base_class, size_class]
+  defp star_size_class(size) do
+    case size do
+      "sm" -> "w-4 h-4"
+      "lg" -> "w-6 h-6"
+      _size_param -> "w-5 h-5"
+    end
   end
 
-  defp ceil_rating(nil), do: Decimal.new(0)
+  defp star_state(_position, nil), do: :empty
 
-  defp ceil_rating(rating) do
-    Decimal.round(rating, 0, :ceiling)
+  defp star_state(position, rating) do
+    rating_value = to_float(rating)
+
+    cond do
+      position <= floor(rating_value) -> :full
+      position == ceil(rating_value) && rating_value - floor(rating_value) >= 0.3 -> :half
+      true -> :empty
+    end
   end
+
+  defp star_display_class(position, rating) do
+    size = "w-4 h-4"
+    rating_value = to_float(rating)
+
+    cond do
+      position <= floor(rating_value) ->
+        "#{size} text-yellow-400 fill-current"
+
+      position == ceil(rating_value) && rating_value - floor(rating_value) >= 0.5 ->
+        "#{size} text-yellow-400 fill-current"
+
+      true ->
+        "#{size} text-gray-300"
+    end
+  end
+
+  defp to_float(%Decimal{} = value), do: Decimal.to_float(value)
+  defp to_float(value) when is_number(value), do: value
+  defp to_float(_value), do: 0.0
 
   defp format_rating(nil), do: "No ratings"
 
