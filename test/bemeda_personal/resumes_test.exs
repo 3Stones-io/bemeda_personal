@@ -8,6 +8,8 @@ defmodule BemedaPersonal.ResumesTest do
   alias BemedaPersonal.Resumes.Education
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonal.Resumes.WorkExperience
+  alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   describe "get_or_create_resume_by_user/1" do
     test "returns existing resume" do
@@ -31,15 +33,24 @@ defmodule BemedaPersonal.ResumesTest do
       resume = Resumes.get_or_create_resume_by_user(user)
 
       topic = "resume"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       new_user = user_fixture()
       new_resume = Resumes.get_or_create_resume_by_user(new_user)
 
-      assert_receive {:resume_created, ^new_resume}
+      assert_receive %Broadcast{
+        event: "resume_created",
+        topic: ^topic,
+        payload: %{resume: ^new_resume}
+      }
 
       {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
-      assert_receive {:resume_updated, ^updated_resume}
+
+      assert_receive %Broadcast{
+        event: "resume_updated",
+        topic: ^topic,
+        payload: %{resume: ^updated_resume}
+      }
     end
   end
 
@@ -89,11 +100,15 @@ defmodule BemedaPersonal.ResumesTest do
       resume = resume_fixture(user)
 
       topic = "resume"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
 
-      assert_receive {:resume_updated, ^updated_resume}
+      assert_receive %Broadcast{
+        event: "resume_updated",
+        topic: ^topic,
+        payload: %{resume: ^updated_resume}
+      }
     end
   end
 
@@ -258,7 +273,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "broadcasts education update event", %{resume: resume} do
       topic = "education:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       attrs = %{
         institution: "University of Example",
@@ -270,7 +285,11 @@ defmodule BemedaPersonal.ResumesTest do
 
       {:ok, education} = Resumes.create_or_update_education(%Education{}, resume, attrs)
 
-      assert_receive {:education_updated, ^education}
+      assert_receive %Broadcast{
+        event: "education_updated",
+        topic: ^topic,
+        payload: %{education: ^education}
+      }
     end
   end
 
@@ -290,11 +309,15 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "broadcasts education delete event", %{education: education, resume: resume} do
       topic = "education:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       {:ok, deleted_education} = Resumes.delete_education(education)
 
-      assert_receive {:education_deleted, ^deleted_education}
+      assert_receive %Broadcast{
+        event: "education_deleted",
+        topic: ^topic,
+        payload: %{education: ^deleted_education}
+      }
     end
   end
 
@@ -487,7 +510,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "broadcasts work experience update event", %{resume: resume} do
       topic = "work_experience:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       attrs = %{
         company_name: "Example Corp",
@@ -499,7 +522,11 @@ defmodule BemedaPersonal.ResumesTest do
       {:ok, work_experience} =
         Resumes.create_or_update_work_experience(%WorkExperience{}, resume, attrs)
 
-      assert_receive {:work_experience_updated, ^work_experience}
+      assert_receive %Broadcast{
+        event: "work_experience_updated",
+        topic: ^topic,
+        payload: %{work_experience: ^work_experience}
+      }
     end
   end
 
@@ -522,11 +549,15 @@ defmodule BemedaPersonal.ResumesTest do
       resume: resume
     } do
       topic = "work_experience:#{resume.id}"
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, topic)
+      Endpoint.subscribe(topic)
 
       {:ok, deleted_work_experience} = Resumes.delete_work_experience(work_experience)
 
-      assert_receive {:work_experience_deleted, ^deleted_work_experience}
+      assert_receive %Broadcast{
+        event: "work_experience_deleted",
+        topic: ^topic,
+        payload: %{work_experience: ^deleted_work_experience}
+      }
     end
   end
 

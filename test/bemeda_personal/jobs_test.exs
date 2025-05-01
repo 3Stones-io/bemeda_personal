@@ -6,7 +6,8 @@ defmodule BemedaPersonal.JobsTest do
   import BemedaPersonal.JobsFixtures
 
   alias BemedaPersonal.Jobs
-  alias Phoenix.PubSub
+  alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   @invalid_attrs %{
     currency: nil,
@@ -441,7 +442,7 @@ defmodule BemedaPersonal.JobsTest do
       company: company
     } do
       company_topic = "job_posting:company:#{company.id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+      Endpoint.subscribe(company_topic)
 
       valid_attrs = %{
         currency: "some currency",
@@ -457,7 +458,11 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, job_posting} = Jobs.create_job_posting(company, valid_attrs)
 
-      assert_receive {:job_posting_updated, ^job_posting}
+      assert_receive %Broadcast{
+        event: "job_posting_created",
+        topic: ^company_topic,
+        payload: %{job_posting: ^job_posting}
+      }
     end
   end
 
@@ -489,7 +494,7 @@ defmodule BemedaPersonal.JobsTest do
       company: company
     } do
       company_topic = "job_posting:company:#{company.id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+      Endpoint.subscribe(company_topic)
 
       update_attrs = %{
         description: "some updated description that is long enough",
@@ -499,7 +504,11 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, updated_job_posting} = Jobs.update_job_posting(job_posting, update_attrs)
 
-      assert_receive {:job_posting_updated, ^updated_job_posting}
+      assert_receive %Broadcast{
+        event: "job_posting_updated",
+        topic: ^company_topic,
+        payload: %{job_posting: ^updated_job_posting}
+      }
     end
   end
 
@@ -516,13 +525,17 @@ defmodule BemedaPersonal.JobsTest do
       company: company
     } do
       company_topic = "job_posting:company:#{company.id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+      Endpoint.subscribe(company_topic)
 
       job_posting = Repo.preload(job_posting, :company)
 
       {:ok, deleted_job_posting} = Jobs.delete_job_posting(job_posting)
 
-      assert_receive {:job_posting_deleted, ^deleted_job_posting}
+      assert_receive %Broadcast{
+        event: "job_posting_deleted",
+        topic: ^company_topic,
+        payload: %{job_posting: ^deleted_job_posting}
+      }
     end
 
     test "returns error when job posting does not exist" do
@@ -634,8 +647,8 @@ defmodule BemedaPersonal.JobsTest do
       company_job_application_topic = "job_application:company:#{job_posting.company_id}"
       user_job_application_topic = "job_application:user:#{user.id}"
 
-      PubSub.subscribe(BemedaPersonal.PubSub, company_job_application_topic)
-      PubSub.subscribe(BemedaPersonal.PubSub, user_job_application_topic)
+      Endpoint.subscribe(company_job_application_topic)
+      Endpoint.subscribe(user_job_application_topic)
 
       valid_attrs = %{
         cover_letter: "some cover letter"
@@ -643,8 +656,17 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, job_application} = Jobs.create_job_application(user, job_posting, valid_attrs)
 
-      assert_receive {:company_job_application_created, ^job_application}
-      assert_receive {:user_job_application_created, ^job_application}
+      assert_receive %Broadcast{
+        event: "company_job_application_created",
+        topic: ^company_job_application_topic,
+        payload: %{job_application: ^job_application}
+      }
+
+      assert_receive %Broadcast{
+        event: "user_job_application_created",
+        topic: ^user_job_application_topic,
+        payload: %{job_application: ^job_application}
+      }
     end
   end
 
@@ -699,8 +721,8 @@ defmodule BemedaPersonal.JobsTest do
 
       user_job_application_topic = "job_application:user:#{job_application.user_id}"
 
-      PubSub.subscribe(BemedaPersonal.PubSub, company_job_application_topic)
-      PubSub.subscribe(BemedaPersonal.PubSub, user_job_application_topic)
+      Endpoint.subscribe(company_job_application_topic)
+      Endpoint.subscribe(user_job_application_topic)
 
       update_attrs = %{
         cover_letter: "updated cover letter"
@@ -708,8 +730,17 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, updated_job_application} = Jobs.update_job_application(job_application, update_attrs)
 
-      assert_receive {:company_job_application_updated, ^updated_job_application}
-      assert_receive {:user_job_application_updated, ^updated_job_application}
+      assert_receive %Broadcast{
+        event: "company_job_application_updated",
+        topic: ^company_job_application_topic,
+        payload: %{job_application: ^updated_job_application}
+      }
+
+      assert_receive %Broadcast{
+        event: "user_job_application_updated",
+        topic: ^user_job_application_topic,
+        payload: %{job_application: ^updated_job_application}
+      }
     end
   end
 

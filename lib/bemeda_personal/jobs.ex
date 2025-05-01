@@ -10,8 +10,8 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Repo
+  alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
-  alias Phoenix.PubSub
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -150,7 +150,14 @@ defmodule BemedaPersonal.Jobs do
       {:ok, job_posting} ->
         broadcast_event(
           "#{@job_posting_topic}:company:#{company.id}",
-          {:job_posting_updated, job_posting}
+          "job_posting_created",
+          %{job_posting: job_posting}
+        )
+
+        broadcast_event(
+          "#{@job_posting_topic}",
+          "job_posting_created",
+          %{job_posting: job_posting}
         )
 
         {:ok, job_posting}
@@ -184,7 +191,14 @@ defmodule BemedaPersonal.Jobs do
       {:ok, updated_job_posting} ->
         broadcast_event(
           "#{@job_posting_topic}:company:#{job_posting.company.id}",
-          {:job_posting_updated, updated_job_posting}
+          "job_posting_updated",
+          %{job_posting: updated_job_posting}
+        )
+
+        broadcast_event(
+          "#{@job_posting_topic}",
+          "job_posting_updated",
+          %{job_posting: updated_job_posting}
         )
 
         {:ok, updated_job_posting}
@@ -214,7 +228,8 @@ defmodule BemedaPersonal.Jobs do
       {:ok, deleted_job_posting} ->
         broadcast_event(
           "#{@job_posting_topic}:company:#{deleted_job_posting.company.id}",
-          {:job_posting_deleted, deleted_job_posting}
+          "job_posting_deleted",
+          %{job_posting: deleted_job_posting}
         )
 
         {:ok, deleted_job_posting}
@@ -537,13 +552,15 @@ defmodule BemedaPersonal.Jobs do
         :ok =
           broadcast_event(
             "#{@job_application_topic}:company:#{job_posting.company_id}",
-            {:company_job_application_created, job_application}
+            "company_job_application_created",
+            %{job_application: job_application}
           )
 
         :ok =
           broadcast_event(
             "#{@job_application_topic}:user:#{user.id}",
-            {:user_job_application_created, job_application}
+            "user_job_application_created",
+            %{job_application: job_application}
           )
 
         {:ok, job_application}
@@ -577,12 +594,14 @@ defmodule BemedaPersonal.Jobs do
       {:ok, updated_job_application} ->
         broadcast_event(
           "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
-          {:company_job_application_updated, updated_job_application}
+          "company_job_application_updated",
+          %{job_application: updated_job_application}
         )
 
         broadcast_event(
           "#{@job_application_topic}:user:#{job_application.user_id}",
-          {:user_job_application_updated, updated_job_application}
+          "user_job_application_updated",
+          %{job_application: updated_job_application}
         )
 
         {:ok, updated_job_application}
@@ -606,10 +625,10 @@ defmodule BemedaPersonal.Jobs do
     JobApplication.changeset(job_application, attrs)
   end
 
-  defp broadcast_event(topic, message) do
-    PubSub.broadcast(
-      BemedaPersonal.PubSub,
+  defp broadcast_event(topic, event, message) do
+    Endpoint.broadcast(
       topic,
+      event,
       message
     )
   end

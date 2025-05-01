@@ -6,6 +6,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.MuxHelpers.Client
   alias BemedaPersonal.MuxHelpers.WebhookHandler
   alias BemedaPersonalWeb.ChatComponents
+  alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -72,9 +74,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({event, message}, socket)
-      when event in [:new_message, :message_updated] do
-    {:noreply, stream_insert(socket, :messages, message)}
+  def handle_info(%Broadcast{event: event, payload: payload}, socket)
+      when event in [
+             "new_message",
+             "message_updated"
+           ] do
+    {:noreply, stream_insert(socket, :messages, payload.message)}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
@@ -86,10 +91,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     job_posting = Jobs.get_job_posting!(job_application.job_posting_id)
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "messages:job_application:#{job_application_id}"
-      )
+      Endpoint.subscribe("messages:job_application:#{job_application_id}")
     end
 
     socket

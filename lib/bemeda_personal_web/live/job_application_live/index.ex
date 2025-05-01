@@ -3,18 +3,17 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationLive.FormComponent
   alias BemedaPersonalWeb.JobApplicationsListComponent
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "job_application:user:#{current_user.id}"
-      )
+      Endpoint.subscribe("job_application:user:#{current_user.id}")
     end
 
     {:ok,
@@ -42,15 +41,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     {:noreply, socket}
   end
 
-  def handle_info({event, job_application}, socket)
+  def handle_info(%Broadcast{event: event, payload: payload}, socket)
       when event in [
-             :user_job_application_created,
-             :user_job_application_updated
+             "user_job_application_created",
+             "user_job_application_updated"
            ] do
     send_update(
       JobApplicationsListComponent,
       id: "job-applications-list",
-      job_application: job_application
+      job_application: payload.job_application
     )
 
     {:noreply, socket}
