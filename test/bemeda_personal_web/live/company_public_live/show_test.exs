@@ -96,6 +96,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       assert html =~ "4.0"
       assert html =~ "fill-current"
       assert html =~ "text-gray-300"
+      assert html =~ "(1)"
     end
 
     test "displays small-sized rating stars with custom size", %{
@@ -320,10 +321,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       other_user = user_fixture()
       job_application_fixture(other_user, job_posting)
 
-      {:ok, view, _html} =
+      {:ok, view, html} =
         conn
         |> log_in_user(user)
         |> live(~p"/company/#{company.id}")
+
+      assert html =~ "(0)"
 
       rating =
         rating_fixture(%{
@@ -341,9 +344,9 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         {:rating_created, rating}
       )
 
-      html = render(view)
-      assert html =~ "star-rating"
-      assert html =~ "fill-current"
+      updated_html = render(view)
+      assert updated_html =~ "5.0"
+      assert updated_html =~ "(1)"
     end
   end
 end

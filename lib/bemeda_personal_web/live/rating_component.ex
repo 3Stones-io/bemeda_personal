@@ -21,6 +21,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
      socket
      |> assign(assigns)
      |> assign_average_rating()
+     |> assign_ratings_count()
      |> assign_current_user_rating()
      |> assign_can_rate?()}
   end
@@ -45,9 +46,9 @@ defmodule BemedaPersonalWeb.RatingComponent do
       |> assign_new(:class, fn -> "" end)
       |> assign_new(:display_class, fn -> "" end)
       |> assign_new(:size, fn -> "md" end)
-      |> assign_new(:show_count, fn -> true end)
       |> assign_new(:rating_modal_id, fn -> "rating-modal-#{assigns.entity_id}" end)
       |> assign_new(:rating_form_id, fn -> "job-seeker-rating-form-#{assigns.entity_id}" end)
+      |> assign_new(:ratings_count, fn -> 0 end)
 
     ~H"""
     <div id={@id} class={@class}>
@@ -68,8 +69,8 @@ defmodule BemedaPersonalWeb.RatingComponent do
           {format_rating(@average_rating)}
         </div>
 
-        <div :if={@show_count && @average_rating} class="text-sm text-gray-500 ml-1">
-          ({@entity_type})
+        <div class="text-sm text-gray-500 ml-1">
+          ({@ratings_count})
         </div>
 
         <div :if={@can_rate?} class="ml-4">
@@ -111,6 +112,15 @@ defmodule BemedaPersonalWeb.RatingComponent do
   defp assign_average_rating(%{assigns: %{entity_type: type, entity_id: id}} = socket) do
     average_rating = Ratings.get_average_rating(type, id)
     assign(socket, :average_rating, average_rating)
+  end
+
+  defp assign_ratings_count(%{assigns: %{ratings_count: %Decimal{}}} = socket) do
+    socket
+  end
+
+  defp assign_ratings_count(%{assigns: %{entity_type: type, entity_id: id}} = socket) do
+    ratings_count = Ratings.get_ratings_count_for_ratee(type, id)
+    assign(socket, :ratings_count, ratings_count)
   end
 
   defp assign_current_user_rating(%{assigns: %{current_user: current_user}} = socket)

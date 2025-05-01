@@ -676,7 +676,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 current_user={@current_user}
                 current_user_rating={@current_user_rating}
                 size="md"
-                show_count={true}
                 rating_modal_id={"rating-modal-#{@application.id}"}
                 rating_form_id={"job-seeker-rating-form-#{@application.id}"}
               />

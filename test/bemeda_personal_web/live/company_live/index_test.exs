@@ -127,6 +127,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> live(~p"/companies")
 
       assert html =~ "3.5"
+      assert html =~ "(2)"
     end
 
     test "shows job count correctly", %{conn: conn} do

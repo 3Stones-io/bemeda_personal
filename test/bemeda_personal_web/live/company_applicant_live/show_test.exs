@@ -243,6 +243,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
       html = render(view)
       assert html =~ "5.0"
+      assert html =~ "(1)"
     end
 
     test "handles cancel action for rating form", %{
