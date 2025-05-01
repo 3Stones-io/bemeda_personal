@@ -8,9 +8,13 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.Jobs.Tag
+  alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
   alias Ecto.Changeset
+  alias Ecto.Multi
   alias Phoenix.PubSub
 
   @type attrs :: map()
@@ -19,6 +23,8 @@ defmodule BemedaPersonal.Jobs do
   @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
+  @type tag_id :: Ecto.UUID.t()
+  @type tags :: String.t()
   @type user :: User.t()
 
   @job_application_topic "job_application"
@@ -59,7 +65,7 @@ defmodule BemedaPersonal.Jobs do
     |> order_by([j], desc: j.inserted_at)
     |> limit(^limit)
     |> Repo.all()
-    |> Repo.preload(:company)
+    |> Repo.preload([:company, :media_asset])
   end
 
   defp apply_filter({:company_id, company_id}, dynamic) do
@@ -122,7 +128,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_posting!(id) do
     JobPosting
     |> Repo.get!(id)
-    |> Repo.preload(:company)
+    |> Repo.preload([:company, :media_asset])
   end
 
   @doc """
@@ -140,23 +146,36 @@ defmodule BemedaPersonal.Jobs do
   @spec create_job_posting(company(), attrs()) ::
           {:ok, job_posting()} | {:error, changeset()}
   def create_job_posting(%Company{} = company, attrs \\ %{}) do
-    result =
+    changeset =
       %JobPosting{}
       |> JobPosting.changeset(attrs)
       |> Changeset.put_assoc(:company, company)
-      |> Repo.insert()
 
-    case result do
-      {:ok, job_posting} ->
+    multi =
+      Multi.new()
+      |> Multi.insert(:job_posting, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_posting: job_posting} ->
+        handle_media_asset(repo, nil, job_posting, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_posting: job_posting}} ->
+        job_posting =
+          Repo.preload(
+            job_posting,
+            [:company, :media_asset],
+            force: true
+          )
+
         broadcast_event(
           "#{@job_posting_topic}:company:#{company.id}",
-          {:job_posting_updated, job_posting}
+          {:job_posting_created, job_posting}
         )
 
         {:ok, job_posting}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 
@@ -175,13 +194,22 @@ defmodule BemedaPersonal.Jobs do
   @spec update_job_posting(job_posting(), attrs()) ::
           {:ok, job_posting()} | {:error, changeset()}
   def update_job_posting(%JobPosting{} = job_posting, attrs \\ %{}) do
-    result =
-      job_posting
-      |> JobPosting.changeset(attrs)
-      |> Repo.update()
+    changeset = JobPosting.changeset(job_posting, attrs)
 
-    case result do
-      {:ok, updated_job_posting} ->
+    multi =
+      Multi.new()
+      |> Multi.update(:job_posting, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_posting: updated_job_posting} ->
+        handle_media_asset(repo, job_posting.media_asset, updated_job_posting, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_posting: updated_job_posting}} ->
+        updated_job_posting =
+          updated_job_posting
+          |> Repo.reload()
+          |> Repo.preload([:company, :media_asset])
+
         broadcast_event(
           "#{@job_posting_topic}:company:#{job_posting.company.id}",
           {:job_posting_updated, updated_job_posting}
@@ -189,9 +217,28 @@ defmodule BemedaPersonal.Jobs do
 
         {:ok, updated_job_posting}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
+  end
+
+  defp handle_media_asset(repo, existing_media_asset, parent, attrs) do
+    media_data = Map.get(attrs, "media_data") || Map.get(attrs, :media_data)
+
+    process_media_data(media_data, repo, existing_media_asset, parent)
+  end
+
+  defp process_media_data(nil, _repo, nil, _parent), do: {:ok, nil}
+
+  defp process_media_data(nil, _repo, existing_media_asset, _parent),
+    do: {:ok, existing_media_asset}
+
+  defp process_media_data(media_data, _repo, nil, parent) do
+    Media.create_media_asset(parent, media_data)
+  end
+
+  defp process_media_data(media_data, _repo, existing_media_asset, _parent) do
+    Media.update_media_asset(existing_media_asset, media_data)
   end
 
   @doc """
@@ -271,6 +318,9 @@ defmodule BemedaPersonal.Jobs do
       iex> list_job_applications(%{job_posting_id: job_posting_id})
       [%JobApplication{}, ...]
 
+      iex> list_job_applications(%{tags: ["urgent", "qualified"]})
+      [%JobApplication{}, ...]
+
   """
   @spec list_job_applications(map(), non_neg_integer()) :: [job_application()]
   def list_job_applications(filters \\ %{}, limit \\ 10)
@@ -278,13 +328,13 @@ defmodule BemedaPersonal.Jobs do
   def list_job_applications(%{company_id: _company_id} = filters, limit) do
     job_post_with_applications_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
   end
 
   def list_job_applications(filters, limit) do
     job_application_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:user, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
   end
 
   defp list_applications(query, filters, limit) do
@@ -397,6 +447,21 @@ defmodule BemedaPersonal.Jobs do
     dynamic([job_application: ja], ^dynamic and ja.inserted_at < ^job_application.inserted_at)
   end
 
+  defp apply_job_application_filter({:tags, tags}, dynamic) do
+    dynamic(
+      [job_application: ja],
+      ^dynamic and
+        ja.id in subquery(
+          from jat in JobApplicationTag,
+            join: t in Tag,
+            on: t.id == jat.tag_id,
+            where: t.name in ^tags,
+            group_by: jat.job_application_id,
+            select: jat.job_application_id
+        )
+    )
+  end
+
   defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   defp parse_date_if_string(date) when is_binary(date) do
@@ -491,7 +556,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:job_posting, :user])
+    |> Repo.preload([:job_posting, :media_asset, :tags, :user])
   end
 
   @doc """
@@ -503,10 +568,11 @@ defmodule BemedaPersonal.Jobs do
       %JobApplication{}
 
   """
-  @spec get_user_job_application(user(), job_posting()) :: job_application() | no_return()
+  @spec get_user_job_application(user(), job_posting()) :: job_application() | nil
   def get_user_job_application(%User{} = user, %JobPosting{} = job) do
     JobApplication
     |> where([ja], ja.user_id == ^user.id and ja.job_posting_id == ^job.id)
+    |> preload([ja], [:media_asset])
     |> Repo.one()
   end
 
@@ -525,31 +591,41 @@ defmodule BemedaPersonal.Jobs do
   @spec create_job_application(user(), job_posting(), attrs()) ::
           {:ok, job_application()} | {:error, changeset()}
   def create_job_application(%User{} = user, %JobPosting{} = job_posting, attrs \\ %{}) do
-    result =
+    changeset =
       %JobApplication{}
       |> JobApplication.changeset(attrs)
       |> Changeset.put_assoc(:user, user)
       |> Changeset.put_assoc(:job_posting, job_posting)
-      |> Repo.insert()
 
-    case result do
-      {:ok, job_application} ->
-        :ok =
-          broadcast_event(
-            "#{@job_application_topic}:company:#{job_posting.company_id}",
-            {:company_job_application_created, job_application}
+    multi =
+      Multi.new()
+      |> Multi.insert(:job_application, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_application: job_application} ->
+        handle_media_asset(repo, nil, job_application, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_application: job_application}} ->
+        job_application =
+          Repo.preload(
+            job_application,
+            [:job_posting, :user, :media_asset]
           )
 
-        :ok =
-          broadcast_event(
-            "#{@job_application_topic}:user:#{user.id}",
-            {:user_job_application_created, job_application}
-          )
+        broadcast_event(
+          "#{@job_application_topic}:company:#{job_posting.company_id}",
+          {:company_job_application_created, job_application}
+        )
+
+        broadcast_event(
+          "#{@job_application_topic}:user:#{user.id}",
+          {:user_job_application_created, job_application}
+        )
 
         {:ok, job_application}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 
@@ -568,13 +644,24 @@ defmodule BemedaPersonal.Jobs do
   @spec update_job_application(job_application(), attrs()) ::
           {:ok, job_application()} | {:error, changeset()}
   def update_job_application(%JobApplication{} = job_application, attrs) do
-    result =
-      job_application
-      |> JobApplication.changeset(attrs)
-      |> Repo.update()
+    changeset = JobApplication.changeset(job_application, attrs)
 
-    case result do
-      {:ok, updated_job_application} ->
+    multi =
+      Multi.new()
+      |> Multi.update(:job_application, changeset)
+      |> Multi.run(:media_asset, fn repo, %{job_application: updated_job_application} ->
+        handle_media_asset(repo, job_application.media_asset, updated_job_application, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{job_application: updated_job_application}} ->
+        updated_job_application =
+          Repo.preload(
+            updated_job_application,
+            [:job_posting, :user, :media_asset],
+            force: true
+          )
+
         broadcast_event(
           "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
           {:company_job_application_updated, updated_job_application}
@@ -587,8 +674,8 @@ defmodule BemedaPersonal.Jobs do
 
         {:ok, updated_job_application}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 
@@ -604,6 +691,111 @@ defmodule BemedaPersonal.Jobs do
   @spec change_job_application(job_application(), attrs()) :: changeset()
   def change_job_application(%JobApplication{} = job_application, attrs \\ %{}) do
     JobApplication.changeset(job_application, attrs)
+  end
+
+  @doc """
+  Adds tags to a job application, creating any tags that don't exist.
+
+  ## Examples
+
+      iex> update_job_application_tags(job_application, ["urgent", "qualified"])
+      {:ok, %JobApplication{}}
+
+  """
+  @spec update_job_application_tags(job_application(), tags()) ::
+          {:ok, job_application()} | {:error, any()}
+  def update_job_application_tags(%JobApplication{} = job_application, tags) do
+    normalized_tags = normalize_tags(tags)
+
+    job_application
+    |> Repo.preload(:tags)
+    |> execute_tag_application_transaction(normalized_tags)
+    |> handle_tag_application_result()
+  end
+
+  defp normalize_tags(tags) do
+    tags
+    |> String.split(",")
+    |> Stream.map(fn tag ->
+      tag
+      |> String.trim()
+      |> String.downcase()
+    end)
+    |> Enum.reject(&(&1 == ""))
+  end
+
+  defp execute_tag_application_transaction(job_application, normalized_tags) do
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.run(:create_tags, fn _repo, _changes ->
+        create_tags_query(normalized_tags)
+      end)
+      |> Ecto.Multi.run(:all_tags, fn _repo, _changes ->
+        {:ok,
+         Tag
+         |> where([t], t.name in ^normalized_tags)
+         |> Repo.all()}
+      end)
+      |> Ecto.Multi.run(:update_job_application, fn _repo, %{all_tags: all_tags} ->
+        add_tags_to_job_application(job_application, all_tags)
+      end)
+
+    Repo.transaction(multi)
+  end
+
+  defp create_tags_query([]), do: {:ok, []}
+
+  defp create_tags_query(tag_names) do
+    timestamp = DateTime.utc_now(:second)
+
+    placeholders = %{timestamp: timestamp}
+
+    maps =
+      Enum.map(
+        tag_names,
+        &%{
+          name: &1,
+          inserted_at: {:placeholder, :timestamp},
+          updated_at: {:placeholder, :timestamp}
+        }
+      )
+
+    Repo.insert_all(
+      Tag,
+      maps,
+      placeholders: placeholders,
+      on_conflict: :nothing
+    )
+
+    {:ok, tag_names}
+  end
+
+  defp add_tags_to_job_application(job_application, tags) do
+    job_application
+    |> change_job_application()
+    |> Changeset.put_assoc(:tags, tags)
+    |> Repo.update()
+  end
+
+  defp handle_tag_application_result({:ok, %{update_job_application: updated_job_application}}) do
+    broadcast_job_application_update(updated_job_application)
+    {:ok, updated_job_application}
+  end
+
+  defp handle_tag_application_result({:error, _operation, changeset, _changes}) do
+    {:error, changeset}
+  end
+
+  defp broadcast_job_application_update(job_application) do
+    broadcast_event(
+      "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
+      {:company_job_application_updated, job_application}
+    )
+
+    broadcast_event(
+      "#{@job_application_topic}:user:#{job_application.user_id}",
+      {:user_job_application_updated, job_application}
+    )
   end
 
   @doc """

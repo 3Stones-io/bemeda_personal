@@ -4,8 +4,12 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.MuxHelpers.Client
-  alias BemedaPersonal.MuxHelpers.WebhookHandler
+  alias BemedaPersonal.TigrisHelper
+  alias BemedaPersonalWeb.Endpoint
+
+  require Logger
+
+  @type socket :: Phoenix.LiveView.Socket.t()
 
   @spec to_html(binary()) :: Phoenix.HTML.safe()
   def to_html(markdown) do
@@ -35,16 +39,26 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     |> Phoenix.HTML.raw()
   end
 
-  @spec assign_job_posting(Phoenix.LiveView.Socket.t(), String.t()) ::
-          {:noreply, Phoenix.LiveView.Socket.t()}
+  @spec assign_job_posting(socket(), Ecto.UUID.t()) ::
+          {:noreply, socket()}
   def assign_job_posting(socket, job_id) do
     job_posting = Jobs.get_job_posting!(job_id)
+
+    if Phoenix.LiveView.connected?(socket) do
+      Endpoint.subscribe("job_posting_assets_#{job_posting.id}")
+    end
 
     {:noreply,
      socket
      |> assign(:job_posting, job_posting)
      |> assign(:page_title, job_posting.title)
      |> assign_current_user_application()}
+  end
+
+  @spec reassign_job_posting(socket(), map()) ::
+          {:noreply, socket()}
+  def reassign_job_posting(socket, %{media_asset_updated: _media_asset, job_posting: job_posting}) do
+    {:noreply, assign(socket, :job_posting, job_posting)}
   end
 
   defp assign_current_user_application(socket) do
@@ -62,18 +76,20 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     end
   end
 
-  @spec create_video_upload(Phoenix.LiveView.Socket.t(), String.t()) ::
-          {:reply, map(), Phoenix.LiveView.Socket.t()}
+  @spec create_video_upload(socket(), map()) ::
+          {:reply, map(), socket()}
   def create_video_upload(socket, params) do
-    with {:ok, upload_url, upload_id} <- Client.create_direct_upload(),
-         {:ok, _pid} <- WebhookHandler.register(upload_id, :form_video_upload) do
-      {:reply, %{upload_url: upload_url},
-       socket
-       |> assign(:enable_submit?, false)
-       |> assign(:mux_data, %{file_name: params["filename"], type: params["type"]})}
-    else
-      {:error, _reason} ->
-        {:reply, %{error: "Failed to create upload URL"}, socket}
-    end
+    upload_id = Ecto.UUID.generate()
+    upload_url = TigrisHelper.get_presigned_upload_url(upload_id)
+
+    {:reply, %{upload_url: upload_url, upload_id: upload_id},
+     socket
+     |> assign(:enable_submit?, false)
+     |> assign(:media_data, %{file_name: params["filename"], upload_id: upload_id})}
+  end
+
+  @spec get_presigned_url(String.t()) :: String.t()
+  def get_presigned_url(upload_id) do
+    TigrisHelper.get_presigned_download_url(upload_id)
   end
 end

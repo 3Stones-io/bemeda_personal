@@ -13,15 +13,30 @@ export default ChatInput = {
       chatInput.classList.remove('border-indigo-600')
     }
 
-    const uploadFile = (newFiles) => {
+    const uploadFile = (file) => {
       hook.pushEvent(
         'upload-media',
-        { filename: newFiles.name, type: newFiles.type },
-        ({ upload_url: uploadUrl }) => {
-          UpChunk.createUpload({
+        { filename: file.name, type: file.type },
+        ({ upload_url: uploadUrl, message_id: messageId }) => {
+          const upload = UpChunk.createUpload({
             endpoint: uploadUrl,
-            file: newFiles,
+            file: file,
             chunkSize: 30720,
+            method: 'PUT',
+            headers: {
+              'Content-Type': file.type,
+            },
+          })
+
+          upload.on('error', (e) => {
+            console.log('error', e.detail)
+          })
+
+          upload.on('success', () => {
+            hook.pushEvent('update-message', {
+              message_id: messageId,
+              status: 'uploaded',
+            })
           })
         }
       )

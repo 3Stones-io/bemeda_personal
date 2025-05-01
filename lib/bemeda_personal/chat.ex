@@ -8,7 +8,9 @@ defmodule BemedaPersonal.Chat do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
+  alias Ecto.Multi
   alias Phoenix.PubSub
 
   @type attrs :: map()
@@ -16,7 +18,6 @@ defmodule BemedaPersonal.Chat do
   @type job_application :: JobApplication.t()
   @type message :: Message.t()
   @type message_id :: Ecto.UUID.t()
-  @type upload_id :: String.t()
   @type user :: User.t()
 
   @message_topic "messages"
@@ -37,7 +38,7 @@ defmodule BemedaPersonal.Chat do
       |> where([m], m.job_application_id == ^job_application.id)
       |> order_by([m], asc: m.inserted_at)
       |> Repo.all()
-      |> Repo.preload([:sender])
+      |> Repo.preload([:media_asset, :sender])
 
     [job_application | messages]
   end
@@ -60,27 +61,7 @@ defmodule BemedaPersonal.Chat do
   def get_message!(id) do
     Message
     |> Repo.get!(id)
-    |> Repo.preload([:sender, :job_application])
-  end
-
-  @doc """
-  Returns a message by upload id.
-
-  ## Examples
-
-      iex> get_message_by_upload_id(123)
-      %Message{}
-
-      iex> get_message_by_upload_id(456)
-      nil
-
-  """
-  @spec get_message_by_upload_id(upload_id()) :: message() | nil
-  def get_message_by_upload_id(mux_upload_id) do
-    Message
-    |> where(fragment("mux_data->>'upload_id' = ?", ^mux_upload_id))
-    |> Repo.one()
-    |> Repo.preload([:sender, :job_application])
+    |> Repo.preload([:job_application, :media_asset, :sender])
   end
 
   @doc """
@@ -113,6 +94,55 @@ defmodule BemedaPersonal.Chat do
 
       error ->
         error
+    end
+  end
+
+  @doc """
+  Creates a message with associated media asset in a transaction.
+
+  ## Examples
+
+      iex> create_message_with_media(user, job_application, %{field: value, media_data: %{}})
+      {:ok, %Message{}}
+
+      iex> create_message_with_media(user, job_application, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec create_message_with_media(user(), job_application(), attrs()) ::
+          {:ok, message()} | {:error, changeset()}
+  def create_message_with_media(%User{} = sender, %JobApplication{} = job_application, attrs) do
+    changeset =
+      %Message{}
+      |> Message.changeset(%{})
+      |> Ecto.Changeset.put_assoc(:sender, sender)
+      |> Ecto.Changeset.put_assoc(:job_application, job_application)
+
+    multi =
+      Multi.new()
+      |> Multi.insert(:message, changeset)
+      |> Multi.run(:media_asset, fn _repo, %{message: message} ->
+        case Map.get(attrs, "media_data") do
+          nil -> {:ok, nil}
+          media_data -> Media.create_media_asset(message, media_data)
+        end
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{message: message}} ->
+        message =
+          Repo.preload(
+            message,
+            [:sender, :job_application, :media_asset],
+            force: true
+          )
+
+        message_topic = "#{@message_topic}:job_application:#{job_application.id}"
+        PubSub.broadcast(BemedaPersonal.PubSub, message_topic, {:new_message, message})
+        {:ok, message}
+
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 

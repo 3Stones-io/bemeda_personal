@@ -18,6 +18,7 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilter do
     field :date_to, :date
     field :job_posting_id, Ecto.UUID
     field :job_title, :string
+    field :tags, {:array, :string}
     field :user_id, Ecto.UUID
   end
 
@@ -28,6 +29,7 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilter do
     :date_to,
     :job_posting_id,
     :job_title,
+    :tags,
     :user_id
   ]
 

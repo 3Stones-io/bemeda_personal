@@ -5,7 +5,9 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.MuxData
+  alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
@@ -42,7 +44,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
         <label for="hidden-file-input" class="cursor-pointer">
           <.icon name="hero-paper-clip" class="text-bold text-[#667085] h-5 w-5" />
 
-          <input id="hidden-file-input" type="file" class="hidden" accept="image/*,video/*,audio/*" />
+          <input id="hidden-file-input" type="file" class="hidden" accept="*" />
         </label>
 
         <button type="submit" class="bg-black text-white px-2 py-1 rounded-lg">
@@ -79,8 +81,8 @@ defmodule BemedaPersonalWeb.ChatComponents do
         </div>
       </div>
 
-      <div :if={@message.mux_data && @message.mux_data.playback_id} class={@class}>
-        <mux-player playback-id={@message.mux_data.playback_id}></mux-player>
+      <div class={@class}>
+        <SharedComponents.video_player media_asset={@message.media_asset} />
       </div>
 
       <.link
@@ -122,7 +124,8 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   @spec chat_message(assigns()) :: output()
   def chat_message(
-        %{message: %{mux_data: %MuxData{type: "video" <> _rest, playback_id: nil}}} = assigns
+        %{message: %{media_asset: %MediaAsset{type: "video" <> _rest, status: :pending}}} =
+          assigns
       ) do
     ~H"""
     <div class="w-full h-[200px] bg-zinc-200 rounded-lg flex items-center justify-center">
@@ -131,14 +134,24 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(%{message: %{mux_data: %MuxData{type: "video" <> _rest}}} = assigns) do
+  def chat_message(
+        %{
+          message: %{
+            media_asset: %MediaAsset{
+              type: "video" <> _rest,
+              status: :uploaded
+            }
+          }
+        } = assigns
+      ) do
     ~H"""
-    <mux-player playback-id={@message.mux_data.playback_id}></mux-player>
+    <SharedComponents.video_player class="w-full" media_asset={@message.media_asset} />
     """
   end
 
   def chat_message(
-        %{message: %{mux_data: %MuxData{type: "audio" <> _rest, playback_id: nil}}} = assigns
+        %{message: %{media_asset: %MediaAsset{type: "audio" <> _rest, status: :pending}}} =
+          assigns
       ) do
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
@@ -156,28 +169,79 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(%{message: %{mux_data: %MuxData{type: "audio" <> _rest}}} = assigns) do
+  def chat_message(
+        %{
+          message: %{
+            media_asset: %MediaAsset{
+              type: "audio" <> _rest,
+              status: :uploaded
+            }
+          }
+        } = assigns
+      ) do
     ~H"""
-    <mux-player
-      playback-id={@message.mux_data.playback_id}
-      audio
-      primary-color="#075389"
-      secondary-color="#d6e6f1"
-    >
-    </mux-player>
+    <audio class="w-full" controls>
+      <source src={SharedHelpers.get_presigned_url(@message.id)} type="audio/mp3" />
+    </audio>
+    """
+  end
+
+  def chat_message(
+        %{message: %{media_asset: %MediaAsset{type: "image" <> _rest, status: :pending}}} =
+          assigns
+      ) do
+    ~H"""
+    <div class="w-full h-[200px] bg-zinc-200 rounded-lg flex items-center justify-center">
+      <.icon name="hero-photo" class="h-12 w-12 text-[#075389] animate-pulse" />
+    </div>
+    """
+  end
+
+  def chat_message(%{message: %{media_asset: %MediaAsset{type: "image" <> _rest}}} = assigns) do
+    ~H"""
+    <div class="w-full overflow-hidden rounded-lg">
+      <img
+        src={SharedHelpers.get_presigned_url(@message.id)}
+        alt={@message.media_asset.file_name || "Image"}
+        class="w-full h-auto object-contain max-h-[400px]"
+      />
+    </div>
+    """
+  end
+
+  def chat_message(%{message: %{media_asset: %MediaAsset{status: :pending}}} = assigns) do
+    ~H"""
+    <div class="w-full bg-[#e9eef2] rounded-lg p-3 flex items-center">
+      <.icon name="hero-document" class="h-6 w-6 text-[#075389] mr-3" />
+      <div class="flex flex-col">
+        <span class="text-sm font-medium text-zinc-800">Uploading file...</span>
+        <span class="text-xs text-zinc-500">Processing...</span>
+      </div>
+    </div>
+    """
+  end
+
+  def chat_message(%{message: %{media_asset: %MediaAsset{status: :uploaded}}} = assigns) do
+    ~H"""
+    <div class="w-full bg-[#e9eef2] rounded-lg p-3">
+      <.link
+        href={SharedHelpers.get_presigned_url(@message.id)}
+        target="_blank"
+        class="flex items-center hover:bg-[#d6e6f1] p-2 rounded-lg transition-colors"
+      >
+        <.icon name="hero-document" class="h-6 w-6 text-[#075389] mr-3" />
+        <p class="text-sm font-medium text-zinc-800">
+          <span>{@message.media_asset.file_name}</span>
+        </p>
+      </.link>
+    </div>
     """
   end
 
   def chat_message(assigns) do
     ~H"""
-    <div
-      class={[
-        "text-sm text-zinc-900 py-2 px-4",
-        @class
-      ]}
-      id={"message-content-#{@message.id}"}
-    >
-      {@message.content}
+    <div class="p-3">
+      <p class="text-sm">{@message.content}</p>
     </div>
     """
   end

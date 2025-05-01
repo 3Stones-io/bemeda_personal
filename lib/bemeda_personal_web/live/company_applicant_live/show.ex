@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
@@ -18,6 +19,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     can_rate? = current_user && company_admin?(current_user, company)
 
     if connected?(socket) do
+      Endpoint.subscribe("job_application_assets_#{application.id}")
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "rating:User:#{application.user.id}")
     end
 
@@ -31,6 +33,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
         )
       end
 
+    tags_form_fields = %{"tags" => ""}
+
     {:noreply,
      socket
      |> assign(:application, application)
@@ -40,7 +44,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
      |> assign(:job_posting, job_posting)
      |> assign(:page_title, "Applicant: #{full_name}")
      |> assign(:rating_modal_open, false)
-     |> assign(:resume, resume)}
+     |> assign(:resume, resume)
+     |> assign(:tags_form, to_form(tags_form_fields))}
   end
 
   @impl Phoenix.LiveView
@@ -60,12 +65,27 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     {:noreply, put_flash(socket, :error, "You need to be a company admin to rate applicants.")}
   end
 
-  @impl Phoenix.LiveView
   def handle_event("close-rating-modal", _params, socket) do
     {:noreply, assign(socket, :rating_modal_open, false)}
   end
 
+  def handle_event("update_tags", %{"tags" => tags}, socket) do
+    application = socket.assigns.application
+
+    case Jobs.update_job_application_tags(application, tags) do
+      {:ok, updated_application} ->
+        {:noreply, assign(socket, :application, updated_application)}
+
+      _error ->
+        {:noreply, socket}
+    end
+  end
+
   @impl Phoenix.LiveView
+  def handle_info(%{job_application: job_application}, socket) do
+    {:noreply, assign(socket, :application, job_application)}
+  end
+
   def handle_info({:rating_updated, _entity_type, _entity_id}, socket) do
     {:noreply, assign(socket, :rating_modal_open, false)}
   end
@@ -107,7 +127,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     end
   end
 
-  @impl Phoenix.LiveView
   def handle_info(
         {event, %{ratee_id: ratee_id, ratee_type: "User"} = rating},
         %{assigns: %{application: %{user: %{id: application_user_id}}}} = socket

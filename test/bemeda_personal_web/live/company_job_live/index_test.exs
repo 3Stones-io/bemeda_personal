@@ -7,6 +7,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Media.MediaAsset
 
   @create_attrs_job %{
     title: "Senior Software Engineer",
@@ -135,15 +136,18 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
 
-      send(
-        view.pid,
-        {:video_ready,
-         %{
-           asset_id: "test-asset-id",
-           playback_id: "test-playback-id",
-           upload_id: "test-upload-id"
-         }}
-      )
+      view
+      |> element("#job_posting-video-video-upload")
+      |> render_hook("upload-video", %{
+        "filename" => "test_video.mp4",
+        "type" => "video/mp4"
+      })
+
+      view
+      |> element("#job_posting-video-video-upload")
+      |> render_hook("upload-completed", %{
+        "upload_id" => Ecto.UUID.generate()
+      })
 
       view
       |> form("#company-job-form", %{
@@ -164,10 +168,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       job_posting = List.first(job_postings)
 
-      assert %Jobs.MuxData{
-               asset_id: "test-asset-id",
-               playback_id: "test-playback-id"
-             } = job_posting.mux_data
+      assert %MediaAsset{
+               file_name: "test_video.mp4"
+             } = job_posting.media_asset
     end
 
     test "shows video upload input on new job form", %{conn: conn, user: user, company: company} do
@@ -203,7 +206,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert html =~ job_posting.title
     end
 
-    test "shows video filename for job posting with video", %{
+    test "Edit shows video filename for job posting with video", %{
       conn: conn,
       user: user,
       company: company,
@@ -211,10 +214,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     } do
       {:ok, job_posting} =
         Jobs.update_job_posting(job_posting, %{
-          mux_data: %{
+          media_data: %{
             file_name: "test_video.mp4",
-            playback_id: "test-playback-id",
-            asset_id: "test-asset-id"
+            upload_id: Ecto.UUID.generate()
           }
         })
 
@@ -257,10 +259,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     } do
       job_posting =
         job_posting_fixture(company, %{
-          mux_data: %{
+          media_data: %{
             file_name: "test_video.mp4",
-            playback_id: "test-playback-id",
-            asset_id: "test-asset-id"
+            upload_id: Ecto.UUID.generate()
           }
         })
 
@@ -269,15 +270,18 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
 
-      send(
-        view.pid,
-        {:video_ready,
-         %{
-           asset_id: "updated_test-asset-id",
-           playback_id: "updated_test-playback-id",
-           upload_id: "updated_test-upload-id"
-         }}
-      )
+      view
+      |> element("#job_posting-video-video-upload")
+      |> render_hook("upload-video", %{
+        "filename" => "updated_test_video.mp4",
+        "type" => "video/mp4"
+      })
+
+      view
+      |> element("#job_posting-video-video-upload")
+      |> render_hook("upload-completed", %{
+        "upload_id" => Ecto.UUID.generate()
+      })
 
       view
       |> form("#company-job-form", %{
@@ -290,10 +294,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       updated_job = Jobs.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
 
-      assert %Jobs.MuxData{
-               asset_id: "updated_test-asset-id",
-               playback_id: "updated_test-playback-id"
-             } = updated_job.mux_data
+      assert %MediaAsset{
+               file_name: "updated_test_video.mp4"
+             } = updated_job.media_asset
     end
 
     test "redirects if trying to edit another company's job", %{

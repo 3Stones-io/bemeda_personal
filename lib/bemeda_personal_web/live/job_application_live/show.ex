@@ -3,9 +3,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.MuxHelpers.Client
-  alias BemedaPersonal.MuxHelpers.WebhookHandler
+  alias BemedaPersonal.Media
+  alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
+  alias BemedaPersonalWeb.Endpoint
+
+  require Logger
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -30,6 +33,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     {:noreply, assign_chat_form(socket, changeset)}
   end
 
+  def handle_event("validate", _params, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event("send-message", %{"message" => message_params}, socket) do
     case Chat.create_message(
            socket.assigns.current_user,
@@ -50,25 +57,39 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("upload-media", %{"filename" => filename, "type" => type}, socket) do
-    with {:ok, upload_url, upload_id} <- Client.create_direct_upload(),
-         {:ok, _pid} <- WebhookHandler.register(upload_id, :message_media_upload),
-         {:ok, message} <-
-           Chat.create_message(
-             socket.assigns.current_user,
-             socket.assigns.job_application,
-             %{
-               "mux_data" => %{
-                 "file_name" => filename,
-                 "type" => type,
-                 "upload_id" => upload_id
-               }
-             }
-           ) do
-      {:reply, %{upload_url: upload_url}, stream_insert(socket, :messages, message)}
-    else
-      {:error, _reason} ->
-        {:reply, %{error: "Failed to create upload URL"}, socket}
-    end
+    {:ok, message} =
+      Chat.create_message_with_media(
+        socket.assigns.current_user,
+        socket.assigns.job_application,
+        %{
+          "media_data" => %{
+            "file_name" => filename,
+            "type" => type,
+            "status" => :pending
+          }
+        }
+      )
+
+    upload_url = TigrisHelper.get_presigned_upload_url(message.id)
+
+    {:reply, %{upload_url: upload_url, message_id: message.id},
+     stream_insert(socket, :messages, message)}
+  end
+
+  def handle_event(
+        "update-message",
+        %{"message_id" => message_id, "status" => "uploaded"},
+        socket
+      ) do
+    message = Chat.get_message!(message_id)
+
+    media_asset =
+      Media.get_media_asset_by_message_id(message.id)
+
+    {:ok, _media_asset} =
+      Media.update_media_asset(media_asset, %{status: :uploaded})
+
+    {:noreply, socket}
   end
 
   @impl Phoenix.LiveView
@@ -77,19 +98,27 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     {:noreply, stream_insert(socket, :messages, message)}
   end
 
+  def handle_info(%{message: message}, socket) do
+    {:noreply, stream_insert(socket, :messages, message)}
+  end
+
+  def handle_info(%{job_application: job_application}, socket) do
+    {:noreply, assign(socket, :job_application, job_application)}
+  end
+
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
     job_application = Jobs.get_job_application!(job_application_id)
     messages = Chat.list_messages(job_application)
     changeset = Chat.change_message(%Chat.Message{})
 
-    # Get the job posting
     job_posting = Jobs.get_job_posting!(job_application.job_posting_id)
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "messages:job_application:#{job_application_id}"
-      )
+      Endpoint.subscribe("messages:job_application:#{job_application_id}")
+
+      Endpoint.subscribe("job_application_messages_assets_#{job_application_id}")
+
+      Endpoint.subscribe("job_application_assets_#{job_application_id}")
     end
 
     socket

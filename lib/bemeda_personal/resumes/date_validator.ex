@@ -18,7 +18,7 @@ defmodule BemedaPersonal.Resumes.DateValidator do
     current = get_field(changeset, current_field)
     end_date = get_field(changeset, :end_date)
 
-    if current && end_date != nil do
+    if current && end_date do
       add_error(changeset, :end_date, error_message)
     else
       changeset
