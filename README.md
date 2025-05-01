@@ -8,6 +8,7 @@
   - install mise using either `curl https://mise.run | sh` or `brew install mise`
   - make sure to activate it
   - run `mise install`
+- install MCP Proxy if you're using Tidewave with `mix escript.install hex mcp_proxy`
 - start PostgreSQL server
 - run `mix setup`
 - start Phoenix server with `mix phx.server`
