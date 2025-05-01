@@ -194,6 +194,8 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   end
 
   def handle_event("filter_applications", %{"job_application_filter" => params}, socket) do
+    params = maybe_parse_tags(params["tags"], params)
+
     changeset =
       %JobApplicationFilter{}
       |> JobApplicationFilter.changeset(params)
@@ -225,6 +227,18 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
     |> Phoenix.LiveView.stream(:job_applications, job_applications, reset: true, limit: 10)
     |> assign(:first_job_application, first_job_application)
     |> assign(:last_job_application, last_job_application)
+  end
+
+  defp maybe_parse_tags(nil, params), do: params
+
+  defp maybe_parse_tags(tags, params) do
+    tags =
+      tags
+      |> String.trim()
+      |> String.split(",")
+      |> Enum.reject(&(&1 == ""))
+
+    Map.put(params, "tags", tags)
   end
 
   defp maybe_insert_job_applications(socket, filters, first_or_last_job, opts \\ [])

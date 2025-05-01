@@ -573,6 +573,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :job, :any, default: nil
   attr :show_actions, :boolean, default: false
   attr :show_job, :boolean, default: false
+  attr :tag_limit, :integer, default: 3
   attr :target, :string, default: nil
 
   @spec applicant_card(assigns()) :: output()
@@ -598,6 +599,21 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   {@applicant.user.email}
                 </span>
               </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mt-2">
+              <div
+                :for={tag <- @applicant.tags |> Enum.take(@tag_limit)}
+                class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full"
+              >
+                {tag.name}
+              </div>
+              <div
+                :if={@applicant.tags && length(@applicant.tags) > @tag_limit}
+                class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
+              >
+                +{length(@applicant.tags) - @tag_limit} more
+              </div>
             </div>
           </div>
         </div>
@@ -627,6 +643,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :job, :any, required: true
   attr :resume, :any, default: nil
   attr :show_actions, :boolean, default: false
+  attr :tags_form, Phoenix.HTML.Form, required: true
   attr :target, :string, default: nil
 
   @spec applicant_detail(assigns()) :: output()
@@ -671,6 +688,41 @@ defmodule BemedaPersonalWeb.JobsComponents do
             <dt class="text-sm font-medium text-gray-500">Applied on</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {Calendar.strftime(@application.inserted_at, "%B %d, %Y")}
+            </dd>
+          </div>
+          <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Tags</dt>
+            <dd class="text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <.form
+                :let={f}
+                for={@tags_form}
+                phx-submit="update_tags"
+                class="tags-input-form flex items-start gap-2"
+              >
+                <div class="flex-1">
+                  <.tags_input>
+                    <:hidden_input>
+                      <.input
+                        field={f[:tags]}
+                        type="hidden"
+                        value={Enum.map_join(@application.tags, ",", & &1.name)}
+                        id="application-tags-input"
+                      />
+                    </:hidden_input>
+                  </.tags_input>
+                </div>
+
+                <button
+                  type="submit"
+                  class={[
+                    "inline-flex items-center justify-center px-2 py-1 border border-transparent min-w-[100px] h-[42px]",
+                    "text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600",
+                    "hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  ]}
+                >
+                  Update Tags
+                </button>
+              </.form>
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -718,13 +770,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   attr :class, :string, default: nil
   attr :form, :map, required: true
+  attr :id, :string, default: "job-application-filters"
   attr :show_job_title, :boolean, default: false
   attr :target, :any, default: nil
 
   @spec job_application_filters(assigns()) :: output()
   def job_application_filters(assigns) do
     ~H"""
-    <div class={@class}>
+    <div class={@class} id={@id}>
       <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-semibold text-gray-700">
@@ -800,12 +853,26 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   type="date"
                 />
               </div>
+
+              <div class="mt-1">
+                <.tags_input
+                  label="Filter by Tags"
+                  label_class="block text-sm font-medium text-gray-700"
+                >
+                  <:hidden_input>
+                    <.input field={f[:tags]} type="hidden" data-input-type="filters" />
+                  </:hidden_input>
+                </.tags_input>
+              </div>
             </div>
             <div class="mt-6 flex justify-end gap-x-2">
               <button
                 type="button"
-                phx-click="clear_filters"
-                phx-target={@target}
+                phx-click={
+                  %JS{}
+                  |> JS.push("clear_filters", target: @target)
+                  |> JS.dispatch("clear_filters", to: "#tags-input")
+                }
                 class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
               >
                 Clear All
@@ -819,6 +886,53 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </div>
           </div>
         </.form>
+      </div>
+    </div>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :label_class, :string, default: nil
+  attr :label, :string, default: nil
+
+  slot :hidden_input
+
+  defp tags_input(assigns) do
+    ~H"""
+    <div class="w-full">
+      <div :if={@label} class="flex items-center justify-between mb-1">
+        <div class={[@label_class]}>
+          {@label}
+        </div>
+      </div>
+
+      <div
+        id="tags-input"
+        class="tag-filter-input flex flex-wrap items-center gap-2 px-3 py-2 border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 min-h-[42px] w-full"
+        phx-hook="TagsInput"
+        phx-update="ignore"
+      >
+        <template id="tag-template">
+          <div class="tag inline-flex items-center gap-1 bg-indigo-100 text-indigo-800 text-xs rounded-full px-3 py-1">
+            <span class="tag-text"></span>
+            <button
+              type="button"
+              class="remove-tag text-indigo-500 hover:text-indigo-700 focus:outline-none"
+            >
+              <.icon name="hero-x-mark" class="w-3 h-3" />
+            </button>
+          </div>
+        </template>
+
+        {render_slot(@hidden_input)}
+
+        <div class="tag-container inline-flex flex-wrap gap-2 overflow-y-auto"></div>
+
+        <input
+          type="text"
+          class="flex-1 tag-input border-none p-0 focus:ring-0 text-sm"
+          placeholder="Type tag name and press Enter"
+        />
       </div>
     </div>
     """
