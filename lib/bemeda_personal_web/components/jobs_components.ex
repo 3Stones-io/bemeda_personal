@@ -690,7 +690,12 @@ defmodule BemedaPersonalWeb.JobsComponents do
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">Tags</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <.form :let={f} for={@tags_form} phx-submit="update_tags" class="tags-input-form">
+              <.form
+                :let={f}
+                for={@tags_form}
+                phx-submit="update_tags"
+                class="tags-input-form flex items-center gap-2"
+              >
                 <.tags_input>
                   <:hidden_input>
                     <.input
@@ -700,20 +705,18 @@ defmodule BemedaPersonalWeb.JobsComponents do
                       id="application-tags-input"
                     />
                   </:hidden_input>
-
-                  <:submit_button>
-                    <button
-                      type="submit"
-                      class={[
-                        "inline-flex items-center px-2 py-1 border border-transparent",
-                        "text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600",
-                        "hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      ]}
-                    >
-                      Update Tags
-                    </button>
-                  </:submit_button>
                 </.tags_input>
+
+                <button
+                  type="submit"
+                  class={[
+                    "self-end inline-flex items-center justify-center px-2 py-1 border border-transparent w-[15%]",
+                    "text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600",
+                    "hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  ]}
+                >
+                  Update Tags
+                </button>
               </.form>
             </dd>
           </div>
@@ -924,19 +927,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
         {render_slot(@hidden_input)}
 
-        <div class="tag-container flex flex-wrap gap-2"></div>
+        <div class="tag-container flex flex-wrap gap-2 max-h-[60px] overflow-y-scroll"></div>
 
-        <div class={[
-          "w-full flex-1",
-          @submit_button && "flex justify-between"
-        ]}>
+        <div class="w-full flex-1">
           <input
             type="text"
-            class="grow tag-input border-none p-0 focus:ring-0 text-sm"
+            class="w-full tag-input border-none p-0 focus:ring-0 text-sm"
             placeholder="Type tag name and press Enter"
           />
-
-          {render_slot(@submit_button)}
         </div>
       </div>
     </div>
