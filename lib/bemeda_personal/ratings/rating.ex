@@ -17,10 +17,10 @@ defmodule BemedaPersonal.Ratings.Rating do
 
   schema "ratings" do
     field :comment, :string
-    field :rater_type, :string
-    field :rater_id, Ecto.UUID
-    field :ratee_type, :string
     field :ratee_id, Ecto.UUID
+    field :ratee_type, :string
+    field :rater_id, Ecto.UUID
+    field :rater_type, :string
     field :score, :integer
 
     timestamps(type: :utc_datetime)

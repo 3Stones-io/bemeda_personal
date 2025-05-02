@@ -340,8 +340,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
 
       Endpoint.broadcast(
         "rating:Company:#{company.id}",
-        "rating_created",
-        {:rating_created, rating}
+        "rating_updated",
+        rating
       )
 
       db_rating =

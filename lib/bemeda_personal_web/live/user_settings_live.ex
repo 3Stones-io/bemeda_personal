@@ -254,15 +254,17 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({:rating_submitted, %{message: message}}, socket) do
-    {:noreply, put_flash(socket, :info, message)}
+  def handle_info(%Phoenix.Socket.Broadcast{event: "rating_updated", payload: payload}, socket) do
+    user_id = socket.assigns.current_user.id
+
+    if payload.ratee_type == "User" && payload.ratee_id == user_id do
+      {:noreply, put_flash(socket, :info, "Rating submitted successfully")}
+    else
+      {:noreply, socket}
+    end
   end
 
   def handle_info({:rating_error, error}, socket) do
     {:noreply, put_flash(socket, :error, error)}
-  end
-
-  def handle_info({:rating_updated, _rating}, socket) do
-    {:noreply, socket}
   end
 end

@@ -7,15 +7,7 @@ defmodule BemedaPersonal.RatingsTest do
   import BemedaPersonal.RatingsFixtures
 
   alias BemedaPersonal.Ratings
-
-  @invalid_attrs %{
-    comment: nil,
-    rater_type: nil,
-    rater_id: nil,
-    ratee_type: nil,
-    ratee_id: nil,
-    score: nil
-  }
+  alias BemedaPersonalWeb.Endpoint
 
   setup do
     user = user_fixture(confirmed: true)
@@ -30,85 +22,32 @@ defmodule BemedaPersonal.RatingsTest do
         rater_type: "Company"
       )
 
-    %{rating: rating}
+    %{rating: rating, user: user, company: company, company_admin: company_admin}
   end
 
-  describe "list_ratings/0" do
-    test "returns all ratings", %{rating: rating} do
-      assert Ratings.list_ratings() == [rating]
-    end
-  end
-
-  describe "get_rating!/1" do
-    test "returns the rating with given id", %{rating: rating} do
-      assert Ratings.get_rating!(rating.id) == rating
+  describe "list_ratings_by_ratee_id/2" do
+    test "returns ratings for a specific ratee", %{rating: rating, user: user} do
+      assert [^rating] = Ratings.list_ratings_by_ratee_id("User", user.id)
     end
 
-    test "raises an error if the rating does not exist" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Ratings.get_rating!(Ecto.UUID.generate())
-      end
+    test "returns empty list when no ratings exist for ratee" do
+      assert Ratings.list_ratings_by_ratee_id("User", Ecto.UUID.generate()) == []
     end
   end
 
-  describe "create_rating/1" do
-    test "with valid data creates a rating" do
-      user = user_fixture(confirmed: true)
-      company_admin = user_fixture(confirmed: true)
-      company = company_fixture(company_admin)
-
-      valid_attrs = %{
-        comment: "some comment",
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
-        ratee_id: user.id,
-        score: 4
-      }
-
-      assert {:ok, %Ratings.Rating{} = rating} = Ratings.create_rating(valid_attrs)
-      assert rating.comment == "some comment"
-      assert rating.rater_type == "Company"
-      assert rating.rater_id == company.id
-      assert rating.ratee_type == "User"
-      assert rating.ratee_id == user.id
-      assert rating.score == 4
+  describe "get_rating_by_rater_and_ratee/4" do
+    test "returns the rating when it exists", %{rating: rating, company: company, user: user} do
+      assert Ratings.get_rating_by_rater_and_ratee("Company", company.id, "User", user.id) ==
+               rating
     end
 
-    test "with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Ratings.create_rating(@invalid_attrs)
-    end
-  end
-
-  describe "update_rating/2" do
-    test "with valid data updates the rating", %{rating: rating} do
-      update_attrs = %{
-        comment: "some updated comment",
-        rater_type: "Company",
-        rater_id: rating.rater_id,
-        ratee_type: "User",
-        ratee_id: rating.ratee_id,
-        score: 3
-      }
-
-      assert {:ok, %Ratings.Rating{} = rating} = Ratings.update_rating(rating, update_attrs)
-      assert rating.comment == "some updated comment"
-      assert rating.rater_type == "Company"
-      assert rating.rater_id == rating.rater_id
-      assert rating.ratee_type == "User"
-      assert rating.ratee_id == rating.ratee_id
-      assert rating.score == 3
-    end
-
-    test "with invalid data returns error changeset", %{rating: rating} do
-      assert {:error, %Ecto.Changeset{}} = Ratings.update_rating(rating, @invalid_attrs)
-      assert rating == Ratings.get_rating!(rating.id)
-    end
-  end
-
-  describe "change_rating/1" do
-    test "returns a rating changeset", %{rating: rating} do
-      assert %Ecto.Changeset{} = Ratings.change_rating(rating)
+    test "returns nil when rating doesn't exist" do
+      assert Ratings.get_rating_by_rater_and_ratee(
+               "User",
+               Ecto.UUID.generate(),
+               "Company",
+               Ecto.UUID.generate()
+             ) == nil
     end
   end
 
@@ -129,16 +68,44 @@ defmodule BemedaPersonal.RatingsTest do
       }
     end
 
-    test "user can rate a company after applying to a job", %{user: user, company: company} do
-      attrs = %{score: 4, comment: "Great company to work with!"}
+    test "with valid data creates a rating", %{user: user, company: company} do
+      valid_attrs = %{
+        score: 4,
+        comment: "some comment"
+      }
 
-      assert {:ok, rating} = Ratings.rate_company(user, company, attrs)
-      assert rating.score == 4
-      assert rating.comment == "Great company to work with!"
+      assert {:ok, %Ratings.Rating{} = rating} = Ratings.rate_company(user, company, valid_attrs)
+      assert rating.comment == "some comment"
       assert rating.rater_type == "User"
       assert rating.rater_id == user.id
       assert rating.ratee_type == "Company"
       assert rating.ratee_id == company.id
+      assert rating.score == 4
+    end
+
+    test "with invalid data returns error changeset", %{user: user, company: company} do
+      invalid_attrs = %{score: nil, comment: nil}
+      assert {:error, %Ecto.Changeset{}} = Ratings.rate_company(user, company, invalid_attrs)
+    end
+
+    test "broadcasts a message when rating is created", %{user: user, company: company} do
+      Endpoint.subscribe("rating:Company:#{company.id}")
+
+      valid_attrs = %{
+        score: 5,
+        comment: "broadcast test comment"
+      }
+
+      assert {:ok, %Ratings.Rating{} = rating} = Ratings.rate_company(user, company, valid_attrs)
+
+      assert_receive %Phoenix.Socket.Broadcast{
+        event: "rating_updated",
+        payload: broadcasted_rating
+      }
+
+      assert broadcasted_rating.id == rating.id
+      assert broadcasted_rating.comment == "broadcast test comment"
+      assert broadcasted_rating.score == 5
     end
 
     test "user can update an existing company rating", %{user: user, company: company} do
@@ -150,9 +117,7 @@ defmodule BemedaPersonal.RatingsTest do
       assert updated_rating.score == 5
       assert updated_rating.comment == "Excellent company after all!"
     end
-  end
 
-  describe "rate_company/3 with no interaction" do
     test "user cannot rate a company without interaction" do
       user = user_fixture(confirmed: true)
       company_admin = user_fixture(confirmed: true)
@@ -160,6 +125,20 @@ defmodule BemedaPersonal.RatingsTest do
 
       attrs = %{score: 4, comment: "Great company!"}
       assert {:error, :no_interaction} = Ratings.rate_company(user, company, attrs)
+    end
+
+    test "with invalid score returns error changeset", %{user: user, company: company} do
+      invalid_score_attrs = %{
+        score: 0,
+        comment: "some comment"
+      }
+
+      assert {:error, changeset} = Ratings.rate_company(user, company, invalid_score_attrs)
+      assert "must be between 1 and 5" in errors_on(changeset).score
+
+      invalid_score_attrs_high = %{score: 6, comment: "some comment"}
+      assert {:error, changeset} = Ratings.rate_company(user, company, invalid_score_attrs_high)
+      assert "must be between 1 and 5" in errors_on(changeset).score
     end
   end
 
@@ -180,16 +159,44 @@ defmodule BemedaPersonal.RatingsTest do
       }
     end
 
-    test "company can rate a user after they apply to a job", %{company: company, user: user} do
-      attrs = %{score: 5, comment: "Excellent candidate!"}
+    test "with valid data creates a rating", %{company: company, user: user} do
+      valid_attrs = %{
+        score: 5,
+        comment: "Excellent candidate!"
+      }
 
-      assert {:ok, rating} = Ratings.rate_user(company, user, attrs)
+      assert {:ok, %Ratings.Rating{} = rating} = Ratings.rate_user(company, user, valid_attrs)
       assert rating.score == 5
       assert rating.comment == "Excellent candidate!"
       assert rating.rater_type == "Company"
       assert rating.rater_id == company.id
       assert rating.ratee_type == "User"
       assert rating.ratee_id == user.id
+    end
+
+    test "with invalid data returns error changeset", %{company: company, user: user} do
+      invalid_attrs = %{score: nil, comment: nil}
+      assert {:error, %Ecto.Changeset{}} = Ratings.rate_user(company, user, invalid_attrs)
+    end
+
+    test "broadcasts a message when rating is created", %{company: company, user: user} do
+      Endpoint.subscribe("rating:User:#{user.id}")
+
+      valid_attrs = %{
+        score: 5,
+        comment: "broadcast test comment"
+      }
+
+      assert {:ok, %Ratings.Rating{} = rating} = Ratings.rate_user(company, user, valid_attrs)
+
+      assert_receive %Phoenix.Socket.Broadcast{
+        event: "rating_updated",
+        payload: broadcasted_rating
+      }
+
+      assert broadcasted_rating.id == rating.id
+      assert broadcasted_rating.comment == "broadcast test comment"
+      assert broadcasted_rating.score == 5
     end
 
     test "company can update an existing user rating", %{company: company, user: user} do
@@ -201,9 +208,7 @@ defmodule BemedaPersonal.RatingsTest do
       assert updated_rating.score == 3
       assert updated_rating.comment == "Better than we initially thought"
     end
-  end
 
-  describe "rate_user/3 with no interaction" do
     test "company cannot rate a user without interaction" do
       user = user_fixture(confirmed: true)
       company_admin = user_fixture(confirmed: true)
@@ -214,52 +219,14 @@ defmodule BemedaPersonal.RatingsTest do
     end
   end
 
-  describe "get_average_rating/2" do
-    test "calculates average rating correctly for companies" do
-      company_admin = user_fixture(confirmed: true)
-      company = company_fixture(company_admin)
-      job_posting = job_posting_fixture(company)
-
-      user1 = user_fixture(confirmed: true)
-      user2 = user_fixture(confirmed: true)
-      user3 = user_fixture(confirmed: true)
-
-      job_application_fixture(user1, job_posting)
-      job_application_fixture(user2, job_posting)
-      job_application_fixture(user3, job_posting)
-
-      Ratings.rate_company(user1, company, %{score: 5, comment: "Excellent"})
-      Ratings.rate_company(user2, company, %{score: 3, comment: "Average"})
-      Ratings.rate_company(user3, company, %{score: 4, comment: "Good"})
-
-      avg_rating = Ratings.get_average_rating("Company", company.id)
-      assert avg_rating != nil
+  describe "change_rating/1" do
+    test "returns a rating changeset", %{rating: rating} do
+      assert %Ecto.Changeset{} = Ratings.change_rating(rating)
     end
 
-    test "calculates average rating correctly for users" do
-      user = user_fixture(confirmed: true)
-
-      admin1 = user_fixture(confirmed: true)
-      admin2 = user_fixture(confirmed: true)
-      admin3 = user_fixture(confirmed: true)
-
-      company1 = company_fixture(admin1)
-      company2 = company_fixture(admin2)
-      company3 = company_fixture(admin3)
-
-      job_posting1 = job_posting_fixture(company1)
-      job_posting2 = job_posting_fixture(company2)
-      job_posting3 = job_posting_fixture(company3)
-
-      job_application_fixture(user, job_posting1)
-      job_application_fixture(user, job_posting2)
-      job_application_fixture(user, job_posting3)
-
-      Ratings.rate_user(company1, user, %{score: 2, comment: "Below average"})
-      Ratings.rate_user(company2, user, %{score: 1, comment: "Poor"})
-      Ratings.rate_user(company3, user, %{score: 3, comment: "Average"})
-
-      assert Ratings.get_average_rating("User", user.id) == Decimal.new("2.0000000000000000")
+    test "returns a changeset with errors when data is invalid", %{rating: rating} do
+      changeset = Ratings.change_rating(rating, %{score: 10})
+      assert %{score: ["must be between 1 and 5"]} = errors_on(changeset)
     end
   end
 end

@@ -9,7 +9,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
-  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(%{"id" => id} = _params, _session, socket) do
@@ -117,19 +116,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({:rating_updated, "Company", company_id}, socket) do
-    {:noreply,
-     socket
-     |> handle_company_rating_update(company_id)
-     |> put_flash(:info, "Rating submitted successfully.")}
+  def handle_info({:rating_error, error}, socket) do
+    {:noreply, put_flash(socket, :error, error)}
   end
 
-  def handle_info(
-        {event, %{ratee_type: "Company", ratee_id: ratee_id} = _rating},
-        socket
-      )
-      when ratee_id == socket.assigns.company.id and event in [:rating_created, :rating_updated] do
-    {:noreply, handle_company_rating_update(socket, ratee_id)}
+  def handle_info(%Phoenix.Socket.Broadcast{event: "rating_updated", payload: payload}, socket) do
+    process_rating_event(payload, socket)
   end
 
   def handle_info(
@@ -169,48 +161,18 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
     end
   end
 
-  def handle_info(
-        {:rating_submitted, %{message: message, entity_type: entity_type, entity_id: entity_id}},
-        socket
-      ) do
-    if entity_type == "Company" && entity_id == socket.assigns.company.id do
-      {:noreply,
-       socket
-       |> handle_company_rating_update(entity_id)
-       |> put_flash(:info, message)}
-    else
-      {:noreply, put_flash(socket, :info, message)}
-    end
-  end
+  defp process_rating_event(payload, socket) do
+    company_id = socket.assigns.company.id
 
-  def handle_info({:rating_error, error}, socket) do
-    {:noreply, put_flash(socket, :error, error)}
-  end
+    case payload do
+      %{ratee_type: "Company", ratee_id: ^company_id} ->
+        {:noreply,
+         socket
+         |> handle_company_rating_update(company_id)
+         |> put_flash(:info, "Rating submitted successfully")}
 
-  def handle_info(%Broadcast{event: "rating_updated", payload: {:rating_updated, rating}}, socket) do
-    if rating.ratee_type == "Company" && rating.ratee_id == socket.assigns.company.id do
-      {:noreply, handle_company_rating_update(socket, rating.ratee_id)}
-    else
-      {:noreply, socket}
-    end
-  end
-
-  def handle_info(
-        %Broadcast{event: "rating_updated", payload: {:rating_updated, entity_type, entity_id}},
-        socket
-      ) do
-    if entity_type == "Company" && entity_id == socket.assigns.company.id do
-      {:noreply, handle_company_rating_update(socket, entity_id)}
-    else
-      {:noreply, socket}
-    end
-  end
-
-  def handle_info(%Broadcast{event: "rating_created", payload: {:rating_created, rating}}, socket) do
-    if rating.ratee_type == "Company" && rating.ratee_id == socket.assigns.company.id do
-      {:noreply, handle_company_rating_update(socket, rating.ratee_id)}
-    else
-      {:noreply, socket}
+      _other ->
+        {:noreply, socket}
     end
   end
 

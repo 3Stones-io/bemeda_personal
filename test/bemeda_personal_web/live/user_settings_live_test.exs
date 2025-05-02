@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
+  import BemedaPersonal.JobsFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Accounts
@@ -266,8 +267,18 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
   describe "user rating display" do
     setup %{conn: conn} do
       user = user_fixture(%{confirmed: true})
-      company = company_fixture(user_fixture())
-      %{conn: log_in_user(conn, user), user: user, company: company}
+      company_admin = user_fixture(%{confirmed: true})
+      company = company_fixture(company_admin)
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      %{
+        conn: log_in_user(conn, user),
+        user: user,
+        company: company,
+        job_posting: job_posting,
+        job_application: job_application
+      }
     end
 
     test "displays rating component with no ratings", %{conn: conn} do
@@ -281,11 +292,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
 
     test "displays user rating correctly when rated", %{conn: conn, user: user, company: company} do
-      Ratings.create_rating(%{
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
-        ratee_id: user.id,
+      Ratings.rate_user(company, user, %{
         score: 5,
         comment: "Great candidate!"
       })
@@ -302,20 +309,17 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       company1 = company_fixture(user_fixture())
       company2 = company_fixture(user_fixture())
 
-      Ratings.create_rating(%{
-        rater_type: "Company",
-        rater_id: company1.id,
-        ratee_type: "User",
-        ratee_id: user.id,
+      job_posting1 = job_posting_fixture(company1)
+      job_posting2 = job_posting_fixture(company2)
+      job_application_fixture(user, job_posting1)
+      job_application_fixture(user, job_posting2)
+
+      Ratings.rate_user(company1, user, %{
         score: 5,
         comment: "Excellent!"
       })
 
-      Ratings.create_rating(%{
-        rater_type: "Company",
-        rater_id: company2.id,
-        ratee_type: "User",
-        ratee_id: user.id,
+      Ratings.rate_user(company2, user, %{
         score: 3,
         comment: "Average"
       })
@@ -328,12 +332,8 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
 
     test "updates display when rating changes", %{conn: conn, user: user, company: company} do
-      {:ok, rating} =
-        Ratings.create_rating(%{
-          rater_type: "Company",
-          rater_id: company.id,
-          ratee_type: "User",
-          ratee_id: user.id,
+      {:ok, _rating} =
+        Ratings.rate_user(company, user, %{
           score: 3,
           comment: "Average"
         })
@@ -341,7 +341,11 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       {:ok, _view, html} = live(conn, ~p"/users/settings")
       assert html =~ "3.0"
 
-      {:ok, _updated_rating} = Ratings.update_rating(rating, %{score: 5, comment: "Excellent!"})
+      {:ok, _updated_rating} =
+        Ratings.rate_user(company, user, %{
+          score: 5,
+          comment: "Excellent!"
+        })
 
       {:ok, _updated_view, updated_html} = live(conn, ~p"/users/settings")
       assert updated_html =~ "5.0"

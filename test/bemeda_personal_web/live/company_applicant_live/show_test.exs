@@ -259,8 +259,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
       Endpoint.broadcast(
         "rating:User:#{applicant.id}",
-        "rating_created",
-        {:rating_created, rating}
+        "rating_updated",
+        rating
       )
 
       db_rating =

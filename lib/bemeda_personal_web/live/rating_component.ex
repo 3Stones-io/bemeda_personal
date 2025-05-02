@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.RatingComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Ratings
-  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.RatingFormComponent
   alias Phoenix.LiveView.JS
 
@@ -179,7 +178,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
   end
 
   defp assign_all_ratings(%{assigns: %{entity_type: type, entity_id: id}} = socket) do
-    all_ratings = Ratings.get_ratings_for_ratee(type, id)
+    all_ratings = Ratings.list_ratings_by_ratee_id(type, id)
     assign(socket, :all_ratings, all_ratings)
   end
 
@@ -267,30 +266,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
          socket
        ) do
     with true <- can_rate?(socket),
-         {:ok, rating} <- create_or_update_rating(socket.assigns.current_user_rating, attrs) do
-      send(
-        self(),
-        {:rating_submitted,
-         %{
-           rating: rating,
-           entity_id: entity_id,
-           entity_type: entity_type,
-           message: "Rating submitted successfully"
-         }}
-      )
-
-      Endpoint.broadcast(
-        "rating:#{entity_type}:#{entity_id}",
-        "rating_updated",
-        {:rating_updated, rating}
-      )
-
-      Endpoint.broadcast(
-        "rating:#{entity_type}:#{entity_id}",
-        "rating_updated",
-        {:rating_updated, entity_type, entity_id}
-      )
-
+         {:ok, rating} <- create_or_update_rating(entity_type, entity_id, attrs, socket) do
       {:noreply,
        socket
        |> assign(:rating_modal_open, false)
@@ -302,6 +278,17 @@ defmodule BemedaPersonalWeb.RatingComponent do
         send(self(), {:rating_error, error})
         {:noreply, socket}
     end
+  end
+
+  defp create_or_update_rating("Company", company_id, attrs, socket) do
+    company = BemedaPersonal.Companies.get_company!(company_id)
+    Ratings.rate_company(socket.assigns.current_user, company, attrs)
+  end
+
+  defp create_or_update_rating("User", user_id, attrs, socket) do
+    company = BemedaPersonal.Companies.get_company_by_user(socket.assigns.current_user)
+    user = BemedaPersonal.Accounts.get_user!(user_id)
+    Ratings.rate_user(company, user, attrs)
   end
 
   defp star_size_class(size) do
@@ -362,14 +349,6 @@ defmodule BemedaPersonalWeb.RatingComponent do
       true
     else
       {:error, "You need to be logged in to rate"}
-    end
-  end
-
-  defp create_or_update_rating(current_rating, attrs) do
-    if current_rating do
-      Ratings.update_rating(current_rating, attrs)
-    else
-      Ratings.create_rating(attrs)
     end
   end
 
