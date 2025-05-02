@@ -13,13 +13,15 @@
         <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
         <.live_component
           module={RatingComponent}
-          id={"rating-display-company-index-#{@company.id}"}
+          id={"rating-component-#{@company.id}"}
+          current_user={@current_user}
           entity_id={@company.id}
           entity_type="Company"
           entity_name={@company.name}
-          average_rating={@company.average_rating}
-          current_user={@current_user}
-          class="mt-2"
+          rater_type={if @current_user, do: "User", else: nil}
+          rater_id={if @current_user, do: @current_user.id, else: nil}
+          size="sm"
+          check_can_rate?={true}
         />
       </div>
       <div>

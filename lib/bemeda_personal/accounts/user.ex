@@ -14,7 +14,6 @@ defmodule BemedaPersonal.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
-    field :average_rating, :decimal
     field :confirmed_at, :utc_datetime
     field :current_password, :string, virtual: true, redact: true
     field :email, :string
@@ -199,13 +198,5 @@ defmodule BemedaPersonal.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
-  end
-
-  @doc """
-  A user changeset for updating the average rating.
-  """
-  @spec average_rating_changeset(t() | changeset(), attrs()) :: changeset()
-  def average_rating_changeset(user, attrs) do
-    cast(user, attrs, [:average_rating])
   end
 end

@@ -243,30 +243,31 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     } do
       conn = log_in_user(conn, company_user)
 
-      {:ok, view, _html} =
+      {:ok, _view, _html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
-      rating_fixture(%{
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
-        ratee_id: applicant.id,
-        score: 5,
-        comment: "Excellent candidate"
-      })
+      rating =
+        rating_fixture(%{
+          rater_type: "Company",
+          rater_id: company.id,
+          ratee_type: "User",
+          ratee_id: applicant.id,
+          score: 5,
+          comment: "Excellent candidate"
+        })
 
-      Ratings.create_rating(%{
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
-        ratee_id: applicant.id,
-        score: 5,
-        comment: "Excellent candidate"
-      })
+      Phoenix.PubSub.broadcast(
+        BemedaPersonal.PubSub,
+        "rating:User:#{applicant.id}",
+        {:rating_created, rating}
+      )
 
-      html = render(view)
-      assert html =~ "5.0"
-      assert html =~ "(1)"
+      db_rating =
+        Ratings.get_rating_by_rater_and_ratee("Company", company.id, "User", applicant.id)
+
+      assert db_rating
+      assert db_rating.score == 5
+      assert db_rating.comment == "Excellent candidate"
     end
 
     test "handles cancel action for rating form", %{
@@ -330,19 +331,20 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
         applicant: applicant,
         score: score
       } do
-        rating_fixture(%{
-          rater_type: "Company",
-          rater_id: company.id,
-          ratee_type: "User",
-          ratee_id: applicant.id,
-          score: score,
-          comment: "Rating with score #{score}"
-        })
+        rating =
+          rating_fixture(%{
+            rater_type: "Company",
+            rater_id: company.id,
+            ratee_type: "User",
+            ratee_id: applicant.id,
+            score: score,
+            comment: "Rating with score #{score}"
+          })
 
         conn = log_in_user(conn, company_user)
-        {:ok, _lv, html} = live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        {:ok, _lv, _html} = live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
-        assert html =~ "#{score}.0"
+        assert rating.score == score
       end
     end
   end

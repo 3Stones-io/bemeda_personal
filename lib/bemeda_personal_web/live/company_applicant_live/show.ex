@@ -15,32 +15,18 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     job_posting = application.job_posting
     resume = Resumes.get_user_resume(application.user)
     full_name = "#{application.user.first_name} #{application.user.last_name}"
-    current_user = socket.assigns.current_user
-    can_rate? = current_user && company_admin?(current_user, company)
 
     if connected?(socket) do
       Endpoint.subscribe("job_application_assets_#{application.id}")
       Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "rating:User:#{application.user.id}")
     end
 
-    current_user_rating =
-      if current_user do
-        Ratings.get_rating_by_rater_and_ratee(
-          "Company",
-          company.id,
-          "User",
-          application.user.id
-        )
-      end
-
     tags_form_fields = %{"tags" => ""}
 
     {:noreply,
      socket
      |> assign(:application, application)
-     |> assign(:can_rate?, can_rate?)
      |> assign(:company, company)
-     |> assign(:current_user_rating, current_user_rating)
      |> assign(:job_posting, job_posting)
      |> assign(:page_title, "Applicant: #{full_name}")
      |> assign(:rating_modal_open, false)
@@ -52,17 +38,16 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   def handle_event(
         "open-rating-modal",
         %{"entity_id" => _entity_id, "entity_type" => _entity_type},
-        %{assigns: %{can_rate?: true}} = socket
-      ) do
-    {:noreply, assign(socket, :rating_modal_open, true)}
-  end
-
-  def handle_event(
-        "open-rating-modal",
-        %{"entity_id" => _entity_id, "entity_type" => _entity_type},
         socket
       ) do
-    {:noreply, put_flash(socket, :error, "You need to be a company admin to rate applicants.")}
+    current_user = socket.assigns.current_user
+    company = socket.assigns.company
+
+    if company_admin?(current_user, company) do
+      {:noreply, assign(socket, :rating_modal_open, true)}
+    else
+      {:noreply, put_flash(socket, :error, "You need to be a company admin to rate applicants.")}
+    end
   end
 
   def handle_event("close-rating-modal", _params, socket) do
@@ -82,6 +67,21 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   end
 
   @impl Phoenix.LiveView
+  @spec handle_info(
+          {:rating_created, any()}
+          | {:rating_updated, any()}
+          | {:submit_rating,
+             %{
+               :comment => any(),
+               :entity_id => any(),
+               :entity_type => any(),
+               :score => binary(),
+               optional(any()) => any()
+             }}
+          | {:rating_updated, any(), any()}
+          | %{:job_application => any(), optional(any()) => any()},
+          any()
+        ) :: {:noreply, any()}
   def handle_info(%{job_application: job_application}, socket) do
     {:noreply, assign(socket, :application, job_application)}
   end
@@ -90,20 +90,14 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     {:noreply, assign(socket, :rating_modal_open, false)}
   end
 
-  def handle_info({:rating_updated, %{ratee_type: "User", ratee_id: ratee_id} = rating}, socket) do
+  def handle_info({:rating_updated, %{ratee_type: "User", ratee_id: ratee_id} = _rating}, socket) do
     if socket.assigns.application.user.id == ratee_id do
-      socket =
-        if socket.assigns.company && rating.rater_type == "Company" &&
-             rating.rater_id == socket.assigns.company.id do
-          socket
-          |> assign(:current_user_rating, rating)
-          |> assign(:rating_modal_open, false)
-        else
-          assign(socket, :rating_modal_open, false)
-        end
-
       updated_application = Jobs.get_job_application!(socket.assigns.application.id)
-      {:noreply, assign(socket, :application, updated_application)}
+
+      {:noreply,
+       socket
+       |> assign(:application, updated_application)
+       |> assign(:rating_modal_open, false)}
     else
       {:noreply, socket}
     end
@@ -117,7 +111,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
       ) do
     %{
       application: application,
-      current_user_rating: current_user_rating,
       company: company
     } = socket.assigns
 
@@ -131,7 +124,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     }
 
     with true <- can_rate?(socket),
-         {:ok, rating} <- create_or_update_rating(current_user_rating, attrs) do
+         {:ok, rating} <- create_or_update_rating(attrs) do
       updated_application = Jobs.get_job_application!(application.id)
 
       Phoenix.PubSub.broadcast(
@@ -150,7 +143,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
        socket
        |> assign(:rating_modal_open, false)
        |> assign(:application, updated_application)
-       |> assign(:current_user_rating, rating)
        |> put_flash(:info, "Rating submitted successfully")}
     else
       {:error, error} ->
@@ -166,7 +158,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     socket =
       if socket.assigns.company && rating.rater_type == "Company" &&
            rating.rater_id == socket.assigns.company.id do
-        assign(socket, :current_user_rating, rating)
+        socket
       else
         socket
       end
@@ -179,18 +171,37 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     {:noreply, socket}
   end
 
+  def handle_info({:rating_submitted, %{message: message}}, socket) do
+    {:noreply, put_flash(socket, :info, message)}
+  end
+
+  def handle_info({:rating_error, error}, socket) do
+    {:noreply, put_flash(socket, :error, error)}
+  end
+
   defp can_rate?(socket) do
-    if socket.assigns.can_rate? do
+    current_user = socket.assigns.current_user
+    company = socket.assigns.company
+
+    if company_admin?(current_user, company) do
       true
     else
       {:error, "You need to be a company admin to rate applicants."}
     end
   end
 
-  defp create_or_update_rating(current_user_rating, attrs) do
+  defp create_or_update_rating(attrs) do
+    existing_rating =
+      Ratings.get_rating_by_rater_and_ratee(
+        attrs.rater_type,
+        attrs.rater_id,
+        attrs.ratee_type,
+        attrs.ratee_id
+      )
+
     result =
-      if current_user_rating do
-        Ratings.update_rating(current_user_rating, attrs)
+      if existing_rating do
+        Ratings.update_rating(existing_rating, attrs)
       else
         Ratings.create_rating(attrs)
       end

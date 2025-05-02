@@ -118,6 +118,9 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   def handle_info({:rating_updated, "Company", company_id}, socket) do
     updated_company = Companies.get_company!(company_id)
 
+    send_update(RatingComponent, id: "rating-component-header-#{company_id}")
+    send_update(RatingComponent, id: "rating-component-sidebar-#{company_id}")
+
     {:noreply,
      socket
      |> assign(:company, updated_company)
@@ -130,11 +133,11 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
       )
       when ratee_id == socket.assigns.company.id and event in [:rating_created, :rating_updated] do
     updated_company = Companies.get_company!(ratee_id)
-    {:noreply, assign(socket, :company, updated_company)}
-  end
 
-  def handle_info({event, _rating}, socket) when event in [:rating_created, :rating_updated] do
-    {:noreply, socket}
+    send_update(RatingComponent, id: "rating-component-header-#{ratee_id}")
+    send_update(RatingComponent, id: "rating-component-sidebar-#{ratee_id}")
+
+    {:noreply, assign(socket, :company, updated_company)}
   end
 
   def handle_info(
@@ -174,18 +177,37 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
     end
   end
 
+  def handle_info(
+        {:rating_submitted, %{message: message, entity_type: entity_type, entity_id: entity_id}},
+        socket
+      ) do
+    if entity_type == "Company" && entity_id == socket.assigns.company.id do
+      updated_company = Companies.get_company!(entity_id)
+
+      send_update(RatingComponent, id: "rating-component-header-#{entity_id}")
+      send_update(RatingComponent, id: "rating-component-sidebar-#{entity_id}")
+
+      {:noreply,
+       socket
+       |> assign(:company, updated_company)
+       |> put_flash(:info, message)}
+    else
+      {:noreply, put_flash(socket, :info, message)}
+    end
+  end
+
+  def handle_info({:rating_error, error}, socket) do
+    {:noreply, put_flash(socket, :error, error)}
+  end
+
   defp string_to_integer(value) when is_binary(value), do: String.to_integer(value)
   defp string_to_integer(value) when is_integer(value), do: value
 
   defp apply_action(socket, :show, %{"id" => id}) do
     company = Companies.get_company!(id)
     job_postings = Jobs.list_job_postings(%{company_id: company.id}, 10)
-    current_user = socket.assigns.current_user
-
-    can_rate? = current_user && Jobs.user_has_applied_to_company_job?(current_user.id, company.id)
 
     socket
-    |> assign(:can_rate?, can_rate?)
     |> assign(:company, company)
     |> assign(:page_title, company.name)
     |> assign(:job_count, Jobs.company_jobs_count(company.id))

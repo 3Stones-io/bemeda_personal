@@ -20,8 +20,8 @@ defmodule BemedaPersonalWeb.RatingComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_average_rating()
      |> assign_all_ratings()
+     |> assign_average_rating()
      |> assign_current_user_rating()
      |> assign_can_rate?()}
   end
@@ -41,21 +41,9 @@ defmodule BemedaPersonalWeb.RatingComponent do
       "comment" => comment
     } = params
 
-    {rater_type, rater_id} =
-      cond do
-        socket.assigns[:company] && Map.has_key?(socket.assigns.company, :id) ->
-          {"Company", socket.assigns.company.id}
-
-        socket.assigns.current_user && Map.get(socket.assigns.current_user, :company_id) ->
-          {"Company", socket.assigns.current_user.company_id}
-
-        true ->
-          {"User", socket.assigns.current_user.id}
-      end
-
     attrs = %{
-      rater_type: rater_type,
-      rater_id: rater_id,
+      rater_type: socket.assigns.rater_type,
+      rater_id: socket.assigns.rater_id,
       ratee_type: socket.assigns.entity_type,
       ratee_id: socket.assigns.entity_id,
       score: String.to_integer(score),
@@ -189,43 +177,62 @@ defmodule BemedaPersonalWeb.RatingComponent do
     """
   end
 
-  defp assign_average_rating(%{assigns: %{average_rating: %Decimal{}}} = socket) do
-    socket
-  end
-
-  defp assign_average_rating(%{assigns: %{entity_type: type, entity_id: id}} = socket) do
-    average_rating = Ratings.get_average_rating(type, id)
-    assign(socket, :average_rating, average_rating)
-  end
-
   defp assign_all_ratings(%{assigns: %{entity_type: type, entity_id: id}} = socket) do
     all_ratings = Ratings.get_ratings_for_ratee(type, id)
     assign(socket, :all_ratings, all_ratings)
   end
 
-  defp assign_current_user_rating(%{assigns: %{current_user: current_user}} = socket)
-       when is_struct(current_user) do
-    %{entity_type: entity_type, entity_id: entity_id} = socket.assigns
+  defp assign_average_rating(%{assigns: %{all_ratings: []}} = socket) do
+    assign(socket, :average_rating, nil)
+  end
 
+  defp assign_average_rating(%{assigns: %{all_ratings: all_ratings}} = socket) do
+    ratings_count =
+      all_ratings
+      |> length()
+      |> Decimal.new()
+
+    average_rating =
+      all_ratings
+      |> Enum.reduce(Decimal.new("0"), fn rating, total ->
+        Decimal.add(total, Decimal.new(rating.score))
+      end)
+      |> Decimal.div(ratings_count)
+
+    assign(socket, :average_rating, average_rating)
+  end
+
+  defp assign_current_user_rating(%{assigns: %{current_user: nil}} = socket) do
+    assign(socket, :current_user_rating, nil)
+  end
+
+  defp assign_current_user_rating(
+         %{
+           assigns: %{
+             rater_type: rater_type,
+             rater_id: rater_id,
+             entity_type: entity_type,
+             entity_id: entity_id
+           }
+         } = socket
+       ) do
     current_user_rating =
-      Ratings.get_rating_by_rater_and_ratee("User", current_user.id, entity_type, entity_id)
+      Ratings.get_rating_by_rater_and_ratee(rater_type, rater_id, entity_type, entity_id)
 
     assign(socket, :current_user_rating, current_user_rating)
   end
-
-  defp assign_current_user_rating(socket), do: assign(socket, :current_user_rating, nil)
 
   defp assign_can_rate?(%{assigns: %{can_rate?: can_rate?}} = socket)
        when is_boolean(can_rate?) do
     socket
   end
 
-  defp assign_can_rate?(%{assigns: %{current_user: nil}} = socket) do
+  defp assign_can_rate?(%{assigns: %{can_rate?: false}} = socket) do
     assign(socket, :can_rate?, false)
   end
 
-  defp assign_can_rate?(%{assigns: %{check_can_rate?: false}} = socket) do
-    assign(socket, :can_rate?, true)
+  defp assign_can_rate?(%{assigns: %{current_user: nil}} = socket) do
+    assign(socket, :can_rate?, false)
   end
 
   defp assign_can_rate?(
@@ -260,6 +267,17 @@ defmodule BemedaPersonalWeb.RatingComponent do
        ) do
     with true <- can_rate?(socket),
          {:ok, rating} <- create_or_update_rating(socket.assigns.current_user_rating, attrs) do
+      send(
+        self(),
+        {:rating_submitted,
+         %{
+           rating: rating,
+           entity_id: entity_id,
+           entity_type: entity_type,
+           message: "Rating submitted successfully"
+         }}
+      )
+
       Phoenix.PubSub.broadcast(
         BemedaPersonal.PubSub,
         "rating:#{entity_type}:#{entity_id}",
@@ -276,17 +294,18 @@ defmodule BemedaPersonalWeb.RatingComponent do
        socket
        |> assign(:rating_modal_open, false)
        |> assign(:current_user_rating, rating)
-       |> put_flash(:info, "Rating submitted successfully")}
+       |> assign_all_ratings()
+       |> assign_average_rating()}
     else
       {:error, error} ->
-        {:noreply, put_flash(socket, :error, error)}
+        send(self(), {:rating_error, error})
+        {:noreply, socket}
     end
   end
 
   defp star_size_class(size) do
     case size do
       "sm" -> "w-4 h-4"
-      "lg" -> "w-6 h-6"
       _size_param -> "w-5 h-5"
     end
   end

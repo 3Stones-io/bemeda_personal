@@ -6,8 +6,6 @@ defmodule BemedaPersonal.RatingsTest do
   import BemedaPersonal.JobsFixtures
   import BemedaPersonal.RatingsFixtures
 
-  alias BemedaPersonal.Accounts
-  alias BemedaPersonal.Companies
   alias BemedaPersonal.Ratings
 
   @invalid_attrs %{
@@ -141,9 +139,6 @@ defmodule BemedaPersonal.RatingsTest do
       assert rating.rater_id == user.id
       assert rating.ratee_type == "Company"
       assert rating.ratee_id == company.id
-
-      updated_company = Companies.get_company!(company.id)
-      assert updated_company.average_rating != nil
     end
 
     test "user can update an existing company rating", %{user: user, company: company} do
@@ -154,9 +149,6 @@ defmodule BemedaPersonal.RatingsTest do
       assert {:ok, updated_rating} = Ratings.rate_company(user, company, update_attrs)
       assert updated_rating.score == 5
       assert updated_rating.comment == "Excellent company after all!"
-
-      updated_company = Companies.get_company!(company.id)
-      assert updated_company.average_rating != nil
     end
   end
 
@@ -198,9 +190,6 @@ defmodule BemedaPersonal.RatingsTest do
       assert rating.rater_id == company.id
       assert rating.ratee_type == "User"
       assert rating.ratee_id == user.id
-
-      updated_user = Accounts.get_user!(user.id)
-      assert updated_user.average_rating != nil
     end
 
     test "company can update an existing user rating", %{company: company, user: user} do
@@ -211,9 +200,6 @@ defmodule BemedaPersonal.RatingsTest do
       assert {:ok, updated_rating} = Ratings.rate_user(company, user, update_attrs)
       assert updated_rating.score == 3
       assert updated_rating.comment == "Better than we initially thought"
-
-      updated_user = Accounts.get_user!(user.id)
-      assert updated_user.average_rating != nil
     end
   end
 
@@ -248,9 +234,6 @@ defmodule BemedaPersonal.RatingsTest do
 
       avg_rating = Ratings.get_average_rating("Company", company.id)
       assert avg_rating != nil
-
-      updated_company = Companies.get_company!(company.id)
-      assert updated_company.average_rating != nil
     end
 
     test "calculates average rating correctly for users" do
@@ -276,11 +259,7 @@ defmodule BemedaPersonal.RatingsTest do
       Ratings.rate_user(company2, user, %{score: 1, comment: "Poor"})
       Ratings.rate_user(company3, user, %{score: 3, comment: "Average"})
 
-      avg_rating = Ratings.get_average_rating("User", user.id)
-      assert avg_rating != nil
-
-      updated_user = Accounts.get_user!(user.id)
-      assert updated_user.average_rating != nil
+      assert Ratings.get_average_rating("User", user.id) == Decimal.new("2.0000000000000000")
     end
   end
 end

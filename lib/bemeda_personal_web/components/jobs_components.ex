@@ -641,9 +641,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :application, :any, required: true
-  attr :can_rate?, :boolean, default: false
   attr :current_user, :any, required: true
-  attr :current_user_rating, :map, default: nil
   attr :job, :any, required: true
   attr :resume, :any, default: nil
   attr :show_actions, :boolean, default: false
@@ -691,10 +689,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 entity_id={@application.user.id}
                 entity_type="User"
                 entity_name={"#{@application.user.first_name} #{@application.user.last_name}"}
-                average_rating={@application.user.average_rating}
-                can_rate?={@can_rate?}
                 current_user={@current_user}
-                current_user_rating={@current_user_rating}
+                rater_type={if Map.get(@current_user, :company_id), do: "Company", else: "User"}
+                rater_id={
+                  if Map.get(@current_user, :company_id),
+                    do: Map.get(@current_user, :company_id),
+                    else: @current_user.id
+                }
                 size="md"
                 rating_modal_id={"rating-modal-#{@application.id}"}
                 rating_form_id={"job-seeker-rating-form-#{@application.id}"}

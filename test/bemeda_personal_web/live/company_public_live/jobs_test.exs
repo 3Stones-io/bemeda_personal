@@ -117,7 +117,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
 
       assert html =~ "Job 4"
       assert html =~ "Job 9"
-      assert html =~ "Software Engineer"
+      assert html =~ "Senior Software Engineer"
 
       patterns = Regex.scan(~r/job_postings-[a-f0-9-]+/, html)
       job_count = length(patterns)

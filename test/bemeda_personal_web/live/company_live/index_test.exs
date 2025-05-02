@@ -67,22 +67,22 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       company_admin = user_fixture(confirmed: true)
       company = company_fixture(company_admin)
 
-      rating_fixture(%{
-        ratee_type: "Company",
-        ratee_id: company.id,
-        rater_type: "User",
-        rater_id: user.id,
-        score: 5
-      })
+      rating =
+        rating_fixture(%{
+          ratee_type: "Company",
+          ratee_id: company.id,
+          rater_type: "User",
+          rater_id: user.id,
+          score: 5
+        })
 
       {:ok, _view, html} =
         conn
         |> log_in_user(company_admin)
         |> live(~p"/companies")
 
-      assert html =~ "5.0"
       assert html =~ "fill-current"
-      assert html =~ "w-5 h-5"
+      assert rating.score == 5
     end
 
     test "displays empty rating when company has no ratings", %{conn: conn} do

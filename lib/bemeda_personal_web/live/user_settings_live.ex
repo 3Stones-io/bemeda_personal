@@ -30,8 +30,13 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
               entity_id={@current_user.id}
               entity_type="User"
               entity_name={"#{@current_user.first_name} #{@current_user.last_name}"}
-              average_rating={@current_user.average_rating}
               current_user={@current_user}
+              rater_type={if Map.get(@current_user, :company_id), do: "Company", else: "User"}
+              rater_id={
+                if Map.get(@current_user, :company_id),
+                  do: Map.get(@current_user, :company_id),
+                  else: @current_user.id
+              }
               class="mb-2"
               check_can_rate?={false}
             />
@@ -133,6 +138,13 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   end
 
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(
+        BemedaPersonal.PubSub,
+        "rating:User:#{socket.assigns.current_user.id}"
+      )
+    end
+
     user = socket.assigns.current_user
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
@@ -241,5 +253,18 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
       {:error, changeset} ->
         {:noreply, assign(socket, :name_form, to_form(changeset))}
     end
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:rating_submitted, %{message: message}}, socket) do
+    {:noreply, put_flash(socket, :info, message)}
+  end
+
+  def handle_info({:rating_error, error}, socket) do
+    {:noreply, put_flash(socket, :error, error)}
+  end
+
+  def handle_info({:rating_updated, _rating}, socket) do
+    {:noreply, socket}
   end
 end

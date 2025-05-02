@@ -21,8 +21,8 @@
           entity_id={@company.id}
           entity_type="Company"
           entity_name={@company.name}
-          average_rating={@company.average_rating}
-          can_rate?={@can_rate?}
+          rater_type={if @current_user, do: "User", else: nil}
+          rater_id={if @current_user, do: @current_user.id, else: nil}
           check_can_rate?={true}
           class="mb-2"
           display_class="mb-2"
@@ -128,9 +128,9 @@
           entity_id={@company.id}
           entity_type="Company"
           entity_name={@company.name}
-          average_rating={@company.average_rating}
+          rater_type={if @current_user, do: "User", else: nil}
+          rater_id={if @current_user, do: @current_user.id, else: nil}
           size="sm"
-          check_can_rate?={false}
           can_rate?={false}
         />
       </div>

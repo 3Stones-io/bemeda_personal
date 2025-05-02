@@ -16,7 +16,6 @@ defmodule BemedaPersonal.Companies.Company do
 
   schema "companies" do
     belongs_to :admin_user, User
-    field :average_rating, :decimal
     field :description, :string
     field :industry, :string
     field :location, :string
@@ -43,13 +42,5 @@ defmodule BemedaPersonal.Companies.Company do
     |> validate_required([:name])
     |> validate_length(:name, min: 1, max: 255)
     |> unique_constraint(:name)
-  end
-
-  @doc """
-  A company changeset for updating the average rating.
-  """
-  @spec average_rating_changeset(t() | changeset(), attrs()) :: changeset()
-  def average_rating_changeset(company, attrs) do
-    cast(company, attrs, [:average_rating])
   end
 end

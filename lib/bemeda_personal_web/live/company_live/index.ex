@@ -81,6 +81,14 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     {:noreply, stream_insert(socket, :recent_applicants, job_application)}
   end
 
+  def handle_info({:rating_submitted, %{message: message}}, socket) do
+    {:noreply, put_flash(socket, :info, message)}
+  end
+
+  def handle_info({:rating_error, error}, socket) do
+    {:noreply, put_flash(socket, :error, error)}
+  end
+
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])
 
   defp assign_job_postings(socket, company) do

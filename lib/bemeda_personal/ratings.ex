@@ -161,8 +161,6 @@ defmodule BemedaPersonal.Ratings do
 
     case result do
       {:ok, rating} ->
-        update_average_rating(rating.ratee_type, rating.ratee_id)
-
         broadcast_event(
           "#{@rating_topic}:#{rating.ratee_type}:#{rating.ratee_id}",
           {:rating_created, rating}
@@ -269,8 +267,6 @@ defmodule BemedaPersonal.Ratings do
 
     case result do
       {:ok, updated_rating} ->
-        update_average_rating(rating.ratee_type, rating.ratee_id)
-
         broadcast_event(
           "#{@rating_topic}:#{rating.ratee_type}:#{rating.ratee_id}",
           {:rating_updated, updated_rating}
@@ -295,29 +291,6 @@ defmodule BemedaPersonal.Ratings do
   @spec change_rating(rating(), attrs()) :: changeset()
   def change_rating(%Rating{} = rating, attrs \\ %{}) do
     Rating.changeset(rating, attrs)
-  end
-
-  @doc """
-  Updates the average rating for a user or company based on their received ratings.
-  """
-  @spec update_average_rating(type(), id()) ::
-          {:ok, company() | user()} | {:error, changeset()}
-  def update_average_rating("Company", id) do
-    average = get_average_rating("Company", id)
-
-    Company
-    |> Repo.get!(id)
-    |> Company.average_rating_changeset(%{average_rating: average})
-    |> Repo.update()
-  end
-
-  def update_average_rating("User", id) do
-    average = get_average_rating("User", id)
-
-    User
-    |> Repo.get!(id)
-    |> User.average_rating_changeset(%{average_rating: average})
-    |> Repo.update()
   end
 
   defp user_has_interacted_with_company?(user, company) do

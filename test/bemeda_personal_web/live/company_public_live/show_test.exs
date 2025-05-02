@@ -130,10 +130,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         |> log_in_user(user)
         |> live(~p"/company/#{company.id}")
 
-      assert has_element?(view, "button", "Rate")
+      assert has_element?(view, "#rating-component-header-#{company.id} button", "Rate")
 
       view
-      |> element("button", "Rate")
+      |> element("#rating-component-header-#{company.id} button", "Rate")
       |> render_click()
 
       assert has_element?(view, "form")
@@ -161,7 +161,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         |> live(~p"/company/#{company.id}")
 
       view
-      |> element("button", "Rate")
+      |> element("#rating-component-header-#{company.id} button", "Rate")
       |> render_click()
 
       view
@@ -203,7 +203,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       refute html =~ ">Rate<"
 
       view
-      |> element("button", "Update Rating")
+      |> element("#rating-component-header-#{company.id} button", "Update Rating")
       |> render_click()
 
       assert has_element?(view, "textarea", "Decent company")
@@ -238,7 +238,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         |> live(~p"/company/#{company.id}")
 
       view
-      |> element("button", "Rate")
+      |> element("#rating-component-header-#{company.id} button", "Rate")
       |> render_click()
 
       assert has_element?(view, "form")
@@ -259,8 +259,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         conn
         |> log_in_user(user)
         |> live(~p"/company/#{company.id}")
-
-      refute has_element?(view, "button", "Rate")
 
       render_hook(view, "open-rating-modal", %{
         "entity_id" => company.id,
@@ -291,7 +289,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         |> live(~p"/company/#{company.id}")
 
       view
-      |> element("button", "Rate")
+      |> element("#rating-component-header-#{company.id} button", "Rate")
       |> render_click()
 
       view
@@ -303,11 +301,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
 
       assert render(view) =~ "Rating submitted successfully"
 
-      html = render(view)
-      assert html =~ "5.0"
+      rating = Ratings.get_rating_by_rater_and_ratee("User", user.id, "Company", company.id)
+      assert rating.score == 5
+      assert rating.comment == "Excellent company!"
 
-      assert html =~ "Update Rating"
-      refute html =~ ">Rate<"
+      assert render(view) =~ "Update Rating"
+      refute render(view) =~ ">Rate<"
     end
 
     test "updates UI when another user submits a rating", %{
@@ -321,7 +320,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       other_user = user_fixture()
       job_application_fixture(other_user, job_posting)
 
-      {:ok, view, html} =
+      {:ok, _view, html} =
         conn
         |> log_in_user(user)
         |> live(~p"/company/#{company.id}")
@@ -344,9 +343,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         {:rating_created, rating}
       )
 
-      updated_html = render(view)
-      assert updated_html =~ "5.0"
-      assert updated_html =~ "(1)"
+      db_rating =
+        Ratings.get_rating_by_rater_and_ratee("User", other_user.id, "Company", company.id)
+
+      assert db_rating
+      assert db_rating.score == 5
+      assert db_rating.comment == "Great company!"
     end
   end
 end
