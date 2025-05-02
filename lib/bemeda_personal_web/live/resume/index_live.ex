@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
 
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Resume.SharedHelpers
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -34,29 +35,28 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
 
   defp assign_resume(_resume, socket), do: assign(socket, :not_found, true)
 
-  # Handle PubSub events
   @impl Phoenix.LiveView
-  def handle_info({:resume_updated, resume}, socket) do
-    if resume.is_public do
-      {:noreply, assign(socket, :resume, resume)}
+  def handle_info(%Broadcast{event: "resume_updated", payload: payload}, socket) do
+    if payload.resume.is_public do
+      {:noreply, assign(socket, :resume, payload.resume)}
     else
       {:noreply, assign(socket, :not_found, true)}
     end
   end
 
-  def handle_info({:education_updated, education}, socket) do
-    {:noreply, stream_insert(socket, :educations, education)}
+  def handle_info(%Broadcast{event: "education_updated", payload: payload}, socket) do
+    {:noreply, stream_insert(socket, :educations, payload.education)}
   end
 
-  def handle_info({:education_deleted, education}, socket) do
-    {:noreply, stream_delete(socket, :educations, education)}
+  def handle_info(%Broadcast{event: "education_deleted", payload: payload}, socket) do
+    {:noreply, stream_delete(socket, :educations, payload.education)}
   end
 
-  def handle_info({:work_experience_updated, work_experience}, socket) do
-    {:noreply, stream_insert(socket, :work_experiences, work_experience)}
+  def handle_info(%Broadcast{event: "work_experience_updated", payload: payload}, socket) do
+    {:noreply, stream_insert(socket, :work_experiences, payload.work_experience)}
   end
 
-  def handle_info({:work_experience_deleted, work_experience}, socket) do
-    {:noreply, stream_delete(socket, :work_experiences, work_experience)}
+  def handle_info(%Broadcast{event: "work_experience_deleted", payload: payload}, socket) do
+    {:noreply, stream_delete(socket, :work_experiences, payload.work_experience)}
   end
 end

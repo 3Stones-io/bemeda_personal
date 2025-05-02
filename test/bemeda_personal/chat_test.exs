@@ -7,7 +7,8 @@ defmodule BemedaPersonal.ChatTest do
   import BemedaPersonal.JobsFixtures
 
   alias BemedaPersonal.Chat
-  alias Phoenix.PubSub
+  alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   defp create_message(_attrs) do
     user = user_fixture()
@@ -72,18 +73,22 @@ defmodule BemedaPersonal.ChatTest do
       assert message.sender_id == user.id
     end
 
-    test "broadcasts new_message event when a message is created", %{
+    test "broadcasts message_created event when a message is created", %{
       job_application: job_application,
       user: user
     } do
       message_topic = "messages:job_application:#{job_application.id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, message_topic)
+      Endpoint.subscribe(message_topic)
 
       valid_attrs = %{content: "new broadcast message"}
 
       {:ok, message} = Chat.create_message(user, job_application, valid_attrs)
 
-      assert_receive {:new_message, ^message}
+      assert_receive %Broadcast{
+        event: "message_created",
+        topic: ^message_topic,
+        payload: %{message: ^message}
+      }
     end
   end
 
@@ -102,13 +107,17 @@ defmodule BemedaPersonal.ChatTest do
       message: message
     } do
       message_topic = "messages:job_application:#{job_application.id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, message_topic)
+      Endpoint.subscribe(message_topic)
 
       update_attrs = %{content: "updated broadcast content"}
 
       {:ok, updated_message} = Chat.update_message(message, update_attrs)
 
-      assert_receive {:message_updated, ^updated_message}
+      assert_receive %Broadcast{
+        event: "message_updated",
+        topic: ^message_topic,
+        payload: %{message: ^updated_message}
+      }
     end
   end
 
@@ -179,12 +188,12 @@ defmodule BemedaPersonal.ChatTest do
       assert message.media_asset == nil
     end
 
-    test "broadcasts new_message event when a message with media is created", %{
+    test "broadcasts message_created event when a message with media is created", %{
       job_application: job_application,
       user: user
     } do
       message_topic = "messages:job_application:#{job_application.id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, message_topic)
+      Endpoint.subscribe(message_topic)
 
       media_data = %{
         "file_name" => "broadcast_test.mp4",
@@ -196,9 +205,11 @@ defmodule BemedaPersonal.ChatTest do
 
       {:ok, message} = Chat.create_message_with_media(user, job_application, attrs)
 
-      assert_receive {:new_message, received_message}
-      assert received_message.id == message.id
-      assert received_message.media_asset.file_name == "broadcast_test.mp4"
+      assert_receive %Broadcast{
+        event: "message_created",
+        topic: ^message_topic,
+        payload: %{message: ^message}
+      }
     end
   end
 end
