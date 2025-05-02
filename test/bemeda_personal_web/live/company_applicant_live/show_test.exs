@@ -10,6 +10,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
+  alias BemedaPersonalWeb.Endpoint
 
   setup %{conn: conn} do
     company_user = user_fixture(confirmed: true)
@@ -256,9 +257,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
           comment: "Excellent candidate"
         })
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
+      Endpoint.broadcast(
         "rating:User:#{applicant.id}",
+        "rating_created",
         {:rating_created, rating}
       )
 

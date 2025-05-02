@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Ratings
+  alias BemedaPersonalWeb.Endpoint
 
   describe "Show" do
     setup %{conn: conn} do
@@ -337,9 +338,9 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
           comment: "Great company!"
         })
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
+      Endpoint.broadcast(
         "rating:Company:#{company.id}",
+        "rating_created",
         {:rating_created, rating}
       )
 

@@ -5,14 +5,16 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(%{"id" => id} = _params, _session, socket) do
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "rating:Company:#{id}")
+      Endpoint.subscribe("rating:Company:#{id}")
     end
 
     {:ok,
@@ -116,14 +118,9 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
 
   @impl Phoenix.LiveView
   def handle_info({:rating_updated, "Company", company_id}, socket) do
-    updated_company = Companies.get_company!(company_id)
-
-    send_update(RatingComponent, id: "rating-component-header-#{company_id}")
-    send_update(RatingComponent, id: "rating-component-sidebar-#{company_id}")
-
     {:noreply,
      socket
-     |> assign(:company, updated_company)
+     |> handle_company_rating_update(company_id)
      |> put_flash(:info, "Rating submitted successfully.")}
   end
 
@@ -132,12 +129,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
         socket
       )
       when ratee_id == socket.assigns.company.id and event in [:rating_created, :rating_updated] do
-    updated_company = Companies.get_company!(ratee_id)
-
-    send_update(RatingComponent, id: "rating-component-header-#{ratee_id}")
-    send_update(RatingComponent, id: "rating-component-sidebar-#{ratee_id}")
-
-    {:noreply, assign(socket, :company, updated_company)}
+    {:noreply, handle_company_rating_update(socket, ratee_id)}
   end
 
   def handle_info(
@@ -182,14 +174,9 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
         socket
       ) do
     if entity_type == "Company" && entity_id == socket.assigns.company.id do
-      updated_company = Companies.get_company!(entity_id)
-
-      send_update(RatingComponent, id: "rating-component-header-#{entity_id}")
-      send_update(RatingComponent, id: "rating-component-sidebar-#{entity_id}")
-
       {:noreply,
        socket
-       |> assign(:company, updated_company)
+       |> handle_company_rating_update(entity_id)
        |> put_flash(:info, message)}
     else
       {:noreply, put_flash(socket, :info, message)}
@@ -198,6 +185,42 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
 
   def handle_info({:rating_error, error}, socket) do
     {:noreply, put_flash(socket, :error, error)}
+  end
+
+  def handle_info(%Broadcast{event: "rating_updated", payload: {:rating_updated, rating}}, socket) do
+    if rating.ratee_type == "Company" && rating.ratee_id == socket.assigns.company.id do
+      {:noreply, handle_company_rating_update(socket, rating.ratee_id)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(
+        %Broadcast{event: "rating_updated", payload: {:rating_updated, entity_type, entity_id}},
+        socket
+      ) do
+    if entity_type == "Company" && entity_id == socket.assigns.company.id do
+      {:noreply, handle_company_rating_update(socket, entity_id)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(%Broadcast{event: "rating_created", payload: {:rating_created, rating}}, socket) do
+    if rating.ratee_type == "Company" && rating.ratee_id == socket.assigns.company.id do
+      {:noreply, handle_company_rating_update(socket, rating.ratee_id)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  defp handle_company_rating_update(socket, company_id) do
+    updated_company = Companies.get_company!(company_id)
+
+    send_update(RatingComponent, id: "rating-component-header-#{company_id}")
+    send_update(RatingComponent, id: "rating-component-sidebar-#{company_id}")
+
+    assign(socket, :company, updated_company)
   end
 
   defp string_to_integer(value) when is_binary(value), do: String.to_integer(value)

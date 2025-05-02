@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.RatingComponent
 
   @impl Phoenix.LiveView
@@ -139,10 +140,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(
-        BemedaPersonal.PubSub,
-        "rating:User:#{socket.assigns.current_user.id}"
-      )
+      Endpoint.subscribe("rating:User:#{socket.assigns.current_user.id}")
     end
 
     user = socket.assigns.current_user

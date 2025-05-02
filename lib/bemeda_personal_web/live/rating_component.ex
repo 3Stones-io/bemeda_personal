@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Ratings
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.RatingFormComponent
   alias Phoenix.LiveView.JS
 
@@ -278,15 +279,15 @@ defmodule BemedaPersonalWeb.RatingComponent do
          }}
       )
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
+      Endpoint.broadcast(
         "rating:#{entity_type}:#{entity_id}",
+        "rating_updated",
         {:rating_updated, rating}
       )
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
+      Endpoint.broadcast(
         "rating:#{entity_type}:#{entity_id}",
+        "rating_updated",
         {:rating_updated, entity_type, entity_id}
       )
 

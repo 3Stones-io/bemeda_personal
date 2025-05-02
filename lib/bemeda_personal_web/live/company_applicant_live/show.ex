@@ -19,7 +19,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
     if connected?(socket) do
       Endpoint.subscribe("job_application_assets_#{application.id}")
-      Phoenix.PubSub.subscribe(BemedaPersonal.PubSub, "rating:User:#{application.user.id}")
+      Endpoint.subscribe("rating:User:#{application.user.id}")
     end
 
     tags_form_fields = %{"tags" => ""}
@@ -117,15 +117,15 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
          {:ok, rating} <- create_or_update_rating(attrs) do
       updated_application = Jobs.get_job_application!(application.id)
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
+      Endpoint.broadcast(
         "rating:#{entity_type}:#{entity_id}",
+        "rating_updated",
         {:rating_updated, rating}
       )
 
-      Phoenix.PubSub.broadcast(
-        BemedaPersonal.PubSub,
+      Endpoint.broadcast(
         "rating:#{entity_type}:#{entity_id}",
+        "rating_updated",
         {:rating_updated, entity_type, entity_id}
       )
 
@@ -167,6 +167,42 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
   def handle_info({:rating_error, error}, socket) do
     {:noreply, put_flash(socket, :error, error)}
+  end
+
+  def handle_info(%Broadcast{event: "rating_updated", payload: {:rating_updated, rating}}, socket) do
+    if rating.ratee_type == "User" &&
+         rating.ratee_id == socket.assigns.application.user.id do
+      updated_application = Jobs.get_job_application!(socket.assigns.application.id)
+
+      {:noreply,
+       socket
+       |> assign(:application, updated_application)
+       |> assign(:rating_modal_open, false)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(
+        %Broadcast{event: "rating_updated", payload: {:rating_updated, entity_type, entity_id}},
+        socket
+      ) do
+    if entity_type == "User" &&
+         entity_id == socket.assigns.application.user.id do
+      {:noreply, assign(socket, :rating_modal_open, false)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(%Broadcast{event: "rating_created", payload: {:rating_created, rating}}, socket) do
+    if rating.ratee_type == "User" &&
+         rating.ratee_id == socket.assigns.application.user.id do
+      updated_application = Jobs.get_job_application!(socket.assigns.application.id)
+      {:noreply, assign(socket, :application, updated_application)}
+    else
+      {:noreply, socket}
+    end
   end
 
   defp can_rate?(socket) do

@@ -10,7 +10,7 @@ defmodule BemedaPersonal.Ratings do
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Ratings.Rating
   alias BemedaPersonal.Repo
-  alias Phoenix.PubSub
+  alias BemedaPersonalWeb.Endpoint
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -163,6 +163,7 @@ defmodule BemedaPersonal.Ratings do
       {:ok, rating} ->
         broadcast_event(
           "#{@rating_topic}:#{rating.ratee_type}:#{rating.ratee_id}",
+          "rating_created",
           {:rating_created, rating}
         )
 
@@ -269,6 +270,7 @@ defmodule BemedaPersonal.Ratings do
       {:ok, updated_rating} ->
         broadcast_event(
           "#{@rating_topic}:#{rating.ratee_type}:#{rating.ratee_id}",
+          "rating_updated",
           {:rating_updated, updated_rating}
         )
 
@@ -304,7 +306,7 @@ defmodule BemedaPersonal.Ratings do
     user_has_interacted_with_company?(user, company)
   end
 
-  defp broadcast_event(topic, message) do
-    PubSub.broadcast(BemedaPersonal.PubSub, topic, message)
+  defp broadcast_event(topic, event, message) do
+    Endpoint.broadcast(topic, event, message)
   end
 end
