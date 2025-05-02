@@ -96,7 +96,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   @impl Phoenix.LiveView
   def handle_info(%Broadcast{event: event, payload: payload}, socket)
       when event in [
-             "new_message",
+             "message_created",
              "message_updated"
            ] do
     {:noreply, stream_insert(socket, :messages, payload.message)}

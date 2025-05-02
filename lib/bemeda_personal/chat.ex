@@ -89,7 +89,7 @@ defmodule BemedaPersonal.Chat do
     case result do
       {:ok, message} ->
         message_topic = "#{@message_topic}:job_application:#{job_application.id}"
-        Endpoint.broadcast(message_topic, "new_message", %{message: message})
+        Endpoint.broadcast(message_topic, "message_created", %{message: message})
 
         {:ok, message}
 
@@ -139,7 +139,7 @@ defmodule BemedaPersonal.Chat do
           )
 
         message_topic = "#{@message_topic}:job_application:#{job_application.id}"
-        Endpoint.broadcast(message_topic, "new_message", %{message: message})
+        Endpoint.broadcast(message_topic, "message_created", %{message: message})
 
         {:ok, message}
 

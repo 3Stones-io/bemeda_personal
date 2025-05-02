@@ -73,7 +73,7 @@ defmodule BemedaPersonal.ChatTest do
       assert message.sender_id == user.id
     end
 
-    test "broadcasts new_message event when a message is created", %{
+    test "broadcasts message_created event when a message is created", %{
       job_application: job_application,
       user: user
     } do
@@ -85,7 +85,7 @@ defmodule BemedaPersonal.ChatTest do
       {:ok, message} = Chat.create_message(user, job_application, valid_attrs)
 
       assert_receive %Broadcast{
-        event: "new_message",
+        event: "message_created",
         topic: ^message_topic,
         payload: %{message: ^message}
       }
@@ -188,7 +188,7 @@ defmodule BemedaPersonal.ChatTest do
       assert message.media_asset == nil
     end
 
-    test "broadcasts new_message event when a message with media is created", %{
+    test "broadcasts message_created event when a message with media is created", %{
       job_application: job_application,
       user: user
     } do
@@ -206,7 +206,7 @@ defmodule BemedaPersonal.ChatTest do
       {:ok, message} = Chat.create_message_with_media(user, job_application, attrs)
 
       assert_receive %Broadcast{
-        event: "new_message",
+        event: "message_created",
         topic: ^message_topic,
         payload: %{message: ^message}
       }
