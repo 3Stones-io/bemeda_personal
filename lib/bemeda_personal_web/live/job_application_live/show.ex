@@ -7,6 +7,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
   alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   require Logger
 
@@ -93,16 +94,22 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({event, message}, socket)
-      when event in [:new_message, :message_updated] do
+  def handle_info(%Broadcast{event: event, payload: payload}, socket)
+      when event in [
+             "message_created",
+             "message_updated"
+           ] do
+    {:noreply, stream_insert(socket, :messages, payload.message)}
+  end
+
+  def handle_info(%Broadcast{event: "media_asset_updated", payload: %{message: message}}, socket) do
     {:noreply, stream_insert(socket, :messages, message)}
   end
 
-  def handle_info(%{message: message}, socket) do
-    {:noreply, stream_insert(socket, :messages, message)}
-  end
-
-  def handle_info(%{job_application: job_application}, socket) do
+  def handle_info(
+        %Broadcast{event: "media_asset_updated", payload: %{job_application: job_application}},
+        socket
+      ) do
     {:noreply, assign(socket, :job_application, job_application)}
   end
 
@@ -115,9 +122,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
     if connected?(socket) do
       Endpoint.subscribe("messages:job_application:#{job_application_id}")
-
       Endpoint.subscribe("job_application_messages_assets_#{job_application_id}")
-
       Endpoint.subscribe("job_application_assets_#{job_application_id}")
     end
 

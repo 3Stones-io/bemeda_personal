@@ -10,6 +10,7 @@ defmodule BemedaPersonal.Media do
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Repo
+  alias BemedaPersonalWeb.Endpoint
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -155,26 +156,26 @@ defmodule BemedaPersonal.Media do
   defp broadcast_to_parent(
          %MediaAsset{job_application: %JobApplication{} = job_application} = media_asset
        ) do
-    Phoenix.PubSub.broadcast(
-      BemedaPersonal.PubSub,
+    Endpoint.broadcast(
       "job_application_assets_#{job_application.id}",
-      %{media_asset_updated: media_asset, job_application: job_application}
+      "media_asset_updated",
+      %{media_asset: media_asset, job_application: job_application}
     )
   end
 
   defp broadcast_to_parent(%MediaAsset{job_posting: %JobPosting{} = job_posting} = media_asset) do
-    Phoenix.PubSub.broadcast(
-      BemedaPersonal.PubSub,
+    Endpoint.broadcast(
       "job_posting_assets_#{job_posting.id}",
-      %{media_asset_updated: media_asset, job_posting: job_posting}
+      "media_asset_updated",
+      %{media_asset: media_asset, job_posting: job_posting}
     )
   end
 
   defp broadcast_to_parent(%MediaAsset{message: %Message{} = message} = media_asset) do
-    Phoenix.PubSub.broadcast(
-      BemedaPersonal.PubSub,
+    Endpoint.broadcast(
       "job_application_messages_assets_#{message.job_application_id}",
-      %{media_asset_updated: media_asset, message: message}
+      "media_asset_updated",
+      %{media_asset: media_asset, message: message}
     )
   end
 

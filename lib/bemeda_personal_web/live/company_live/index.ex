@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.RatingComponent
   alias Phoenix.LiveView.JS
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -54,31 +55,34 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({:company_updated, company}, socket) do
+  def handle_info(%Broadcast{event: "company_updated", payload: payload}, socket) do
     {:noreply,
      socket
-     |> assign(:company, company)
-     |> assign_job_postings(company)}
+     |> assign(:company, payload.company)
+     |> assign_job_postings(payload.company)}
   end
 
-  def handle_info({event, job}, socket)
-      when event in [:job_posting_created, :job_posting_updated] do
+  def handle_info(%Broadcast{event: event, payload: payload}, socket)
+      when event in [
+             "job_posting_created",
+             "job_posting_updated"
+           ] do
     {:noreply,
      socket
      |> assign(:job_count, Jobs.company_jobs_count(socket.assigns.company.id))
-     |> stream_insert(:job_postings, job)}
+     |> stream_insert(:job_postings, payload.job_posting)}
   end
 
-  def handle_info({:job_posting_deleted, job}, socket) do
-    {:noreply, stream_delete(socket, :job_postings, job)}
+  def handle_info(%Broadcast{event: "job_posting_deleted", payload: payload}, socket) do
+    {:noreply, stream_delete(socket, :job_postings, payload.job_posting)}
   end
 
-  def handle_info({event, job_application}, socket)
+  def handle_info(%Broadcast{event: event, payload: payload}, socket)
       when event in [
-             :job_application_created,
-             :job_application_updated
+             "job_application_created",
+             "job_application_updated"
            ] do
-    {:noreply, stream_insert(socket, :recent_applicants, job_application)}
+    {:noreply, stream_insert(socket, :recent_applicants, payload.job_application)}
   end
 
   def handle_info({:rating_submitted, %{message: message}}, socket) do

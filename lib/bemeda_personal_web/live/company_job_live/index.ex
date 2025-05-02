@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobListComponent
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -72,9 +73,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     {:noreply, push_patch(socket, to: ~p"/companies/#{company}/jobs?#{filters}")}
   end
 
-  def handle_info({event, job_posting}, socket)
-      when event in [:job_posting_created, :job_posting_updated] do
-    send_update(JobListComponent, id: "job-post-list", job_posting: job_posting)
+  def handle_info(%Broadcast{event: event, payload: payload}, socket)
+      when event in [
+             "job_posting_created",
+             "job_posting_updated"
+           ] do
+    send_update(JobListComponent, id: "job-post-list", job_posting: payload.job_posting)
+
     {:noreply, socket}
   end
 

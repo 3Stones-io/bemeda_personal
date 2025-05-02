@@ -7,7 +7,8 @@ defmodule BemedaPersonal.CompaniesTest do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Repo
-  alias Phoenix.PubSub
+  alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   @invalid_attrs %{
     description: nil,
@@ -111,18 +112,14 @@ defmodule BemedaPersonal.CompaniesTest do
         logo_url: "logo_url"
       }
 
-      # We need to create the company directly to test the broadcast
       {:ok, company} = Companies.create_company(user, valid_attrs)
       company_topic = "company:#{company.admin_user_id}"
 
-      # Subscribe after to avoid receiving the broadcast sent during creation
-      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+      Endpoint.subscribe(company_topic)
 
-      # Create another company to ensure broadcasting still works
       another_user = user_fixture(%{email: "another@example.com"})
       {:ok, another_company} = Companies.create_company(another_user, %{name: "another company"})
 
-      # We should not receive a broadcast for the other company
       refute_receive {:company_created, ^another_company}
     end
   end
@@ -146,7 +143,7 @@ defmodule BemedaPersonal.CompaniesTest do
 
     test "broadcasts company_updated event when updating a company", %{company: company} do
       company_topic = "company:#{company.admin_user_id}"
-      PubSub.subscribe(BemedaPersonal.PubSub, company_topic)
+      Endpoint.subscribe(company_topic)
 
       update_attrs = %{
         name: "updated company name"
@@ -154,7 +151,11 @@ defmodule BemedaPersonal.CompaniesTest do
 
       {:ok, updated_company} = Companies.update_company(company, update_attrs)
 
-      assert_receive {:company_updated, ^updated_company}
+      assert_receive %Broadcast{
+        event: "company_updated",
+        topic: ^company_topic,
+        payload: %{company: ^updated_company}
+      }
     end
   end
 

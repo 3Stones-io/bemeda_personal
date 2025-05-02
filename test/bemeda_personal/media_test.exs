@@ -10,6 +10,7 @@ defmodule BemedaPersonal.MediaTest do
   alias BemedaPersonal.Media
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   defp create_test_data(_context) do
     user = user_fixture()
@@ -150,14 +151,15 @@ defmodule BemedaPersonal.MediaTest do
       job_application: job_application
     } do
       media_asset = media_asset_fixture(job_application, %{})
-
-      Endpoint.subscribe("job_application_assets_#{job_application.id}")
+      topic = "job_application_assets_#{job_application.id}"
+      Endpoint.subscribe(topic)
 
       {:ok, updated_media_asset} = Media.update_media_asset(media_asset, %{status: :failed})
 
-      assert_receive %{
-        job_application: ^job_application,
-        media_asset_updated: ^updated_media_asset
+      assert_receive %Broadcast{
+        event: "media_asset_updated",
+        topic: ^topic,
+        payload: %{media_asset: ^updated_media_asset, job_application: ^job_application}
       }
     end
 
@@ -165,12 +167,16 @@ defmodule BemedaPersonal.MediaTest do
       job_posting: job_posting
     } do
       media_asset = media_asset_fixture(job_posting, %{})
-
-      Endpoint.subscribe("job_posting_assets_#{job_posting.id}")
+      topic = "job_posting_assets_#{job_posting.id}"
+      Endpoint.subscribe(topic)
 
       {:ok, updated_media_asset} = Media.update_media_asset(media_asset, %{status: :failed})
 
-      assert_receive %{job_posting: ^job_posting, media_asset_updated: ^updated_media_asset}
+      assert_receive %Broadcast{
+        event: "media_asset_updated",
+        topic: ^topic,
+        payload: %{media_asset: ^updated_media_asset, job_posting: ^job_posting}
+      }
     end
 
     test "broadcasts to job_application_messages topic when updating message media asset", %{
@@ -178,12 +184,17 @@ defmodule BemedaPersonal.MediaTest do
     } do
       message = Repo.preload(message, [:media_asset])
       media_asset = media_asset_fixture(message, %{})
+      topic = "job_application_messages_assets_#{message.job_application_id}"
 
-      Endpoint.subscribe("job_application_messages_assets_#{message.job_application_id}")
+      Endpoint.subscribe(topic)
 
       {:ok, updated_media_asset} = Media.update_media_asset(media_asset, %{status: :failed})
 
-      assert_receive %{message: ^message, media_asset_updated: ^updated_media_asset}
+      assert_receive %Broadcast{
+        event: "media_asset_updated",
+        topic: ^topic,
+        payload: %{media_asset: ^updated_media_asset, message: ^message}
+      }
     end
   end
 

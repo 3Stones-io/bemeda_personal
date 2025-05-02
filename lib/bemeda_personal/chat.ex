@@ -10,8 +10,8 @@ defmodule BemedaPersonal.Chat do
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
+  alias BemedaPersonalWeb.Endpoint
   alias Ecto.Multi
-  alias Phoenix.PubSub
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -89,7 +89,8 @@ defmodule BemedaPersonal.Chat do
     case result do
       {:ok, message} ->
         message_topic = "#{@message_topic}:job_application:#{job_application.id}"
-        PubSub.broadcast(BemedaPersonal.PubSub, message_topic, {:new_message, message})
+        Endpoint.broadcast(message_topic, "message_created", %{message: message})
+
         {:ok, message}
 
       error ->
@@ -138,7 +139,8 @@ defmodule BemedaPersonal.Chat do
           )
 
         message_topic = "#{@message_topic}:job_application:#{job_application.id}"
-        PubSub.broadcast(BemedaPersonal.PubSub, message_topic, {:new_message, message})
+        Endpoint.broadcast(message_topic, "message_created", %{message: message})
+
         {:ok, message}
 
       {:error, _operation, changeset, _changes} ->
@@ -169,10 +171,10 @@ defmodule BemedaPersonal.Chat do
       {:ok, updated_message} ->
         message_topic = "#{@message_topic}:job_application:#{updated_message.job_application_id}"
 
-        PubSub.broadcast(
-          BemedaPersonal.PubSub,
+        Endpoint.broadcast(
           message_topic,
-          {:message_updated, updated_message}
+          "message_updated",
+          %{message: updated_message}
         )
 
         {:ok, updated_message}

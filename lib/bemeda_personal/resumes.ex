@@ -12,8 +12,8 @@ defmodule BemedaPersonal.Resumes do
   alias BemedaPersonal.Resumes.Education
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonal.Resumes.WorkExperience
+  alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
-  alias Phoenix.PubSub
 
   @type changeset :: Ecto.Changeset.t()
   @type education :: Education.t()
@@ -50,7 +50,7 @@ defmodule BemedaPersonal.Resumes do
           |> Changeset.put_assoc(:user, user)
           |> Repo.insert!()
 
-        broadcast_event(@resume_topic, {:resume_created, resume})
+        broadcast_event(@resume_topic, "resume_created", %{resume: resume})
         resume
 
       resume ->
@@ -113,7 +113,7 @@ defmodule BemedaPersonal.Resumes do
 
     case result do
       {:ok, updated_resume} ->
-        broadcast_event(@resume_topic, {:resume_updated, updated_resume})
+        broadcast_event(@resume_topic, "resume_updated", %{resume: updated_resume})
         {:ok, updated_resume}
 
       error ->
@@ -201,7 +201,8 @@ defmodule BemedaPersonal.Resumes do
       {:ok, updated_education} ->
         broadcast_event(
           "#{@education_topic}:#{resume.id}",
-          {:education_updated, updated_education}
+          "education_updated",
+          %{education: updated_education}
         )
 
         {:ok, updated_education}
@@ -234,7 +235,8 @@ defmodule BemedaPersonal.Resumes do
 
         broadcast_event(
           "#{@education_topic}:#{deleted_education.resume.id}",
-          {:education_deleted, deleted_education}
+          "education_deleted",
+          %{education: deleted_education}
         )
 
         {:ok, deleted_education}
@@ -345,7 +347,8 @@ defmodule BemedaPersonal.Resumes do
       {:ok, updated_work_experience} ->
         broadcast_event(
           "#{@work_experience_topic}:#{resume.id}",
-          {:work_experience_updated, updated_work_experience}
+          "work_experience_updated",
+          %{work_experience: updated_work_experience}
         )
 
         {:ok, updated_work_experience}
@@ -379,7 +382,8 @@ defmodule BemedaPersonal.Resumes do
 
         broadcast_event(
           "#{@work_experience_topic}:#{deleted_work_experience.resume.id}",
-          {:work_experience_deleted, deleted_work_experience}
+          "work_experience_deleted",
+          %{work_experience: deleted_work_experience}
         )
 
         {:ok, deleted_work_experience}
@@ -403,10 +407,10 @@ defmodule BemedaPersonal.Resumes do
     WorkExperience.changeset(work_experience, attrs)
   end
 
-  defp broadcast_event(topic, message) do
-    PubSub.broadcast(
-      BemedaPersonal.PubSub,
+  defp broadcast_event(topic, event, message) do
+    Endpoint.broadcast(
       topic,
+      event,
       message
     )
   end

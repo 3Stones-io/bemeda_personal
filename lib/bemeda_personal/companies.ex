@@ -8,8 +8,8 @@ defmodule BemedaPersonal.Companies do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Repo
+  alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
-  alias Phoenix.PubSub
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -93,7 +93,12 @@ defmodule BemedaPersonal.Companies do
 
     case result do
       {:ok, company} ->
-        broadcast_event("#{@company_topic}:#{user.id}", {:company_created, company})
+        broadcast_event(
+          "#{@company_topic}:#{user.id}",
+          "company_created",
+          %{company: company}
+        )
+
         {:ok, company}
 
       error ->
@@ -124,7 +129,14 @@ defmodule BemedaPersonal.Companies do
       {:ok, updated_company} ->
         broadcast_event(
           "#{@company_topic}:#{updated_company.admin_user_id}",
-          {:company_updated, updated_company}
+          "company_updated",
+          %{company: updated_company}
+        )
+
+        broadcast_event(
+          "#{@company_topic}:#{updated_company.id}",
+          "company_updated",
+          %{company: updated_company}
         )
 
         {:ok, updated_company}
@@ -148,10 +160,10 @@ defmodule BemedaPersonal.Companies do
     Company.changeset(company, attrs)
   end
 
-  defp broadcast_event(topic, message) do
-    PubSub.broadcast(
-      BemedaPersonal.PubSub,
+  defp broadcast_event(topic, event, message) do
+    Endpoint.broadcast(
       topic,
+      event,
       message
     )
   end
