@@ -641,6 +641,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :application, :any, required: true
+  attr :company, :any, required: true
   attr :current_user, :any, required: true
   attr :job, :any, required: true
   attr :resume, :any, default: nil
@@ -684,21 +685,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
             <dt class="text-sm font-medium text-gray-500">Rating</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <.live_component
-                module={RatingComponent}
-                id={"rating-display-applicant-#{@application.user.id}"}
-                entity_id={@application.user.id}
-                entity_type="User"
-                entity_name={"#{@application.user.first_name} #{@application.user.last_name}"}
                 current_user={@current_user}
-                rater_type={if Map.get(@current_user, :company_id), do: "Company", else: "User"}
-                rater_id={
-                  if Map.get(@current_user, :company_id),
-                    do: Map.get(@current_user, :company_id),
-                    else: @current_user.id
-                }
+                entity_id={@application.user.id}
+                entity_name={"#{@application.user.first_name} #{@application.user.last_name}"}
+                entity_type="User"
+                id={"rating-display-applicant-#{@application.user.id}"}
+                module={RatingComponent}
+                rater_id={@company.id}
+                rater_type="Company"
                 size="md"
-                rating_modal_id={"rating-modal-#{@application.id}"}
-                rating_form_id={"job-seeker-rating-form-#{@application.id}"}
               />
             </dd>
           </div>

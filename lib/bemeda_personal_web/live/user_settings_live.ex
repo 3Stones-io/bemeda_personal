@@ -28,20 +28,13 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
           </div>
           <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
             <.live_component
-              module={RatingComponent}
-              id={"rating-display-user-settings-#{@current_user.id}"}
               can_rate?={false}
+              class="mb-2"
+              current_user={@current_user}
               entity_id={@current_user.id}
               entity_type="User"
-              entity_name={"#{@current_user.first_name} #{@current_user.last_name}"}
-              current_user={@current_user}
-              rater_type={if Map.get(@current_user, :company_id), do: "Company", else: "User"}
-              rater_id={
-                if Map.get(@current_user, :company_id),
-                  do: Map.get(@current_user, :company_id),
-                  else: @current_user.id
-              }
-              class="mb-2"
+              id={"rating-display-user-settings-#{@current_user.id}"}
+              module={RatingComponent}
             />
           </div>
         </div>
@@ -141,7 +134,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
 
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
-
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
     name_changeset = Accounts.change_user_name(user)

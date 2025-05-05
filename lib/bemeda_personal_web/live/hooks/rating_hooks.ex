@@ -18,18 +18,12 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   Sets up rating functionality in LiveViews.
 
   There are several mounting hooks available:
-  - :default - Sets up basic message handling without any subscriptions
   - :company - Sets up company entity subscriptions based on the "id" URL parameter
   - :user - Sets up user entity subscriptions based on the current_user
   """
   @spec on_mount(atom(), map(), map(), Phoenix.LiveView.Socket.t()) ::
           {:cont, Phoenix.LiveView.Socket.t()}
   def on_mount(hook_name, params, session, socket)
-
-  def on_mount(:default, _params, _session, socket) do
-    socket = attach_hook(socket, :rating_info_handler, :handle_info, &handle_rating_info/2)
-    {:cont, socket}
-  end
 
   def on_mount(:company, params, _session, socket) do
     if id = params["id"] do
@@ -39,6 +33,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     end
 
     socket = attach_hook(socket, :rating_info_handler, :handle_info, &handle_rating_info/2)
+
     {:cont, socket}
   end
 

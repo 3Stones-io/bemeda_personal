@@ -7,14 +7,13 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
   def update(assigns, socket) do
     current_score = if assigns.current_rating, do: assigns.current_rating.score, else: 5
     current_comment = if assigns.current_rating, do: assigns.current_rating.comment, else: ""
-
-    form = to_form(%{"score" => current_score, "comment" => current_comment})
+    form = to_form(%{"comment" => current_comment, "score" => current_score})
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:form, form)
-     |> assign(:current_score, current_score)}
+     |> assign(:current_score, current_score)
+     |> assign(:form, form)}
   end
 
   @impl Phoenix.LiveComponent
@@ -64,15 +63,15 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
   end
 
   @impl Phoenix.LiveComponent
-  def handle_event(event, params, socket) when event in ["submit", "submit-rating"] do
+  def handle_event("submit_rating", params, socket) do
     send(
       self(),
       {:submit_rating,
        %{
-         score: params["score"],
          comment: params["comment"],
          entity_id: socket.assigns.entity_id,
-         entity_type: socket.assigns.entity_type
+         entity_type: socket.assigns.entity_type,
+         score: params["score"]
        }}
     )
 

@@ -9,7 +9,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias Phoenix.Socket.Broadcast
 
-  on_mount {RatingHooks, :default}
+  on_mount {RatingHooks, :company}
 
   @impl Phoenix.LiveView
   def handle_params(%{"company_id" => company_id, "id" => applicant_id}, _url, socket) do
@@ -18,13 +18,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     job_posting = application.job_posting
     resume = Resumes.get_user_resume(application.user)
     full_name = "#{application.user.first_name} #{application.user.last_name}"
+    tags_form_fields = %{"tags" => ""}
 
     if connected?(socket) do
       Endpoint.subscribe("job_application_assets_#{application.id}")
       Endpoint.subscribe("rating:User:#{application.user.id}")
     end
-
-    tags_form_fields = %{"tags" => ""}
 
     {:noreply,
      socket
@@ -38,25 +37,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   end
 
   @impl Phoenix.LiveView
-  def handle_event(
-        "open-rating-modal",
-        %{"entity_id" => _entity_id, "entity_type" => _entity_type},
-        socket
-      ) do
-    current_user = socket.assigns.current_user
-    company = socket.assigns.company
-
-    if company_admin?(current_user, company) do
-      {:noreply, assign(socket, :rating_modal_open, true)}
-    else
-      {:noreply, put_flash(socket, :error, "You need to be a company admin to rate applicants.")}
-    end
-  end
-
-  def handle_event("close-rating-modal", _params, socket) do
-    {:noreply, assign(socket, :rating_modal_open, false)}
-  end
-
   def handle_event("update_tags", %{"tags" => tags}, socket) do
     application = socket.assigns.application
 
@@ -76,13 +56,5 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
   def handle_info(%Broadcast{event: "media_asset_updated", payload: payload}, socket) do
     {:noreply, assign(socket, :application, payload.job_application)}
-  end
-
-  @spec company_admin?(
-          BemedaPersonal.Accounts.User.t() | nil,
-          BemedaPersonal.Companies.Company.t() | nil
-        ) :: boolean()
-  defp company_admin?(user, company) do
-    user && company && company.admin_user_id == user.id
   end
 end

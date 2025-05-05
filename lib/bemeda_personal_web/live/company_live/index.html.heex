@@ -12,16 +12,14 @@
         <h2 class="text-xl font-semibold text-gray-900">{@company.name}</h2>
         <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
         <.live_component
-          module={RatingComponent}
-          id={"rating-component-#{@company.id}"}
+          can_rate?={false}
           current_user={@current_user}
           entity_id={@company.id}
-          entity_type="Company"
           entity_name={@company.name}
-          rater_type={if @current_user, do: "User", else: nil}
-          rater_id={if @current_user, do: @current_user.id, else: nil}
+          entity_type="Company"
+          id={"rating-component-#{@company.id}"}
+          module={RatingComponent}
           size="sm"
-          can_rate?={false}
         />
       </div>
       <div>

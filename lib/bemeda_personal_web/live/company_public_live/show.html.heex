@@ -15,16 +15,16 @@
       <div>
         <h1 class="text-4xl font-bold text-gray-900 mb-4">{@company.name}</h1>
         <.live_component
-          module={RatingComponent}
-          id={"rating-component-header-#{@company.id}"}
-          current_user={@current_user}
-          entity_id={@company.id}
-          entity_type="Company"
-          entity_name={@company.name}
-          rater_type={if @current_user, do: "User", else: nil}
-          rater_id={if @current_user, do: @current_user.id, else: nil}
           class="mb-2"
+          current_user={@current_user}
           display_class="mb-2"
+          entity_id={@company.id}
+          entity_name={@company.name}
+          entity_type="Company"
+          id={"rating-component-header-#{@company.id}"}
+          module={RatingComponent}
+          rater_id={if @current_user, do: @current_user.id}
+          rater_type={if @current_user, do: "User"}
         />
       </div>
     </div>
@@ -121,16 +121,15 @@
       <div class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">Rating</h4>
         <.live_component
-          module={RatingComponent}
-          id={"rating-component-sidebar-#{@company.id}"}
           current_user={@current_user}
           entity_id={@company.id}
-          entity_type="Company"
           entity_name={@company.name}
-          rater_type={if @current_user, do: "User", else: nil}
-          rater_id={if @current_user, do: @current_user.id, else: nil}
+          entity_type="Company"
+          id={"rating-component-sidebar-#{@company.id}"}
+          module={RatingComponent}
+          rater_id={if @current_user, do: @current_user.id}
+          rater_type={if @current_user, do: "User"}
           size="sm"
-          can_rate?={false}
         />
       </div>
     </div>

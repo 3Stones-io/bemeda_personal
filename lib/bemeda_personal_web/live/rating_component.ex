@@ -12,10 +12,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
 
   @impl Phoenix.LiveComponent
   def mount(socket) do
-    {:ok,
-     socket
-     |> assign(:rating_modal_open, false)
-     |> assign(:current_user_rating, nil)}
+    {:ok, assign(socket, :rating_modal_open, false)}
   end
 
   @impl Phoenix.LiveComponent
@@ -25,20 +22,20 @@ defmodule BemedaPersonalWeb.RatingComponent do
      |> assign(assigns)
      |> assign_all_ratings()
      |> assign_average_rating()
-     |> assign_current_user_rating()
-     |> assign_can_rate?()}
+     |> assign_can_rate?()
+     |> assign_current_user_rating()}
   end
 
   @impl Phoenix.LiveComponent
-  def handle_event("open-rating-modal", _params, socket) do
+  def handle_event("open_rating_modal", _params, socket) do
     {:noreply, assign(socket, :rating_modal_open, true)}
   end
 
-  def handle_event("close-rating-modal", _params, socket) do
+  def handle_event("close_rating_modal", _params, socket) do
     {:noreply, assign(socket, :rating_modal_open, false)}
   end
 
-  def handle_event("submit-rating", params, socket) do
+  def handle_event("submit_rating", params, socket) do
     %{
       "score" => score,
       "comment" => comment
@@ -71,10 +68,10 @@ defmodule BemedaPersonalWeb.RatingComponent do
       assigns
       |> assign_new(:class, fn -> "" end)
       |> assign_new(:display_class, fn -> "" end)
-      |> assign_new(:size, fn -> "md" end)
+      |> assign_new(:rating_form_id, fn -> "rating-form-#{assigns.entity_id}" end)
       |> assign_new(:rating_modal_id, fn -> "rating-modal-#{assigns.entity_id}" end)
-      |> assign_new(:rating_form_id, fn -> "job-seeker-rating-form-#{assigns.entity_id}" end)
       |> assign_new(:ratings_tooltip_id, fn -> "ratings-tooltip-#{assigns.id}" end)
+      |> assign_new(:size, fn -> "md" end)
 
     ~H"""
     <div id={@id} class={@class}>
@@ -151,7 +148,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
         <div :if={@can_rate?} class="ml-4">
           <.button
             type="button"
-            phx-click={JS.push("open-rating-modal", target: @myself)}
+            phx-click={JS.push("open_rating_modal", target: @myself)}
             class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1 rounded"
           >
             {if @current_user_rating, do: "Update Rating", else: "Rate"}
@@ -163,7 +160,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
         :if={@rating_modal_open}
         id={@rating_modal_id}
         show={@rating_modal_open}
-        on_cancel={JS.push("close-rating-modal", target: @myself)}
+        on_cancel={JS.push("close_rating_modal", target: @myself)}
       >
         <.live_component
           module={RatingFormComponent}
@@ -172,8 +169,8 @@ defmodule BemedaPersonalWeb.RatingComponent do
           entity_type={@entity_type}
           entity_name={@entity_name}
           current_rating={@current_user_rating}
-          on_submit={JS.push("submit-rating", target: @myself)}
-          on_cancel={JS.push("close-rating-modal", target: @myself)}
+          on_submit={JS.push("submit_rating", target: @myself)}
+          on_cancel={JS.push("close_rating_modal", target: @myself)}
         />
       </.modal>
     </div>
@@ -205,26 +202,6 @@ defmodule BemedaPersonalWeb.RatingComponent do
     assign(socket, :average_rating, average_rating)
   end
 
-  defp assign_current_user_rating(%{assigns: %{current_user: nil}} = socket) do
-    assign(socket, :current_user_rating, nil)
-  end
-
-  defp assign_current_user_rating(
-         %{
-           assigns: %{
-             rater_type: rater_type,
-             rater_id: rater_id,
-             entity_type: entity_type,
-             entity_id: entity_id
-           }
-         } = socket
-       ) do
-    current_user_rating =
-      Ratings.get_rating_by_rater_and_ratee(rater_type, rater_id, entity_type, entity_id)
-
-    assign(socket, :current_user_rating, current_user_rating)
-  end
-
   defp assign_can_rate?(%{assigns: %{can_rate?: can_rate?}} = socket)
        when is_boolean(can_rate?) do
     socket
@@ -253,6 +230,26 @@ defmodule BemedaPersonalWeb.RatingComponent do
         Jobs.user_has_applied_to_company_job?(user_id, company.id)
 
     assign(socket, :can_rate?, can_rate?)
+  end
+
+  defp assign_current_user_rating(%{assigns: %{can_rate?: false}} = socket) do
+    assign(socket, :current_user_rating, nil)
+  end
+
+  defp assign_current_user_rating(
+         %{
+           assigns: %{
+             rater_type: rater_type,
+             rater_id: rater_id,
+             entity_type: entity_type,
+             entity_id: entity_id
+           }
+         } = socket
+       ) do
+    current_user_rating =
+      Ratings.get_rating_by_rater_and_ratee(rater_type, rater_id, entity_type, entity_id)
+
+    assign(socket, :current_user_rating, current_user_rating)
   end
 
   defp process_rating_submission(

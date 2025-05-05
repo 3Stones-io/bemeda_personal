@@ -270,25 +270,20 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
       conn = log_in_user(conn, company_user)
 
-      {:ok, view, html} =
+      {:ok, view, _html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
-      assert html =~ "Rate"
+      html =
+        view
+        |> element("button", "Update Rating")
+        |> render_click()
+
+      assert html =~ "Rate Jane Applicant"
+      assert html =~ "Good candidate"
+      assert html =~ "value=\"3\" checked"
 
       view
-      |> element("button", "Rate")
-      |> render_click()
-
-      modal_content = render(view)
-
-      assert modal_content =~ "Rate Jane Applicant"
-      assert modal_content =~ "Score"
-      assert modal_content =~ "Comment"
-
-      assert modal_content =~ "value=\"3\""
-
-      view
-      |> form("#job-seeker-rating-form-#{application.id} form", %{
+      |> form("#rating-form-#{applicant.id} form", %{
         "score" => "4",
         "comment" => "Updated comment"
       })
@@ -325,7 +320,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       |> render_click()
 
       view
-      |> form("#job-seeker-rating-form-#{application.id} form", %{
+      |> form("#rating-form-#{applicant.id} form", %{
         "score" => "5",
         "comment" => "Excellent applicant"
       })
