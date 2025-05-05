@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Companies
+  alias BemedaPersonal.Ratings
 
   describe "Company Dashboard" do
     test "redirects if user is not logged in", %{conn: conn} do
@@ -181,25 +182,26 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       conn: conn,
       company: company
     } do
-      {:ok, _view, html} = live(conn, ~p"/companies")
+      user = user_fixture(confirmed: true)
+      job_posting = job_posting_fixture(company)
+      job_application_fixture(user, job_posting)
+
+      {:ok, view, html} = live(conn, ~p"/companies")
 
       assert html =~ "(0)"
       assert html =~ "No ratings yet"
       refute html =~ "fill-current"
 
-      user = user_fixture(confirmed: true)
-
-      rating_fixture(%{
-        ratee_type: "Company",
-        ratee_id: company.id,
-        rater_type: "User",
-        rater_id: user.id,
+      Ratings.rate_company(user, company, %{
         score: 5,
         comment: "Excellent company!"
       })
 
-      {:ok, _updated_view, updated_html} = live(conn, ~p"/companies")
+      # Flaky test, sometimes the rating is not updated in time
+      Process.sleep(100)
 
+      updated_html = render(view)
+      assert updated_html =~ "5.0"
       assert updated_html =~ "(1)"
       assert updated_html =~ "fill-current"
     end

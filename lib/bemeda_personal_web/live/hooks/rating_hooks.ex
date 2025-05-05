@@ -9,42 +9,21 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   import Phoenix.Component, only: [assign: 3]
   import Phoenix.LiveView
 
+  alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Companies
+  alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
-  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.RatingComponent
   alias Phoenix.Socket.Broadcast
 
   @doc """
-  Sets up rating functionality in LiveViews.
-
-  There are several mounting hooks available:
-  - :company - Sets up company entity subscriptions based on the "id" URL parameter
-  - :user - Sets up user entity subscriptions based on the current_user
+  Sets up shared rating functionality in LiveViews.
   """
   @spec on_mount(atom(), map(), map(), Phoenix.LiveView.Socket.t()) ::
           {:cont, Phoenix.LiveView.Socket.t()}
-  def on_mount(hook_name, params, session, socket)
-
-  def on_mount(:company, params, _session, socket) do
-    if id = params["id"] do
-      if connected?(socket) do
-        Endpoint.subscribe("rating:Company:#{id}")
-      end
-    end
-
+  def on_mount(:default, _params, _session, socket) do
     socket = attach_hook(socket, :rating_info_handler, :handle_info, &handle_rating_info/2)
 
-    {:cont, socket}
-  end
-
-  def on_mount(:user, _params, _session, socket) do
-    if user = socket.assigns[:current_user] do
-      if connected?(socket) do
-        Endpoint.subscribe("rating:User:#{user.id}")
-      end
-    end
-
-    socket = attach_hook(socket, :rating_info_handler, :handle_info, &handle_rating_info/2)
     {:cont, socket}
   end
 
@@ -74,10 +53,6 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     handle_rating_update(entity_type, entity_id, socket)
   end
 
-  def handle_rating_info(%Broadcast{event: "rating_updated"}, socket) do
-    {:cont, socket}
-  end
-
   def handle_rating_info(
         {:submit_rating,
          %{score: score, comment: comment, entity_id: entity_id, entity_type: entity_type}},
@@ -90,31 +65,45 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     {:cont, socket}
   end
 
-  defp handle_rating_update("Company", entity_id, socket) do
-    if Map.has_key?(socket.assigns, :company) && socket.assigns.company.id == entity_id do
-      send_update(RatingComponent, id: "rating-component-sidebar-#{entity_id}")
-      {:halt, socket}
-    else
-      {:cont, socket}
-    end
+  defp handle_rating_update(
+         "Company",
+         entity_id,
+         %{
+           assigns: %{company: %Companies.Company{id: company_id}}
+         } = socket
+       )
+       when company_id == entity_id do
+    send_update(RatingComponent, id: "rating-component-header-#{entity_id}")
+    send_update(RatingComponent, id: "rating-component-sidebar-#{entity_id}")
+    send_update(RatingComponent, id: "rating-component-#{entity_id}")
+
+    {:halt, socket}
   end
 
-  defp handle_rating_update("User", entity_id, socket) do
-    cond do
-      Map.has_key?(socket.assigns, :current_user) && socket.assigns.current_user.id == entity_id ->
-        send_update(RatingComponent, id: "rating-display-user-settings-#{entity_id}")
-        {:halt, put_flash(socket, :info, "Rating submitted successfully")}
+  defp handle_rating_update(
+         "User",
+         entity_id,
+         %{
+           assigns: %{application: %Jobs.JobApplication{user_id: user_id}}
+         } = socket
+       )
+       when user_id == entity_id do
+    send_update(RatingComponent, id: "rating-display-applicant-#{entity_id}")
 
-      Map.has_key?(socket.assigns, :application) &&
-          socket.assigns.application.user.id == entity_id ->
-        updated_application =
-          BemedaPersonal.Jobs.get_job_application!(socket.assigns.application.id)
+    {:halt, socket}
+  end
 
-        {:halt, assign(socket, :application, updated_application)}
+  defp handle_rating_update(
+         "User",
+         entity_id,
+         %{
+           assigns: %{current_user: %Accounts.User{id: current_user_id}}
+         } = socket
+       )
+       when current_user_id == entity_id do
+    send_update(RatingComponent, id: "rating-display-user-settings-#{entity_id}")
 
-      true ->
-        {:cont, socket}
-    end
+    {:halt, socket}
   end
 
   defp handle_rating_update(_entity_type, _entity_id, socket) do
@@ -163,14 +152,10 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
       {:halt,
        socket
        |> put_flash(:info, "Rating submitted successfully.")
-       |> assign(:current_user_rating, updated_rating)
-       |> assign(:rating_modal_open, false)}
+       |> assign(:current_user_rating, updated_rating)}
     else
       {:error, reason} ->
-        {:halt,
-         socket
-         |> put_flash(:error, reason)
-         |> assign(:rating_modal_open, false)}
+        {:halt, put_flash(socket, :error, reason)}
     end
   end
 
@@ -186,13 +171,12 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     }
 
     with true <- can_rate?(socket),
-         user = BemedaPersonal.Accounts.get_user!(entity_id),
+         user = Accounts.get_user!(entity_id),
          {:ok, _rating} <- Ratings.rate_user(company, user, attrs) do
-      updated_application = BemedaPersonal.Jobs.get_job_application!(application.id)
+      updated_application = Jobs.get_job_application!(application.id)
 
       {:halt,
        socket
-       |> assign(:rating_modal_open, false)
        |> assign(:application, updated_application)
        |> put_flash(:info, "Rating submitted successfully")}
     else
@@ -201,7 +185,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     end
   end
 
-  defp authorize(%{assigns: %{current_user: %BemedaPersonal.Accounts.User{}}}), do: :ok
+  defp authorize(%{assigns: %{current_user: %Accounts.User{}}}), do: :ok
   defp authorize(%{assigns: %{current_user: nil}}), do: {:error, "You must be logged in to rate."}
 
   defp rate_company(current_user, company, attrs) do

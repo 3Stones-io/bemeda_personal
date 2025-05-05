@@ -3,22 +3,19 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
-
-  on_mount {RatingHooks, :company}
+  on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
-  def mount(%{"id" => _id} = _params, _session, socket) do
-    {:ok,
-     socket
-     |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
-     |> stream(:job_postings, [])}
-  end
+  def mount(%{"id" => id}, _session, socket) do
+    if connected?(socket) do
+      Endpoint.subscribe("rating:Company:#{id}")
+    end
 
-  def mount(_params, _session, socket) do
     {:ok,
      socket
      |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")

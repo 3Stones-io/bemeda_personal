@@ -349,27 +349,23 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     } do
       conn = log_in_user(conn, company_user)
 
-      {:ok, _view, html} =
+      {:ok, view, html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
       assert html =~ "(0)"
       assert html =~ "No ratings yet"
       refute html =~ "fill-current"
 
-      rating_fixture(%{
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
-        ratee_id: applicant.id,
+      Ratings.rate_user(company, applicant, %{
         score: 5,
         comment: "Excellent candidate"
       })
 
-      {:ok, _updated_view, updated_html} =
-        conn
-        |> log_in_user(company_user)
-        |> live(~p"/companies/#{company.id}/applicant/#{application.id}")
+      # Flaky test, sometimes the rating is not updated in time
+      Process.sleep(100)
 
+      updated_html = render(view)
+      assert updated_html =~ "5.0"
       assert updated_html =~ "(1)"
       assert updated_html =~ "fill-current"
     end

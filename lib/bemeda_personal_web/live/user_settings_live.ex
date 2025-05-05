@@ -2,10 +2,11 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias BemedaPersonalWeb.RatingComponent
 
-  on_mount {RatingHooks, :user}
+  on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -137,6 +138,10 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
     name_changeset = Accounts.change_user_name(user)
+
+    if connected?(socket) do
+      Endpoint.subscribe("rating:User:#{user.id}")
+    end
 
     socket =
       socket
