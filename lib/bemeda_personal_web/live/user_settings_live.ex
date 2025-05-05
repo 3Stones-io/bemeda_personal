@@ -2,9 +2,10 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts
-  alias BemedaPersonalWeb.Endpoint
+  alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias BemedaPersonalWeb.RatingComponent
-  alias Phoenix.Socket.Broadcast
+
+  on_mount {RatingHooks, :user}
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -119,7 +120,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
             </:actions>
           </.simple_form>
         </div>
-        >>>>>>> main
       </div>
     </section>
     """
@@ -140,11 +140,8 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   end
 
   def mount(_params, _session, socket) do
-    if connected?(socket) do
-      Endpoint.subscribe("rating:User:#{socket.assigns.current_user.id}")
-    end
-
     user = socket.assigns.current_user
+
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
     name_changeset = Accounts.change_user_name(user)
@@ -252,22 +249,5 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
       {:error, changeset} ->
         {:noreply, assign(socket, :name_form, to_form(changeset))}
     end
-  end
-
-  @impl Phoenix.LiveView
-  def handle_info(%Broadcast{event: "rating_updated", payload: payload}, socket) do
-    user_id = socket.assigns.current_user.id
-
-    if payload.ratee_type == "User" && payload.ratee_id == user_id do
-      send_update(RatingComponent, id: "rating-display-user-settings-#{user_id}")
-
-      {:noreply, put_flash(socket, :info, "Rating submitted successfully")}
-    else
-      {:noreply, socket}
-    end
-  end
-
-  def handle_info({:rating_error, error}, socket) do
-    {:noreply, put_flash(socket, :error, error)}
   end
 end

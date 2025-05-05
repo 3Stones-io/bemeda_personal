@@ -3,11 +3,13 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.Ratings
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias Phoenix.Socket.Broadcast
+
+  on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
   def handle_params(%{"company_id" => company_id, "id" => applicant_id}, _url, socket) do
@@ -74,69 +76,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
   def handle_info(%Broadcast{event: "media_asset_updated", payload: payload}, socket) do
     {:noreply, assign(socket, :application, payload.job_application)}
-  end
-
-  def handle_info({:rating_error, error}, socket) do
-    {:noreply, put_flash(socket, :error, error)}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_info(
-        {:submit_rating,
-         %{score: score, comment: comment, entity_id: entity_id, entity_type: _entity_type}},
-        socket
-      ) do
-    %{
-      application: application,
-      company: company
-    } = socket.assigns
-
-    attrs = %{
-      score: String.to_integer(score),
-      comment: comment
-    }
-
-    with true <- can_rate?(socket),
-         user = BemedaPersonal.Accounts.get_user!(entity_id),
-         {:ok, _rating} <- Ratings.rate_user(company, user, attrs) do
-      updated_application = Jobs.get_job_application!(application.id)
-
-      {:noreply,
-       socket
-       |> assign(:rating_modal_open, false)
-       |> assign(:application, updated_application)
-       |> put_flash(:info, "Rating submitted successfully")}
-    else
-      {:error, error} ->
-        {:noreply, put_flash(socket, :error, error)}
-    end
-  end
-
-  def handle_info(
-        %Broadcast{
-          event: "rating_updated",
-          payload: %{ratee_type: "User", ratee_id: ratee_id} = _rating
-        },
-        socket
-      )
-      when socket.assigns.application.user.id == ratee_id do
-    updated_application = Jobs.get_job_application!(socket.assigns.application.id)
-
-    {:noreply, assign(socket, :application, updated_application)}
-  end
-
-  def handle_info(%Broadcast{event: "rating_updated", payload: _payload}, socket),
-    do: {:noreply, socket}
-
-  defp can_rate?(socket) do
-    current_user = socket.assigns.current_user
-    company = socket.assigns.company
-
-    if company_admin?(current_user, company) do
-      true
-    else
-      {:error, "You need to be a company admin to rate applicants."}
-    end
   end
 
   @spec company_admin?(
