@@ -35,7 +35,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     setup %{conn: conn} do
       password = valid_user_password()
       user = user_fixture(%{confirmed: true, password: password})
-      %{conn: log_in_user(conn, user), user: user, password: password}
+      %{conn: log_in_user(conn, user), password: password, user: user}
     end
 
     test "updates the user email", %{conn: conn, password: password, user: user} do
@@ -92,7 +92,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     setup %{conn: conn} do
       password = valid_user_password()
       user = user_fixture(%{confirmed: true, password: password})
-      %{conn: log_in_user(conn, user), user: user, password: password}
+      %{conn: log_in_user(conn, user), password: password, user: user}
     end
 
     test "updates the user password", %{conn: conn, user: user, password: password} do
@@ -177,7 +177,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       %{conn: log_in_user(conn, user), token: token, email: email, user: user}
     end
 
-    test "updates the user email once", %{conn: conn, user: user, token: token, email: email} do
+    test "updates the user email once", %{conn: conn, email: email, token: token, user: user} do
       {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
 
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
@@ -277,14 +277,14 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       job_application2 = job_application_fixture(user, job_posting2)
 
       %{
-        conn: log_in_user(conn, user),
-        user: user,
         company1: company1,
         company2: company2,
+        conn: log_in_user(conn, user),
+        job_application1: job_application1,
+        job_application2: job_application2,
         job_posting1: job_posting1,
         job_posting2: job_posting2,
-        job_application1: job_application1,
-        job_application2: job_application2
+        user: user
       }
     end
 
@@ -303,17 +303,17 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
 
     test "displays correct rating with single rating", %{
+      company1: company,
       conn: conn,
-      user: user,
-      company1: company
+      user: user
     } do
       rating_fixture(%{
-        ratee_type: "User",
+        comment: "Excellent candidate!",
         ratee_id: user.id,
-        rater_type: "Company",
+        ratee_type: "User",
         rater_id: company.id,
-        score: 5,
-        comment: "Excellent candidate!"
+        rater_type: "Company",
+        score: 5
       })
 
       {:ok, _view, html} = live(conn, ~p"/users/settings")
@@ -325,27 +325,27 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
 
     test "displays average of multiple ratings correctly", %{
-      conn: conn,
-      user: user,
       company1: company1,
-      company2: company2
+      company2: company2,
+      conn: conn,
+      user: user
     } do
       rating_fixture(%{
-        ratee_type: "User",
+        comment: "Excellent!",
         ratee_id: user.id,
-        rater_type: "Company",
+        ratee_type: "User",
         rater_id: company1.id,
-        score: 5,
-        comment: "Excellent!"
+        rater_type: "Company",
+        score: 5
       })
 
       rating_fixture(%{
-        ratee_type: "User",
+        comment: "Average",
         ratee_id: user.id,
-        rater_type: "Company",
+        ratee_type: "User",
         rater_id: company2.id,
-        score: 3,
-        comment: "Average"
+        rater_type: "Company",
+        score: 3
       })
 
       {:ok, _view, html} = live(conn, ~p"/users/settings")
@@ -357,9 +357,9 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
 
     test "updates display when rating changes", %{
+      company1: company,
       conn: conn,
-      user: user,
-      company1: company
+      user: user
     } do
       {:ok, view, html} = live(conn, ~p"/users/settings")
 
@@ -367,7 +367,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert html =~ "No ratings yet"
       refute html =~ "fill-current"
 
-      Ratings.rate_user(company, user, %{score: 4, comment: "Very good candidate"})
+      Ratings.rate_user(company, user, %{comment: "Very good candidate", score: 4})
 
       # Flaky test, sometimes the rating is not updated in time
       Process.sleep(100)

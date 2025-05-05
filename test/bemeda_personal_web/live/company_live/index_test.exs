@@ -107,9 +107,9 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       user = user_fixture(confirmed: true)
 
       %{
-        conn: log_in_user(conn, company_admin),
         company: company,
         company_admin: company_admin,
+        conn: log_in_user(conn, company_admin),
         user: user
       }
     end
@@ -128,15 +128,15 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "displays component with one rating", %{
-      conn: conn,
       company: company,
+      conn: conn,
       user: user
     } do
       rating_fixture(%{
-        ratee_type: "Company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user.id,
+        rater_type: "User",
         score: 4
       })
 
@@ -149,25 +149,25 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "displays partial rating correctly with decimal value", %{
-      conn: conn,
-      company: company
+      company: company,
+      conn: conn
     } do
       user1 = user_fixture(confirmed: true)
       user2 = user_fixture(confirmed: true)
 
       rating_fixture(%{
-        ratee_type: "Company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user1.id,
+        rater_type: "User",
         score: 3
       })
 
       rating_fixture(%{
-        ratee_type: "Company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user2.id,
+        rater_type: "User",
         score: 4
       })
 
@@ -179,8 +179,8 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "rating display updates in real-time when ratings change", %{
-      conn: conn,
-      company: company
+      company: company,
+      conn: conn
     } do
       user = user_fixture(confirmed: true)
       job_posting = job_posting_fixture(company)
@@ -193,8 +193,8 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       refute html =~ "fill-current"
 
       Ratings.rate_company(user, company, %{
-        score: 5,
-        comment: "Excellent company!"
+        comment: "Excellent company!",
+        score: 5
       })
 
       # Flaky test, sometimes the rating is not updated in time

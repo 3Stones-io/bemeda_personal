@@ -28,11 +28,11 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     resume = resume_fixture(applicant_user, %{is_public: true})
 
     %{
-      conn: conn,
+      applicant: applicant_user,
       company: company,
       company_user: company_user,
+      conn: conn,
       job: job,
-      applicant: applicant_user,
       job_application: job_application,
       resume: resume
     }
@@ -40,8 +40,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
   describe "/companies/:company_id/applicant/:id" do
     test "redirects if user is not logged in", %{
-      conn: conn,
       company: company,
+      conn: conn,
       job_application: application
     } do
       assert {:error, redirect} =
@@ -53,8 +53,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "redirects if user is not admin of the company", %{
-      conn: conn,
       company: company,
+      conn: conn,
       job_application: application
     } do
       other_user = user_fixture(confirmed: true)
@@ -69,11 +69,11 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "renders applicant details page", %{
-      conn: conn,
       company: company,
       company_user: company_user,
-      job_application: application,
-      job: job
+      conn: conn,
+      job: job,
+      job_application: application
     } do
       {:ok, _view, html} =
         conn
@@ -88,9 +88,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "displays resume information when available", %{
-      conn: conn,
       company: company,
       company_user: company_user,
+      conn: conn,
       job_application: application
     } do
       {:ok, _view, html} =
@@ -104,11 +104,11 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "allows user to navigate to the applicant chat page", %{
-      conn: conn,
       company: company,
       company_user: company_user,
-      job_application: application,
-      job: job
+      conn: conn,
+      job: job,
+      job_application: application
     } do
       conn = log_in_user(conn, company_user)
 
@@ -124,9 +124,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "provides a link back to applicants list", %{
-      conn: conn,
       company: company,
       company_user: company_user,
+      conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, company_user)
@@ -140,8 +140,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "allows updating tags for the application", %{
-      company_user: user,
       company: company,
+      company_user: user,
       conn: conn,
       job_application: application
     } do
@@ -164,9 +164,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
   describe "applicant ratings" do
     test "displays component with no ratings", %{
-      conn: conn,
       company: company,
       company_user: company_user,
+      conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, company_user)
@@ -181,20 +181,20 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "displays component with one rating", %{
-      conn: conn,
+      applicant: applicant,
       company: company,
       company_user: company_user,
-      job_application: application,
-      applicant: applicant
+      conn: conn,
+      job_application: application
     } do
       rating =
         rating_fixture(%{
-          rater_type: "Company",
-          rater_id: company.id,
-          ratee_type: "User",
+          comment: "Good candidate",
           ratee_id: applicant.id,
-          score: 4,
-          comment: "Good candidate"
+          ratee_type: "User",
+          rater_id: company.id,
+          rater_type: "Company",
+          score: 4
         })
 
       conn = log_in_user(conn, company_user)
@@ -210,32 +210,32 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "displays component with multiple ratings", %{
-      conn: conn,
+      applicant: applicant,
       company: company,
       company_user: company_user,
-      job_application: application,
-      applicant: applicant
+      conn: conn,
+      job_application: application
     } do
       other_company = company_fixture(user_fixture(confirmed: true))
 
       rating1 =
         rating_fixture(%{
-          rater_type: "Company",
-          rater_id: company.id,
-          ratee_type: "User",
+          comment: "Average candidate",
           ratee_id: applicant.id,
-          score: 3,
-          comment: "Average candidate"
+          ratee_type: "User",
+          rater_id: company.id,
+          rater_type: "Company",
+          score: 3
         })
 
       rating2 =
         rating_fixture(%{
-          rater_type: "Company",
-          rater_id: other_company.id,
-          ratee_type: "User",
+          comment: "Excellent candidate",
           ratee_id: applicant.id,
-          score: 5,
-          comment: "Excellent candidate"
+          ratee_type: "User",
+          rater_id: other_company.id,
+          rater_type: "Company",
+          score: 5
         })
 
       conn = log_in_user(conn, company_user)
@@ -252,20 +252,20 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "rating form prefills with existing rating", %{
-      conn: conn,
+      applicant: applicant,
       company: company,
       company_user: company_user,
-      job_application: application,
-      applicant: applicant
+      conn: conn,
+      job_application: application
     } do
       _rating =
         rating_fixture(%{
-          rater_type: "Company",
-          rater_id: company.id,
-          ratee_type: "User",
+          comment: "Good candidate",
           ratee_id: applicant.id,
-          score: 3,
-          comment: "Good candidate"
+          ratee_type: "User",
+          rater_id: company.id,
+          rater_type: "Company",
+          score: 3
         })
 
       conn = log_in_user(conn, company_user)
@@ -304,11 +304,11 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "submits new rating successfully", %{
-      conn: conn,
+      applicant: applicant,
       company: company,
       company_user: company_user,
-      job_application: application,
-      applicant: applicant
+      conn: conn,
+      job_application: application
     } do
       conn = log_in_user(conn, company_user)
 
@@ -341,11 +341,11 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "rating display updates in real-time when ratings change", %{
-      conn: conn,
+      applicant: applicant,
       company: company,
       company_user: company_user,
-      job_application: application,
-      applicant: applicant
+      conn: conn,
+      job_application: application
     } do
       conn = log_in_user(conn, company_user)
 
@@ -357,8 +357,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       refute html =~ "fill-current"
 
       Ratings.rate_user(company, applicant, %{
-        score: 5,
-        comment: "Excellent candidate"
+        comment: "Excellent candidate",
+        score: 5
       })
 
       # Flaky test, sometimes the rating is not updated in time
@@ -371,9 +371,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "handles cancel action for rating form", %{
-      conn: conn,
       company: company,
       company_user: company_user,
+      conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, company_user)
@@ -395,30 +395,30 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "renders decimal ratings correctly", %{
-      conn: conn,
+      applicant: applicant,
       company: company,
       company_user: company_user,
-      job_application: application,
-      applicant: applicant
+      conn: conn,
+      job_application: application
     } do
       other_company = company_fixture(user_fixture(confirmed: true))
 
       rating_fixture(%{
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
+        comment: "Average candidate",
         ratee_id: applicant.id,
-        score: 3,
-        comment: "Average candidate"
+        ratee_type: "User",
+        rater_id: company.id,
+        rater_type: "Company",
+        score: 3
       })
 
       rating_fixture(%{
-        rater_type: "Company",
-        rater_id: other_company.id,
-        ratee_type: "User",
+        comment: "Good candidate",
         ratee_id: applicant.id,
-        score: 4,
-        comment: "Good candidate"
+        ratee_type: "User",
+        rater_id: other_company.id,
+        rater_type: "Company",
+        score: 4
       })
 
       {:ok, _view, html} =

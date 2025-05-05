@@ -16,7 +16,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company)
 
-      %{conn: conn, company: company, user: user, job_posting: job_posting}
+      %{company: company, conn: conn, job_posting: job_posting, user: user}
     end
 
     test "renders company public profile for unauthenticated users", %{
@@ -84,7 +84,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company)
 
-      %{conn: conn, company: company, user: user, job_posting: job_posting}
+      %{company: company, conn: conn, job_posting: job_posting, user: user}
     end
 
     test "displays component with no ratings", %{
@@ -106,12 +106,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       user: user
     } do
       rating_fixture(%{
-        ratee_type: "Company",
+        comment: "Good company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user.id,
-        score: 4,
-        comment: "Good company"
+        rater_type: "User",
+        score: 4
       })
 
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
@@ -131,21 +131,21 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       user2 = user_fixture(confirmed: true)
 
       rating_fixture(%{
-        ratee_type: "Company",
+        comment: "Average company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user1.id,
-        score: 3,
-        comment: "Average company"
+        rater_type: "User",
+        score: 3
       })
 
       rating_fixture(%{
-        ratee_type: "Company",
+        comment: "Great company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user2.id,
-        score: 5,
-        comment: "Great company"
+        rater_type: "User",
+        score: 5
       })
 
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
@@ -172,8 +172,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     test "user who has applied sees 'Rate' button", %{
       company: company,
       conn: conn,
-      user: user,
-      job_posting: job_posting
+      job_posting: job_posting,
+      user: user
     } do
       job_application_fixture(user, job_posting)
 
@@ -188,18 +188,18 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     test "user who has already rated sees 'Update Rating' button", %{
       company: company,
       conn: conn,
-      user: user,
-      job_posting: job_posting
+      job_posting: job_posting,
+      user: user
     } do
       job_application_fixture(user, job_posting)
 
       rating_fixture(%{
-        rater_type: "User",
-        rater_id: user.id,
-        ratee_type: "Company",
+        comment: "Good company",
         ratee_id: company.id,
-        score: 4,
-        comment: "Good company"
+        ratee_type: "Company",
+        rater_id: user.id,
+        rater_type: "User",
+        score: 4
       })
 
       {:ok, _view, html} =
@@ -214,8 +214,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     test "rating modal opens when user clicks 'Rate' button", %{
       company: company,
       conn: conn,
-      user: user,
-      job_posting: job_posting
+      job_posting: job_posting,
+      user: user
     } do
       job_application_fixture(user, job_posting)
 
@@ -237,8 +237,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     test "user submits valid rating and sees success message", %{
       company: company,
       conn: conn,
-      user: user,
-      job_posting: job_posting
+      job_posting: job_posting,
+      user: user
     } do
       job_application_fixture(user, job_posting)
 
@@ -268,18 +268,18 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     test "user updates existing rating and UI immediately reflects change", %{
       company: company,
       conn: conn,
-      user: user,
-      job_posting: job_posting
+      job_posting: job_posting,
+      user: user
     } do
       job_application_fixture(user, job_posting)
 
       rating_fixture(%{
-        ratee_type: "Company",
+        comment: "Average company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user.id,
-        score: 3,
-        comment: "Average company"
+        rater_type: "User",
+        score: 3
       })
 
       {:ok, view, html} =
@@ -324,7 +324,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       refute html =~ "fill-current"
       assert html =~ "(0)"
 
-      Ratings.rate_company(user, company, %{score: 5, comment: "Great company!"})
+      Ratings.rate_company(user, company, %{comment: "Great company!", score: 5})
 
       # Flaky test, sometimes the rating is not updated in time
       Process.sleep(100)
@@ -341,12 +341,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       user: user
     } do
       rating_fixture(%{
-        ratee_type: "Company",
+        comment: "Good company",
         ratee_id: company.id,
-        rater_type: "User",
+        ratee_type: "Company",
         rater_id: user.id,
-        score: 4,
-        comment: "Good company"
+        rater_type: "User",
+        score: 4
       })
 
       {:ok, view, _html} = live(conn, ~p"/company/#{company.id}")
@@ -371,8 +371,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     test "both rating components update simultaneously when rating changes", %{
       company: company,
       conn: conn,
-      user: user,
-      job_posting: job_posting
+      job_posting: job_posting,
+      user: user
     } do
       job_application_fixture(user, job_posting)
 
@@ -424,8 +424,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     test "cancelling rating form closes modal without submitting", %{
       company: company,
       conn: conn,
-      user: user,
-      job_posting: job_posting
+      job_posting: job_posting,
+      user: user
     } do
       job_application_fixture(user, job_posting)
 
