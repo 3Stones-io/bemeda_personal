@@ -937,4 +937,63 @@ defmodule BemedaPersonalWeb.JobsComponents do
     </div>
     """
   end
+
+  # Application Status UI Components
+
+  def status_color(state) do
+    case state do
+      "applied" -> "bg-blue-100 text-blue-800"
+      "under_review" -> "bg-indigo-100 text-indigo-800"
+      "screening" -> "bg-purple-100 text-purple-800"
+      "interview_scheduled" -> "bg-yellow-100 text-yellow-800"
+      "interviewed" -> "bg-orange-100 text-orange-800"
+      "offer_pending" -> "bg-pink-100 text-pink-800"
+      "offer_extended" -> "bg-green-100 text-green-800"
+      "offer_accepted" -> "bg-emerald-100 text-emerald-800"
+      "offer_declined" -> "bg-red-100 text-red-800"
+      "withdrawn" -> "bg-gray-100 text-gray-800"
+      "rejected" -> "bg-red-100 text-red-800"
+      _other -> "bg-gray-100 text-gray-800"
+    end
+  end
+
+  def format_state_name(state) do
+    state
+    |> String.replace("_", " ")
+    |> String.capitalize()
+  end
+
+  def format_state_action(state) do
+    case state do
+      "under_review" -> "Move to Review"
+      "screening" -> "Move to Screening"
+      "interview_scheduled" -> "Schedule Interview"
+      "interviewed" -> "Mark as Interviewed"
+      "offer_pending" -> "Prepare Offer"
+      "offer_extended" -> "Extend Offer"
+      "offer_accepted" -> "Accept Offer"
+      "offer_declined" -> "Decline Offer"
+      "withdrawn" -> "Withdraw Application"
+      "rejected" -> "Reject Application"
+      _other -> format_state_name(state)
+    end
+  end
+
+  def get_action_button_class(state) do
+    base_class = "px-4 py-2 text-sm font-medium rounded-md"
+
+    case state do
+      "under_review" -> "#{base_class} bg-blue-600 hover:bg-blue-700 text-white"
+      "screening" -> "#{base_class} bg-indigo-600 hover:bg-indigo-700 text-white"
+      "interview_scheduled" -> "#{base_class} bg-yellow-600 hover:bg-yellow-700 text-white"
+      "interviewed" -> "#{base_class} bg-orange-600 hover:bg-orange-700 text-white"
+      "offer_pending" -> "#{base_class} bg-pink-600 hover:bg-pink-700 text-white"
+      "offer_extended" -> "#{base_class} bg-green-600 hover:bg-green-700 text-white"
+      "offer_accepted" -> "#{base_class} bg-emerald-600 hover:bg-emerald-700 text-white"
+      "offer_declined" -> "#{base_class} bg-red-600 hover:bg-red-700 text-white"
+      "withdrawn" -> "#{base_class} bg-gray-600 hover:bg-gray-700 text-white"
+      "rejected" -> "#{base_class} bg-red-600 hover:bg-red-700 text-white"
+      _other -> "#{base_class} bg-gray-600 hover:bg-gray-700 text-white"
+    end
+  end
 end

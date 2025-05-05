@@ -101,8 +101,22 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   @spec chat_container(assigns()) :: output()
   def chat_container(%{message: %Message{}} = assigns) do
+    is_status_update =
+      assigns.message.content && String.contains?(assigns.message.content, "Status changed from")
+
+    assigns = assign(assigns, :is_status_update, is_status_update)
+
     ~H"""
+    <div :if={@is_status_update} id={@id} class="w-full flex justify-center my-6">
+      <div class="bg-purple-100 text-purple-800 rounded-full py-2 px-4 text-xs text-center max-w-md">
+        <p>{@message.content}</p>
+        <p class="text-[11px] text-purple-600 mt-1">
+          {Calendar.strftime(@message.inserted_at, "%B %d, %Y at %I:%M %p")}
+        </p>
+      </div>
+    </div>
     <div
+      :if={!@is_status_update}
       id={@id}
       class={[
         "w-[85%] md:w-[60%] lg:w-[40%] mb-3",

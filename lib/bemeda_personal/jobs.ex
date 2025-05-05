@@ -8,6 +8,7 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.JobApplicationStateTransition
   alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.Tag
@@ -343,13 +344,13 @@ defmodule BemedaPersonal.Jobs do
   def list_job_applications(%{company_id: _company_id} = filters, limit) do
     job_post_with_applications_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   def list_job_applications(filters, limit) do
     job_application_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   defp list_applications(query, filters, limit) do
@@ -571,7 +572,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:job_posting, :media_asset, :tags, :user])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   @doc """
@@ -833,5 +834,152 @@ defmodule BemedaPersonal.Jobs do
     filters
     |> Map.keys()
     |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
+  end
+
+  @doc """
+  Transitions a job application to a new state.
+
+  ## Examples
+
+      iex> update_job_application_state(
+      ...>   job_application,
+      ...>   "screening",
+      ...>   %{notes: "Good candidate"},
+      ...>   user
+      ...> )
+      {:ok, %JobApplication{}}
+
+      iex> update_job_application_state(job_application, "rejected", %{}, user)
+      {:error, %Ecto.Changeset{}}
+
+      iex> update_job_application_state(job_application, "not_valid_state", %{}, user)
+      {:error, "invalid transition from applied to not_valid_state"}
+
+  """
+  @spec update_job_application_state(job_application(), String.t(), attrs(), user()) ::
+          {:ok, job_application()} | {:error, changeset()} | {:error, String.t()}
+  def update_job_application_state(
+        %JobApplication{} = job_application,
+        to_state,
+        params \\ %{},
+        %User{} = user
+      ) do
+    from_state = job_application.state
+
+    prepared_job_application =
+      job_application
+      |> Repo.preload([:user, job_posting: [company: :admin_user]])
+      |> Map.put(:current_user, user)
+
+    prepared_job_application
+    |> Fsmx.transition(to_state)
+    |> handle_transition_result(from_state, to_state, params, user)
+  end
+
+  defp handle_transition_result(
+         {:ok, updated_job_application},
+         from_state,
+         to_state,
+         params,
+         user
+       ) do
+    execute_transition(updated_job_application, from_state, to_state, params, user)
+  end
+
+  defp handle_transition_result({:error, reason}, _from_state, _to_state, _params, _user)
+       when is_binary(reason) do
+    {:error, reason}
+  end
+
+  defp handle_transition_result({:error, changeset}, from_state, to_state, _params, _user) do
+    {:error, extract_invalid_transition_error(changeset, from_state, to_state)}
+  end
+
+  defp execute_transition(job_application, from_state, to_state, params, user) do
+    job_application
+    |> build_transition_multi(from_state, to_state, params, user)
+    |> Repo.transaction()
+    |> handle_transaction_result(from_state, to_state)
+  end
+
+  defp handle_transaction_result(
+         {:ok, %{job_application: final_job_application}},
+         from_state,
+         to_state
+       ) do
+    broadcast_state_change(final_job_application, from_state, to_state)
+    {:ok, final_job_application}
+  end
+
+  defp handle_transaction_result(
+         {:error, _operation, changeset, _changes},
+         _from_state,
+         _to_state
+       ) do
+    {:error, changeset}
+  end
+
+  defp build_transition_multi(job_application, from_state, to_state, params, user) do
+    Multi.new()
+    |> Multi.insert(
+      :transition,
+      create_transition_record(job_application, from_state, to_state, params, user)
+    )
+    |> Multi.run(:job_application, fn _repo, _changes ->
+      {:ok, job_application}
+    end)
+  end
+
+  defp create_transition_record(job_application, from_state, to_state, params, user) do
+    %JobApplicationStateTransition{}
+    |> JobApplicationStateTransition.changeset(%{
+      from_state: from_state,
+      to_state: to_state,
+      notes: Map.get(params, "notes") || Map.get(params, :notes)
+    })
+    |> Changeset.put_assoc(:job_application, job_application)
+    |> Changeset.put_assoc(:transitioned_by, user)
+  end
+
+  defp broadcast_state_change(job_application, from_state, to_state) do
+    broadcast_event(
+      "#{@job_application_topic}:#{job_application.id}",
+      "job_application_state_changed",
+      %{
+        job_application: job_application,
+        from_state: from_state,
+        to_state: to_state
+      }
+    )
+  end
+
+  defp extract_invalid_transition_error(changeset, from_state, to_state) do
+    case Keyword.get(changeset.errors, :state) do
+      {message, _} when is_binary(message) ->
+        "invalid transition from #{from_state} to #{to_state}"
+
+      _other ->
+        changeset
+    end
+  end
+
+  @doc """
+  Lists all state transitions for a job application in chronological order.
+
+  ## Examples
+
+      iex> list_job_application_state_transitions(job_application)
+      [%JobApplicationStateTransition{}, ...]
+
+  """
+  @spec list_job_application_state_transitions(job_application()) :: [
+          JobApplicationStateTransition.t()
+        ]
+  def list_job_application_state_transitions(%JobApplication{} = job_application) do
+    JobApplicationStateTransition
+    |> where([t], t.job_application_id == ^job_application.id)
+    |> order_by([t], asc: t.inserted_at)
+    |> preload([:transitioned_by])
+    |> Repo.all()
   end
 end
