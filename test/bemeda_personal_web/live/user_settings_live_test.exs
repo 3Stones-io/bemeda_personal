@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.RatingsFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Accounts
@@ -264,91 +265,117 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
   end
 
-  describe "user rating display" do
+  describe "user ratings" do
     setup %{conn: conn} do
       user = user_fixture(%{confirmed: true})
       company_admin = user_fixture(%{confirmed: true})
-      company = company_fixture(company_admin)
-      job_posting = job_posting_fixture(company)
-      job_application = job_application_fixture(user, job_posting)
+      company1 = company_fixture(company_admin)
+      company2 = company_fixture(user_fixture(%{confirmed: true}))
+      job_posting1 = job_posting_fixture(company1)
+      job_posting2 = job_posting_fixture(company2)
+      job_application1 = job_application_fixture(user, job_posting1)
+      job_application2 = job_application_fixture(user, job_posting2)
 
       %{
         conn: log_in_user(conn, user),
         user: user,
-        company: company,
-        job_posting: job_posting,
-        job_application: job_application
+        company1: company1,
+        company2: company2,
+        job_posting1: job_posting1,
+        job_posting2: job_posting2,
+        job_application1: job_application1,
+        job_application2: job_application2
       }
     end
 
-    test "displays rating component with no ratings", %{conn: conn} do
-      {:ok, _lv, html} = live(conn, ~p"/users/settings")
+    test "displays component with no ratings", %{conn: conn} do
+      {:ok, view, html} = live(conn, ~p"/users/settings")
 
       assert html =~ "Your Rating"
       assert html =~ "How companies have rated your applications"
-
-      assert html =~ "<div class=\"star-rating flex\">"
       assert html =~ "hero-star"
+      assert html =~ "(0)"
+      assert html =~ "No ratings yet"
+      refute html =~ "fill-current"
+
+      refute has_element?(view, "button", "Rate")
+      refute has_element?(view, "button", "Update Rating")
     end
 
-    test "displays user rating correctly when rated", %{conn: conn, user: user, company: company} do
-      Ratings.rate_user(company, user, %{
+    test "displays correct rating with single rating", %{
+      conn: conn,
+      user: user,
+      company1: company
+    } do
+      rating_fixture(%{
+        ratee_type: "User",
+        ratee_id: user.id,
+        rater_type: "Company",
+        rater_id: company.id,
         score: 5,
-        comment: "Great candidate!"
+        comment: "Excellent candidate!"
       })
 
-      {:ok, _lv, html} = live(conn, ~p"/users/settings")
+      {:ok, _view, html} = live(conn, ~p"/users/settings")
 
       assert html =~ "Your Rating"
       assert html =~ "5.0"
-
+      assert html =~ "(1)"
       assert html =~ "fill-current"
     end
 
-    test "displays average of multiple ratings correctly", %{conn: conn, user: user} do
-      company1 = company_fixture(user_fixture())
-      company2 = company_fixture(user_fixture())
-
-      job_posting1 = job_posting_fixture(company1)
-      job_posting2 = job_posting_fixture(company2)
-      job_application_fixture(user, job_posting1)
-      job_application_fixture(user, job_posting2)
-
-      Ratings.rate_user(company1, user, %{
+    test "displays average of multiple ratings correctly", %{
+      conn: conn,
+      user: user,
+      company1: company1,
+      company2: company2
+    } do
+      rating_fixture(%{
+        ratee_type: "User",
+        ratee_id: user.id,
+        rater_type: "Company",
+        rater_id: company1.id,
         score: 5,
         comment: "Excellent!"
       })
 
-      Ratings.rate_user(company2, user, %{
+      rating_fixture(%{
+        ratee_type: "User",
+        ratee_id: user.id,
+        rater_type: "Company",
+        rater_id: company2.id,
         score: 3,
         comment: "Average"
       })
 
-      {:ok, _lv, html} = live(conn, ~p"/users/settings")
+      {:ok, _view, html} = live(conn, ~p"/users/settings")
 
       assert html =~ "Your Rating"
       assert html =~ "4.0"
+      assert html =~ "(2)"
       assert html =~ "fill-current"
     end
 
-    test "updates display when rating changes", %{conn: conn, user: user, company: company} do
-      {:ok, _rating} =
-        Ratings.rate_user(company, user, %{
-          score: 3,
-          comment: "Average"
-        })
+    test "updates display when rating changes", %{
+      conn: conn,
+      user: user,
+      company1: company
+    } do
+      {:ok, view, html} = live(conn, ~p"/users/settings")
 
-      {:ok, _view, html} = live(conn, ~p"/users/settings")
-      assert html =~ "3.0"
+      assert html =~ "(0)"
+      assert html =~ "No ratings yet"
+      refute html =~ "fill-current"
 
-      {:ok, _updated_rating} =
-        Ratings.rate_user(company, user, %{
-          score: 5,
-          comment: "Excellent!"
-        })
+      Ratings.rate_user(company, user, %{score: 4, comment: "Very good candidate"})
 
-      {:ok, _updated_view, updated_html} = live(conn, ~p"/users/settings")
-      assert updated_html =~ "5.0"
+      # Flaky test, sometimes the rating is not updated in time
+      Process.sleep(100)
+
+      updated_html = render(view)
+      assert updated_html =~ "4.0"
+      assert updated_html =~ "(1)"
+      assert updated_html =~ "fill-current"
     end
   end
 end

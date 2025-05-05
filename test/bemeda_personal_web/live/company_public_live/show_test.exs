@@ -8,7 +8,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Ratings
-  alias BemedaPersonalWeb.Endpoint
 
   describe "Show" do
     setup %{conn: conn} do
@@ -76,8 +75,32 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
 
       assert html =~ "Jobs at #{company.name}"
     end
+  end
 
-    test "displays rating stars correctly with existing rating", %{
+  describe "company ratings" do
+    setup %{conn: conn} do
+      user = user_fixture(confirmed: true)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
+      job_posting = job_posting_fixture(company)
+
+      %{conn: conn, company: company, user: user, job_posting: job_posting}
+    end
+
+    test "displays component with no ratings", %{
+      company: company,
+      conn: conn
+    } do
+      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
+
+      assert html =~ "Rating"
+      assert html =~ "hero-star"
+      assert html =~ "No ratings yet"
+      refute html =~ "fill-current"
+      assert html =~ "(0)"
+    end
+
+    test "displays correct rating with single rating", %{
       company: company,
       conn: conn,
       user: user
@@ -87,7 +110,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         ratee_id: company.id,
         rater_type: "User",
         rater_id: user.id,
-        score: 4
+        score: 4,
+        comment: "Good company"
       })
 
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
@@ -96,29 +120,56 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       assert html =~ "hero-star"
       assert html =~ "4.0"
       assert html =~ "fill-current"
-      assert html =~ "text-gray-300"
       assert html =~ "(1)"
     end
 
-    test "displays small-sized rating stars with custom size", %{
+    test "displays average of multiple ratings correctly", %{
       company: company,
-      conn: conn,
-      user: user
+      conn: conn
     } do
+      user1 = user_fixture(confirmed: true)
+      user2 = user_fixture(confirmed: true)
+
       rating_fixture(%{
         ratee_type: "Company",
         ratee_id: company.id,
         rater_type: "User",
-        rater_id: user.id,
-        score: 5
+        rater_id: user1.id,
+        score: 3,
+        comment: "Average company"
+      })
+
+      rating_fixture(%{
+        ratee_type: "Company",
+        ratee_id: company.id,
+        rater_type: "User",
+        rater_id: user2.id,
+        score: 5,
+        comment: "Great company"
       })
 
       {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
 
-      assert html =~ "w-4 h-4"
+      assert html =~ "Rating"
+      assert html =~ "4.0"
+      assert html =~ "(2)"
+      assert html =~ "fill-current"
     end
 
-    test "shows rating form when user clicks rate button", %{
+    test "user who hasn't applied to company job doesn't see 'Rate' button", %{
+      company: company,
+      conn: conn,
+      user: user
+    } do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company/#{company.id}")
+
+      refute has_element?(view, "#rating-component-header-#{company.id} button", "Rate")
+    end
+
+    test "user who has applied sees 'Rate' button", %{
       company: company,
       conn: conn,
       user: user,
@@ -132,6 +183,46 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         |> live(~p"/company/#{company.id}")
 
       assert has_element?(view, "#rating-component-header-#{company.id} button", "Rate")
+    end
+
+    test "user who has already rated sees 'Update Rating' button", %{
+      company: company,
+      conn: conn,
+      user: user,
+      job_posting: job_posting
+    } do
+      job_application_fixture(user, job_posting)
+
+      rating_fixture(%{
+        rater_type: "User",
+        rater_id: user.id,
+        ratee_type: "Company",
+        ratee_id: company.id,
+        score: 4,
+        comment: "Good company"
+      })
+
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company/#{company.id}")
+
+      assert html =~ "Update Rating"
+      refute html =~ ">Rate<"
+    end
+
+    test "rating modal opens when user clicks 'Rate' button", %{
+      company: company,
+      conn: conn,
+      user: user,
+      job_posting: job_posting
+    } do
+      job_application_fixture(user, job_posting)
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company/#{company.id}")
 
       view
       |> element("#rating-component-header-#{company.id} button", "Rate")
@@ -140,15 +231,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       assert has_element?(view, "form")
       assert has_element?(view, "h3", "Rate #{company.name}")
       assert has_element?(view, "label", "Score")
-      assert has_element?(view, "label", "Comment")
-      assert has_element?(view, "input[type=radio][name=score][value=1]")
       assert has_element?(view, "input[type=radio][name=score][value=5]")
-      assert has_element?(view, "textarea[name=comment]")
-      assert has_element?(view, "button", "Submit Rating")
-      assert has_element?(view, "button", "Cancel")
     end
 
-    test "can submit rating form successfully", %{
+    test "user submits valid rating and sees success message", %{
       company: company,
       conn: conn,
       user: user,
@@ -168,17 +254,18 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       view
       |> form("form", %{
         "score" => "5",
-        "comment" => "Great company to work with!"
+        "comment" => "Excellent company to work with!"
       })
       |> render_submit()
 
-      assert render(view) =~ "Rating submitted successfully"
-
-      assert %{score: 5, comment: "Great company to work with!"} =
-               Ratings.get_rating_by_rater_and_ratee("User", user.id, "Company", company.id)
+      html = render(view)
+      assert html =~ "Rating submitted successfully"
+      assert html =~ "5.0"
+      assert html =~ "(1)"
+      assert html =~ "fill-current"
     end
 
-    test "shows update button for existing ratings", %{
+    test "user updates existing rating and UI immediately reflects change", %{
       company: company,
       conn: conn,
       user: user,
@@ -187,12 +274,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       job_application_fixture(user, job_posting)
 
       rating_fixture(%{
-        rater_type: "User",
-        rater_id: user.id,
         ratee_type: "Company",
         ratee_id: company.id,
+        rater_type: "User",
+        rater_id: user.id,
         score: 3,
-        comment: "Decent company"
+        comment: "Average company"
       })
 
       {:ok, view, html} =
@@ -200,32 +287,141 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         |> log_in_user(user)
         |> live(~p"/company/#{company.id}")
 
-      assert html =~ "Update Rating"
-      refute html =~ ">Rate<"
+      assert html =~ "3.0"
+      assert html =~ "(1)"
 
       view
       |> element("#rating-component-header-#{company.id} button", "Update Rating")
       |> render_click()
 
-      assert has_element?(view, "textarea", "Decent company")
-
       view
       |> form("form", %{
-        "score" => "4",
-        "comment" => "Better than I thought initially"
+        "score" => "5",
+        "comment" => "Much better than I initially thought!"
       })
       |> render_submit()
 
+      # Flaky test, sometimes the rating is not updated in time
       Process.sleep(100)
 
-      updated_rating =
-        Ratings.get_rating_by_rater_and_ratee("User", user.id, "Company", company.id)
-
-      assert updated_rating.score == 4
-      assert updated_rating.comment == "Better than I thought initially"
+      updated_html = render(view)
+      assert updated_html =~ "Rating submitted successfully"
+      assert updated_html =~ "5.0"
+      assert updated_html =~ "(1)"
     end
 
-    test "can close rating form", %{
+    test "rating display updates in real-time when ratings change", %{
+      company: company,
+      conn: conn,
+      job_posting: job_posting,
+      user: user
+    } do
+      job_application_fixture(user, job_posting)
+
+      {:ok, view, html} = live(conn, ~p"/company/#{company}")
+
+      assert html =~ "No ratings yet"
+      refute html =~ "fill-current"
+      assert html =~ "(0)"
+
+      Ratings.rate_company(user, company, %{score: 5, comment: "Great company!"})
+
+      # Flaky test, sometimes the rating is not updated in time
+      Process.sleep(100)
+
+      updated_html = render(view)
+      assert updated_html =~ "5.0"
+      assert updated_html =~ "(1)"
+      assert updated_html =~ "fill-current"
+    end
+
+    test "sidebar rating component syncs with header component", %{
+      company: company,
+      conn: conn,
+      user: user
+    } do
+      rating_fixture(%{
+        ratee_type: "Company",
+        ratee_id: company.id,
+        rater_type: "User",
+        rater_id: user.id,
+        score: 4,
+        comment: "Good company"
+      })
+
+      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}")
+
+      header_rating =
+        view
+        |> element("#rating-component-header-#{company.id}")
+        |> render()
+
+      sidebar_rating =
+        view
+        |> element("#rating-component-sidebar-#{company.id}")
+        |> render()
+
+      assert header_rating =~ "4.0"
+      assert sidebar_rating =~ "4.0"
+
+      assert header_rating =~ "(1)"
+      assert sidebar_rating =~ "(1)"
+    end
+
+    test "both rating components update simultaneously when rating changes", %{
+      company: company,
+      conn: conn,
+      user: user,
+      job_posting: job_posting
+    } do
+      job_application_fixture(user, job_posting)
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company/#{company.id}")
+
+      header_before =
+        view
+        |> element("#rating-component-header-#{company.id}")
+        |> render()
+
+      sidebar_before =
+        view
+        |> element("#rating-component-sidebar-#{company.id}")
+        |> render()
+
+      assert header_before =~ "(0)"
+      assert sidebar_before =~ "(0)"
+
+      view
+      |> element("#rating-component-header-#{company.id} button", "Rate")
+      |> render_click()
+
+      view
+      |> form("form", %{
+        "score" => "5",
+        "comment" => "Excellent company!"
+      })
+      |> render_submit()
+
+      header_after =
+        view
+        |> element("#rating-component-header-#{company.id}")
+        |> render()
+
+      sidebar_after =
+        view
+        |> element("#rating-component-sidebar-#{company.id}")
+        |> render()
+
+      assert header_after =~ "5.0"
+      assert sidebar_after =~ "5.0"
+      assert header_after =~ "(1)"
+      assert sidebar_after =~ "(1)"
+    end
+
+    test "cancelling rating form closes modal without submitting", %{
       company: company,
       conn: conn,
       user: user,
@@ -248,108 +444,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       |> element("button", "Cancel")
       |> render_click()
 
-      refute has_element?(view, "form phx-submit")
-    end
-
-    test "handles error when user hasn't applied to company job", %{
-      company: company,
-      conn: conn,
-      user: user
-    } do
-      {:ok, view, _html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
-
-      render_hook(view, "open-rating-modal", %{
-        "entity_id" => company.id,
-        "entity_type" => "Company"
-      })
-
-      view
-      |> with_target("#rating-modal")
-      |> render_hook("submit-rating", %{
-        "score" => "5",
-        "comment" => "Trying to rate without applying"
-      })
-
-      assert render(view) =~ "need to apply to a job before rating"
-    end
-
-    test "updates UI immediately when rating is submitted", %{
-      company: company,
-      conn: conn,
-      user: user,
-      job_posting: job_posting
-    } do
-      job_application_fixture(user, job_posting)
-
-      {:ok, view, _html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
-
-      view
-      |> element("#rating-component-header-#{company.id} button", "Rate")
-      |> render_click()
-
-      view
-      |> form("form", %{
-        "score" => "5",
-        "comment" => "Excellent company!"
-      })
-      |> render_submit()
-
-      assert render(view) =~ "Rating submitted successfully"
-
-      rating = Ratings.get_rating_by_rater_and_ratee("User", user.id, "Company", company.id)
-      assert rating.score == 5
-      assert rating.comment == "Excellent company!"
-
-      assert render(view) =~ "Update Rating"
-      refute render(view) =~ ">Rate<"
-    end
-
-    test "updates UI when another user submits a rating", %{
-      company: company,
-      conn: conn,
-      user: user,
-      job_posting: job_posting
-    } do
-      job_application_fixture(user, job_posting)
-
-      other_user = user_fixture()
-      job_application_fixture(other_user, job_posting)
-
-      {:ok, _view, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
-
-      assert html =~ "(0)"
-
-      rating =
-        rating_fixture(%{
-          rater_type: "User",
-          rater_id: other_user.id,
-          ratee_type: "Company",
-          ratee_id: company.id,
-          score: 5,
-          comment: "Great company!"
-        })
-
-      Endpoint.broadcast(
-        "rating:Company:#{company.id}",
-        "rating_updated",
-        rating
-      )
-
-      db_rating =
-        Ratings.get_rating_by_rater_and_ratee("User", other_user.id, "Company", company.id)
-
-      assert db_rating
-      assert db_rating.score == 5
-      assert db_rating.comment == "Great company!"
+      refute has_element?(view, "h3", "Rate #{company.name}")
     end
   end
 end

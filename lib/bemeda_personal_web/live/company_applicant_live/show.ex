@@ -118,23 +118,15 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
           payload: %{ratee_type: "User", ratee_id: ratee_id} = _rating
         },
         socket
-      ) do
-    if socket.assigns.application.user.id == ratee_id do
-      updated_application = Jobs.get_job_application!(socket.assigns.application.id)
+      )
+      when socket.assigns.application.user.id == ratee_id do
+    updated_application = Jobs.get_job_application!(socket.assigns.application.id)
 
-      {:noreply,
-       socket
-       |> assign(:application, updated_application)
-       |> assign(:rating_modal_open, false)
-       |> put_flash(:info, "Rating submitted successfully")}
-    else
-      {:noreply, socket}
-    end
+    {:noreply, assign(socket, :application, updated_application)}
   end
 
-  def handle_info(%Broadcast{event: "rating_updated", payload: _payload}, socket) do
-    {:noreply, socket}
-  end
+  def handle_info(%Broadcast{event: "rating_updated", payload: _payload}, socket),
+    do: {:noreply, socket}
 
   defp can_rate?(socket) do
     current_user = socket.assigns.current_user

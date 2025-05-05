@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   alias BemedaPersonal.Accounts
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.RatingComponent
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -28,6 +29,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
             <.live_component
               module={RatingComponent}
               id={"rating-display-user-settings-#{@current_user.id}"}
+              can_rate?={false}
               entity_id={@current_user.id}
               entity_type="User"
               entity_name={"#{@current_user.first_name} #{@current_user.last_name}"}
@@ -39,7 +41,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
                   else: @current_user.id
               }
               class="mb-2"
-              check_can_rate?={false}
             />
           </div>
         </div>
@@ -254,10 +255,12 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_info(%Phoenix.Socket.Broadcast{event: "rating_updated", payload: payload}, socket) do
+  def handle_info(%Broadcast{event: "rating_updated", payload: payload}, socket) do
     user_id = socket.assigns.current_user.id
 
     if payload.ratee_type == "User" && payload.ratee_id == user_id do
+      send_update(RatingComponent, id: "rating-display-user-settings-#{user_id}")
+
       {:noreply, put_flash(socket, :info, "Rating submitted successfully")}
     else
       {:noreply, socket}

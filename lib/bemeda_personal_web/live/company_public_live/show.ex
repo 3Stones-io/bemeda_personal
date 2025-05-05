@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
+  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(%{"id" => id} = _params, _session, socket) do
@@ -120,9 +121,24 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
     {:noreply, put_flash(socket, :error, error)}
   end
 
-  def handle_info(%Phoenix.Socket.Broadcast{event: "rating_updated", payload: payload}, socket) do
-    process_rating_event(payload, socket)
+  def handle_info(
+        %Broadcast{
+          event: "rating_updated",
+          payload: %Ratings.Rating{ratee_type: "Company", ratee_id: company_id}
+        },
+        socket
+      )
+      when socket.assigns.company.id == company_id do
+    send_update(RatingComponent, id: "rating-component-header-#{company_id}")
+    send_update(RatingComponent, id: "rating-component-sidebar-#{company_id}")
+
+    updated_company = Companies.get_company!(company_id)
+
+    {:noreply, assign(socket, :company, updated_company)}
   end
+
+  def handle_info(%Broadcast{event: "rating_updated"}, socket),
+    do: {:noreply, socket}
 
   def handle_info(
         {:submit_rating,
@@ -159,30 +175,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
          |> put_flash(:error, reason)
          |> assign(:rating_modal_open, false)}
     end
-  end
-
-  defp process_rating_event(payload, socket) do
-    company_id = socket.assigns.company.id
-
-    case payload do
-      %{ratee_type: "Company", ratee_id: ^company_id} ->
-        {:noreply,
-         socket
-         |> handle_company_rating_update(company_id)
-         |> put_flash(:info, "Rating submitted successfully")}
-
-      _other ->
-        {:noreply, socket}
-    end
-  end
-
-  defp handle_company_rating_update(socket, company_id) do
-    updated_company = Companies.get_company!(company_id)
-
-    send_update(RatingComponent, id: "rating-component-header-#{company_id}")
-    send_update(RatingComponent, id: "rating-component-sidebar-#{company_id}")
-
-    assign(socket, :company, updated_company)
   end
 
   defp string_to_integer(value) when is_binary(value), do: String.to_integer(value)

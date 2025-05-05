@@ -227,10 +227,6 @@ defmodule BemedaPersonalWeb.RatingComponent do
     socket
   end
 
-  defp assign_can_rate?(%{assigns: %{can_rate?: false}} = socket) do
-    assign(socket, :can_rate?, false)
-  end
-
   defp assign_can_rate?(%{assigns: %{current_user: nil}} = socket) do
     assign(socket, :can_rate?, false)
   end

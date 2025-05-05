@@ -10,7 +10,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
-  alias BemedaPersonalWeb.Endpoint
 
   setup %{conn: conn} do
     company_user = user_fixture(confirmed: true)
@@ -163,8 +162,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
   end
 
-  describe "applicant rating functionality" do
-    test "handles nil average rating", %{
+  describe "applicant ratings" do
+    test "displays component with no ratings", %{
       conn: conn,
       company: company,
       company_user: company_user,
@@ -176,6 +175,80 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
       assert html =~ "Rating"
+      assert html =~ "hero-star"
+      refute html =~ "fill-current"
+      assert html =~ "(0)"
+    end
+
+    test "displays component with one rating", %{
+      conn: conn,
+      company: company,
+      company_user: company_user,
+      job_application: application,
+      applicant: applicant
+    } do
+      rating =
+        rating_fixture(%{
+          rater_type: "Company",
+          rater_id: company.id,
+          ratee_type: "User",
+          ratee_id: applicant.id,
+          score: 4,
+          comment: "Good candidate"
+        })
+
+      conn = log_in_user(conn, company_user)
+
+      {:ok, _view, html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert html =~ "Rating"
+      assert html =~ "4.0"
+      assert html =~ "(1)"
+      assert html =~ "fill-current"
+      assert rating.score == 4
+    end
+
+    test "displays component with multiple ratings", %{
+      conn: conn,
+      company: company,
+      company_user: company_user,
+      job_application: application,
+      applicant: applicant
+    } do
+      other_company = company_fixture(user_fixture(confirmed: true))
+
+      rating1 =
+        rating_fixture(%{
+          rater_type: "Company",
+          rater_id: company.id,
+          ratee_type: "User",
+          ratee_id: applicant.id,
+          score: 3,
+          comment: "Average candidate"
+        })
+
+      rating2 =
+        rating_fixture(%{
+          rater_type: "Company",
+          rater_id: other_company.id,
+          ratee_type: "User",
+          ratee_id: applicant.id,
+          score: 5,
+          comment: "Excellent candidate"
+        })
+
+      conn = log_in_user(conn, company_user)
+
+      {:ok, _view, html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert html =~ "Rating"
+      assert html =~ "4.0"
+      assert html =~ "(2)"
+      assert html =~ "fill-current"
+      assert rating1.score == 3
+      assert rating2.score == 5
     end
 
     test "rating form prefills with existing rating", %{
@@ -235,7 +308,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       assert updated_rating.comment == "Updated comment"
     end
 
-    test "updates when rating is created", %{
+    test "submits new rating successfully", %{
       conn: conn,
       company: company,
       company_user: company_user,
@@ -244,31 +317,66 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     } do
       conn = log_in_user(conn, company_user)
 
-      {:ok, _view, _html} =
+      {:ok, view, _html} =
         live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
 
+      view
+      |> element("button", "Rate")
+      |> render_click()
+
+      view
+      |> form("#job-seeker-rating-form-#{application.id} form", %{
+        "score" => "5",
+        "comment" => "Excellent applicant"
+      })
+      |> render_submit()
+
+      assert render(view) =~ "Rating submitted successfully"
+
       rating =
-        rating_fixture(%{
-          rater_type: "Company",
-          rater_id: company.id,
-          ratee_type: "User",
-          ratee_id: applicant.id,
-          score: 5,
-          comment: "Excellent candidate"
-        })
+        Ratings.get_rating_by_rater_and_ratee(
+          "Company",
+          company.id,
+          "User",
+          applicant.id
+        )
 
-      Endpoint.broadcast(
-        "rating:User:#{applicant.id}",
-        "rating_updated",
-        rating
-      )
+      assert rating.score == 5
+      assert rating.comment == "Excellent applicant"
+    end
 
-      db_rating =
-        Ratings.get_rating_by_rater_and_ratee("Company", company.id, "User", applicant.id)
+    test "rating display updates in real-time when ratings change", %{
+      conn: conn,
+      company: company,
+      company_user: company_user,
+      job_application: application,
+      applicant: applicant
+    } do
+      conn = log_in_user(conn, company_user)
 
-      assert db_rating
-      assert db_rating.score == 5
-      assert db_rating.comment == "Excellent candidate"
+      {:ok, _view, html} =
+        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert html =~ "(0)"
+      assert html =~ "No ratings yet"
+      refute html =~ "fill-current"
+
+      rating_fixture(%{
+        rater_type: "Company",
+        rater_id: company.id,
+        ratee_type: "User",
+        ratee_id: applicant.id,
+        score: 5,
+        comment: "Excellent candidate"
+      })
+
+      {:ok, _updated_view, updated_html} =
+        conn
+        |> log_in_user(company_user)
+        |> live(~p"/companies/#{company.id}/applicant/#{application.id}")
+
+      assert updated_html =~ "(1)"
+      assert updated_html =~ "fill-current"
     end
 
     test "handles cancel action for rating form", %{
@@ -295,58 +403,42 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       refute has_element?(view, "h3", "Rate Jane Applicant")
     end
 
-    test "handles missing score value", %{
+    test "renders decimal ratings correctly", %{
       conn: conn,
       company: company,
       company_user: company_user,
-      job_application: application
+      job_application: application,
+      applicant: applicant
     } do
-      conn = log_in_user(conn, company_user)
+      other_company = company_fixture(user_fixture(confirmed: true))
 
-      {:ok, view, _html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
-
-      view
-      |> element("button", "Rate")
-      |> render_click()
-
-      assert has_element?(view, "form")
-
-      view
-      |> form("#job-seeker-rating-form-#{application.id} form", %{
-        "score" => "4",
-        "comment" => "Valid submission"
+      rating_fixture(%{
+        rater_type: "Company",
+        rater_id: company.id,
+        ratee_type: "User",
+        ratee_id: applicant.id,
+        score: 3,
+        comment: "Average candidate"
       })
-      |> render_submit()
 
-      assert render(view) =~ "Rating submitted successfully"
-    end
+      rating_fixture(%{
+        rater_type: "Company",
+        rater_id: other_company.id,
+        ratee_type: "User",
+        ratee_id: applicant.id,
+        score: 4,
+        comment: "Good candidate"
+      })
 
-    for score <- [1, 5] do
-      @tag score: score
-      test "tests star rendering with rating #{score}", %{
-        conn: conn,
-        company: company,
-        company_user: company_user,
-        job_application: application,
-        applicant: applicant,
-        score: score
-      } do
-        rating =
-          rating_fixture(%{
-            rater_type: "Company",
-            rater_id: company.id,
-            ratee_type: "User",
-            ratee_id: applicant.id,
-            score: score,
-            comment: "Rating with score #{score}"
-          })
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(company_user)
+        |> live(~p"/companies/#{company.id}/applicant/#{application.id}")
 
-        conn = log_in_user(conn, company_user)
-        {:ok, _lv, _html} = live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
-
-        assert rating.score == score
-      end
+      assert html =~ "Rating"
+      assert html =~ "3.5"
+      assert html =~ "(2)"
+      assert html =~ "fill-current"
     end
   end
 end

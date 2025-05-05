@@ -21,7 +21,7 @@
           rater_type={if @current_user, do: "User", else: nil}
           rater_id={if @current_user, do: @current_user.id, else: nil}
           size="sm"
-          check_can_rate?={true}
+          can_rate?={false}
         />
       </div>
       <div>
