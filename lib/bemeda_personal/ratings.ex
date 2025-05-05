@@ -85,12 +85,12 @@ defmodule BemedaPersonal.Ratings do
   def rate_company(%User{} = user, %Company{} = company, attrs) do
     if user_has_interacted_with_company?(user, company) do
       rating_attrs = %{
-        rater_type: "User",
-        rater_id: user.id,
-        ratee_type: "Company",
+        comment: attrs.comment,
         ratee_id: company.id,
-        score: attrs.score,
-        comment: attrs.comment
+        ratee_type: "Company",
+        rater_id: user.id,
+        rater_type: "User",
+        score: attrs.score
       }
 
       create_or_update_rating(rating_attrs)
@@ -117,12 +117,12 @@ defmodule BemedaPersonal.Ratings do
   def rate_user(%Company{} = company, %User{} = user, attrs) do
     if company_has_interacted_with_user?(company, user) do
       rating_attrs = %{
-        rater_type: "Company",
-        rater_id: company.id,
-        ratee_type: "User",
+        comment: attrs.comment,
         ratee_id: user.id,
-        score: attrs.score,
-        comment: attrs.comment
+        ratee_type: "User",
+        rater_id: company.id,
+        rater_type: "Company",
+        score: attrs.score
       }
 
       create_or_update_rating(rating_attrs)

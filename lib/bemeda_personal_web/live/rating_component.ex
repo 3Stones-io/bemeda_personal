@@ -3,6 +3,9 @@ defmodule BemedaPersonalWeb.RatingComponent do
 
   use BemedaPersonalWeb, :live_component
 
+  alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Companies
+  alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
   alias BemedaPersonalWeb.RatingFormComponent
   alias Phoenix.LiveView.JS
@@ -235,7 +238,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
          %{assigns: %{current_user: current_user, entity_type: "Company", entity_id: entity_id}} =
            socket
        ) do
-    can_rate? = BemedaPersonal.Jobs.user_has_applied_to_company_job?(current_user.id, entity_id)
+    can_rate? = Jobs.user_has_applied_to_company_job?(current_user.id, entity_id)
     assign(socket, :can_rate?, can_rate?)
   end
 
@@ -243,16 +246,11 @@ defmodule BemedaPersonalWeb.RatingComponent do
          %{assigns: %{current_user: current_user, entity_type: "User", entity_id: user_id}} =
            socket
        ) do
-    company = BemedaPersonal.Companies.get_company_by_user(current_user)
+    company = Companies.get_company_by_user(current_user)
 
     can_rate? =
-      with %{id: company_id} <- company,
-           true <- company.admin_user_id == current_user.id,
-           true <- BemedaPersonal.Jobs.user_has_applied_to_company_job?(user_id, company_id) do
-        true
-      else
-        _reason -> false
-      end
+      company && company.admin_user_id == current_user.id &&
+        Jobs.user_has_applied_to_company_job?(user_id, company.id)
 
     assign(socket, :can_rate?, can_rate?)
   end
@@ -277,13 +275,13 @@ defmodule BemedaPersonalWeb.RatingComponent do
   end
 
   defp create_or_update_rating("Company", company_id, attrs, socket) do
-    company = BemedaPersonal.Companies.get_company!(company_id)
+    company = Companies.get_company!(company_id)
     Ratings.rate_company(socket.assigns.current_user, company, attrs)
   end
 
   defp create_or_update_rating("User", user_id, attrs, socket) do
-    company = BemedaPersonal.Companies.get_company_by_user(socket.assigns.current_user)
-    user = BemedaPersonal.Accounts.get_user!(user_id)
+    company = Companies.get_company_by_user(socket.assigns.current_user)
+    user = Accounts.get_user!(user_id)
     Ratings.rate_user(company, user, attrs)
   end
 
