@@ -122,25 +122,25 @@ defmodule BemedaPersonalWeb.RatingComponent do
             </div>
 
             <ul :if={@all_ratings != []} class="space-y-3">
-              <%= for rating <- @all_ratings do %>
-                <li class="border-b border-gray-100 pb-2">
-                  <div class="flex items-center mb-1">
-                    <div class="flex">
-                      <%= for i <- 1..5 do %>
-                        <.icon name="hero-star" class={star_display_class(i, rating.score)} />
-                      <% end %>
-                    </div>
-                    <span class="ml-2 text-xs text-gray-500">
-                      {format_date(rating.inserted_at)}
-                    </span>
+              <li :for={rating <- @all_ratings} class="border-b border-gray-100 pb-2">
+                <div class="flex items-center mb-1">
+                  <div class="flex">
+                    <.icon
+                      :for={i <- 1..5}
+                      name="hero-star"
+                      class={star_display_class(i, rating.score)}
+                    />
                   </div>
-                  <%= if rating.comment && rating.comment != "" do %>
-                    <p class="text-sm text-gray-700">{rating.comment}</p>
-                  <% else %>
-                    <p class="text-sm text-gray-500 italic">No comment</p>
-                  <% end %>
-                </li>
-              <% end %>
+                  <span class="ml-2 text-xs text-gray-500">
+                    {format_date(rating.inserted_at)}
+                  </span>
+                </div>
+                <%= if rating.comment && rating.comment != "" do %>
+                  <p class="text-sm text-gray-700">{rating.comment}</p>
+                <% else %>
+                  <p class="text-sm text-gray-500 italic">No comment</p>
+                <% end %>
+              </li>
             </ul>
           </div>
         </div>
