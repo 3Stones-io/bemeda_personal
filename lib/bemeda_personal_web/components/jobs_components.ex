@@ -693,7 +693,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 module={RatingComponent}
                 rater_id={@company.id}
                 rater_type="Company"
-                size="md"
               />
             </dd>
           </div>

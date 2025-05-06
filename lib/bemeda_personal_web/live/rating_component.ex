@@ -71,28 +71,25 @@ defmodule BemedaPersonalWeb.RatingComponent do
       |> assign_new(:rating_form_id, fn -> "rating-form-#{assigns.entity_id}" end)
       |> assign_new(:rating_modal_id, fn -> "rating-modal-#{assigns.entity_id}" end)
       |> assign_new(:ratings_tooltip_id, fn -> "ratings-tooltip-#{assigns.id}" end)
-      |> assign_new(:size, fn -> "md" end)
 
     ~H"""
     <div id={@id} class={@class}>
       <div id={"rating-display-#{@id}"} class={["flex items-center", @display_class]}>
         <div class="star-rating flex">
           <%= for i <- 1..5 do %>
-            <div class={star_size_class(@size)}>
-              <%= case star_state(i, @average_rating) do %>
-                <% :full -> %>
-                  <.icon name="hero-star" class="text-yellow-400 fill-current" />
-                <% :half -> %>
-                  <div class="relative">
-                    <.icon name="hero-star" class="text-gray-300" />
-                    <div class="absolute inset-0 overflow-hidden w-3/5">
-                      <.icon name="hero-star" class="text-yellow-400 fill-current" />
-                    </div>
+            <%= case star_state(i, @average_rating) do %>
+              <% :full -> %>
+                <.icon name="hero-star-solid" class="text-yellow-400 fill-current" />
+              <% :half -> %>
+                <div class="relative">
+                  <.icon name="hero-star-solid" class="text-gray-300" />
+                  <div class="absolute inset-0 overflow-hidden w-1/2">
+                    <.icon name="hero-star-solid" class="text-yellow-400 fill-current" />
                   </div>
-                <% :empty -> %>
-                  <.icon name="hero-star" class="text-gray-300" />
-              <% end %>
-            </div>
+                </div>
+              <% :empty -> %>
+                <.icon name="hero-star-solid" class="text-gray-300" />
+            <% end %>
           <% end %>
         </div>
 
@@ -112,7 +109,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
 
           <div
             id={@ratings_tooltip_id}
-            class="hidden absolute bottom-full left-0 mb-2 bg-white shadow-lg rounded-lg p-4 z-50 w-80 max-h-80 overflow-y-auto"
+            class="hidden absolute bottom-full left-0 mb-2 bg-white shadow-lg rounded-lg p-4 z-50 w-80 max-h-80 overflow-y-auto z-[150]"
             phx-hook="RatingsTooltipContent"
           >
             <h3 class="font-medium text-gray-900 mb-2">All Ratings</h3>
@@ -127,7 +124,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
                   <div class="flex">
                     <.icon
                       :for={i <- 1..5}
-                      name="hero-star"
+                      name="hero-star-solid"
                       class={star_display_class(i, rating.score)}
                     />
                   </div>
@@ -282,13 +279,6 @@ defmodule BemedaPersonalWeb.RatingComponent do
     Ratings.rate_user(company, user, attrs)
   end
 
-  defp star_size_class(size) do
-    case size do
-      "sm" -> "w-4 h-4"
-      _size_param -> "w-5 h-5"
-    end
-  end
-
   defp star_state(_position, nil), do: :empty
 
   defp star_state(position, rating) do
@@ -302,18 +292,17 @@ defmodule BemedaPersonalWeb.RatingComponent do
   end
 
   defp star_display_class(position, rating) do
-    size = "w-4 h-4"
     rating_value = to_float(rating)
 
     cond do
       position <= floor(rating_value) ->
-        "#{size} text-yellow-400 fill-current"
+        "text-yellow-400"
 
       position == ceil(rating_value) && rating_value - floor(rating_value) >= 0.5 ->
-        "#{size} text-yellow-400 fill-current"
+        "text-yellow-400"
 
       true ->
-        "#{size} text-gray-300"
+        "text-gray-300"
     end
   end
 
