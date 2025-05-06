@@ -31,23 +31,19 @@
         </p>
       </div>
 
-      <%= for transition <- @transitions do %>
-        <div class="relative pl-10 pb-8">
-          <div class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center">
-            <.icon name="hero-check" class="h-3 w-3" />
-          </div>
-          <h3 class="text-lg font-medium">Status: {format_state_name(transition.to_state)}</h3>
-          <p class="text-sm text-gray-500">{format_date(transition.inserted_at)}</p>
-          <%= if transition.notes do %>
-            <div class="mt-2 p-3 bg-gray-50 rounded-md">
-              <p class="text-sm text-gray-600">{transition.notes}</p>
-            </div>
-          <% end %>
-          <p class="text-sm text-gray-600 mt-2">
-            Updated by: {transition.transitioned_by.email}
-          </p>
+      <div :for={transition <- @transitions} class="relative pl-10 pb-8">
+        <div class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center">
+          <.icon name="hero-check" class="h-3 w-3" />
         </div>
-      <% end %>
+        <h3 class="text-lg font-medium">Status: {format_state_name(transition.to_state)}</h3>
+        <p class="text-sm text-gray-500">{format_date(transition.inserted_at)}</p>
+        <div :if={transition.notes} class="mt-2 p-3 bg-gray-50 rounded-md">
+          <p class="text-sm text-gray-600">{transition.notes}</p>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">
+          Updated by: {transition.transitioned_by.email}
+        </p>
+      </div>
 
       <div class="relative pl-10">
         <div class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-purple-500 text-white flex items-center justify-center">
