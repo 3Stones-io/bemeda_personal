@@ -76,21 +76,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
     <div id={@id} class={@class}>
       <div id={"rating-display-#{@id}"} class={["flex items-center", @display_class]}>
         <div class="star-rating flex">
-          <%= for i <- 1..5 do %>
-            <%= case star_state(i, @average_rating) do %>
-              <% :full -> %>
-                <.icon name="hero-star-solid" class="text-yellow-400 fill-current" />
-              <% :half -> %>
-                <div class="relative">
-                  <.icon name="hero-star-solid" class="text-gray-300" />
-                  <div class="absolute inset-0 overflow-hidden w-1/2">
-                    <.icon name="hero-star-solid" class="text-yellow-400 fill-current" />
-                  </div>
-                </div>
-              <% :empty -> %>
-                <.icon name="hero-star-solid" class="text-gray-300" />
-            <% end %>
-          <% end %>
+          <.average_rating_star :for={i <- 1..5} position={i} rating={@average_rating} />
         </div>
 
         <div :if={@average_rating} class="ml-2 text-sm font-medium text-gray-700">
@@ -122,11 +108,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
               <li :for={rating <- @all_ratings} class="border-b border-gray-100 pb-2">
                 <div class="flex items-center mb-1">
                   <div class="flex">
-                    <.icon
-                      :for={i <- 1..5}
-                      name="hero-star-solid"
-                      class={star_display_class(i, rating.score)}
-                    />
+                    <.rating_star :for={i <- 1..5} position={i} rating={rating.score} />
                   </div>
                   <span class="ml-2 text-xs text-gray-500">
                     {format_date(rating.inserted_at)}
@@ -180,7 +162,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
   end
 
   defp assign_average_rating(%{assigns: %{all_ratings: []}} = socket) do
-    assign(socket, :average_rating, nil)
+    assign(socket, :average_rating, Decimal.new(0))
   end
 
   defp assign_average_rating(%{assigns: %{all_ratings: all_ratings}} = socket) do
@@ -253,7 +235,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
          %{attrs: attrs, entity_id: entity_id, entity_type: entity_type},
          socket
        ) do
-    with true <- can_rate?(socket),
+    with true <- socket.assigns.can_rate?,
          {:ok, rating} <- create_or_update_rating(entity_type, entity_id, attrs, socket) do
       {:noreply,
        socket
@@ -279,36 +261,60 @@ defmodule BemedaPersonalWeb.RatingComponent do
     Ratings.rate_user(company, user, attrs)
   end
 
-  defp star_state(_position, nil), do: :empty
+  defp average_rating_star(assigns) do
+    assigns =
+      assign_new(assigns, :state, fn %{rating: rating, position: position} ->
+        rating
+        |> Decimal.to_float()
+        |> star_state(position)
+      end)
 
-  defp star_state(position, rating) do
-    rating_value = to_float(rating)
-
-    cond do
-      position <= floor(rating_value) -> :full
-      position == ceil(rating_value) && rating_value - floor(rating_value) >= 0.3 -> :half
-      true -> :empty
-    end
+    ~H"""
+    <.star_icon state={@state} />
+    """
   end
 
-  defp star_display_class(position, rating) do
-    rating_value = to_float(rating)
+  defp rating_star(assigns) do
+    ~H"""
+    <.star_icon state={star_state(@rating, @position)} />
+    """
+  end
 
+  defp star_state(rating, position) do
     cond do
-      position <= floor(rating_value) ->
-        "text-yellow-400"
+      position <= floor(rating) ->
+        :full
 
-      position == ceil(rating_value) && rating_value - floor(rating_value) >= 0.5 ->
-        "text-yellow-400"
+      position == ceil(rating) && rating - floor(rating) >= 0.3 ->
+        :half
 
       true ->
-        "text-gray-300"
+        :empty
     end
   end
 
-  defp to_float(%Decimal{} = value), do: Decimal.to_float(value)
-  defp to_float(value) when is_number(value), do: value
-  defp to_float(_value), do: 0.0
+  defp star_icon(%{state: :full} = assigns) do
+    ~H"""
+    <.icon name="hero-star-solid" class="text-yellow-400 fill-current" />
+    """
+  end
+
+  defp star_icon(%{state: :half} = assigns) do
+    ~H"""
+    <div class="relative">
+      <.icon name="hero-star-solid" class="text-gray-300" />
+      <div class="absolute inset-0 overflow-hidden w-1/2">
+        <.icon name="hero-star-solid" class="text-yellow-400 fill-current" />
+      </div>
+    </div>
+    """
+  end
+
+  defp star_icon(%{state: :empty} = assigns) do
+    ~H"""
+    <.icon name="hero-star-solid" class="text-gray-300" />
+    """
+  end
 
   defp format_rating(nil), do: "No ratings"
 
@@ -321,14 +327,6 @@ defmodule BemedaPersonalWeb.RatingComponent do
 
       _rating_value ->
         rating
-    end
-  end
-
-  defp can_rate?(socket) do
-    if socket.assigns.current_user do
-      true
-    else
-      {:error, "You need to be logged in to rate"}
     end
   end
 
