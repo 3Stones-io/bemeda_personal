@@ -39,10 +39,10 @@
         </div>
 
         <h3 class="text-lg font-medium">
-          {translate_status()[transition.to_state]}
+          {SharedHelpers.translate_status(:state)[transition.to_state]}
         </h3>
 
-        <p class="text-sm text-gray-500">{format_date(transition.inserted_at)}</p>
+        <p class="text-sm text-gray-500">{DateUtils.format_datetime(transition.inserted_at)}</p>
 
         <div
           :if={transition.notes && @current_user.id != @job_application.user_id}
@@ -63,7 +63,7 @@
       </div>
 
       <h3 class="text-lg font-medium">Application Created</h3>
-      <p class="text-sm text-gray-500">{format_date(@job_application.inserted_at)}</p>
+      <p class="text-sm text-gray-500">{DateUtils.format_datetime(@job_application.inserted_at)}</p>
       <p class="text-sm text-gray-600 mt-2">
         {if @current_user.id == @job_application.user_id do
           "You applied for the #{String.downcase(@job_posting.title)} position at #{@job_posting.company.name}."

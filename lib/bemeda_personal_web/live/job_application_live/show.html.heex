@@ -10,14 +10,30 @@
       </span>
 
       <span class="text-xs font-medium bg-purple-700 text-white rounded-full px-2 py-1">
-        {SharedHelpers.translate_status()[@job_application.state]}
+        {SharedHelpers.translate_status(:state)[@job_application.state]}
       </span>
     </h1>
 
     <div class="relative">
-      <button class="text-white hover:text-white/50" phx-click={JS.toggle(to: "#status-menu")}>
-        <.icon name="hero-ellipsis-vertical" class="h-6 w-6" />
-      </button>
+      <div class="flex items-center">
+        <.link
+          :if={@job_application.user_id == @current_user.id}
+          navigate={
+            ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/edit"
+          }
+          class="text-white hover:text-white/50"
+          title="Edit Your Application"
+        >
+          <.icon name="hero-pencil-square" class="h-5 w-5" />
+        </.link>
+
+        <button
+          class="text-white hover:text-white/50 ml-4"
+          phx-click={JS.toggle(to: "#status-menu")}
+        >
+          <.icon name="hero-ellipsis-vertical" class="h-6 w-6" />
+        </button>
+      </div>
 
       <div
         phx-click-away={JS.hide(to: "#status-menu")}
@@ -32,7 +48,7 @@
               }
               class="block w-full text-center px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
             >
-              {SharedHelpers.translate_status()[status]}
+              {SharedHelpers.translate_status(:action)[status]}
             </.link>
           </div>
         </div>
@@ -71,7 +87,7 @@
     }
   >
     <.header>
-      {SharedHelpers.translate_status()[@to_state]}
+      {SharedHelpers.translate_status(:state)[@to_state]}
     </.header>
 
     <.simple_form

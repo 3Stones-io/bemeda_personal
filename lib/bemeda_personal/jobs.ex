@@ -481,7 +481,6 @@ defmodule BemedaPersonal.Jobs do
   end
 
   defp apply_job_application_filter({:state, state}, dynamic) do
-    IO.puts(IO.ANSI.format([:yellow, "Applying state filter: #{state}"]))
     dynamic([job_application: ja], ^dynamic and ja.state == ^state)
   end
 

@@ -84,17 +84,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
       <div class={@class}>
         <SharedComponents.video_player media_asset={@message.media_asset} />
       </div>
-
-      <.link
-        :if={@message.user_id == @current_user.id}
-        navigate={~p"/jobs/#{@message.job_posting_id}/job_applications/#{@message.id}/edit"}
-        class={[
-          "py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 transition-colors",
-          "ml-auto mb-3 inline-blockw-[85%] md:w-[60%] lg:w-[40%] flex items-center justify-center"
-        ]}
-      >
-        Edit Your Application
-      </.link>
     </div>
     """
   end

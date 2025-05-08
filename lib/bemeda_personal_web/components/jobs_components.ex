@@ -604,7 +604,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 ]}
                 title={if(!Enum.empty?(@available_statuses), do: "Click to update status")}
               >
-                {SharedHelpers.translate_status()[@applicant.state]}
+                {SharedHelpers.translate_status(:state)[@applicant.state]}
               </button>
 
               <div
@@ -643,7 +643,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
                       type="select"
                       prompt="Select a status"
                       options={
-                        Enum.map(SharedHelpers.translate_status(), fn {key, _value} -> {key} end)
+                        Enum.map(@available_statuses, fn key ->
+                          {SharedHelpers.translate_status(:action)[key], key}
+                        end)
                       }
                       required
                     />
@@ -946,7 +948,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   label_class="block text-sm font-medium text-gray-700"
                   type="select"
                   options={
-                    Enum.map(SharedHelpers.translate_status(), fn {key, value} -> {value, key} end)
+                    Enum.map(SharedHelpers.translate_status(:state), fn {key, value} ->
+                      {value, key}
+                    end)
                   }
                   prompt="Select a status"
                 />

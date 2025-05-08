@@ -4,10 +4,10 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Jobs.JobApplicationStateMachine
+  alias BemedaPersonal.Jobs.JobApplicationStateTransition
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Endpoint
-  alias BemedaPersonal.Jobs.JobApplicationStateTransition
-  alias Phoenix.LiveView.JS
 
   require Logger
 
@@ -101,14 +101,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     is_company_admin = job_posting.company.admin_user_id == current_user.id
     is_job_applicant = job_application.user_id == current_user.id
 
-    transitions = %{
-      "applied" => ["under_review", "withdrawn", "rejected"],
-      "under_review" => ["screening", "withdrawn", "rejected"],
-      "screening" => ["interview_scheduled", "withdrawn", "rejected"],
-      "interview_scheduled" => ["interviewed", "withdrawn", "rejected"],
-      "interviewed" => ["offer_extended", "withdrawn", "rejected"],
-      "offer_extended" => ["offer_accepted", "offer_declined", "withdrawn"]
-    }
+    transitions = JobApplicationStateMachine.get_transitions()
 
     all_next_states = transitions[current_state] || []
 
@@ -155,23 +148,53 @@ defmodule BemedaPersonalWeb.SharedHelpers do
        ),
        do: []
 
-  @doc """
-  Returns a map of application states to their human-readable display names.
-  """
-  @spec translate_status() :: map()
-  def translate_status do
+  @spec translate_status(atom) :: map()
+  def translate_status(:action) do
+    %{
+      "applied" => "Submit Application",
+      "under_review" => "Start Review",
+      "screening" => "Start Screening",
+      "interview_scheduled" => "Schedule Interview",
+      "interviewed" => "Mark as Interviewed",
+      "offer_extended" => "Extend Offer",
+      "offer_accepted" => "Accept Offer",
+      "offer_declined" => "Decline Offer",
+      "rejected" => "Reject Application",
+      "withdrawn" => "Withdraw Application"
+    }
+  end
+
+  def translate_status(:state) do
     %{
       "applied" => "Applied",
+      "under_review" => "Under Review",
+      "screening" => "Screening",
       "interview_scheduled" => "Interview Scheduled",
       "interviewed" => "Interviewed",
+      "offer_extended" => "Offer Extended",
       "offer_accepted" => "Offer Accepted",
       "offer_declined" => "Offer Declined",
-      "offer_extended" => "Offer Extended",
       "rejected" => "Rejected",
-      "screening" => "Screening",
-      "under_review" => "Under Review",
       "withdrawn" => "Withdrawn"
     }
+  end
+
+  @spec status_badge_color(String.t()) :: String.t()
+  def status_badge_color(status) do
+    status_colors = %{
+      "applied" => "bg-blue-100 text-blue-800",
+      "interview_scheduled" => "bg-green-100 text-green-800",
+      "interviewed" => "bg-teal-100 text-teal-800",
+      "offer_accepted" => "bg-green-100 text-green-800",
+      "offer_declined" => "bg-red-100 text-red-800",
+      "offer_extended" => "bg-yellow-100 text-yellow-800",
+      "rejected" => "bg-red-100 text-red-800",
+      "screening" => "bg-indigo-100 text-indigo-800",
+      "under_review" => "bg-purple-100 text-purple-800",
+      "withdrawn" => "bg-gray-100 text-gray-800"
+    }
+
+    Map.get(status_colors, status, "bg-gray-100 text-gray-800")
   end
 
   @spec assign_job_application_status_form(socket()) :: socket()
@@ -195,7 +218,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       })
 
     case Jobs.update_job_application_status(job_application, user, params) do
-      {:ok, updated_job_application} ->
+      {:ok, _updated_job_application} ->
         {:noreply, Phoenix.LiveView.put_flash(socket, :info, "Status updated successfully")}
 
       {:error, changeset} ->
@@ -204,23 +227,5 @@ defmodule BemedaPersonalWeb.SharedHelpers do
          |> Phoenix.LiveView.put_flash(:error, "Failed to update status")
          |> assign(:update_job_application_status_form, changeset)}
     end
-  end
-
-  @spec status_badge_color(String.t()) :: String.t()
-  def status_badge_color(status) do
-    status_colors = %{
-      "applied" => "bg-blue-100 text-blue-800",
-      "interview_scheduled" => "bg-green-100 text-green-800",
-      "interviewed" => "bg-teal-100 text-teal-800",
-      "offer_accepted" => "bg-green-100 text-green-800",
-      "offer_declined" => "bg-red-100 text-red-800",
-      "offer_extended" => "bg-yellow-100 text-yellow-800",
-      "rejected" => "bg-red-100 text-red-800",
-      "screening" => "bg-indigo-100 text-indigo-800",
-      "under_review" => "bg-purple-100 text-purple-800",
-      "withdrawn" => "bg-gray-100 text-gray-800"
-    }
-
-    Map.get(status_colors, status, "bg-gray-100 text-gray-800")
   end
 end

@@ -111,7 +111,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
            socket.assigns.current_user,
            transition_attrs
          ) do
-      {:ok, updated_job_application} ->
+      {:ok, _updated_job_application} ->
         {:noreply,
          socket
          |> put_flash(:info, "Job application status updated successfully.")

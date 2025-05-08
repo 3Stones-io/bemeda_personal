@@ -6,7 +6,6 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobApplicationFilter
-  alias BemedaPersonal.Jobs.JobApplicationStateTransition
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -109,7 +108,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
                       "text-xs font-medium w-[fit-content] px-2 py-1 rounded-full cursor-pointer",
                       SharedHelpers.status_badge_color(application.state)
                     ]}>
-                      {SharedHelpers.translate_status()[application.state]}
+                      {SharedHelpers.translate_status(:state)[application.state]}
                     </span>
                   </h3>
                   <p class="text-sm text-gray-600 mt-1">{application.job_posting.company.name}</p>
