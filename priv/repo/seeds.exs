@@ -1,6 +1,8 @@
+alias BemedaPersonal.Accounts.User
 alias BemedaPersonal.Accounts
 alias BemedaPersonal.Companies
 alias BemedaPersonal.Jobs
+alias BemedaPersonal.Repo
 
 {:ok, user1} =
   Accounts.register_user(%{
@@ -17,6 +19,14 @@ alias BemedaPersonal.Jobs
     first_name: "Jane",
     last_name: "Smith"
   })
+
+user1
+|> User.confirm_changeset()
+|> Repo.update()
+
+user2
+|> User.confirm_changeset()
+|> Repo.update()
 
 {:ok, company1} =
   Companies.create_company(user1, %{

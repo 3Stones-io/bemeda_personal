@@ -2,6 +2,11 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonalWeb.Endpoint
+  alias BemedaPersonalWeb.Live.Hooks.RatingHooks
+  alias BemedaPersonalWeb.RatingComponent
+
+  on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -13,6 +18,28 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
       </.header>
 
       <div class="space-y-12 divide-y">
+        <div class="mb-6 bg-white shadow overflow-hidden sm:rounded-lg">
+          <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Your Rating</h2>
+              <p class="mt-1 text-sm text-gray-500">
+                How companies have rated your applications
+              </p>
+            </div>
+          </div>
+          <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+            <.live_component
+              can_rate?={false}
+              class="mb-2"
+              current_user={@current_user}
+              entity_id={@current_user.id}
+              entity_type="User"
+              id={"rating-display-user-settings-#{@current_user.id}"}
+              module={RatingComponent}
+            />
+          </div>
+        </div>
+
         <div>
           <.simple_form
             for={@name_form}
@@ -111,6 +138,10 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
     name_changeset = Accounts.change_user_name(user)
+
+    if connected?(socket) do
+      Endpoint.subscribe("rating:User:#{user.id}")
+    end
 
     socket =
       socket

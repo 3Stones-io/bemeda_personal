@@ -3,14 +3,20 @@
     <h1 class="text-3xl font-bold text-gray-900">Company Dashboard</h1>
   </div>
 
-  <div
-    :if={@company && @live_action != :new}
-    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
-  >
+  <div :if={@company && @live_action != :new} class="bg-white shadow sm:rounded-lg mb-8">
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
       <div>
         <h2 class="text-xl font-semibold text-gray-900">{@company.name}</h2>
         <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
+        <.live_component
+          can_rate?={false}
+          current_user={@current_user}
+          entity_id={@company.id}
+          entity_name={@company.name}
+          entity_type="Company"
+          id={"rating-component-#{@company.id}"}
+          module={RatingComponent}
+        />
       </div>
       <div>
         <.link

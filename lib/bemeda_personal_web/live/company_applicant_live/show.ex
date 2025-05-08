@@ -6,7 +6,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias Phoenix.Socket.Broadcast
+
+  on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
   def handle_params(%{"company_id" => company_id, "id" => applicant_id}, _url, socket) do
@@ -19,6 +22,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
     if connected?(socket) do
       Endpoint.subscribe("job_application_assets_#{application.id}")
+      Endpoint.subscribe("rating:User:#{application.user_id}")
     end
 
     {:noreply,
@@ -45,6 +49,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   end
 
   @impl Phoenix.LiveView
+  def handle_info(%{job_application: job_application}, socket) do
+    {:noreply, assign(socket, :application, job_application)}
+  end
+
   def handle_info(%Broadcast{event: "media_asset_updated", payload: payload}, socket) do
     {:noreply, assign(socket, :application, payload.job_application)}
   end
