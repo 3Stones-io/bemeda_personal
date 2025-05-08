@@ -1,11 +1,8 @@
 {
   "mcpServers": {
     "tidewave": {
-      "command": "~/.local/share/mise/installs/erlang/27.2.3/bin/escript",
-      "args": [
-        "~/.local/share/mise/installs/elixir/1.18.2-otp-27/.mix/escripts/mcp-proxy",
-        "http://localhost:4000/tidewave/mcp"
-      ]
+      "command": "mcp-proxy",
+      "args": ["http://localhost:4000/tidewave/mcp"]
     }
   }
 }
