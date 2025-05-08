@@ -101,27 +101,16 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   @spec chat_container(assigns()) :: output()
   def chat_container(%{message: %Message{}} = assigns) do
-    is_status_update =
-      assigns.message.content && String.contains?(assigns.message.content, "Status changed from")
-
-    assigns = assign(assigns, :is_status_update, is_status_update)
-
     ~H"""
-    <div :if={@is_status_update} id={@id} class="w-full flex justify-center my-6">
-      <div class="bg-purple-100 text-purple-800 rounded-full py-2 px-4 text-xs text-center max-w-md">
-        <p>{@message.content}</p>
-        <p class="text-[11px] text-purple-600 mt-1">
-          {Calendar.strftime(@message.inserted_at, "%B %d, %Y at %I:%M %p")}
-        </p>
-      </div>
-    </div>
     <div
-      :if={!@is_status_update}
       id={@id}
       class={[
         "w-[85%] md:w-[60%] lg:w-[40%] mb-3",
-        @message.sender_id == @current_user.id && "ml-auto rounded-2xl rounded-br-none",
-        @message.sender_id != @current_user.id && "mr-auto rounded-2xl rounded-bl-none",
+        @message.type == :status_update && "mx-auto bg-purple-100 rounded-2xl",
+        @message.sender_id == @current_user.id && @message.type != :status_update &&
+          "ml-auto rounded-2xl rounded-br-none",
+        @message.sender_id != @current_user.id && @message.type != :status_update &&
+          "mr-auto rounded-2xl rounded-bl-none",
         @message.content && @message.sender_id == @current_user.id && "bg-blue-100 ",
         @message.content && @message.sender_id != @current_user.id && "bg-gray-100 "
       ]}
@@ -248,6 +237,16 @@ defmodule BemedaPersonalWeb.ChatComponents do
           <span>{@message.media_asset.file_name}</span>
         </p>
       </.link>
+    </div>
+    """
+  end
+
+  def chat_message(%{message: %{type: :status_update}} = assigns) do
+    ~H"""
+    <div class="w-full flex justify-center my-2">
+      <div class="bg-purple-100 text-purple-800 rounded-xl py-2 px-4 text-center text-sm">
+        {@message.content}
+      </div>
     </div>
     """
   end

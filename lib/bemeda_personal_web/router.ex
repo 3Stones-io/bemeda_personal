@@ -90,6 +90,7 @@ defmodule BemedaPersonalWeb.Router do
       live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
       live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
       live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
+      live "/jobs/:job_id/job_applications/:id/edit_status", JobApplicationLive.Show, :edit_status
       live "/jobs/:job_id/job_applications/:id/history", JobApplicationLive.History, :show
     end
   end

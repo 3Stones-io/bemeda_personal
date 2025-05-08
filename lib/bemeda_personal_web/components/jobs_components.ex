@@ -569,12 +569,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :applicant, :any, required: true
+  attr :available_statuses, :list, default: []
   attr :id, :string, required: true
   attr :job, :any, default: nil
   attr :show_actions, :boolean, default: false
   attr :show_job, :boolean, default: false
   attr :tag_limit, :integer, default: 3
   attr :target, :string, default: nil
+  attr :update_job_application_status_form, Phoenix.HTML.Form
 
   @spec applicant_card(assigns()) :: output()
   def applicant_card(assigns) do
@@ -583,50 +585,133 @@ defmodule BemedaPersonalWeb.JobsComponents do
       class="px-8 py-6 relative group cursor-pointer"
       phx-click={JS.navigate(~p"/companies/#{@job.company_id}/applicant/#{@applicant.id}")}
     >
-      <div class="flex justify-between">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div>
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <div class="flex items-center gap-3">
             <h3 class="text-lg font-medium text-gray-900">
               <.link navigate={~p"/companies/#{@job.company_id}/applicant/#{@applicant.id}"} id={@id}>
                 {"#{@applicant.user.first_name} #{@applicant.user.last_name}"}
               </.link>
             </h3>
 
-            <div class="text-sm text-gray-500 mt-1">
-              <p :if={@applicant.user.email}>
-                <span class="inline-flex items-center">
-                  <.icon name="hero-envelope" class="w-4 h-4 mr-1" />
-                  {@applicant.user.email}
-                </span>
-              </p>
-            </div>
+            <div class="relative">
+              <button
+                type="button"
+                phx-click={JS.toggle(to: "#status-menu-#{@applicant.id}")}
+                class={[
+                  "text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer",
+                  SharedHelpers.status_badge_color(@applicant.state)
+                ]}
+                title={if(!Enum.empty?(@available_statuses), do: "Click to update status")}
+              >
+                {SharedHelpers.translate_status()[@applicant.state]}
+              </button>
 
-            <div class="flex flex-wrap gap-2 mt-2">
               <div
-                :for={tag <- @applicant.tags |> Enum.take(@tag_limit)}
-                class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full"
+                :if={!Enum.empty?(@available_statuses)}
+                id={"status-menu-#{@applicant.id}"}
+                phx-click-away={JS.hide(to: "#status-menu-#{@applicant.id}")}
+                class={[
+                  "hidden absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg p-4 z-50",
+                  "max-h-[80vh] overflow-y-auto min-w-[350px] max-w-[90vw]"
+                ]}
+                phx-hook="JobApplicationInputs"
               >
-                {tag.name}
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                  <h3 class="text-lg font-medium text-gray-900">Update Status</h3>
+                  <button
+                    type="button"
+                    class="text-gray-400 hover:text-gray-500"
+                    phx-click={JS.hide(to: "#status-menu-#{@applicant.id}")}
+                  >
+                    <.icon name="hero-x-mark" class="h-5 w-5" />
+                  </button>
+                </div>
+
+                <.form
+                  :let={f}
+                  for={@update_job_application_status_form}
+                  id={"status-form-#{@applicant.id}"}
+                  phx-submit="update_job_application_status"
+                >
+                  <input type="hidden" name="applicant_id" value={@applicant.id} />
+
+                  <div class="mb-4">
+                    <.input
+                      field={f[:to_state]}
+                      label="Status"
+                      type="select"
+                      prompt="Select a status"
+                      options={
+                        Enum.map(SharedHelpers.translate_status(), fn {key, _value} -> {key} end)
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-4">
+                    <.input
+                      field={f[:notes]}
+                      type="textarea"
+                      rows="4"
+                      label="Notes"
+                      placeholder="Add notes about this status change..."
+                    />
+                  </div>
+
+                  <div class="flex justify-end space-x-2">
+                    <button
+                      type="button"
+                      class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors duration-150 ease-in-out"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
+                    >
+                      Update Status
+                    </button>
+                  </div>
+                </.form>
               </div>
-              <div
-                :if={@applicant.tags && length(@applicant.tags) > @tag_limit}
-                class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
-              >
-                +{length(@applicant.tags) - @tag_limit} more
-              </div>
+            </div>
+          </div>
+
+          <div class="text-sm text-gray-500 mt-1">
+            <p :if={@applicant.user.email}>
+              <span class="inline-flex items-center">
+                <.icon name="hero-envelope" class="w-4 h-4 mr-1" />
+                {@applicant.user.email}
+              </span>
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2 mt-2">
+            <div
+              :for={tag <- @applicant.tags |> Enum.take(@tag_limit)}
+              class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full"
+            >
+              {tag.name}
+            </div>
+            <div
+              :if={@applicant.tags && length(@applicant.tags) > @tag_limit}
+              class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
+            >
+              +{length(@applicant.tags) - @tag_limit} more
             </div>
           </div>
         </div>
 
-        <div :if={@show_job && @job} class="hidden sm:block">
-          <div class="text-sm text-start">
+        <div>
+          <div :if={@show_job && @job} class="text-sm text-end">
             <p class="font-medium text-gray-900">{@job.title}</p>
             <p class="text-gray-500">{@job.location || "Remote"}</p>
           </div>
         </div>
       </div>
 
-      <div class="absolute bottom-4 right-6 flex space-x-2 z-10">
+      <div class="absolute bottom-2 right-6 flex space-x-2 z-10">
         <.link
           navigate={~p"/jobs/#{@applicant.job_posting_id}/job_applications/#{@applicant.id}"}
           class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center shadow-sm"
@@ -855,6 +940,19 @@ defmodule BemedaPersonalWeb.JobsComponents do
               </div>
 
               <div class="mt-1">
+                <.input
+                  field={f[:state]}
+                  label="Application Status"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="select"
+                  options={
+                    Enum.map(SharedHelpers.translate_status(), fn {key, value} -> {value, key} end)
+                  }
+                  prompt="Select a status"
+                />
+              </div>
+
+              <div class="mt-1">
                 <.tags_input
                   label="Filter by Tags"
                   label_class="block text-sm font-medium text-gray-700"
@@ -936,64 +1034,5 @@ defmodule BemedaPersonalWeb.JobsComponents do
       </div>
     </div>
     """
-  end
-
-  # Application Status UI Components
-
-  def status_color(state) do
-    case state do
-      "applied" -> "bg-blue-100 text-blue-800"
-      "under_review" -> "bg-indigo-100 text-indigo-800"
-      "screening" -> "bg-purple-100 text-purple-800"
-      "interview_scheduled" -> "bg-yellow-100 text-yellow-800"
-      "interviewed" -> "bg-orange-100 text-orange-800"
-      "offer_pending" -> "bg-pink-100 text-pink-800"
-      "offer_extended" -> "bg-green-100 text-green-800"
-      "offer_accepted" -> "bg-emerald-100 text-emerald-800"
-      "offer_declined" -> "bg-red-100 text-red-800"
-      "withdrawn" -> "bg-gray-100 text-gray-800"
-      "rejected" -> "bg-red-100 text-red-800"
-      _other -> "bg-gray-100 text-gray-800"
-    end
-  end
-
-  def format_state_name(state) do
-    state
-    |> String.replace("_", " ")
-    |> String.capitalize()
-  end
-
-  def format_state_action(state) do
-    case state do
-      "under_review" -> "Move to Review"
-      "screening" -> "Move to Screening"
-      "interview_scheduled" -> "Schedule Interview"
-      "interviewed" -> "Mark as Interviewed"
-      "offer_pending" -> "Prepare Offer"
-      "offer_extended" -> "Extend Offer"
-      "offer_accepted" -> "Accept Offer"
-      "offer_declined" -> "Decline Offer"
-      "withdrawn" -> "Withdraw Application"
-      "rejected" -> "Reject Application"
-      _other -> format_state_name(state)
-    end
-  end
-
-  def get_action_button_class(state) do
-    base_class = "px-4 py-2 text-sm font-medium rounded-md"
-
-    case state do
-      "under_review" -> "#{base_class} bg-blue-600 hover:bg-blue-700 text-white"
-      "screening" -> "#{base_class} bg-indigo-600 hover:bg-indigo-700 text-white"
-      "interview_scheduled" -> "#{base_class} bg-yellow-600 hover:bg-yellow-700 text-white"
-      "interviewed" -> "#{base_class} bg-orange-600 hover:bg-orange-700 text-white"
-      "offer_pending" -> "#{base_class} bg-pink-600 hover:bg-pink-700 text-white"
-      "offer_extended" -> "#{base_class} bg-green-600 hover:bg-green-700 text-white"
-      "offer_accepted" -> "#{base_class} bg-emerald-600 hover:bg-emerald-700 text-white"
-      "offer_declined" -> "#{base_class} bg-red-600 hover:bg-red-700 text-white"
-      "withdrawn" -> "#{base_class} bg-gray-600 hover:bg-gray-700 text-white"
-      "rejected" -> "#{base_class} bg-red-600 hover:bg-red-700 text-white"
-      _other -> "#{base_class} bg-gray-600 hover:bg-gray-700 text-white"
-    end
   end
 end

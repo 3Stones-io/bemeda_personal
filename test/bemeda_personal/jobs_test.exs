@@ -1312,191 +1312,144 @@ defmodule BemedaPersonal.JobsTest do
     end
   end
 
-  describe "update_job_application_state/4" do
+  describe "update_job_application_status/3" do
     setup do
-      company_admin = user_fixture(%{email: "company_admin@example.com"})
-      company = company_fixture(company_admin)
+      user = user_fixture()
+      company = company_fixture(user)
       job_posting = job_posting_fixture(company)
-      applicant = user_fixture(%{email: "applicant@example.com"})
-      job_application = job_application_fixture(applicant, job_posting)
-      job_application = Repo.preload(job_application, [:user, job_posting: [:company]])
+      job_application = job_application_fixture(user, job_posting)
 
       %{
-        company_admin: company_admin,
+        user: user,
         company: company,
         job_posting: job_posting,
-        applicant: applicant,
         job_application: job_application
       }
     end
 
-    test "company admin can transition application from applied to under_review", %{
+    test "successfully updates status in valid state transition", %{
       job_application: job_application,
-      company_admin: company_admin
+      user: user
     } do
       assert job_application.state == "applied"
 
-      {:ok, updated_application} =
-        Jobs.update_job_application_state(
-          job_application,
-          "under_review",
-          %{notes: "Application looks promising"},
-          company_admin
-        )
+      application_topic = "job_application:user:#{job_application.user_id}"
+      Endpoint.subscribe(application_topic)
 
-      assert updated_application.state == "under_review"
+      attrs = %{to_state: "under_review", notes: "Application looks promising"}
 
-      transition =
-        BemedaPersonal.Jobs.JobApplicationStateTransition
-        |> Repo.get_by(job_application_id: job_application.id)
-        |> Repo.preload([:transitioned_by])
+      assert {:ok, updated_job_application} =
+               Jobs.update_job_application_status(job_application, user, attrs)
 
+      assert updated_job_application.state == "under_review"
+
+      transitions = Repo.all(BemedaPersonal.Jobs.JobApplicationStateTransition)
+      assert length(transitions) == 1
+
+      transition = List.first(transitions)
       assert transition.from_state == "applied"
       assert transition.to_state == "under_review"
       assert transition.notes == "Application looks promising"
-      assert transition.transitioned_by_id == company_admin.id
-    end
+      assert transition.job_application_id == job_application.id
+      assert transition.transitioned_by_id == user.id
 
-    test "company admin can transition through multiple states", %{
-      job_application: job_application,
-      company_admin: company_admin
-    } do
-      assert job_application.state == "applied"
+      messages = BemedaPersonal.Chat.list_messages(job_application)
+      assert length(messages) == 2
 
-      {:ok, app1} =
-        Jobs.update_job_application_state(
-          job_application,
-          "under_review",
-          %{notes: "Initial review"},
-          company_admin
-        )
-
-      assert app1.state == "under_review"
-
-      {:ok, app2} =
-        Jobs.update_job_application_state(
-          app1,
-          "screening",
-          %{notes: "Moving to screening"},
-          company_admin
-        )
-
-      assert app2.state == "screening"
-
-      {:ok, app3} =
-        Jobs.update_job_application_state(
-          app2,
-          "interview_scheduled",
-          %{notes: "Interview scheduled for next week"},
-          company_admin
-        )
-
-      assert app3.state == "interview_scheduled"
-
-      transitions =
-        BemedaPersonal.Jobs.JobApplicationStateTransition
-        |> Repo.all()
-        |> Enum.sort_by(& &1.inserted_at)
-
-      assert length(transitions) == 3
-      assert Enum.map(transitions, & &1.from_state) == ["applied", "under_review", "screening"]
-
-      assert Enum.map(transitions, & &1.to_state) == [
-               "under_review",
-               "screening",
-               "interview_scheduled"
-             ]
-    end
-
-    test "applicant can withdraw their application", %{
-      job_application: job_application,
-      applicant: applicant
-    } do
-      assert job_application.state == "applied"
-
-      {:ok, updated_application} =
-        Jobs.update_job_application_state(
-          job_application,
-          "withdrawn",
-          %{notes: "Found another opportunity"},
-          applicant
-        )
-
-      assert updated_application.state == "withdrawn"
-
-      transition =
-        Repo.get_by(BemedaPersonal.Jobs.JobApplicationStateTransition,
-          job_application_id: job_application.id
-        )
-
-      assert transition.from_state == "applied"
-      assert transition.to_state == "withdrawn"
-      assert transition.notes == "Found another opportunity"
-      assert transition.transitioned_by_id == applicant.id
-    end
-
-    test "applicant cannot transition to under_review", %{
-      job_application: job_application,
-      applicant: applicant
-    } do
-      assert job_application.state == "applied"
-
-      result =
-        Jobs.update_job_application_state(
-          job_application,
-          "under_review",
-          %{},
-          applicant
-        )
-
-      assert {:error, "You are not authorized to perform this transition"} = result
-
-      assert Repo.all(BemedaPersonal.Jobs.JobApplicationStateTransition) == []
-    end
-
-    test "rejects invalid state transition", %{
-      job_application: job_application,
-      company_admin: company_admin
-    } do
-      assert job_application.state == "applied"
-
-      result =
-        Jobs.update_job_application_state(
-          job_application,
-          "interviewed",
-          %{},
-          company_admin
-        )
-
-      assert {:error, "invalid transition from applied to interviewed"} = result
-
-      assert Repo.all(BemedaPersonal.Jobs.JobApplicationStateTransition) == []
-    end
-
-    test "broadcasts event when transitioning state", %{
-      job_application: job_application,
-      company_admin: company_admin
-    } do
-      topic = "job_application:#{job_application.id}"
-      Endpoint.subscribe(topic)
-
-      {:ok, updated_application} =
-        Jobs.update_job_application_state(
-          job_application,
-          "under_review",
-          %{notes: "Looking at this application"},
-          company_admin
-        )
+      status_message = Enum.at(messages, 1)
+      assert status_message.content =~ "Job application status updated to under_review"
+      assert status_message.sender_id == user.id
+      assert status_message.type == :status_update
 
       assert_receive %Broadcast{
-        event: "job_application_state_changed",
-        topic: ^topic,
-        payload: %{
-          job_application: ^updated_application,
-          from_state: "applied",
-          to_state: "under_review"
-        }
+        event: "user_job_application_updated",
+        topic: ^application_topic
       }
+    end
+
+    test "allows multiple transitions in sequence", %{
+      job_application: job_application,
+      user: user
+    } do
+      assert job_application.state == "applied"
+
+      {:ok, updated_job_application} =
+        Jobs.update_job_application_status(job_application, user, %{to_state: "under_review"})
+
+      assert updated_job_application.state == "under_review"
+
+      {:ok, updated_job_application} =
+        Jobs.update_job_application_status(updated_job_application, user, %{to_state: "screening"})
+
+      assert updated_job_application.state == "screening"
+
+      {:ok, updated_job_application} =
+        Jobs.update_job_application_status(updated_job_application, user, %{
+          to_state: "interview_scheduled"
+        })
+
+      assert updated_job_application.state == "interview_scheduled"
+
+      transitions = Repo.all(BemedaPersonal.Jobs.JobApplicationStateTransition)
+      assert length(transitions) == 3
+
+      messages = BemedaPersonal.Chat.list_messages(job_application)
+      assert length(messages) == 4
+    end
+
+    test "fails when trying to skip states", %{
+      job_application: job_application,
+      user: user
+    } do
+      assert job_application.state == "applied"
+
+      attrs = %{to_state: "interview_scheduled"}
+      result = Jobs.update_job_application_status(job_application, user, attrs)
+
+      assert {:error, error_string} = result
+      assert error_string =~ "invalid transition from applied to interview_scheduled"
+
+      assert Repo.all(BemedaPersonal.Jobs.JobApplicationStateTransition) == []
+
+      messages = BemedaPersonal.Chat.list_messages(job_application)
+      assert length(messages) == 1
+    end
+
+    test "fails when trying to transition to an invalid state", %{
+      job_application: job_application,
+      user: user
+    } do
+      attrs = %{to_state: "invalid_state"}
+      result = Jobs.update_job_application_status(job_application, user, attrs)
+
+      assert {:error, error_string} = result
+      assert error_string =~ "invalid transition from applied to invalid_state"
+
+      assert Repo.all(BemedaPersonal.Jobs.JobApplicationStateTransition) == []
+
+      messages = BemedaPersonal.Chat.list_messages(job_application)
+      assert length(messages) == 1
+    end
+
+    test "successfully transitions to withdrawn state from any state", %{
+      job_application: job_application,
+      user: user
+    } do
+      {:ok, updated_job_application} =
+        Jobs.update_job_application_status(job_application, user, %{to_state: "under_review"})
+
+      assert updated_job_application.state == "under_review"
+
+      {:ok, withdrawn_application} =
+        Jobs.update_job_application_status(updated_job_application, user, %{to_state: "withdrawn"})
+
+      assert withdrawn_application.state == "withdrawn"
+
+      transitions = Repo.all(BemedaPersonal.Jobs.JobApplicationStateTransition)
+      assert length(transitions) == 2
+
+      messages = BemedaPersonal.Chat.list_messages(job_application)
+      assert length(messages) == 3
     end
   end
 end

@@ -12,7 +12,7 @@ defmodule BemedaPersonal.Repo.Migrations.CreateJobApplicationStateTransitions do
       add :from_state, :string, null: false
       add :to_state, :string, null: false
       add :transitioned_by_id, references(:users, on_delete: :nilify_all, type: :binary_id)
-      add :notes, :string
+      add :notes, :text
 
       timestamps()
     end

@@ -17,6 +17,7 @@ defmodule BemedaPersonal.Chat.Message do
   @foreign_key_type :binary_id
   schema "messages" do
     field :content, :string
+    field :type, Ecto.Enum, values: [:user, :status_update], default: :user
     belongs_to :job_application, JobApplication
     has_one :media_asset, MediaAsset
     belongs_to :sender, User
@@ -26,6 +27,6 @@ defmodule BemedaPersonal.Chat.Message do
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(%__MODULE__{} = message, attrs) do
-    cast(message, attrs, [:content])
+    cast(message, attrs, [:content, :type])
   end
 end

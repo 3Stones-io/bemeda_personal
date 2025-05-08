@@ -6,7 +6,9 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobApplicationFilter
+  alias BemedaPersonal.Jobs.JobApplicationStateTransition
   alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -44,10 +46,18 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
           id={dom_id}
         >
           <JobsComponents.applicant_card
+            available_statuses={
+              SharedHelpers.get_available_statuses(
+                @current_user,
+                application,
+                application.job_posting
+              )
+            }
             applicant={application}
             id={"applicant-#{application.id}"}
             job={application.job_posting}
             show_job={true}
+            update_job_application_status_form={@update_job_application_status_form}
           />
         </div>
       </div>
@@ -91,7 +101,17 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
             <div class="flex flex-col md:flex-row justify-between">
               <div class="flex-1 pr-4">
                 <div>
-                  <h3 class="text-lg font-semibold text-gray-900">{application.job_posting.title}</h3>
+                  <h3>
+                    <span class="text-lg font-semibold text-gray-900">
+                      {application.job_posting.title}
+                    </span>
+                    <span class={[
+                      "text-xs font-medium w-[fit-content] px-2 py-1 rounded-full cursor-pointer",
+                      SharedHelpers.status_badge_color(application.state)
+                    ]}>
+                      {SharedHelpers.translate_status()[application.state]}
+                    </span>
+                  </h3>
                   <p class="text-sm text-gray-600 mt-1">{application.job_posting.company.name}</p>
                 </div>
 
@@ -138,9 +158,10 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   def mount(socket) do
     {:ok,
      socket
+     |> stream(:job_applications, [], dom_id: &"job_applications-#{&1.id}")
      |> assign(:end_of_timeline?, false)
      |> assign(:filters_form, %JobApplicationFilter{})
-     |> stream(:job_applications, [], dom_id: &"job_applications-#{&1.id}")}
+     |> SharedHelpers.assign_job_application_status_form()}
   end
 
   @impl Phoenix.LiveComponent

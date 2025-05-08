@@ -6,6 +6,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Endpoint
+  alias BemedaPersonal.Jobs.JobApplicationStateTransition
+  alias Phoenix.LiveView.JS
 
   require Logger
 
@@ -91,5 +93,134 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   @spec get_presigned_url(String.t()) :: String.t()
   def get_presigned_url(upload_id) do
     TigrisHelper.get_presigned_download_url(upload_id)
+  end
+
+  @spec get_available_statuses(map(), map(), map()) :: [String.t()]
+  def get_available_statuses(current_user, job_application, job_posting) do
+    current_state = job_application.state
+    is_company_admin = job_posting.company.admin_user_id == current_user.id
+    is_job_applicant = job_application.user_id == current_user.id
+
+    transitions = %{
+      "applied" => ["under_review", "withdrawn", "rejected"],
+      "under_review" => ["screening", "withdrawn", "rejected"],
+      "screening" => ["interview_scheduled", "withdrawn", "rejected"],
+      "interview_scheduled" => ["interviewed", "withdrawn", "rejected"],
+      "interviewed" => ["offer_extended", "withdrawn", "rejected"],
+      "offer_extended" => ["offer_accepted", "offer_declined", "withdrawn"]
+    }
+
+    all_next_states = transitions[current_state] || []
+
+    get_available_statuses_by_role(
+      is_company_admin,
+      is_job_applicant,
+      current_state,
+      all_next_states
+    )
+  end
+
+  defp get_available_statuses_by_role(true, false, "rejected", all_next_states) do
+    all_next_states
+  end
+
+  defp get_available_statuses_by_role(true, false, _current_state, all_next_states) do
+    Enum.filter(all_next_states, fn state ->
+      state not in ["offer_accepted", "offer_declined", "withdrawn"]
+    end)
+  end
+
+  defp get_available_statuses_by_role(false, true, "rejected", _all_next_states) do
+    []
+  end
+
+  defp get_available_statuses_by_role(false, true, "offer_extended", _all_next_states) do
+    ["offer_accepted", "offer_declined", "withdrawn"]
+  end
+
+  defp get_available_statuses_by_role(false, true, current_state, _all_next_states)
+       when current_state in ["offer_accepted", "offer_declined", "withdrawn"] do
+    []
+  end
+
+  defp get_available_statuses_by_role(false, true, _current_state, _all_next_states) do
+    ["withdrawn"]
+  end
+
+  defp get_available_statuses_by_role(
+         _is_company_admin,
+         _is_job_applicant,
+         _current_state,
+         _all_next_states
+       ),
+       do: []
+
+  @doc """
+  Returns a map of application states to their human-readable display names.
+  """
+  @spec translate_status() :: map()
+  def translate_status do
+    %{
+      "applied" => "Applied",
+      "interview_scheduled" => "Interview Scheduled",
+      "interviewed" => "Interviewed",
+      "offer_accepted" => "Offer Accepted",
+      "offer_declined" => "Offer Declined",
+      "offer_extended" => "Offer Extended",
+      "rejected" => "Rejected",
+      "screening" => "Screening",
+      "under_review" => "Under Review",
+      "withdrawn" => "Withdrawn"
+    }
+  end
+
+  @spec assign_job_application_status_form(socket()) :: socket()
+  def assign_job_application_status_form(socket) do
+    update_job_application_status_form =
+      %JobApplicationStateTransition{}
+      |> Jobs.change_job_application_status()
+      |> Phoenix.Component.to_form()
+
+    assign(socket, :update_job_application_status_form, update_job_application_status_form)
+  end
+
+  @spec update_job_application_status(socket(), map(), String.t()) :: {:noreply, socket()}
+  def update_job_application_status(socket, params, applicant_id) do
+    job_application = Jobs.get_job_application!(applicant_id)
+    user = socket.assigns.current_user
+
+    params =
+      Map.merge(params, %{
+        "from_state" => job_application.state
+      })
+
+    case Jobs.update_job_application_status(job_application, user, params) do
+      {:ok, updated_job_application} ->
+        {:noreply, Phoenix.LiveView.put_flash(socket, :info, "Status updated successfully")}
+
+      {:error, changeset} ->
+        {:noreply,
+         socket
+         |> Phoenix.LiveView.put_flash(:error, "Failed to update status")
+         |> assign(:update_job_application_status_form, changeset)}
+    end
+  end
+
+  @spec status_badge_color(String.t()) :: String.t()
+  def status_badge_color(status) do
+    status_colors = %{
+      "applied" => "bg-blue-100 text-blue-800",
+      "interview_scheduled" => "bg-green-100 text-green-800",
+      "interviewed" => "bg-teal-100 text-teal-800",
+      "offer_accepted" => "bg-green-100 text-green-800",
+      "offer_declined" => "bg-red-100 text-red-800",
+      "offer_extended" => "bg-yellow-100 text-yellow-800",
+      "rejected" => "bg-red-100 text-red-800",
+      "screening" => "bg-indigo-100 text-indigo-800",
+      "under_review" => "bg-purple-100 text-purple-800",
+      "withdrawn" => "bg-gray-100 text-gray-800"
+    }
+
+    Map.get(status_colors, status, "bg-gray-100 text-gray-800")
   end
 end

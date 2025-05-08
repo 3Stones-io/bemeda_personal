@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -12,14 +13,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
   @impl Phoenix.LiveView
   def handle_params(%{"id" => job_application_id, "job_id" => job_id}, _url, socket) do
     job_application = Jobs.get_job_application!(job_application_id)
-    job_posting = Jobs.get_job_posting!(job_id)
-    transitions = Jobs.list_job_application_state_transitions(job_application)
+
+    transitions =
+      Jobs.list_job_application_state_transitions(job_application)
 
     {:noreply,
      socket
      |> assign(:page_title, "Application History")
      |> assign(:job_application, job_application)
-     |> assign(:job_posting, job_posting)
+     |> assign(:job_posting, job_application.job_posting)
      |> assign(:transitions, transitions)}
   end
 
@@ -27,7 +29,18 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
     Calendar.strftime(datetime, "%B %d, %Y at %I:%M %p")
   end
 
-  def format_state_name(state) do
-    JobsComponents.format_state_name(state)
+  defp translate_status() do
+    %{
+      "applied" => "Applied",
+      "interview_scheduled" => "Interview Scheduled",
+      "interviewed" => "Interviewed",
+      "offer_accepted" => "Accept Offer",
+      "offer_declined" => "Decline Offer",
+      "offer_extended" => "Extend Offer",
+      "rejected" => "Reject Application",
+      "screening" => "Screening",
+      "under_review" => "Under Review",
+      "withdrawn" => "Withdraw Application"
+    }
   end
 end

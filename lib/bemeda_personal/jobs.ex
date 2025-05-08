@@ -6,6 +6,7 @@ defmodule BemedaPersonal.Jobs do
   import Ecto.Query, warn: false
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Chat
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.JobApplicationStateTransition
@@ -22,6 +23,7 @@ defmodule BemedaPersonal.Jobs do
   @type changeset :: Ecto.Changeset.t()
   @type company :: Company.t()
   @type job_application :: JobApplication.t()
+  @type job_application_state_transition :: JobApplicationStateTransition.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
   @type tag_id :: Ecto.UUID.t()
@@ -478,6 +480,11 @@ defmodule BemedaPersonal.Jobs do
     )
   end
 
+  defp apply_job_application_filter({:state, state}, dynamic) do
+    IO.puts(IO.ANSI.format([:yellow, "Applying state filter: #{state}"]))
+    dynamic([job_application: ja], ^dynamic and ja.state == ^state)
+  end
+
   defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   defp parse_date_if_string(date) when is_binary(date) do
@@ -836,131 +843,97 @@ defmodule BemedaPersonal.Jobs do
     |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
   end
 
-  @doc """
-  Transitions a job application to a new state.
-
-  ## Examples
-
-      iex> update_job_application_state(
-      ...>   job_application,
-      ...>   "screening",
-      ...>   %{notes: "Good candidate"},
-      ...>   user
-      ...> )
-      {:ok, %JobApplication{}}
-
-      iex> update_job_application_state(job_application, "rejected", %{}, user)
-      {:error, %Ecto.Changeset{}}
-
-      iex> update_job_application_state(job_application, "not_valid_state", %{}, user)
-      {:error, "invalid transition from applied to not_valid_state"}
-
-  """
-  @spec update_job_application_state(job_application(), String.t(), attrs(), user()) ::
-          {:ok, job_application()} | {:error, changeset()} | {:error, String.t()}
-  def update_job_application_state(
-        %JobApplication{} = job_application,
-        to_state,
-        params \\ %{},
-        %User{} = user
-      ) do
+  @spec update_job_application_status(job_application(), user(), attrs()) ::
+          {:ok, job_application()} | {:error, changeset()}
+  def update_job_application_status(job_application, user, attrs) do
     from_state = job_application.state
+    to_state = Map.get(attrs, :to_state) || Map.get(attrs, "to_state")
+    notes = Map.get(attrs, :notes) || Map.get(attrs, "notes")
 
-    prepared_job_application =
-      job_application
-      |> Repo.preload([:user, job_posting: [company: :admin_user]])
-      |> Map.put(:current_user, user)
-
-    prepared_job_application
-    |> Fsmx.transition(to_state)
-    |> handle_transition_result(from_state, to_state, params, user)
-  end
-
-  defp handle_transition_result(
-         {:ok, updated_job_application},
-         from_state,
-         to_state,
-         params,
-         user
-       ) do
-    execute_transition(updated_job_application, from_state, to_state, params, user)
-  end
-
-  defp handle_transition_result({:error, reason}, _from_state, _to_state, _params, _user)
-       when is_binary(reason) do
-    {:error, reason}
-  end
-
-  defp handle_transition_result({:error, changeset}, from_state, to_state, _params, _user) do
-    {:error, extract_invalid_transition_error(changeset, from_state, to_state)}
-  end
-
-  defp execute_transition(job_application, from_state, to_state, params, user) do
-    job_application
-    |> build_transition_multi(from_state, to_state, params, user)
-    |> Repo.transaction()
-    |> handle_transaction_result(from_state, to_state)
-  end
-
-  defp handle_transaction_result(
-         {:ok, %{job_application: final_job_application}},
-         from_state,
-         to_state
-       ) do
-    broadcast_state_change(final_job_application, from_state, to_state)
-    {:ok, final_job_application}
-  end
-
-  defp handle_transaction_result(
-         {:error, _operation, changeset, _changes},
-         _from_state,
-         _to_state
-       ) do
-    {:error, changeset}
-  end
-
-  defp build_transition_multi(job_application, from_state, to_state, params, user) do
     Multi.new()
-    |> Multi.insert(
-      :transition,
-      create_transition_record(job_application, from_state, to_state, params, user)
-    )
     |> Multi.run(:job_application, fn _repo, _changes ->
-      {:ok, job_application}
+      job_application
+      |> Fsmx.transition_changeset(to_state)
+      |> Repo.update()
     end)
+    |> Multi.run(:job_application_state_transition, fn _repo,
+                                                       %{job_application: job_application} ->
+      create_job_application_state_transition(job_application, user, from_state, notes)
+    end)
+    |> Multi.run(:create_status_message, fn _repo,
+                                            %{
+                                              job_application_state_transition:
+                                                job_application_state_transition
+                                            } ->
+      message = status_message_for_state(job_application_state_transition.to_state)
+
+      Chat.create_message(user, job_application_state_transition.job_application, %{
+        content: message,
+        type: "status_update"
+      })
+    end)
+    |> Repo.transaction()
+    |> handle_update_job_application_status_result()
   end
 
-  defp create_transition_record(job_application, from_state, to_state, params, user) do
+  defp create_job_application_state_transition(job_application, user, from_state, notes) do
     %JobApplicationStateTransition{}
     |> JobApplicationStateTransition.changeset(%{
       from_state: from_state,
-      to_state: to_state,
-      notes: Map.get(params, "notes") || Map.get(params, :notes)
+      to_state: job_application.state,
+      notes: notes
     })
     |> Changeset.put_assoc(:job_application, job_application)
     |> Changeset.put_assoc(:transitioned_by, user)
+    |> Repo.insert()
   end
 
-  defp broadcast_state_change(job_application, from_state, to_state) do
-    broadcast_event(
-      "#{@job_application_topic}:#{job_application.id}",
-      "job_application_state_changed",
-      %{
-        job_application: job_application,
-        from_state: from_state,
-        to_state: to_state
-      }
+  defp status_message_for_state(state) do
+    messages = %{
+      "applied" => "Job application has been submitted",
+      "under_review" => "Job application is now under review",
+      "screening" => "Job application is now in the screening phase",
+      "interview_scheduled" => "Interview has been scheduled for this application",
+      "interviewed" => "Candidate has been interviewed for this position",
+      "offer_extended" => "An offer has been extended for this position",
+      "offer_accepted" => "Offer has been accepted by the candidate",
+      "offer_declined" => "Offer has been declined by the candidate",
+      "rejected" => "Job application has been rejected",
+      "withdrawn" => "Job application has been withdrawn"
+    }
+
+    Map.get(messages, state, "Job application status changed to #{state}")
+  end
+
+  defp handle_update_job_application_status_result({:ok, %{job_application: job_application}}) do
+    :ok = broadcast_job_application_update(job_application)
+
+    {:ok, job_application}
+  end
+
+  defp handle_update_job_application_status_result({:error, _operation, changeset, _changes}) do
+    {:error, changeset}
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking job application state transition changes.
+
+  ## Examples
+
+      iex> change_job_application_status(job_application_state_transition)
+      %Ecto.Changeset{data: %JobApplicationStateTransition{}}
+
+  """
+  @spec change_job_application_status(job_application_state_transition(), attrs()) ::
+          changeset()
+  def change_job_application_status(
+        %JobApplicationStateTransition{} = job_application_state_transition,
+        attrs \\ %{}
+      ) do
+    JobApplicationStateTransition.changeset(
+      job_application_state_transition,
+      attrs
     )
-  end
-
-  defp extract_invalid_transition_error(changeset, from_state, to_state) do
-    case Keyword.get(changeset.errors, :state) do
-      {message, _} when is_binary(message) ->
-        "invalid transition from #{from_state} to #{to_state}"
-
-      _other ->
-        changeset
-    end
   end
 
   @doc """
@@ -978,7 +951,7 @@ defmodule BemedaPersonal.Jobs do
   def list_job_application_state_transitions(%JobApplication{} = job_application) do
     JobApplicationStateTransition
     |> where([t], t.job_application_id == ^job_application.id)
-    |> order_by([t], asc: t.inserted_at)
+    |> order_by([t], desc: t.inserted_at)
     |> preload([:transitioned_by])
     |> Repo.all()
   end

@@ -5,6 +5,7 @@
     <div :if={@live_action == :index}>
       <.live_component
         module={JobApplicationsListComponent}
+        current_user={@current_user}
         filter_params={@filter_params}
         id="job-applications-list"
         list_type={:applicant}

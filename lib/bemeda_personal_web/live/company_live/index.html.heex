@@ -138,6 +138,14 @@
             id={"applicant-card-#{application.id}"}
             job={application.job_posting}
             show_job={true}
+            available_statuses={
+              SharedHelpers.get_available_statuses(
+                @current_user,
+                application,
+                application.job_posting
+              )
+            }
+            update_job_application_status_form={@update_job_application_status_form}
           />
         </div>
       </div>
