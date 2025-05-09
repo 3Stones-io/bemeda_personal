@@ -829,6 +829,29 @@ defmodule BemedaPersonal.Jobs do
     )
   end
 
+  @doc """
+  Checks if a user has applied to any job of a specific company.
+  This is used to determine if a user can rate a company.
+
+  ## Examples
+
+      iex> user_has_applied_to_company_job?(user_id, company_id)
+      true
+
+      iex> user_has_applied_to_company_job?(user_id, company_id)
+      false
+
+  """
+  @spec user_has_applied_to_company_job?(binary(), binary()) :: boolean()
+  def user_has_applied_to_company_job?(user_id, company_id) do
+    query =
+      from ja in JobApplication,
+        join: jp in assoc(ja, :job_posting),
+        where: ja.user_id == ^user_id and jp.company_id == ^company_id
+
+    Repo.exists?(query)
+  end
+
   defp broadcast_event(topic, event, message) do
     Endpoint.broadcast(
       topic,

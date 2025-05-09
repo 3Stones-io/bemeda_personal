@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -727,6 +728,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :application, :any, required: true
+  attr :company, :any, required: true
+  attr :current_user, :any, required: true
   attr :job, :any, required: true
   attr :resume, :any, default: nil
   attr :show_actions, :boolean, default: false
@@ -766,6 +769,21 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </dd>
           </div>
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Rating</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <.live_component
+                current_user={@current_user}
+                entity_id={@application.user.id}
+                entity_name={"#{@application.user.first_name} #{@application.user.last_name}"}
+                entity_type="User"
+                id={"rating-display-applicant-#{@application.user.id}"}
+                module={RatingComponent}
+                rater_id={@company.id}
+                rater_type="Company"
+              />
+            </dd>
+          </div>
+          <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">Applied for</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {@job.title}

@@ -4,9 +4,11 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.RatingsFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Companies
+  alias BemedaPersonal.Ratings
 
   describe "Company Dashboard" do
     test "redirects if user is not logged in", %{conn: conn} do
@@ -35,17 +37,18 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ company.size
 
       assert html =~ company.website_url
+      assert html =~ "hero-star"
     end
 
     test "shows job count correctly", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
       job_posting_fixture(company)
       job_posting_fixture(company)
 
       {:ok, _view, html} =
         conn
-        |> log_in_user(user)
+        |> log_in_user(company_admin)
         |> live(~p"/companies")
 
       assert html =~ "Open Positions"
@@ -53,12 +56,12 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "users can edit their company", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
 
       {:ok, view, _html} =
         conn
-        |> log_in_user(user)
+        |> log_in_user(company_admin)
         |> live(~p"/companies")
 
       assert view
@@ -94,6 +97,113 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert view
              |> element("a[href='/companies/new']")
              |> has_element?()
+    end
+  end
+
+  describe "company ratings" do
+    setup %{conn: conn} do
+      company_admin = user_fixture(confirmed: true)
+      company = company_fixture(company_admin)
+      user = user_fixture(confirmed: true)
+
+      %{
+        company: company,
+        company_admin: company_admin,
+        conn: log_in_user(conn, company_admin),
+        user: user
+      }
+    end
+
+    test "displays component with no ratings", %{conn: conn} do
+      {:ok, view, html} = live(conn, ~p"/companies")
+
+      assert html =~ "hero-star"
+      assert html =~ "text-gray-300"
+      refute html =~ "fill-current"
+      assert html =~ "(0)"
+      assert html =~ "No ratings yet"
+
+      refute has_element?(view, "button", "Rate")
+      refute has_element?(view, "button", "Update Rating")
+    end
+
+    test "displays component with one rating", %{
+      company: company,
+      conn: conn,
+      user: user
+    } do
+      rating_fixture(%{
+        ratee_id: company.id,
+        ratee_type: "Company",
+        rater_id: user.id,
+        rater_type: "User",
+        score: 4
+      })
+
+      {:ok, _view, html} = live(conn, ~p"/companies")
+
+      assert html =~ "4.0"
+      assert html =~ "(1)"
+      assert html =~ "fill-current"
+      assert html =~ "text-gray-300"
+    end
+
+    test "displays partial rating correctly with decimal value", %{
+      company: company,
+      conn: conn
+    } do
+      user1 = user_fixture(confirmed: true)
+      user2 = user_fixture(confirmed: true)
+
+      rating_fixture(%{
+        ratee_id: company.id,
+        ratee_type: "Company",
+        rater_id: user1.id,
+        rater_type: "User",
+        score: 3
+      })
+
+      rating_fixture(%{
+        ratee_id: company.id,
+        ratee_type: "Company",
+        rater_id: user2.id,
+        rater_type: "User",
+        score: 4
+      })
+
+      {:ok, _view, html} = live(conn, ~p"/companies")
+
+      assert html =~ "3.5"
+      assert html =~ "(2)"
+      assert html =~ "fill-current"
+    end
+
+    test "rating display updates in real-time when ratings change", %{
+      company: company,
+      conn: conn
+    } do
+      user = user_fixture(confirmed: true)
+      job_posting = job_posting_fixture(company)
+      job_application_fixture(user, job_posting)
+
+      {:ok, view, html} = live(conn, ~p"/companies")
+
+      assert html =~ "(0)"
+      assert html =~ "No ratings yet"
+      refute html =~ "fill-current"
+
+      Ratings.rate_company(user, company, %{
+        comment: "Excellent company!",
+        score: 5
+      })
+
+      # Flaky test, sometimes the rating is not updated in time
+      Process.sleep(100)
+
+      updated_html = render(view)
+      assert updated_html =~ "5.0"
+      assert updated_html =~ "(1)"
+      assert updated_html =~ "fill-current"
     end
   end
 

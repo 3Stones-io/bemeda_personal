@@ -6,8 +6,13 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.Live.Hooks.RatingHooks
+  alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
+  alias Phoenix.LiveView.JS
   alias Phoenix.Socket.Broadcast
+
+  on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -18,6 +23,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
       Endpoint.subscribe("company:#{current_user.id}")
       Endpoint.subscribe("job_application:company:#{company.id}")
       Endpoint.subscribe("job_posting:company:#{company.id}")
+      Endpoint.subscribe("rating:Company:#{company.id}")
     end
 
     {:ok,
