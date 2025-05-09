@@ -15,10 +15,10 @@ defmodule BemedaPersonal.Jobs.JobApplicationStateTransition do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "job_application_state_transitions" do
-    belongs_to :job_application, JobApplication
     field :from_state, :string
-    field :to_state, :string
+    belongs_to :job_application, JobApplication
     field :notes, :string
+    field :to_state, :string
     belongs_to :transitioned_by, User
 
     timestamps(type: :utc_datetime)
@@ -27,7 +27,7 @@ defmodule BemedaPersonal.Jobs.JobApplicationStateTransition do
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(%__MODULE__{} = transition, attrs) do
     transition
-    |> cast(attrs, [:from_state, :to_state, :notes])
+    |> cast(attrs, [:from_state, :notes, :to_state])
     |> validate_required([:from_state, :to_state])
   end
 end

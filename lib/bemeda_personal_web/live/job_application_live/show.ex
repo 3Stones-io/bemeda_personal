@@ -112,18 +112,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         {:noreply,
          socket
          |> assign(:show_status_transition_modal, false)
-         |> put_flash(:info, "Job application status updated successfully.")
-         |> push_patch(
-           to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-         )}
+         |> put_flash(:info, "Job application status updated successfully.")}
 
       {:error, _changeset} ->
         {:noreply,
          socket
-         |> put_flash(:error, "Failed to update job application status.")
-         |> push_patch(
-           to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-         )}
+         |> assign(:show_status_transition_modal, false)
+         |> put_flash(:error, "Failed to update job application status.")}
     end
   end
 
@@ -177,7 +172,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     {:noreply,
      socket
      |> assign(:job_application, job_application)
-     |> assign_available_statuses(job_application, job_application.job_posting)}
+     |> assign_available_statuses(job_application)}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
@@ -195,11 +190,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       Endpoint.subscribe("job_application:user:#{job_application.user_id}")
     end
 
+    is_company_admin =
+      socket.assigns.current_user.id == job_posting.company.admin_user_id
+
     socket
     |> stream(:messages, messages)
     |> assign(:job_application, job_application)
     |> assign(:job_posting, job_posting)
-    |> assign_available_statuses(job_application, job_posting)
+    |> assign(:is_company_admin?, is_company_admin)
+    |> assign_available_statuses(job_application)
     |> assign_chat_form(changeset)
   end
 
@@ -207,12 +206,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     assign(socket, :chat_form, to_form(changeset))
   end
 
-  defp assign_available_statuses(socket, job_application, job_posting) do
+  defp assign_available_statuses(socket, job_application) do
     available_statuses =
       SharedHelpers.get_available_statuses(
         socket.assigns.current_user,
-        job_application,
-        job_posting
+        job_application
       )
 
     assign(socket, :available_statuses, available_statuses)

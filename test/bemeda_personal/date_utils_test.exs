@@ -1,5 +1,5 @@
 defmodule BemedaPersonal.DateUtilsTest do
-  use BemedaPersonal.DataCase, async: true
+  use ExUnit.Case, async: true
 
   alias BemedaPersonal.DateUtils
 

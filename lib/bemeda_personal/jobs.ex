@@ -807,7 +807,6 @@ defmodule BemedaPersonal.Jobs do
 
   defp handle_tag_application_result({:ok, %{update_job_application: updated_job_application}}) do
     broadcast_job_application_update(updated_job_application)
-
     {:ok, updated_job_application}
   end
 
@@ -903,8 +902,8 @@ defmodule BemedaPersonal.Jobs do
     %JobApplicationStateTransition{}
     |> JobApplicationStateTransition.changeset(%{
       from_state: from_state,
-      to_state: job_application.state,
-      notes: notes
+      notes: notes,
+      to_state: job_application.state
     })
     |> Changeset.put_assoc(:job_application, job_application)
     |> Changeset.put_assoc(:transitioned_by, user)

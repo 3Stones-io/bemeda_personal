@@ -17,10 +17,10 @@ defmodule BemedaPersonal.Chat.Message do
   @foreign_key_type :binary_id
   schema "messages" do
     field :content, :string
-    field :type, Ecto.Enum, values: [:user, :status_update], default: :user
     belongs_to :job_application, JobApplication
     has_one :media_asset, MediaAsset
     belongs_to :sender, User
+    field :type, Ecto.Enum, values: [:user, :status_update], default: :user
 
     timestamps(type: :utc_datetime)
   end

@@ -19,9 +19,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
 
     {:noreply,
      socket
-     |> assign(:page_title, "Application History")
      |> assign(:job_application, job_application)
      |> assign(:job_posting, job_application.job_posting)
+     |> assign(:page_title, "Application History")
      |> assign(:transitions, transitions)}
   end
 end

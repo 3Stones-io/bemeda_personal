@@ -26,7 +26,7 @@ import topbar from '../vendor/topbar'
 import ChatInput from './hooks/chat_input'
 import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
-import JobApplicationInputs from './hooks/job_application_inputs'
+import JobApplicationStatusInputs from './hooks/job_application_status_inputs'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
 import TagsInput from './hooks/tags_input'
@@ -38,7 +38,7 @@ const Hooks = {
   ChatInput,
   CopyToClipboard,
   CurrentCheckbox,
-  JobApplicationInputs,
+  JobApplicationStatusInputs,
   RatingsTooltip,
   RatingsTooltipContent,
   TagsInput,

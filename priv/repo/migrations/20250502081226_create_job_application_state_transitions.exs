@@ -1,7 +1,7 @@
 defmodule BemedaPersonal.Repo.Migrations.CreateJobApplicationStateTransitions do
   use Ecto.Migration
 
-  def up do
+  def change do
     create table(:job_application_state_transitions, primary_key: false) do
       add :id, :binary_id, primary_key: true
 
@@ -20,9 +20,5 @@ defmodule BemedaPersonal.Repo.Migrations.CreateJobApplicationStateTransitions do
     create index(:job_application_state_transitions, [:job_application_id])
     create index(:job_application_state_transitions, [:transitioned_by_id])
     create index(:job_application_state_transitions, [:from_state, :to_state])
-  end
-
-  def down do
-    drop table(:job_application_state_transitions)
   end
 end

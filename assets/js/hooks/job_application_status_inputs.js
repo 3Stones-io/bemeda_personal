@@ -1,4 +1,4 @@
-const JobApplicationInputs = {
+const JobApplicationStatusInputs = {
   mounted() {
     const updateStatusContainer = this.el
     const form = updateStatusContainer.querySelector('form')
@@ -37,4 +37,4 @@ const JobApplicationInputs = {
   },
 }
 
-export default JobApplicationInputs
+export default JobApplicationStatusInputs

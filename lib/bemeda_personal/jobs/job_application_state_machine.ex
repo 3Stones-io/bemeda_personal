@@ -12,8 +12,7 @@ defmodule BemedaPersonal.Jobs.JobApplicationStateMachine do
     "offer_extended" => ["offer_accepted", "offer_declined", "withdrawn"]
   }
 
-  use Fsmx.Fsm,
-    transitions: @transitions
+  use Fsmx.Fsm, transitions: @transitions
 
   @spec get_transitions() :: map()
   def get_transitions, do: @transitions

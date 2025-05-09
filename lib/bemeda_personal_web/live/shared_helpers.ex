@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   import Phoenix.Component, only: [assign: 3]
 
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobApplicationStateMachine
   alias BemedaPersonal.Jobs.JobApplicationStateTransition
@@ -11,7 +12,9 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   require Logger
 
+  @type job_application :: Jobs.JobApplication.t()
   @type socket :: Phoenix.LiveView.Socket.t()
+  @type user :: User.t()
 
   @spec to_html(binary()) :: Phoenix.HTML.safe()
   def to_html(markdown) do
@@ -95,10 +98,9 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     TigrisHelper.get_presigned_download_url(upload_id)
   end
 
-  @spec get_available_statuses(map(), map(), map()) :: [String.t()]
-  def get_available_statuses(current_user, job_application, job_posting) do
+  @spec get_available_statuses(user(), job_application()) :: list()
+  def get_available_statuses(current_user, job_application) do
     current_state = job_application.state
-    is_company_admin = job_posting.company.admin_user_id == current_user.id
     is_job_applicant = job_application.user_id == current_user.id
 
     transitions = JobApplicationStateMachine.get_transitions()
@@ -106,47 +108,42 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     all_next_states = transitions[current_state] || []
 
     get_available_statuses_by_role(
-      is_company_admin,
-      is_job_applicant,
       current_state,
-      all_next_states
+      all_next_states,
+      is_job_applicant
     )
   end
 
-  defp get_available_statuses_by_role(true, false, "rejected", all_next_states) do
-    all_next_states
-  end
-
-  defp get_available_statuses_by_role(true, false, _current_state, all_next_states) do
-    Enum.filter(all_next_states, fn state ->
-      state not in ["offer_accepted", "offer_declined", "withdrawn"]
-    end)
-  end
-
-  defp get_available_statuses_by_role(false, true, "rejected", _all_next_states) do
+  defp get_available_statuses_by_role("rejected", _all_next_states, true) do
     []
   end
 
-  defp get_available_statuses_by_role(false, true, "offer_extended", _all_next_states) do
+  defp get_available_statuses_by_role(
+         "offer_extended",
+         _all_next_states,
+         true
+       ) do
     ["offer_accepted", "offer_declined", "withdrawn"]
   end
 
-  defp get_available_statuses_by_role(false, true, current_state, _all_next_states)
+  defp get_available_statuses_by_role(current_state, _all_next_states, true)
        when current_state in ["offer_accepted", "offer_declined", "withdrawn"] do
     []
   end
 
-  defp get_available_statuses_by_role(false, true, _current_state, _all_next_states) do
+  defp get_available_statuses_by_role(_current_state, _all_next_states, true) do
     ["withdrawn"]
   end
 
-  defp get_available_statuses_by_role(
-         _is_company_admin,
-         _is_job_applicant,
-         _current_state,
-         _all_next_states
-       ),
-       do: []
+  defp get_available_statuses_by_role("rejected", all_next_states, false) do
+    all_next_states
+  end
+
+  defp get_available_statuses_by_role(_current_state, all_next_states, false) do
+    Enum.filter(all_next_states, fn state ->
+      state not in ["offer_accepted", "offer_declined", "withdrawn"]
+    end)
+  end
 
   @spec translate_status(atom) :: map()
   def translate_status(:action) do

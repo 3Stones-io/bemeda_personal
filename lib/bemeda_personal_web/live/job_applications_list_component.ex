@@ -48,8 +48,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
             available_statuses={
               SharedHelpers.get_available_statuses(
                 @current_user,
-                application,
-                application.job_posting
+                application
               )
             }
             applicant={application}

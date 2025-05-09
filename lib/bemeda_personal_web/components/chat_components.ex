@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   use BemedaPersonalWeb, :html
 
+  alias BemedaPersonal.Account.User
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media.MediaAsset
@@ -11,6 +12,32 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
+
+  @candidate_messages %{
+    "applied" => "You have submitted your application",
+    "interview_scheduled" => "Your interview has been scheduled",
+    "interviewed" => "You have been interviewed",
+    "offer_accepted" => "You have accepted the offer",
+    "offer_declined" => "You have declined the offer",
+    "offer_extended" => "An offer has been extended to you",
+    "rejected" => "Your application has been rejected",
+    "screening" => "Your application is in the screening phase",
+    "under_review" => "Your application is now under review",
+    "withdrawn" => "You have withdrawn your application"
+  }
+
+  @employer_messages %{
+    "applied" => "This application has been submitted",
+    "interview_scheduled" => "An interview has been scheduled for this application",
+    "interviewed" => "This candidate has been interviewed",
+    "offer_accepted" => "The offer has been accepted",
+    "offer_declined" => "The offer has been declined",
+    "offer_extended" => "An offer has been extended for this position",
+    "rejected" => "This application has been rejected",
+    "screening" => "This application is now in the screening phase",
+    "under_review" => "This application is now under review",
+    "withdrawn" => "This application has been withdrawn"
+  }
 
   attr :chat_form, :any, required: true
   attr :class, :string, default: nil
@@ -54,6 +81,11 @@ defmodule BemedaPersonalWeb.ChatComponents do
     </.form>
     """
   end
+
+  attr :current_user, User
+  attr :id, :string
+  attr :is_company_admin?, :boolean
+  attr :message, Message
 
   @spec chat_container(assigns()) :: output()
   def chat_container(%{message: %JobApplication{}} = assigns) do
@@ -104,22 +136,26 @@ defmodule BemedaPersonalWeb.ChatComponents do
         @message.content && @message.sender_id != @current_user.id && "bg-gray-100 "
       ]}
     >
-      <.chat_message message={@message} current_user={@current_user} />
+      <.chat_message
+        current_user={@current_user}
+        is_company_admin?={@is_company_admin?}
+        message={@message}
+      />
     </div>
     """
   end
 
   attr :class, :string, default: nil
   attr :current_user, :any, default: nil
-  attr :message, :any
-  attr :job_application, :any, default: nil
   attr :index, :string, default: nil
+  attr :is_company_admin?, :boolean
+  attr :job_application, :any, default: nil
+  attr :message, :any
 
-  @spec chat_message(assigns()) :: output()
-  def chat_message(
-        %{message: %{media_asset: %MediaAsset{type: "video" <> _rest, status: :pending}}} =
-          assigns
-      ) do
+  defp chat_message(
+         %{message: %{media_asset: %MediaAsset{type: "video" <> _rest, status: :pending}}} =
+           assigns
+       ) do
     ~H"""
     <div class="w-full h-[200px] bg-zinc-200 rounded-lg flex items-center justify-center">
       <.icon name="hero-arrow-up-on-square" class="h-12 w-12 text-[#075389] animate-pulse" />
@@ -127,25 +163,25 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(
-        %{
-          message: %{
-            media_asset: %MediaAsset{
-              type: "video" <> _rest,
-              status: :uploaded
-            }
-          }
-        } = assigns
-      ) do
+  defp chat_message(
+         %{
+           message: %{
+             media_asset: %MediaAsset{
+               type: "video" <> _rest,
+               status: :uploaded
+             }
+           }
+         } = assigns
+       ) do
     ~H"""
     <SharedComponents.video_player class="w-full" media_asset={@message.media_asset} />
     """
   end
 
-  def chat_message(
-        %{message: %{media_asset: %MediaAsset{type: "audio" <> _rest, status: :pending}}} =
-          assigns
-      ) do
+  defp chat_message(
+         %{message: %{media_asset: %MediaAsset{type: "audio" <> _rest, status: :pending}}} =
+           assigns
+       ) do
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
       <div class="flex items-center gap-3">
@@ -162,16 +198,16 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(
-        %{
-          message: %{
-            media_asset: %MediaAsset{
-              type: "audio" <> _rest,
-              status: :uploaded
-            }
-          }
-        } = assigns
-      ) do
+  defp chat_message(
+         %{
+           message: %{
+             media_asset: %MediaAsset{
+               type: "audio" <> _rest,
+               status: :uploaded
+             }
+           }
+         } = assigns
+       ) do
     ~H"""
     <audio class="w-full" controls>
       <source src={SharedHelpers.get_presigned_url(@message.id)} type="audio/mp3" />
@@ -179,10 +215,10 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(
-        %{message: %{media_asset: %MediaAsset{type: "image" <> _rest, status: :pending}}} =
-          assigns
-      ) do
+  defp chat_message(
+         %{message: %{media_asset: %MediaAsset{type: "image" <> _rest, status: :pending}}} =
+           assigns
+       ) do
     ~H"""
     <div class="w-full h-[200px] bg-zinc-200 rounded-lg flex items-center justify-center">
       <.icon name="hero-photo" class="h-12 w-12 text-[#075389] animate-pulse" />
@@ -190,7 +226,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(%{message: %{media_asset: %MediaAsset{type: "image" <> _rest}}} = assigns) do
+  defp chat_message(%{message: %{media_asset: %MediaAsset{type: "image" <> _rest}}} = assigns) do
     ~H"""
     <div class="w-full overflow-hidden rounded-lg">
       <img
@@ -202,7 +238,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(%{message: %{media_asset: %MediaAsset{status: :pending}}} = assigns) do
+  defp chat_message(%{message: %{media_asset: %MediaAsset{status: :pending}}} = assigns) do
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3 flex items-center">
       <.icon name="hero-document" class="h-6 w-6 text-[#075389] mr-3" />
@@ -214,7 +250,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(%{message: %{media_asset: %MediaAsset{status: :uploaded}}} = assigns) do
+  defp chat_message(%{message: %{media_asset: %MediaAsset{status: :uploaded}}} = assigns) do
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
       <.link
@@ -231,17 +267,17 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  def chat_message(%{message: %{type: :status_update}} = assigns) do
+  defp chat_message(%{message: %{type: :status_update}} = assigns) do
     ~H"""
     <div class="w-full flex justify-center my-2">
       <div class="bg-purple-100 text-purple-800 rounded-xl py-2 px-4 text-center text-sm">
-        {get_status_message(@message, @current_user)}
+        <p>{get_message_content(@message, @is_company_admin?)}</p>
       </div>
     </div>
     """
   end
 
-  def chat_message(assigns) do
+  defp chat_message(assigns) do
     ~H"""
     <div class="p-3">
       <p class="text-sm">{@message.content}</p>
@@ -249,55 +285,21 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  defp get_status_message(%{content: content}, _current_user) when not is_binary(content) do
-    content
-  end
+  defp get_message_content(message, is_company_admin?) do
+    default_message = "Your application status changed to #{message.content}"
 
-  defp get_status_message(%{job_application: nil, content: content}, _current_user) do
-    content
-  end
-
-  defp get_status_message(%{job_application: %{user_id: user_id}, content: content}, %{
-         id: user_id
-       }) do
-    get_candidate_message(content)
-  end
-
-  defp get_status_message(%{content: content}, _current_user) do
-    get_employer_message(content)
-  end
-
-  defp get_candidate_message(state) do
-    candidate_messages = %{
-      "applied" => "You have submitted your application",
-      "under_review" => "Your application is now under review",
-      "screening" => "Your application is in the screening phase",
-      "interview_scheduled" => "Your interview has been scheduled",
-      "interviewed" => "You have been interviewed",
-      "offer_extended" => "An offer has been extended to you",
-      "offer_accepted" => "You have accepted the offer",
-      "offer_declined" => "You have declined the offer",
-      "rejected" => "Your application has been rejected",
-      "withdrawn" => "You have withdrawn your application"
-    }
-
-    Map.get(candidate_messages, state, "Your application status changed to #{state}")
-  end
-
-  defp get_employer_message(state) do
-    employer_messages = %{
-      "applied" => "This application has been submitted",
-      "under_review" => "This application is now under review",
-      "screening" => "This application is now in the screening phase",
-      "interview_scheduled" => "An interview has been scheduled for this application",
-      "interviewed" => "This candidate has been interviewed",
-      "offer_extended" => "An offer has been extended for this position",
-      "offer_accepted" => "The offer has been accepted",
-      "offer_declined" => "The offer has been declined",
-      "rejected" => "This application has been rejected",
-      "withdrawn" => "This application has been withdrawn"
-    }
-
-    Map.get(employer_messages, state, "This application status changed to #{state}")
+    if is_company_admin? do
+      Map.get(
+        @employer_messages,
+        message.content,
+        default_message
+      )
+    else
+      Map.get(
+        @candidate_messages,
+        message.content,
+        default_message
+      )
+    end
   end
 end
