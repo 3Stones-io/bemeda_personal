@@ -43,8 +43,10 @@
         <div class="border-b border-gray-200 pb-2 mb-2">
           <div :for={status <- @available_statuses} class="px-3 py-1">
             <.link
-              patch={
-                ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/edit_status?to_state=#{status}"
+              phx-click={
+                JS.push("show-status-transition-modal",
+                  value: %{to_state: status}
+                )
               }
               class="block w-full text-center px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
             >
@@ -77,14 +79,10 @@
   <ChatComponents.chat_form chat_form={@chat_form} class="fixed inset-x-[2%] bottom-[2%]" />
 
   <.modal
-    :if={@live_action == :edit_status && Map.get(assigns, :to_state)}
+    :if={@show_status_transition_modal}
     id="status-transition-modal"
     show
-    on_cancel={
-      JS.patch(
-        ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}"
-      )
-    }
+    on_cancel={JS.push("hide-status-transition-modal")}
   >
     <.header>
       {SharedHelpers.translate_status(:state)[@to_state]}
@@ -102,17 +100,6 @@
       />
 
       <:actions>
-        <.button
-          type="button"
-          class="bg-gray-300 hover:bg-gray-400 text-gray-800"
-          phx-click={
-            JS.patch(
-              ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}"
-            )
-          }
-        >
-          Cancel
-        </.button>
         <.button type="submit" class="bg-indigo-600 hover:bg-indigo-700">
           Update Status
         </.button>

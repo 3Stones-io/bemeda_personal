@@ -1,4 +1,6 @@
 defmodule BemedaPersonal.Jobs.JobApplicationStateTransition do
+  @moduledoc false
+
   use Ecto.Schema
 
   import Ecto.Changeset

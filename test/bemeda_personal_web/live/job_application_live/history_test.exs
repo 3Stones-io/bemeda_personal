@@ -110,6 +110,32 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
       assert html =~ formatted_date
     end
 
+    test "displays all job application transitions with complete information", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      transitions = Jobs.list_job_application_state_transitions(job_application)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
+        )
+
+      for transition <- transitions do
+        assert html =~
+                 BemedaPersonalWeb.SharedHelpers.translate_status(:state)[transition.to_state]
+
+        formatted_date = DateUtils.format_datetime(transition.inserted_at)
+        assert html =~ formatted_date
+
+        assert html =~ "Updated by: #{transition.transitioned_by.email}"
+      end
+
+      assert html =~ "Application Created"
+      assert html =~ DateUtils.format_datetime(job_application.inserted_at)
+    end
+
     test "provides back link to job application", %{
       conn: conn,
       job_application: job_application
@@ -139,10 +165,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
     end
 
     test "displays transition notes when viewed by company user", %{
+      conn: conn,
       job_application: job_application,
       company_user: company_user
     } do
-      conn = build_conn() |> log_in_user(company_user)
+      conn = log_in_user(conn, company_user)
 
       {:ok, _view, html} =
         live(
@@ -152,6 +179,35 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
 
       assert html =~ "Candidate profile looks promising"
       assert html =~ "Moving to initial screening"
+    end
+
+    test "hides transition notes from candidates but shows them to company users", %{
+      conn: conn,
+      job_application: job_application,
+      company_user: company_user,
+      user: user
+    } do
+      candidate_conn = log_in_user(conn, user)
+
+      {:ok, _view, candidate_html} =
+        live(
+          candidate_conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
+        )
+
+      refute candidate_html =~ "Candidate profile looks promising"
+      refute candidate_html =~ "Moving to initial screening"
+
+      company_conn = log_in_user(conn, company_user)
+
+      {:ok, _view, company_html} =
+        live(
+          company_conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
+        )
+
+      assert company_html =~ "Candidate profile looks promising"
+      assert company_html =~ "Moving to initial screening"
     end
   end
 end

@@ -81,7 +81,8 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
       when event in [
              "job_application_created",
              "job_application_updated",
-             "company_job_application_updated"
+             "company_job_application_updated",
+             "company_job_application_status_updated"
            ] do
     {:noreply, stream_insert(socket, :recent_applicants, payload.job_application)}
   end

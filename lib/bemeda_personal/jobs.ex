@@ -807,6 +807,7 @@ defmodule BemedaPersonal.Jobs do
 
   defp handle_tag_application_result({:ok, %{update_job_application: updated_job_application}}) do
     broadcast_job_application_update(updated_job_application)
+
     {:ok, updated_job_application}
   end
 
@@ -864,10 +865,10 @@ defmodule BemedaPersonal.Jobs do
                                               job_application_state_transition:
                                                 job_application_state_transition
                                             } ->
-      message = status_message_for_state(job_application_state_transition.to_state)
+      state = job_application_state_transition.to_state
 
       Chat.create_message(user, job_application_state_transition.job_application, %{
-        content: message,
+        content: state,
         type: "status_update"
       })
     end)
@@ -887,25 +888,18 @@ defmodule BemedaPersonal.Jobs do
     |> Repo.insert()
   end
 
-  defp status_message_for_state(state) do
-    messages = %{
-      "applied" => "Job application has been submitted",
-      "under_review" => "Job application is now under review",
-      "screening" => "Job application is now in the screening phase",
-      "interview_scheduled" => "Interview has been scheduled for this application",
-      "interviewed" => "Candidate has been interviewed for this position",
-      "offer_extended" => "An offer has been extended for this position",
-      "offer_accepted" => "Offer has been accepted by the candidate",
-      "offer_declined" => "Offer has been declined by the candidate",
-      "rejected" => "Job application has been rejected",
-      "withdrawn" => "Job application has been withdrawn"
-    }
-
-    Map.get(messages, state, "Job application status changed to #{state}")
-  end
-
   defp handle_update_job_application_status_result({:ok, %{job_application: job_application}}) do
-    :ok = broadcast_job_application_update(job_application)
+    broadcast_event(
+      "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
+      "company_job_application_status_updated",
+      %{job_application: job_application}
+    )
+
+    broadcast_event(
+      "#{@job_application_topic}:user:#{job_application.user_id}",
+      "user_job_application_status_updated",
+      %{job_application: job_application}
+    )
 
     {:ok, job_application}
   end

@@ -1215,7 +1215,8 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, updated_application3} =
         Jobs.update_job_application_status(job_application3, user, %{to_state: "under_review"})
-      {:ok, updated_application3} =
+
+      {:ok, screened_application3} =
         Jobs.update_job_application_status(updated_application3, user, %{to_state: "screening"})
 
       results = Jobs.list_job_applications(%{state: "applied"})
@@ -1227,26 +1228,31 @@ defmodule BemedaPersonal.JobsTest do
       assert result.state == "under_review"
 
       assert [result] = Jobs.list_job_applications(%{state: "screening"})
-      assert result.id == updated_application3.id
+      assert result.id == screened_application3.id
       assert result.state == "screening"
 
-      assert [] = Jobs.list_job_applications(%{state: "withdrawn"})
+      assert %{state: "withdrawn"}
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
 
-      assert [result] = Jobs.list_job_applications(%{
-        state: "screening",
-        user_id: user.id,
-        job_posting_id: job_posting.id
-      })
+      assert [result] =
+               Jobs.list_job_applications(%{
+                 state: "screening",
+                 user_id: user.id,
+                 job_posting_id: job_posting.id
+               })
 
-      assert result.id == updated_application3.id
+      assert result.id == screened_application3.id
       assert result.state == "screening"
       assert result.user_id == user.id
       assert result.job_posting_id == job_posting.id
 
-      assert Enum.empty?(Jobs.list_job_applications(%{
-        state: "screening",
-        user_id: Ecto.UUID.generate()
-      }))
+      assert %{
+               state: "screening",
+               user_id: Ecto.UUID.generate()
+             }
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
     end
   end
 
@@ -1406,12 +1412,12 @@ defmodule BemedaPersonal.JobsTest do
       assert length(messages) == 2
 
       status_message = Enum.at(messages, 1)
-      assert status_message.content =~ "Job application is now under review"
+      assert status_message.content == "under_review"
       assert status_message.sender_id == user.id
       assert status_message.type == :status_update
 
       assert_receive %Broadcast{
-        event: "user_job_application_updated",
+        event: "user_job_application_status_updated",
         topic: ^application_topic
       }
     end
@@ -1422,22 +1428,24 @@ defmodule BemedaPersonal.JobsTest do
     } do
       assert job_application.state == "applied"
 
-      {:ok, updated_job_application} =
+      {:ok, under_review_application} =
         Jobs.update_job_application_status(job_application, user, %{to_state: "under_review"})
 
-      assert updated_job_application.state == "under_review"
+      assert under_review_application.state == "under_review"
 
-      {:ok, updated_job_application} =
-        Jobs.update_job_application_status(updated_job_application, user, %{to_state: "screening"})
+      {:ok, screening_application} =
+        Jobs.update_job_application_status(under_review_application, user, %{
+          to_state: "screening"
+        })
 
-      assert updated_job_application.state == "screening"
+      assert screening_application.state == "screening"
 
-      {:ok, updated_job_application} =
-        Jobs.update_job_application_status(updated_job_application, user, %{
+      {:ok, interview_application} =
+        Jobs.update_job_application_status(screening_application, user, %{
           to_state: "interview_scheduled"
         })
 
-      assert updated_job_application.state == "interview_scheduled"
+      assert interview_application.state == "interview_scheduled"
 
       transitions = Repo.all(Jobs.JobApplicationStateTransition)
       assert length(transitions) == 3
@@ -1455,7 +1463,9 @@ defmodule BemedaPersonal.JobsTest do
       attrs = %{to_state: "interview_scheduled"}
       {:error, changeset} = Jobs.update_job_application_status(job_application, user, attrs)
 
-      assert "transition_changeset failed: invalid transition from applied to interview_scheduled" in errors_on(changeset).state
+      assert "transition_changeset failed: invalid transition from applied to interview_scheduled" in errors_on(
+               changeset
+             ).state
 
       assert Repo.all(Jobs.JobApplicationStateTransition) == []
 
@@ -1471,7 +1481,10 @@ defmodule BemedaPersonal.JobsTest do
       result = Jobs.update_job_application_status(job_application, user, attrs)
 
       assert {:error, changeset} = result
-      assert "transition_changeset failed: invalid transition from applied to invalid_state" in errors_on(changeset).state
+
+      assert "transition_changeset failed: invalid transition from applied to invalid_state" in errors_on(
+               changeset
+             ).state
 
       assert Repo.all(Jobs.JobApplicationStateTransition) == []
 
@@ -1523,14 +1536,20 @@ defmodule BemedaPersonal.JobsTest do
       assert %Ecto.Changeset{} = Jobs.change_job_application_status(transition)
     end
 
-    test "returns a changeset with changes when valid attrs are provided", %{transition: transition} do
+    test "returns a changeset with changes when valid attrs are provided", %{
+      transition: transition
+    } do
       changeset = Jobs.change_job_application_status(transition, %{notes: "Updated notes"})
       assert changeset.valid?
       assert changeset.changes[:notes] == "Updated notes"
     end
 
-    test "returns a changeset with errors when invalid attrs are provided", %{transition: transition} do
-      changeset = Jobs.change_job_application_status(transition, %{from_state: nil, to_state: nil})
+    test "returns a changeset with errors when invalid attrs are provided", %{
+      transition: transition
+    } do
+      changeset =
+        Jobs.change_job_application_status(transition, %{from_state: nil, to_state: nil})
+
       refute changeset.valid?
       assert errors_on(changeset)[:from_state]
       assert errors_on(changeset)[:to_state]
@@ -1571,7 +1590,9 @@ defmodule BemedaPersonal.JobsTest do
       }
     end
 
-    test "returns a list of state transitions for a job application", %{job_application: job_application} do
+    test "returns a list of state transitions for a job application", %{
+      job_application: job_application
+    } do
       transitions = Jobs.list_job_application_state_transitions(job_application)
 
       assert length(transitions) == 3
@@ -1592,7 +1613,9 @@ defmodule BemedaPersonal.JobsTest do
       end)
     end
 
-    test "returns an empty list for job application with no transitions", %{other_application: other_application} do
+    test "returns an empty list for job application with no transitions", %{
+      other_application: other_application
+    } do
       transitions = Jobs.list_job_application_state_transitions(other_application)
       assert Enum.empty?(transitions)
     end

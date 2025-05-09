@@ -63,7 +63,9 @@
       </div>
 
       <h3 class="text-lg font-medium">Application Created</h3>
-      <p class="text-sm text-gray-500">{DateUtils.format_datetime(@job_application.inserted_at)}</p>
+      <p class="text-sm text-gray-500">
+        {DateUtils.format_datetime(@job_application.inserted_at)}
+      </p>
       <p class="text-sm text-gray-600 mt-2">
         {if @current_user.id == @job_application.user_id do
           "You applied for the #{String.downcase(@job_posting.title)} position at #{@job_posting.company.name}."

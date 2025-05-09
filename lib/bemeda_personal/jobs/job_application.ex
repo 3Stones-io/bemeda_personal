@@ -2,12 +2,12 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   @moduledoc false
 
   use Ecto.Schema
+  use Fsmx.Struct, fsm: BemedaPersonal.Jobs.JobApplicationStateMachine
 
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.Jobs.JobApplicationStateMachine
   alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.Tag
@@ -32,8 +32,6 @@ defmodule BemedaPersonal.Jobs.JobApplication do
 
     timestamps(type: :utc_datetime)
   end
-
-  use Fsmx.Struct, fsm: JobApplicationStateMachine
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(job_application, attrs) do

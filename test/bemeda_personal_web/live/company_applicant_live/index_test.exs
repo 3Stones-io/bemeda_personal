@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.SharedHelpers
 
   setup %{conn: conn} do
     company_user = user_fixture(%{email: "company@example.com"})
@@ -306,6 +307,55 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
         |> render()
 
       refute empty_input_html =~ "value="
+    end
+
+    test "shows applicant's status and can update it", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, html} = live(conn, ~p"/companies/#{company}/applicants")
+
+      assert html =~ SharedHelpers.translate_status(:state)[application.state]
+
+      view
+      |> element("#status-form-#{application.id}")
+      |> render_submit(%{
+        "applicant_id" => application.id,
+        "job_application_state_transition" => %{
+          "to_state" => "screening",
+          "notes" => "Started initial screening"
+        }
+      })
+
+      assert render(view) =~ "Failed to update status"
+    end
+
+    test "handles error case when updating applicant status", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job_application: application
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, html} = live(conn, ~p"/companies/#{company}/applicants")
+
+      assert html =~ SharedHelpers.translate_status(:state)[application.state]
+
+      view
+      |> element("#status-form-#{application.id}")
+      |> render_submit(%{
+        "applicant_id" => application.id,
+        "job_application_state_transition" => %{
+          "notes" => "Some notes"
+        }
+      })
+
+      assert render(view) =~ "Failed to update status"
     end
   end
 

@@ -104,12 +104,13 @@ defmodule BemedaPersonalWeb.ChatComponents do
         @message.content && @message.sender_id != @current_user.id && "bg-gray-100 "
       ]}
     >
-      <.chat_message message={@message} />
+      <.chat_message message={@message} current_user={@current_user} />
     </div>
     """
   end
 
   attr :class, :string, default: nil
+  attr :current_user, :any, default: nil
   attr :message, :any
   attr :job_application, :any, default: nil
   attr :index, :string, default: nil
@@ -234,7 +235,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full flex justify-center my-2">
       <div class="bg-purple-100 text-purple-800 rounded-xl py-2 px-4 text-center text-sm">
-        {@message.content}
+        {get_status_message(@message, @current_user)}
       </div>
     </div>
     """
@@ -246,5 +247,57 @@ defmodule BemedaPersonalWeb.ChatComponents do
       <p class="text-sm">{@message.content}</p>
     </div>
     """
+  end
+
+  defp get_status_message(%{content: content}, _current_user) when not is_binary(content) do
+    content
+  end
+
+  defp get_status_message(%{job_application: nil, content: content}, _current_user) do
+    content
+  end
+
+  defp get_status_message(%{job_application: %{user_id: user_id}, content: content}, %{
+         id: user_id
+       }) do
+    get_candidate_message(content)
+  end
+
+  defp get_status_message(%{content: content}, _current_user) do
+    get_employer_message(content)
+  end
+
+  defp get_candidate_message(state) do
+    candidate_messages = %{
+      "applied" => "You have submitted your application",
+      "under_review" => "Your application is now under review",
+      "screening" => "Your application is in the screening phase",
+      "interview_scheduled" => "Your interview has been scheduled",
+      "interviewed" => "You have been interviewed",
+      "offer_extended" => "An offer has been extended to you",
+      "offer_accepted" => "You have accepted the offer",
+      "offer_declined" => "You have declined the offer",
+      "rejected" => "Your application has been rejected",
+      "withdrawn" => "You have withdrawn your application"
+    }
+
+    Map.get(candidate_messages, state, "Your application status changed to #{state}")
+  end
+
+  defp get_employer_message(state) do
+    employer_messages = %{
+      "applied" => "This application has been submitted",
+      "under_review" => "This application is now under review",
+      "screening" => "This application is now in the screening phase",
+      "interview_scheduled" => "An interview has been scheduled for this application",
+      "interviewed" => "This candidate has been interviewed",
+      "offer_extended" => "An offer has been extended for this position",
+      "offer_accepted" => "The offer has been accepted",
+      "offer_declined" => "The offer has been declined",
+      "rejected" => "This application has been rejected",
+      "withdrawn" => "This application has been withdrawn"
+    }
+
+    Map.get(employer_messages, state, "This application status changed to #{state}")
   end
 end

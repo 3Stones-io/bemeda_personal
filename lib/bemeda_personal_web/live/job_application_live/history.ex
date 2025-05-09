@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.History do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Jobs
   alias BemedaPersonal.DateUtils
+  alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView
