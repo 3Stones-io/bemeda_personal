@@ -282,7 +282,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       pdf_html = render(view)
 
       assert pdf_html =~
-               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.id})
+               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.media_asset.upload_id})
 
       assert pdf_html =~ "hero-document"
       assert pdf_html =~ "document.pdf"
@@ -313,7 +313,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       image_html = render(view)
 
       assert image_html =~
-               ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.id})
+               ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.media_asset.upload_id})
     end
   end
 end

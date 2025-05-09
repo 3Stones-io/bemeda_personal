@@ -29,11 +29,6 @@ defmodule BemedaPersonal.Media.MediaAsset do
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(%__MODULE__{} = media_asset, attrs) do
-    cast(media_asset, attrs, [
-      :file_name,
-      :status,
-      :type,
-      :upload_id
-    ])
+    cast(media_asset, attrs, [:file_name, :status, :type, :upload_id])
   end
 end

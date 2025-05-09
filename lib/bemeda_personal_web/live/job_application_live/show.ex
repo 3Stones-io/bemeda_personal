@@ -58,6 +58,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("upload-media", %{"filename" => filename, "type" => type}, socket) do
+    upload_id = Ecto.UUID.generate()
+
     {:ok, message} =
       Chat.create_message_with_media(
         socket.assigns.current_user,
@@ -65,13 +67,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         %{
           "media_data" => %{
             "file_name" => filename,
+            "status" => :pending,
             "type" => type,
-            "status" => :pending
+            "upload_id" => upload_id
           }
         }
       )
 
-    upload_url = TigrisHelper.get_presigned_upload_url(message.id)
+    upload_url = TigrisHelper.get_presigned_upload_url(upload_id)
 
     {:reply, %{upload_url: upload_url, message_id: message.id},
      stream_insert(socket, :messages, message)}

@@ -17,10 +17,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
     ~H"""
     <div :if={@media_asset} class={@class}>
       <video controls>
-        <source
-          src={SharedHelpers.get_presigned_url(@media_asset.message_id || @media_asset.upload_id)}
-          type="video/mp4"
-        />
+        <source src={SharedHelpers.get_presigned_url(@media_asset.upload_id)} type="video/mp4" />
       </video>
     </div>
     """

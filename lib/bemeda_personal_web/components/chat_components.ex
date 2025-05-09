@@ -181,7 +181,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
       ) do
     ~H"""
     <audio class="w-full" controls>
-      <source src={SharedHelpers.get_presigned_url(@message.id)} type="audio/mp3" />
+      <source src={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)} type="audio/mp3" />
     </audio>
     """
   end
@@ -201,7 +201,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full overflow-hidden rounded-lg">
       <img
-        src={SharedHelpers.get_presigned_url(@message.id)}
+        src={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
         alt={@message.media_asset.file_name || "Image"}
         class="w-full h-auto object-contain max-h-[400px]"
       />
@@ -225,7 +225,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
       <.link
-        href={SharedHelpers.get_presigned_url(@message.id)}
+        href={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
         target="_blank"
         class="flex items-center hover:bg-[#d6e6f1] p-2 rounded-lg transition-colors"
       >
