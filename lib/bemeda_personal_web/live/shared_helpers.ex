@@ -120,10 +120,12 @@ defmodule BemedaPersonalWeb.SharedHelpers do
          "offer_extended",
          _all_next_states,
          true
-       ), do: ["offer_accepted", "offer_declined", "withdrawn"]
+       ),
+       do: ["offer_accepted", "offer_declined", "withdrawn"]
 
   defp get_available_statuses_by_role(current_state, _all_next_states, true)
-       when current_state in ["offer_accepted", "offer_declined", "withdrawn"], do: []
+       when current_state in ["offer_accepted", "offer_declined", "withdrawn"],
+       do: []
 
   defp get_available_statuses_by_role(_current_state, _all_next_states, true), do: ["withdrawn"]
 
