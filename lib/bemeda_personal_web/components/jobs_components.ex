@@ -616,7 +616,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   "hidden absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg p-4 z-50",
                   "max-h-[80vh] overflow-y-auto min-w-[350px] max-w-[90vw]"
                 ]}
-                phx-hook="JobApplicationInputs"
+                phx-hook="JobApplicationStatusInputs"
               >
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
                   <h3 class="text-lg font-medium text-gray-900">Update Status</h3>
