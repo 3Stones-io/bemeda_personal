@@ -45,13 +45,13 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
           id={dom_id}
         >
           <JobsComponents.applicant_card
+          applicant={application}
             available_statuses={
               SharedHelpers.get_available_statuses(
                 @current_user,
                 application
               )
             }
-            applicant={application}
             id={"applicant-#{application.id}"}
             job={application.job_posting}
             show_job={true}

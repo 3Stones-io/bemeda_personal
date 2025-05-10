@@ -8,14 +8,10 @@ const JobApplicationStatusInputs = {
     )
 
     formElements.forEach((element) => {
-      element.addEventListener('click', (event) => {
-        event.stopPropagation()
-      })
-      element.addEventListener('keydown', (event) => {
-        event.stopPropagation()
-      })
-      element.addEventListener('change', (event) => {
-        event.stopPropagation()
+      ['click', 'keydown', 'change'].forEach((eventType) => {
+        element.addEventListener(eventType, (event) => {
+          event.stopPropagation()
+        })
       })
     })
 

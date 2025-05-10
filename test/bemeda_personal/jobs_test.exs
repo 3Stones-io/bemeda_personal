@@ -1375,10 +1375,10 @@ defmodule BemedaPersonal.JobsTest do
       job_application = job_application_fixture(user, job_posting)
 
       %{
-        user: user,
         company: company,
+        job_application: job_application,
         job_posting: job_posting,
-        job_application: job_application
+        user: user
       }
     end
 

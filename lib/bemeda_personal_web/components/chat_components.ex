@@ -146,11 +146,9 @@ defmodule BemedaPersonalWeb.ChatComponents do
   end
 
   attr :class, :string, default: nil
-  attr :current_user, :any, default: nil
-  attr :index, :string, default: nil
+  attr :current_user, User
   attr :is_company_admin?, :boolean
-  attr :job_application, :any, default: nil
-  attr :message, :any
+  attr :message, Message
 
   defp chat_message(
          %{message: %{media_asset: %MediaAsset{type: "video" <> _rest, status: :pending}}} =
@@ -164,24 +162,24 @@ defmodule BemedaPersonalWeb.ChatComponents do
   end
 
   defp chat_message(
-         %{
-           message: %{
-             media_asset: %MediaAsset{
-               type: "video" <> _rest,
-               status: :uploaded
-             }
-           }
-         } = assigns
-       ) do
+        %{
+          message: %{
+            media_asset: %MediaAsset{
+              type: "video" <> _rest,
+              status: :uploaded
+            }
+          }
+        } = assigns
+      ) do
     ~H"""
     <SharedComponents.video_player class="w-full" media_asset={@message.media_asset} />
     """
   end
 
   defp chat_message(
-         %{message: %{media_asset: %MediaAsset{type: "audio" <> _rest, status: :pending}}} =
-           assigns
-       ) do
+        %{message: %{media_asset: %MediaAsset{type: "audio" <> _rest, status: :pending}}} =
+          assigns
+      ) do
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
       <div class="flex items-center gap-3">
@@ -216,9 +214,9 @@ defmodule BemedaPersonalWeb.ChatComponents do
   end
 
   defp chat_message(
-         %{message: %{media_asset: %MediaAsset{type: "image" <> _rest, status: :pending}}} =
-           assigns
-       ) do
+        %{message: %{media_asset: %MediaAsset{type: "image" <> _rest, status: :pending}}} =
+          assigns
+      ) do
     ~H"""
     <div class="w-full h-[200px] bg-zinc-200 rounded-lg flex items-center justify-center">
       <.icon name="hero-photo" class="h-12 w-12 text-[#075389] animate-pulse" />

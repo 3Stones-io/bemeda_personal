@@ -114,30 +114,20 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     )
   end
 
-  defp get_available_statuses_by_role("rejected", _all_next_states, true) do
-    []
-  end
+  defp get_available_statuses_by_role("rejected", _all_next_states, true), do: []
 
   defp get_available_statuses_by_role(
          "offer_extended",
          _all_next_states,
          true
-       ) do
-    ["offer_accepted", "offer_declined", "withdrawn"]
-  end
+       ), do: ["offer_accepted", "offer_declined", "withdrawn"]
 
   defp get_available_statuses_by_role(current_state, _all_next_states, true)
-       when current_state in ["offer_accepted", "offer_declined", "withdrawn"] do
-    []
-  end
+       when current_state in ["offer_accepted", "offer_declined", "withdrawn"], do: []
 
-  defp get_available_statuses_by_role(_current_state, _all_next_states, true) do
-    ["withdrawn"]
-  end
+  defp get_available_statuses_by_role(_current_state, _all_next_states, true), do: ["withdrawn"]
 
-  defp get_available_statuses_by_role("rejected", all_next_states, false) do
-    all_next_states
-  end
+  defp get_available_statuses_by_role("rejected", all_next_states, false), do: all_next_states
 
   defp get_available_statuses_by_role(_current_state, all_next_states, false) do
     Enum.filter(all_next_states, fn state ->
@@ -149,14 +139,14 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def translate_status(:action) do
     %{
       "applied" => "Submit Application",
-      "under_review" => "Start Review",
-      "screening" => "Start Screening",
       "interview_scheduled" => "Schedule Interview",
       "interviewed" => "Mark as Interviewed",
-      "offer_extended" => "Extend Offer",
       "offer_accepted" => "Accept Offer",
       "offer_declined" => "Decline Offer",
+      "offer_extended" => "Extend Offer",
       "rejected" => "Reject Application",
+      "screening" => "Start Screening",
+      "under_review" => "Start Review",
       "withdrawn" => "Withdraw Application"
     }
   end
@@ -164,14 +154,14 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def translate_status(:state) do
     %{
       "applied" => "Applied",
-      "under_review" => "Under Review",
-      "screening" => "Screening",
       "interview_scheduled" => "Interview Scheduled",
       "interviewed" => "Interviewed",
-      "offer_extended" => "Offer Extended",
       "offer_accepted" => "Offer Accepted",
       "offer_declined" => "Offer Declined",
+      "offer_extended" => "Offer Extended",
       "rejected" => "Rejected",
+      "screening" => "Screening",
+      "under_review" => "Under Review",
       "withdrawn" => "Withdrawn"
     }
   end

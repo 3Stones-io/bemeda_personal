@@ -310,9 +310,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     end
 
     test "shows applicant's status and can update it", %{
-      conn: conn,
       company_user: user,
       company: company,
+      conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, user)
@@ -335,9 +335,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     end
 
     test "handles error case when updating applicant status", %{
-      conn: conn,
       company_user: user,
       company: company,
+      conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, user)

@@ -17,8 +17,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
 
       job =
         job_posting_fixture(company, %{
-          title: "Senior Developer",
-          description: "Build amazing applications"
+          description: "Build amazing applications",
+          title: "Senior Developer"
         })
 
       job_application = job_application_fixture(user, job)
@@ -27,23 +27,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
 
       {:ok, under_review_app} =
         Jobs.update_job_application_status(job_application, company_user, %{
-          to_state: "under_review",
-          notes: "Candidate profile looks promising"
+          notes: "Candidate profile looks promising",
+          to_state: "under_review"
         })
 
       {:ok, screening_app} =
         Jobs.update_job_application_status(under_review_app, company_user, %{
-          to_state: "screening",
-          notes: "Moving to initial screening"
+          notes: "Moving to initial screening",
+          to_state: "screening"
         })
 
       %{
-        conn: conn,
-        job: job,
-        user: user,
         company_user: company_user,
+        company: company,
+        conn: conn,
         job_application: screening_app,
-        company: company
+        job: job,
+        user: user
       }
     end
 
@@ -165,9 +165,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
     end
 
     test "displays transition notes when viewed by company user", %{
+      company_user: company_user,
       conn: conn,
-      job_application: job_application,
-      company_user: company_user
+      job_application: job_application
     } do
       conn = log_in_user(conn, company_user)
 
@@ -182,9 +182,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
     end
 
     test "hides transition notes from candidates but shows them to company users", %{
+      company_user: company_user,
       conn: conn,
       job_application: job_application,
-      company_user: company_user,
       user: user
     } do
       candidate_conn = log_in_user(conn, user)
