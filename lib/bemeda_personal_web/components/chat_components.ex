@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonalWeb.DocumentTemplateComponent
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -112,15 +113,20 @@ defmodule BemedaPersonalWeb.ChatComponents do
         @message.content && @message.sender_id != @current_user.id && "bg-gray-100 "
       ]}
     >
-      <.chat_message message={@message} />
+      <.chat_message
+        current_user={@current_user}
+        job_application={@job_application}
+        message={@message}
+      />
     </div>
     """
   end
 
   attr :class, :string, default: nil
-  attr :message, :any
-  attr :job_application, :any, default: nil
+  attr :current_user, :any, default: nil
   attr :index, :string, default: nil
+  attr :job_application, :any, default: nil
+  attr :message, :any
 
   @spec chat_message(assigns()) :: output()
   def chat_message(
@@ -222,6 +228,13 @@ defmodule BemedaPersonalWeb.ChatComponents do
   end
 
   def chat_message(%{message: %{media_asset: %MediaAsset{status: :uploaded}}} = assigns) do
+    assigns =
+      assign_new(assigns, :extension, fn %{message: message} ->
+        message.media_asset.file_name
+        |> String.split(".")
+        |> List.last()
+      end)
+
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
       <.link
@@ -234,6 +247,13 @@ defmodule BemedaPersonalWeb.ChatComponents do
           <span>{@message.media_asset.file_name}</span>
         </p>
       </.link>
+
+      <.additional_actions
+        current_user={@current_user}
+        extension={@extension}
+        job_application={@job_application}
+        message={@message}
+      />
     </div>
     """
   end
@@ -243,6 +263,23 @@ defmodule BemedaPersonalWeb.ChatComponents do
     <div class="p-3">
       <p class="text-sm">{@message.content}</p>
     </div>
+    """
+  end
+
+  defp additional_actions(%{extension: extension} = assigns) when extension in ["doc", "docx"] do
+    ~H"""
+    <.live_component
+      current_user={@current_user}
+      id={"document-template-#{@message.id}"}
+      job_application={@job_application}
+      message={@message}
+      module={DocumentTemplateComponent}
+    />
+    """
+  end
+
+  defp additional_actions(assigns) do
+    ~H"""
     """
   end
 end

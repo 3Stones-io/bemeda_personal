@@ -80,18 +80,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      stream_insert(socket, :messages, message)}
   end
 
-  def handle_event(
-        "update-message",
-        %{"message_id" => message_id, "status" => "uploaded"},
-        socket
-      ) do
-    message = Chat.get_message!(message_id)
-
-    media_asset =
-      Media.get_media_asset_by_message_id(message.id)
-
-    {:ok, _media_asset} =
-      Media.update_media_asset(media_asset, %{status: :uploaded})
+  def handle_event("update-message", %{"message_id" => message_id, "status" => status}, socket) do
+    message_id
+    |> Media.get_media_asset_by_message_id()
+    |> Media.update_media_asset(%{status: status})
 
     {:noreply, socket}
   end
@@ -114,6 +106,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         socket
       ) do
     {:noreply, assign(socket, :job_application, job_application)}
+  end
+
+  def handle_info({:flash, type, message}, socket) do
+    {:noreply, put_flash(socket, type, message)}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do

@@ -22,6 +22,7 @@ defmodule BemedaPersonal.MixProject do
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.html": :test,
+        "coveralls.json": :test,
         credo: :test,
         dialyzer: :test,
         sobelow: :test
@@ -68,9 +69,11 @@ defmodule BemedaPersonal.MixProject do
     [
       {:bcrypt_elixir, "~> 3.0"},
       {:mdex, "~> 0.4.0"},
+      {:mox, "~> 1.2", only: :test},
       {:multipart, "~> 0.4"},
       {:number, "~> 1.0"},
       {:plug, "~> 1.17"},
+      {:req, "~> 0.5"},
       {:tidewave, "~> 0.1", only: :dev}
     ]
   end
