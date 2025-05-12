@@ -34,14 +34,10 @@ defmodule BemedaPersonal.Documents do
   """
   @spec extract_template_variables(message_id()) :: {:ok, [variable()]} | {:error, reason()}
   def extract_template_variables(message_id) do
-    with %Media.MediaAsset{upload_id: upload_id} <-
-           Media.get_media_asset_by_message_id(message_id),
+    with {:ok, %Media.MediaAsset{upload_id: upload_id}} <- get_media_asset(message_id),
          {:ok, doc_path} <- download_document(upload_id),
          variables <- Processor.extract_variables(doc_path) do
       {:ok, variables}
-    else
-      {:error, reason} ->
-        {:error, reason}
     end
   end
 
@@ -62,8 +58,8 @@ defmodule BemedaPersonal.Documents do
   @spec generate_pdf(message_id(), variables(), Accounts.User.t(), Jobs.JobApplication.t()) ::
           {:ok, Chat.Message.t()} | {:error, reason()}
   def generate_pdf(message_id, variables, user, job_application) do
-    with %Media.MediaAsset{upload_id: upload_id} = media_asset <-
-           Media.get_media_asset_by_message_id(message_id),
+    with {:ok, %Media.MediaAsset{upload_id: upload_id} = media_asset} <-
+           get_media_asset(message_id),
          {:ok, doc_path} <- download_document(upload_id),
          doc_path <- Processor.replace_variables(doc_path, variables),
          pdf_path <- Processor.convert_to_pdf(doc_path),
@@ -83,9 +79,16 @@ defmodule BemedaPersonal.Documents do
           }
         }
       )
-    else
-      nil -> {:error, "Message or media asset not found"}
-      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp get_media_asset(message_id) do
+    case Media.get_media_asset_by_message_id(message_id) do
+      %Media.MediaAsset{} = media_asset ->
+        {:ok, media_asset}
+
+      nil ->
+        {:error, "Media asset not found"}
     end
   end
 
@@ -117,7 +120,8 @@ defmodule BemedaPersonal.Documents do
          :ok <- Storage.upload_file(pdf_id, content, "application/pdf") do
       {:ok, pdf_id}
     else
-      {:error, reason} -> {:error, "Failed to upload PDF: #{inspect(reason)}"}
+      {:error, reason} ->
+        {:error, "Failed to upload PDF: #{inspect(reason)}"}
     end
   end
 end

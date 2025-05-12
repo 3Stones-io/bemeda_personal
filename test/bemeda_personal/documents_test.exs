@@ -88,9 +88,7 @@ defmodule BemedaPersonal.DocumentsTest do
       |> Media.get_media_asset_by_message_id()
       |> Media.delete_media_asset()
 
-      assert_raise WithClauseError, fn ->
-        Documents.extract_template_variables(message.id)
-      end
+      assert {:error, "Media asset not found"} = Documents.extract_template_variables(message.id)
     end
 
     test "handles empty upload_id case", %{message: message} do
@@ -180,7 +178,7 @@ defmodule BemedaPersonal.DocumentsTest do
       |> Media.get_media_asset_by_message_id()
       |> Media.delete_media_asset()
 
-      assert {:error, "Message or media asset not found"} =
+      assert {:error, "Media asset not found"} =
                Documents.generate_pdf(message.id, variables, user, job_application)
     end
 
