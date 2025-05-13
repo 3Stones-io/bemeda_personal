@@ -2,8 +2,9 @@
   <div id="chat-messages" phx-update="stream" class="h-[80svh] overflow-y-scroll">
     <ChatComponents.chat_container
       :for={{dom_id, message} <- @streams.messages}
-      id={dom_id}
       current_user={@current_user}
+      id={dom_id}
+      job_application={@job_application}
       message={message}
     />
   </div>

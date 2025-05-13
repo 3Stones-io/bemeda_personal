@@ -223,6 +223,7 @@ defmodule GithubWorkflows do
   end
 
   defp elixir_job(name, opts) do
+    lfs? = Keyword.get(opts, :lfs?, false)
     needs = Keyword.get(opts, :needs)
     services = Keyword.get(opts, :services)
     steps = Keyword.get(opts, :steps, [])
@@ -232,7 +233,7 @@ defmodule GithubWorkflows do
       "runs-on": "ubuntu-latest",
       steps:
         [
-          checkout_step(),
+          checkout_step(lfs?: lfs?),
           [
             id: "setup-beam",
             name: "Set up Elixir",
@@ -359,11 +360,16 @@ defmodule GithubWorkflows do
 
   defp test_job do
     elixir_job("Test",
+      lfs?: true,
       needs: :compile,
       services: [
         db: db_service()
       ],
       steps: [
+        [
+          name: "Install LibreOffice",
+          run: "sudo apt-get update && sudo apt-get install -y libreoffice libreoffice-writer"
+        ],
         [
           name: "Run tests",
           env: [
@@ -398,10 +404,15 @@ defmodule GithubWorkflows do
     ]
   end
 
-  defp checkout_step do
+  defp checkout_step(opts \\ []) do
+    lfs? = Keyword.get(opts, :lfs?, false)
+
     [
       name: "Checkout",
-      uses: "actions/checkout@v4"
+      uses: "actions/checkout@v4",
+      with: [
+        lfs: if(lfs?, do: "true", else: "false")
+      ]
     ]
   end
 

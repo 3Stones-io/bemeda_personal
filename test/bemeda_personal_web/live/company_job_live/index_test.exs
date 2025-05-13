@@ -145,9 +145,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       view
       |> element("#job_posting-video-video-upload")
-      |> render_hook("upload-completed", %{
-        "upload_id" => Ecto.UUID.generate()
-      })
+      |> render_hook("upload-completed")
 
       view
       |> form("#company-job-form", %{
@@ -279,9 +277,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       view
       |> element("#job_posting-video-video-upload")
-      |> render_hook("upload-completed", %{
-        "upload_id" => Ecto.UUID.generate()
-      })
+      |> render_hook("upload-completed")
 
       view
       |> form("#company-job-form", %{

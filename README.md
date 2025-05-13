@@ -2,7 +2,7 @@
 
 ## Setup
 
-- clone the repo using `git clone --recurse-submodules https://github.com/3Stones-IO/bemeda_personal.git`
+- install [Git LFS](https://git-lfs.github.com) and clone the repo using `git clone --recurse-submodules https://github.com/3Stones-IO/bemeda_personal.git`
   - if you've already cloned the repo without submodules, run `git submodule update --init`
 - install Elixir, Erlang and Node using [mise](https://mise.jdx.dev)
   - install mise using either `curl https://mise.run | sh` or `brew install mise`
@@ -11,6 +11,7 @@
 - install MCP Proxy if you're using Tidewave (https://elixirdrops.net/d/UAo4BtYi)
   - `curl -sL https://github.com/tidewave-ai/mcp_proxy_rust/releases/latest/download/mcp-proxy-aarch64-apple-darwin.tar.gz | tar xv`
   - `sudo mv mcp-proxy /usr/local/bin`
+- install LibreOffice using `brew install libreoffice`
 - start PostgreSQL server
 - run `mix setup`
 - start Phoenix server with `mix phx.server`

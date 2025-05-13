@@ -5,9 +5,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
   import BemedaPersonal.ResumesFixtures
+  import Mox
   import Phoenix.LiveViewTest
 
+  setup :verify_on_exit!
+
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.Documents.MockProcessor
+  alias BemedaPersonal.Documents.MockStorage
 
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
@@ -35,8 +40,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       %{
         company: company,
         conn: conn,
-        job_application: job_application,
         job: job,
+        job_application: job_application,
         resume: resume,
         user: user
       }
@@ -128,8 +133,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
     test "shows both video and cover letter when application has video", %{
       conn: conn,
-      user: user,
-      job: job
+      job: job,
+      user: user
     } do
       job_application =
         job_application_fixture(
@@ -282,7 +287,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       pdf_html = render(view)
 
       assert pdf_html =~
-               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.id})
+               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.media_asset.upload_id})
 
       assert pdf_html =~ "hero-document"
       assert pdf_html =~ "document.pdf"
@@ -313,7 +318,220 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       image_html = render(view)
 
       assert image_html =~
-               ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.id})
+               ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.media_asset.upload_id})
+    end
+  end
+
+  describe "document template processing" do
+    setup %{conn: conn} do
+      user = user_fixture()
+      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+      job = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job)
+      upload_id = Ecto.UUID.generate()
+
+      conn = log_in_user(conn, user)
+
+      {:ok, message} =
+        Chat.create_message_with_media(user, job_application, %{
+          "content" => "Template Document",
+          "media_data" => %{
+            "file_name" => "template.docx",
+            "status" => :uploaded,
+            "type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "upload_id" => upload_id
+          }
+        })
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      temp_dir = System.tmp_dir!()
+      processed_path = Path.join(temp_dir, "processed.docx")
+      pdf_path = Path.join(temp_dir, "processed.pdf")
+
+      File.write!(processed_path, "mock document content")
+      File.write!(pdf_path, "mock pdf content")
+
+      on_exit(fn ->
+        File.rm_rf(processed_path)
+        File.rm_rf(pdf_path)
+      end)
+
+      %{
+        conn: conn,
+        job_application: job_application,
+        message: message,
+        pdf_path: pdf_path,
+        processed_path: processed_path,
+        upload_id: upload_id,
+        user: user,
+        view: view
+      }
+    end
+
+    test "toggles the extraction form", %{view: view} do
+      view
+      |> element("button", "Fill Template")
+      |> render_click()
+
+      assert has_element?(view, "button", "Extract Variables")
+      assert has_element?(view, "button", "Cancel")
+
+      view
+      |> element("button", "Fill Template")
+      |> render_click()
+
+      refute has_element?(view, "button", "Extract Variables")
+      refute has_element?(view, "button", "Cancel")
+    end
+
+    test "closes form when cancel is clicked", %{view: view} do
+      view
+      |> element("button", "Fill Template")
+      |> render_click()
+
+      view
+      |> element("button", "Cancel")
+      |> render_click()
+
+      assert has_element?(view, "button", "Fill Template")
+      refute has_element?(view, "button", "Extract Variables")
+    end
+
+    test "successfully fills variables and generates a PDF", %{
+      message: message,
+      pdf_path: pdf_path,
+      processed_path: processed_path,
+      upload_id: upload_id,
+      view: view
+    } do
+      stub(MockStorage, :download_file, fn ^upload_id ->
+        {:ok, "mock document content"}
+      end)
+
+      expect(MockProcessor, :extract_variables, fn _doc_path ->
+        [
+          "Sender.FirstName",
+          "Sender.LastName",
+          "Sender.Company",
+          "Client.FirstName",
+          "Client.LastName"
+        ]
+      end)
+
+      expect(MockProcessor, :replace_variables, fn _doc_path, _variables ->
+        processed_path
+      end)
+
+      expect(MockProcessor, :convert_to_pdf, fn ^processed_path ->
+        pdf_path
+      end)
+
+      expect(MockStorage, :upload_file, fn _pdf_id, _content, "application/pdf" ->
+        :ok
+      end)
+
+      view
+      |> element("button", "Fill Template")
+      |> render_click()
+
+      assert view
+             |> element("button", "Extract Variables")
+             |> render_click() =~ "Extracting variables from document..."
+
+      assert render_async(view) =~ "Generate PDF"
+
+      view
+      |> form("#document-template-#{message.id} form", %{
+        "Sender.FirstName" => "John",
+        "Sender.LastName" => "Doe",
+        "Sender.Company" => "ACME Corp"
+      })
+      |> render_submit()
+
+      assert has_element?(view, "button", "Fill Template")
+      refute has_element?(view, "#document-template-#{message.id} form")
+    end
+
+    test "handles errors during variable extraction", %{
+      upload_id: upload_id,
+      view: view
+    } do
+      expect(MockStorage, :download_file, fn ^upload_id ->
+        {:error, "Invalid document format"}
+      end)
+
+      view
+      |> element("button", "Fill Template")
+      |> render_click()
+
+      html =
+        view
+        |> element("button", "Extract Variables")
+        |> render_click()
+
+      assert html =~ "Extracting variables from document..."
+
+      assert render_async(view) =~ "Failed to extract variables"
+      assert has_element?(view, "button", "Cancel")
+    end
+
+    test "handles errors during PDF generation", %{
+      message: message,
+      pdf_path: pdf_path,
+      processed_path: processed_path,
+      upload_id: upload_id,
+      view: view
+    } do
+      stub(MockStorage, :download_file, fn ^upload_id ->
+        {:ok, "mock document content"}
+      end)
+
+      expect(MockProcessor, :extract_variables, fn _doc_path ->
+        [
+          "Sender.FirstName",
+          "Sender.LastName",
+          "Sender.Company",
+          "Client.FirstName",
+          "Client.LastName"
+        ]
+      end)
+
+      expect(MockProcessor, :replace_variables, fn _doc_path, _variables ->
+        processed_path
+      end)
+
+      expect(MockProcessor, :convert_to_pdf, fn ^processed_path ->
+        pdf_path
+      end)
+
+      expect(MockStorage, :upload_file, fn _pdf_id, _content, "application/pdf" ->
+        {:error, "Upload failed"}
+      end)
+
+      view
+      |> element("button", "Fill Template")
+      |> render_click()
+
+      view
+      |> element("button", "Extract Variables")
+      |> render_click()
+
+      render_async(view)
+
+      assert has_element?(view, "button", "Generate PDF")
+
+      assert view
+             |> form("#document-template-#{message.id} form", %{
+               "Sender.FirstName" => "John",
+               "Sender.LastName" => "Doe",
+               "Sender.Company" => "ACME Corp"
+             })
+             |> render_submit() =~ "Failed to process document"
     end
   end
 end
