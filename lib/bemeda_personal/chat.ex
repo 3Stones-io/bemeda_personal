@@ -38,7 +38,7 @@ defmodule BemedaPersonal.Chat do
       |> where([m], m.job_application_id == ^job_application.id)
       |> order_by([m], asc: m.inserted_at)
       |> Repo.all()
-      |> Repo.preload([:media_asset, :job_application, :sender])
+      |> Repo.preload([:media_asset, :sender])
 
     [job_application | messages]
   end

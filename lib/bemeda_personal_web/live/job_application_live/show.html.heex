@@ -71,7 +71,7 @@
     <ChatComponents.chat_container
       :for={{dom_id, message} <- @streams.messages}
       id={dom_id}
-      is_company_admin?={@is_company_admin?}
+      is_employer?={@is_employer?}
       current_user={@current_user}
       message={message}
     />

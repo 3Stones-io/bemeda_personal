@@ -84,7 +84,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   attr :current_user, User
   attr :id, :string
-  attr :is_company_admin?, :boolean
+  attr :is_employer?, :boolean
   attr :message, Message
 
   @spec chat_container(assigns()) :: output()
@@ -136,18 +136,14 @@ defmodule BemedaPersonalWeb.ChatComponents do
         @message.content && @message.sender_id != @current_user.id && "bg-gray-100 "
       ]}
     >
-      <.chat_message
-        current_user={@current_user}
-        is_company_admin?={@is_company_admin?}
-        message={@message}
-      />
+      <.chat_message current_user={@current_user} is_employer?={@is_employer?} message={@message} />
     </div>
     """
   end
 
   attr :class, :string, default: nil
   attr :current_user, User
-  attr :is_company_admin?, :boolean
+  attr :is_employer?, :boolean
   attr :message, Message
 
   defp chat_message(
@@ -269,7 +265,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full flex justify-center my-2">
       <div class="bg-purple-100 text-purple-800 rounded-xl py-2 px-4 text-center text-sm">
-        <p>{get_message_content(@message, @is_company_admin?)}</p>
+        <p>{get_message_content(@message, @is_employer?)}</p>
       </div>
     </div>
     """
@@ -283,20 +279,16 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  defp get_message_content(message, is_company_admin?) do
-    default_message = "Your application status changed to #{message.content}"
-
-    if is_company_admin? do
+  defp get_message_content(message, is_employer?) do
+    if is_employer? do
       Map.get(
         @employer_messages,
-        message.content,
-        default_message
+        message.content
       )
     else
       Map.get(
         @candidate_messages,
-        message.content,
-        default_message
+        message.content
       )
     end
   end

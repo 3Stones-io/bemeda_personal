@@ -6,11 +6,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
-    {:ok, socket}
-  end
-
-  @impl Phoenix.LiveView
   def handle_params(%{"id" => job_application_id}, _url, socket) do
     job_application = Jobs.get_job_application!(job_application_id)
 

@@ -190,14 +190,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       Endpoint.subscribe("job_application:user:#{job_application.user_id}")
     end
 
-    is_company_admin =
+    is_employer =
       socket.assigns.current_user.id == job_posting.company.admin_user_id
 
     socket
     |> stream(:messages, messages)
     |> assign(:job_application, job_application)
     |> assign(:job_posting, job_posting)
-    |> assign(:is_company_admin?, is_company_admin)
+    |> assign(:is_employer?, is_employer)
     |> assign_available_statuses(job_application)
     |> assign_chat_form(changeset)
   end

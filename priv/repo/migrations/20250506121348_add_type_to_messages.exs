@@ -3,9 +3,7 @@ defmodule BemedaPersonal.Repo.Migrations.AddTypeToMessages do
 
   def change do
     alter table(:messages) do
-      add :type, :string, null: false
+      add :type, :string, null: false, default: "user"
     end
-
-    create index(:messages, [:type])
   end
 end

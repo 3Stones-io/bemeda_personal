@@ -690,9 +690,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
       for={@update_job_application_status_form}
       id={"status-form-#{@applicant.id}"}
       phx-submit="update_job_application_status"
+      phx-value-applicant_id={@applicant.id}
+      data-applicant-id={@applicant.id}
     >
-      <input type="hidden" name="applicant_id" value={@applicant.id} />
-
       <div class="mb-4">
         <.input
           field={f[:to_state]}
@@ -722,12 +722,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <button
           type="button"
           class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors duration-150 ease-in-out"
+          id={"cancel-status-update-#{@applicant.id}"}
         >
           Cancel
         </button>
         <button
           type="submit"
           class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
+          id={"update-status-#{@applicant.id}"}
         >
           Update Status
         </button>

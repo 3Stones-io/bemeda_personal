@@ -18,7 +18,5 @@ defmodule BemedaPersonal.Repo.Migrations.CreateJobApplicationStateTransitions do
     end
 
     create index(:job_application_state_transitions, [:job_application_id])
-    create index(:job_application_state_transitions, [:transitioned_by_id])
-    create index(:job_application_state_transitions, [:from_state, :to_state])
   end
 end

@@ -61,6 +61,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   def handle_info(%Broadcast{event: event, payload: payload}, socket)
       when event in [
              "company_job_application_created",
+             "company_job_application_status_updated",
              "company_job_application_updated"
            ] do
     send_update(

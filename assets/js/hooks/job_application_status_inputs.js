@@ -2,6 +2,11 @@ const JobApplicationStatusInputs = {
   mounted() {
     const updateStatusContainer = this.el
     const form = updateStatusContainer.querySelector('form')
+    const applicantId = form.dataset.applicantId
+    const cancelButton = document.getElementById(
+      `cancel-status-update-${applicantId}`
+    )
+    const submitButton = document.getElementById(`update-status-${applicantId}`)
 
     const formElements = form.querySelectorAll(
       'input, select, textarea, button'
@@ -14,14 +19,6 @@ const JobApplicationStatusInputs = {
         })
       })
     })
-
-    const cancelButton = Array.from(this.el.querySelectorAll('button')).find(
-      (button) => button.textContent.trim() === 'Cancel'
-    )
-
-    const submitButton = Array.from(this.el.querySelectorAll('button')).find(
-      (button) => button.textContent.trim() === 'Update Status'
-    )
 
     cancelButton.addEventListener('click', () => {
       updateStatusContainer.style.display = 'none'
