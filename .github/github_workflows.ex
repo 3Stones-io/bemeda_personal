@@ -121,7 +121,7 @@ defmodule GithubWorkflows do
         DOCKER_BUILDKIT: "1"
       ],
       steps: [
-        checkout_step(),
+        checkout_step(lfs?: true),
         [
           name: "Set up Ruby",
           uses: "ruby/setup-ruby@v1",
