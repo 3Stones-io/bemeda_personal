@@ -415,9 +415,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     } do
       job_application =
         job_application_fixture(user, job, %{
-          media_data: %{
-            file_name: "test_video.mp4",
-            upload_id: Ecto.UUID.generate()
+          "media_data" => %{
+            "file_name" => "test_video.mp4",
+            "upload_id" => Ecto.UUID.generate()
           }
         })
 
@@ -473,9 +473,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           base_data.user,
           base_data.job,
           %{
-            cover_letter: "Application with video",
-            media_data: %{
-              file_name: "test_video.mp4"
+            "cover_letter" => "Application with video",
+            "media_data" => %{
+              "file_name" => "test_video.mp4"
             }
           }
         )

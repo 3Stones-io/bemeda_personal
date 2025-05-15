@@ -321,17 +321,19 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       assert html =~ SharedHelpers.translate_status(:state)[application.state]
 
-      view
-      |> element("#status-form-#{application.id}")
-      |> render_submit(%{
-        "applicant_id" => application.id,
-        "job_application_state_transition" => %{
-          "to_state" => "screening",
-          "notes" => "Started initial screening"
-        }
-      })
+      html2 =
+        view
+        |> form("#status-update-form-#{application.id}", %{
+          "job_application_state_transition" => %{
+            "to_state" => "under_review",
+            "notes" => "Started initial screening"
+          }
+        })
+        |> render_submit()
 
-      assert render(view) =~ "Failed to update status"
+      assert html2 =~ "Under Review"
+      assert updated_job_application = Jobs.get_job_application!(application.id)
+      assert updated_job_application.state == "under_review"
     end
 
     test "handles error case when updating applicant status", %{
@@ -347,15 +349,15 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert html =~ SharedHelpers.translate_status(:state)[application.state]
 
       view
-      |> element("#status-form-#{application.id}")
-      |> render_submit(%{
-        "applicant_id" => application.id,
+      |> form("#status-update-form-#{application.id}", %{
         "job_application_state_transition" => %{
           "notes" => "Some notes"
         }
       })
+      |> render_submit()
 
-      assert render(view) =~ "Failed to update status"
+      assert updated_job_application = Jobs.get_job_application!(application.id)
+      refute updated_job_application.state == "under_review"
     end
   end
 

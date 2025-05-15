@@ -214,9 +214,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     } do
       {:ok, job_posting} =
         Jobs.update_job_posting(job_posting, %{
-          media_data: %{
-            file_name: "test_video.mp4",
-            upload_id: Ecto.UUID.generate()
+          "media_data" => %{
+            "file_name" => "test_video.mp4",
+            "upload_id" => Ecto.UUID.generate()
           }
         })
 
@@ -259,9 +259,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     } do
       job_posting =
         job_posting_fixture(company, %{
-          media_data: %{
-            file_name: "test_video.mp4",
-            upload_id: Ecto.UUID.generate()
+          "media_data" => %{
+            "file_name" => "test_video.mp4",
+            "upload_id" => Ecto.UUID.generate()
           }
         })
 

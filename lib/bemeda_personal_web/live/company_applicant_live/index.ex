@@ -5,7 +5,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationsListComponent
-  alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
@@ -71,17 +70,5 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     )
 
     {:noreply, socket}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event(
-        "update_job_application_status",
-        %{
-          "applicant_id" => applicant_id,
-          "job_application_state_transition" => params
-        },
-        socket
-      ) do
-    SharedHelpers.update_job_application_status(socket, params, applicant_id)
   end
 end

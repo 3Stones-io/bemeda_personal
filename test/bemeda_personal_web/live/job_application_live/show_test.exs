@@ -80,11 +80,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           user,
           job,
           %{
-            cover_letter: "Application with video",
-            media_data: %{
-              file_name: "test_video.mp4",
-              type: "video/mp4",
-              upload_id: Ecto.UUID.generate()
+            "cover_letter" => "Application with video",
+            "media_data" => %{
+              "file_name" => "test_video.mp4",
+              "type" => "video/mp4",
+              "upload_id" => Ecto.UUID.generate()
             }
           }
         )
@@ -137,12 +137,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           user,
           job,
           %{
-            cover_letter: "Application with video",
-            media_data: %{
-              file_name: "test_video.mp4",
-              status: :uploaded,
-              type: "video/mp4",
-              upload_id: Ecto.UUID.generate()
+            "cover_letter" => "Application with video",
+            "media_data" => %{
+              "file_name" => "test_video.mp4",
+              "status" => :uploaded,
+              "type" => "video/mp4",
+              "upload_id" => Ecto.UUID.generate()
             }
           }
         )
@@ -387,7 +387,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert html =~ "Offer Extended"
 
-      render_hook(view, "show-status-transition-modal", %{to_state: "offer_accepted"})
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_accepted"})
 
       view
       |> form("#job-application-state-transition-form")
@@ -425,7 +425,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      render_hook(view, "show-status-transition-modal", %{to_state: "withdrawn"})
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "withdrawn"})
 
       view
       |> form("#job-application-state-transition-form")
@@ -461,7 +461,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert initial_messages_html =~ job_application.cover_letter
 
-      render_hook(view, "show-status-transition-modal", %{to_state: "under_review"})
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "under_review"})
 
       view
       |> form("#job-application-state-transition-form")
@@ -484,7 +484,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert updated_messages_html =~ "application is now under review"
 
-      render_hook(updated_view, "show-status-transition-modal", %{to_state: "screening"})
+      render_hook(updated_view, "show-status-transition-modal", %{"to_state" => "screening"})
 
       updated_view
       |> form("#job-application-state-transition-form")

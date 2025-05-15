@@ -52,10 +52,10 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
                 application
               )
             }
+            current_user={@current_user}
             id={"applicant-#{application.id}"}
             job={application.job_posting}
             show_job={true}
-            update_job_application_status_form={@update_job_application_status_form}
           />
         </div>
       </div>
@@ -158,8 +158,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
      socket
      |> stream(:job_applications, [], dom_id: &"job_applications-#{&1.id}")
      |> assign(:end_of_timeline?, false)
-     |> assign(:filters_form, %JobApplicationFilter{})
-     |> SharedHelpers.assign_job_application_status_form()}
+     |> assign(:filters_form, %JobApplicationFilter{})}
   end
 
   @impl Phoenix.LiveComponent

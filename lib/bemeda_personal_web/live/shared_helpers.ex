@@ -6,7 +6,6 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobApplicationStateMachine
-  alias BemedaPersonal.Jobs.JobApplicationStateTransition
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Endpoint
 
@@ -169,52 +168,15 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   end
 
   @spec status_badge_color(String.t()) :: String.t()
-  def status_badge_color(status) do
-    status_colors = %{
-      "applied" => "bg-blue-100 text-blue-800",
-      "interview_scheduled" => "bg-green-100 text-green-800",
-      "interviewed" => "bg-teal-100 text-teal-800",
-      "offer_accepted" => "bg-green-100 text-green-800",
-      "offer_declined" => "bg-red-100 text-red-800",
-      "offer_extended" => "bg-yellow-100 text-yellow-800",
-      "rejected" => "bg-red-100 text-red-800",
-      "screening" => "bg-indigo-100 text-indigo-800",
-      "under_review" => "bg-purple-100 text-purple-800",
-      "withdrawn" => "bg-gray-100 text-gray-800"
-    }
-
-    Map.get(status_colors, status, "bg-gray-100 text-gray-800")
-  end
-
-  @spec assign_job_application_status_form(socket()) :: socket()
-  def assign_job_application_status_form(socket) do
-    update_job_application_status_form =
-      %JobApplicationStateTransition{}
-      |> Jobs.change_job_application_status()
-      |> Phoenix.Component.to_form()
-
-    assign(socket, :update_job_application_status_form, update_job_application_status_form)
-  end
-
-  @spec update_job_application_status(socket(), map(), String.t()) :: {:noreply, socket()}
-  def update_job_application_status(socket, params, applicant_id) do
-    job_application = Jobs.get_job_application!(applicant_id)
-    user = socket.assigns.current_user
-
-    params =
-      Map.merge(params, %{
-        "from_state" => job_application.state
-      })
-
-    case Jobs.update_job_application_status(job_application, user, params) do
-      {:ok, _updated_job_application} ->
-        {:noreply, Phoenix.LiveView.put_flash(socket, :info, "Status updated successfully")}
-
-      {:error, changeset} ->
-        {:noreply,
-         socket
-         |> Phoenix.LiveView.put_flash(:error, "Failed to update status")
-         |> assign(:update_job_application_status_form, changeset)}
-    end
-  end
+  def status_badge_color("applied"), do: "bg-blue-100 text-blue-800"
+  def status_badge_color("interview_scheduled"), do: "bg-green-100 text-green-800"
+  def status_badge_color("interviewed"), do: "bg-teal-100 text-teal-800"
+  def status_badge_color("offer_accepted"), do: "bg-green-100 text-green-800"
+  def status_badge_color("offer_declined"), do: "bg-red-100 text-red-800"
+  def status_badge_color("offer_extended"), do: "bg-yellow-100 text-yellow-800"
+  def status_badge_color("rejected"), do: "bg-red-100 text-red-800"
+  def status_badge_color("screening"), do: "bg-indigo-100 text-indigo-800"
+  def status_badge_color("under_review"), do: "bg-purple-100 text-purple-800"
+  def status_badge_color("withdrawn"), do: "bg-gray-100 text-gray-800"
+  def status_badge_color(_status), do: "bg-gray-100 text-gray-800"
 end

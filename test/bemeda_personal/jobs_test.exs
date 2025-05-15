@@ -1211,13 +1211,15 @@ defmodule BemedaPersonal.JobsTest do
       job_application3 = job_application_fixture(user, job_posting)
 
       {:ok, updated_application2} =
-        Jobs.update_job_application_status(job_application2, user, %{to_state: "under_review"})
+        Jobs.update_job_application_status(job_application2, user, %{"to_state" => "under_review"})
 
       {:ok, updated_application3} =
-        Jobs.update_job_application_status(job_application3, user, %{to_state: "under_review"})
+        Jobs.update_job_application_status(job_application3, user, %{"to_state" => "under_review"})
 
       {:ok, screened_application3} =
-        Jobs.update_job_application_status(updated_application3, user, %{to_state: "screening"})
+        Jobs.update_job_application_status(updated_application3, user, %{
+          "to_state" => "screening"
+        })
 
       results = Jobs.list_job_applications(%{state: "applied"})
       assert Enum.any?(results, fn app -> app.id == job_application1.id end)
@@ -1391,7 +1393,7 @@ defmodule BemedaPersonal.JobsTest do
       application_topic = "job_application:user:#{job_application.user_id}"
       Endpoint.subscribe(application_topic)
 
-      attrs = %{to_state: "under_review", notes: "Application looks promising"}
+      attrs = %{"to_state" => "under_review", "notes" => "Application looks promising"}
 
       assert {:ok, updated_job_application} =
                Jobs.update_job_application_status(job_application, user, attrs)
@@ -1429,20 +1431,20 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.state == "applied"
 
       {:ok, under_review_application} =
-        Jobs.update_job_application_status(job_application, user, %{to_state: "under_review"})
+        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
 
       assert under_review_application.state == "under_review"
 
       {:ok, screening_application} =
         Jobs.update_job_application_status(under_review_application, user, %{
-          to_state: "screening"
+          "to_state" => "screening"
         })
 
       assert screening_application.state == "screening"
 
       {:ok, interview_application} =
         Jobs.update_job_application_status(screening_application, user, %{
-          to_state: "interview_scheduled"
+          "to_state" => "interview_scheduled"
         })
 
       assert interview_application.state == "interview_scheduled"
@@ -1460,7 +1462,7 @@ defmodule BemedaPersonal.JobsTest do
     } do
       assert job_application.state == "applied"
 
-      attrs = %{to_state: "interview_scheduled"}
+      attrs = %{"to_state" => "interview_scheduled"}
       {:error, changeset} = Jobs.update_job_application_status(job_application, user, attrs)
 
       assert "transition_changeset failed: invalid transition from applied to interview_scheduled" in errors_on(
@@ -1477,7 +1479,7 @@ defmodule BemedaPersonal.JobsTest do
       job_application: job_application,
       user: user
     } do
-      attrs = %{to_state: "invalid_state"}
+      attrs = %{"to_state" => "invalid_state"}
       result = Jobs.update_job_application_status(job_application, user, attrs)
 
       assert {:error, changeset} = result
@@ -1497,12 +1499,14 @@ defmodule BemedaPersonal.JobsTest do
       user: user
     } do
       {:ok, updated_job_application} =
-        Jobs.update_job_application_status(job_application, user, %{to_state: "under_review"})
+        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
 
       assert updated_job_application.state == "under_review"
 
       {:ok, withdrawn_application} =
-        Jobs.update_job_application_status(updated_job_application, user, %{to_state: "withdrawn"})
+        Jobs.update_job_application_status(updated_job_application, user, %{
+          "to_state" => "withdrawn"
+        })
 
       assert withdrawn_application.state == "withdrawn"
 
@@ -1522,7 +1526,7 @@ defmodule BemedaPersonal.JobsTest do
       job_application = job_application_fixture(user, job_posting)
 
       {:ok, updated_application} =
-        Jobs.update_job_application_status(job_application, user, %{to_state: "under_review"})
+        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
 
       transitions = Jobs.list_job_application_state_transitions(updated_application)
       transition = List.first(transitions)
@@ -1539,7 +1543,7 @@ defmodule BemedaPersonal.JobsTest do
     test "returns a changeset with changes when valid attrs are provided", %{
       transition: transition
     } do
-      changeset = Jobs.change_job_application_status(transition, %{notes: "Updated notes"})
+      changeset = Jobs.change_job_application_status(transition, %{"notes" => "Updated notes"})
       assert changeset.valid?
       assert changeset.changes[:notes] == "Updated notes"
     end
@@ -1548,7 +1552,7 @@ defmodule BemedaPersonal.JobsTest do
       transition: transition
     } do
       changeset =
-        Jobs.change_job_application_status(transition, %{from_state: nil, to_state: nil})
+        Jobs.change_job_application_status(transition, %{"from_state" => nil, "to_state" => nil})
 
       refute changeset.valid?
       assert errors_on(changeset)[:from_state]
@@ -1565,20 +1569,20 @@ defmodule BemedaPersonal.JobsTest do
 
       {:ok, under_review_app} =
         Jobs.update_job_application_status(job_application, user, %{
-          to_state: "under_review",
-          notes: "Moving to review"
+          "to_state" => "under_review",
+          "notes" => "Moving to review"
         })
 
       {:ok, screening_app} =
         Jobs.update_job_application_status(under_review_app, user, %{
-          to_state: "screening",
-          notes: "Moving to screening"
+          "to_state" => "screening",
+          "notes" => "Moving to screening"
         })
 
       {:ok, interview_app} =
         Jobs.update_job_application_status(screening_app, user, %{
-          to_state: "interview_scheduled",
-          notes: "Moving to review"
+          "to_state" => "interview_scheduled",
+          "notes" => "Moving to review"
         })
 
       other_application = job_application_fixture(user, job_posting)

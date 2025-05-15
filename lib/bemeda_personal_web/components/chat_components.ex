@@ -82,6 +82,26 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
+  attr :job_application, JobApplication
+  attr :is_employer?, :boolean
+
+  @spec chat_contact_name(assigns()) :: output()
+  def chat_contact_name(%{is_employer?: true} = assigns) do
+    ~H"""
+    <span>
+      {"#{@job_application.user.first_name} #{@job_application.user.last_name}"}
+    </span>
+    """
+  end
+
+  def chat_contact_name(assigns) do
+    ~H"""
+    <span>
+      {@job_application.job_posting.company.name}
+    </span>
+    """
+  end
+
   attr :current_user, User
   attr :id, :string
   attr :is_employer?, :boolean
@@ -265,7 +285,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full flex justify-center my-2">
       <div class="bg-purple-100 text-purple-800 rounded-xl py-2 px-4 text-center text-sm">
-        <p>{get_message_content(@message, @is_employer?)}</p>
+        <p>{get_message_content(@message.content, @is_employer?)}</p>
       </div>
     </div>
     """
@@ -279,17 +299,9 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
-  defp get_message_content(message, is_employer?) do
-    if is_employer? do
-      Map.get(
-        @employer_messages,
-        message.content
-      )
-    else
-      Map.get(
-        @candidate_messages,
-        message.content
-      )
-    end
-  end
+  defp get_message_content(content, employer?)
+
+  defp get_message_content(content, true), do: Map.get(@employer_messages, content)
+
+  defp get_message_content(content, false), do: Map.get(@candidate_messages, content)
 end

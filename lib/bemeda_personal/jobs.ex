@@ -240,7 +240,7 @@ defmodule BemedaPersonal.Jobs do
   end
 
   defp handle_media_asset(repo, existing_media_asset, parent, attrs) do
-    media_data = Map.get(attrs, "media_data") || Map.get(attrs, :media_data)
+    media_data = Map.get(attrs, "media_data")
 
     process_media_data(media_data, repo, existing_media_asset, parent)
   end
@@ -869,8 +869,8 @@ defmodule BemedaPersonal.Jobs do
           {:ok, job_application()} | {:error, changeset()}
   def update_job_application_status(job_application, user, attrs) do
     from_state = job_application.state
-    to_state = Map.get(attrs, :to_state) || Map.get(attrs, "to_state")
-    notes = Map.get(attrs, :notes) || Map.get(attrs, "notes")
+    to_state = Map.get(attrs, "to_state")
+    notes = Map.get(attrs, "notes")
 
     Multi.new()
     |> Multi.run(:job_application, fn _repo, _changes ->

@@ -1,13 +1,10 @@
 <section class="w-full py-2 max-w-full min-h-screen">
   <div class="text-white flex justify-between items-center py-4 mb-4 bg-indigo-500">
     <h1 class="text-xl font-semibold px-4">
-      <span :if={@job_posting.company.admin_user_id == @current_user.id}>
-        {"#{@job_application.user.first_name} #{@job_application.user.last_name}"}
-      </span>
-
-      <span :if={@job_posting.company.admin_user_id != @current_user.id}>
-        {@job_posting.company.name}
-      </span>
+      <ChatComponents.chat_contact_name
+        job_application={@job_application}
+        is_employer?={@is_employer?}
+      />
 
       <span class="text-xs font-medium bg-purple-700 text-white rounded-full px-2 py-1">
         {SharedHelpers.translate_status(:state)[@job_application.state]}

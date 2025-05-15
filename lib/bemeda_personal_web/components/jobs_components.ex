@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
@@ -571,6 +572,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   attr :applicant, :any, required: true
   attr :available_statuses, :list, default: []
+  attr :current_user, :any, required: true
   attr :id, :string, required: true
   attr :job, :any, default: nil
   attr :show_actions, :boolean, default: false
@@ -628,10 +630,12 @@ defmodule BemedaPersonalWeb.JobsComponents do
                     <.icon name="hero-x-mark" class="h-5 w-5" />
                   </button>
                 </div>
-                <.status_update_form
+                <.live_component
+                  module={StatusUpdateFormComponent}
+                  id={"status-update-form-#{@applicant.id}"}
                   applicant={@applicant}
                   available_statuses={@available_statuses}
-                  update_job_application_status_form={@update_job_application_status_form}
+                  current_user={@current_user}
                 />
               </div>
             </div>
@@ -680,61 +684,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </.link>
       </div>
     </div>
-    """
-  end
-
-  defp status_update_form(assigns) do
-    ~H"""
-    <.form
-      :let={f}
-      for={@update_job_application_status_form}
-      id={"status-form-#{@applicant.id}"}
-      phx-submit="update_job_application_status"
-      phx-value-applicant_id={@applicant.id}
-      data-applicant-id={@applicant.id}
-    >
-      <div class="mb-4">
-        <.input
-          field={f[:to_state]}
-          label="Status"
-          type="select"
-          prompt="Select a status"
-          options={
-            Enum.map(@available_statuses, fn key ->
-              {SharedHelpers.translate_status(:action)[key], key}
-            end)
-          }
-          required
-        />
-      </div>
-
-      <div class="mb-4">
-        <.input
-          field={f[:notes]}
-          type="textarea"
-          rows="4"
-          label="Notes"
-          placeholder="Add notes about this status change..."
-        />
-      </div>
-
-      <div class="flex justify-end space-x-2">
-        <button
-          type="button"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors duration-150 ease-in-out"
-          id={"cancel-status-update-#{@applicant.id}"}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
-          id={"update-status-#{@applicant.id}"}
-        >
-          Update Status
-        </button>
-      </div>
-    </.form>
     """
   end
 

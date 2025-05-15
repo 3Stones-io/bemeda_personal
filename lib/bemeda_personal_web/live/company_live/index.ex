@@ -33,8 +33,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
      |> assign(:company, company)
      |> assign_job_count(company)
      |> assign_job_postings(company)
-     |> assign_recent_applicants(company)
-     |> SharedHelpers.assign_job_application_status_form()}
+     |> assign_recent_applicants(company)}
   end
 
   @impl Phoenix.LiveView
@@ -91,18 +90,6 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
              "job_application_updated"
            ] do
     {:noreply, stream_insert(socket, :recent_applicants, payload.job_application)}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event(
-        "update_job_application_status",
-        %{
-          "applicant_id" => applicant_id,
-          "job_application_state_transition" => params
-        },
-        socket
-      ) do
-    SharedHelpers.update_job_application_status(socket, params, applicant_id)
   end
 
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])

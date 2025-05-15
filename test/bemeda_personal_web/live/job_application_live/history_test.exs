@@ -27,14 +27,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
 
       {:ok, under_review_app} =
         Jobs.update_job_application_status(job_application, company_user, %{
-          notes: "Candidate profile looks promising",
-          to_state: "under_review"
+          "notes" => "Candidate profile looks promising",
+          "to_state" => "under_review"
         })
 
       {:ok, screening_app} =
         Jobs.update_job_application_status(under_review_app, company_user, %{
-          notes: "Moving to initial screening",
-          to_state: "screening"
+          "notes" => "Moving to initial screening",
+          "to_state" => "screening"
         })
 
       %{
