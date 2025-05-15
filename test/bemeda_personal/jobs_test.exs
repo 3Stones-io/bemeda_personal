@@ -384,6 +384,52 @@ defmodule BemedaPersonal.JobsTest do
       assert job_posting.media_asset == nil
     end
 
+    test "with nil media_data does not create a media asset", %{company: company} do
+      valid_attrs = %{
+        currency: "some currency",
+        description: "some description that is long enough",
+        employment_type: "some employment_type",
+        experience_level: "some experience_level",
+        location: "some location",
+        remote_allowed: true,
+        salary_max: 42,
+        salary_min: 42,
+        title: "some valid title",
+        media_data: nil
+      }
+
+      assert {:ok, %Jobs.JobPosting{} = job_posting} =
+               Jobs.create_job_posting(company, valid_attrs)
+
+      assert job_posting.description == "some description that is long enough"
+      assert job_posting.title == "some valid title"
+      assert job_posting.company_id == company.id
+      refute job_posting.media_asset
+    end
+
+    test "with empty media_data does not create a media asset", %{company: company} do
+      valid_attrs = %{
+        currency: "some currency",
+        description: "some description that is long enough",
+        employment_type: "some employment_type",
+        experience_level: "some experience_level",
+        location: "some location",
+        remote_allowed: true,
+        salary_max: 42,
+        salary_min: 42,
+        title: "some valid title",
+        media_data: %{}
+      }
+
+      assert {:ok, %Jobs.JobPosting{} = job_posting} =
+               Jobs.create_job_posting(company, valid_attrs)
+
+      assert job_posting.description == "some description that is long enough"
+      assert job_posting.title == "some valid title"
+      assert job_posting.company_id == company.id
+      refute job_posting.media_asset
+    end
+
     test "with valid data including media_data creates a job_posting with media asset", %{
       company: company
     } do
@@ -536,6 +582,40 @@ defmodule BemedaPersonal.JobsTest do
       assert updated_job_posting.title == "some updated valid title"
       assert updated_job_posting.remote_allowed == false
       assert updated_job_posting.media_asset.file_name == "updated_file.jpg"
+    end
+
+    test "with nil media_data does not create or update a media asset", %{
+      job_posting: job_posting
+    } do
+      update_attrs = %{
+        "description" => "some updated description that is long enough",
+        "title" => "some updated valid title",
+        "media_data" => nil
+      }
+
+      assert {:ok, %Jobs.JobPosting{} = updated_job_posting} =
+               Jobs.update_job_posting(job_posting, update_attrs)
+
+      assert updated_job_posting.description == "some updated description that is long enough"
+      assert updated_job_posting.title == "some updated valid title"
+      refute updated_job_posting.media_asset
+    end
+
+    test "with empty media_data does not create or update a media asset", %{
+      job_posting: job_posting
+    } do
+      update_attrs = %{
+        "description" => "some updated description that is long enough",
+        "title" => "some updated valid title",
+        "media_data" => %{}
+      }
+
+      assert {:ok, %Jobs.JobPosting{} = updated_job_posting} =
+               Jobs.update_job_posting(job_posting, update_attrs)
+
+      assert updated_job_posting.description == "some updated description that is long enough"
+      assert updated_job_posting.title == "some updated valid title"
+      refute updated_job_posting.media_asset
     end
 
     test "with valid data updates existing media asset when present", %{job_posting: job_posting} do
@@ -707,6 +787,52 @@ defmodule BemedaPersonal.JobsTest do
       assert job_application.media_asset
     end
 
+    test "creates a job_application with nil media_data and no media asset" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
+
+      valid_attrs = %{
+        "cover_letter" => "some cover letter",
+        "media_data" => nil
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = job_application} =
+               Jobs.create_job_application(user, job_posting, valid_attrs)
+
+      assert job_application.cover_letter == "some cover letter"
+      assert job_application.job_posting_id == job_posting.id
+      assert job_application.user_id == user.id
+      refute job_application.media_asset
+    end
+
+    test "creates a job_application with empty media_data and no media asset" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting =
+        company
+        |> job_posting_fixture()
+        |> Repo.preload(:company)
+
+      valid_attrs = %{
+        "cover_letter" => "some cover letter",
+        "media_data" => %{}
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = job_application} =
+               Jobs.create_job_application(user, job_posting, valid_attrs)
+
+      assert job_application.cover_letter == "some cover letter"
+      assert job_application.job_posting_id == job_posting.id
+      assert job_application.user_id == user.id
+      refute job_application.media_asset
+    end
+
     test "creates a job_application with media asset" do
       user = user_fixture()
       company = company_fixture(user)
@@ -822,6 +948,36 @@ defmodule BemedaPersonal.JobsTest do
       assert updated_job_application.cover_letter == "updated cover letter"
       assert updated_job_application.id == job_application.id
       assert updated_job_application.media_asset == job_application.media_asset
+    end
+
+    test "updates the job_application with nil media_data and doesn't create media asset",
+         %{job_application: job_application} do
+      update_attrs = %{
+        "cover_letter" => "updated cover letter",
+        "media_data" => nil
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = updated_job_application} =
+               Jobs.update_job_application(job_application, update_attrs)
+
+      assert updated_job_application.cover_letter == "updated cover letter"
+      assert updated_job_application.id == job_application.id
+      refute updated_job_application.media_asset
+    end
+
+    test "updates the job_application with empty media_data and doesn't create media asset",
+         %{job_application: job_application} do
+      update_attrs = %{
+        "cover_letter" => "updated cover letter",
+        "media_data" => %{}
+      }
+
+      assert {:ok, %Jobs.JobApplication{} = updated_job_application} =
+               Jobs.update_job_application(job_application, update_attrs)
+
+      assert updated_job_application.cover_letter == "updated cover letter"
+      assert updated_job_application.id == job_application.id
+      refute updated_job_application.media_asset
     end
 
     test "updates the job_application with media asset", %{job_application: job_application} do

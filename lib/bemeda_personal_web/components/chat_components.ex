@@ -7,6 +7,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonalWeb.DocumentTemplateComponent
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -105,6 +106,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   attr :current_user, User
   attr :id, :string
   attr :is_employer?, :boolean
+  attr :job_application, JobApplication
   attr :message, Message
 
   @spec chat_container(assigns()) :: output()
@@ -156,7 +158,12 @@ defmodule BemedaPersonalWeb.ChatComponents do
         @message.content && @message.sender_id != @current_user.id && "bg-gray-100 "
       ]}
     >
-      <.chat_message current_user={@current_user} is_employer?={@is_employer?} message={@message} />
+      <.chat_message
+        current_user={@current_user}
+        is_employer?={@is_employer?}
+        job_application={@job_application}
+        message={@message}
+      />
     </div>
     """
   end
@@ -164,6 +171,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   attr :class, :string, default: nil
   attr :current_user, User
   attr :is_employer?, :boolean
+  attr :job_application, :any, default: nil
   attr :message, Message
 
   defp chat_message(
@@ -224,7 +232,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
        ) do
     ~H"""
     <audio class="w-full" controls>
-      <source src={SharedHelpers.get_presigned_url(@message.id)} type="audio/mp3" />
+      <source src={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)} type="audio/mp3" />
     </audio>
     """
   end
@@ -244,7 +252,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     ~H"""
     <div class="w-full overflow-hidden rounded-lg">
       <img
-        src={SharedHelpers.get_presigned_url(@message.id)}
+        src={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
         alt={@message.media_asset.file_name || "Image"}
         class="w-full h-auto object-contain max-h-[400px]"
       />
@@ -265,10 +273,17 @@ defmodule BemedaPersonalWeb.ChatComponents do
   end
 
   defp chat_message(%{message: %{media_asset: %MediaAsset{status: :uploaded}}} = assigns) do
+    assigns =
+      assign_new(assigns, :extension, fn %{message: message} ->
+        message.media_asset.file_name
+        |> String.split(".")
+        |> List.last()
+      end)
+
     ~H"""
     <div class="w-full bg-[#e9eef2] rounded-lg p-3">
       <.link
-        href={SharedHelpers.get_presigned_url(@message.id)}
+        href={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
         target="_blank"
         class="flex items-center hover:bg-[#d6e6f1] p-2 rounded-lg transition-colors"
       >
@@ -277,6 +292,13 @@ defmodule BemedaPersonalWeb.ChatComponents do
           <span>{@message.media_asset.file_name}</span>
         </p>
       </.link>
+
+      <.additional_actions
+        current_user={@current_user}
+        extension={@extension}
+        job_application={@job_application}
+        message={@message}
+      />
     </div>
     """
   end
@@ -304,4 +326,21 @@ defmodule BemedaPersonalWeb.ChatComponents do
   defp get_message_content(content, true), do: Map.get(@employer_messages, content)
 
   defp get_message_content(content, false), do: Map.get(@candidate_messages, content)
+
+  defp additional_actions(%{extension: extension} = assigns) when extension in ["doc", "docx"] do
+    ~H"""
+    <.live_component
+      current_user={@current_user}
+      id={"document-template-#{@message.id}"}
+      job_application={@job_application}
+      message={@message}
+      module={DocumentTemplateComponent}
+    />
+    """
+  end
+
+  defp additional_actions(assigns) do
+    ~H"""
+    """
+  end
 end

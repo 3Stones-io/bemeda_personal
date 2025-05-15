@@ -2,8 +2,8 @@
   <div class="text-white flex justify-between items-center py-4 mb-4 bg-indigo-500">
     <h1 class="text-xl font-semibold px-4">
       <ChatComponents.chat_contact_name
-        job_application={@job_application}
         is_employer?={@is_employer?}
+        job_application={@job_application}
       />
 
       <span class="text-xs font-medium bg-purple-700 text-white rounded-full px-2 py-1">
@@ -68,8 +68,9 @@
     <ChatComponents.chat_container
       :for={{dom_id, message} <- @streams.messages}
       id={dom_id}
-      is_employer?={@is_employer?}
       current_user={@current_user}
+      is_employer?={@is_employer?}
+      job_application={@job_application}
       message={message}
     />
   </div>

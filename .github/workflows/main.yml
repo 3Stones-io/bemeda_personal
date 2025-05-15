@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -49,6 +51,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -75,6 +79,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -101,6 +107,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -143,6 +151,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -169,6 +179,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -203,6 +215,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -232,6 +246,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - name: Restore npm cache
         uses: actions/cache/restore@v4
         id: npm-cache
@@ -257,6 +273,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -291,6 +309,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: true
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -306,6 +326,8 @@ jobs:
             deps
           restore-keys: |
             mix-${{ runner.os }}-${{ steps.setup-beam.outputs.elixir-version }}-${{ steps.setup-beam.outputs.otp-version }}-
+      - name: Install LibreOffice
+        run: sudo apt-get update && sudo apt-get install -y libreoffice libreoffice-writer
       - name: Run tests
         env:
           MIX_ENV: test
@@ -317,6 +339,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: false
       - id: setup-beam
         name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -361,6 +385,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: true
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:

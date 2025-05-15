@@ -22,6 +22,7 @@ defmodule BemedaPersonal.MixProject do
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.html": :test,
+        "coveralls.json": :test,
         credo: :test,
         dialyzer: :test,
         sobelow: :test
@@ -69,10 +70,11 @@ defmodule BemedaPersonal.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:fsmx, "~> 0.5.0"},
       {:mdex, "~> 0.4.0"},
+      {:mox, "~> 1.2", only: :test},
       {:multipart, "~> 0.4"},
       {:number, "~> 1.0"},
       {:plug, "~> 1.17"},
-      {:tidewave, "~> 0.1", only: :dev}
+      {:req, "~> 0.5"}
     ]
   end
 
@@ -88,8 +90,9 @@ defmodule BemedaPersonal.MixProject do
       {:faker, "~> 0.18", only: :test},
       {:github_workflows_generator, "~> 0.1", only: :dev, runtime: false},
       {:mix_audit, "~> 2.1", only: :test, runtime: false},
-      {:optimum_credo, "~> 0.1", github: "optimumBA/optimum_credo", only: :test, runtime: false},
-      {:sobelow, "~> 0.13", only: :test, runtime: false}
+      {:optimum_credo, "~> 0.1", only: :test, runtime: false},
+      {:sobelow, "~> 0.13", only: :test, runtime: false},
+      {:tidewave, "~> 0.1", only: :dev}
     ]
   end
 
@@ -155,8 +158,7 @@ defmodule BemedaPersonal.MixProject do
       ],
       check_code: [
         "deps.unlock --check-unused",
-        # TODO: Remove the flag once the hackney issue is fixed
-        "deps.audit --ignore-advisory-ids \"GHSA-vq52-99r9-h5pw\"",
+        "deps.audit",
         "hex.audit",
         "sobelow --config .sobelow-conf",
         "format --check-formatted",

@@ -56,6 +56,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("upload-media", %{"filename" => filename, "type" => type}, socket) do
+    upload_id = Ecto.UUID.generate()
+
     {:ok, message} =
       Chat.create_message_with_media(
         socket.assigns.current_user,
@@ -63,30 +65,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         %{
           "media_data" => %{
             "file_name" => filename,
+            "status" => :pending,
             "type" => type,
-            "status" => :pending
+            "upload_id" => upload_id
           }
         }
       )
 
-    upload_url = TigrisHelper.get_presigned_upload_url(message.id)
+    upload_url = TigrisHelper.get_presigned_upload_url(upload_id)
 
     {:reply, %{upload_url: upload_url, message_id: message.id},
      stream_insert(socket, :messages, message)}
   end
 
-  def handle_event(
-        "update-message",
-        %{"message_id" => message_id, "status" => "uploaded"},
-        socket
-      ) do
-    message = Chat.get_message!(message_id)
-
-    media_asset =
-      Media.get_media_asset_by_message_id(message.id)
-
-    {:ok, _media_asset} =
-      Media.update_media_asset(media_asset, %{status: :uploaded})
+  def handle_event("update-message", %{"message_id" => message_id, "status" => status}, socket) do
+    message_id
+    |> Media.get_media_asset_by_message_id()
+    |> Media.update_media_asset(%{status: status})
 
     {:noreply, socket}
   end
@@ -173,6 +168,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      socket
      |> assign(:job_application, job_application)
      |> assign_available_statuses(job_application)}
+  end
+
+  def handle_info({:flash, type, message}, socket) do
+    {:noreply, put_flash(socket, type, message)}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do

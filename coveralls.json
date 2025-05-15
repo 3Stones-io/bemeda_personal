@@ -4,6 +4,7 @@
   },
   "skip_files": [
     "lib/bemeda_personal/release.ex",
+    "lib/bemeda_personal/documents/tigris_storage.ex",
     "lib/bemeda_personal_web/components/core_components.ex"
   ]
 }
