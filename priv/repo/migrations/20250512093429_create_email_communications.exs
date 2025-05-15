@@ -9,12 +9,12 @@ defmodule BemedaPersonal.Repo.Migrations.CreateEmailCommunications do
       add :html_body, :text, null: false
       add :status, :string, null: false
       add :email_type, :string, null: false
-      add :recipient_id, references(:users, on_delete: :nillify, type: :binary_id)
-      add :sender_id, references(:users, on_delete: :nillify, type: :binary_id)
-      add :company_id, references(:companies, on_delete: :nillify, type: :binary_id)
+      add :recipient_id, references(:users, on_delete: :nilify_all, type: :binary_id)
+      add :sender_id, references(:users, on_delete: :nilify_all, type: :binary_id)
+      add :company_id, references(:companies, on_delete: :nilify_all, type: :binary_id)
 
       add :job_application_id,
-          references(:job_applications, on_delete: :nillify, type: :binary_id)
+          references(:job_applications, on_delete: :nilify_all, type: :binary_id)
 
       timestamps(type: :utc_datetime)
     end
