@@ -69,6 +69,7 @@ defmodule BemedaPersonal.MixProject do
     [
       {:bcrypt_elixir, "~> 3.0"},
       {:mdex, "~> 0.4.0"},
+      {:mjml_eex, "~> 0.12.0"},
       {:mox, "~> 1.2", only: :test},
       {:multipart, "~> 0.4"},
       {:number, "~> 1.0"},
