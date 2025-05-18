@@ -3,13 +3,13 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
   import Swoosh.Email
 
-  alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Accounts.EmailTemplates.ConfirmationEmail
   alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationStatusEmail
   alias BemedaPersonal.Accounts.EmailTemplates.NewMessageEmail
   alias BemedaPersonal.Accounts.EmailTemplates.ResetPasswordEmail
   alias BemedaPersonal.Accounts.EmailTemplates.UpdateEmailInstructions
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Mailer
 

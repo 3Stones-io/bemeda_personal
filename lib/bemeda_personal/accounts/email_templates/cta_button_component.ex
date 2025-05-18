@@ -1,4 +1,6 @@
 defmodule BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent do
+  @moduledoc false
+
   use MjmlEEx.Component, mode: :runtime
 
   @impl MjmlEEx.Component
