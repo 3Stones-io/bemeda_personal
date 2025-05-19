@@ -27,6 +27,7 @@ import ChatInput from './hooks/chat_input'
 import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
 import DocumentTemplate from './hooks/document_template'
+import JobApplicationStatusInputs from './hooks/job_application_status_inputs'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
 import TagsInput from './hooks/tags_input'
@@ -39,6 +40,7 @@ const Hooks = {
   CopyToClipboard,
   CurrentCheckbox,
   DocumentTemplate,
+  JobApplicationStatusInputs,
   RatingsTooltip,
   RatingsTooltipContent,
   TagsInput,

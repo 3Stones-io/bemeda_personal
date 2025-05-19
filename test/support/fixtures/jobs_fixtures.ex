@@ -18,28 +18,31 @@ defmodule BemedaPersonal.JobsFixtures do
 
   @spec job_posting_fixture(company(), attrs()) :: job_posting()
   def job_posting_fixture(%Companies.Company{} = company, attrs \\ %{}) do
-    job_posting_attrs =
-      Enum.into(attrs, %{
-        currency: "USD",
-        description: "some description",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
-        location: "some location",
-        remote_allowed: true,
-        salary_max: 42_000,
-        salary_min: 42_000,
-        title: "some title"
-      })
+    attrs = stringify_keys(attrs)
 
-    {:ok, job_posting} = Jobs.create_job_posting(company, job_posting_attrs)
+    job_posting_attrs =
+      %{
+        "currency" => "USD",
+        "description" => "some description",
+        "employment_type" => "some employment_type",
+        "experience_level" => "some experience_level",
+        "location" => "some location",
+        "remote_allowed" => true,
+        "salary_max" => 42_000,
+        "salary_min" => 42_000,
+        "title" => "some title"
+      }
+
+    {:ok, job_posting} = Jobs.create_job_posting(company, Map.merge(job_posting_attrs, attrs))
 
     job_posting
   end
 
   @spec job_application_fixture(user(), job_posting(), attrs()) :: job_application()
   def job_application_fixture(%User{} = user, %Jobs.JobPosting{} = job_posting, attrs \\ %{}) do
-    {inserted_at, attrs_without_inserted_at} = Map.pop(attrs, :inserted_at)
-    cover_letter_attrs = %{cover_letter: "some cover letter"}
+    stringified_attrs = stringify_keys(attrs)
+    {inserted_at, attrs_without_inserted_at} = Map.pop(stringified_attrs, "inserted_at")
+    cover_letter_attrs = %{"cover_letter" => "some cover letter"}
     job_application_attrs = Map.merge(cover_letter_attrs, attrs_without_inserted_at)
 
     {:ok, job_application} = Jobs.create_job_application(user, job_posting, job_application_attrs)
@@ -55,4 +58,12 @@ defmodule BemedaPersonal.JobsFixtures do
       job_application
     end
   end
+
+  defp stringify_keys(map) when is_map(map) do
+    map
+    |> Enum.map(fn {k, v} -> {to_string(k), v} end)
+    |> Enum.into(%{})
+  end
+
+  defp stringify_keys(value), do: value
 end

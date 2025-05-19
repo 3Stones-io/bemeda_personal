@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Chat.Message do
+defmodule BemedaPersonal.Jobs.JobApplicationStateTransition do
   @moduledoc false
 
   use Ecto.Schema
@@ -7,7 +7,6 @@ defmodule BemedaPersonal.Chat.Message do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Media.MediaAsset
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -15,18 +14,20 @@ defmodule BemedaPersonal.Chat.Message do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  schema "messages" do
-    field :content, :string
+  schema "job_application_state_transitions" do
+    field :from_state, :string
     belongs_to :job_application, JobApplication
-    has_one :media_asset, MediaAsset
-    belongs_to :sender, User
-    field :type, Ecto.Enum, values: [:status_update, :user], default: :user
+    field :notes, :string
+    field :to_state, :string
+    belongs_to :transitioned_by, User
 
     timestamps(type: :utc_datetime)
   end
 
   @spec changeset(t(), attrs()) :: changeset()
-  def changeset(%__MODULE__{} = message, attrs) do
-    cast(message, attrs, [:content, :type])
+  def changeset(%__MODULE__{} = transition, attrs) do
+    transition
+    |> cast(attrs, [:from_state, :notes, :to_state])
+    |> validate_required([:from_state, :to_state])
   end
 end

@@ -6,8 +6,10 @@ defmodule BemedaPersonal.Jobs do
   import Ecto.Query, warn: false
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Chat
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.JobApplicationStateTransition
   alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.Tag
@@ -21,6 +23,7 @@ defmodule BemedaPersonal.Jobs do
   @type changeset :: Ecto.Changeset.t()
   @type company :: Company.t()
   @type job_application :: JobApplication.t()
+  @type job_application_state_transition :: JobApplicationStateTransition.t()
   @type job_posting :: JobPosting.t()
   @type job_posting_id :: Ecto.UUID.t()
   @type tag_id :: Ecto.UUID.t()
@@ -237,7 +240,7 @@ defmodule BemedaPersonal.Jobs do
   end
 
   defp handle_media_asset(repo, existing_media_asset, parent, attrs) do
-    media_data = Map.get(attrs, "media_data") || Map.get(attrs, :media_data)
+    media_data = Map.get(attrs, "media_data")
 
     if media_data && Enum.empty?(media_data) do
       process_media_data(nil, repo, nil, parent)
@@ -347,13 +350,13 @@ defmodule BemedaPersonal.Jobs do
   def list_job_applications(%{company_id: _company_id} = filters, limit) do
     job_post_with_applications_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   def list_job_applications(filters, limit) do
     job_application_query()
     |> list_applications(filters, limit)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [:company]])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   defp list_applications(query, filters, limit) do
@@ -481,6 +484,10 @@ defmodule BemedaPersonal.Jobs do
     )
   end
 
+  defp apply_job_application_filter({:state, state}, dynamic) do
+    dynamic([job_application: ja], ^dynamic and ja.state == ^state)
+  end
+
   defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   defp parse_date_if_string(date) when is_binary(date) do
@@ -575,7 +582,7 @@ defmodule BemedaPersonal.Jobs do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:job_posting, :media_asset, :tags, :user])
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   @doc """
@@ -860,5 +867,111 @@ defmodule BemedaPersonal.Jobs do
     filters
     |> Map.keys()
     |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
+  end
+
+  @spec update_job_application_status(job_application(), user(), attrs()) ::
+          {:ok, job_application()} | {:error, changeset()}
+  def update_job_application_status(job_application, user, attrs) do
+    from_state = job_application.state
+    to_state = Map.get(attrs, "to_state")
+    notes = Map.get(attrs, "notes")
+
+    Multi.new()
+    |> Multi.run(:job_application, fn _repo, _changes ->
+      job_application
+      |> Fsmx.transition_changeset(to_state)
+      |> Repo.update()
+    end)
+    |> Multi.run(:job_application_state_transition, fn _repo,
+                                                       %{job_application: job_application} ->
+      create_job_application_state_transition(job_application, user, from_state, notes)
+    end)
+    |> Multi.run(:create_status_message, fn _repo,
+                                            %{
+                                              job_application_state_transition:
+                                                job_application_state_transition
+                                            } ->
+      state = job_application_state_transition.to_state
+
+      Chat.create_message(user, job_application_state_transition.job_application, %{
+        content: state,
+        type: "status_update"
+      })
+    end)
+    |> Repo.transaction()
+    |> handle_update_job_application_status_result()
+  end
+
+  defp create_job_application_state_transition(job_application, user, from_state, notes) do
+    %JobApplicationStateTransition{}
+    |> JobApplicationStateTransition.changeset(%{
+      from_state: from_state,
+      notes: notes,
+      to_state: job_application.state
+    })
+    |> Changeset.put_assoc(:job_application, job_application)
+    |> Changeset.put_assoc(:transitioned_by, user)
+    |> Repo.insert()
+  end
+
+  defp handle_update_job_application_status_result({:ok, %{job_application: job_application}}) do
+    broadcast_event(
+      "#{@job_application_topic}:company:#{job_application.job_posting.company_id}",
+      "company_job_application_status_updated",
+      %{job_application: job_application}
+    )
+
+    broadcast_event(
+      "#{@job_application_topic}:user:#{job_application.user_id}",
+      "user_job_application_status_updated",
+      %{job_application: job_application}
+    )
+
+    {:ok, job_application}
+  end
+
+  defp handle_update_job_application_status_result({:error, _operation, changeset, _changes}) do
+    {:error, changeset}
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking job application state transition changes.
+
+  ## Examples
+
+      iex> change_job_application_status(job_application_state_transition)
+      %Ecto.Changeset{data: %JobApplicationStateTransition{}}
+
+  """
+  @spec change_job_application_status(job_application_state_transition(), attrs()) ::
+          changeset()
+  def change_job_application_status(
+        %JobApplicationStateTransition{} = job_application_state_transition,
+        attrs \\ %{}
+      ) do
+    JobApplicationStateTransition.changeset(
+      job_application_state_transition,
+      attrs
+    )
+  end
+
+  @doc """
+  Lists all state transitions for a job application in chronological order.
+
+  ## Examples
+
+      iex> list_job_application_state_transitions(job_application)
+      [%JobApplicationStateTransition{}, ...]
+
+  """
+  @spec list_job_application_state_transitions(job_application()) :: [
+          JobApplicationStateTransition.t()
+        ]
+  def list_job_application_state_transitions(%JobApplication{} = job_application) do
+    JobApplicationStateTransition
+    |> where([t], t.job_application_id == ^job_application.id)
+    |> order_by([t], desc: t.inserted_at)
+    |> preload([:transitioned_by])
+    |> Repo.all()
   end
 end

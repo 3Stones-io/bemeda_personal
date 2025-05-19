@@ -68,6 +68,7 @@ defmodule BemedaPersonal.MixProject do
   defp app_deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:fsmx, "~> 0.5.0"},
       {:mdex, "~> 0.4.0"},
       {:mox, "~> 1.2", only: :test},
       {:multipart, "~> 0.4"},

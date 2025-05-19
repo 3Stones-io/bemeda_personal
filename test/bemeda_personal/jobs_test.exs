@@ -5,6 +5,7 @@ defmodule BemedaPersonal.JobsTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
 
+  alias BemedaPersonal.Chat
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
@@ -1355,6 +1356,62 @@ defmodule BemedaPersonal.JobsTest do
 
       assert Enum.empty?(result_ids_3)
     end
+
+    test "can filter job applications by state" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+
+      job_application1 = job_application_fixture(user, job_posting)
+      job_application2 = job_application_fixture(user, job_posting)
+      job_application3 = job_application_fixture(user, job_posting)
+
+      {:ok, updated_application2} =
+        Jobs.update_job_application_status(job_application2, user, %{"to_state" => "under_review"})
+
+      {:ok, updated_application3} =
+        Jobs.update_job_application_status(job_application3, user, %{"to_state" => "under_review"})
+
+      {:ok, screened_application3} =
+        Jobs.update_job_application_status(updated_application3, user, %{
+          "to_state" => "screening"
+        })
+
+      results = Jobs.list_job_applications(%{state: "applied"})
+      assert Enum.any?(results, fn app -> app.id == job_application1.id end)
+      assert Enum.all?(results, fn app -> app.state == "applied" end)
+
+      assert [result] = Jobs.list_job_applications(%{state: "under_review"})
+      assert result.id == updated_application2.id
+      assert result.state == "under_review"
+
+      assert [result] = Jobs.list_job_applications(%{state: "screening"})
+      assert result.id == screened_application3.id
+      assert result.state == "screening"
+
+      assert %{state: "withdrawn"}
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
+
+      assert [result] =
+               Jobs.list_job_applications(%{
+                 state: "screening",
+                 user_id: user.id,
+                 job_posting_id: job_posting.id
+               })
+
+      assert result.id == screened_application3.id
+      assert result.state == "screening"
+      assert result.user_id == user.id
+      assert result.job_posting_id == job_posting.id
+
+      assert %{
+               state: "screening",
+               user_id: Ecto.UUID.generate()
+             }
+             |> Jobs.list_job_applications()
+             |> Enum.empty?()
+    end
   end
 
   describe "get_user_job_application/2" do
@@ -1465,6 +1522,262 @@ defmodule BemedaPersonal.JobsTest do
         event: "user_job_application_updated",
         payload: %{job_application: ^updated_job_application}
       }
+    end
+  end
+
+  describe "update_job_application_status/3" do
+    setup do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      %{
+        company: company,
+        job_application: job_application,
+        job_posting: job_posting,
+        user: user
+      }
+    end
+
+    test "successfully updates status in valid state transition", %{
+      job_application: job_application,
+      user: user
+    } do
+      assert job_application.state == "applied"
+
+      application_topic = "job_application:user:#{job_application.user_id}"
+      Endpoint.subscribe(application_topic)
+
+      attrs = %{"to_state" => "under_review", "notes" => "Application looks promising"}
+
+      assert {:ok, updated_job_application} =
+               Jobs.update_job_application_status(job_application, user, attrs)
+
+      assert updated_job_application.state == "under_review"
+
+      transitions = Repo.all(Jobs.JobApplicationStateTransition)
+      assert length(transitions) == 1
+
+      transition = List.first(transitions)
+      assert transition.from_state == "applied"
+      assert transition.to_state == "under_review"
+      assert transition.notes == "Application looks promising"
+      assert transition.job_application_id == job_application.id
+      assert transition.transitioned_by_id == user.id
+
+      messages = Chat.list_messages(job_application)
+      assert length(messages) == 2
+
+      status_message = Enum.at(messages, 1)
+      assert status_message.content == "under_review"
+      assert status_message.sender_id == user.id
+      assert status_message.type == :status_update
+
+      assert_receive %Broadcast{
+        event: "user_job_application_status_updated",
+        topic: ^application_topic
+      }
+    end
+
+    test "allows multiple transitions in sequence", %{
+      job_application: job_application,
+      user: user
+    } do
+      assert job_application.state == "applied"
+
+      {:ok, under_review_application} =
+        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
+
+      assert under_review_application.state == "under_review"
+
+      {:ok, screening_application} =
+        Jobs.update_job_application_status(under_review_application, user, %{
+          "to_state" => "screening"
+        })
+
+      assert screening_application.state == "screening"
+
+      {:ok, interview_application} =
+        Jobs.update_job_application_status(screening_application, user, %{
+          "to_state" => "interview_scheduled"
+        })
+
+      assert interview_application.state == "interview_scheduled"
+
+      transitions = Repo.all(Jobs.JobApplicationStateTransition)
+      assert length(transitions) == 3
+
+      messages = Chat.list_messages(job_application)
+      assert length(messages) == 4
+    end
+
+    test "fails when trying to skip states", %{
+      job_application: job_application,
+      user: user
+    } do
+      assert job_application.state == "applied"
+
+      attrs = %{"to_state" => "interview_scheduled"}
+      {:error, changeset} = Jobs.update_job_application_status(job_application, user, attrs)
+
+      assert "transition_changeset failed: invalid transition from applied to interview_scheduled" in errors_on(
+               changeset
+             ).state
+
+      assert Repo.all(Jobs.JobApplicationStateTransition) == []
+
+      messages = Chat.list_messages(job_application)
+      assert length(messages) == 1
+    end
+
+    test "fails when trying to transition to an invalid state", %{
+      job_application: job_application,
+      user: user
+    } do
+      attrs = %{"to_state" => "invalid_state"}
+      result = Jobs.update_job_application_status(job_application, user, attrs)
+
+      assert {:error, changeset} = result
+
+      assert "transition_changeset failed: invalid transition from applied to invalid_state" in errors_on(
+               changeset
+             ).state
+
+      assert Repo.all(Jobs.JobApplicationStateTransition) == []
+
+      messages = Chat.list_messages(job_application)
+      assert length(messages) == 1
+    end
+
+    test "successfully transitions to withdrawn state from any state", %{
+      job_application: job_application,
+      user: user
+    } do
+      {:ok, updated_job_application} =
+        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
+
+      assert updated_job_application.state == "under_review"
+
+      {:ok, withdrawn_application} =
+        Jobs.update_job_application_status(updated_job_application, user, %{
+          "to_state" => "withdrawn"
+        })
+
+      assert withdrawn_application.state == "withdrawn"
+
+      transitions = Repo.all(Jobs.JobApplicationStateTransition)
+      assert length(transitions) == 2
+
+      messages = Chat.list_messages(job_application)
+      assert length(messages) == 3
+    end
+  end
+
+  describe "change_job_application_status/2" do
+    setup do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      {:ok, updated_application} =
+        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
+
+      transitions = Jobs.list_job_application_state_transitions(updated_application)
+      transition = List.first(transitions)
+
+      %{
+        transition: transition
+      }
+    end
+
+    test "returns a job_application_state_transition changeset", %{transition: transition} do
+      assert %Ecto.Changeset{} = Jobs.change_job_application_status(transition)
+    end
+
+    test "returns a changeset with changes when valid attrs are provided", %{
+      transition: transition
+    } do
+      changeset = Jobs.change_job_application_status(transition, %{"notes" => "Updated notes"})
+      assert changeset.valid?
+      assert changeset.changes[:notes] == "Updated notes"
+    end
+
+    test "returns a changeset with errors when invalid attrs are provided", %{
+      transition: transition
+    } do
+      changeset =
+        Jobs.change_job_application_status(transition, %{"from_state" => nil, "to_state" => nil})
+
+      refute changeset.valid?
+      assert errors_on(changeset)[:from_state]
+      assert errors_on(changeset)[:to_state]
+    end
+  end
+
+  describe "list_job_application_state_transitions/1" do
+    setup do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      {:ok, under_review_app} =
+        Jobs.update_job_application_status(job_application, user, %{
+          "to_state" => "under_review",
+          "notes" => "Moving to review"
+        })
+
+      {:ok, screening_app} =
+        Jobs.update_job_application_status(under_review_app, user, %{
+          "to_state" => "screening",
+          "notes" => "Moving to screening"
+        })
+
+      {:ok, interview_app} =
+        Jobs.update_job_application_status(screening_app, user, %{
+          "to_state" => "interview_scheduled",
+          "notes" => "Moving to review"
+        })
+
+      other_application = job_application_fixture(user, job_posting)
+
+      %{
+        user: user,
+        job_application: interview_app,
+        other_application: other_application
+      }
+    end
+
+    test "returns a list of state transitions for a job application", %{
+      job_application: job_application
+    } do
+      transitions = Jobs.list_job_application_state_transitions(job_application)
+
+      assert length(transitions) == 3
+
+      [first, second, third] = transitions
+
+      assert first.to_state == "under_review"
+      assert first.notes == "Moving to review"
+
+      assert second.to_state == "screening"
+      assert second.notes == "Moving to screening"
+
+      assert third.to_state == "interview_scheduled"
+      assert third.notes == "Moving to review"
+
+      Enum.each(transitions, fn transition ->
+        assert Ecto.assoc_loaded?(transition.transitioned_by)
+      end)
+    end
+
+    test "returns an empty list for job application with no transitions", %{
+      other_application: other_application
+    } do
+      transitions = Jobs.list_job_application_state_transitions(other_application)
+      assert Enum.empty?(transitions)
     end
   end
 end
