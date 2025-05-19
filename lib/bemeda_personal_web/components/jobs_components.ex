@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
@@ -570,12 +571,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :applicant, :any, required: true
+  attr :available_statuses, :list, default: []
+  attr :current_user, :any, required: true
   attr :id, :string, required: true
   attr :job, :any, default: nil
   attr :show_actions, :boolean, default: false
   attr :show_job, :boolean, default: false
   attr :tag_limit, :integer, default: 3
   attr :target, :string, default: nil
+  attr :update_job_application_status_form, Phoenix.HTML.Form
 
   @spec applicant_card(assigns()) :: output()
   def applicant_card(assigns) do
@@ -584,50 +588,93 @@ defmodule BemedaPersonalWeb.JobsComponents do
       class="px-8 py-6 relative group cursor-pointer"
       phx-click={JS.navigate(~p"/companies/#{@job.company_id}/applicant/#{@applicant.id}")}
     >
-      <div class="flex justify-between">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div>
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <div class="flex items-center gap-3">
             <h3 class="text-lg font-medium text-gray-900">
               <.link navigate={~p"/companies/#{@job.company_id}/applicant/#{@applicant.id}"} id={@id}>
                 {"#{@applicant.user.first_name} #{@applicant.user.last_name}"}
               </.link>
             </h3>
 
-            <div class="text-sm text-gray-500 mt-1">
-              <p :if={@applicant.user.email}>
-                <span class="inline-flex items-center">
-                  <.icon name="hero-envelope" class="w-4 h-4 mr-1" />
-                  {@applicant.user.email}
-                </span>
-              </p>
-            </div>
+            <div class="relative">
+              <button
+                type="button"
+                phx-click={JS.toggle(to: "#status-menu-#{@applicant.id}")}
+                class={[
+                  "text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer",
+                  SharedHelpers.status_badge_color(@applicant.state)
+                ]}
+                title={if(!Enum.empty?(@available_statuses), do: "Click to update status")}
+              >
+                {SharedHelpers.translate_status(:state)[@applicant.state]}
+              </button>
 
-            <div class="flex flex-wrap gap-2 mt-2">
               <div
-                :for={tag <- @applicant.tags |> Enum.take(@tag_limit)}
-                class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full"
+                :if={!Enum.empty?(@available_statuses)}
+                id={"status-menu-#{@applicant.id}"}
+                phx-click-away={JS.hide(to: "#status-menu-#{@applicant.id}")}
+                class={[
+                  "hidden absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg p-4 z-50",
+                  "max-h-[80vh] overflow-y-auto min-w-[350px] max-w-[90vw]"
+                ]}
+                phx-hook="JobApplicationStatusInputs"
               >
-                {tag.name}
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                  <h3 class="text-lg font-medium text-gray-900">Update Status</h3>
+                  <button
+                    type="button"
+                    class="text-gray-400 hover:text-gray-500"
+                    phx-click={JS.hide(to: "#status-menu-#{@applicant.id}")}
+                  >
+                    <.icon name="hero-x-mark" class="h-5 w-5" />
+                  </button>
+                </div>
+                <.live_component
+                  module={StatusUpdateFormComponent}
+                  id={"status-update-form-#{@applicant.id}"}
+                  applicant={@applicant}
+                  available_statuses={@available_statuses}
+                  current_user={@current_user}
+                />
               </div>
-              <div
-                :if={@applicant.tags && length(@applicant.tags) > @tag_limit}
-                class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
-              >
-                +{length(@applicant.tags) - @tag_limit} more
-              </div>
+            </div>
+          </div>
+
+          <div class="text-sm text-gray-500 mt-1">
+            <p :if={@applicant.user.email}>
+              <span class="inline-flex items-center">
+                <.icon name="hero-envelope" class="w-4 h-4 mr-1" />
+                {@applicant.user.email}
+              </span>
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2 mt-2">
+            <div
+              :for={tag <- @applicant.tags |> Enum.take(@tag_limit)}
+              class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full"
+            >
+              {tag.name}
+            </div>
+            <div
+              :if={@applicant.tags && length(@applicant.tags) > @tag_limit}
+              class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
+            >
+              +{length(@applicant.tags) - @tag_limit} more
             </div>
           </div>
         </div>
 
-        <div :if={@show_job && @job} class="hidden sm:block">
-          <div class="text-sm text-start">
+        <div>
+          <div :if={@show_job && @job} class="text-sm text-end">
             <p class="font-medium text-gray-900">{@job.title}</p>
             <p class="text-gray-500">{@job.location || "Remote"}</p>
           </div>
         </div>
       </div>
 
-      <div class="absolute bottom-4 right-6 flex space-x-2 z-10">
+      <div class="absolute bottom-2 right-6 flex space-x-2 z-10">
         <.link
           navigate={~p"/jobs/#{@applicant.job_posting_id}/job_applications/#{@applicant.id}"}
           class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center shadow-sm"
@@ -869,6 +916,21 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   label="Application Date To"
                   label_class="block text-sm font-medium text-gray-700"
                   type="date"
+                />
+              </div>
+
+              <div class="mt-1">
+                <.input
+                  field={f[:state]}
+                  label="Application Status"
+                  label_class="block text-sm font-medium text-gray-700"
+                  type="select"
+                  options={
+                    Enum.map(SharedHelpers.translate_status(:state), fn {key, value} ->
+                      {value, key}
+                    end)
+                  }
+                  prompt="Select a status"
                 />
               </div>
 

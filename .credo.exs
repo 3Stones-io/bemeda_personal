@@ -203,7 +203,12 @@
              ]
            }},
           {Credo.Check.Readability.StrictModuleLayout,
-           order: [:shortdoc, :moduledoc, :use, :import, :alias, :require, :behaviour]},
+           order: [:shortdoc, :moduledoc, :use, :import, :alias, :require, :behaviour],
+           files: %{
+             excluded: [
+               "lib/bemeda_personal/jobs/job_application_state_machine.ex"
+             ]
+           }},
           {Credo.Check.Readability.WithCustomTaggedTuple, []},
           {Credo.Check.Refactor.ABCSize, []},
           {Credo.Check.Refactor.AppendSingleItem, []},
@@ -214,10 +219,11 @@
           {Credo.Check.Refactor.ModuleDependencies,
            files: %{
              excluded: [
-               "lib/bemeda_personal/application.ex",
                "lib/bemeda_personal_web.ex",
                "lib/bemeda_personal_web/endpoint.ex",
-               "lib/bemeda_personal_web/router.ex"
+               "lib/bemeda_personal_web/router.ex",
+               "lib/bemeda_personal/application.ex",
+               "lib/bemeda_personal/jobs.ex"
              ]
            },
            max_deps: 20},

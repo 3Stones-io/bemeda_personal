@@ -2,6 +2,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   @moduledoc false
 
   use Ecto.Schema
+  use Fsmx.Struct, fsm: BemedaPersonal.Jobs.JobApplicationStateMachine
 
   import Ecto.Changeset
 
@@ -14,6 +15,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
+  @type status :: String.t()
   @type t :: %__MODULE__{}
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -24,6 +26,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
     has_many :messages, Message
     has_one :media_asset, MediaAsset
     belongs_to :job_posting, JobPosting
+    field :state, :string, default: "applied"
     many_to_many :tags, Tag, join_through: JobApplicationTag, on_replace: :delete
     belongs_to :user, User
 
@@ -33,7 +36,7 @@ defmodule BemedaPersonal.Jobs.JobApplication do
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(job_application, attrs) do
     job_application
-    |> cast(attrs, [:cover_letter])
+    |> cast(attrs, [:cover_letter, :state])
     |> validate_required([:cover_letter])
   end
 end

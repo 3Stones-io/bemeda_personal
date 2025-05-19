@@ -3,13 +3,17 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   import Phoenix.Component, only: [assign: 3]
 
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Jobs.JobApplicationStateMachine
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Endpoint
 
   require Logger
 
+  @type job_application :: Jobs.JobApplication.t()
   @type socket :: Phoenix.LiveView.Socket.t()
+  @type user :: User.t()
 
   @spec to_html(binary()) :: Phoenix.HTML.safe()
   def to_html(markdown) do
@@ -92,4 +96,87 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def get_presigned_url(upload_id) do
     TigrisHelper.get_presigned_download_url(upload_id)
   end
+
+  @spec get_available_statuses(user(), job_application()) :: list()
+  def get_available_statuses(current_user, job_application) do
+    current_state = job_application.state
+    is_job_applicant = job_application.user_id == current_user.id
+
+    transitions = JobApplicationStateMachine.get_transitions()
+
+    all_next_states = transitions[current_state] || []
+
+    get_available_statuses_by_role(
+      current_state,
+      all_next_states,
+      is_job_applicant
+    )
+  end
+
+  defp get_available_statuses_by_role("rejected", _all_next_states, true), do: []
+
+  defp get_available_statuses_by_role(
+         "offer_extended",
+         _all_next_states,
+         true
+       ),
+       do: ["offer_accepted", "offer_declined", "withdrawn"]
+
+  defp get_available_statuses_by_role(current_state, _all_next_states, true)
+       when current_state in ["offer_accepted", "offer_declined", "withdrawn"],
+       do: []
+
+  defp get_available_statuses_by_role(_current_state, _all_next_states, true), do: ["withdrawn"]
+
+  defp get_available_statuses_by_role("rejected", all_next_states, false), do: all_next_states
+
+  defp get_available_statuses_by_role(_current_state, all_next_states, false) do
+    Enum.filter(all_next_states, fn state ->
+      state not in ["offer_accepted", "offer_declined", "withdrawn"]
+    end)
+  end
+
+  @spec translate_status(atom) :: map()
+  def translate_status(:action) do
+    %{
+      "applied" => "Submit Application",
+      "interview_scheduled" => "Schedule Interview",
+      "interviewed" => "Mark as Interviewed",
+      "offer_accepted" => "Accept Offer",
+      "offer_declined" => "Decline Offer",
+      "offer_extended" => "Extend Offer",
+      "rejected" => "Reject Application",
+      "screening" => "Start Screening",
+      "under_review" => "Start Review",
+      "withdrawn" => "Withdraw Application"
+    }
+  end
+
+  def translate_status(:state) do
+    %{
+      "applied" => "Applied",
+      "interview_scheduled" => "Interview Scheduled",
+      "interviewed" => "Interviewed",
+      "offer_accepted" => "Offer Accepted",
+      "offer_declined" => "Offer Declined",
+      "offer_extended" => "Offer Extended",
+      "rejected" => "Rejected",
+      "screening" => "Screening",
+      "under_review" => "Under Review",
+      "withdrawn" => "Withdrawn"
+    }
+  end
+
+  @spec status_badge_color(String.t()) :: String.t()
+  def status_badge_color("applied"), do: "bg-blue-100 text-blue-800"
+  def status_badge_color("interview_scheduled"), do: "bg-green-100 text-green-800"
+  def status_badge_color("interviewed"), do: "bg-teal-100 text-teal-800"
+  def status_badge_color("offer_accepted"), do: "bg-green-100 text-green-800"
+  def status_badge_color("offer_declined"), do: "bg-red-100 text-red-800"
+  def status_badge_color("offer_extended"), do: "bg-yellow-100 text-yellow-800"
+  def status_badge_color("rejected"), do: "bg-red-100 text-red-800"
+  def status_badge_color("screening"), do: "bg-indigo-100 text-indigo-800"
+  def status_badge_color("under_review"), do: "bg-purple-100 text-purple-800"
+  def status_badge_color("withdrawn"), do: "bg-gray-100 text-gray-800"
+  def status_badge_color(_status), do: "bg-gray-100 text-gray-800"
 end

@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias BemedaPersonalWeb.RatingComponent
+  alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.LiveView.JS
   alias Phoenix.Socket.Broadcast
 
@@ -83,6 +84,8 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   def handle_info(%Broadcast{event: event, payload: payload}, socket)
       when event in [
+             "company_job_application_status_updated",
+             "company_job_application_updated",
              "job_application_created",
              "job_application_updated"
            ] do

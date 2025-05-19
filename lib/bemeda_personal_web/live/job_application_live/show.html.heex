@@ -1,13 +1,108 @@
-<section class="px-4 w-full py-2 max-w-full min-h-screen">
-  <div id="chat-messages" phx-update="stream" class="h-[80svh] overflow-y-scroll">
+<section class="w-full py-2 max-w-full min-h-screen">
+  <div class="text-white flex justify-between items-center py-4 mb-4 bg-indigo-500">
+    <h1 class="text-xl font-semibold px-4">
+      <ChatComponents.chat_contact_name
+        is_employer?={@is_employer?}
+        job_application={@job_application}
+      />
+
+      <span class="text-xs font-medium bg-purple-700 text-white rounded-full px-2 py-1">
+        {SharedHelpers.translate_status(:state)[@job_application.state]}
+      </span>
+    </h1>
+
+    <div class="relative">
+      <div class="flex items-center">
+        <.link
+          :if={@job_application.user_id == @current_user.id}
+          navigate={
+            ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/edit"
+          }
+          class="text-white hover:text-white/50"
+          title="Edit Your Application"
+        >
+          <.icon name="hero-pencil-square" class="h-5 w-5" />
+        </.link>
+
+        <button
+          class="text-white hover:text-white/50 ml-4"
+          phx-click={JS.toggle(to: "#status-menu")}
+        >
+          <.icon name="hero-ellipsis-vertical" class="h-6 w-6" />
+        </button>
+      </div>
+
+      <div
+        phx-click-away={JS.hide(to: "#status-menu")}
+        id="status-menu"
+        class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+      >
+        <div class="border-b border-gray-200 pb-2 mb-2">
+          <div :for={status <- @available_statuses} class="px-3 py-1">
+            <.link
+              phx-click={
+                JS.push("show-status-transition-modal",
+                  value: %{to_state: status}
+                )
+              }
+              class="block w-full text-center px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
+            >
+              {SharedHelpers.translate_status(:action)[status]}
+            </.link>
+          </div>
+        </div>
+
+        <.link
+          patch={
+            ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/history"
+          }
+          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        >
+          Show History
+        </.link>
+      </div>
+    </div>
+  </div>
+
+  <div id="chat-messages" phx-update="stream" class="px-4 h-[80svh] overflow-y-scroll">
     <ChatComponents.chat_container
       :for={{dom_id, message} <- @streams.messages}
-      current_user={@current_user}
       id={dom_id}
+      current_user={@current_user}
+      is_employer?={@is_employer?}
       job_application={@job_application}
       message={message}
     />
   </div>
 
   <ChatComponents.chat_form chat_form={@chat_form} class="fixed inset-x-[2%] bottom-[2%]" />
+
+  <.modal
+    :if={@show_status_transition_modal}
+    id="status-transition-modal"
+    show
+    on_cancel={JS.push("hide-status-transition-modal")}
+  >
+    <.header>
+      {SharedHelpers.translate_status(:state)[@to_state]}
+    </.header>
+
+    <.simple_form
+      for={@job_application_state_transition_form}
+      id="job-application-state-transition-form"
+      phx-submit="update-job-application-status"
+    >
+      <.input
+        field={@job_application_state_transition_form[:notes]}
+        type="textarea"
+        label="Notes"
+      />
+
+      <:actions>
+        <.button type="submit" class="bg-indigo-600 hover:bg-indigo-700">
+          Update Status
+        </.button>
+      </:actions>
+    </.simple_form>
+  </.modal>
 </section>
