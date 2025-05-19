@@ -331,7 +331,7 @@ jobs:
           restore-keys: |
             mix-${{ runner.os }}-${{ steps.setup-beam.outputs.elixir-version }}-${{ steps.setup-beam.outputs.otp-version }}-
       - name: Install LibreOffice
-        run: sudo apt-get update && sudo apt-get install -y libreoffice libreoffice-writer
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libreoffice-writer
       - name: Run tests
         env:
           MIX_ENV: test
