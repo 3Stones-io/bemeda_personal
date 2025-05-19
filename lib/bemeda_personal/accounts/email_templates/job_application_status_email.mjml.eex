@@ -13,13 +13,16 @@
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 8px 0">
         has been updated to:
       </mj-text>
-      <mj-section padding="0 0 24px 0">
+      <mj-section padding="0 0 16px 0">
         <mj-column width="60%" background-color="#f7f9fc" border-radius="8px">
           <mj-text align="center" font-size="18px" font-family="Montserrat, Arial, sans-serif" color="#3d4fa1" font-weight="700" padding="16px">
-            <%= @new_status %>
+            <%= @status_message %>
           </mj-text>
         </mj-column>
       </mj-section>
+      <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
+        <%= @status_description %>
+      </mj-text>
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
         To view the details of your application and any next steps required, please click the button below:
       </mj-text>

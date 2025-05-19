@@ -21,6 +21,33 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
   @from {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"}
 
+  @status_messages %{
+    "applied" => "Application Received",
+    "under_review" => "Under Review",
+    "interview_scheduled" => "Interview Scheduled",
+    "interviewed" => "Interview Completed",
+    "offer_extended" => "Job Offer Extended",
+    "offer_accepted" => "Offer Accepted",
+    "offer_declined" => "Offer Declined",
+    "rejected" => "Application Unsuccessful",
+    "screening" => "Screening in Progress",
+    "withdrawn" => "Application Withdrawn"
+  }
+
+  @status_descriptions %{
+    "applied" => "We've received your application and will review it shortly.",
+    "under_review" => "Your application is currently being reviewed by our hiring team.",
+    "interview_scheduled" => "An interview has been scheduled.",
+    "interviewed" => "Thank you for attending the interview. We're reviewing your performance.",
+    "offer_extended" => "Good news! We've extended an offer to you.",
+    "offer_accepted" => "You've accepted our offer — welcome aboard!",
+    "offer_declined" =>
+      "You've declined our offer. We wish you the best in your future endeavors.",
+    "rejected" => "Unfortunately, we won't be moving forward with your application at this time.",
+    "screening" => "You're currently undergoing our screening process.",
+    "withdrawn" => "You've withdrawn your application."
+  }
+
   defp deliver(%User{} = recipient, subject, html_body, text_body) do
     email =
       new()
@@ -150,33 +177,35 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
+    readable_status = Map.get(@status_messages, new_status, "Application Status Updated")
+
+    status_description =
+      Map.get(@status_descriptions, new_status, "Your application status has been updated.")
 
     html_body =
       JobApplicationStatusEmail.render(
         url: url,
         user_name: user_name,
         job_title: job_title,
-        new_status: new_status
+        new_status: new_status,
+        status_message: readable_status,
+        status_description: status_description
       )
 
     text_body = """
-    Hello #{user_name},
+    Hi #{user_name},
 
-    We're writing to inform you that the status of your application for the position of:
+    This is an update regarding your application for the position of "#{job_title}".
 
-    #{job_title}
+    #{status_description}
 
-    has been updated to:
-
-    #{new_status}
-
-    To view the details of your application and any next steps required, please visit the link below:
+     To view the details of your application and any next steps required, please visit the link below:
     #{url}
     """
 
     deliver(
       job_application.user,
-      "BemedaPersonal | Job Application Status Update",
+      "BemedaPersonal | Job Application Status Update - #{readable_status}",
       html_body,
       text_body
     )
