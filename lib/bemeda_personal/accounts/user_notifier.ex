@@ -4,6 +4,9 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   import Swoosh.Email
 
   alias BemedaPersonal.Accounts.EmailTemplates.ConfirmationEmail
+  alias BemedaPersonal.Accounts.EmailTemplates.EmployerJobApplicationReceivedEmail
+  alias BemedaPersonal.Accounts.EmailTemplates.EmployerJobApplicationStatusEmail
+  alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationReceivedEmail
   alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationStatusEmail
   alias BemedaPersonal.Accounts.EmailTemplates.NewMessageEmail
   alias BemedaPersonal.Accounts.EmailTemplates.ResetPasswordEmail
@@ -22,36 +25,46 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @from {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"}
 
   @status_messages %{
-    "applied" => "Application Received",
-    "under_review" => "Under Review",
     "interview_scheduled" => "Interview Scheduled",
     "interviewed" => "Interview Completed",
-    "offer_extended" => "Job Offer Extended",
     "offer_accepted" => "Offer Accepted",
     "offer_declined" => "Offer Declined",
+    "offer_extended" => "Job Offer Extended",
     "rejected" => "Application Unsuccessful",
     "screening" => "Screening in Progress",
+    "under_review" => "Under Review",
     "withdrawn" => "Application Withdrawn"
   }
 
-  @status_descriptions %{
-    "applied" => "We've received your application and will review it shortly.",
-    "under_review" => "Your application is currently being reviewed by our hiring team.",
+  @applicant_status_descriptions %{
     "interview_scheduled" => "An interview has been scheduled.",
     "interviewed" => "Thank you for attending the interview. We're reviewing your performance.",
-    "offer_extended" => "Good news! We've extended an offer to you.",
     "offer_accepted" => "You've accepted our offer — welcome aboard!",
     "offer_declined" =>
       "You've declined our offer. We wish you the best in your future endeavors.",
+    "offer_extended" => "Good news! We've extended an offer to you.",
     "rejected" => "Unfortunately, we won't be moving forward with your application at this time.",
     "screening" => "You're currently undergoing our screening process.",
+    "under_review" => "Your application is currently being reviewed by our hiring team.",
     "withdrawn" => "You've withdrawn your application."
+  }
+
+  @employer_status_descriptions %{
+    "interview_scheduled" => "You have scheduled an interview with this candidate.",
+    "interviewed" => "The interview with this candidate has been completed.",
+    "offer_accepted" => "The candidate has accepted your job offer!",
+    "offer_declined" => "The candidate has declined your job offer.",
+    "offer_extended" => "You've extended an offer to this candidate.",
+    "rejected" => "You've rejected this candidate's application.",
+    "screening" => "This application is in the screening process.",
+    "under_review" => "This application is under review by your team.",
+    "withdrawn" => "The candidate has withdrawn their application."
   }
 
   defp deliver(%User{} = recipient, subject, html_body, text_body) do
     email =
       new()
-      |> to(recipient.email)
+      |> to({"#{recipient.first_name} #{recipient.last_name}", recipient.email})
       |> from(@from)
       |> subject(subject)
       |> text_body(text_body)
@@ -172,15 +185,53 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_job_application_status(job_application(), url()) :: {:ok, email} | {:error, any()}
-  def deliver_job_application_status(job_application, url) do
+  @spec deliver_user_job_application_received(job_application(), url()) ::
+          {:ok, email} | {:error, any()}
+  def deliver_user_job_application_received(job_application, url) do
+    user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
+    job_title = job_application.job_posting.title
+    company_name = job_application.job_posting.company.name
+
+    html_body =
+      JobApplicationReceivedEmail.render(
+        url: url,
+        user_name: user_name,
+        job_title: job_title,
+        company_name: company_name
+      )
+
+    text_body = """
+    Hello #{user_name},
+
+    We've received your application for the position of "#{job_title}" at #{company_name}.
+
+    To view the details of your application and any next steps required, please visit the link below:
+
+    #{url}
+    """
+
+    deliver(
+      job_application.user,
+      "BemedaPersonal | Job Application Received - #{job_title}",
+      html_body,
+      text_body
+    )
+  end
+
+  @spec deliver_user_job_application_status(job_application(), url()) ::
+          {:ok, email} | {:error, any()}
+  def deliver_user_job_application_status(job_application, url) do
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
     readable_status = Map.get(@status_messages, new_status, "Application Status Updated")
 
     status_description =
-      Map.get(@status_descriptions, new_status, "Your application status has been updated.")
+      Map.get(
+        @applicant_status_descriptions,
+        new_status,
+        "Your application status has been updated."
+      )
 
     html_body =
       JobApplicationStatusEmail.render(
@@ -199,12 +250,93 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     #{status_description}
 
-     To view the details of your application and any next steps required, please visit the link below:
+    To view the details of your application and any next steps required, please visit the link below:
     #{url}
     """
 
     deliver(
       job_application.user,
+      "BemedaPersonal | Job Application Status Update - #{readable_status}",
+      html_body,
+      text_body
+    )
+  end
+
+  @spec deliver_employer_job_application_received(job_application(), url()) ::
+          {:ok, email} | {:error, any()}
+  def deliver_employer_job_application_received(job_application, url) do
+    admin_user = job_application.job_posting.company.admin_user
+    employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
+    applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
+    job_title = job_application.job_posting.title
+
+    html_body =
+      EmployerJobApplicationReceivedEmail.render(
+        url: url,
+        user_name: employer_name,
+        job_title: job_title,
+        applicant_name: applicant_name
+      )
+
+    text_body = """
+    Hello #{employer_name},
+
+    You've received a new application from #{applicant_name} for the position of "#{job_title}".
+
+    To review this application and take action, please visit the link below:
+
+    #{url}
+    """
+
+    deliver(
+      admin_user,
+      "BemedaPersonal | New Job Application Received - #{job_title}",
+      html_body,
+      text_body
+    )
+  end
+
+  @spec deliver_employer_job_application_status(job_application(), url()) ::
+          {:ok, email} | {:error, any()}
+  def deliver_employer_job_application_status(job_application, url) do
+    admin_user = job_application.job_posting.company.admin_user
+    employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
+    applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
+    job_title = job_application.job_posting.title
+    new_status = job_application.state
+    readable_status = Map.get(@status_messages, new_status, "Application Status Updated")
+
+    status_description =
+      Map.get(
+        @employer_status_descriptions,
+        new_status,
+        "The application status has been updated."
+      )
+
+    html_body =
+      EmployerJobApplicationStatusEmail.render(
+        url: url,
+        user_name: employer_name,
+        job_title: job_title,
+        new_status: new_status,
+        status_message: readable_status,
+        status_description: status_description,
+        applicant_name: applicant_name
+      )
+
+    text_body = """
+    Hi #{employer_name},
+
+    This is an update regarding #{applicant_name}'s application for the position of "#{job_title}".
+
+    #{status_description}
+
+    To view the details of this application and take further action, please visit the link below:
+    #{url}
+    """
+
+    deliver(
+      admin_user,
       "BemedaPersonal | Job Application Status Update - #{readable_status}",
       html_body,
       text_body

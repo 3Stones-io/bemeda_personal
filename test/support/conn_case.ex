@@ -28,6 +28,7 @@ defmodule BemedaPersonalWeb.ConnCase do
       @endpoint BemedaPersonalWeb.Endpoint
 
       use BemedaPersonalWeb, :verified_routes
+      use Oban.Testing, repo: BemedaPersonal.Repo
 
       # Import conveniences for testing with connections
       import BemedaPersonalWeb.ConnCase

@@ -70,6 +70,12 @@ config :appsignal, :config,
   name: "bemeda_personal",
   otp_app: :bemeda_personal
 
+# Oban
+config :bemeda_personal, Oban,
+  engine: Oban.Engines.Basic,
+  queues: [default: 10, emails: 50],
+  repo: BemedaPersonal.Repo
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

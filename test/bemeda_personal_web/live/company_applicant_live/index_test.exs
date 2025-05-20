@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Workers.EmailNotificationWorker
   alias BemedaPersonalWeb.SharedHelpers
 
   setup %{conn: conn} do
@@ -330,6 +331,14 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
           }
         })
         |> render_submit()
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: application.id,
+          type: "job_application_status_update"
+        }
+      )
 
       assert html2 =~ "Under Review"
       assert updated_job_application = Jobs.get_job_application!(application.id)

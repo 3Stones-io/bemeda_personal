@@ -43,3 +43,6 @@ config :bemeda_personal, :tigris,
   access_key_id: "tigris_access_key_id",
   secret_access_key: "tigris_secret_access_key",
   bucket: "tigris-bucket"
+
+# Oban
+config :bemeda_personal, Oban, testing: :manual

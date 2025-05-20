@@ -1,0 +1,16 @@
+<mj-body>
+  <mj-section padding="32px 0 0 0">
+    <mj-column width="100%">
+      <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 16px 0">
+        Hello <%= @user_name %>,
+      </mj-text>
+      <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
+        You've received a new application from <%= @applicant_name %> for the position of "<%= @job_title %>".
+      </mj-text>
+      <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
+        To review this application and take action, please click the button below:
+      </mj-text>
+      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: "Review Application", cta_url: @url} %>
+    </mj-column>
+  </mj-section>
+</mj-body>

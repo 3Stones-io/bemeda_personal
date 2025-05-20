@@ -5,7 +5,7 @@
         Hello <%= @user_name %>,
       </mj-text>
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 12px 0">
-        We're writing to inform you that the status of your application for the position of:
+        This is an update regarding <%= @applicant_name %>'s application for the position of:
       </mj-text>
       <mj-text align="center" font-size="18px" font-family="Montserrat, Arial, sans-serif" font-weight="700" color="#3d4fa1" padding="0 0 12px 0">
         <%= @job_title %>
@@ -14,9 +14,9 @@
         <%= @status_description %>
       </mj-text>
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
-        To view the details of your application and any next steps required, please click the button below:
+        To view the details of this application and take further action, please click the button below:
       </mj-text>
-      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: "View Application Details", cta_url: @url} %>
+      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: "Manage Application", cta_url: @url} %>
     </mj-column>
   </mj-section>
 </mj-body>

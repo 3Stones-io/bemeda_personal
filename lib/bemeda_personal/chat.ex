@@ -61,7 +61,7 @@ defmodule BemedaPersonal.Chat do
   def get_message!(id) do
     Message
     |> Repo.get!(id)
-    |> Repo.preload([:job_application, :media_asset, :sender])
+    |> Repo.preload([:media_asset, :sender, job_application: [job_posting: [:company]]])
   end
 
   @doc """
