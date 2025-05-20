@@ -368,7 +368,8 @@ defmodule GithubWorkflows do
       steps: [
         [
           name: "Install LibreOffice",
-          run: "sudo apt-get update && sudo apt-get install -y libreoffice libreoffice-writer"
+          run:
+            "sudo apt-get update && sudo apt-get install -y --no-install-recommends libreoffice-writer"
         ],
         [
           name: "Run tests",
