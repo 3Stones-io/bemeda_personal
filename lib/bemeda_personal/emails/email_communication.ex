@@ -25,6 +25,7 @@ defmodule BemedaPersonal.Emails.EmailCommunication do
     belongs_to :sender, User
     field :status, Ecto.Enum, values: [:sent, :draft, :failed]
     field :subject, :string
+    field :is_read, :boolean, default: false
 
     timestamps(type: :utc_datetime)
   end
@@ -37,7 +38,8 @@ defmodule BemedaPersonal.Emails.EmailCommunication do
       :email_type,
       :html_body,
       :status,
-      :subject
+      :subject,
+      :is_read
     ])
     |> validate_required([:subject, :body, :status, :email_type])
   end

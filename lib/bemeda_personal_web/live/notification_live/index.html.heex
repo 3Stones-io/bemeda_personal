@@ -1,0 +1,87 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Notifications</h1>
+
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="border-b border-gray-200">
+      <nav class="flex -mb-px">
+        <button
+          phx-click="tab-change"
+          phx-value-tab="all"
+          class={"px-6 py-3 font-medium text-sm #{if @active_tab == "all", do: "border-b-2 border-indigo-500 text-indigo-600", else: "text-gray-500 hover:text-gray-700 hover:border-gray-300"}"}>
+          All
+          <span class="ml-2 bg-gray-100 text-gray-700 py-0.5 px-2 rounded-full text-xs">
+            <%= Enum.count(@notifications) %>
+          </span>
+        </button>
+        <button
+          phx-click="tab-change"
+          phx-value-tab="unread"
+          class={"px-6 py-3 font-medium text-sm #{if @active_tab == "unread", do: "border-b-2 border-indigo-500 text-indigo-600", else: "text-gray-500 hover:text-gray-700 hover:border-gray-300"}"}>
+          Unread
+          <span class="ml-2 bg-gray-100 text-gray-700 py-0.5 px-2 rounded-full text-xs">
+            <%= Enum.count(Enum.filter(@notifications, fn n -> !n.is_read end)) %>
+          </span>
+        </button>
+        <button
+          phx-click="tab-change"
+          phx-value-tab="read"
+          class={"px-6 py-3 font-medium text-sm #{if @active_tab == "read", do: "border-b-2 border-indigo-500 text-indigo-600", else: "text-gray-500 hover:text-gray-700 hover:border-gray-300"}"}>
+          Read
+          <span class="ml-2 bg-gray-100 text-gray-700 py-0.5 px-2 rounded-full text-xs">
+            <%= Enum.count(Enum.filter(@notifications, fn n -> n.is_read end)) %>
+          </span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="divide-y divide-gray-200">
+      <%= for notification <- get_filtered_notifications(@active_tab, @notifications) do %>
+        <div class={"flex items-center p-4 hover:bg-gray-50 #{if !notification.is_read, do: "bg-blue-50"}"}>
+          <div class="min-w-0 flex-1">
+            <.link navigate={~p"/notifications/#{notification.id}"} class="block focus:outline-none">
+              <div class="flex items-center justify-between">
+                <p class={"text-sm font-medium #{if !notification.is_read, do: "text-gray-900", else: "text-gray-600"}"}>
+                  <%= notification.subject %>
+                </p>
+                <p class="text-sm text-gray-500">
+                  <%= format_date(notification.inserted_at) %>
+                </p>
+              </div>
+              <p class="mt-1 text-sm text-gray-600 truncate">
+                <%= notification.body || "" |> HtmlSanitize.strip_tags() |> String.slice(0, 100) %><%= if String.length(notification.body || "") > 100, do: "...", else: "" %>
+              </p>
+            </.link>
+          </div>
+
+          <div class="ml-4 flex-shrink-0 flex">
+            <%= if notification.is_read do %>
+              <button
+                phx-click="mark-as-unread"
+                phx-value-id={notification.id}
+                class="ml-2 text-gray-400 hover:text-gray-600"
+                title="Mark as unread">
+                <.icon name="hero-envelope" class="h-5 w-5" />
+              </button>
+            <% else %>
+              <button
+                phx-click="mark-as-read"
+                phx-value-id={notification.id}
+                class="ml-2 text-gray-400 hover:text-gray-600"
+                title="Mark as read">
+                <.icon name="hero-envelope-open" class="h-5 w-5" />
+              </button>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <%= if Enum.empty?(@notifications) do %>
+        <div class="py-12 text-center">
+          <.icon name="hero-bell-slash" class="h-12 w-12 mx-auto text-gray-400" />
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No notifications</h3>
+          <p class="mt-1 text-sm text-gray-500">You don't have any notifications yet.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
