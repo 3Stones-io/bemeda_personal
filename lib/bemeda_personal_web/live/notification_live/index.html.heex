@@ -1,87 +1,81 @@
 <div class="container mx-auto px-4 py-6">
   <h1 class="text-2xl font-bold mb-6">Notifications</h1>
 
-  <div class="bg-white rounded-lg shadow overflow-hidden">
-    <div class="border-b border-gray-200">
-      <nav class="flex -mb-px">
-        <button
-          phx-click="tab-change"
-          phx-value-tab="all"
-          class={"px-6 py-3 font-medium text-sm #{if @active_tab == "all", do: "border-b-2 border-indigo-500 text-indigo-600", else: "text-gray-500 hover:text-gray-700 hover:border-gray-300"}"}>
-          All
-          <span class="ml-2 bg-gray-100 text-gray-700 py-0.5 px-2 rounded-full text-xs">
-            <%= Enum.count(@notifications) %>
-          </span>
-        </button>
-        <button
-          phx-click="tab-change"
-          phx-value-tab="unread"
-          class={"px-6 py-3 font-medium text-sm #{if @active_tab == "unread", do: "border-b-2 border-indigo-500 text-indigo-600", else: "text-gray-500 hover:text-gray-700 hover:border-gray-300"}"}>
-          Unread
-          <span class="ml-2 bg-gray-100 text-gray-700 py-0.5 px-2 rounded-full text-xs">
-            <%= Enum.count(Enum.filter(@notifications, fn n -> !n.is_read end)) %>
-          </span>
-        </button>
-        <button
-          phx-click="tab-change"
-          phx-value-tab="read"
-          class={"px-6 py-3 font-medium text-sm #{if @active_tab == "read", do: "border-b-2 border-indigo-500 text-indigo-600", else: "text-gray-500 hover:text-gray-700 hover:border-gray-300"}"}>
-          Read
-          <span class="ml-2 bg-gray-100 text-gray-700 py-0.5 px-2 rounded-full text-xs">
-            <%= Enum.count(Enum.filter(@notifications, fn n -> n.is_read end)) %>
-          </span>
-        </button>
-      </nav>
+  <div
+    id="notifications"
+    phx-update="stream"
+    phx-viewport-top={!@end_of_timeline? && JS.push("prev-page")}
+    phx-viewport-bottom={!@end_of_timeline? && JS.push("next-page")}
+    phx-page-loading
+  >
+    <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
+      <p class="text-gray-500">No notifications available at the moment.</p>
     </div>
 
-    <div class="divide-y divide-gray-200">
-      <%= for notification <- get_filtered_notifications(@active_tab, @notifications) do %>
-        <div class={"flex items-center p-4 hover:bg-gray-50 #{if !notification.is_read, do: "bg-blue-50"}"}>
-          <div class="min-w-0 flex-1">
-            <.link navigate={~p"/notifications/#{notification.id}"} class="block focus:outline-none">
-              <div class="flex items-center justify-between">
-                <p class={"text-sm font-medium #{if !notification.is_read, do: "text-gray-900", else: "text-gray-600"}"}>
-                  <%= notification.subject %>
+    <div
+      :for={{notification_id, notification} <- @streams.notifications}
+      class={[
+        notification.is_read && "bg-gray-50 border-b border-gray-200",
+        !notification.is_read && "bg-white border-b border-gray-200 shadow-sm",
+        "px-4 py-5 sm:px-6"
+      ]}
+      id={notification_id}
+      role="list"
+    >
+      <div class="flex items-center space-x-2">
+        <div class="flex-grow min-w-0">
+          <div class="flex items-center">
+            <div :if={!notification.is_read} class="mr-3 flex-shrink-0">
+              <div class="h-3 w-3 bg-green-500 rounded-full"></div>
+            </div>
+            <.link
+              navigate={~p"/notifications/#{notification.id}"}
+              class="block focus:outline-none w-full"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <p class={[
+                  "text-sm font-medium truncate",
+                  !notification.is_read && "text-gray-900 font-bold",
+                  notification.is_read && "text-gray-600"
+                ]}>
+                  {String.replace(notification.subject, "BemedaPersonal | ", "")}
                 </p>
                 <p class="text-sm text-gray-500">
-                  <%= format_date(notification.inserted_at) %>
+                  {format_date(notification.inserted_at)}
                 </p>
               </div>
-              <p class="mt-1 text-sm text-gray-600 truncate">
-                <%= notification.body || "" |> HtmlSanitize.strip_tags() |> String.slice(0, 100) %><%= if String.length(notification.body || "") > 100, do: "...", else: "" %>
+              <p class={[
+                "mt-1 text-sm truncate",
+                !notification.is_read && "text-gray-800",
+                notification.is_read && "text-gray-500"
+              ]}>
+                {format_notification_body(notification.body)}
               </p>
             </.link>
           </div>
-
-          <div class="ml-4 flex-shrink-0 flex">
-            <%= if notification.is_read do %>
-              <button
-                phx-click="mark-as-unread"
-                phx-value-id={notification.id}
-                class="ml-2 text-gray-400 hover:text-gray-600"
-                title="Mark as unread">
-                <.icon name="hero-envelope" class="h-5 w-5" />
-              </button>
-            <% else %>
-              <button
-                phx-click="mark-as-read"
-                phx-value-id={notification.id}
-                class="ml-2 text-gray-400 hover:text-gray-600"
-                title="Mark as read">
-                <.icon name="hero-envelope-open" class="h-5 w-5" />
-              </button>
-            <% end %>
-          </div>
         </div>
-      <% end %>
-
-      <%= if Enum.empty?(@notifications) do %>
-        <div class="py-12 text-center">
-          <.icon name="hero-bell-slash" class="h-12 w-12 mx-auto text-gray-400" />
-          <h3 class="mt-2 text-sm font-medium text-gray-900">No notifications</h3>
-          <p class="mt-1 text-sm text-gray-500">You don't have any notifications yet.</p>
+        <div class="flex-shrink-0">
+          <button
+            phx-click={JS.push("toggle-read-status", value: %{id: notification.id})}
+            class={[
+              "p-1 rounded-full focus:outline-none",
+              !notification.is_read && "text-green-500 hover:text-green-700",
+              notification.is_read && "text-gray-400 hover:text-gray-600"
+            ]}
+            aria-label={if notification.is_read, do: "Mark as unread", else: "Mark as read"}
+            title={
+              if notification.is_read,
+                do: "Click to mark as unread",
+                else: "Click to mark as read"
+            }
+          >
+            <.icon
+              name={if notification.is_read, do: "hero-envelope", else: "hero-envelope-open"}
+              class="h-5 w-5"
+            />
+          </button>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </div>

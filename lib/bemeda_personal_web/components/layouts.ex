@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.Layouts do
   """
   use BemedaPersonalWeb, :html
 
-  import BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonal.Emails
 
   embed_templates "layouts/*"
 end

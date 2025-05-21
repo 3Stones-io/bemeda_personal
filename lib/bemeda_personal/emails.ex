@@ -49,7 +49,7 @@ defmodule BemedaPersonal.Emails do
 
     from(email_communication in EmailCommunication, as: :email_communication)
     |> where(^filter_query.(filters))
-    |> order_by([e], desc: e.inserted_at)
+    |> order_by([e], asc: e.is_read, desc: e.inserted_at)
     |> limit(^limit)
     |> Repo.all()
     |> Repo.preload([:company, :job_application, :recipient, :sender])
@@ -57,10 +57,6 @@ defmodule BemedaPersonal.Emails do
 
   defp apply_filter({:recipient_id, recipient_id}, dynamic) do
     dynamic([email_communication: e], ^dynamic and e.recipient_id == ^recipient_id)
-  end
-
-  defp apply_filter({:company_id, company_id}, dynamic) do
-    dynamic([email_communication: e], ^dynamic and e.company_id == ^company_id)
   end
 
   defp apply_filter({:newer_than, %EmailCommunication{} = email_communication}, dynamic) do
@@ -80,14 +76,20 @@ defmodule BemedaPersonal.Emails do
   defp apply_filter(_other, dynamic), do: dynamic
 
   @doc """
-  Returns the list of email communications for a specific user.
+  Returns the count of unread email communications.
+
+  ## Examples
+
+      iex> unread_email_communications_count()
+      10
+
   """
-  def list_email_communications_for_user(user_id) do
-    EmailCommunication
-    |> where([e], e.recipient_id == ^user_id)
-    |> order_by([e], desc: e.inserted_at)
-    |> preload([:sender, :recipient])
-    |> Repo.all()
+  @spec unread_email_communications_count() :: non_neg_integer()
+  def unread_email_communications_count do
+    from(email_communication in EmailCommunication, as: :email_communication)
+    |> where([e], e.is_read == false)
+    |> select([e], count(e.id))
+    |> Repo.one()
   end
 
   @doc """

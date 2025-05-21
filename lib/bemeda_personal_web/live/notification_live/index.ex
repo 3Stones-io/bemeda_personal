@@ -4,103 +4,115 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
   alias BemedaPersonal.Emails
   alias BemedaPersonal.Emails.EmailCommunication
 
-  import Timex
-
-  @impl true
+  @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_user
-    email_communications = Emails.list_email_communications_for_user(current_user.id)
+    filters = %{
+      recipient_id: socket.assigns.current_user.id
+    }
 
     {:ok,
-      socket
-      |> assign(:page_title, "Notifications")
-      |> assign(:notifications, email_communications)
-      |> assign(:active_tab, "all")}
+     socket
+     |> stream_configure(:notifications, dom_id: &"notification-#{&1.id}")
+     |> assign(:end_of_timeline?, false)
+     |> assign(:filters, filters)
+     |> assign(:page_title, "Notifications")
+     |> assign_notifications()}
   end
 
-  @impl true
-  def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
+  @impl Phoenix.LiveView
+  def handle_event("toggle-read-status", %{"id" => id}, socket) do
+    notification = Emails.get_email_communication!(id)
+    new_status = !notification.is_read
 
-  defp apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Notifications")
-  end
+    case Emails.update_email_communication(notification, %{is_read: new_status}) do
+      {:ok, updated_notification} ->
+        {:noreply, stream_insert(socket, :notifications, updated_notification)}
 
-  @impl true
-  def handle_event("tab-change", %{"tab" => tab}, socket) do
-    notifications = socket.assigns.notifications
-
-    filtered_notifications = case tab do
-      "all" -> notifications
-      "unread" -> Enum.filter(notifications, fn n -> !n.is_read end)
-      "read" -> Enum.filter(notifications, fn n -> n.is_read end)
-      _ -> notifications
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Could not update notification status")}
     end
+  end
+
+  def handle_event("next-page", _params, socket) do
+    filters = %{older_than: socket.assigns.last_notification}
+
+    {:noreply, maybe_insert_notifications(socket, filters, socket.assigns.last_notification)}
+  end
+
+  def handle_event("prev-page", %{"_overran" => true}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("prev-page", _unused_params, socket) do
+    filters = %{newer_than: socket.assigns.first_notification}
 
     {:noreply,
-      socket
-      |> assign(:active_tab, tab)
-      |> assign(:filtered_notifications, filtered_notifications)}
+     maybe_insert_notifications(socket, filters, socket.assigns.first_notification, at: 0)}
   end
 
-  @impl true
-  def handle_event("mark-as-read", %{"id" => id}, socket) do
-    notification = Emails.get_email_communication!(id)
+  defp assign_notifications(socket, filters \\ %{}) do
+    notifications =
+      filters
+      |> Map.merge(socket.assigns.filters)
+      |> Emails.list_email_communications()
 
-    case Emails.update_email_communication(notification, %{is_read: true}) do
-      {:ok, _updated} ->
-        notifications = Emails.list_email_communications_for_user(socket.assigns.current_user.id)
+    first_notification = List.first(notifications)
+    last_notification = List.last(notifications)
 
-        {:noreply,
-          socket
-          |> assign(:notifications, notifications)
-          |> put_flash(:info, "Notification marked as read")}
-
-      {:error, _} ->
-        {:noreply, put_flash(socket, :error, "Could not mark notification as read")}
-    end
+    socket
+    |> stream(:notifications, notifications)
+    |> assign(:filters, filters)
+    |> assign(:first_notification, first_notification)
+    |> assign(:last_notification, last_notification)
   end
 
-  @impl true
-  def handle_event("mark-as-unread", %{"id" => id}, socket) do
-    notification = Emails.get_email_communication!(id)
+  defp maybe_insert_notifications(socket, filters, first_or_last_notification, opts \\ [])
 
-    case Emails.update_email_communication(notification, %{is_read: false}) do
-      {:ok, _updated} ->
-        notifications = Emails.list_email_communications_for_user(socket.assigns.current_user.id)
-
-        {:noreply,
-          socket
-          |> assign(:notifications, notifications)
-          |> put_flash(:info, "Notification marked as unread")}
-
-      {:error, _} ->
-        {:noreply, put_flash(socket, :error, "Could not mark notification as unread")}
-    end
+  defp maybe_insert_notifications(socket, _filters, nil, _opts) do
+    assign(socket, :end_of_timeline?, true)
   end
 
+  defp maybe_insert_notifications(socket, filters, _first_or_last_notification, opts) do
+    notifications =
+      filters
+      |> Map.merge(socket.assigns.filters)
+      |> Emails.list_email_communications()
+
+    first_notification = List.first(notifications)
+    last_notification = List.last(notifications)
+
+    socket
+    |> stream(:notifications, notifications, opts)
+    |> assign(:first_notification, first_notification)
+    |> assign(:last_notification, last_notification)
+  end
+
+  # Move this to the date_helper.ex file
   defp format_date(date) do
     cond do
       Timex.diff(Timex.now(), date, :days) == 0 ->
         Timex.format!(date, "{h12}:{m} {AM}")
+
       Timex.diff(Timex.now(), date, :days) == 1 ->
         "Yesterday"
+
       Timex.diff(Timex.now(), date, :days) <= 7 ->
         "#{Timex.diff(Timex.now(), date, :days)} days ago"
+
       true ->
         Timex.format!(date, "{D}/{M}/{YYYY}")
     end
   end
 
-  # Helper function to filter notifications by tab
-  def get_filtered_notifications(tab, notifications) do
-    case tab do
-      "all" -> notifications
-      "unread" -> Enum.filter(notifications, fn n -> !n.is_read end)
-      "read" -> Enum.filter(notifications, fn n -> n.is_read end)
-      _ -> notifications
+  defp format_notification_body(body) do
+    body_text = body || ""
+
+    if String.length(body_text) > 150 do
+      String.slice(body_text, 0, 150) <> "..."
+    else
+      body_text
     end
   end
 end
+
+# Notification indicator should subscribe to events -> user will not have to refresh the page
