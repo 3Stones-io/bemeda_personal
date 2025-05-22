@@ -1,8 +1,9 @@
 defmodule BemedaPersonalWeb.NotificationLive.Index do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Emails
-  alias BemedaPersonal.Emails.EmailCommunication
+  alias BemedaPersonalWeb.Endpoint
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -26,9 +27,13 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
 
     case Emails.update_email_communication(notification, %{is_read: new_status}) do
       {:ok, updated_notification} ->
+        Endpoint.broadcast("notifications_count", "update_unread_count", %{
+          user_id: socket.assigns.current_user.id
+        })
+
         {:noreply, stream_insert(socket, :notifications, updated_notification)}
 
-      {:error, _} ->
+      {:error, _changeset} ->
         {:noreply, put_flash(socket, :error, "Could not update notification status")}
     end
   end
@@ -87,23 +92,6 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
     |> assign(:last_notification, last_notification)
   end
 
-  # Move this to the date_helper.ex file
-  defp format_date(date) do
-    cond do
-      Timex.diff(Timex.now(), date, :days) == 0 ->
-        Timex.format!(date, "{h12}:{m} {AM}")
-
-      Timex.diff(Timex.now(), date, :days) == 1 ->
-        "Yesterday"
-
-      Timex.diff(Timex.now(), date, :days) <= 7 ->
-        "#{Timex.diff(Timex.now(), date, :days)} days ago"
-
-      true ->
-        Timex.format!(date, "{D}/{M}/{YYYY}")
-    end
-  end
-
   defp format_notification_body(body) do
     body_text = body || ""
 
@@ -114,5 +102,3 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
     end
   end
 end
-
-# Notification indicator should subscribe to events -> user will not have to refresh the page

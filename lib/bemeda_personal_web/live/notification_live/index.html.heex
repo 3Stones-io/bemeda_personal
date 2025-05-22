@@ -41,7 +41,7 @@
                   {String.replace(notification.subject, "BemedaPersonal | ", "")}
                 </p>
                 <p class="text-sm text-gray-500">
-                  {format_date(notification.inserted_at)}
+                  {DateUtils.format_emails_date(notification.inserted_at)}
                 </p>
               </div>
               <p class={[

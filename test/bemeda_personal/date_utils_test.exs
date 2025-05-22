@@ -47,4 +47,36 @@ defmodule BemedaPersonal.DateUtilsTest do
       assert DateUtils.format_datetime(december) =~ "December"
     end
   end
+
+  describe "format_emails_date/1" do
+    test "formats today's date as hour:minute AM/PM" do
+      now = Timex.now()
+      formatted = DateUtils.format_emails_date(now)
+      expected_format = Timex.format!(now, "{h12}:{m} {AM}")
+      assert formatted == expected_format
+    end
+
+    test "formats yesterday's date as 'Yesterday'" do
+      now = Timex.now()
+      yesterday = Timex.shift(now, days: -1)
+      assert DateUtils.format_emails_date(yesterday) == "Yesterday"
+    end
+
+    test "formats dates within the last week as 'X days ago'" do
+      now = Timex.now()
+      three_days_ago = Timex.shift(now, days: -3)
+      seven_days_ago = Timex.shift(now, days: -7)
+
+      assert DateUtils.format_emails_date(three_days_ago) == "3 days ago"
+      assert DateUtils.format_emails_date(seven_days_ago) == "7 days ago"
+    end
+
+    test "formats older dates as D/M/YYYY" do
+      now = Timex.now()
+      older_date = Timex.shift(now, days: -8)
+      expected_format = Timex.format!(older_date, "{D}/{M}/{YYYY}")
+
+      assert DateUtils.format_emails_date(older_date) == expected_format
+    end
+  end
 end

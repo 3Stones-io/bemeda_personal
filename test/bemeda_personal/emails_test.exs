@@ -160,12 +160,12 @@ defmodule BemedaPersonal.EmailsTest do
     test "returns empty list for filters whose conditions are not met", %{recipient: recipient} do
       non_existing_company_id = Ecto.UUID.generate()
 
-      assert Enum.empty?(
-               Emails.list_email_communications(%{
-                 recipient_id: recipient.id,
-                 company_id: non_existing_company_id
-               })
-             )
+      assert %{
+               recipient_id: recipient.id,
+               company_id: non_existing_company_id
+             }
+             |> Emails.list_email_communications()
+             |> Enum.empty?()
     end
 
     test "limits the number of returned email_communications", %{
@@ -184,6 +184,70 @@ defmodule BemedaPersonal.EmailsTest do
       assert length(Emails.list_email_communications()) == 10
       assert length(Emails.list_email_communications(%{}, 5)) == 5
       assert length(Emails.list_email_communications(%{}, 20)) == 16
+    end
+  end
+
+  describe "unread_email_communications_count/1" do
+    test "returns the count of unread email communications for a recipient", %{
+      company: company,
+      job_application: job_application,
+      recipient: recipient,
+      sender: sender
+    } do
+      Repo.delete_all(EmailCommunication)
+
+      Enum.each(1..3, fn i ->
+        email_communication_fixture(company, job_application, recipient, sender, %{
+          body: "unread body #{i}",
+          subject: "unread subject #{i}",
+          is_read: false
+        })
+      end)
+
+      Enum.each(1..2, fn i ->
+        email_communication_fixture(company, job_application, recipient, sender, %{
+          body: "read body #{i}",
+          subject: "read subject #{i}",
+          is_read: true
+        })
+      end)
+
+      another_recipient = user_fixture(%{email: "another-count@example.com"})
+
+      Enum.each(1..2, fn i ->
+        email_communication_fixture(company, job_application, another_recipient, sender, %{
+          body: "another unread body #{i}",
+          subject: "another unread subject #{i}",
+          is_read: false
+        })
+      end)
+
+      assert Emails.unread_email_communications_count(recipient.id) == 3
+      assert Emails.unread_email_communications_count(another_recipient.id) == 2
+    end
+
+    test "returns zero when recipient has no unread email communications", %{
+      company: company,
+      job_application: job_application,
+      recipient: recipient,
+      sender: sender
+    } do
+      Repo.delete_all(EmailCommunication)
+
+      Enum.each(1..3, fn i ->
+        email_communication_fixture(company, job_application, recipient, sender, %{
+          body: "read body #{i}",
+          subject: "read subject #{i}",
+          is_read: true
+        })
+      end)
+
+      assert Emails.unread_email_communications_count(recipient.id) == 0
+    end
+
+    test "returns zero when recipient has no email communications" do
+      non_existing_recipient_id = Ecto.UUID.generate()
+      assert Emails.unread_email_communications_count(non_existing_recipient_id) == 0
     end
   end
 
@@ -258,6 +322,59 @@ defmodule BemedaPersonal.EmailsTest do
                  sender,
                  invalid_attrs
                )
+    end
+  end
+
+  describe "update_email_communication/2" do
+    test "with valid data updates the email_communication", %{
+      email_communication: email_communication
+    } do
+      update_attrs = %{
+        body: "updated body",
+        email_type: "interview_invite",
+        html_body: "updated html_body",
+        is_read: true,
+        status: "draft",
+        subject: "updated subject"
+      }
+
+      assert {:ok, %EmailCommunication{} = updated_communication} =
+               Emails.update_email_communication(email_communication, update_attrs)
+
+      assert updated_communication.body == "updated body"
+      assert updated_communication.email_type == "interview_invite"
+      assert updated_communication.html_body == "updated html_body"
+      assert updated_communication.is_read == true
+      assert updated_communication.status == :draft
+      assert updated_communication.subject == "updated subject"
+    end
+
+    test "with invalid data returns error changeset", %{
+      email_communication: email_communication
+    } do
+      invalid_attrs = %{
+        body: nil,
+        subject: nil,
+        status: nil,
+        email_type: nil
+      }
+
+      assert {:error, %Ecto.Changeset{}} =
+               Emails.update_email_communication(email_communication, invalid_attrs)
+
+      unchanged_communication = Emails.get_email_communication!(email_communication.id)
+      assert unchanged_communication.body == email_communication.body
+      assert unchanged_communication.subject == email_communication.subject
+    end
+  end
+
+  describe "delete_email_communication/1" do
+    test "deletes the email_communication", %{email_communication: email_communication} do
+      assert {:ok, %EmailCommunication{}} = Emails.delete_email_communication(email_communication)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Emails.get_email_communication!(email_communication.id)
+      end
     end
   end
 

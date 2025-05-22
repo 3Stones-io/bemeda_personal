@@ -23,4 +23,24 @@ defmodule BemedaPersonal.DateUtils do
   def format_datetime(datetime) do
     Calendar.strftime(datetime, "%B %d, %Y at %I:%M %p")
   end
+
+  @doc """
+  Format a date to a string in the format "Month Day, Year at HH:MM AM/PM".
+  """
+  @spec format_emails_date(DateTime.t()) :: String.t()
+  def format_emails_date(date) do
+    cond do
+      Timex.diff(Timex.now(), date, :days) == 0 ->
+        Timex.format!(date, "{h12}:{m} {AM}")
+
+      Timex.diff(Timex.now(), date, :days) == 1 ->
+        "Yesterday"
+
+      Timex.diff(Timex.now(), date, :days) <= 7 ->
+        "#{Timex.diff(Timex.now(), date, :days)} days ago"
+
+      true ->
+        Timex.format!(date, "{D}/{M}/{YYYY}")
+    end
+  end
 end

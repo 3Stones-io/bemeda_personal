@@ -59,6 +59,10 @@ defmodule BemedaPersonal.Emails do
     dynamic([email_communication: e], ^dynamic and e.recipient_id == ^recipient_id)
   end
 
+  defp apply_filter({:company_id, company_id}, dynamic) do
+    dynamic([email_communication: e], ^dynamic and e.company_id == ^company_id)
+  end
+
   defp apply_filter({:newer_than, %EmailCommunication{} = email_communication}, dynamic) do
     dynamic(
       [email_communication: e],
@@ -80,14 +84,14 @@ defmodule BemedaPersonal.Emails do
 
   ## Examples
 
-      iex> unread_email_communications_count()
+      iex> unread_email_communications_count(recipient_id)
       10
 
   """
-  @spec unread_email_communications_count() :: non_neg_integer()
-  def unread_email_communications_count do
+  @spec unread_email_communications_count(Ecto.UUID.t() | nil) :: non_neg_integer()
+  def unread_email_communications_count(recipient_id) do
     from(email_communication in EmailCommunication, as: :email_communication)
-    |> where([e], e.is_read == false)
+    |> where([e], e.is_read == false and e.recipient_id == ^recipient_id)
     |> select([e], count(e.id))
     |> Repo.one()
   end
@@ -142,6 +146,8 @@ defmodule BemedaPersonal.Emails do
   @doc """
   Updates a email_communication.
   """
+  @spec update_email_communication(email_communication(), attrs()) ::
+          {:ok, email_communication()} | {:error, changeset()}
   def update_email_communication(%EmailCommunication{} = email_communication, attrs) do
     email_communication
     |> EmailCommunication.changeset(attrs)
@@ -151,6 +157,7 @@ defmodule BemedaPersonal.Emails do
   @doc """
   Deletes a email_communication.
   """
+  @spec delete_email_communication(email_communication()) :: :ok | {:error, Ecto.Changeset.t()}
   def delete_email_communication(%EmailCommunication{} = email_communication) do
     Repo.delete(email_communication)
   end

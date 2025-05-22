@@ -1,6 +1,10 @@
 <div class="container mx-auto px-4 py-6">
   <div class="mb-6 flex items-center">
-    <.link navigate={~p"/notifications"} class="text-gray-500 hover:text-gray-700 mr-4">
+    <.link
+      navigate={~p"/notifications"}
+      class="text-gray-500 hover:text-gray-700 mr-4"
+      id="back-to-notifications"
+    >
       <.icon name="hero-arrow-left" class="h-5 w-5" />
     </.link>
     <h1 class="text-2xl font-bold flex-1 truncate">{@notification.subject}</h1>
