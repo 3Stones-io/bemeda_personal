@@ -20,12 +20,12 @@ defmodule BemedaPersonal.Emails.EmailCommunication do
     belongs_to :company, Company
     field :email_type, :string
     field :html_body, :string
+    field :is_read, :boolean, default: false
     belongs_to :job_application, JobApplication
     belongs_to :recipient, User
     belongs_to :sender, User
     field :status, Ecto.Enum, values: [:sent, :draft, :failed]
     field :subject, :string
-    field :is_read, :boolean, default: false
 
     timestamps(type: :utc_datetime)
   end
@@ -37,9 +37,9 @@ defmodule BemedaPersonal.Emails.EmailCommunication do
       :body,
       :email_type,
       :html_body,
+      :is_read,
       :status,
-      :subject,
-      :is_read
+      :subject
     ])
     |> validate_required([:subject, :body, :status, :email_type])
   end

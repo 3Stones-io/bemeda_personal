@@ -50,8 +50,8 @@ defmodule BemedaPersonal.EmailsTest do
     end
 
     test "can filter email_communications by company_id", %{
-      email_communication: email_communication,
-      company: company
+      company: company,
+      email_communication: email_communication
     } do
       assert [result] = Emails.list_email_communications(%{company_id: company.id})
       assert result.id == email_communication.id
@@ -199,16 +199,16 @@ defmodule BemedaPersonal.EmailsTest do
       Enum.each(1..3, fn i ->
         email_communication_fixture(company, job_application, recipient, sender, %{
           body: "unread body #{i}",
-          subject: "unread subject #{i}",
-          is_read: false
+          is_read: false,
+          subject: "unread subject #{i}"
         })
       end)
 
       Enum.each(1..2, fn i ->
         email_communication_fixture(company, job_application, recipient, sender, %{
           body: "read body #{i}",
-          subject: "read subject #{i}",
-          is_read: true
+          is_read: true,
+          subject: "read subject #{i}"
         })
       end)
 
@@ -217,8 +217,8 @@ defmodule BemedaPersonal.EmailsTest do
       Enum.each(1..2, fn i ->
         email_communication_fixture(company, job_application, another_recipient, sender, %{
           body: "another unread body #{i}",
-          subject: "another unread subject #{i}",
-          is_read: false
+          is_read: false,
+          subject: "another unread subject #{i}"
         })
       end)
 
@@ -237,8 +237,8 @@ defmodule BemedaPersonal.EmailsTest do
       Enum.each(1..3, fn i ->
         email_communication_fixture(company, job_application, recipient, sender, %{
           body: "read body #{i}",
-          subject: "read subject #{i}",
-          is_read: true
+          is_read: true,
+          subject: "read subject #{i}"
         })
       end)
 
@@ -308,10 +308,10 @@ defmodule BemedaPersonal.EmailsTest do
       sender: sender
     } do
       invalid_attrs = %{
-        status: nil,
         body: nil,
-        subject: nil,
-        email_type: nil
+        email_type: nil,
+        status: nil,
+        subject: nil
       }
 
       assert {:error, %Ecto.Changeset{}} =
