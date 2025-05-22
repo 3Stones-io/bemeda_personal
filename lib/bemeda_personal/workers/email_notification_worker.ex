@@ -15,20 +15,20 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
   def perform(%Oban.Job{args: %{"type" => "job_application_received"} = args}) do
     job_application = Jobs.get_job_application!(args["job_application_id"])
 
-    send_job_application_notification(
-      &UserNotifier.deliver_user_job_application_received/2,
+    send_notification(
+      fn -> UserNotifier.deliver_user_job_application_received(&1, args["url"]) end,
       job_application,
       job_application.user,
-      "job_application_received",
-      args["url"]
+      "job_application_received"
     )
 
-    send_job_application_notification(
-      &UserNotifier.deliver_employer_job_application_received/2,
+    send_notification(
+      fn ->
+        UserNotifier.deliver_employer_job_application_received(job_application, args["url"])
+      end,
       job_application,
       job_application.job_posting.company.admin_user,
-      "job_application_received",
-      args["url"]
+      "job_application_received"
     )
 
     :ok
@@ -38,20 +38,20 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
   def perform(%Oban.Job{args: %{"type" => "job_application_status_update"} = args}) do
     job_application = Jobs.get_job_application!(args["job_application_id"])
 
-    send_job_application_notification(
-      &UserNotifier.deliver_user_job_application_status/2,
+    send_notification(
+      fn -> UserNotifier.deliver_user_job_application_status(job_application, args["url"]) end,
       job_application,
       job_application.user,
-      "job_application_status_update",
-      args["url"]
+      "job_application_status_update"
     )
 
-    send_job_application_notification(
-      &UserNotifier.deliver_employer_job_application_status/2,
+    send_notification(
+      fn ->
+        UserNotifier.deliver_employer_job_application_status(job_application, args["url"])
+      end,
       job_application,
       job_application.job_posting.company.admin_user,
-      "job_application_status_update",
-      args["url"]
+      "job_application_status_update"
     )
 
     :ok
@@ -62,55 +62,24 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
     message = Chat.get_message!(args["message_id"])
     recipient = Accounts.get_user!(args["recipient_id"])
 
-    send_message_notification(
-      &UserNotifier.deliver_new_message/3,
-      message,
+    send_notification(
+      fn -> UserNotifier.deliver_new_message(recipient, message, args["url"]) end,
+      message.job_application,
       recipient,
       "new_message",
-      args["url"]
+      %{sender_id: message.sender_id}
     )
 
     :ok
   end
 
-  defp send_job_application_notification(email_function, job_application, recipient, type, url) do
-    company = get_company(job_application, recipient.id)
+  defp send_notification(email_fun, job_application, recipient, type, opts \\ %{}) do
+    company = get_company(job_application, Map.get(opts, :sender_id, recipient.id))
 
-    case email_function.(job_application, url) do
+    case email_fun.() do
       {:ok, email} ->
         create_email_history_record(
           job_application,
-          recipient,
-          company,
-          type,
-          :sent,
-          %{
-            subject: email.subject,
-            body: email.text_body,
-            html_body: email.html_body
-          }
-        )
-
-      error ->
-        Logger.error("Error sending job application notification: #{inspect(error)}")
-
-        create_email_history_record(
-          job_application,
-          recipient,
-          company,
-          type,
-          :failed
-        )
-    end
-  end
-
-  defp send_message_notification(email_function, message, recipient, type, url) do
-    company = get_company(message.job_application, message.sender_id)
-
-    case email_function.(recipient, message, url) do
-      {:ok, email} ->
-        create_email_history_record(
-          message.job_application,
           recipient,
           company,
           type,
@@ -125,10 +94,10 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
         :ok
 
       error ->
-        Logger.error("Error sending message notification: #{inspect(error)}")
+        Logger.error("Error sending notification: #{inspect(error)}")
 
         create_email_history_record(
-          message.job_application,
+          job_application,
           recipient,
           company,
           type,

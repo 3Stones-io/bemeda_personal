@@ -229,24 +229,21 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     assign(socket, :available_statuses, available_statuses)
   end
 
-  defp enqueue_email_notification(message, socket) do
-    if message.type == :user do
-      job_application = socket.assigns.job_application
+  defp enqueue_email_notification(%Chat.Message{type: :user} = message, socket) do
+    job_application = socket.assigns.job_application
 
-      recipient_id =
-        if message.sender_id == job_application.job_posting.company.admin_user_id do
-          job_application.user_id
-        else
-          job_application.job_posting.company.admin_user_id
-        end
+    recipient_id =
+      if message.sender_id == job_application.job_posting.company.admin_user_id do
+        job_application.user_id
+      else
+        job_application.job_posting.company.admin_user_id
+      end
 
-      SharedHelpers.enqueue_email_notification_job(%{
-        message_id: message.id,
-        recipient_id: recipient_id,
-        type: "new_message",
-        url:
-          url(~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}")
-      })
-    end
+    SharedHelpers.enqueue_email_notification_job(%{
+      message_id: message.id,
+      recipient_id: recipient_id,
+      type: "new_message",
+      url: url(~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}")
+    })
   end
 end

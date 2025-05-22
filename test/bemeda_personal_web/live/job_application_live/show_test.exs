@@ -185,7 +185,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       messages = Chat.list_messages(job_application)
       assert length(messages) == 2
 
-      # Check that a message notification email was enqueued
       assert_enqueued(
         worker: EmailNotificationWorker,
         args: %{
