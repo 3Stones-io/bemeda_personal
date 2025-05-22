@@ -16,7 +16,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
     job_application = Jobs.get_job_application!(args["job_application_id"])
 
     send_notification(
-      fn -> UserNotifier.deliver_user_job_application_received(&1, args["url"]) end,
+      fn -> UserNotifier.deliver_user_job_application_received(job_application, args["url"]) end,
       job_application,
       job_application.user,
       "job_application_received"
