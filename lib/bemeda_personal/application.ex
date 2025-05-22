@@ -15,6 +15,7 @@ defmodule BemedaPersonal.Application do
       # Start the Finch HTTP client for sending emails
       {Finch, name: BemedaPersonal.Finch},
       {Registry, keys: :unique, name: BemedaPersonal.Registry},
+      {Oban, Application.fetch_env!(:bemeda_personal, Oban)},
       # Start a worker by calling: BemedaPersonal.Worker.start_link(arg)
       # {BemedaPersonal.Worker, arg},
       # Start to serve requests, typically the last entry

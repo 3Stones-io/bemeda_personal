@@ -45,6 +45,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       {:ok, message} ->
         changeset = Chat.change_message(%Chat.Message{})
 
+        enqueue_email_notification(message, socket)
+
         {:noreply,
          socket
          |> stream_insert(:messages, message)
@@ -79,9 +81,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("update-message", %{"message_id" => message_id, "status" => status}, socket) do
-    message_id
-    |> Media.get_media_asset_by_message_id()
-    |> Media.update_media_asset(%{status: status})
+    {:ok, media_asset} =
+      message_id
+      |> Media.get_media_asset_by_message_id()
+      |> Media.update_media_asset(%{status: status})
+
+    enqueue_email_notification(media_asset.message, socket)
 
     {:noreply, socket}
   end
@@ -103,7 +108,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
            socket.assigns.current_user,
            transition_attrs
          ) do
-      {:ok, _updated_job_application} ->
+      {:ok, updated_job_application} ->
+        SharedHelpers.enqueue_email_notification_job(%{
+          job_application_id: updated_job_application.id,
+          type: "job_application_status_update",
+          url:
+            url(
+              ~p"/jobs/#{updated_job_application.job_posting_id}/job_applications/#{updated_job_application.id}"
+            )
+        })
+
         {:noreply,
          socket
          |> assign(:show_status_transition_modal, false)
@@ -213,5 +227,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       )
 
     assign(socket, :available_statuses, available_statuses)
+  end
+
+  defp enqueue_email_notification(%Chat.Message{type: :user} = message, socket) do
+    job_application = socket.assigns.job_application
+
+    recipient_id =
+      if message.sender_id == job_application.job_posting.company.admin_user_id do
+        job_application.user_id
+      else
+        job_application.job_posting.company.admin_user_id
+      end
+
+    SharedHelpers.enqueue_email_notification_job(%{
+      message_id: message.id,
+      recipient_id: recipient_id,
+      type: "new_message",
+      url: url(~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}")
+    })
   end
 end

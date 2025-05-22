@@ -95,7 +95,16 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
       })
 
     case Jobs.update_job_application_status(job_application, user, params) do
-      {:ok, _updated_job_application} ->
+      {:ok, updated_job_application} ->
+        SharedHelpers.enqueue_email_notification_job(%{
+          job_application_id: updated_job_application.id,
+          type: "job_application_status_update",
+          url:
+            url(
+              ~p"/jobs/#{updated_job_application.job_posting_id}/job_applications/#{updated_job_application.id}"
+            )
+        })
+
         {:noreply, put_flash(socket, :info, "Status updated successfully")}
 
       {:error, changeset} ->

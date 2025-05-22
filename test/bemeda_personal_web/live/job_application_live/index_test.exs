@@ -10,6 +10,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonal.Workers.EmailNotificationWorker
 
   defp create_test_data(conn) do
     user = user_fixture()
@@ -325,6 +326,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert created_application.cover_letter ==
                "I am very interested in this position. Please consider my application."
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: created_application.id,
+          type: "job_application_received"
+        }
+      )
     end
 
     test "submits new job application successfully with video", %{
@@ -375,6 +384,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       assert %MediaAsset{
                file_name: "test_video.mp4"
              } = created_application.media_asset
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: created_application.id,
+          type: "job_application_received"
+        }
+      )
     end
 
     test "updates existing job application successfully", %{
@@ -404,6 +421,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
+
+      refute_enqueued(
+        worker: BemedaPersonal.Workers.EmailNotificationWorker,
+        args: %{
+          job_application_id: job_application.id,
+          type: "job_application_received"
+        }
+      )
     end
 
     test "updates existing job application with video", %{

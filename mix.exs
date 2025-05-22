@@ -74,6 +74,7 @@ defmodule BemedaPersonal.MixProject do
       {:mox, "~> 1.2", only: :test},
       {:multipart, "~> 0.4"},
       {:number, "~> 1.0"},
+      {:oban, "~> 2.19"},
       {:plug, "~> 1.17"},
       {:req, "~> 0.5"}
     ]

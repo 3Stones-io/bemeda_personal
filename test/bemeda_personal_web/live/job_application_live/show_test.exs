@@ -14,6 +14,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   alias BemedaPersonal.Documents.MockProcessor
   alias BemedaPersonal.Documents.MockStorage
   alias BemedaPersonal.Jobs
+  alias BemedaPersonal.Workers.EmailNotificationWorker
 
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
@@ -183,6 +184,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       messages = Chat.list_messages(job_application)
       assert length(messages) == 2
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          message_id: Enum.at(messages, 1).id,
+          type: "new_message"
+        }
+      )
 
       result =
         view
@@ -615,6 +624,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         }
       })
 
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: job_application_offer_extended.id,
+          type: "job_application_status_update"
+        }
+      )
+
       {:ok, job_application_offer_accepted} =
         Jobs.update_job_application_status(
           job_application_offer_extended,
@@ -653,6 +670,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         }
       })
 
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: job_application.id,
+          type: "job_application_status_update"
+        }
+      )
+
       {:ok, _updated_view, updated_html} =
         live(
           conn,
@@ -689,6 +714,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         }
       })
 
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: job_application.id,
+          type: "job_application_status_update"
+        }
+      )
+
       {:ok, updated_view, _html} =
         live(
           conn,
@@ -711,6 +744,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           "notes" => "Moving to screening phase."
         }
       })
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: job_application.id,
+          type: "job_application_status_update"
+        }
+      )
 
       {:ok, screening_view, _html} =
         live(
