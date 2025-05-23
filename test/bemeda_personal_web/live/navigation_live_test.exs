@@ -87,7 +87,7 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
       )
 
       BemedaPersonalWeb.Endpoint.broadcast(
-        "#{user.id}_notifications_count",
+        "users:#{user.id}_notifications_count",
         "update_unread_count",
         %{}
       )

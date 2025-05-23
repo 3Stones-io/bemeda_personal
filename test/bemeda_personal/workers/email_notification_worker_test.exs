@@ -95,8 +95,8 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       company: company,
       job_application: job_application
     } do
-      applicant_notification_topic = "#{applicant.id}_notifications_count"
-      admin_notification_topic = "#{admin_user.id}_notifications_count"
+      applicant_notification_topic = "users:#{applicant.id}_notifications_count"
+      admin_notification_topic = "users:#{admin_user.id}_notifications_count"
 
       Endpoint.subscribe(applicant_notification_topic)
       Endpoint.subscribe(admin_notification_topic)
@@ -178,8 +178,8 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       company: company,
       job_application: job_application
     } do
-      applicant_notification_topic = "#{applicant.id}_notifications_count"
-      admin_notification_topic = "#{admin_user.id}_notifications_count"
+      applicant_notification_topic = "users:#{applicant.id}_notifications_count"
+      admin_notification_topic = "users:#{admin_user.id}_notifications_count"
 
       Endpoint.subscribe(applicant_notification_topic)
       Endpoint.subscribe(admin_notification_topic)
@@ -247,7 +247,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       company: company,
       message: message
     } do
-      notification_topic = "#{admin_user.id}_notifications_count"
+      notification_topic = "users:#{admin_user.id}_notifications_count"
       Endpoint.subscribe(notification_topic)
 
       url =

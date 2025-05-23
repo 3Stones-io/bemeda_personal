@@ -28,7 +28,7 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
     case Emails.update_email_communication(notification, %{is_read: new_status}) do
       {:ok, updated_notification} ->
         Endpoint.broadcast(
-          "#{socket.assigns.current_user.id}_notifications_count",
+          "users:#{socket.assigns.current_user.id}_notifications_count",
           "update_unread_count",
           %{}
         )
