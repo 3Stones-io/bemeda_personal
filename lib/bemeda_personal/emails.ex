@@ -131,7 +131,13 @@ defmodule BemedaPersonal.Emails do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_email_communication(company(), job_application(), recipient(), sender(), attrs()) ::
+  @spec create_email_communication(
+          company() | nil,
+          job_application() | nil,
+          recipient(),
+          sender() | nil,
+          attrs()
+        ) ::
           {:ok, email_communication()} | {:error, changeset()}
   def create_email_communication(company, job_application, recipient, sender, attrs \\ %{}) do
     %EmailCommunication{}

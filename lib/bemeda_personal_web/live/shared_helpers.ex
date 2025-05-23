@@ -7,6 +7,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobApplicationStateMachine
   alias BemedaPersonal.TigrisHelper
+  alias BemedaPersonal.Workers.EmailNotificationWorker
   alias BemedaPersonalWeb.Endpoint
 
   require Logger
@@ -179,4 +180,11 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def status_badge_color("under_review"), do: "bg-purple-100 text-purple-800"
   def status_badge_color("withdrawn"), do: "bg-gray-100 text-gray-800"
   def status_badge_color(_status), do: "bg-gray-100 text-gray-800"
+
+  @spec enqueue_email_notification_job(map()) :: {:ok, Oban.Job.t()} | {:error, any()}
+  def enqueue_email_notification_job(args) do
+    args
+    |> EmailNotificationWorker.new()
+    |> Oban.insert()
+  end
 end

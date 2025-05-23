@@ -8,14 +8,23 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
   import Swoosh.TestAssertions
 
   alias BemedaPersonal.Accounts.UserNotifier
+  alias BemedaPersonal.Repo
 
   setup do
+    admin_user =
+      user_fixture(%{first_name: "Admin", last_name: "User", email: "admin@example.com"})
+
     user = user_fixture(%{first_name: "John", last_name: "Doe", email: "john@example.com"})
-    company = company_fixture(user)
+    company = company_fixture(admin_user)
     job_posting = job_posting_fixture(company, %{title: "Software Engineer"})
-    job_application = job_application_fixture(user, job_posting, %{state: "interview_scheduled"})
+
+    job_application =
+      user
+      |> job_application_fixture(job_posting, %{state: "interview_scheduled"})
+      |> Repo.preload(job_posting: [company: :admin_user])
 
     %{
+      admin_user: admin_user,
       job_application: job_application,
       job_posting: job_posting,
       user: user
@@ -29,7 +38,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       assert_email_sent(
         from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
         subject: "BemedaPersonal | Welcome - Confirm Your Account",
-        to: [{nil, "john@example.com"}],
+        to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="CONFIRMATION_URL"/,
         text_body: ~r/CONFIRMATION_URL/
       )
@@ -43,7 +52,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       assert_email_sent(
         from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
         subject: "BemedaPersonal | Password Reset Request",
-        to: [{nil, "john@example.com"}],
+        to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="PASSWORD_RESET_URL"/,
         text_body: ~r/PASSWORD_RESET_URL/
       )
@@ -57,7 +66,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       assert_email_sent(
         from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
         subject: "BemedaPersonal | Email Address Update Request",
-        to: [{nil, "john@example.com"}],
+        to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="EMAIL_UPDATE_URL"/,
         text_body: ~r/EMAIL_UPDATE_URL/
       )
@@ -79,7 +88,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       assert_email_sent(
         from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
         subject: "BemedaPersonal | New Message from Sender Name",
-        to: [{nil, "john@example.com"}],
+        to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="MESSAGE_URL"/,
         text_body: ~r/MESSAGE_URL/,
         text_body: ~r/Sender Name/
@@ -87,20 +96,74 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     end
   end
 
-  describe "deliver_job_application_status/2" do
-    test "delivers job application status update with proper content", %{
+  describe "deliver_user_job_application_received/2" do
+    test "delivers job application received notification to applicant with proper content", %{
       job_application: job_application
     } do
-      UserNotifier.deliver_job_application_status(job_application, "APPLICATION_URL")
+      UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
+
+      assert_email_sent(
+        from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
+        subject: "BemedaPersonal | Job Application Received - Software Engineer",
+        to: [{"John Doe", "john@example.com"}],
+        html_body: ~r/<a href="APPLICATION_URL"/,
+        text_body: ~r/APPLICATION_URL/,
+        text_body: ~r/Software Engineer/,
+        text_body: ~r/We've received your application/
+      )
+    end
+  end
+
+  describe "deliver_user_job_application_status/2" do
+    test "delivers job application status update to applicant with proper content", %{
+      job_application: job_application
+    } do
+      UserNotifier.deliver_user_job_application_status(job_application, "APPLICATION_URL")
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
         subject: "BemedaPersonal | Job Application Status Update - Interview Scheduled",
-        to: [{nil, "john@example.com"}],
+        to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="APPLICATION_URL"/,
         text_body: ~r/APPLICATION_URL/,
         text_body: ~r/Software Engineer/,
         text_body: ~r/An interview has been scheduled./
+      )
+    end
+  end
+
+  describe "deliver_employer_job_application_received/2" do
+    test "delivers job application received notification to employer with proper content", %{
+      job_application: job_application
+    } do
+      UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
+
+      assert_email_sent(
+        from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
+        subject: "BemedaPersonal | New Job Application Received - Software Engineer",
+        to: [{"Admin User", "admin@example.com"}],
+        html_body: ~r/<a href="APPLICATION_URL"/,
+        text_body: ~r/APPLICATION_URL/,
+        text_body: ~r/Software Engineer/,
+        text_body: ~r/You've received a new application/
+      )
+    end
+  end
+
+  describe "deliver_employer_job_application_status/2" do
+    test "delivers job application status update to employer with proper content", %{
+      job_application: job_application
+    } do
+      UserNotifier.deliver_employer_job_application_status(job_application, "APPLICATION_URL")
+
+      assert_email_sent(
+        from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
+        subject: "BemedaPersonal | Job Application Status Update - Interview Scheduled",
+        to: [{"Admin User", "admin@example.com"}],
+        html_body: ~r/<a href="APPLICATION_URL"/,
+        text_body: ~r/APPLICATION_URL/,
+        text_body: ~r/Software Engineer/,
+        text_body: ~r/You have scheduled an interview with this candidate./
       )
     end
   end

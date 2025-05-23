@@ -138,6 +138,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
            job_application_params
          ) do
       {:ok, job_application} ->
+        SharedHelpers.enqueue_email_notification_job(%{
+          job_application_id: job_application.id,
+          type: "job_application_received",
+          url:
+            url(
+              ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+            )
+        })
+
         {:noreply,
          socket
          |> put_flash(:info, "Application submitted successfully")
