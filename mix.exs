@@ -76,8 +76,7 @@ defmodule BemedaPersonal.MixProject do
       {:number, "~> 1.0"},
       {:oban, "~> 2.19"},
       {:plug, "~> 1.17"},
-      {:req, "~> 0.5"},
-      {:timex, "~> 3.7"}
+      {:req, "~> 0.5"}
     ]
   end
 

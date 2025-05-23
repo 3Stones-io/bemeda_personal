@@ -30,6 +30,6 @@ defmodule BemedaPersonalWeb.NotificationLive.Show do
   end
 
   defp format_date(date) do
-    Timex.format!(date, "{D} {Mshort} {YYYY} at {h12}:{m} {AM}")
+    Calendar.strftime(date, "%d %b %Y at %I:%M %p")
   end
 end

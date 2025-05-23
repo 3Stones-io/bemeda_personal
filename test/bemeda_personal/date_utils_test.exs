@@ -50,33 +50,51 @@ defmodule BemedaPersonal.DateUtilsTest do
 
   describe "format_emails_date/1" do
     test "formats today's date as hour:minute AM/PM" do
-      now = Timex.now()
-      formatted = DateUtils.format_emails_date(now)
-      expected_format = Timex.format!(now, "{h12}:{m} {AM}")
-      assert formatted == expected_format
+      now = DateTime.utc_now()
+      assert DateUtils.format_emails_date(now) =~ ~r/\d{1,2}:\d{2} (AM|PM)/
+    end
+
+    test "formats midnight (00:00) correctly" do
+      now = DateTime.utc_now()
+      midnight = %{now | hour: 0, minute: 0, second: 0, microsecond: {0, 6}}
+      assert DateUtils.format_emails_date(midnight) == "12:00 AM"
+    end
+
+    test "formats noon (12:00) correctly" do
+      now = DateTime.utc_now()
+      noon = %{now | hour: 12, minute: 0, second: 0, microsecond: {0, 6}}
+      assert DateUtils.format_emails_date(noon) == "12:00 PM"
+    end
+
+    test "formats afternoon time correctly" do
+      now = DateTime.utc_now()
+      afternoon = %{now | hour: 15, minute: 30, second: 0, microsecond: {0, 6}}
+      assert DateUtils.format_emails_date(afternoon) == "03:30 PM"
     end
 
     test "formats yesterday's date as 'Yesterday'" do
-      now = Timex.now()
-      yesterday = Timex.shift(now, days: -1)
+      now = DateTime.utc_now()
+      yesterday = DateTime.add(now, -1, :day)
       assert DateUtils.format_emails_date(yesterday) == "Yesterday"
     end
 
     test "formats dates within the last week as 'X days ago'" do
-      now = Timex.now()
-      three_days_ago = Timex.shift(now, days: -3)
-      seven_days_ago = Timex.shift(now, days: -7)
+      now = DateTime.utc_now()
 
+      three_days_ago = DateTime.add(now, -3, :day)
       assert DateUtils.format_emails_date(three_days_ago) == "3 days ago"
+
+      seven_days_ago = DateTime.add(now, -7, :day)
       assert DateUtils.format_emails_date(seven_days_ago) == "7 days ago"
     end
 
     test "formats older dates as D/M/YYYY" do
-      now = Timex.now()
-      older_date = Timex.shift(now, days: -8)
-      expected_format = Timex.format!(older_date, "{D}/{M}/{YYYY}")
+      now = DateTime.utc_now()
+      older_date_1 = DateTime.add(now, -8, :day)
+      assert DateUtils.format_emails_date(older_date_1) =~ ~r/\d{1,2}\/\d{1,2}\/\d{4}/
 
-      assert DateUtils.format_emails_date(older_date) == expected_format
+      older_date_2 = ~U[2001-01-01 12:00:00Z]
+      assert DateUtils.format_emails_date(older_date_2) == "01/01/2001"
     end
   end
 end

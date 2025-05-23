@@ -28,19 +28,26 @@ defmodule BemedaPersonal.DateUtils do
   Returns a relative or absolute date string.
   """
   @spec format_emails_date(DateTime.t()) :: String.t()
-  def format_emails_date(date) do
-    cond do
-      Timex.diff(Timex.now(), date, :days) == 0 ->
-        Timex.format!(date, "{h12}:{m} {AM}")
+  def format_emails_date(datetime) do
+    date_only = DateTime.to_date(datetime)
 
-      Timex.diff(Timex.now(), date, :days) == 1 ->
+    days_diff =
+      DateTime.utc_now()
+      |> DateTime.to_date()
+      |> Date.diff(date_only)
+
+    cond do
+      days_diff == 0 ->
+        Calendar.strftime(datetime, "%I:%M %p")
+
+      days_diff == 1 ->
         "Yesterday"
 
-      Timex.diff(Timex.now(), date, :days) <= 7 ->
-        "#{Timex.diff(Timex.now(), date, :days)} days ago"
+      days_diff <= 7 ->
+        "#{days_diff} days ago"
 
       true ->
-        Timex.format!(date, "{D}/{M}/{YYYY}")
+        Calendar.strftime(date_only, "%d/%m/%Y")
     end
   end
 end
