@@ -25,7 +25,7 @@ defmodule BemedaPersonal.DateUtils do
   end
 
   @doc """
-  Format a date to a string in the format "Month Day, Year at HH:MM AM/PM".
+  Returns a relative or absolute date string.
   """
   @spec format_emails_date(DateTime.t()) :: String.t()
   def format_emails_date(date) do

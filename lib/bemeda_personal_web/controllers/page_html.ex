@@ -6,7 +6,5 @@ defmodule BemedaPersonalWeb.PageHTML do
   """
   use BemedaPersonalWeb, :html
 
-  alias BemedaPersonalWeb.SharedComponents
-
   embed_templates "page_html/*"
 end

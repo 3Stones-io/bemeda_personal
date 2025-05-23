@@ -10,7 +10,5 @@ defmodule BemedaPersonalWeb.Layouts do
   """
   use BemedaPersonalWeb, :html
 
-  import BemedaPersonalWeb.SharedComponents
-
   embed_templates "layouts/*"
 end

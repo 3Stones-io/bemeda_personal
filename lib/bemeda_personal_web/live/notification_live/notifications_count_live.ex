@@ -13,7 +13,7 @@ defmodule BemedaPersonalWeb.NotificationLive.NotificationsCountLive do
     user = Accounts.get_user_by_session_token(session["user_token"])
 
     if connected?(socket) && user do
-      Endpoint.subscribe("notifications_count")
+      Endpoint.subscribe("#{user.id}_notifications_count")
     end
 
     unread_count = Emails.unread_email_communications_count(user.id)

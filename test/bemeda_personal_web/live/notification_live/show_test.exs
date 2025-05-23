@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
   alias BemedaPersonal.Emails
   alias BemedaPersonalWeb.Endpoint
 
-  defp create_test_data(conn) do
+  defp create_test_data(%{conn: conn}) do
     recipient = user_fixture(%{confirmed: true})
     sender = user_fixture(%{email: "sender@example.com", confirmed: true})
     company = company_fixture(sender)
@@ -38,9 +38,7 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
   end
 
   describe "/notifications/:id" do
-    setup %{conn: conn} do
-      create_test_data(conn)
-    end
+    setup [:create_test_data]
 
     test "requires authentication for access", %{notification: notification} do
       public_conn = build_conn()
@@ -73,7 +71,7 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
     test "marks unread notification as read on view", %{conn: conn, notification: notification} do
       refute notification.is_read
 
-      Endpoint.subscribe("notifications_count")
+      Endpoint.subscribe("#{notification.recipient_id}_notifications_count")
 
       {:ok, _view, _html} = live(conn, ~p"/notifications/#{notification.id}")
 
@@ -82,10 +80,8 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
 
       assert_receive %Phoenix.Socket.Broadcast{
         event: "update_unread_count",
-        payload: %{user_id: user_id}
+        payload: %{}
       }
-
-      assert user_id == notification.recipient_id
     end
 
     test "does not modify already read notifications", %{conn: conn, notification: notification} do
@@ -94,7 +90,7 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
 
       assert marked_notification.is_read
 
-      Endpoint.subscribe("notifications_count")
+      Endpoint.subscribe("#{notification.recipient_id}_notifications_count")
 
       {:ok, _view, _html} = live(conn, ~p"/notifications/#{marked_notification.id}")
 

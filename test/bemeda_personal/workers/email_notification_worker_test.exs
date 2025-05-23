@@ -10,6 +10,8 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
 
   alias BemedaPersonal.Emails
   alias BemedaPersonal.Workers.EmailNotificationWorker
+  alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.Socket.Broadcast
 
   setup do
     admin_user =
@@ -86,6 +88,40 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       assert employer_email_history.company_id == company.id
       assert employer_email_history.job_application_id == job_application.id
     end
+
+    test "broadcasts update_unread_count when notification is sent", %{
+      admin_user: admin_user,
+      applicant: applicant,
+      company: company,
+      job_application: job_application
+    } do
+      applicant_notification_topic = "#{applicant.id}_notifications_count"
+      admin_notification_topic = "#{admin_user.id}_notifications_count"
+
+      Endpoint.subscribe(applicant_notification_topic)
+      Endpoint.subscribe(admin_notification_topic)
+
+      url = "http://localhost:4000/companies/#{company.id}/applicants/#{job_application.id}"
+
+      assert :ok =
+               perform_job(EmailNotificationWorker, %{
+                 "job_application_id" => job_application.id,
+                 "type" => "job_application_received",
+                 "url" => url
+               })
+
+      assert_receive %Broadcast{
+        event: "update_unread_count",
+        topic: ^applicant_notification_topic,
+        payload: %{}
+      }
+
+      assert_receive %Broadcast{
+        event: "update_unread_count",
+        topic: ^admin_notification_topic,
+        payload: %{}
+      }
+    end
   end
 
   describe "perform/1 with job_application_status_update" do
@@ -135,6 +171,40 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       assert employer_email_history.status == :sent
       assert employer_email_history.company_id == company.id
     end
+
+    test "broadcasts update_unread_count when status notification is sent", %{
+      admin_user: admin_user,
+      applicant: applicant,
+      company: company,
+      job_application: job_application
+    } do
+      applicant_notification_topic = "#{applicant.id}_notifications_count"
+      admin_notification_topic = "#{admin_user.id}_notifications_count"
+
+      Endpoint.subscribe(applicant_notification_topic)
+      Endpoint.subscribe(admin_notification_topic)
+
+      url = "http://localhost:4000/companies/#{company.id}/applicants/#{job_application.id}"
+
+      assert :ok =
+               perform_job(EmailNotificationWorker, %{
+                 "job_application_id" => job_application.id,
+                 "type" => "job_application_status_update",
+                 "url" => url
+               })
+
+      assert_receive %Broadcast{
+        event: "update_unread_count",
+        topic: ^applicant_notification_topic,
+        payload: %{}
+      }
+
+      assert_receive %Broadcast{
+        event: "update_unread_count",
+        topic: ^admin_notification_topic,
+        payload: %{}
+      }
+    end
   end
 
   describe "perform/1 with new_message" do
@@ -170,6 +240,32 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       assert email_history
       assert email_history.status == :sent
       assert email_history.job_application_id == message.job_application_id
+    end
+
+    test "broadcasts update_unread_count when message notification is sent", %{
+      admin_user: admin_user,
+      company: company,
+      message: message
+    } do
+      notification_topic = "#{admin_user.id}_notifications_count"
+      Endpoint.subscribe(notification_topic)
+
+      url =
+        "http://localhost:4000/companies/#{company.id}/applicants/#{message.job_application_id}"
+
+      assert :ok =
+               perform_job(EmailNotificationWorker, %{
+                 "message_id" => message.id,
+                 "recipient_id" => admin_user.id,
+                 "type" => "new_message",
+                 "url" => url
+               })
+
+      assert_receive %Broadcast{
+        event: "update_unread_count",
+        topic: ^notification_topic,
+        payload: %{}
+      }
     end
   end
 end

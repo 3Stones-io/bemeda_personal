@@ -14,17 +14,19 @@ defmodule BemedaPersonalWeb.NotificationLive.Show do
       else
         {:ok, updated} = Emails.update_email_communication(notification, %{is_read: true})
 
-        Endpoint.broadcast("notifications_count", "update_unread_count", %{
-          user_id: socket.assigns.current_user.id
-        })
+        Endpoint.broadcast(
+          "#{socket.assigns.current_user.id}_notifications_count",
+          "update_unread_count",
+          %{}
+        )
 
         updated
       end
 
     {:ok,
      socket
-     |> assign(:page_title, updated_notification.subject)
-     |> assign(:notification, updated_notification)}
+     |> assign(:notification, updated_notification)
+     |> assign(:page_title, updated_notification.subject)}
   end
 
   defp format_date(date) do

@@ -1,4 +1,9 @@
-<.nav_bar current_user={assigns[:current_user]} socket={@socket} />
+{live_render(
+  @socket,
+  BemedaPersonalWeb.NavigationLive,
+  id: "navigation",
+  sticky: true
+)}
 <main>
   <.flash_group flash={@flash} />
   {@inner_content}

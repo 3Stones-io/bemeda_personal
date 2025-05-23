@@ -21,15 +21,17 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("toggle-read-status", %{"id" => id}, socket) do
+  def handle_event("toggle_read_status", %{"id" => id}, socket) do
     notification = Emails.get_email_communication!(id)
     new_status = !notification.is_read
 
     case Emails.update_email_communication(notification, %{is_read: new_status}) do
       {:ok, updated_notification} ->
-        Endpoint.broadcast("notifications_count", "update_unread_count", %{
-          user_id: socket.assigns.current_user.id
-        })
+        Endpoint.broadcast(
+          "#{socket.assigns.current_user.id}_notifications_count",
+          "update_unread_count",
+          %{}
+        )
 
         {:noreply, stream_insert(socket, :notifications, updated_notification)}
 
@@ -38,17 +40,17 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
     end
   end
 
-  def handle_event("next-page", _params, socket) do
+  def handle_event("next_page", _params, socket) do
     filters = %{older_than: socket.assigns.last_notification}
 
     {:noreply, maybe_insert_notifications(socket, filters, socket.assigns.last_notification)}
   end
 
-  def handle_event("prev-page", %{"_overran" => true}, socket) do
+  def handle_event("prev_page", %{"_overran" => true}, socket) do
     {:noreply, socket}
   end
 
-  def handle_event("prev-page", _unused_params, socket) do
+  def handle_event("prev_page", _unused_params, socket) do
     filters = %{newer_than: socket.assigns.first_notification}
 
     {:noreply,

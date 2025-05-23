@@ -4,8 +4,8 @@
   <div
     id="notifications"
     phx-update="stream"
-    phx-viewport-top={!@end_of_timeline? && JS.push("prev-page")}
-    phx-viewport-bottom={!@end_of_timeline? && JS.push("next-page")}
+    phx-viewport-top={!@end_of_timeline? && JS.push("prev_page")}
+    phx-viewport-bottom={!@end_of_timeline? && JS.push("next_page")}
     phx-page-loading
   >
     <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
@@ -56,7 +56,7 @@
         </div>
         <div class="flex-shrink-0">
           <button
-            phx-click={JS.push("toggle-read-status", value: %{id: notification.id})}
+            phx-click={JS.push("toggle_read_status", value: %{id: notification.id})}
             class={[
               "p-1 rounded-full focus:outline-none",
               !notification.is_read && "text-green-500 hover:text-green-700",

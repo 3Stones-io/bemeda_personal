@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
   alias BemedaPersonal.Emails
   alias BemedaPersonalWeb.Endpoint
 
-  defp create_test_data(conn) do
+  defp create_test_data(%{conn: conn}) do
     recipient = user_fixture(%{confirmed: true})
     sender = user_fixture(%{email: "sender@example.com", confirmed: true})
     company = company_fixture(sender)
@@ -37,9 +37,7 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
   end
 
   describe "/notifications" do
-    setup %{conn: conn} do
-      create_test_data(conn)
-    end
+    setup [:create_test_data]
 
     test "requires authentication for access" do
       public_conn = build_conn()
@@ -87,9 +85,7 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
   end
 
   describe "notification interactions" do
-    setup %{conn: conn} do
-      create_test_data(conn)
-    end
+    setup [:create_test_data]
 
     test "can toggle read status of a notification", %{
       conn: conn,
@@ -121,7 +117,7 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
     } do
       {:ok, view, _html} = live(conn, ~p"/notifications")
 
-      Endpoint.subscribe("notifications_count")
+      Endpoint.subscribe("#{recipient.id}_notifications_count")
 
       view
       |> element("#notification-#{notification.id} button[aria-label='Mark as read']")
@@ -129,10 +125,8 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
 
       assert_receive %Phoenix.Socket.Broadcast{
         event: "update_unread_count",
-        payload: %{user_id: user_id}
+        payload: %{}
       }
-
-      assert user_id == recipient.id
     end
   end
 
