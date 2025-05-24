@@ -93,7 +93,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
         )
 
         Endpoint.broadcast(
-          "users:#{recipient.id}_notifications_count",
+          "users:#{recipient.id}:notifications_count",
           "update_unread_count",
           %{}
         )

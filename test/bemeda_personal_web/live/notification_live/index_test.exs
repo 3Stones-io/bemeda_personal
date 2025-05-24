@@ -117,7 +117,7 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
     } do
       {:ok, view, _html} = live(conn, ~p"/notifications")
 
-      Endpoint.subscribe("users:#{recipient.id}_notifications_count")
+      Endpoint.subscribe("users:#{recipient.id}:notifications_count")
 
       view
       |> element("#notification-#{notification.id} button[aria-label='Mark as read']")

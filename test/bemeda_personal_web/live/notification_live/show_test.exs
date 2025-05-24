@@ -71,7 +71,7 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
     test "marks unread notification as read on view", %{conn: conn, notification: notification} do
       refute notification.is_read
 
-      Endpoint.subscribe("users:#{notification.recipient_id}_notifications_count")
+      Endpoint.subscribe("users:#{notification.recipient_id}:notifications_count")
 
       {:ok, _view, _html} = live(conn, ~p"/notifications/#{notification.id}")
 
@@ -90,7 +90,7 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
 
       assert marked_notification.is_read
 
-      Endpoint.subscribe("users:#{notification.recipient_id}_notifications_count")
+      Endpoint.subscribe("users:#{notification.recipient_id}:notifications_count")
 
       {:ok, _view, _html} = live(conn, ~p"/notifications/#{marked_notification.id}")
 

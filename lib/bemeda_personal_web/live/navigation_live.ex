@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
     user = Accounts.get_user_by_session_token(token)
 
     if connected?(socket) && user do
-      Endpoint.subscribe("users:#{user.id}_notifications_count")
+      Endpoint.subscribe("users:#{user.id}:notifications_count")
     end
 
     unread_count = Emails.unread_email_communications_count(user.id)
