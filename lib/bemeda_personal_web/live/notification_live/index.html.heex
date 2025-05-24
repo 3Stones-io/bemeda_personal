@@ -1,0 +1,81 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Notifications</h1>
+
+  <div
+    id="notifications"
+    phx-update="stream"
+    phx-viewport-top={!@end_of_timeline? && JS.push("prev_page")}
+    phx-viewport-bottom={!@end_of_timeline? && JS.push("next_page")}
+    phx-page-loading
+  >
+    <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
+      <p class="text-gray-500">No notifications available at the moment.</p>
+    </div>
+
+    <div
+      :for={{notification_id, notification} <- @streams.notifications}
+      class={[
+        notification.is_read && "bg-gray-50 border-b border-gray-200",
+        !notification.is_read && "bg-white border-b border-gray-200 shadow-sm",
+        "px-4 py-5 sm:px-6"
+      ]}
+      id={notification_id}
+      role="list"
+    >
+      <div class="flex items-center space-x-2">
+        <div class="flex-grow min-w-0">
+          <div class="flex items-center">
+            <div :if={!notification.is_read} class="mr-3 flex-shrink-0">
+              <div class="h-3 w-3 bg-green-500 rounded-full"></div>
+            </div>
+            <.link
+              navigate={~p"/notifications/#{notification.id}"}
+              class="block focus:outline-none w-full"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <p class={[
+                  "text-sm font-medium truncate",
+                  !notification.is_read && "text-gray-900 font-bold",
+                  notification.is_read && "text-gray-600"
+                ]}>
+                  {String.replace(notification.subject, "BemedaPersonal | ", "")}
+                </p>
+                <p class="text-sm text-gray-500">
+                  {DateUtils.format_emails_date(notification.inserted_at)}
+                </p>
+              </div>
+              <p class={[
+                "mt-1 text-sm truncate",
+                !notification.is_read && "text-gray-800",
+                notification.is_read && "text-gray-500"
+              ]}>
+                {format_notification_body(notification.body)}
+              </p>
+            </.link>
+          </div>
+        </div>
+        <div class="flex-shrink-0">
+          <button
+            phx-click={JS.push("toggle_read_status", value: %{id: notification.id})}
+            class={[
+              "p-1 rounded-full focus:outline-none",
+              !notification.is_read && "text-green-500 hover:text-green-700",
+              notification.is_read && "text-gray-400 hover:text-gray-600"
+            ]}
+            aria-label={if notification.is_read, do: "Mark as unread", else: "Mark as read"}
+            title={
+              if notification.is_read,
+                do: "Click to mark as unread",
+                else: "Click to mark as read"
+            }
+          >
+            <.icon
+              name={if notification.is_read, do: "hero-envelope", else: "hero-envelope-open"}
+              class="h-5 w-5"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

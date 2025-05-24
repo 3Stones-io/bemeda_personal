@@ -1,0 +1,34 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="mb-6 flex items-center">
+    <.link
+      navigate={~p"/notifications"}
+      class="text-gray-500 hover:text-gray-700 mr-4"
+      id="back-to-notifications"
+    >
+      <.icon name="hero-arrow-left" class="h-5 w-5" />
+    </.link>
+    <h1 class="text-2xl font-bold flex-1 truncate">{@notification.subject}</h1>
+  </div>
+
+  <div class="bg-white rounded-lg shadow">
+    <div class="border-b border-gray-200 p-4">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-900">
+            From: {(@notification.sender && @notification.sender.email) || "System"}
+          </p>
+          <p class="text-sm text-gray-500">
+            To: {@notification.recipient.email}
+          </p>
+        </div>
+        <p class="text-sm text-gray-500">
+          {format_date(@notification.inserted_at)}
+        </p>
+      </div>
+    </div>
+
+    <div class="p-4 overflow-auto">
+      {raw(@notification.html_body)}
+    </div>
+  </div>
+</div>

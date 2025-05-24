@@ -8,6 +8,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Emails
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.Endpoint
 
   require Logger
 
@@ -89,6 +90,12 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
             body: email.text_body,
             html_body: email.html_body
           }
+        )
+
+        Endpoint.broadcast(
+          "users:#{recipient.id}:notifications_count",
+          "update_unread_count",
+          %{}
         )
 
         :ok

@@ -20,6 +20,7 @@ defmodule BemedaPersonal.Emails.EmailCommunication do
     belongs_to :company, Company
     field :email_type, :string
     field :html_body, :string
+    field :is_read, :boolean, default: false
     belongs_to :job_application, JobApplication
     belongs_to :recipient, User
     belongs_to :sender, User
@@ -36,6 +37,7 @@ defmodule BemedaPersonal.Emails.EmailCommunication do
       :body,
       :email_type,
       :html_body,
+      :is_read,
       :status,
       :subject
     ])

@@ -28,12 +28,72 @@ defmodule BemedaPersonal.Emails do
       iex> list_email_communications()
       [%EmailCommunication{}, ...]
 
+      iex> list_email_communications(%{recipient_id: recipient_id})
+      [%EmailCommunication{}, ...]
+
+      iex> list_email_communications(%{company_id: company_id})
+      [%EmailCommunication{}, ...]
+
+      iex> list_email_communications(%{newer_than: email_communication})
+      [%EmailCommunication{}, ...]
+
+      iex> list_email_communications(%{older_than: email_communication})
+      [%EmailCommunication{}, ...]
+
   """
-  @spec list_email_communications() :: [email_communication()]
-  def list_email_communications do
-    EmailCommunication
+  @spec list_email_communications(map(), non_neg_integer()) :: [email_communication()]
+  def list_email_communications(filters \\ %{}, limit \\ 10) do
+    filter_query = fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_filter/2)
+    end
+
+    from(email_communication in EmailCommunication, as: :email_communication)
+    |> where(^filter_query.(filters))
+    |> order_by([e], asc: e.is_read, desc: e.inserted_at)
+    |> limit(^limit)
     |> Repo.all()
     |> Repo.preload([:company, :job_application, :recipient, :sender])
+  end
+
+  defp apply_filter({:recipient_id, recipient_id}, dynamic) do
+    dynamic([email_communication: e], ^dynamic and e.recipient_id == ^recipient_id)
+  end
+
+  defp apply_filter({:company_id, company_id}, dynamic) do
+    dynamic([email_communication: e], ^dynamic and e.company_id == ^company_id)
+  end
+
+  defp apply_filter({:newer_than, %EmailCommunication{} = email_communication}, dynamic) do
+    dynamic(
+      [email_communication: e],
+      ^dynamic and e.inserted_at > ^email_communication.inserted_at
+    )
+  end
+
+  defp apply_filter({:older_than, %EmailCommunication{} = email_communication}, dynamic) do
+    dynamic(
+      [email_communication: e],
+      ^dynamic and e.inserted_at < ^email_communication.inserted_at
+    )
+  end
+
+  defp apply_filter(_other, dynamic), do: dynamic
+
+  @doc """
+  Returns the count of unread email communications.
+
+  ## Examples
+
+      iex> unread_email_communications_count(recipient_id)
+      10
+
+  """
+  @spec unread_email_communications_count(Ecto.UUID.t() | nil) :: non_neg_integer()
+  def unread_email_communications_count(recipient_id) do
+    from(email_communication in EmailCommunication, as: :email_communication)
+    |> where([e], e.is_read == false and e.recipient_id == ^recipient_id)
+    |> select([e], count(e.id))
+    |> Repo.one()
   end
 
   @doc """
@@ -54,7 +114,7 @@ defmodule BemedaPersonal.Emails do
   def get_email_communication!(id) do
     EmailCommunication
     |> Repo.get!(id)
-    |> Repo.preload([:company, :job_application, :recipient, :sender])
+    |> Repo.preload([:sender, :recipient])
   end
 
   @doc """
@@ -87,6 +147,25 @@ defmodule BemedaPersonal.Emails do
     |> Ecto.Changeset.put_assoc(:recipient, recipient)
     |> Ecto.Changeset.put_assoc(:sender, sender)
     |> Repo.insert()
+  end
+
+  @doc """
+  Updates a email_communication.
+  """
+  @spec update_email_communication(email_communication(), attrs()) ::
+          {:ok, email_communication()} | {:error, changeset()}
+  def update_email_communication(%EmailCommunication{} = email_communication, attrs) do
+    email_communication
+    |> EmailCommunication.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a email_communication.
+  """
+  @spec delete_email_communication(email_communication()) :: :ok | {:error, Ecto.Changeset.t()}
+  def delete_email_communication(%EmailCommunication{} = email_communication) do
+    Repo.delete(email_communication)
   end
 
   @doc """

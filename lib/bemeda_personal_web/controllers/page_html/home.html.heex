@@ -1,4 +1,10 @@
 <.flash_group flash={@flash} />
+{live_render(
+  @conn,
+  BemedaPersonalWeb.NavigationLive,
+  id: "navigation",
+  sticky: true
+)}
 <div class="relative bg-white min-h-screen flex">
   <div class="lg:grid lg:grid-cols-2 w-full">
     <div class="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
