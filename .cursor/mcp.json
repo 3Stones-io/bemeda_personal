@@ -1,5 +1,8 @@
 {
   "mcpServers": {
+    "playwright": {
+      "url": "http://localhost:8931/mcp"
+    },
     "tidewave": {
       "command": "mcp-proxy",
       "args": ["http://localhost:4000/tidewave/mcp"]
