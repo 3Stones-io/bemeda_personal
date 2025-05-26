@@ -532,6 +532,31 @@ defmodule BemedaPersonal.AccountsTest do
     end
   end
 
+  describe "update_user_locale/2" do
+    test "with valid data updates the locale" do
+      user = user_fixture()
+      assert {:ok, updated_user} = Accounts.update_user_locale(user, %{locale: "de"})
+      assert updated_user.locale == :de
+    end
+
+    test "with invalid locale returns error changeset" do
+      user = user_fixture()
+      assert {:error, changeset} = Accounts.update_user_locale(user, %{locale: "invalid"})
+      assert "is invalid" in errors_on(changeset).locale
+    end
+
+    test "with empty locale uses default locale" do
+      user = user_fixture()
+      assert {:ok, updated_user} = Accounts.update_user_locale(user, %{locale: ""})
+      assert updated_user.locale == :de
+    end
+
+    test "new users have default locale" do
+      user = user_fixture()
+      assert user.locale == :de
+    end
+  end
+
   describe "inspect/2 for the User module" do
     test "does not include password" do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""

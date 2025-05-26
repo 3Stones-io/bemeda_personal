@@ -3,6 +3,8 @@ defmodule BemedaPersonalWeb.Router do
 
   import BemedaPersonalWeb.UserAuth
 
+  alias BemedaPersonalWeb.Locale
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -11,6 +13,7 @@ defmodule BemedaPersonalWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug Locale
   end
 
   pipeline :api do
@@ -23,7 +26,10 @@ defmodule BemedaPersonalWeb.Router do
     get "/", PageController, :home
 
     live_session :public_routes,
-      on_mount: [{BemedaPersonalWeb.UserAuth, :mount_current_user}] do
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :mount_current_user},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+      ] do
       live "/jobs", JobLive.Index, :index
       live "/jobs/:id", JobLive.Show, :show
       live "/company/:id", CompanyPublicLive.Show, :show
@@ -59,7 +65,10 @@ defmodule BemedaPersonalWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{BemedaPersonalWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :redirect_if_user_is_authenticated},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+      ] do
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -73,7 +82,10 @@ defmodule BemedaPersonalWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+      ] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
@@ -101,7 +113,10 @@ defmodule BemedaPersonalWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :user_companies,
-      on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+      ] do
       live "/", CompanyLive.Index, :index
     end
   end
@@ -112,7 +127,8 @@ defmodule BemedaPersonalWeb.Router do
     live_session :new_company,
       on_mount: [
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
-        {BemedaPersonalWeb.UserAuth, :require_no_existing_company}
+        {BemedaPersonalWeb.UserAuth, :require_no_existing_company},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
       live "/new", CompanyLive.Index, :new
     end
@@ -124,7 +140,8 @@ defmodule BemedaPersonalWeb.Router do
     live_session :require_admin_user,
       on_mount: [
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
-        {BemedaPersonalWeb.UserAuth, :require_admin_user}
+        {BemedaPersonalWeb.UserAuth, :require_admin_user},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
       live "/:company_id/edit", CompanyLive.Index, :edit
 
@@ -143,10 +160,14 @@ defmodule BemedaPersonalWeb.Router do
   scope "/", BemedaPersonalWeb do
     pipe_through [:browser]
 
+    get "/locale/:locale", LocaleController, :set
     delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
-      on_mount: [{BemedaPersonalWeb.UserAuth, :mount_current_user}] do
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :mount_current_user},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+      ] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
