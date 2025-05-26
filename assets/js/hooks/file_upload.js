@@ -118,7 +118,7 @@ export default FileUpload = {
       deleteButton.addEventListener('click', () => {
         fileUploadInput.classList.remove('hidden')
         assetDescription.classList.add('hidden')
-        hook.pushEventTo(`#${eventsTarget}`, 'delete-file')
+        hook.pushEventTo(`#${eventsTarget}`, 'delete_file')
       })
     }
 

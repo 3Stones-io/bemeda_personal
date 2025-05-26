@@ -199,10 +199,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
     {:noreply, assign(socket, :enable_submit?, true)}
   end
 
-  def handle_event("delete-video", _params, socket) do
-    {:ok, _asset} = Media.delete_media_asset(socket.assigns.job_posting.media_asset)
+  def handle_event("delete_file", _params, socket) do
+    {:ok, asset} = Media.delete_media_asset(socket.assigns.job_posting.media_asset)
 
-    {:noreply, assign(socket, :show_video_description, false)}
+    {:noreply,
+     socket
+     |> assign(:job_posting, asset.job_posting)
+     |> assign(:show_video_description, false)}
   end
 
   defp save_job_posting(socket, :new, job_params) do

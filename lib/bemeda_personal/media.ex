@@ -213,7 +213,15 @@ defmodule BemedaPersonal.Media do
   """
   @spec delete_media_asset(media_asset()) :: {:ok, media_asset()} | {:error, changeset()}
   def delete_media_asset(%MediaAsset{} = media_asset) do
-    Repo.delete(media_asset)
+    {:ok, asset} = Repo.delete(media_asset)
+
+    {:ok,
+     Repo.preload(asset, [
+       [company: [:media_asset]],
+       [job_application: [:media_asset, [job_posting: :company]]],
+       [job_posting: [:media_asset, :company]],
+       [message: [:media_asset]]
+     ])}
   end
 
   @doc """

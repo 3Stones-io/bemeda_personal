@@ -145,10 +145,13 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
     {:noreply, assign(socket, :enable_submit?, true)}
   end
 
-  def handle_event("delete-file", _params, socket) do
-    {:ok, _asset} = Media.delete_media_asset(socket.assigns.company.media_asset)
+  def handle_event("delete_file", _params, socket) do
+    {:ok, asset} = Media.delete_media_asset(socket.assigns.company.media_asset)
 
-    {:noreply, assign(socket, :show_logo?, false)}
+    {:noreply,
+     socket
+     |> assign(:company, asset.company)
+     |> assign(:show_logo?, false)}
   end
 
   defp save_company(socket, :edit, company_params) do
