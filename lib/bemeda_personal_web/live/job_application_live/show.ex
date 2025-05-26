@@ -197,8 +197,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
     if connected?(socket) do
       Endpoint.subscribe("messages:job_application:#{job_application_id}")
-      Endpoint.subscribe("job_application_messages_assets_#{job_application_id}")
-      Endpoint.subscribe("job_application_assets_#{job_application_id}")
+      Endpoint.subscribe("job_application_messages:#{job_application_id}:media_assets")
+      Endpoint.subscribe("job_application:#{job_application_id}:media_assets")
       Endpoint.subscribe("job_application:company:#{job_application.job_posting.company_id}")
       Endpoint.subscribe("job_application:user:#{job_application.user_id}")
     end

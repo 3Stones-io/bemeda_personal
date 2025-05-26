@@ -137,14 +137,14 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
 
       view
-      |> element("#job_posting-video-video-upload")
+      |> element("#job_posting-video-file-upload")
       |> render_hook("upload-video", %{
         "filename" => "test_video.mp4",
         "type" => "video/mp4"
       })
 
       view
-      |> element("#job_posting-video-video-upload")
+      |> element("#job_posting-video-file-upload")
       |> render_hook("upload-completed")
 
       view
@@ -179,7 +179,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       assert html =~ "Drag and drop to upload your video"
       assert html =~ "Browse Files"
-      assert html =~ "Max file size: 50MB"
+      assert html =~ "Max file size: 50 MB"
     end
   end
 
@@ -224,7 +224,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
 
       assert html =~ "test_video.mp4"
-      assert html =~ "Video Description"
     end
 
     test "updates job posting", %{
@@ -269,14 +268,14 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
 
       view
-      |> element("#job_posting-video-video-upload")
+      |> element("#job_posting-video-file-upload")
       |> render_hook("upload-video", %{
         "filename" => "updated_test_video.mp4",
         "type" => "video/mp4"
       })
 
       view
-      |> element("#job_posting-video-video-upload")
+      |> element("#job_posting-video-file-upload")
       |> render_hook("upload-completed")
 
       view

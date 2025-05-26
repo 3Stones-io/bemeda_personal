@@ -2,6 +2,9 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Companies
+  alias BemedaPersonal.Media
+  alias BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -39,13 +42,46 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <div>
-            <.input field={f[:website_url]} type="url" label="Website URL" />
+          <.input field={f[:website_url]} type="url" label="Website URL" />
+        </div>
+
+        <div>
+          <p class="block text-base text-zinc-800 mb-2">Company Logo</p>
+
+          <SharedComponents.asset_preview
+            show_asset_description={@show_logo?}
+            media_asset={@company.media_asset}
+            type="Logo"
+            asset_preview_id="logo-preview"
+          />
+
+          <div
+            :if={@show_logo?}
+            id="logo-preview"
+            class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6 mt-2 hidden"
+          >
+            <img
+              src={SharedHelpers.get_presigned_url(@company.media_asset.upload_id)}
+              alt="Company Logo"
+              class="w-full h-auto"
+            />
           </div>
 
-          <div>
-            <.input field={f[:logo_url]} type="url" label="Logo URL" />
-          </div>
+          <SharedComponents.file_input_component
+            accept="image/*"
+            class={@show_logo? && "hidden"}
+            events_target="company-form"
+            id="logo-upload"
+            max_file_size={10_000_000}
+            target={@myself}
+            type="image"
+          />
+
+          <SharedComponents.file_upload_progress
+            id="logo-upload-progress"
+            class="hidden"
+            phx-update="ignore"
+          />
         </div>
 
         <div class="flex justify-end space-x-3">
@@ -57,6 +93,8 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
             Cancel
           </.link>
           <.button
+            class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
+            disabled={!@enable_submit?}
             type="submit"
             phx-disable-with={if @action == :new, do: "Creating...", else: "Saving..."}
           >
@@ -75,11 +113,16 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:form, to_form(changeset))}
+     |> assign(:enable_submit?, true)
+     |> assign(:form, to_form(changeset))
+     |> assign(:media_data, %{})
+     |> assign(:show_logo?, has_logo?(company))}
   end
 
   @impl Phoenix.LiveComponent
   def handle_event("validate", %{"company" => company_params}, socket) do
+    company_params = update_media_data_params(socket, company_params)
+
     changeset =
       socket.assigns.company
       |> Companies.change_company(company_params)
@@ -89,7 +132,23 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
   end
 
   def handle_event("save", %{"company" => company_params}, socket) do
+    company_params = update_media_data_params(socket, company_params)
+
     save_company(socket, socket.assigns.action, company_params)
+  end
+
+  def handle_event("upload-file", params, socket) do
+    SharedHelpers.create_file_upload(socket, params)
+  end
+
+  def handle_event("upload-completed", _params, socket) do
+    {:noreply, assign(socket, :enable_submit?, true)}
+  end
+
+  def handle_event("delete-file", _params, socket) do
+    {:ok, _asset} = Media.delete_media_asset(socket.assigns.company.media_asset)
+
+    {:noreply, assign(socket, :show_logo?, false)}
   end
 
   defp save_company(socket, :edit, company_params) do
@@ -115,6 +174,17 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
+    end
+  end
+
+  defp update_media_data_params(socket, params) do
+    Map.put(params, "media_data", socket.assigns.media_data)
+  end
+
+  defp has_logo?(company) do
+    case company.media_asset do
+      %Media.MediaAsset{} = _asset -> true
+      _other -> false
     end
   end
 end

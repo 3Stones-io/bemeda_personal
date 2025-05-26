@@ -3,7 +3,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -103,9 +102,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           />
         </div>
 
-        <JobsComponents.video_preview_component
-          show_video_description={@show_video_description}
+        <SharedComponents.asset_preview
+          show_asset_description={@show_video_description}
           media_asset={@job_posting.media_asset}
+          type="Video"
+          asset_preview_id="video-preview-player"
         />
 
         <div
@@ -119,14 +120,17 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           />
         </div>
 
-        <JobsComponents.video_upload_input_component
-          id="job_posting-video"
-          show_video_description={@show_video_description}
+        <SharedComponents.file_input_component
+          accept="video/*"
+          class={@show_video_description && "hidden"}
           events_target={@id}
-          myself={@myself}
+          id="job_posting-video"
+          max_file_size={52_000_000}
+          target={@myself}
+          type="video"
         />
 
-        <JobsComponents.video_upload_progress
+        <SharedComponents.file_upload_progress
           id={"#{@id}-video"}
           class="job-form-video-upload-progress hidden"
           phx-update="ignore"
@@ -179,8 +183,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
     save_job_posting(socket, socket.assigns.action, job_params)
   end
 
+  def handle_event("upload-file", params, socket) do
+    SharedHelpers.create_file_upload(socket, params)
+  end
+
   def handle_event("upload-video", params, socket) do
-    SharedHelpers.create_video_upload(socket, params)
+    SharedHelpers.create_file_upload(socket, params)
   end
 
   def handle_event("upload-completed", _params, socket) do

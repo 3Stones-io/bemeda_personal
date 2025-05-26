@@ -8,11 +8,14 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
+  alias Phoenix.Socket.Broadcast
+
   on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
   def mount(%{"id" => id}, _session, socket) do
     if connected?(socket) do
+      Endpoint.subscribe("company:#{id}:media_assets")
       Endpoint.subscribe("rating:Company:#{id}")
     end
 
@@ -36,5 +39,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
     |> assign(:job_count, Jobs.company_jobs_count(company.id))
     |> assign(:page_title, company.name)
     |> stream(:job_postings, job_postings)
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(%Broadcast{event: "media_asset_updated", payload: payload}, socket) do
+    {:noreply, assign(socket, :company, payload.company)}
   end
 end

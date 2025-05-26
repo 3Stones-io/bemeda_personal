@@ -3,7 +3,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -24,11 +23,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
           phx-debounce="blur"
         />
 
-        <JobsComponents.video_preview_component
-          show_video_description={@show_video_description}
-          media_asset={@job_application.media_asset}
-        />
-
         <div
           :if={@show_video_description}
           id="video-preview-player"
@@ -37,14 +31,24 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
           <SharedComponents.video_player media_asset={@job_application.media_asset} />
         </div>
 
-        <JobsComponents.video_upload_input_component
-          id="job_application-video"
-          show_video_description={@show_video_description}
-          events_target={@id}
-          myself={@myself}
+        <SharedComponents.asset_preview
+          show_asset_description={@show_video_description}
+          media_asset={@job_application.media_asset}
+          type="Video"
+          asset_preview_id="video-preview-player"
         />
 
-        <JobsComponents.video_upload_progress
+        <SharedComponents.file_input_component
+          accept="video/*"
+          class={@show_video_description && "hidden"}
+          events_target={@id}
+          id="job_application-video"
+          max_file_size={52_000_000}
+          target={@myself}
+          type="video"
+        />
+
+        <SharedComponents.file_upload_progress
           id={"#{@id}-video"}
           class="job-application-form-video-upload-progress hidden"
           phx-update="ignore"
@@ -98,8 +102,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     save_job_application(socket, socket.assigns.action, job_application_params)
   end
 
+  def handle_event("upload-file", params, socket) do
+    SharedHelpers.create_file_upload(socket, params)
+  end
+
   def handle_event("upload-video", params, socket) do
-    SharedHelpers.create_video_upload(socket, params)
+    SharedHelpers.create_file_upload(socket, params)
   end
 
   def handle_event("upload-completed", _params, socket) do
@@ -110,7 +118,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     {:noreply, assign(socket, :enable_submit?, true)}
   end
 
-  def handle_event("delete-video", _params, socket) do
+  def handle_event("delete-file", _params, socket) do
     {:ok, _asset} = Media.delete_media_asset(socket.assigns.job_application.media_asset)
 
     {:noreply, assign(socket, :show_video_description, false)}

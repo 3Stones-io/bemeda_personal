@@ -6,6 +6,7 @@ defmodule BemedaPersonal.Media do
   import Ecto.Query, warn: false
 
   alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Media.MediaAsset
@@ -14,6 +15,7 @@ defmodule BemedaPersonal.Media do
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
+  @type company :: Company.t()
   @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
   @type media_asset :: MediaAsset.t()
@@ -93,8 +95,15 @@ defmodule BemedaPersonal.Media do
       iex> create_media_asset(message, %{field: value})
       {:ok, %MediaAsset{}}
   """
-  @spec create_media_asset(job_application() | job_posting() | message(), attrs()) ::
+  @spec create_media_asset(company() | job_application() | job_posting() | message(), attrs()) ::
           {:ok, media_asset()} | {:error, changeset()}
+  def create_media_asset(%Company{} = company, attrs) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Repo.insert()
+  end
+
   def create_media_asset(%JobApplication{} = job_application, attrs) do
     %MediaAsset{}
     |> MediaAsset.changeset(attrs)
@@ -139,6 +148,7 @@ defmodule BemedaPersonal.Media do
       {:ok, media_asset} ->
         updated_media_asset =
           Repo.preload(media_asset, [
+            [company: [:media_asset]],
             [job_application: [:media_asset]],
             [job_posting: [:media_asset]],
             [message: [:media_asset]]
@@ -153,11 +163,19 @@ defmodule BemedaPersonal.Media do
     end
   end
 
+  defp broadcast_to_parent(%MediaAsset{company: %Company{} = company} = media_asset) do
+    Endpoint.broadcast(
+      "company:#{company.id}:media_assets",
+      "media_asset_updated",
+      %{media_asset: media_asset, company: company}
+    )
+  end
+
   defp broadcast_to_parent(
          %MediaAsset{job_application: %JobApplication{} = job_application} = media_asset
        ) do
     Endpoint.broadcast(
-      "job_application_assets_#{job_application.id}",
+      "job_application:#{job_application.id}:media_assets",
       "media_asset_updated",
       %{media_asset: media_asset, job_application: job_application}
     )
@@ -165,7 +183,7 @@ defmodule BemedaPersonal.Media do
 
   defp broadcast_to_parent(%MediaAsset{job_posting: %JobPosting{} = job_posting} = media_asset) do
     Endpoint.broadcast(
-      "job_posting_assets_#{job_posting.id}",
+      "job_posting:#{job_posting.id}:media_assets",
       "media_asset_updated",
       %{media_asset: media_asset, job_posting: job_posting}
     )
@@ -173,7 +191,7 @@ defmodule BemedaPersonal.Media do
 
   defp broadcast_to_parent(%MediaAsset{message: %Message{} = message} = media_asset) do
     Endpoint.broadcast(
-      "job_application_messages_assets_#{message.job_application_id}",
+      "job_application_messages:#{message.job_application_id}:media_assets",
       "media_asset_updated",
       %{media_asset: media_asset, message: message}
     )
