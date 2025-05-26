@@ -24,7 +24,9 @@ defmodule BemedaPersonal.Repo.Migrations.AddCompanyIdToMediaAssets do
 
     drop constraint(:media_assets, :exactly_one_parent)
 
-    execute("DELETE FROM media_assets WHERE company_id IS NOT NULL AND job_application_id IS NULL AND job_posting_id IS NULL AND message_id IS NULL")
+    execute(
+      "DELETE FROM media_assets WHERE company_id IS NOT NULL AND job_application_id IS NULL AND job_posting_id IS NULL AND message_id IS NULL"
+    )
 
     create(
       constraint(
