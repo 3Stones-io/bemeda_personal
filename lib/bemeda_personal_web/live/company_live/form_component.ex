@@ -20,7 +20,14 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
         class="space-y-6"
       >
         <div>
-          <.input field={f[:name]} type="text" label="Company Name" required />
+          <.input
+            field={f[:name]}
+            type="text"
+            label={
+              Phoenix.HTML.raw("Company Name <span class='text-red-600'>*</span>")
+            }
+            required
+          />
         </div>
 
         <div>
