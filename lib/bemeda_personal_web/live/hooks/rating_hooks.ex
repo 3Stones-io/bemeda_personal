@@ -195,7 +195,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
         {:ok, rating}
 
       {:error, :no_interaction} ->
-        {:error, dgettext("companies", "You need to apply to a job before rating this company.")}
+        {:error, dgettext("ratings", "You need to apply to a job before rating this company.")}
 
       {:error, _changeset} ->
         {:error, dgettext("ratings", "Error submitting rating.")}

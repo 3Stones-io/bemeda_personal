@@ -62,7 +62,7 @@
         navigate={~p"/company/#{@company.id}/jobs"}
         class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        {dgettext("actions", "View All Jobs")}
+        {dgettext("jobs", "View All Jobs")}
       </.link>
       <.link
         :if={@company.website_url}
@@ -71,7 +71,7 @@
         rel="noopener noreferrer"
         class="inline-flex items-center px-5 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        {dgettext("actions", "Visit Website")}
+        {dgettext("companies", "Visit Website")}
       </.link>
     </div>
   </div>
@@ -148,7 +148,7 @@
         navigate={~p"/company/#{@company.id}/jobs"}
         class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center"
       >
-        {dgettext("actions", "View all jobs")}
+        {dgettext("jobs", "View all jobs")}
         <.icon name="hero-chevron-right" class="h-4 w-4 ml-1" />
       </.link>
     </div>

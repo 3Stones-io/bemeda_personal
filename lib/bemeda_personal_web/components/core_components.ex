@@ -73,7 +73,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
                   class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
-                  aria-label={dgettext("actions", "close")}
+                  aria-label={dgettext("general", "close")}
                 >
                   <.icon name="hero-x-mark-solid" class="h-5 w-5" />
                 </button>
@@ -130,7 +130,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
       <button
         type="button"
         class="group absolute top-1 right-1 p-2"
-        aria-label={dgettext("actions", "close")}
+        aria-label={dgettext("general", "close")}
       >
         <.icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
       </button>
@@ -612,7 +612,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
             <th :if={@action != []} class="relative p-0 pb-4">
-              <span class="sr-only">{dgettext("actions", "Actions")}</span>
+              <span class="sr-only">{dgettext("general", "Actions")}</span>
             </th>
           </tr>
         </thead>

@@ -54,15 +54,15 @@ defmodule BemedaPersonalWeb.SharedComponents do
           <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-indigo-600" />
         </div>
         <h3 class="mb-2 text-lg font-medium text-gray-900">
-          {dgettext("forms", "Drag and drop to upload your %{type}", type: @type)}
+          {dgettext("general", "Drag and drop to upload your %{type}", type: @type)}
         </h3>
-        <p class="mb-4 text-sm text-gray-500">{dgettext("forms", "or")}</p>
+        <p class="mb-4 text-sm text-gray-500">{dgettext("general", "or")}</p>
         <div>
           <label
             for="hidden-file-input"
             class="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            {dgettext("actions", "Browse Files")}
+            {dgettext("general", "Browse Files")}
             <input
               id="hidden-file-input"
               type="file"
@@ -73,7 +73,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
           </label>
         </div>
         <p class="mt-2 text-xs text-gray-500">
-          {dgettext("forms", "Max file size: %{size}", size: FileSizeUtils.pretty(@max_file_size))}
+          {dgettext("general", "Max file size: %{size}", size: FileSizeUtils.pretty(@max_file_size))}
         </p>
       </div>
       <p id="file-upload-error" class="mt-2 text-sm text-red-600 text-center mt-4 hidden">
@@ -150,7 +150,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
           out: "transition-all duration-200 ease-in-out"
         )
       }
-      title={dgettext("actions", "Show %{type}", type: @type)}
+      title={dgettext("general", "Show %{type}", type: @type)}
     >
       <div
         class="relative w-full bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:bg-gray-50"
