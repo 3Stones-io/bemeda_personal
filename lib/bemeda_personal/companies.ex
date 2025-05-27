@@ -7,9 +7,11 @@ defmodule BemedaPersonal.Companies do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.MediaDataUtils
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
+  alias Ecto.Multi
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -48,7 +50,11 @@ defmodule BemedaPersonal.Companies do
 
   """
   @spec get_company!(id()) :: company() | no_return()
-  def get_company!(id), do: Repo.get!(Company, id)
+  def get_company!(id) do
+    Company
+    |> Repo.get!(id)
+    |> Repo.preload([:media_asset])
+  end
 
   @doc """
   Gets a company for a specific user.
@@ -69,6 +75,7 @@ defmodule BemedaPersonal.Companies do
     Company
     |> where([c], c.admin_user_id == ^user.id)
     |> Repo.one()
+    |> Repo.preload([:media_asset])
   end
 
   @doc """
@@ -85,14 +92,22 @@ defmodule BemedaPersonal.Companies do
   """
   @spec create_company(user(), attrs()) :: {:ok, company()} | {:error, changeset()}
   def create_company(user, attrs \\ %{}) do
-    result =
+    changeset =
       %Company{}
       |> Company.changeset(attrs)
       |> Changeset.put_assoc(:admin_user, user)
-      |> Repo.insert()
 
-    case result do
-      {:ok, company} ->
+    multi =
+      Multi.new()
+      |> Multi.insert(:company, changeset)
+      |> Multi.run(:media_asset, fn repo, %{company: company} ->
+        MediaDataUtils.handle_media_asset(repo, nil, company, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{company: company}} ->
+        company = Repo.preload(company, [:media_asset], force: true)
+
         broadcast_event(
           "#{@company_topic}:#{user.id}",
           "company_created",
@@ -101,8 +116,8 @@ defmodule BemedaPersonal.Companies do
 
         {:ok, company}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 
@@ -120,15 +135,21 @@ defmodule BemedaPersonal.Companies do
   """
   @spec update_company(company(), attrs()) :: {:ok, company()} | {:error, changeset()}
   def update_company(%Company{} = company, attrs) do
-    result =
-      company
-      |> Company.changeset(attrs)
-      |> Repo.update()
+    changeset = Company.changeset(company, attrs)
 
-    case result do
-      {:ok, updated_company} ->
+    multi =
+      Multi.new()
+      |> Multi.update(:company, changeset)
+      |> Multi.run(:media_asset, fn repo, %{company: company} ->
+        MediaDataUtils.handle_media_asset(repo, company.media_asset, company, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{company: updated_company}} ->
+        updated_company = Repo.preload(updated_company, [:media_asset], force: true)
+
         broadcast_event(
-          "#{@company_topic}:#{updated_company.admin_user_id}",
+          "#{@company_topic}:#{company.admin_user_id}",
           "company_updated",
           %{company: updated_company}
         )
@@ -141,8 +162,8 @@ defmodule BemedaPersonal.Companies do
 
         {:ok, updated_company}
 
-      error ->
-        error
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
     end
   end
 

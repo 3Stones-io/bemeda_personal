@@ -21,7 +21,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
     tags_form_fields = %{"tags" => ""}
 
     if connected?(socket) do
-      Endpoint.subscribe("job_application_assets_#{application.id}")
+      Endpoint.subscribe("job_application:#{application.id}:media_assets")
       Endpoint.subscribe("rating:User:#{application.user_id}")
     end
 

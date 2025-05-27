@@ -18,7 +18,6 @@ defmodule BemedaPersonal.CompaniesFixtures do
         description: "some description",
         industry: "some industry",
         location: "some location",
-        logo_url: "some logo_url",
         name: "some name",
         size: "some size",
         website_url: "some website_url"

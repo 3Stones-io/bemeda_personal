@@ -6,6 +6,7 @@ defmodule BemedaPersonal.Media.MediaAsset do
   import Ecto.Changeset
 
   alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs
 
   @type attrs :: map()
@@ -16,6 +17,7 @@ defmodule BemedaPersonal.Media.MediaAsset do
   @foreign_key_type :binary_id
 
   schema "media_assets" do
+    belongs_to :company, Company
     field :file_name, :string
     belongs_to :job_application, Jobs.JobApplication
     belongs_to :job_posting, Jobs.JobPosting
