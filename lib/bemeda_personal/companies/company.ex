@@ -6,6 +6,7 @@ defmodule BemedaPersonal.Companies.Company do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Media.MediaAsset
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -19,7 +20,7 @@ defmodule BemedaPersonal.Companies.Company do
     field :description, :string
     field :industry, :string
     field :location, :string
-    field :logo_url, :string
+    has_one :media_asset, MediaAsset
     field :name, :string
     field :size, :string
     field :website_url, :string
@@ -31,13 +32,12 @@ defmodule BemedaPersonal.Companies.Company do
   def changeset(company, attrs) do
     company
     |> cast(attrs, [
-      :name,
       :description,
       :industry,
-      :size,
-      :website_url,
       :location,
-      :logo_url
+      :name,
+      :size,
+      :website_url
     ])
     |> validate_required([:name])
     |> validate_length(:name, min: 1, max: 255)

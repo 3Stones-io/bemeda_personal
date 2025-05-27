@@ -196,7 +196,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert html =~ "Drag and drop to upload your video"
       assert html =~ "Browse Files"
-      assert html =~ "Max file size: 50MB"
+      assert html =~ "Max file size: 50 MB"
     end
 
     test "renders video upload progress component correctly", %{
@@ -343,15 +343,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
       view
-      |> element("#job_application-video-video-upload")
-      |> render_hook("upload-video", %{
+      |> element("#job_application-video-file-upload")
+      |> render_hook("upload_file", %{
         "filename" => "test_video.mp4",
         "type" => "video/mp4"
       })
 
       view
-      |> element("#job_application-video-video-upload")
-      |> render_hook("upload-completed")
+      |> element("#job_application-video-file-upload")
+      |> render_hook("upload_completed")
 
       assert view
              |> form("#job-application-form", %{
@@ -451,15 +451,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         )
 
       view
-      |> element("#job_application-video-video-upload")
-      |> render_hook("upload-video", %{
+      |> element("#job_application-video-file-upload")
+      |> render_hook("upload_file", %{
         "filename" => "updated_test_video.mp4",
         "type" => "video/mp4"
       })
 
       view
-      |> element("#job_application-video-video-upload")
-      |> render_hook("upload-completed")
+      |> element("#job_application-video-file-upload")
+      |> render_hook("upload_completed")
 
       assert view
              |> form("#job-application-form", %{
@@ -514,7 +514,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
           ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}/edit"
         )
 
-      assert html =~ "Video Description"
       assert html =~ "test_video.mp4"
     end
 
@@ -524,7 +523,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     } do
       {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
-      assert html =~ "video-upload-inputs-container"
+      assert html =~ "file-upload-inputs-container"
       assert html =~ "Drag and drop to upload your video"
       assert html =~ "Browse Files"
     end

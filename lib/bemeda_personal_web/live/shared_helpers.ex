@@ -81,9 +81,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     end
   end
 
-  @spec create_video_upload(socket(), map()) ::
-          {:reply, map(), socket()}
-  def create_video_upload(socket, params) do
+  @spec create_file_upload(socket(), map()) :: {:reply, map(), socket()}
+  def create_file_upload(socket, params) do
     upload_id = Ecto.UUID.generate()
     upload_url = TigrisHelper.get_presigned_upload_url(upload_id)
 

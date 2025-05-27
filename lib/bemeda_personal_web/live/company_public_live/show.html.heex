@@ -3,12 +3,12 @@
     <div class="flex items-center gap-4">
       <div class="w-20 h-14 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
         <img
-          :if={@company.logo_url}
-          src={@company.logo_url}
+          :if={@company.media_asset}
+          src={SharedHelpers.get_presigned_url(@company.media_asset.upload_id)}
           alt={@company.name}
           class="w-full h-full object-cover"
         />
-        <div :if={!@company.logo_url} class="text-2xl font-bold text-gray-500">
+        <div :if={!@company.media_asset} class="text-2xl font-bold text-gray-500">
           {String.first(@company.name)}
         </div>
       </div>

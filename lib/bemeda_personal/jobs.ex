@@ -13,7 +13,7 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
   alias BemedaPersonal.Jobs.Tag
-  alias BemedaPersonal.Media
+  alias BemedaPersonal.MediaDataUtils
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
@@ -158,7 +158,7 @@ defmodule BemedaPersonal.Jobs do
       Multi.new()
       |> Multi.insert(:job_posting, changeset)
       |> Multi.run(:media_asset, fn repo, %{job_posting: job_posting} ->
-        handle_media_asset(repo, nil, job_posting, attrs)
+        MediaDataUtils.handle_media_asset(repo, nil, job_posting, attrs)
       end)
 
     case Repo.transaction(multi) do
@@ -210,7 +210,12 @@ defmodule BemedaPersonal.Jobs do
       Multi.new()
       |> Multi.update(:job_posting, changeset)
       |> Multi.run(:media_asset, fn repo, %{job_posting: updated_job_posting} ->
-        handle_media_asset(repo, job_posting.media_asset, updated_job_posting, attrs)
+        MediaDataUtils.handle_media_asset(
+          repo,
+          job_posting.media_asset,
+          updated_job_posting,
+          attrs
+        )
       end)
 
     case Repo.transaction(multi) do
@@ -237,29 +242,6 @@ defmodule BemedaPersonal.Jobs do
       {:error, _operation, changeset, _changes} ->
         {:error, changeset}
     end
-  end
-
-  defp handle_media_asset(repo, existing_media_asset, parent, attrs) do
-    media_data = Map.get(attrs, "media_data")
-
-    if media_data && Enum.empty?(media_data) do
-      process_media_data(nil, repo, nil, parent)
-    else
-      process_media_data(media_data, repo, existing_media_asset, parent)
-    end
-  end
-
-  defp process_media_data(nil, _repo, nil, _parent), do: {:ok, nil}
-
-  defp process_media_data(nil, _repo, existing_media_asset, _parent),
-    do: {:ok, existing_media_asset}
-
-  defp process_media_data(media_data, _repo, nil, parent) do
-    Media.create_media_asset(parent, media_data)
-  end
-
-  defp process_media_data(media_data, _repo, existing_media_asset, _parent) do
-    Media.update_media_asset(existing_media_asset, media_data)
   end
 
   @doc """
@@ -627,7 +609,7 @@ defmodule BemedaPersonal.Jobs do
       Multi.new()
       |> Multi.insert(:job_application, changeset)
       |> Multi.run(:media_asset, fn repo, %{job_application: job_application} ->
-        handle_media_asset(repo, nil, job_application, attrs)
+        MediaDataUtils.handle_media_asset(repo, nil, job_application, attrs)
       end)
 
     case Repo.transaction(multi) do
@@ -680,7 +662,12 @@ defmodule BemedaPersonal.Jobs do
       Multi.new()
       |> Multi.update(:job_application, changeset)
       |> Multi.run(:media_asset, fn repo, %{job_application: updated_job_application} ->
-        handle_media_asset(repo, job_application.media_asset, updated_job_application, attrs)
+        MediaDataUtils.handle_media_asset(
+          repo,
+          job_application.media_asset,
+          updated_job_application,
+          attrs
+        )
       end)
 
     case Repo.transaction(multi) do

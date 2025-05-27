@@ -1,21 +1,22 @@
 import 'dragster'
 import * as UpChunk from '@mux/upchunk'
 
-export default VideoUpload = {
+export default FileUpload = {
   mounted() {
     const hook = this
-    const videoUploadInput = hook.el
-    const videoUploadInputsContainer = videoUploadInput.querySelector(
-      '#video-upload-inputs-container'
+    const fileUploadInput = hook.el
+    const fileUploadInputsContainer = fileUploadInput.querySelector(
+      '#file-upload-inputs-container'
     )
-    const eventsTarget = videoUploadInput.dataset.eventsTarget
+    const eventsTarget = fileUploadInput.dataset.eventsTarget
 
-    const input = videoUploadInput.querySelector('#hidden-file-input')
-    const videoDescription = document.querySelector('#video-description')
+    const input = fileUploadInput.querySelector('#hidden-file-input')
+    const assetDescription = document.querySelector('#asset-description')
 
     const uploadProgressElement = document.querySelector(
-      '.video-upload-progress'
+      '.file-upload-progress'
     )
+
     const filenameElement =
       uploadProgressElement.querySelector('#upload-filename')
     const fileSizeElement = uploadProgressElement.querySelector('#upload-size')
@@ -28,12 +29,11 @@ export default VideoUpload = {
       uploadProgressElement.querySelector('#upload-progress')
 
     let currentUpload
-    let uploadId
 
     const restoreDropzoneStyles = () => {
-      videoUploadInputsContainer.classList.remove('border-indigo-600')
-      videoUploadInputsContainer.classList.add('border-gray-300')
-      videoUploadInputsContainer.classList.remove('dropzone')
+      fileUploadInputsContainer.classList.remove('border-indigo-600')
+      fileUploadInputsContainer.classList.add('border-gray-300')
+      fileUploadInputsContainer.classList.remove('dropzone')
     }
 
     const fileSizeSI = (bytes) => {
@@ -44,7 +44,7 @@ export default VideoUpload = {
       return `${decimal} ${exponent ? `${'kMGTPEZY'[exponent - 1]}B` : 'B'}`
     }
 
-    const uploadVideo = (file) => {
+    const uploadFile = (file) => {
       if (currentUpload) {
         currentUpload.abort()
         currentUpload = null
@@ -52,7 +52,7 @@ export default VideoUpload = {
 
       hook.pushEventTo(
         `#${eventsTarget}`,
-        'upload-video',
+        'upload_file',
         { filename: file.name, type: file.type },
         (response) => {
           if (response.error) {
@@ -105,36 +105,36 @@ export default VideoUpload = {
             progressBar.classList.remove('processing-bar')
             percentageElement.textContent = 'Completed'
 
-            hook.pushEventTo(`#${eventsTarget}`, 'upload-completed')
+            hook.pushEventTo(`#${eventsTarget}`, 'upload_completed')
           })
         }
       )
     }
 
-    const deleteButton = videoDescription?.querySelector(
+    const deleteButton = assetDescription?.querySelector(
       'button[type="button"]'
     )
     if (deleteButton) {
       deleteButton.addEventListener('click', () => {
-        videoUploadInput.classList.remove('hidden')
-        videoDescription.classList.add('hidden')
-        hook.pushEventTo(`#${eventsTarget}`, 'delete-video')
+        fileUploadInput.classList.remove('hidden')
+        assetDescription.classList.add('hidden')
+        hook.pushEventTo(`#${eventsTarget}`, 'delete_file')
       })
     }
 
-    new Dragster(videoUploadInput)
+    new Dragster(fileUploadInput)
 
-    videoUploadInputsContainer.addEventListener(
+    fileUploadInputsContainer.addEventListener(
       'dragster:enter',
       () => {
-        videoUploadInputsContainer.classList.remove('border-gray-300')
-        videoUploadInputsContainer.classList.add('border-indigo-600')
-        videoUploadInputsContainer.classList.add('dropzone')
+        fileUploadInputsContainer.classList.remove('border-gray-300')
+        fileUploadInputsContainer.classList.add('border-indigo-600')
+        fileUploadInputsContainer.classList.add('dropzone')
       },
       false
     )
 
-    videoUploadInputsContainer.addEventListener(
+    fileUploadInputsContainer.addEventListener(
       'dragster:leave',
       () => {
         restoreDropzoneStyles()
@@ -142,27 +142,27 @@ export default VideoUpload = {
       false
     )
 
-    videoUploadInputsContainer.addEventListener('drop', (event) => {
+    fileUploadInputsContainer.addEventListener('drop', (event) => {
       event.preventDefault()
 
       let newFiles = Array.from(event.dataTransfer.files || [])
 
-      uploadVideo(newFiles[0])
+      uploadFile(newFiles[0])
 
       restoreDropzoneStyles()
     })
 
-    videoUploadInputsContainer.addEventListener('dragenter', (e) =>
+    fileUploadInputsContainer.addEventListener('dragenter', (e) =>
       e.preventDefault()
     )
-    videoUploadInputsContainer.addEventListener('dragover', (e) =>
+    fileUploadInputsContainer.addEventListener('dragover', (e) =>
       e.preventDefault()
     )
 
     input.addEventListener('change', () => {
       let newFiles = Array.from(input.files || [])
 
-      uploadVideo(newFiles[0])
+      uploadFile(newFiles[0])
     })
   },
 }
