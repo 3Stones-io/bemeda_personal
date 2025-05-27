@@ -1,6 +1,8 @@
 defmodule BemedaPersonal.Accounts.EmailTemplates.UpdateEmailInstructions do
   @moduledoc false
 
+  use Gettext, backend: BemedaPersonalWeb.Gettext
+
   use MjmlEEx,
     layout: BemedaPersonal.Accounts.EmailTemplates.BaseTemplate,
     mjml_template: "update_email_instructions.mjml.eex"

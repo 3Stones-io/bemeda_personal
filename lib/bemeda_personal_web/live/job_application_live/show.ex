@@ -121,13 +121,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         {:noreply,
          socket
          |> assign(:show_status_transition_modal, false)
-         |> put_flash(:info, "Job application status updated successfully.")}
+         |> put_flash(:info, dgettext("flash", "Job application status updated successfully."))}
 
       {:error, _changeset} ->
         {:noreply,
          socket
          |> assign(:show_status_transition_modal, false)
-         |> put_flash(:error, "Failed to update job application status.")}
+         |> put_flash(:error, dgettext("flash", "Failed to update job application status."))}
     end
   end
 

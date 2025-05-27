@@ -96,7 +96,7 @@ defmodule BemedaPersonalWeb.Resume.ResumeFormComponent do
       {:ok, _resume} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Resume updated successfully")
+         |> put_flash(:info, dgettext("flash", "Resume updated successfully"))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -121,7 +121,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
       {:ok, job_application} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Application updated successfully")
+         |> put_flash(:info, dgettext("flash", "Application updated successfully"))
          |> push_navigate(
            to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
          )}
@@ -149,7 +149,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Application submitted successfully")
+         |> put_flash(:info, dgettext("flash", "Application submitted successfully"))
          |> push_navigate(
            to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
          )}

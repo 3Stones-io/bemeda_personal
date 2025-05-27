@@ -105,12 +105,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
             )
         })
 
-        {:noreply, put_flash(socket, :info, "Status updated successfully")}
+        {:noreply, put_flash(socket, :info, dgettext("flash", "Status updated successfully"))}
 
       {:error, changeset} ->
         {:noreply,
          socket
-         |> put_flash(:error, "Failed to update status")
+         |> put_flash(:error, dgettext("flash", "Failed to update status"))
          |> assign(:update_job_application_status_form, changeset)}
     end
   end

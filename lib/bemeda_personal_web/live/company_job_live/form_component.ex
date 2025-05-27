@@ -39,11 +39,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label="Employment Type"
             options={[
-              {"Full-time", "Full-time"},
-              {"Part-time", "Part-time"},
-              {"Contract", "Contract"},
-              {"Temporary", "Temporary"},
-              {"Internship", "Internship"}
+              {dgettext("options", "Full-time"), "Full-time"},
+              {dgettext("options", "Part-time"), "Part-time"},
+              {dgettext("options", "Contract"), "Contract"},
+              {dgettext("options", "Temporary"), "Temporary"},
+              {dgettext("options", "Internship"), "Internship"}
             ]}
             phx-debounce="blur"
           />
@@ -55,10 +55,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label="Experience Level"
             options={[
-              {"Entry Level", "Entry Level"},
-              {"Mid Level", "Mid Level"},
-              {"Senior Level", "Senior Level"},
-              {"Executive", "Executive"}
+              {dgettext("options", "Entry Level"), "Entry Level"},
+              {dgettext("options", "Mid Level"), "Mid Level"},
+              {dgettext("options", "Senior Level"), "Senior Level"},
+              {dgettext("options", "Executive"), "Executive"}
             ]}
           />
 
@@ -139,7 +139,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
             disabled={!@enable_submit?}
           >
-            {if(@action == :edit, do: "Save Changes", else: "Post Job")}
+            {if(@action == :edit,
+              do: dgettext("options", "Save Changes"),
+              else: dgettext("options", "Post Job")
+            )}
           </.button>
         </div>
       </.form>
@@ -202,7 +205,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:ok, _job_posting} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Job posted successfully.")
+         |> put_flash(:info, dgettext("flash", "Job posted successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -215,7 +218,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:ok, _job_posting} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Job updated successfully.")
+         |> put_flash(:info, dgettext("flash", "Job updated successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -1,6 +1,8 @@
 defmodule BemedaPersonal.Accounts.UserNotifier do
   @moduledoc false
 
+  use Gettext, backend: BemedaPersonalWeb.Gettext
+
   import Swoosh.Email
 
   alias BemedaPersonal.Accounts.EmailTemplates.ConfirmationEmail
@@ -25,40 +27,53 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @from {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"}
 
   @status_messages %{
-    "interview_scheduled" => "Interview Scheduled",
-    "interviewed" => "Interview Completed",
-    "offer_accepted" => "Offer Accepted",
-    "offer_declined" => "Offer Declined",
-    "offer_extended" => "Job Offer Extended",
-    "rejected" => "Application Unsuccessful",
-    "screening" => "Screening in Progress",
-    "under_review" => "Under Review",
-    "withdrawn" => "Application Withdrawn"
+    "interview_scheduled" => dgettext("states", "Interview Scheduled"),
+    "interviewed" => dgettext("states", "Interview Completed"),
+    "offer_accepted" => dgettext("states", "Offer Accepted"),
+    "offer_declined" => dgettext("states", "Offer Declined"),
+    "offer_extended" => dgettext("states", "Job Offer Extended"),
+    "rejected" => dgettext("states", "Application Unsuccessful"),
+    "screening" => dgettext("states", "Screening in Progress"),
+    "under_review" => dgettext("states", "Under Review"),
+    "withdrawn" => dgettext("states", "Application Withdrawn")
   }
 
   @applicant_status_descriptions %{
-    "interview_scheduled" => "An interview has been scheduled.",
-    "interviewed" => "Thank you for attending the interview. We're reviewing your performance.",
-    "offer_accepted" => "You've accepted our offer — welcome aboard!",
+    "interview_scheduled" => dgettext("emails", "An interview has been scheduled."),
+    "interviewed" =>
+      dgettext(
+        "emails",
+        "Thank you for attending the interview. We're reviewing your performance."
+      ),
+    "offer_accepted" => dgettext("emails", "You've accepted our offer — welcome aboard!"),
     "offer_declined" =>
-      "You've declined our offer. We wish you the best in your future endeavors.",
-    "offer_extended" => "Good news! We've extended an offer to you.",
-    "rejected" => "Unfortunately, we won't be moving forward with your application at this time.",
-    "screening" => "You're currently undergoing our screening process.",
-    "under_review" => "Your application is currently being reviewed by our hiring team.",
-    "withdrawn" => "You've withdrawn your application."
+      dgettext(
+        "emails",
+        "You've declined our offer. We wish you the best in your future endeavors."
+      ),
+    "offer_extended" => dgettext("emails", "Good news! We've extended an offer to you."),
+    "rejected" =>
+      dgettext(
+        "emails",
+        "Unfortunately, we won't be moving forward with your application at this time."
+      ),
+    "screening" => dgettext("emails", "You're currently undergoing our screening process."),
+    "under_review" =>
+      dgettext("emails", "Your application is currently being reviewed by our hiring team."),
+    "withdrawn" => dgettext("emails", "You've withdrawn your application.")
   }
 
   @employer_status_descriptions %{
-    "interview_scheduled" => "You have scheduled an interview with this candidate.",
-    "interviewed" => "The interview with this candidate has been completed.",
-    "offer_accepted" => "The candidate has accepted your job offer!",
-    "offer_declined" => "The candidate has declined your job offer.",
-    "offer_extended" => "You've extended an offer to this candidate.",
-    "rejected" => "You've rejected this candidate's application.",
-    "screening" => "This application is in the screening process.",
-    "under_review" => "This application is under review by your team.",
-    "withdrawn" => "The candidate has withdrawn their application."
+    "interview_scheduled" =>
+      dgettext("emails", "You have scheduled an interview with this candidate."),
+    "interviewed" => dgettext("emails", "The interview with this candidate has been completed."),
+    "offer_accepted" => dgettext("emails", "The candidate has accepted your job offer!"),
+    "offer_declined" => dgettext("emails", "The candidate has declined your job offer."),
+    "offer_extended" => dgettext("emails", "You've extended an offer to this candidate."),
+    "rejected" => dgettext("emails", "You've rejected this candidate's application."),
+    "screening" => dgettext("emails", "This application is in the screening process."),
+    "under_review" => dgettext("emails", "This application is under review by your team."),
+    "withdrawn" => dgettext("emails", "The candidate has withdrawn their application.")
   }
 
   defp deliver(%User{} = recipient, subject, html_body, text_body) do
@@ -90,18 +105,23 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hello #{user_name},
+    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
 
-    Thank you for joining BemedaPersonal. We're excited to have you on board!
+    #{dgettext("emails", "Thank you for joining BemedaPersonal. We're excited to have you on board!")}
 
-    To start using all our features, please confirm your account by visiting the link below:
+    #{dgettext("emails", "To start using all our features, please confirm your account by visiting the link below:")}
 
     #{url}
 
-    If you didn't create an account with us, please ignore this email.
+    #{dgettext("emails", "If you didn't create an account with us, please ignore this email.")}
     """
 
-    deliver(user, "BemedaPersonal | Welcome - Confirm Your Account", html_body, text_body)
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Welcome - Confirm Your Account"),
+      html_body,
+      text_body
+    )
   end
 
   @spec deliver_reset_password_instructions(recipient(), url()) ::
@@ -116,18 +136,23 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hello #{user_name},
+    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
 
-    We received a request to reset the password for your BemedaPersonal account.
+    #{dgettext("emails", "We received a request to reset the password for your BemedaPersonal account.")}
 
-    To create a new password, please visit the link below:
+    #{dgettext("emails", "To create a new password, please visit the link below:")}
 
     #{url}
 
-    If you didn't request a password reset, please ignore this email or contact us if you have concerns.
+    #{dgettext("emails", "If you didn't request a password reset, please ignore this email or contact us if you have concerns.")}
     """
 
-    deliver(user, "BemedaPersonal | Password Reset Request", html_body, text_body)
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Password Reset Request"),
+      html_body,
+      text_body
+    )
   end
 
   @spec deliver_update_email_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
@@ -141,18 +166,23 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hello #{user_name},
+    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
 
-    We received a request to update the email address for your BemedaPersonal account.
+    #{dgettext("emails", "We received a request to update the email address for your BemedaPersonal account.")}
 
-    To confirm this change, please visit the link below:
+    #{dgettext("emails", "To confirm this change, please visit the link below:")}
 
     #{url}
 
-    If you didn't request to change your email address, please ignore this email or contact our support team immediately if you have concerns.
+    #{dgettext("emails", "If you didn't request to change your email address, please ignore this email or contact our support team immediately if you have concerns.")}
     """
 
-    deliver(user, "BemedaPersonal | Email Address Update Request", html_body, text_body)
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Email Address Update Request"),
+      html_body,
+      text_body
+    )
   end
 
   @spec deliver_new_message(recipient(), message(), url()) :: {:ok, email()} | {:error, any()}
@@ -168,18 +198,20 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hello #{user_name},
+    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
 
-    You have received a new message from #{sender_name}.
+    #{dgettext("emails", "You have received a new message from %{sender_name}.", sender_name: sender_name)}
 
-    To view and respond to this message, please visit the link below:
+    #{dgettext("emails", "To view and respond to this message, please visit the link below:")}
 
     #{url}
     """
 
     deliver(
       recipient,
-      "BemedaPersonal | New Message from #{sender_name}",
+      dgettext("emails", "BemedaPersonal | New Message from %{sender_name}",
+        sender_name: sender_name
+      ),
       html_body,
       text_body
     )
@@ -201,18 +233,20 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hello #{user_name},
+    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
 
-    We've received your application for the position of "#{job_title}" at #{company_name}.
+    #{dgettext("emails", "We've received your application for the position of \"%{job_title}\" at %{company_name}.", job_title: job_title, company_name: company_name)}
 
-    To view the details of your application and any next steps required, please visit the link below:
+    #{dgettext("emails", "To view the details of your application and any next steps required, please visit the link below:")}
 
     #{url}
     """
 
     deliver(
       job_application.user,
-      "BemedaPersonal | Job Application Received - #{job_title}",
+      dgettext("emails", "BemedaPersonal | Job Application Received - %{job_title}",
+        job_title: job_title
+      ),
       html_body,
       text_body
     )
@@ -224,13 +258,15 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
-    readable_status = Map.get(@status_messages, new_status, "Application Status Updated")
+
+    readable_status =
+      Map.get(@status_messages, new_status, dgettext("states", "Application Status Updated"))
 
     status_description =
       Map.get(
         @applicant_status_descriptions,
         new_status,
-        "Your application status has been updated."
+        dgettext("emails", "Your application status has been updated.")
       )
 
     html_body =
@@ -244,19 +280,21 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hi #{user_name},
+    #{dgettext("emails", "Hi %{user_name},", user_name: user_name)}
 
-    This is an update regarding your application for the position of "#{job_title}".
+    #{dgettext("emails", "This is an update regarding your application for the position of \"%{job_title}\".", job_title: job_title)}
 
     #{status_description}
 
-    To view the details of your application and any next steps required, please visit the link below:
+    #{dgettext("emails", "To view the details of your application and any next steps required, please visit the link below:")}
     #{url}
     """
 
     deliver(
       job_application.user,
-      "BemedaPersonal | Job Application Status Update - #{readable_status}",
+      dgettext("emails", "BemedaPersonal | Job Application Status Update - %{readable_status}",
+        readable_status: readable_status
+      ),
       html_body,
       text_body
     )
@@ -279,18 +317,20 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hello #{employer_name},
+    #{dgettext("emails", "Hello %{user_name},", user_name: employer_name)}
 
-    You've received a new application from #{applicant_name} for the position of "#{job_title}".
+    #{dgettext("emails", "You've received a new application from %{applicant_name} for the position of \"%{job_title}\".", applicant_name: applicant_name, job_title: job_title)}
 
-    To review this application and take action, please visit the link below:
+    #{dgettext("emails", "To review this application and take action, please visit the link below:")}
 
     #{url}
     """
 
     deliver(
       admin_user,
-      "BemedaPersonal | New Job Application Received - #{job_title}",
+      dgettext("emails", "BemedaPersonal | New Job Application Received - %{job_title}",
+        job_title: job_title
+      ),
       html_body,
       text_body
     )
@@ -304,13 +344,15 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
-    readable_status = Map.get(@status_messages, new_status, "Application Status Updated")
+
+    readable_status =
+      Map.get(@status_messages, new_status, dgettext("states", "Application Status Updated"))
 
     status_description =
       Map.get(
         @employer_status_descriptions,
         new_status,
-        "The application status has been updated."
+        dgettext("emails", "The application status has been updated.")
       )
 
     html_body =
@@ -325,19 +367,21 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     text_body = """
-    Hi #{employer_name},
+    #{dgettext("emails", "Hi %{user_name},", user_name: employer_name)}
 
-    This is an update regarding #{applicant_name}'s application for the position of "#{job_title}".
+    #{dgettext("emails", "This is an update regarding %{applicant_name}'s application for the position of \"%{job_title}\".", applicant_name: applicant_name, job_title: job_title)}
 
     #{status_description}
 
-    To view the details of this application and take further action, please visit the link below:
+    #{dgettext("emails", "To view the details of this application and take further action, please visit the link below:")}
     #{url}
     """
 
     deliver(
       admin_user,
-      "BemedaPersonal | Job Application Status Update - #{readable_status}",
+      dgettext("emails", "BemedaPersonal | Job Application Status Update - %{readable_status}",
+        readable_status: readable_status
+      ),
       html_body,
       text_body
     )

@@ -109,7 +109,7 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
       {:ok, _education} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Education saved successfully")
+         |> put_flash(:info, dgettext("flash", "Education saved successfully"))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

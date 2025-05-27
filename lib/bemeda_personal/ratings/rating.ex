@@ -2,6 +2,7 @@ defmodule BemedaPersonal.Ratings.Rating do
   @moduledoc false
 
   use Ecto.Schema
+  use Gettext, backend: BemedaPersonalWeb.Gettext
 
   import Ecto.Changeset
 
@@ -31,11 +32,13 @@ defmodule BemedaPersonal.Ratings.Rating do
     rating
     |> cast(attrs, [:rater_type, :rater_id, :ratee_type, :ratee_id, :score, :comment])
     |> validate_required([:rater_type, :rater_id, :ratee_type, :ratee_id, :score])
-    |> validate_inclusion(:score, 1..5, message: "must be between 1 and 5")
+    |> validate_inclusion(:score, 1..5,
+      message: dgettext("validation", "must be between 1 and 5")
+    )
     |> validate_length(:comment, max: 1000)
     |> unique_constraint([:rater_type, :rater_id, :ratee_type, :ratee_id],
       name: :ratings_rater_ratee_unique_index,
-      message: "You can only rate this entity once"
+      message: dgettext("validation", "You can only rate this entity once")
     )
   end
 end

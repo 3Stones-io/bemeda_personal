@@ -2,6 +2,7 @@ defmodule BemedaPersonal.Accounts.User do
   @moduledoc false
 
   use Ecto.Schema
+  use Gettext, backend: BemedaPersonalWeb.Gettext
 
   import Ecto.Changeset
 
@@ -62,7 +63,9 @@ defmodule BemedaPersonal.Accounts.User do
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/,
+      message: dgettext("validation", "must have the @ sign and no spaces")
+    )
     |> validate_length(:email, max: 160)
     |> maybe_validate_unique_email(opts)
   end
@@ -126,7 +129,7 @@ defmodule BemedaPersonal.Accounts.User do
 
     case changeset do
       %{changes: %{email: _email}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :email, "did not change")
+      %{} = changeset -> add_error(changeset, :email, dgettext("validation", "did not change"))
     end
   end
 
@@ -146,7 +149,9 @@ defmodule BemedaPersonal.Accounts.User do
   def password_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:password])
-    |> validate_confirmation(:password, message: "does not match password")
+    |> validate_confirmation(:password,
+      message: dgettext("validation", "does not match password")
+    )
     |> validate_password(opts)
   end
 
@@ -196,7 +201,7 @@ defmodule BemedaPersonal.Accounts.User do
     if valid_password?(changeset.data, password) do
       changeset
     else
-      add_error(changeset, :current_password, "is not valid")
+      add_error(changeset, :current_password, dgettext("validation", "is not valid"))
     end
   end
 end

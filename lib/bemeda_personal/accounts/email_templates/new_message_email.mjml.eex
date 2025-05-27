@@ -2,15 +2,15 @@
   <mj-section padding="32px 0 0 0">
     <mj-column width="100%">
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 16px 0">
-        Hello <%= @user_name %>,
+        <%= dgettext("emails", "Hello %{user_name},", user_name: @user_name) %>
       </mj-text>
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 12px 0">
-        You have received a new message from <%= @sender_name %>.
+        <%= dgettext("emails", "You have received a new message from %{sender_name}.", sender_name: @sender_name) %>
       </mj-text>
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
-        To view and respond to this message, please click the button below:
+        <%= dgettext("emails", "To view and respond to this message, please click the button below:") %>
       </mj-text>
-      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: "View & Reply", cta_url: @url} %>
+      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: dgettext("emails", "View & Reply"), cta_url: @url} %>
     </mj-column>
   </mj-section>
 </mj-body>
