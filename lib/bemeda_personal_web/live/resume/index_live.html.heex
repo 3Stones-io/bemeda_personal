@@ -6,10 +6,13 @@
     <div>
       <h1 class="text-9xl font-extrabold text-gray-400">404</h1>
       <h2 class="mt-6 text-3xl font-bold text-gray-900">
-        Resume Not Found
+        {dgettext("resumes", "Resume Not Found")}
       </h2>
       <p class="mt-2 text-sm text-gray-600">
-        The resume you're looking for doesn't exist or is not available for public viewing.
+        {dgettext(
+          "resumes",
+          "The resume you're looking for doesn't exist or is not available for public viewing."
+        )}
       </p>
     </div>
     <div class="mt-8">
@@ -17,21 +20,24 @@
         href={~p"/"}
         class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
       >
-        <.icon name="hero-home" class="h-5 w-5 mr-2 text-white" /> Return to Home
+        <.icon name="hero-home" class="h-5 w-5 mr-2 text-white" /> {dgettext(
+          "navigation",
+          "Return to Home"
+        )}
       </.link>
     </div>
   </div>
 </div>
 
 <div :if={!@not_found} class="container mx-auto px-4 py-8 max-w-4xl">
-  <.resume_profile resume={@resume} title="Resume" />
+  <.resume_profile resume={@resume} title={dgettext("resumes", "Resume")} />
   
 <!-- Education Section -->
   <.resume_section
     id="educations"
-    title="Education"
+    title={dgettext("resumes", "Education")}
     items={@streams.educations}
-    empty_state_message="No education entries available."
+    empty_state_message={dgettext("resumes", "No education entries available.")}
   >
     <:resume_item :let={education}>
       <.resume_item
@@ -41,7 +47,7 @@
         item={education}
         subtitle={
           if(education.field_of_study,
-            do: "#{education.degree} in #{education.field_of_study}",
+            do: "#{education.degree} #{dgettext("resumes", "in")} #{education.field_of_study}",
             else: education.degree
           )
         }
@@ -53,9 +59,9 @@
 <!-- Work Experience Section -->
   <.resume_section
     id="work_experiences"
-    title="Work Experience"
+    title={dgettext("resumes", "Work Experience")}
     items={@streams.work_experiences}
-    empty_state_message="No work experience entries available."
+    empty_state_message={dgettext("resumes", "No work experience entries available.")}
   >
     <:resume_item :let={work_experience}>
       <.resume_item

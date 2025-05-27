@@ -46,17 +46,17 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
     socket
     |> assign(:company, company)
-    |> assign(:page_title, "Edit Company Profile")
+    |> assign(:page_title, dgettext("companies", "Edit Company Profile"))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:company, %Company{})
-    |> assign(:page_title, "Create Company Profile")
+    |> assign(:page_title, dgettext("companies", "Create Company Profile"))
   end
 
   defp apply_action(socket, :index, _params) do
-    assign(socket, :page_title, "Company Dashboard")
+    assign(socket, :page_title, dgettext("companies", "Company Dashboard"))
   end
 
   @impl Phoenix.LiveView

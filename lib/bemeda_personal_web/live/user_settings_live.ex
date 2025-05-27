@@ -13,17 +13,19 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
     ~H"""
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <.header class="text-center">
-        Account Settings
-        <:subtitle>Manage your account email address and password settings</:subtitle>
+        {dgettext("auth", "Account Settings")}
+        <:subtitle>
+          {dgettext("auth", "Manage your account email address and password settings")}
+        </:subtitle>
       </.header>
 
       <div class="space-y-12 divide-y">
         <div class="mb-6 bg-white shadow overflow-hidden sm:rounded-lg">
           <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
             <div>
-              <h2 class="text-xl font-semibold text-gray-900">Your Rating</h2>
+              <h2 class="text-xl font-semibold text-gray-900">{dgettext("auth", "Your Rating")}</h2>
               <p class="mt-1 text-sm text-gray-500">
-                How companies have rated your applications
+                {dgettext("auth", "How companies have rated your applications")}
               </p>
             </div>
           </div>
@@ -47,10 +49,22 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
             phx-submit="update_name"
             phx-change="validate_name"
           >
-            <.input field={@name_form[:first_name]} type="text" label="First Name" required />
-            <.input field={@name_form[:last_name]} type="text" label="Last Name" required />
+            <.input
+              field={@name_form[:first_name]}
+              type="text"
+              label={dgettext("auth", "First Name")}
+              required
+            />
+            <.input
+              field={@name_form[:last_name]}
+              type="text"
+              label={dgettext("auth", "Last Name")}
+              required
+            />
             <:actions>
-              <.button phx-disable-with="Changing...">Update Name</.button>
+              <.button phx-disable-with={dgettext("auth", "Changing...")}>
+                {dgettext("auth", "Update Name")}
+              </.button>
             </:actions>
           </.simple_form>
         </div>
@@ -62,18 +76,25 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
             phx-submit="update_email"
             phx-change="validate_email"
           >
-            <.input field={@email_form[:email]} type="email" label="Email" required />
+            <.input
+              field={@email_form[:email]}
+              type="email"
+              label={dgettext("auth", "Email")}
+              required
+            />
             <.input
               field={@email_form[:current_password]}
               name="current_password"
               id="current_password_for_email"
               type="password"
-              label="Current password"
+              label={dgettext("auth", "Current password")}
               value={@email_form_current_password}
               required
             />
             <:actions>
-              <.button phx-disable-with="Changing...">Change Email</.button>
+              <.button phx-disable-with={dgettext("auth", "Changing...")}>
+                {dgettext("auth", "Change Email")}
+              </.button>
             </:actions>
           </.simple_form>
         </div>
@@ -94,23 +115,30 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
               id="hidden_user_email"
               value={@current_email}
             />
-            <.input field={@password_form[:password]} type="password" label="New password" required />
+            <.input
+              field={@password_form[:password]}
+              type="password"
+              label={dgettext("auth", "New password")}
+              required
+            />
             <.input
               field={@password_form[:password_confirmation]}
               type="password"
-              label="Confirm new password"
+              label={dgettext("auth", "Confirm new password")}
             />
             <.input
               field={@password_form[:current_password]}
               name="current_password"
               type="password"
-              label="Current password"
+              label={dgettext("auth", "Current password")}
               id="current_password_for_password"
               value={@current_password}
               required
             />
             <:actions>
-              <.button phx-disable-with="Changing...">Change Password</.button>
+              <.button phx-disable-with={dgettext("auth", "Changing...")}>
+                {dgettext("auth", "Change Password")}
+              </.button>
             </:actions>
           </.simple_form>
         </div>
@@ -124,10 +152,14 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
     socket =
       case Accounts.update_user_email(socket.assigns.current_user, token) do
         :ok ->
-          put_flash(socket, :info, "Email changed successfully.")
+          put_flash(socket, :info, dgettext("auth", "Email changed successfully."))
 
         :error ->
-          put_flash(socket, :error, "Email change link is invalid or it has expired.")
+          put_flash(
+            socket,
+            :error,
+            dgettext("auth", "Email change link is invalid or it has expired.")
+          )
       end
 
     {:ok, push_navigate(socket, to: ~p"/users/settings")}
@@ -181,7 +213,11 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
           &url(~p"/users/settings/confirm_email/#{&1}")
         )
 
-        info = "A link to confirm your email change has been sent to the new address."
+        info =
+          dgettext(
+            "auth",
+            "A link to confirm your email change has been sent to the new address."
+          )
 
         {:noreply,
          socket
@@ -240,7 +276,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
       {:ok, _user} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Name updated successfully.")
+         |> put_flash(:info, dgettext("auth", "Name updated successfully."))
          |> assign(:name_form, to_form(Accounts.change_user_name(user)))}
 
       {:error, changeset} ->

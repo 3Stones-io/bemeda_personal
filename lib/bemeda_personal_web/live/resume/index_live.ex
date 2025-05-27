@@ -27,7 +27,7 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
     id
     |> Resumes.get_resume()
     |> assign_resume(socket)
-    |> assign(:page_title, "Resume")
+    |> assign(:page_title, dgettext("resumes", "Resume"))
   end
 
   defp assign_resume(%Resumes.Resume{is_public: true} = resume, socket),

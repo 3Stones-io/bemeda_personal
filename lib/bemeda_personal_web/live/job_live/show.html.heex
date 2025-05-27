@@ -5,13 +5,15 @@
     <div class="lg:col-span-2">
       <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-          <h2 class="text-xl font-semibold text-gray-900">Job Description</h2>
+          <h2 class="text-xl font-semibold text-gray-900">
+            {dgettext("jobs", "Job Description")}
+          </h2>
           <.link
             :if={!@application}
             navigate={~p"/jobs/#{@job_posting.id}/job_applications/new"}
             class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Apply to this job
+            {dgettext("jobs", "Apply to this job")}
           </.link>
 
           <.link
@@ -19,7 +21,7 @@
             navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@application.id}"}
             class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Review Application
+            {dgettext("jobs", "Review Application")}
           </.link>
         </div>
 
@@ -34,7 +36,7 @@
     <div>
       <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6">
-          <h2 class="text-lg font-medium text-gray-900">Job Details</h2>
+          <h2 class="text-lg font-medium text-gray-900">{dgettext("jobs", "Job Details")}</h2>
         </div>
         <div class="border-t border-gray-200 px-4 py-5 sm:px-6 mb-4">
           <JobsComponents.job_details job={@job_posting} />
