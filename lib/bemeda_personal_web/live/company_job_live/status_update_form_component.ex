@@ -22,9 +22,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
         <div class="mb-4">
           <.input
             field={f[:to_state]}
-            label="Status"
+            label={dgettext("jobs", "Status")}
             type="select"
-            prompt="Select a status"
+            prompt={dgettext("jobs", "Select a status")}
             options={
               Enum.map(@available_statuses, fn key ->
                 {SharedHelpers.translate_status(:action)[key], key}
@@ -39,8 +39,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
             field={f[:notes]}
             type="textarea"
             rows="4"
-            label="Notes"
-            placeholder="Add notes about this status change..."
+            label={dgettext("jobs", "Notes")}
+            placeholder={dgettext("jobs", "Add notes about this status change...")}
           />
         </div>
 
@@ -50,14 +50,14 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors duration-150 ease-in-out"
             id={"cancel-status-update-#{@applicant.id}"}
           >
-            Cancel
+            {dgettext("general", "Cancel")}
           </button>
           <button
             type="submit"
             class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
             id={"update-status-#{@applicant.id}"}
           >
-            Update Status
+            {dgettext("jobs", "Update Status")}
           </button>
         </div>
       </.form>
@@ -105,12 +105,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
             )
         })
 
-        {:noreply, put_flash(socket, :info, dgettext("flash", "Status updated successfully"))}
+        {:noreply, put_flash(socket, :info, dgettext("jobs", "Status updated successfully"))}
 
       {:error, changeset} ->
         {:noreply,
          socket
-         |> put_flash(:error, dgettext("flash", "Failed to update status"))
+         |> put_flash(:error, dgettext("jobs", "Failed to update status"))
          |> assign(:update_job_application_status_form, changeset)}
     end
   end

@@ -23,43 +23,54 @@ defmodule BemedaPersonalWeb.Resume.ResumeFormComponent do
         <.input
           field={@form[:headline]}
           type="text"
-          label="Professional Headline"
-          placeholder="e.g., Senior Software Engineer"
+          label={dgettext("resumes", "Professional Headline")}
+          placeholder={dgettext("resumes", "e.g., Senior Software Engineer")}
         />
         <.input
           field={@form[:summary]}
           type="textarea"
-          label="Professional Summary"
-          placeholder="Briefly describe your professional background, skills, and career goals"
+          label={dgettext("resumes", "Professional Summary")}
+          placeholder={
+            dgettext(
+              "resumes",
+              "Briefly describe your professional background, skills, and career goals"
+            )
+          }
         />
         <.input
           field={@form[:location]}
           type="text"
-          label="Location"
-          placeholder="e.g., San Francisco, CA"
+          label={dgettext("resumes", "Location")}
+          placeholder={dgettext("resumes", "e.g., San Francisco, CA")}
         />
         <.input
           field={@form[:contact_email]}
           type="email"
-          label="Contact Email"
-          placeholder="Your preferred contact email"
+          label={dgettext("resumes", "Contact Email")}
+          placeholder={dgettext("resumes", "Your preferred contact email")}
         />
         <.input
           field={@form[:phone_number]}
           type="text"
-          label="Phone Number"
-          placeholder="Your phone number"
+          label={dgettext("resumes", "Phone Number")}
+          placeholder={dgettext("resumes", "Your phone number")}
         />
         <.input
           field={@form[:website_url]}
           type="url"
-          label="Website URL"
-          placeholder="Your personal website or portfolio"
+          label={dgettext("resumes", "Website URL")}
+          placeholder={dgettext("resumes", "Your personal website or portfolio")}
         />
-        <.input field={@form[:is_public]} type="checkbox" label="Make resume public" />
+        <.input
+          field={@form[:is_public]}
+          type="checkbox"
+          label={dgettext("resumes", "Make resume public")}
+        />
 
         <:actions>
-          <.button phx-disable-with="Saving...">Save Resume</.button>
+          <.button phx-disable-with={dgettext("resumes", "Saving...")}>
+            {dgettext("resumes", "Save Resume")}
+          </.button>
         </:actions>
       </.simple_form>
     </div>
@@ -96,7 +107,7 @@ defmodule BemedaPersonalWeb.Resume.ResumeFormComponent do
       {:ok, _resume} ->
         {:noreply,
          socket
-         |> put_flash(:info, dgettext("flash", "Resume updated successfully"))
+         |> put_flash(:info, dgettext("resumes", "Resume updated successfully"))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

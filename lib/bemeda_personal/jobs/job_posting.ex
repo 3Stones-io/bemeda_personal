@@ -61,7 +61,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
       add_error(
         changeset,
         :salary_min,
-        dgettext("validation", "must be less than or equal to salary maximum")
+        dgettext("jobs", "must be less than or equal to salary maximum")
       )
     else
       changeset

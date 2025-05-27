@@ -38,7 +38,7 @@ defmodule BemedaPersonal.Resumes.DateValidator do
       add_error(
         changeset,
         :end_date,
-        dgettext("validation", "end date must be after or equal to start date")
+        dgettext("resumes", "end date must be after or equal to start date")
       )
     end
   end

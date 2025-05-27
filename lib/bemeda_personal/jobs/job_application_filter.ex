@@ -51,11 +51,11 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilter do
       changeset
       |> add_error(
         :date_from,
-        dgettext("validation", "Start date must be before or equal to end date")
+        dgettext("jobs", "Start date must be before or equal to end date")
       )
       |> add_error(
         :date_to,
-        dgettext("validation", "End date must be after or equal to start date")
+        dgettext("jobs", "End date must be after or equal to start date")
       )
     else
       changeset

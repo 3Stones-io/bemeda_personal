@@ -24,46 +24,53 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
         <.input
           field={@form[:institution]}
           type="text"
-          label="Institution"
-          placeholder="e.g., Stanford University"
+          label={dgettext("resumes", "Institution")}
+          placeholder={dgettext("resumes", "e.g., Stanford University")}
           required
         />
         <.input
           field={@form[:degree]}
           type="text"
-          label="Degree"
-          placeholder="e.g., Bachelor of Science"
+          label={dgettext("resumes", "Degree")}
+          placeholder={dgettext("resumes", "e.g., Bachelor of Science")}
         />
         <.input
           field={@form[:field_of_study]}
           type="text"
-          label="Field of Study"
-          placeholder="e.g., Computer Science"
+          label={dgettext("resumes", "Field of Study")}
+          placeholder={dgettext("resumes", "e.g., Computer Science")}
         />
-        <.input field={@form[:start_date]} type="date" label="Start Date" required={true} />
+        <.input
+          field={@form[:start_date]}
+          type="date"
+          label={dgettext("resumes", "Start Date")}
+          required={true}
+        />
         <.input
           field={@form[:current]}
           type="checkbox"
-          label="I am currently studying here"
+          label={dgettext("resumes", "I am currently studying here")}
           phx-hook="CurrentCheckbox"
           data-end-date-id={@form[:end_date].id}
         />
         <.input
           field={@form[:end_date]}
           type="date"
-          label="End Date"
+          label={dgettext("resumes", "End Date")}
           required={true}
           disabled={@form[:current].value}
         />
         <.input
           field={@form[:description]}
           type="textarea"
-          label="Description"
-          placeholder="Describe your studies, achievements, activities, etc."
+          label={dgettext("resumes", "Description")}
+          placeholder={dgettext("resumes", "Describe your studies, achievements, activities, etc.")}
         />
 
         <:actions>
-          <.button phx-disable-with="Saving...">Save Education</.button>
+          <.button phx-disable-with={dgettext("resumes", "Saving...")}>
+            {dgettext("resumes", "Save Education")}
+          </.button>
         </:actions>
       </.simple_form>
     </div>
@@ -109,7 +116,7 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
       {:ok, _education} ->
         {:noreply,
          socket
-         |> put_flash(:info, dgettext("flash", "Education saved successfully"))
+         |> put_flash(:info, dgettext("resumes", "Education saved successfully"))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

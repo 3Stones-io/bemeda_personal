@@ -15,10 +15,12 @@
       <div class="flex justify-between">
         <div>
           <p class="text-sm font-medium text-gray-900">
-            From: {(@notification.sender && @notification.sender.email) || "System"}
+            {dgettext("notifications", "From")}: {(@notification.sender &&
+                                                     @notification.sender.email) ||
+              dgettext("notifications", "System")}
           </p>
           <p class="text-sm text-gray-500">
-            To: {@notification.recipient.email}
+            {dgettext("notifications", "To")}: {@notification.recipient.email}
           </p>
         </div>
         <p class="text-sm text-gray-500">

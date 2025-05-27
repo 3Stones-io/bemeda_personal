@@ -181,7 +181,7 @@ defmodule BemedaPersonalWeb.UserAuth do
         socket
         |> Phoenix.LiveView.put_flash(
           :error,
-          dgettext("flash", "You must log in to access this page.")
+          dgettext("auth", "You must log in to access this page.")
         )
         |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
 
@@ -210,7 +210,7 @@ defmodule BemedaPersonalWeb.UserAuth do
         socket
         |> Phoenix.LiveView.put_flash(
           :error,
-          dgettext("flash", "You don't have permission to access this company.")
+          dgettext("companies", "You don't have permission to access this company.")
         )
         |> Phoenix.LiveView.redirect(to: ~p"/companies")
 
@@ -261,7 +261,10 @@ defmodule BemedaPersonalWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, dgettext("flash", "You don't have permission to access this company."))
+      |> put_flash(
+        :error,
+        dgettext("companies", "You don't have permission to access this company.")
+      )
       |> redirect(to: ~p"/companies")
       |> halt()
     end
@@ -307,7 +310,7 @@ defmodule BemedaPersonalWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, dgettext("flash", "You must log in to access this page."))
+      |> put_flash(:error, dgettext("auth", "You must log in to access this page."))
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()

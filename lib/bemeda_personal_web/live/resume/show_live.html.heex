@@ -3,10 +3,10 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center">
         <.icon name="hero-information-circle" class="h-5 w-5 text-green-500 mr-2" />
-        <span class="text-green-700">Your resume is public</span>
+        <span class="text-green-700">{dgettext("resumes", "Your resume is public")}</span>
       </div>
       <div class="flex items-center">
-        <span class="text-sm text-gray-600 mr-2">Share URL:</span>
+        <span class="text-sm text-gray-600 mr-2">{dgettext("resumes", "Share URL:")}</span>
         <p
           id="share-url"
           class="text-sm bg-white border border-gray-300 rounded px-2 py-1 w-64 overflow-hidden text-ellipsis whitespace-nowrap m-0"
@@ -18,7 +18,7 @@
           class="ml-2 text-blue-500 hover:text-blue-700"
           phx-hook="CopyToClipboard"
           data-clipboard-text={url(~p"/resumes/#{@resume.id}")}
-          title="Copy to clipboard"
+          title={dgettext("general", "Copy to clipboard")}
         >
           <span id="copy-icon">
             <.icon name="hero-clipboard-document" class="h-5 w-5" />
@@ -33,10 +33,12 @@
 
   <.resume_profile
     resume={@resume}
-    title="My Resume"
+    title={dgettext("resumes", "My Resume")}
     email_fallback={@current_user.email}
-    headline_default="Add a professional headline"
-    summary_default="Add a summary of your professional experience and skills"
+    headline_default={dgettext("resumes", "Add a professional headline")}
+    summary_default={
+      dgettext("resumes", "Add a summary of your professional experience and skills")
+    }
   >
     <:actions>
       <.link
@@ -45,13 +47,13 @@
         target="_blank"
         class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center"
       >
-        <.icon name="hero-eye" class="h-5 w-5 mr-2" /> View Public
+        <.icon name="hero-eye" class="h-5 w-5 mr-2" /> {dgettext("resumes", "View Public")}
       </.link>
       <.link
         navigate={~p"/resume/edit"}
         class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
       >
-        <.icon name="hero-pencil-square" class="h-5 w-5 mr-2" /> Edit
+        <.icon name="hero-pencil-square" class="h-5 w-5 mr-2" /> {dgettext("general", "Edit")}
       </.link>
     </:actions>
   </.resume_profile>
@@ -59,10 +61,15 @@
 <!-- Education Section -->
   <.resume_section
     id="educations"
-    title="Education"
+    title={dgettext("resumes", "Education")}
     add_path={~p"/resume/education/new"}
     items={@streams.educations}
-    empty_state_message="No education entries yet. Click 'Add' to add your educational background."
+    empty_state_message={
+      dgettext(
+        "resumes",
+        "No education entries yet. Click 'Add' to add your educational background."
+      )
+    }
     can_update_resume={true}
   >
     <:resume_item :let={education}>
@@ -72,7 +79,7 @@
         title={education.institution}
         subtitle={
           if(education.field_of_study,
-            do: "#{education.degree} in #{education.field_of_study}",
+            do: "#{education.degree} #{dgettext("resumes", "in")} #{education.field_of_study}",
             else: education.degree
           )
         }
@@ -86,10 +93,12 @@
 <!-- Work Experience Section -->
   <.resume_section
     id="work_experiences"
-    title="Work Experience"
+    title={dgettext("resumes", "Work Experience")}
     add_path={~p"/resume/work-experience/new"}
     items={@streams.work_experiences}
-    empty_state_message="No work experience entries yet. Click 'Add' to add your work history."
+    empty_state_message={
+      dgettext("resumes", "No work experience entries yet. Click 'Add' to add your work history.")
+    }
     can_update_resume={true}
   >
     <:resume_item :let={work_experience}>

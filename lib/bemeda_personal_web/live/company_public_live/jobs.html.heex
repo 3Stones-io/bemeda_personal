@@ -1,10 +1,15 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
     <div>
-      <JobsComponents.company_breadcrumb company={@company} active_page="Jobs" />
-      <h1 class="text-3xl font-bold text-gray-900">Jobs at {@company.name}</h1>
+      <JobsComponents.company_breadcrumb
+        company={@company}
+        active_page={dgettext("jobs", "Jobs")}
+      />
+      <h1 class="text-3xl font-bold text-gray-900">
+        {dgettext("jobs", "Jobs at %{company}", company: @company.name)}
+      </h1>
       <p class="mt-2 text-sm text-gray-500">
-        {@company.industry} • {@company.location || "Remote"}
+        {@company.industry} • {@company.location || dgettext("general", "Remote")}
       </p>
     </div>
     <div class="mt-4 md:mt-0">
@@ -15,7 +20,7 @@
           rel="noopener noreferrer"
           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Visit Website
+          {dgettext("actions", "Visit Website")}
         </a>
       <% end %>
     </div>
@@ -24,7 +29,7 @@
   <.live_component
     module={JobListComponent}
     id="job-post-list"
-    empty_state_message="Please check back later for new opportunities."
+    empty_state_message={dgettext("jobs", "Please check back later for new opportunities.")}
     filter_params={@filter_params}
     job_view={:job}
     show_actions={false}

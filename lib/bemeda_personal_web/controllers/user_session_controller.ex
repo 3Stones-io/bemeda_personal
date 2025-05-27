@@ -9,17 +9,17 @@ defmodule BemedaPersonalWeb.UserSessionController do
 
   @spec create(conn(), params()) :: conn()
   def create(conn, %{"_action" => "registered"} = params) do
-    create(conn, params, dgettext("flash", "Account created successfully!"))
+    create(conn, params, dgettext("auth", "Account created successfully!"))
   end
 
   def create(conn, %{"_action" => "password_updated"} = params) do
     conn
     |> put_session(:user_return_to, ~p"/users/settings")
-    |> create(params, dgettext("flash", "Password updated successfully!"))
+    |> create(params, dgettext("auth", "Password updated successfully!"))
   end
 
   def create(conn, params) do
-    create(conn, params, dgettext("flash", "Welcome back!"))
+    create(conn, params, dgettext("auth", "Welcome back!"))
   end
 
   defp create(conn, %{"user" => user_params}, info) do
@@ -29,13 +29,13 @@ defmodule BemedaPersonalWeb.UserSessionController do
       nil ->
         # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
         conn
-        |> put_flash(:error, dgettext("flash", "Invalid email or password"))
+        |> put_flash(:error, dgettext("auth", "Invalid email or password"))
         |> put_flash(:email, String.slice(email, 0, 160))
         |> redirect(to: ~p"/users/log_in")
 
       %Accounts.User{confirmed_at: nil} ->
         conn
-        |> put_flash(:error, dgettext("flash", "You must confirm your email address"))
+        |> put_flash(:error, dgettext("auth", "You must confirm your email address"))
         |> redirect(to: ~p"/users/log_in")
 
       user ->
@@ -48,7 +48,7 @@ defmodule BemedaPersonalWeb.UserSessionController do
   @spec delete(conn(), params()) :: conn()
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, dgettext("flash", "Logged out successfully."))
+    |> put_flash(:info, dgettext("auth", "Logged out successfully."))
     |> UserAuth.log_out_user()
   end
 end

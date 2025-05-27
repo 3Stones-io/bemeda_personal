@@ -2,6 +2,7 @@ defmodule BemedaPersonal.Resumes.WorkExperience do
   @moduledoc false
 
   use Ecto.Schema
+  use Gettext, backend: BemedaPersonalWeb.Gettext
 
   import Ecto.Changeset
 
@@ -46,6 +47,8 @@ defmodule BemedaPersonal.Resumes.WorkExperience do
       :start_date
     ])
     |> DateValidator.validate_end_date_after_start_date()
-    |> DateValidator.validate_current_end_date("end date must be blank for current job")
+    |> DateValidator.validate_current_end_date(
+      dgettext("resumes", "end date must be blank for current job")
+    )
   end
 end

@@ -150,7 +150,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
 
       {:halt,
        socket
-       |> put_flash(:info, dgettext("flash", "Rating submitted successfully."))
+       |> put_flash(:info, dgettext("ratings", "Rating submitted successfully."))
        |> assign(:current_user_rating, updated_rating)}
     else
       {:error, reason} ->
@@ -177,7 +177,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
       {:halt,
        socket
        |> assign(:application, updated_application)
-       |> put_flash(:info, dgettext("flash", "Rating submitted successfully"))}
+       |> put_flash(:info, dgettext("ratings", "Rating submitted successfully"))}
     else
       {:error, error} ->
         {:halt, put_flash(socket, :error, error)}
@@ -187,7 +187,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   defp authorize(%{assigns: %{current_user: %Accounts.User{}}}), do: :ok
 
   defp authorize(%{assigns: %{current_user: nil}}),
-    do: {:error, dgettext("flash", "You must be logged in to rate.")}
+    do: {:error, dgettext("auth", "You must be logged in to rate.")}
 
   defp rate_company(current_user, company, attrs) do
     case Ratings.rate_company(current_user, company, attrs) do
@@ -195,10 +195,10 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
         {:ok, rating}
 
       {:error, :no_interaction} ->
-        {:error, dgettext("flash", "You need to apply to a job before rating this company.")}
+        {:error, dgettext("companies", "You need to apply to a job before rating this company.")}
 
       {:error, _changeset} ->
-        {:error, dgettext("flash", "Error submitting rating.")}
+        {:error, dgettext("ratings", "Error submitting rating.")}
     end
   end
 
@@ -206,7 +206,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     if socket.assigns.current_user do
       true
     else
-      {:error, dgettext("flash", "You need to be logged in to rate")}
+      {:error, dgettext("auth", "You need to be logged in to rate")}
     end
   end
 

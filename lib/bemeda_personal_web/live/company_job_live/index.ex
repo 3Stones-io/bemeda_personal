@@ -61,13 +61,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     if job_posting.company_id == socket.assigns.company.id do
       {:ok, _deleted} = Jobs.delete_job_posting(job_posting)
 
-      {:noreply, put_flash(socket, :info, dgettext("flash", "Job posting deleted successfully"))}
+      {:noreply, put_flash(socket, :info, dgettext("jobs", "Job posting deleted successfully"))}
     else
       {:noreply,
        put_flash(
          socket,
          :error,
-         dgettext("flash", "You are not authorized to delete this job posting")
+         dgettext("jobs", "You are not authorized to delete this job posting")
        )}
     end
   end
