@@ -344,7 +344,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <select
         id={@id}
         name={@name}
@@ -363,7 +363,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <textarea
         id={@id}
         name={@name}
@@ -402,7 +402,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "date"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <div class="mt-2 relative">
         <input
           type="date"
@@ -430,7 +430,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -487,7 +487,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def date_input(assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@required}>{@label}</.label>
       <div class="mt-2 relative">
         <input
           type="date"
@@ -519,12 +519,18 @@ defmodule BemedaPersonalWeb.CoreComponents do
   """
   attr :for, :string, default: nil
   attr :class, :string, default: "block text-sm font-semibold leading-6 text-zinc-800"
+  attr :required, :boolean, default: false
   slot :inner_block, required: true
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class={@class}>
-      {render_slot(@inner_block)}
+    <label
+      for={@for}
+      class={[
+        @class
+      ]}
+    >
+      {render_slot(@inner_block)}<span :if={@required} class="text-red-600"> * </span>
     </label>
     """
   end

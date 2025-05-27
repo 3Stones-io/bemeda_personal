@@ -3,12 +3,12 @@
     <div class="flex items-center gap-4">
       <div class="w-20 h-14 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
         <img
-          :if={@company.logo_url}
-          src={@company.logo_url}
+          :if={@company.media_asset}
+          src={SharedHelpers.get_presigned_url(@company.media_asset.upload_id)}
           alt={@company.name}
           class="w-full h-full object-cover"
         />
-        <div :if={!@company.logo_url} class="text-2xl font-bold text-gray-500">
+        <div :if={!@company.media_asset} class="text-2xl font-bold text-gray-500">
           {String.first(@company.name)}
         </div>
       </div>
@@ -45,13 +45,13 @@
     <div class="bg-white border border-gray-200 rounded-lg p-8 shadow-sm mt-4 company-stats">
       <div class="flex gap-4 justify-between">
         <p class="flex flex-col gap-1">
-          <span class="text-sm text-gray-500 mb-1">Open Jobs</span>
+          <span class="text-sm text-gray-500 mb-1">{dgettext("jobs", "Open Jobs")}</span>
           <span class="text-xl font-bold text-gray-900">{@job_count}</span>
         </p>
         <p class="flex flex-col gap-1">
-          <span class="text-sm text-gray-500 mb-1">Industry</span>
+          <span class="text-sm text-gray-500 mb-1">{dgettext("companies", "Industry")}</span>
           <span class="text-xl font-bold text-gray-900">
-            {String.slice(@company.industry || "Tech", 0, 10)}
+            {String.slice(@company.industry || dgettext("companies", "Tech"), 0, 10)}
           </span>
         </p>
       </div>
@@ -62,7 +62,7 @@
         navigate={~p"/company/#{@company.id}/jobs"}
         class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        View All Jobs
+        {dgettext("actions", "View All Jobs")}
       </.link>
       <.link
         :if={@company.website_url}
@@ -71,26 +71,30 @@
         rel="noopener noreferrer"
         class="inline-flex items-center px-5 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        Visit Website
+        {dgettext("actions", "Visit Website")}
       </.link>
     </div>
   </div>
 
   <div class="about-company py-4">
     <div class="description py-4">
-      <h2 class="text-2xl font-semibold text-gray-900 mb-3">About {@company.name}</h2>
+      <h2 class="text-2xl font-semibold text-gray-900 mb-3">
+        {dgettext("companies", "About %{company}", company: @company.name)}
+      </h2>
       <div :if={@company.description} class="md-to-html">
         {SharedHelpers.to_html(@company.description)}
       </div>
       <p :if={!@company.description} class="text-gray-500">
-        No company description available.
+        {dgettext("companies", "No company description available.")}
       </p>
     </div>
 
     <div class="company-info outline outline-gray-200 p-4 rounded-lg">
-      <h2 class="text-sm font-semibold text-gray-400 mb-2">About {@company.name}</h2>
+      <h2 class="text-sm font-semibold text-gray-400 mb-2">
+        {dgettext("companies", "About %{company}", company: @company.name)}
+      </h2>
       <div :if={@company.website_url} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold">Website</h4>
+        <h4 class="uppercase text-xs font-semibold">{dgettext("companies", "Website")}</h4>
         <a
           href={@company.website_url}
           target="_blank"
@@ -101,25 +105,27 @@
         </a>
       </div>
       <div :if={@company.industry} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">Industry</h4>
+        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("companies", "Industry")}</h4>
         <p class="text-sm text-gray-600">{@company.industry}</p>
       </div>
       <div :if={@company.size} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">Company Size</h4>
+        <h4 class="uppercase text-xs font-semibold mb-1">
+          {dgettext("companies", "Company Size")}
+        </h4>
         <p class="text-sm text-gray-600">{@company.size}</p>
       </div>
       <div :if={@company.location} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">Location</h4>
+        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("companies", "Location")}</h4>
         <p class="text-sm text-gray-600">{@company.location}</p>
       </div>
 
       <div :if={@job_count} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">Open Positions</h4>
+        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("jobs", "Open Positions")}</h4>
         <p class="text-sm text-gray-600">{@job_count}</p>
       </div>
 
       <div class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">Rating</h4>
+        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("general", "Rating")}</h4>
         <.live_component
           current_user={@current_user}
           entity_id={@company.id}
@@ -136,13 +142,14 @@
 
   <div class="jobs">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-2xl font-bold text-gray-900">Recent Jobs</h2>
+      <h2 class="text-2xl font-bold text-gray-900">{dgettext("jobs", "Recent Jobs")}</h2>
       <.link
         :if={@job_count > 0}
         navigate={~p"/company/#{@company.id}/jobs"}
         class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center"
       >
-        View all jobs <.icon name="hero-chevron-right" class="h-4 w-4 ml-1" />
+        {dgettext("actions", "View all jobs")}
+        <.icon name="hero-chevron-right" class="h-4 w-4 ml-1" />
       </.link>
     </div>
 
@@ -151,7 +158,7 @@
         id="empty-jobs"
         class="hidden bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500 only:block"
       >
-        No open positions at this time
+        {dgettext("jobs", "No open positions at this time")}
       </p>
 
       <div

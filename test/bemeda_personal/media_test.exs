@@ -147,11 +147,27 @@ defmodule BemedaPersonal.MediaTest do
       assert fetched_media_asset.file_name == nil
     end
 
+    test "broadcasts to company topic when updating company media asset", %{
+      company: company
+    } do
+      media_asset = media_asset_fixture(company, %{})
+      topic = "company:#{company.id}:media_assets"
+      Endpoint.subscribe(topic)
+
+      {:ok, updated_media_asset} = Media.update_media_asset(media_asset, %{status: :failed})
+
+      assert_receive %Broadcast{
+        event: "media_asset_updated",
+        topic: ^topic,
+        payload: %{media_asset: ^updated_media_asset, company: ^company}
+      }
+    end
+
     test "broadcasts to job_application topic when updating job application media asset", %{
       job_application: job_application
     } do
       media_asset = media_asset_fixture(job_application, %{})
-      topic = "job_application_assets_#{job_application.id}"
+      topic = "job_application:#{job_application.id}:media_assets"
       Endpoint.subscribe(topic)
 
       {:ok, updated_media_asset} = Media.update_media_asset(media_asset, %{status: :failed})
@@ -167,7 +183,7 @@ defmodule BemedaPersonal.MediaTest do
       job_posting: job_posting
     } do
       media_asset = media_asset_fixture(job_posting, %{})
-      topic = "job_posting_assets_#{job_posting.id}"
+      topic = "job_posting:#{job_posting.id}:media_assets"
       Endpoint.subscribe(topic)
 
       {:ok, updated_media_asset} = Media.update_media_asset(media_asset, %{status: :failed})
@@ -184,7 +200,7 @@ defmodule BemedaPersonal.MediaTest do
     } do
       message = Repo.preload(message, [:media_asset])
       media_asset = media_asset_fixture(message, %{})
-      topic = "job_application_messages_assets_#{message.job_application_id}"
+      topic = "job_application_messages:#{message.job_application_id}:media_assets"
 
       Endpoint.subscribe(topic)
 
