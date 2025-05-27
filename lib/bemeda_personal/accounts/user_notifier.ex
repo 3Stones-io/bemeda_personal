@@ -24,18 +24,19 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @type recipient :: User.t()
   @type url :: String.t()
 
+  @default_status_message dgettext("emails", "Application Status Updated")
   @from {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"}
 
   @status_messages %{
-    "interview_scheduled" => dgettext("jobs", "Interview Scheduled"),
-    "interviewed" => dgettext("jobs", "Interview Completed"),
-    "offer_accepted" => dgettext("jobs", "Offer Accepted"),
-    "offer_declined" => dgettext("jobs", "Offer Declined"),
-    "offer_extended" => dgettext("jobs", "Job Offer Extended"),
-    "rejected" => dgettext("jobs", "Application Unsuccessful"),
-    "screening" => dgettext("jobs", "Screening in Progress"),
-    "under_review" => dgettext("jobs", "Under Review"),
-    "withdrawn" => dgettext("jobs", "Application Withdrawn")
+    "interview_scheduled" => dgettext("emails", "Interview Scheduled"),
+    "interviewed" => dgettext("emails", "Interview Completed"),
+    "offer_accepted" => dgettext("emails", "Offer Accepted"),
+    "offer_declined" => dgettext("emails", "Offer Declined"),
+    "offer_extended" => dgettext("emails", "Job Offer Extended"),
+    "rejected" => dgettext("emails", "Application Unsuccessful"),
+    "screening" => dgettext("emails", "Screening in Progress"),
+    "under_review" => dgettext("emails", "Under Review"),
+    "withdrawn" => dgettext("emails", "Application Withdrawn")
   }
 
   @applicant_status_descriptions %{
@@ -258,9 +259,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
-
-    readable_status =
-      Map.get(@status_messages, new_status, dgettext("jobs", "Application Status Updated"))
+    readable_status = Map.get(@status_messages, new_status, @default_status_message)
 
     status_description =
       Map.get(
@@ -344,9 +343,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
-
-    readable_status =
-      Map.get(@status_messages, new_status, dgettext("jobs", "Application Status Updated"))
+    readable_status = Map.get(@status_messages, new_status, @default_status_message)
 
     status_description =
       Map.get(
