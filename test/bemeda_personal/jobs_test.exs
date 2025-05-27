@@ -98,10 +98,10 @@ defmodule BemedaPersonal.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      job_posting1 = job_posting_fixture(company, %{employment_type: "Full-time"})
-      job_posting_fixture(company, %{employment_type: "Part-time"})
+      job_posting1 = job_posting_fixture(company, %{employment_type: "Permanent Position"})
+      job_posting_fixture(company, %{employment_type: "Floater"})
 
-      assert [result] = Jobs.list_job_postings(%{employment_type: "Full"})
+      assert [result] = Jobs.list_job_postings(%{employment_type: "Permanent"})
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
     end

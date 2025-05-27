@@ -9,7 +9,7 @@ defmodule BemedaPersonal.Jobs.JobFilterTest do
         title: "Developer",
         location: "New York",
         remote_allowed: "true",
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         experience_level: "Senior"
       }
 
@@ -29,10 +29,13 @@ defmodule BemedaPersonal.Jobs.JobFilterTest do
     end
 
     test "validates employment_type for valid values" do
-      Enum.each(["Full-time", "Part-time", "Contract", "Internship", ""], fn value ->
-        changeset = JobFilter.changeset(%JobFilter{}, %{employment_type: value})
-        assert changeset.valid?, "Expected #{value} to be valid"
-      end)
+      Enum.each(
+        ["Floater", "Permanent Position", "Staff Pool", "Temporary Assignment", ""],
+        fn value ->
+          changeset = JobFilter.changeset(%JobFilter{}, %{employment_type: value})
+          assert changeset.valid?, "Expected #{value} to be valid"
+        end
+      )
 
       changeset = JobFilter.changeset(%JobFilter{}, %{employment_type: "Invalid"})
       refute changeset.valid?
@@ -70,7 +73,7 @@ defmodule BemedaPersonal.Jobs.JobFilterTest do
         title: "Developer",
         location: "New York",
         remote_allowed: true,
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         experience_level: "Senior"
       }
 
@@ -80,7 +83,7 @@ defmodule BemedaPersonal.Jobs.JobFilterTest do
       assert params[:title] == "Developer"
       assert params[:location] == "New York"
       assert params[:remote_allowed] == true
-      assert params[:employment_type] == "Full-time"
+      assert params[:employment_type] == "Permanent Position"
       assert params[:experience_level] == "Senior"
     end
 

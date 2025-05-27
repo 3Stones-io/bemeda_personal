@@ -15,7 +15,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "Senior Software Engineer",
           location: "San Francisco",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Senior",
           remote_allowed: true
         })
@@ -24,7 +24,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "UX Designer",
           location: "New York",
-          employment_type: "Part-time",
+          employment_type: "Floater",
           experience_level: "Mid-level",
           remote_allowed: false
         })
@@ -33,7 +33,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "Frontend Developer",
           location: "Remote",
-          employment_type: "Contract",
+          employment_type: "Staff Pool",
           experience_level: "Mid-level",
           remote_allowed: true
         })
@@ -49,7 +49,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
       job2: job2,
       job3: job3
     } do
-      {:ok, view, _html} = live(conn, ~p"/jobs?employment_type=Full-time")
+      {:ok, view, _html} = live(conn, ~p"/jobs?employment_type=Permanent Position")
 
       html = render(view)
       assert html =~ job1.title

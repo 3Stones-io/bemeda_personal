@@ -31,24 +31,19 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         />
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <.input field={f[:location]} type="text" label="Location" phx-debounce="blur" />
-
           <.input
             field={f[:employment_type]}
             type="select"
             label="Employment Type"
             options={[
-              {"Full-time", "Full-time"},
-              {"Part-time", "Part-time"},
-              {"Contract", "Contract"},
-              {"Temporary", "Temporary"},
-              {"Internship", "Internship"}
+              {"Floater", "Floater"},
+              {"Permanent Position", "Permanent Position"},
+              {"Staff Pool", "Staff Pool"},
+              {"Temporary Assignment", "Temporary Assignment"}
             ]}
             phx-debounce="blur"
           />
-        </div>
 
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
           <.input
             field={f[:experience_level]}
             type="select"
@@ -60,13 +55,19 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
               {"Executive", "Executive"}
             ]}
           />
+        </div>
 
-          <.input
-            field={f[:remote_allowed]}
-            type="checkbox"
-            label="Remote Work Allowed"
-            phx-debounce="blur"
-          />
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 items-center">
+          <.input field={f[:location]} type="text" label="Location" phx-debounce="blur" />
+
+          <div class="sm:mt-8">
+            <.input
+              field={f[:remote_allowed]}
+              type="checkbox"
+              label="Remote Work Allowed"
+              phx-debounce="blur"
+            />
+          </div>
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
@@ -91,6 +92,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label="Currency"
             options={[
+              {"CHF", "CHF"},
               {"USD", "USD"},
               {"EUR", "EUR"},
               {"GBP", "GBP"},
