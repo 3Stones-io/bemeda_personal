@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.Components.LanguageSwitcher do
   @moduledoc """
   Language switcher component for i18n support.
   """
+
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonalWeb.Locale

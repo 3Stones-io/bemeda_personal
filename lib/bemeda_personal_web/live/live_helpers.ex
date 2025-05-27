@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.LiveHelpers do
   @moduledoc """
   Hooks and other helpers for LiveViews.
   """
+
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonalWeb.Locale
