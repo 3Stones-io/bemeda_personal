@@ -519,7 +519,15 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class={@class}>
+    <label
+      for={@for}
+      class={[
+        @class,
+        "has-[+_[required]]:after:content-['_*'] has-[+_[required]]:after:text-red-600 has-[+_[required]]:after:font-medium",
+        "has-[+_div_[required]]:after:content-['_*'] has-[+_div_[required]]:after:text-red-600 has-[+_div_[required]]:after:font-medium",
+        "has-[[required]]:after:content-['_*'] has-[[required]]:after:text-red-600 has-[[required]]:after:font-medium"
+      ]}
+    >
       {render_slot(@inner_block)}
     </label>
     """

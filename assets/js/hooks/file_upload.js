@@ -52,7 +52,7 @@ export default FileUpload = {
 
       hook.pushEventTo(
         `#${eventsTarget}`,
-        'upload-file',
+        'upload_file',
         { filename: file.name, type: file.type },
         (response) => {
           if (response.error) {

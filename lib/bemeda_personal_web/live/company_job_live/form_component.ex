@@ -183,7 +183,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
     save_job_posting(socket, socket.assigns.action, job_params)
   end
 
-  def handle_event("upload-file", params, socket) do
+  def handle_event("upload_file", params, socket) do
     SharedHelpers.create_file_upload(socket, params)
   end
 

@@ -20,12 +20,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
         class="space-y-6"
       >
         <div>
-          <.input
-            field={f[:name]}
-            type="text"
-            label={Phoenix.HTML.raw("Company Name <span class='text-red-600'>*</span>")}
-            required
-          />
+          <.input field={f[:name]} type="text" label="Company Name" required />
         </div>
 
         <div>
@@ -142,7 +137,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
     save_company(socket, socket.assigns.action, company_params)
   end
 
-  def handle_event("upload-file", params, socket) do
+  def handle_event("upload_file", params, socket) do
     SharedHelpers.create_file_upload(socket, params)
   end
 

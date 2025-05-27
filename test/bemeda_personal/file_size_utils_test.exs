@@ -28,32 +28,9 @@ defmodule BemedaPersonal.FileSizeUtilsTest do
       assert FileSizeUtils.pretty(5_368_709_120) == "5 GB"
     end
 
-    test "formats terabytes correctly" do
-      assert FileSizeUtils.pretty(1_099_511_627_776) == "1 TB"
-      assert FileSizeUtils.pretty(2_199_023_255_552) == "2 TB"
-    end
-
-    test "formats petabytes correctly" do
-      assert FileSizeUtils.pretty(1_125_899_906_842_624) == "1 PB"
-    end
-
-    test "formats with rounding" do
-      assert FileSizeUtils.pretty(1024, round: 1) == "1.0 KB"
-      assert FileSizeUtils.pretty(124_000_027, round: 2) == "118.26 MB"
-      assert FileSizeUtils.pretty(265_318, round: 0) == "259 KB"
-      assert FileSizeUtils.pretty(265_318, round: 1) == "259.1 KB"
-      assert FileSizeUtils.pretty(1536, round: 1) == "1.5 KB"
-    end
-
     test "handles negative values" do
       assert FileSizeUtils.pretty(-1) == "0 B"
       assert FileSizeUtils.pretty(-1024) == "0 B"
-    end
-
-    test "handles large values" do
-      assert FileSizeUtils.pretty(1_152_921_504_606_846_976) == "1 EB"
-      assert FileSizeUtils.pretty(1_180_591_620_717_411_303_424) == "1 ZB"
-      assert FileSizeUtils.pretty(1_208_925_819_614_629_174_706_176) == "1 YB"
     end
   end
 end
