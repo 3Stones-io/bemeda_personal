@@ -105,7 +105,7 @@ export default FileUpload = {
             progressBar.classList.remove('processing-bar')
             percentageElement.textContent = 'Completed'
 
-            hook.pushEventTo(`#${eventsTarget}`, 'upload-completed')
+            hook.pushEventTo(`#${eventsTarget}`, 'upload_completed')
           })
         }
       )

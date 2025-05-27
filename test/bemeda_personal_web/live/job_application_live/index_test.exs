@@ -344,14 +344,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       view
       |> element("#job_application-video-file-upload")
-      |> render_hook("upload-video", %{
+      |> render_hook("upload_file", %{
         "filename" => "test_video.mp4",
         "type" => "video/mp4"
       })
 
       view
       |> element("#job_application-video-file-upload")
-      |> render_hook("upload-completed")
+      |> render_hook("upload_completed")
 
       assert view
              |> form("#job-application-form", %{
@@ -452,14 +452,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       view
       |> element("#job_application-video-file-upload")
-      |> render_hook("upload-video", %{
+      |> render_hook("upload_file", %{
         "filename" => "updated_test_video.mp4",
         "type" => "video/mp4"
       })
 
       view
       |> element("#job_application-video-file-upload")
-      |> render_hook("upload-completed")
+      |> render_hook("upload_completed")
 
       assert view
              |> form("#job-application-form", %{

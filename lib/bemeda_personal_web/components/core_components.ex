@@ -340,7 +340,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <select
         id={@id}
         name={@name}
@@ -359,7 +359,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <textarea
         id={@id}
         name={@name}
@@ -398,7 +398,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(%{type: "date"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <div class="mt-2 relative">
         <input
           type="date"
@@ -426,7 +426,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -483,7 +483,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def date_input(assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@required}>{@label}</.label>
       <div class="mt-2 relative">
         <input
           type="date"
@@ -515,6 +515,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   """
   attr :for, :string, default: nil
   attr :class, :string, default: "block text-sm font-semibold leading-6 text-zinc-800"
+  attr :required, :boolean, default: false
   slot :inner_block, required: true
 
   def label(assigns) do
@@ -522,13 +523,10 @@ defmodule BemedaPersonalWeb.CoreComponents do
     <label
       for={@for}
       class={[
-        @class,
-        "has-[+_[required]]:after:content-['_*'] has-[+_[required]]:after:text-red-600 has-[+_[required]]:after:font-medium",
-        "has-[+_div_[required]]:after:content-['_*'] has-[+_div_[required]]:after:text-red-600 has-[+_div_[required]]:after:font-medium",
-        "has-[[required]]:after:content-['_*'] has-[[required]]:after:text-red-600 has-[[required]]:after:font-medium"
+        @class
       ]}
     >
-      {render_slot(@inner_block)}
+      {render_slot(@inner_block)}<span :if={@required} class="text-red-600"> * </span>
     </label>
     """
   end
