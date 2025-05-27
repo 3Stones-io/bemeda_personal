@@ -27,15 +27,15 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @from {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"}
 
   @status_messages %{
-    "interview_scheduled" => dgettext("states", "Interview Scheduled"),
-    "interviewed" => dgettext("states", "Interview Completed"),
-    "offer_accepted" => dgettext("states", "Offer Accepted"),
-    "offer_declined" => dgettext("states", "Offer Declined"),
-    "offer_extended" => dgettext("states", "Job Offer Extended"),
-    "rejected" => dgettext("states", "Application Unsuccessful"),
-    "screening" => dgettext("states", "Screening in Progress"),
-    "under_review" => dgettext("states", "Under Review"),
-    "withdrawn" => dgettext("states", "Application Withdrawn")
+    "interview_scheduled" => dgettext("jobs", "Interview Scheduled"),
+    "interviewed" => dgettext("jobs", "Interview Completed"),
+    "offer_accepted" => dgettext("jobs", "Offer Accepted"),
+    "offer_declined" => dgettext("jobs", "Offer Declined"),
+    "offer_extended" => dgettext("jobs", "Job Offer Extended"),
+    "rejected" => dgettext("jobs", "Application Unsuccessful"),
+    "screening" => dgettext("jobs", "Screening in Progress"),
+    "under_review" => dgettext("jobs", "Under Review"),
+    "withdrawn" => dgettext("jobs", "Application Withdrawn")
   }
 
   @applicant_status_descriptions %{
@@ -260,7 +260,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     new_status = job_application.state
 
     readable_status =
-      Map.get(@status_messages, new_status, dgettext("states", "Application Status Updated"))
+      Map.get(@status_messages, new_status, dgettext("jobs", "Application Status Updated"))
 
     status_description =
       Map.get(
@@ -346,7 +346,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     new_status = job_application.state
 
     readable_status =
-      Map.get(@status_messages, new_status, dgettext("states", "Application Status Updated"))
+      Map.get(@status_messages, new_status, dgettext("jobs", "Application Status Updated"))
 
     status_description =
       Map.get(

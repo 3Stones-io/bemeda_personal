@@ -391,9 +391,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   label_class="block text-sm font-medium text-gray-700"
                   type="select"
                   options={[
-                    {dgettext("options", "Any"), ""},
-                    {dgettext("options", "Remote Only"), "true"},
-                    {dgettext("options", "On-site Only"), "false"}
+                    {dgettext("jobs", "Any"), ""},
+                    {dgettext("jobs", "Remote Only"), "true"},
+                    {dgettext("jobs", "On-site Only"), "false"}
                   ]}
                   class="w-full"
                 />
@@ -406,14 +406,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 phx-target={@target}
                 class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
               >
-                {dgettext("options", "Clear All")}
+                {dgettext("jobs", "Clear All")}
               </button>
 
               <button
                 type="submit"
                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                {dgettext("options", "Apply Filters")}
+                {dgettext("jobs", "Apply Filters")}
               </button>
             </div>
           </div>
@@ -808,13 +808,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 }
                 class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
               >
-                {dgettext("options", "Clear All")}
+                {dgettext("jobs", "Clear All")}
               </button>
               <button
                 type="submit"
                 class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
               >
-                {dgettext("options", "Apply Filters")}
+                {dgettext("jobs", "Apply Filters")}
               </button>
             </div>
           </div>
