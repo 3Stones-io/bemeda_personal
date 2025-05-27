@@ -20,6 +20,7 @@ defmodule BemedaPersonal.Accounts.User do
     field :first_name, :string
     field :hashed_password, :string, redact: true
     field :last_name, :string
+    field :locale, Ecto.Enum, values: [:de, :en, :fr, :it], default: :de
     field :password, :string, virtual: true, redact: true
 
     has_one :resume, BemedaPersonal.Resumes.Resume
@@ -53,7 +54,7 @@ defmodule BemedaPersonal.Accounts.User do
   @spec registration_changeset(t() | changeset(), attrs(), opts()) :: changeset()
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :first_name, :last_name])
+    |> cast(attrs, [:email, :first_name, :last_name, :locale, :password])
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_name()
@@ -158,6 +159,16 @@ defmodule BemedaPersonal.Accounts.User do
     user
     |> cast(attrs, [:first_name, :last_name])
     |> validate_name()
+  end
+
+  @doc """
+  A user changeset for updating the locale preference.
+  """
+  @spec locale_changeset(t() | changeset(), attrs()) :: changeset()
+  def locale_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:locale])
+    |> validate_required([:locale])
   end
 
   @doc """

@@ -101,4 +101,83 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
                "<div class=\"absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full\">"
     end
   end
+
+  describe "Language switcher" do
+    test "renders language switcher in both desktop and mobile", %{conn: conn} do
+      {:ok, lv, html} = live(conn, ~p"/jobs")
+
+      assert html =~ "language-switcher-desktop"
+      assert html =~ "language-switcher-mobile"
+
+      assert has_element?(
+               lv,
+               "#language-switcher-desktop button[class*='bg-gray-50'][class*='text-gray-900']",
+               "🇩🇪"
+             )
+
+      assert has_element?(
+               lv,
+               "#language-switcher-mobile button[class*='bg-gray-50'][class*='text-gray-900']",
+               "🇩🇪"
+             )
+    end
+
+    test "shows default locale as selected", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/jobs")
+
+      assert has_element?(lv, "button[class*='bg-gray-50'][class*='text-gray-900']", "🇩🇪")
+      refute has_element?(lv, "button[class*='bg-gray-50'][class*='text-gray-900']", "🇺🇸")
+    end
+
+    test "shows selected locale", %{conn: conn} do
+      conn =
+        conn
+        |> init_test_session(%{})
+        |> put_session(:locale, "en")
+
+      {:ok, lv, _html} = live(conn, ~p"/jobs")
+
+      assert has_element?(lv, "button[class*='bg-gray-50'][class*='text-gray-900']", "🇺🇸")
+      refute has_element?(lv, "button[class*='bg-gray-50'][class*='text-gray-900']", "🇩🇪")
+    end
+
+    test "language switcher contains all supported languages", %{conn: conn} do
+      {:ok, _lv, html} = live(conn, ~p"/jobs")
+
+      assert html =~ "🇩🇪"
+      assert html =~ "Deutsch"
+      assert html =~ "🇺🇸"
+      assert html =~ "English"
+      assert html =~ "🇫🇷"
+      assert html =~ "Français"
+      assert html =~ "🇮🇹"
+      assert html =~ "Italiano"
+    end
+
+    test "language options navigate to the locale path", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/jobs")
+
+      assert {:error, {:live_redirect, %{to: "/locale/en"}}} =
+               lv
+               |> element("#language-switcher-desktop button", "🇺🇸")
+               |> render_click()
+
+      # Hack to manually set the locale in the session
+      conn_with_locale = get(conn, ~p"/locale/en")
+
+      {:ok, lv_with_locale, _html} = live(conn_with_locale, ~p"/jobs")
+
+      assert has_element?(
+               lv_with_locale,
+               "button[class*='bg-gray-50'][class*='text-gray-900']",
+               "🇺🇸"
+             )
+
+      refute has_element?(
+               lv_with_locale,
+               "button[class*='bg-gray-50'][class*='text-gray-900']",
+               "🇩🇪"
+             )
+    end
+  end
 end

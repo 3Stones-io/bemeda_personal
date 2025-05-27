@@ -431,4 +431,23 @@ defmodule BemedaPersonal.Accounts do
     |> User.name_changeset(attrs)
     |> Repo.update()
   end
+
+  @doc """
+  Updates the user locale preference.
+
+  ## Examples
+
+      iex> update_user_locale(user, %{locale: "de"})
+      {:ok, %User{}}
+
+      iex> update_user_locale(user, %{locale: "invalid"})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec update_user_locale(user(), attrs()) :: {:ok, user()} | {:error, changeset()}
+  def update_user_locale(user, attrs) do
+    user
+    |> User.locale_changeset(attrs)
+    |> Repo.update()
+  end
 end
