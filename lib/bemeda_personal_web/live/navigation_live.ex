@@ -5,8 +5,11 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Emails
+  alias BemedaPersonalWeb.Components.LanguageSwitcher
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
+
+  on_mount {BemedaPersonalWeb.LiveHelpers, :assign_locale}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -79,6 +82,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             </div>
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+            <LanguageSwitcher.language_switcher id="language-switcher-desktop" locale={@locale} />
             <%= if @current_user do %>
               <.link
                 navigate={~p"/resume"}
@@ -174,6 +178,9 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
       <div class="sm:hidden hidden bg-gray-50" id="mobile-menu">
         <div class="pt-2 pb-3 space-y-1">
+          <div class="px-3 py-2">
+            <LanguageSwitcher.language_switcher id="language-switcher-mobile" locale={@locale} />
+          </div>
           <.link
             navigate={~p"/jobs"}
             class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"

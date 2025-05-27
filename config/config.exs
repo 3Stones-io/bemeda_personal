@@ -61,6 +61,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Gettext configuration
+config :bemeda_personal, BemedaPersonalWeb.Gettext,
+  default_locale: "de",
+  locales: ~w(de en fr it)
+
 # AppSignal
 config :appsignal, :config,
   active: false,

@@ -71,7 +71,10 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
 
   @impl Phoenix.LiveView
   def handle_event("save", %{"user" => user_params}, socket) do
-    case Accounts.register_user(user_params) do
+    current_locale = socket.assigns.locale
+    user_params_with_locale = Map.put(user_params, "locale", current_locale)
+
+    case Accounts.register_user(user_params_with_locale) do
       {:ok, user} ->
         {:ok, _email} =
           Accounts.deliver_user_confirmation_instructions(
