@@ -53,14 +53,16 @@ defmodule BemedaPersonalWeb.SharedComponents do
         <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
           <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-indigo-600" />
         </div>
-        <h3 class="mb-2 text-lg font-medium text-gray-900">Drag and drop to upload your {@type}</h3>
-        <p class="mb-4 text-sm text-gray-500">or</p>
+        <h3 class="mb-2 text-lg font-medium text-gray-900">
+          {dgettext("general", "Drag and drop to upload your %{type}", type: @type)}
+        </h3>
+        <p class="mb-4 text-sm text-gray-500">{dgettext("general", "or")}</p>
         <div>
           <label
             for="hidden-file-input"
             class="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Browse Files
+            {dgettext("general", "Browse Files")}
             <input
               id="hidden-file-input"
               type="file"
@@ -71,11 +73,14 @@ defmodule BemedaPersonalWeb.SharedComponents do
           </label>
         </div>
         <p class="mt-2 text-xs text-gray-500">
-          Max file size: {FileSizeUtils.pretty(@max_file_size)}
+          {dgettext("general", "Max file size: %{size}", size: FileSizeUtils.pretty(@max_file_size))}
         </p>
       </div>
       <p id="file-upload-error" class="mt-2 text-sm text-red-600 text-center mt-4 hidden">
-        <.icon name="hero-exclamation-circle" class="h-4 w-4" /> Unsupported file type.
+        <.icon name="hero-exclamation-circle" class="h-4 w-4" /> {dgettext(
+          "errors",
+          "Unsupported file type."
+        )}
       </p>
     </div>
     """
@@ -106,7 +111,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
         <div
           id="upload-progress"
           role="progressbar"
-          aria-label="Upload progress"
+          aria-label={dgettext("general", "Upload progress")}
           aria-valuemin="0"
           aria-valuemax="100"
           class="w-full bg-gray-200 rounded-full h-2.5"
@@ -145,7 +150,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
           out: "transition-all duration-200 ease-in-out"
         )
       }
-      title={"Show #{@type}"}
+      title={dgettext("general", "Show %{type}", type: @type)}
     >
       <div
         class="relative w-full bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:bg-gray-50"

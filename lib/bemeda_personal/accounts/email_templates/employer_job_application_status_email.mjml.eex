@@ -2,10 +2,10 @@
   <mj-section padding="32px 0 0 0">
     <mj-column width="100%">
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 16px 0">
-        Hello <%= @user_name %>,
+        <%= dgettext("emails", "Hello %{user_name},", user_name: @user_name) %>
       </mj-text>
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 12px 0">
-        This is an update regarding <%= @applicant_name %>'s application for the position of:
+        <%= dgettext("emails", "This is an update regarding %{applicant_name}'s application for the position of:", applicant_name: @applicant_name) %>
       </mj-text>
       <mj-text align="center" font-size="18px" font-family="Montserrat, Arial, sans-serif" font-weight="700" color="#3d4fa1" padding="0 0 12px 0">
         <%= @job_title %>
@@ -14,9 +14,9 @@
         <%= @status_description %>
       </mj-text>
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
-        To view the details of this application and take further action, please click the button below:
+        <%= dgettext("emails", "To view the details of this application and take further action, please click the button below:") %>
       </mj-text>
-      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: "Manage Application", cta_url: @url} %>
+      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: dgettext("emails", "Manage Application"), cta_url: @url} %>
     </mj-column>
   </mj-section>
 </mj-body>

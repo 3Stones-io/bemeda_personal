@@ -2,6 +2,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   @moduledoc false
 
   use Ecto.Schema
+  use Gettext, backend: BemedaPersonalWeb.Gettext
 
   import Ecto.Changeset
 
@@ -57,7 +58,11 @@ defmodule BemedaPersonal.Jobs.JobPosting do
     salary_max = get_field(changeset, :salary_max)
 
     if salary_min && salary_max && salary_min > salary_max do
-      add_error(changeset, :salary_min, "must be less than or equal to salary maximum")
+      add_error(
+        changeset,
+        :salary_min,
+        dgettext("jobs", "must be less than or equal to salary maximum")
+      )
     else
       changeset
     end

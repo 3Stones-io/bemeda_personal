@@ -19,30 +19,41 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         phx-submit="save"
         class="space-y-6"
       >
-        <.input field={f[:title]} type="text" label="Job Title" required phx-debounce="blur" />
+        <.input
+          field={f[:title]}
+          type="text"
+          label={dgettext("jobs", "Job Title")}
+          required
+          phx-debounce="blur"
+        />
 
         <.input
           field={f[:description]}
           type="textarea"
-          label="Job Description"
+          label={dgettext("jobs", "Job Description")}
           rows={6}
           required
           phx-debounce="blur"
         />
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <.input field={f[:location]} type="text" label="Location" phx-debounce="blur" />
+          <.input
+            field={f[:location]}
+            type="text"
+            label={dgettext("jobs", "Location")}
+            phx-debounce="blur"
+          />
 
           <.input
             field={f[:employment_type]}
             type="select"
-            label="Employment Type"
+            label={dgettext("jobs", "Employment Type")}
             options={[
-              {"Full-time", "Full-time"},
-              {"Part-time", "Part-time"},
-              {"Contract", "Contract"},
-              {"Temporary", "Temporary"},
-              {"Internship", "Internship"}
+              {dgettext("jobs", "Full-time"), "Full-time"},
+              {dgettext("jobs", "Part-time"), "Part-time"},
+              {dgettext("jobs", "Contract"), "Contract"},
+              {dgettext("jobs", "Temporary"), "Temporary"},
+              {dgettext("jobs", "Internship"), "Internship"}
             ]}
             phx-debounce="blur"
           />
@@ -52,19 +63,19 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:experience_level]}
             type="select"
-            label="Experience Level"
+            label={dgettext("jobs", "Experience Level")}
             options={[
-              {"Entry Level", "Entry Level"},
-              {"Mid Level", "Mid Level"},
-              {"Senior Level", "Senior Level"},
-              {"Executive", "Executive"}
+              {dgettext("jobs", "Entry Level"), "Entry Level"},
+              {dgettext("jobs", "Mid Level"), "Mid Level"},
+              {dgettext("jobs", "Senior Level"), "Senior Level"},
+              {dgettext("jobs", "Executive"), "Executive"}
             ]}
           />
 
           <.input
             field={f[:remote_allowed]}
             type="checkbox"
-            label="Remote Work Allowed"
+            label={dgettext("jobs", "Remote Work Allowed")}
             phx-debounce="blur"
           />
         </div>
@@ -73,7 +84,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:salary_min]}
             type="number"
-            label="Minimum Salary"
+            label={dgettext("jobs", "Minimum Salary")}
             min="0"
             phx-debounce="blur"
           />
@@ -81,7 +92,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:salary_max]}
             type="number"
-            label="Maximum Salary"
+            label={dgettext("jobs", "Maximum Salary")}
             min="0"
             phx-debounce="blur"
           />
@@ -89,7 +100,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:currency]}
             type="select"
-            label="Currency"
+            label={dgettext("jobs", "Currency")}
             options={[
               {"USD", "USD"},
               {"EUR", "EUR"},
@@ -105,7 +116,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         <SharedComponents.asset_preview
           show_asset_description={@show_video_description}
           media_asset={@job_posting.media_asset}
-          type="Video"
+          type={dgettext("jobs", "Video")}
           asset_preview_id="video-preview-player"
         />
 
@@ -143,7 +154,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
             disabled={!@enable_submit?}
           >
-            {if(@action == :edit, do: "Save Changes", else: "Post Job")}
+            {if(@action == :edit,
+              do: dgettext("jobs", "Save Changes"),
+              else: dgettext("jobs", "Post Job")
+            )}
           </.button>
         </div>
       </.form>
@@ -209,7 +223,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:ok, _job_posting} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Job posted successfully.")
+         |> put_flash(:info, dgettext("jobs", "Job posted successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -222,7 +236,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:ok, _job_posting} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Job updated successfully.")
+         |> put_flash(:info, dgettext("jobs", "Job updated successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -33,9 +33,9 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
           id="applicants-empty"
           class="only:block hidden px-4 py-5 sm:px-6 text-center border-t border-gray-200"
         >
-          <p class="text-gray-500">No applicants found.</p>
+          <p class="text-gray-500">{dgettext("jobs", "No applicants found.")}</p>
           <p class="mt-2 text-sm text-gray-500">
-            Applicants will appear here when they apply to your job postings.
+            {dgettext("jobs", "Applicants will appear here when they apply to your job postings.")}
           </p>
         </div>
 
@@ -74,15 +74,15 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
           id="applications-empty"
           class="only:block hidden px-4 py-5 sm:px-6 text-center border-t border-gray-200"
         >
-          <p class="text-gray-500">You haven't applied for any jobs yet.</p>
+          <p class="text-gray-500">{dgettext("jobs", "You haven't applied for any jobs yet.")}</p>
           <p class="mt-2 text-sm text-gray-500">
-            Start your job search by browsing available positions.
+            {dgettext("jobs", "Start your job search by browsing available positions.")}
           </p>
           <.link
             navigate={~p"/jobs"}
             class="mt-4 inline-block px-4 py-2 bg-indigo-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Browse Jobs
+            {dgettext("jobs", "Browse Jobs")}
           </.link>
         </div>
 
@@ -115,7 +115,9 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
 
                 <div class="mt-4 flex items-center text-sm text-gray-500">
                   <.icon name="hero-calendar" class="w-4 h-4 mr-1" />
-                  Applied on {DateUtils.format_date(DateTime.to_date(application.inserted_at))}
+                  {dgettext("jobs", "Applied on")} {DateUtils.format_date(
+                    DateTime.to_date(application.inserted_at)
+                  )}
                 </div>
               </div>
 
@@ -135,13 +137,13 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
                   }
                   class="px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Edit
+                  {dgettext("jobs", "Edit")}
                 </.link>
                 <.link
                   navigate={~p"/jobs/#{application.job_posting_id}"}
                   class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  View Job
+                  {dgettext("jobs", "View Job")}
                 </.link>
               </div>
             </div>

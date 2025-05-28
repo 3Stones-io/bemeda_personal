@@ -11,7 +11,7 @@ defmodule BemedaPersonalWeb.JobLive.Index do
       Endpoint.subscribe("job_posting")
     end
 
-    {:ok, assign(socket, :page_title, "Job Listings")}
+    {:ok, assign(socket, :page_title, dgettext("jobs", "Job Listings"))}
   end
 
   @impl Phoenix.LiveView

@@ -2,6 +2,7 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilter do
   @moduledoc false
 
   use Ecto.Schema
+  use Gettext, backend: BemedaPersonalWeb.Gettext
 
   import Ecto.Changeset
 
@@ -48,8 +49,14 @@ defmodule BemedaPersonal.Jobs.JobApplicationFilter do
 
     if date_from && date_to && Date.compare(date_from, date_to) == :gt do
       changeset
-      |> add_error(:date_from, "Start date must be before or equal to end date")
-      |> add_error(:date_to, "End date must be after or equal to start date")
+      |> add_error(
+        :date_from,
+        dgettext("jobs", "Start date must be before or equal to end date")
+      )
+      |> add_error(
+        :date_to,
+        dgettext("jobs", "End date must be after or equal to start date")
+      )
     else
       changeset
     end

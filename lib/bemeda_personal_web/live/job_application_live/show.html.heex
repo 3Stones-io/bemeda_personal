@@ -19,7 +19,7 @@
             ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/edit"
           }
           class="text-white hover:text-white/50"
-          title="Edit Your Application"
+          title={dgettext("jobs", "Edit Your Application")}
         >
           <.icon name="hero-pencil-square" class="h-5 w-5" />
         </.link>
@@ -58,7 +58,7 @@
           }
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
         >
-          Show History
+          {dgettext("jobs", "Show History")}
         </.link>
       </div>
     </div>
@@ -95,12 +95,12 @@
       <.input
         field={@job_application_state_transition_form[:notes]}
         type="textarea"
-        label="Notes"
+        label={dgettext("jobs", "Notes")}
       />
 
       <:actions>
         <.button type="submit" class="bg-indigo-600 hover:bg-indigo-700">
-          Update Status
+          {dgettext("jobs", "Update Status")}
         </.button>
       </:actions>
     </.simple_form>
