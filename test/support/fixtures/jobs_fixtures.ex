@@ -23,14 +23,23 @@ defmodule BemedaPersonal.JobsFixtures do
     job_posting_attrs =
       %{
         "currency" => "USD",
+        "department" => "Administration",
         "description" => "some description",
         "employment_type" => "some employment_type",
         "experience_level" => "some experience_level",
+        "gender" => "Male",
+        "language" => "English",
         "location" => "some location",
+        "position" => "some position",
+        "region" => "Zurich",
         "remote_allowed" => true,
         "salary_max" => 42_000,
         "salary_min" => 42_000,
-        "title" => "some title"
+        "shift_type" => "Day Shift",
+        "title" => "some title",
+        "workload" => "Full-time",
+        "part_time_details" => "some part_time_details",
+        "years_of_experience" => "2-5 years"
       }
 
     {:ok, job_posting} = Jobs.create_job_posting(company, Map.merge(job_posting_attrs, attrs))

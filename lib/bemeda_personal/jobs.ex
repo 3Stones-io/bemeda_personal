@@ -111,6 +111,50 @@ defmodule BemedaPersonal.Jobs do
     dynamic([job_posting: j], ^dynamic and j.inserted_at < ^job_posting.inserted_at)
   end
 
+  defp apply_filter({:department, department}, dynamic) do
+    pattern = "%#{department}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.department, ^pattern))
+  end
+
+  defp apply_filter({:shift_type, shift_type}, dynamic) do
+    pattern = "%#{shift_type}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.shift_type, ^pattern))
+  end
+
+  defp apply_filter({:region, region}, dynamic) do
+    pattern = "%#{region}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.region, ^pattern))
+  end
+
+  defp apply_filter({:years_of_experience, years_of_experience}, dynamic) do
+    pattern = "%#{years_of_experience}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.years_of_experience, ^pattern))
+  end
+
+  defp apply_filter({:position, position}, dynamic) do
+    pattern = "%#{position}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.position, ^pattern))
+  end
+
+  defp apply_filter({:gender, gender}, dynamic) do
+    dynamic([job_posting: j], ^dynamic and j.gender == ^gender)
+  end
+
+  defp apply_filter({:language, language}, dynamic) do
+    pattern = "%#{language}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.language, ^pattern))
+  end
+
+  defp apply_filter({:workload, workload}, dynamic) do
+    pattern = "%#{workload}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.workload, ^pattern))
+  end
+
+  defp apply_filter({:part_time_details, part_time_details}, dynamic) do
+    pattern = "%#{part_time_details}%"
+    dynamic([job_posting: j], ^dynamic and ilike(j.part_time_details, ^pattern))
+  end
+
   defp apply_filter(_other, dynamic), do: dynamic
 
   @doc """

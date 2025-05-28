@@ -119,7 +119,16 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
           "experience_level" => "Mid Level",
           "location" => "Remote",
           "remote_allowed" => true,
-          "title" => "Software Engineer"
+          "title" => "Software Engineer",
+          "department" => "Engineering",
+          "shift_type" => "Day Shift",
+          "region" => "North America",
+          "years_of_experience" => "2-5 years",
+          "position" => "Employee",
+          "gender" => "Male,Female",
+          "language" => "English,Spanish",
+          "workload" => "Min,Max",
+          "part_time_details" => "Min,Max"
         }
       })
       |> render_submit()

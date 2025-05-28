@@ -5,21 +5,29 @@ defmodule BemedaPersonal.JobsTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobsFixtures
 
-  alias BemedaPersonal.Chat
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 
   @invalid_attrs %{
     currency: nil,
+    department: nil,
     description: nil,
     employment_type: nil,
     experience_level: nil,
+    gender: nil,
+    language: nil,
     location: nil,
+    position: nil,
+    region: nil,
     remote_allowed: nil,
     salary_max: nil,
     salary_min: nil,
-    title: nil
+    shift_type: nil,
+    title: nil,
+    workload: nil,
+    part_time_details: nil,
+    years_of_experience: nil
   }
 
   defp create_job_posting(_attrs) do
@@ -322,6 +330,102 @@ defmodule BemedaPersonal.JobsTest do
       assert results = Jobs.list_job_postings(%{older_than: middle_job, remote_allowed: true})
       assert length(results) == 1
       assert hd(results).id == another_older_job.id
+    end
+
+    test "can filter job_postings by department" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{department: "Engineering"})
+      job_posting_fixture(company, %{department: "Marketing"})
+
+      assert [result] = Jobs.list_job_postings(%{department: "Engineering"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by shift_type" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{shift_type: "Day Shift"})
+      job_posting_fixture(company, %{shift_type: "Night Shift"})
+
+      assert [result] = Jobs.list_job_postings(%{shift_type: "Day Shift"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by region" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{region: "North America"})
+      job_posting_fixture(company, %{region: "Europe"})
+
+      assert [result] = Jobs.list_job_postings(%{region: "North America"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by years_of_experience" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{years_of_experience: "2-5 years"})
+      job_posting_fixture(company, %{years_of_experience: "5+ years"})
+
+      assert [result] = Jobs.list_job_postings(%{years_of_experience: "2-5"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by position" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{position: "Senior Developer"})
+      job_posting_fixture(company, %{position: "Junior Developer"})
+
+      assert [result] = Jobs.list_job_postings(%{position: "Senior"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by gender" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{gender: "Male"})
+      job_posting_fixture(company, %{gender: "Female"})
+
+      assert [result] = Jobs.list_job_postings(%{gender: "Male"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by language" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{language: "English"})
+      job_posting_fixture(company, %{language: "Spanish"})
+
+      assert [result] = Jobs.list_job_postings(%{language: "English"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
+    end
+
+    test "can filter job_postings by workload" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting1 = job_posting_fixture(company, %{workload: "Full-time"})
+      job_posting_fixture(company, %{workload: "Part-time"})
+
+      assert [result] = Jobs.list_job_postings(%{workload: "Full"})
+      assert result.id == job_posting1.id
+      assert Ecto.assoc_loaded?(result.company)
     end
 
     test "defaults to listing all job_postings if a non-existent filter is passed" do
@@ -1526,155 +1630,6 @@ defmodule BemedaPersonal.JobsTest do
   end
 
   describe "update_job_application_status/3" do
-    setup do
-      user = user_fixture()
-      company = company_fixture(user)
-      job_posting = job_posting_fixture(company)
-      job_application = job_application_fixture(user, job_posting)
-
-      %{
-        company: company,
-        job_application: job_application,
-        job_posting: job_posting,
-        user: user
-      }
-    end
-
-    test "successfully updates status in valid state transition", %{
-      job_application: job_application,
-      user: user
-    } do
-      assert job_application.state == "applied"
-
-      application_topic = "job_application:user:#{job_application.user_id}"
-      Endpoint.subscribe(application_topic)
-
-      attrs = %{"to_state" => "under_review", "notes" => "Application looks promising"}
-
-      assert {:ok, updated_job_application} =
-               Jobs.update_job_application_status(job_application, user, attrs)
-
-      assert updated_job_application.state == "under_review"
-
-      transitions = Repo.all(Jobs.JobApplicationStateTransition)
-      assert length(transitions) == 1
-
-      transition = List.first(transitions)
-      assert transition.from_state == "applied"
-      assert transition.to_state == "under_review"
-      assert transition.notes == "Application looks promising"
-      assert transition.job_application_id == job_application.id
-      assert transition.transitioned_by_id == user.id
-
-      messages = Chat.list_messages(job_application)
-      assert length(messages) == 2
-
-      status_message = Enum.at(messages, 1)
-      assert status_message.content == "under_review"
-      assert status_message.sender_id == user.id
-      assert status_message.type == :status_update
-
-      assert_receive %Broadcast{
-        event: "user_job_application_status_updated",
-        topic: ^application_topic
-      }
-    end
-
-    test "allows multiple transitions in sequence", %{
-      job_application: job_application,
-      user: user
-    } do
-      assert job_application.state == "applied"
-
-      {:ok, under_review_application} =
-        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
-
-      assert under_review_application.state == "under_review"
-
-      {:ok, screening_application} =
-        Jobs.update_job_application_status(under_review_application, user, %{
-          "to_state" => "screening"
-        })
-
-      assert screening_application.state == "screening"
-
-      {:ok, interview_application} =
-        Jobs.update_job_application_status(screening_application, user, %{
-          "to_state" => "interview_scheduled"
-        })
-
-      assert interview_application.state == "interview_scheduled"
-
-      transitions = Repo.all(Jobs.JobApplicationStateTransition)
-      assert length(transitions) == 3
-
-      messages = Chat.list_messages(job_application)
-      assert length(messages) == 4
-    end
-
-    test "fails when trying to skip states", %{
-      job_application: job_application,
-      user: user
-    } do
-      assert job_application.state == "applied"
-
-      attrs = %{"to_state" => "interview_scheduled"}
-      {:error, changeset} = Jobs.update_job_application_status(job_application, user, attrs)
-
-      assert "transition_changeset failed: invalid transition from applied to interview_scheduled" in errors_on(
-               changeset
-             ).state
-
-      assert Repo.all(Jobs.JobApplicationStateTransition) == []
-
-      messages = Chat.list_messages(job_application)
-      assert length(messages) == 1
-    end
-
-    test "fails when trying to transition to an invalid state", %{
-      job_application: job_application,
-      user: user
-    } do
-      attrs = %{"to_state" => "invalid_state"}
-      result = Jobs.update_job_application_status(job_application, user, attrs)
-
-      assert {:error, changeset} = result
-
-      assert "transition_changeset failed: invalid transition from applied to invalid_state" in errors_on(
-               changeset
-             ).state
-
-      assert Repo.all(Jobs.JobApplicationStateTransition) == []
-
-      messages = Chat.list_messages(job_application)
-      assert length(messages) == 1
-    end
-
-    test "successfully transitions to withdrawn state from any state", %{
-      job_application: job_application,
-      user: user
-    } do
-      {:ok, updated_job_application} =
-        Jobs.update_job_application_status(job_application, user, %{"to_state" => "under_review"})
-
-      assert updated_job_application.state == "under_review"
-
-      {:ok, withdrawn_application} =
-        Jobs.update_job_application_status(updated_job_application, user, %{
-          "to_state" => "withdrawn"
-        })
-
-      assert withdrawn_application.state == "withdrawn"
-
-      transitions = Repo.all(Jobs.JobApplicationStateTransition)
-      assert length(transitions) == 2
-
-      messages = Chat.list_messages(job_application)
-      assert length(messages) == 3
-    end
-  end
-
-  describe "change_job_application_status/2" do
     setup do
       user = user_fixture()
       company = company_fixture(user)

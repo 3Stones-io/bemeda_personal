@@ -276,7 +276,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   attr :type, :string,
     default: "text",
     values:
-      ~w(chat-input checkbox color date datetime-local email file hidden month number password
+      ~w(chat-input checkbox color date datetime-local multi-select email file hidden month number password
                range search select tel text textarea time url week)
 
   attr :field, Phoenix.HTML.FormField,
@@ -289,10 +289,14 @@ defmodule BemedaPersonalWeb.CoreComponents do
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
   attr :label_class, :string, default: nil, doc: "the class for the label"
   attr :input_class, :string, default: nil, doc: "the class for the input"
+  attr :nested_input?, :boolean, default: false, doc: "the nested input flag"
+  attr :show_nested_input, :string, default: nil, doc: "the nested input flag"
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
+
+  slot :nested_input, doc: "the slot for the nested input"
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
@@ -325,7 +329,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
           value="true"
           checked={@checked}
           class={[
-            "rounded border-zinc-300 text-zinc-900 focus:ring-0",
+            "peer rounded border-zinc-300 text-zinc-900 focus:ring-0",
             @input_class
           ]}
           {@rest}
@@ -391,6 +395,74 @@ defmodule BemedaPersonalWeb.CoreComponents do
           {@rest}
         >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
       </.label>
+    </div>
+    """
+  end
+
+  def input(%{type: "multi-select"} = assigns) do
+    ~H"""
+    <div
+      id={"#{@id}-container"}
+      data-id={@id}
+      phx-hook="MultiSelectInput"
+      class="relative"
+      phx-feedback-for={@name}
+      {@rest}
+    >
+      <button
+        class="flex items-center justify-between w-full p-3 border-b border-zinc-300 hover:border-zinc-400 focus:border-b focus:border-zinc-400 focus:ring-0"
+        type="button"
+        id={"select-button-#{@id}"}
+      >
+        <.label for={@id} class={@label_class} required={@rest[:required]}>
+          {@label}
+        </.label>
+        <div id={"select-icon-#{@id}"}>
+          <.icon name="hero-chevron-down" class="h-5 w-5 text-gray-400 transition-transform" />
+        </div>
+      </button>
+
+      <input
+        type="text"
+        name={@name}
+        id={@id}
+        value={Phoenix.HTML.Form.normalize_value("text", @value)}
+        class="hidden"
+      />
+
+      <div
+        class="hidden absolute inset-x-[-4] z-10 w-full mt-1 bg-white border border-zinc-300 rounded-lg shadow-lg max-h-60 overflow-y-scroll"
+        id={"select-dropdown-#{@id}"}
+      >
+        <div class="p-2 space-y-1">
+          <div>
+            <label
+              :for={option <- @options}
+              class={[
+                "p-2 hover:bg-zinc-50 rounded cursor-pointer",
+                !@nested_input? && "flex items-center",
+                @nested_input? && "nested-multi-select-input-container"
+              ]}
+            >
+              <input
+                type="checkbox"
+                value={option}
+                checked={@value && option in String.split(@value, ",", trim: true)}
+                class="peer rounded border-zinc-300 text-blue-600 focus:ring-blue-500 focus:ring-2 mr-3 main-checkbox"
+              />
+              <span class="text-sm text-zinc-900 w-full p-2 option-label inline-block">{option}</span>
+              <div
+                :if={@nested_input? && option == @show_nested_input}
+                class="mt-4 hidden peer-checked:block nested-input w-full"
+              >
+                {render_slot(@nested_input)}
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end

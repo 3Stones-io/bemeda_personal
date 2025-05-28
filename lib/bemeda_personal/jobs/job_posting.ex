@@ -17,15 +17,24 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   schema "job_postings" do
     belongs_to :company, Company
     field :currency, :string
+    field :department, :string
     field :description, :string
     field :employment_type, :string
     field :experience_level, :string
+    field :gender, :string
+    field :language, :string
     field :location, :string
     has_one :media_asset, MediaAsset
+    field :part_time_details, :string
+    field :position, :string
+    field :region, :string
     field :remote_allowed, :boolean, default: false
     field :salary_max, :integer
     field :salary_min, :integer
+    field :shift_type, :string
     field :title, :string
+    field :workload, :string
+    field :years_of_experience, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -34,15 +43,24 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   def changeset(job_posting, attrs) do
     job_posting
     |> cast(attrs, [
-      :title,
+      :currency,
+      :department,
       :description,
-      :location,
       :employment_type,
       :experience_level,
-      :salary_min,
+      :gender,
+      :language,
+      :location,
+      :part_time_details,
+      :position,
+      :region,
+      :remote_allowed,
       :salary_max,
-      :currency,
-      :remote_allowed
+      :salary_min,
+      :shift_type,
+      :title,
+      :workload,
+      :years_of_experience
     ])
     |> validate_required([:title, :description])
     |> validate_length(:title, min: 5, max: 255)

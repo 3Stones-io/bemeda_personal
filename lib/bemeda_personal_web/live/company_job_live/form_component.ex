@@ -30,11 +30,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           phx-debounce="blur"
         />
 
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
           <.input
             field={f[:employment_type]}
             type="select"
             label="Employment Type"
+            prompt="Select employment type"
             options={[
               {"Floater", "Floater"},
               {"Permanent Position", "Permanent Position"},
@@ -57,10 +58,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           />
         </div>
 
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 items-center">
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2 items-center">
           <.input field={f[:location]} type="text" label="Location" phx-debounce="blur" />
 
-          <div class="sm:mt-8">
+          <div class="md:mt-8">
             <.input
               field={f[:remote_allowed]}
               type="checkbox"
@@ -102,6 +103,119 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             ]}
             phx-debounce="blur"
           />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
+          <.input
+            field={f[:position]}
+            type="select"
+            label="Position"
+            prompt="Select position"
+            options={[
+              {"Employee", "Employee"},
+              {"Specialist Role", "Specialist Role"},
+              {"Leadership Position", "Leadership Position"}
+            ]}
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:years_of_experience]}
+            type="select"
+            label="Years of Experience"
+            prompt="Select experience range"
+            options={[
+              {"Less than 2 years", "Less than 2 years"},
+              {"2-5 years", "2-5 years"},
+              {"More than 5 years", "More than 5 years"}
+            ]}
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
+            field={f[:department]}
+            type="multi-select"
+            label="Department"
+            options={departments()}
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:shift_type]}
+            type="multi-select"
+            label="Shift Type"
+            options={[
+              "Day Shift",
+              "Early Shift",
+              "Late Shift",
+              "Night Shift",
+              "Split Shift"
+            ]}
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
+            field={f[:region]}
+            type="multi-select"
+            label="Region"
+            options={regions()}
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:language]}
+            type="multi-select"
+            label="Language"
+            options={[
+              "English",
+              "French",
+              "German",
+              "Italian"
+            ]}
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
+            field={f[:gender]}
+            type="multi-select"
+            label="Gender"
+            options={["Male", "Female"]}
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:workload]}
+            type="multi-select"
+            label="Workload"
+            prompt="Select workload"
+            options={[
+              "Full-time",
+              "Part-time"
+            ]}
+            nested_input?={true}
+            show_nested_input="Part-time"
+            phx-debounce="blur"
+          >
+            <:nested_input>
+              <.input
+                field={f[:part_time_details]}
+                type="multi-select"
+                label="Workload Type"
+                prompt="Select workload type"
+                options={[
+                  "Min",
+                  "Max"
+                ]}
+                phx-debounce="blur"
+              />
+            </:nested_input>
+          </.input>
         </div>
 
         <SharedComponents.asset_preview
@@ -241,5 +355,58 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   defp update_media_data_params(socket, job_params) do
     Map.put(job_params, "media_data", socket.assigns.media_data)
+  end
+
+  defp departments do
+    [
+      "Administration",
+      "Acute Care",
+      "Anesthesia",
+      "Day Clinic",
+      "Emergency Department",
+      "Home Care (Spitex)",
+      "Hospital / Clinic",
+      "Intensive Care",
+      "Intermediate Care (IMC)",
+      "Long-Term Care",
+      "Medical Practices",
+      "Operating Room",
+      "Other",
+      "Psychiatry",
+      "Recovery Room (PACU)",
+      "Rehabilitation",
+      "Therapies"
+    ]
+  end
+
+  defp regions do
+    [
+      "Aargau",
+      "Appenzell Ausserrhoden",
+      "Appenzell Innerrhoden",
+      "Basel-Landschaft",
+      "Basel-Stadt",
+      "Bern",
+      "Fribourg",
+      "Geneva",
+      "Glarus",
+      "Grisons",
+      "Jura",
+      "Lucerne",
+      "Neuchâtel",
+      "Nidwalden",
+      "Obwalden",
+      "Schaffhausen",
+      "Schwyz",
+      "Solothurn",
+      "St. Gallen",
+      "Ticino",
+      "Thurgau",
+      "Uri",
+      "Vaud",
+      "Valais",
+      "Zug",
+      "Zurich"
+    ]
   end
 end
