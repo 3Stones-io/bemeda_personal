@@ -68,3 +68,6 @@ coveralls.json
 package.json
 package-lock.json
 README.md
+
+# Optimum Codegen
+/codegen/

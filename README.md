@@ -28,6 +28,10 @@ It will open documentation in your browser.
 
 - run `mix coveralls` or `mix coveralls.html`
 
+## Optimum Codegen
+
+Navigate to the `codegen` directory and run `make help` to get info.
+
 ## Contributing
 
 Make sure to execute `make check_code` in order to run all the checks before committing the code.

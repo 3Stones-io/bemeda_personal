@@ -45,3 +45,7 @@ npm-debug.log
 .env
 /package.json
 /package-lock.json
+
+# Optimum Codegen
+/codegen/node_modules/
+/codegen/plans/
