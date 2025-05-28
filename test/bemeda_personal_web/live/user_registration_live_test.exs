@@ -4,6 +4,8 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
   import BemedaPersonal.AccountsFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts
+
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register")
@@ -74,6 +76,27 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
         |> render_submit()
 
       assert result =~ "has already been taken"
+    end
+
+    test "saves the locale preference", %{conn: conn} do
+      conn = init_test_session(conn, %{locale: "it"})
+
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      form =
+        form(lv, "#registration_form",
+          user: %{
+            first_name: "Test",
+            last_name: "User",
+            email: "test_locale@example.com",
+            password: "test_password_123"
+          }
+        )
+
+      render_submit(form)
+
+      user = Accounts.get_user_by_email("test_locale@example.com")
+      assert user.locale == :it
     end
   end
 

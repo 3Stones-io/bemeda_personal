@@ -26,7 +26,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
         phx-page-loading
       >
         <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
-          <p class="text-gray-500">No job postings available at the moment.</p>
+          <p class="text-gray-500">{dgettext("jobs", "No job postings available at the moment.")}</p>
           <p class="mt-2 text-sm text-gray-500">
             {@empty_state_message}
           </p>

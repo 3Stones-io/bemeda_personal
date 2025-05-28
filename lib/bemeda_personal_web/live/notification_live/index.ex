@@ -36,7 +36,12 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
         {:noreply, stream_insert(socket, :notifications, updated_notification)}
 
       {:error, _changeset} ->
-        {:noreply, put_flash(socket, :error, "Could not update notification status")}
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("notifications", "Could not update notification status")
+         )}
     end
   end
 

@@ -3,23 +3,25 @@
     <.link
       navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@job_application.id}"}
       class="inline-flex items-center text-blue-600 hover:text-blue-800 mr-4"
-      aria-label="Back to application"
+      aria-label={dgettext("jobs", "Back to application")}
     >
       <.icon name="hero-arrow-left" class="h-5 w-5" />
     </.link>
 
-    <h1 class="text-2xl font-bold">Application History</h1>
+    <h1 class="text-2xl font-bold">{dgettext("jobs", "Application History")}</h1>
   </div>
 
   <p class="text-gray-600 text-sm mb-6">
-    <span>View the timeline of your application status changes for the</span>
+    <span>
+      {dgettext("jobs", "View the timeline of your application status changes for the")}
+    </span>
     <span class="font-bold">{@job_posting.title}</span>
-    <span>position at</span>
+    <span>{dgettext("jobs", "position at")}</span>
     <span class="font-bold">{@job_posting.company.name}</span>
   </p>
 
   <div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-xl font-semibold mb-4">Application Timeline</h2>
+    <h2 class="text-xl font-semibold mb-4">{dgettext("jobs", "Application Timeline")}</h2>
 
     <div class="relative">
       <div class="absolute h-full w-0.5 bg-gray-200 left-2.5"></div>
@@ -52,7 +54,7 @@
         </div>
 
         <p class="text-sm text-gray-600 mt-2">
-          Updated by: {transition.transitioned_by.email}
+          {dgettext("jobs", "Updated by")}: {transition.transitioned_by.email}
         </p>
       </div>
     </div>
@@ -62,15 +64,22 @@
         <.icon name="hero-check" class="h-3 w-3" />
       </div>
 
-      <h3 class="text-lg font-medium">Application Created</h3>
+      <h3 class="text-lg font-medium">{dgettext("jobs", "Application Created")}</h3>
       <p class="text-sm text-gray-500">
         {DateUtils.format_datetime(@job_application.inserted_at)}
       </p>
       <p class="text-sm text-gray-600 mt-2">
         {if @current_user.id == @job_application.user_id do
-          "You applied for the #{String.downcase(@job_posting.title)} position at #{@job_posting.company.name}."
+          dgettext("jobs", "You applied for the %{position} position at %{company}.",
+            position: String.downcase(@job_posting.title),
+            company: @job_posting.company.name
+          )
         else
-          "#{@job_application.user.first_name} #{@job_application.user.last_name} applied for the #{String.downcase(@job_posting.title)} position at #{@job_posting.company.name}."
+          dgettext("jobs", "%{applicant} applied for the %{position} position at %{company}.",
+            applicant: "#{@job_application.user.first_name} #{@job_application.user.last_name}",
+            position: String.downcase(@job_posting.title),
+            company: @job_posting.company.name
+          )
         end}
       </p>
     </div>

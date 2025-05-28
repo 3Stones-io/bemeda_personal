@@ -1,6 +1,8 @@
 defmodule BemedaPersonal.Resumes.DateValidator do
   @moduledoc false
 
+  use Gettext, backend: BemedaPersonalWeb.Gettext
+
   import Ecto.Changeset
 
   @type changeset :: Ecto.Changeset.t()
@@ -33,7 +35,11 @@ defmodule BemedaPersonal.Resumes.DateValidator do
     if Date.compare(end_date, start_date) in [:gt, :eq] do
       changeset
     else
-      add_error(changeset, :end_date, "end date must be after or equal to start date")
+      add_error(
+        changeset,
+        :end_date,
+        dgettext("resumes", "end date must be after or equal to start date")
+      )
     end
   end
 end

@@ -2,6 +2,7 @@ defmodule BemedaPersonal.Accounts.User do
   @moduledoc false
 
   use Ecto.Schema
+  use Gettext, backend: BemedaPersonalWeb.Gettext
 
   import Ecto.Changeset
 
@@ -20,6 +21,7 @@ defmodule BemedaPersonal.Accounts.User do
     field :first_name, :string
     field :hashed_password, :string, redact: true
     field :last_name, :string
+    field :locale, Ecto.Enum, values: [:de, :en, :fr, :it], default: :de
     field :password, :string, virtual: true, redact: true
 
     has_one :resume, BemedaPersonal.Resumes.Resume
@@ -53,7 +55,7 @@ defmodule BemedaPersonal.Accounts.User do
   @spec registration_changeset(t() | changeset(), attrs(), opts()) :: changeset()
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :first_name, :last_name])
+    |> cast(attrs, [:email, :first_name, :last_name, :locale, :password])
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_name()
@@ -62,7 +64,9 @@ defmodule BemedaPersonal.Accounts.User do
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/,
+      message: dgettext("auth", "must have the @ sign and no spaces")
+    )
     |> validate_length(:email, max: 160)
     |> maybe_validate_unique_email(opts)
   end
@@ -126,7 +130,7 @@ defmodule BemedaPersonal.Accounts.User do
 
     case changeset do
       %{changes: %{email: _email}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :email, "did not change")
+      %{} = changeset -> add_error(changeset, :email, dgettext("auth", "did not change"))
     end
   end
 
@@ -146,7 +150,9 @@ defmodule BemedaPersonal.Accounts.User do
   def password_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:password])
-    |> validate_confirmation(:password, message: "does not match password")
+    |> validate_confirmation(:password,
+      message: dgettext("auth", "does not match password")
+    )
     |> validate_password(opts)
   end
 
@@ -158,6 +164,16 @@ defmodule BemedaPersonal.Accounts.User do
     user
     |> cast(attrs, [:first_name, :last_name])
     |> validate_name()
+  end
+
+  @doc """
+  A user changeset for updating the locale preference.
+  """
+  @spec locale_changeset(t() | changeset(), attrs()) :: changeset()
+  def locale_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:locale])
+    |> validate_required([:locale])
   end
 
   @doc """
@@ -196,7 +212,7 @@ defmodule BemedaPersonal.Accounts.User do
     if valid_password?(changeset.data, password) do
       changeset
     else
-      add_error(changeset, :current_password, "is not valid")
+      add_error(changeset, :current_password, dgettext("auth", "is not valid"))
     end
   end
 end

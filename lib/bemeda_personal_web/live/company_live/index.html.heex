@@ -1,6 +1,6 @@
 <section class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Company Dashboard</h1>
+    <h1 class="text-3xl font-bold text-gray-900">{dgettext("companies", "Company Dashboard")}</h1>
   </div>
 
   <div :if={@company && @live_action != :new} class="bg-white shadow sm:rounded-lg mb-8">
@@ -23,26 +23,34 @@
           patch={~p"/companies/#{@company}/edit"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Edit Company Profile
+          {dgettext("companies", "Edit Company Profile")}
         </.link>
       </div>
     </div>
     <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
       <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
         <div>
-          <dt class="text-sm font-medium text-gray-500">Location</dt>
-          <dd class="mt-1 text-sm text-gray-900">{@company.location || "Not specified"}</dd>
+          <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Location")}</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {@company.location || dgettext("general", "Not specified")}
+          </dd>
         </div>
         <div>
-          <dt class="text-sm font-medium text-gray-500">Company Size</dt>
-          <dd class="mt-1 text-sm text-gray-900">{@company.size || "Not specified"}</dd>
+          <dt class="text-sm font-medium text-gray-500">
+            {dgettext("companies", "Company Size")}
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {@company.size || dgettext("general", "Not specified")}
+          </dd>
         </div>
         <div>
-          <dt class="text-sm font-medium text-gray-500">Open Positions</dt>
+          <dt class="text-sm font-medium text-gray-500">
+            {dgettext("companies", "Open Positions")}
+          </dt>
           <dd class="mt-1 text-sm text-gray-900">{@job_count}</dd>
         </div>
         <div>
-          <dt class="text-sm font-medium text-gray-500">Website</dt>
+          <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Website")}</dt>
           <dd class="mt-1 text-sm text-gray-900">
             <%= if @company.website_url do %>
               <a
@@ -53,7 +61,7 @@
                 {@company.website_url}
               </a>
             <% else %>
-              Not specified
+              {dgettext("general", "Not specified")}
             <% end %>
           </dd>
         </div>
@@ -66,19 +74,19 @@
     class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
   >
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">Recent Jobs</h2>
+      <h2 class="text-xl font-semibold text-gray-900">{dgettext("companies", "Recent Jobs")}</h2>
       <div>
         <.link
           navigate={~p"/companies/#{@company.id}/jobs"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          View All Jobs
+          {dgettext("companies", "View All Jobs")}
         </.link>
         <.link
           navigate={~p"/companies/#{@company.id}/jobs/new"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Post New Job
+          {dgettext("companies", "Post New Job")}
         </.link>
       </div>
     </div>
@@ -86,9 +94,9 @@
     <div class="border-t border-gray-200">
       <div id="job-postings-container" phx-update="stream">
         <div id="no-jobs-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
-          <p class="text-gray-500">You haven't posted any jobs yet.</p>
+          <p class="text-gray-500">{dgettext("companies", "You haven't posted any jobs yet.")}</p>
           <p class="mt-2 text-sm text-gray-500">
-            Get started by clicking the "Post New Job" button above.
+            {dgettext("companies", "Get started by clicking the \"Post New Job\" button above.")}
           </p>
         </div>
 
@@ -114,13 +122,15 @@
     class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
   >
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">Recent Applicants</h2>
+      <h2 class="text-xl font-semibold text-gray-900">
+        {dgettext("companies", "Recent Applicants")}
+      </h2>
       <div>
         <.link
           navigate={~p"/companies/#{@company.id}/applicants"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          View All Applicants
+          {dgettext("companies", "View All Applicants")}
         </.link>
       </div>
     </div>
@@ -128,9 +138,14 @@
     <div class="border-t border-gray-200">
       <div id="recent-applicants-container" phx-update="stream">
         <div id="no-applicants-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
-          <p class="text-gray-500">You don't have any applicants yet.</p>
+          <p class="text-gray-500">
+            {dgettext("companies", "You don't have any applicants yet.")}
+          </p>
           <p class="mt-2 text-sm text-gray-500">
-            Applicants will appear here when they apply to your job postings.
+            {dgettext(
+              "companies",
+              "Applicants will appear here when they apply to your job postings."
+            )}
           </p>
         </div>
 
@@ -159,20 +174,25 @@
 
   <div :if={!@company} class="bg-white shadow overflow-hidden sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6">
-      <h2 class="text-xl font-semibold text-gray-900">Create Your Company Profile</h2>
+      <h2 class="text-xl font-semibold text-gray-900">
+        {dgettext("companies", "Create Your Company Profile")}
+      </h2>
       <p class="mt-1 text-sm text-gray-500">
-        You need to create a company profile before you can post jobs.
+        {dgettext("companies", "You need to create a company profile before you can post jobs.")}
       </p>
     </div>
     <div class="border-t border-gray-200 px-4 py-5 sm:px-6 text-center">
       <p class="text-gray-500 mb-4">
-        Set up your company profile to start posting jobs and connecting with potential candidates.
+        {dgettext(
+          "companies",
+          "Set up your company profile to start posting jobs and connecting with potential candidates."
+        )}
       </p>
       <.link
         patch={~p"/companies/new"}
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        Create Company Profile
+        {dgettext("companies", "Create Company Profile")}
       </.link>
     </div>
   </div>

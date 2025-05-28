@@ -4,32 +4,59 @@ alias BemedaPersonal.Companies
 alias BemedaPersonal.Jobs
 alias BemedaPersonal.Repo
 
-{:ok, user1} =
-  Accounts.register_user(%{
+get_or_create_user = fn email, attrs ->
+  case Accounts.get_user_by_email(email) do
+    nil ->
+      case Accounts.register_user(attrs) do
+        {:ok, user} ->
+          case user
+               |> User.confirm_changeset()
+               |> Repo.update() do
+            {:ok, confirmed_user} -> confirmed_user
+            {:error, _changeset} -> user
+          end
+
+        {:error, _changeset} ->
+          # If registration fails, try to get the user again (race condition)
+          Accounts.get_user_by_email(email)
+      end
+
+    user ->
+      user
+  end
+end
+
+get_or_create_company = fn user, attrs ->
+  case Companies.get_company_by_user(user) do
+    nil ->
+      case Companies.create_company(user, attrs) do
+        {:ok, company} -> company
+        {:error, _changeset} -> Companies.get_company_by_user(user)
+      end
+
+    company ->
+      company
+  end
+end
+
+user1 =
+  get_or_create_user.("john.doe@example.com", %{
     email: "john.doe@example.com",
     password: "password123456",
     first_name: "John",
     last_name: "Doe"
   })
 
-{:ok, user2} =
-  Accounts.register_user(%{
+user2 =
+  get_or_create_user.("jane.smith@example.com", %{
     email: "jane.smith@example.com",
     password: "password123456",
     first_name: "Jane",
     last_name: "Smith"
   })
 
-user1
-|> User.confirm_changeset()
-|> Repo.update()
-
-user2
-|> User.confirm_changeset()
-|> Repo.update()
-
-{:ok, company1} =
-  Companies.create_company(user1, %{
+company1 =
+  get_or_create_company.(user1, %{
     name: "TechInnovate",
     description: "A leading technology company focused on innovative solutions for businesses.",
     industry: "Technology",
@@ -39,8 +66,8 @@ user2
     logo_url: "https://via.placeholder.com/150?text=TechInnovate"
   })
 
-{:ok, company2} =
-  Companies.create_company(user2, %{
+company2 =
+  get_or_create_company.(user2, %{
     name: "HealthPlus",
     description: "Revolutionizing healthcare through technology and modern approaches.",
     industry: "Healthcare",
@@ -260,21 +287,32 @@ update_job_inserted_at = fn job, seconds_offset ->
   updated_job
 end
 
-Enum.with_index(all_tech_jobs)
-|> Enum.each(fn {job_attrs, index} ->
-  {:ok, job} = Jobs.create_job_posting(company1, job_attrs)
-  # Make jobs have different timestamps, 2 hours apart
-  update_job_inserted_at.(job, -7200 * (index + 1))
-end)
+existing_tech_jobs = Jobs.list_job_postings(%{company_id: company1.id}, 1)
+existing_health_jobs = Jobs.list_job_postings(%{company_id: company2.id}, 1)
 
-Enum.with_index(all_health_jobs)
-|> Enum.each(fn {job_attrs, index} ->
-  {:ok, job} = Jobs.create_job_posting(company2, job_attrs)
-  update_job_inserted_at.(job, -7200 * (index + 1))
-end)
+if Enum.empty?(existing_tech_jobs) do
+  Enum.with_index(all_tech_jobs)
+  |> Enum.each(fn {job_attrs, index} ->
+    {:ok, job} = Jobs.create_job_posting(company1, job_attrs)
 
-IO.puts("Seed data created successfully!")
+    update_job_inserted_at.(job, -7200 * (index + 1))
+  end)
 
-IO.puts(
-  "Created 2 users, 2 companies, and #{length(all_tech_jobs) + length(all_health_jobs)} job postings with different timestamps."
-)
+  IO.puts("Created #{length(all_tech_jobs)} tech jobs for TechInnovate")
+else
+  IO.puts("TechInnovate already has jobs, skipping job creation")
+end
+
+if Enum.empty?(existing_health_jobs) do
+  Enum.with_index(all_health_jobs)
+  |> Enum.each(fn {job_attrs, index} ->
+    {:ok, job} = Jobs.create_job_posting(company2, job_attrs)
+    update_job_inserted_at.(job, -7200 * (index + 1))
+  end)
+
+  IO.puts("Created #{length(all_health_jobs)} health jobs for HealthPlus")
+else
+  IO.puts("HealthPlus already has jobs, skipping job creation")
+end
+
+IO.puts("Seed data is now available!")

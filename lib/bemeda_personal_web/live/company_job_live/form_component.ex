@@ -19,12 +19,18 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         phx-submit="save"
         class="space-y-6"
       >
-        <.input field={f[:title]} type="text" label="Job Title" required phx-debounce="blur" />
+        <.input
+          field={f[:title]}
+          type="text"
+          label={dgettext("jobs", "Job Title")}
+          required
+          phx-debounce="blur"
+        />
 
         <.input
           field={f[:description]}
           type="textarea"
-          label="Job Description"
+          label={dgettext("jobs", "Job Description")}
           rows={6}
           required
           phx-debounce="blur"
@@ -34,13 +40,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:employment_type]}
             type="select"
-            label="Employment Type"
-            prompt="Select employment type"
+            label={dgettext("jobs", "Employment Type")}
+            prompt={dgettext("jobs", "Select employment type")}
             options={[
-              {"Floater", "Floater"},
-              {"Permanent Position", "Permanent Position"},
-              {"Staff Pool", "Staff Pool"},
-              {"Temporary Assignment", "Temporary Assignment"}
+              {dgettext("jobs", "Floater"), "Floater"},
+              {dgettext("jobs", "Permanent Position"), "Permanent Position"},
+              {dgettext("jobs", "Staff Pool"), "Staff Pool"},
+              {dgettext("jobs", "Temporary Assignment"), "Temporary Assignment"}
             ]}
             phx-debounce="blur"
           />
@@ -48,24 +54,30 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:experience_level]}
             type="select"
-            label="Experience Level"
+            label={dgettext("jobs", "Experience Level")}
+            prompt={dgettext("jobs", "Select experience level")}
             options={[
-              {"Entry Level", "Entry Level"},
-              {"Mid Level", "Mid Level"},
-              {"Senior Level", "Senior Level"},
-              {"Executive", "Executive"}
+              {dgettext("jobs", "Entry Level"), "Entry Level"},
+              {dgettext("jobs", "Mid Level"), "Mid Level"},
+              {dgettext("jobs", "Senior Level"), "Senior Level"},
+              {dgettext("jobs", "Executive"), "Executive"}
             ]}
           />
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2 items-center">
-          <.input field={f[:location]} type="text" label="Location" phx-debounce="blur" />
+          <.input
+            field={f[:location]}
+            type="text"
+            label={dgettext("jobs", "Location")}
+            phx-debounce="blur"
+          />
 
           <div class="md:mt-8">
             <.input
               field={f[:remote_allowed]}
               type="checkbox"
-              label="Remote Work Allowed"
+              label={dgettext("jobs", "Remote Work Allowed")}
               phx-debounce="blur"
             />
           </div>
@@ -75,7 +87,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:salary_min]}
             type="number"
-            label="Minimum Salary"
+            label={dgettext("jobs", "Minimum Salary")}
             min="0"
             phx-debounce="blur"
           />
@@ -83,7 +95,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:salary_max]}
             type="number"
-            label="Maximum Salary"
+            label={dgettext("jobs", "Maximum Salary")}
             min="0"
             phx-debounce="blur"
           />
@@ -109,12 +121,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:position]}
             type="select"
-            label="Position"
-            prompt="Select position"
+            label={dgettext("jobs", "Position")}
+            prompt={dgettext("jobs", "Select position")}
             options={[
-              {"Employee", "Employee"},
-              {"Specialist Role", "Specialist Role"},
-              {"Leadership Position", "Leadership Position"}
+              {dgettext("jobs", "Employee"), "Employee"},
+              {dgettext("jobs", "Specialist Role"), "Specialist Role"},
+              {dgettext("jobs", "Leadership Position"), "Leadership Position"}
             ]}
             phx-debounce="blur"
           />
@@ -122,12 +134,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:years_of_experience]}
             type="select"
-            label="Years of Experience"
-            prompt="Select experience range"
+            label={dgettext("jobs", "Years of Experience")}
+            prompt={dgettext("jobs", "Select experience range")}
             options={[
-              {"Less than 2 years", "Less than 2 years"},
-              {"2-5 years", "2-5 years"},
-              {"More than 5 years", "More than 5 years"}
+              {dgettext("jobs", "Less than 2 years"), "Less than 2 years"},
+              {dgettext("jobs", "2-5 years"), "2-5 years"},
+              {dgettext("jobs", "More than 5 years"), "More than 5 years"}
             ]}
             phx-debounce="blur"
           />
@@ -137,7 +149,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:department]}
             type="multi-select"
-            label="Department"
+            label={dgettext("jobs", "Department")}
             options={departments()}
             phx-debounce="blur"
           />
@@ -147,11 +159,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="multi-select"
             label="Shift Type"
             options={[
-              "Day Shift",
-              "Early Shift",
-              "Late Shift",
-              "Night Shift",
-              "Split Shift"
+              {dgettext("jobs", "Day Shift"), "Day Shift"},
+              {dgettext("jobs", "Early Shift"), "Early Shift"},
+              {dgettext("jobs", "Late Shift"), "Late Shift"},
+              {dgettext("jobs", "Night Shift"), "Night Shift"},
+              {dgettext("jobs", "Split Shift"), "Split Shift"}
             ]}
             phx-debounce="blur"
           />
@@ -161,7 +173,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:region]}
             type="multi-select"
-            label="Region"
+            label={dgettext("jobs", "Region")}
             options={regions()}
             phx-debounce="blur"
           />
@@ -169,12 +181,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:language]}
             type="multi-select"
-            label="Language"
+            label={dgettext("jobs", "Language")}
             options={[
-              "English",
-              "French",
-              "German",
-              "Italian"
+              {dgettext("jobs", "English"), "English"},
+              {dgettext("jobs", "French"), "French"},
+              {dgettext("jobs", "German"), "German"},
+              {dgettext("jobs", "Italian"), "Italian"}
             ]}
             phx-debounce="blur"
           />
@@ -184,19 +196,22 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:gender]}
             type="multi-select"
-            label="Gender"
-            options={["Male", "Female"]}
+            label={dgettext("jobs", "Gender")}
+            options={[
+              {dgettext("jobs", "Male"), "Male"},
+              {dgettext("jobs", "Female"), "Female"}
+            ]}
             phx-debounce="blur"
           />
 
           <.input
             field={f[:workload]}
             type="multi-select"
-            label="Workload"
-            prompt="Select workload"
+            label={dgettext("jobs", "Workload")}
+            prompt={dgettext("jobs", "Select workload")}
             options={[
-              "Full-time",
-              "Part-time"
+              {dgettext("jobs", "Full-time"), "Full-time"},
+              {dgettext("jobs", "Part-time"), "Part-time"}
             ]}
             nested_input?={true}
             show_nested_input="Part-time"
@@ -206,11 +221,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
               <.input
                 field={f[:part_time_details]}
                 type="multi-select"
-                label="Workload Type"
-                prompt="Select workload type"
+                label={dgettext("jobs", "Workload Type")}
+                prompt={dgettext("jobs", "Select workload type")}
                 options={[
-                  "Min",
-                  "Max"
+                  {dgettext("jobs", "Min"), "Min"},
+                  {dgettext("jobs", "Max"), "Max"}
                 ]}
                 phx-debounce="blur"
               />
@@ -359,54 +374,54 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   defp departments do
     [
-      "Administration",
-      "Acute Care",
-      "Anesthesia",
-      "Day Clinic",
-      "Emergency Department",
-      "Home Care (Spitex)",
-      "Hospital / Clinic",
-      "Intensive Care",
-      "Intermediate Care (IMC)",
-      "Long-Term Care",
-      "Medical Practices",
-      "Operating Room",
-      "Other",
-      "Psychiatry",
-      "Recovery Room (PACU)",
-      "Rehabilitation",
-      "Therapies"
+      {dgettext("jobs", "Administration"), "Administration"},
+      {dgettext("jobs", "Acute Care"), "Acute Care"},
+      {dgettext("jobs", "Anesthesia"), "Anesthesia"},
+      {dgettext("jobs", "Day Clinic"), "Day Clinic"},
+      {dgettext("jobs", "Emergency Department"), "Emergency Department"},
+      {dgettext("jobs", "Home Care (Spitex)"), "Home Care (Spitex)"},
+      {dgettext("jobs", "Hospital / Clinic"), "Hospital / Clinic"},
+      {dgettext("jobs", "Intensive Care"), "Intensive Care"},
+      {dgettext("jobs", "Intermediate Care (IMC)"), "Intermediate Care (IMC)"},
+      {dgettext("jobs", "Long-Term Care"), "Long-Term Care"},
+      {dgettext("jobs", "Medical Practices"), "Medical Practices"},
+      {dgettext("jobs", "Operating Room"), "Operating Room"},
+      {dgettext("jobs", "Other"), "Other"},
+      {dgettext("jobs", "Psychiatry"), "Psychiatry"},
+      {dgettext("jobs", "Recovery Room (PACU)"), "Recovery Room (PACU)"},
+      {dgettext("jobs", "Rehabilitation"), "Rehabilitation"},
+      {dgettext("jobs", "Therapies"), "Therapies"}
     ]
   end
 
   defp regions do
     [
-      "Aargau",
-      "Appenzell Ausserrhoden",
-      "Appenzell Innerrhoden",
-      "Basel-Landschaft",
-      "Basel-Stadt",
-      "Bern",
-      "Fribourg",
-      "Geneva",
-      "Glarus",
-      "Grisons",
-      "Jura",
-      "Lucerne",
-      "Neuchâtel",
-      "Nidwalden",
-      "Obwalden",
-      "Schaffhausen",
-      "Schwyz",
-      "Solothurn",
-      "St. Gallen",
-      "Ticino",
-      "Thurgau",
-      "Uri",
-      "Vaud",
-      "Valais",
-      "Zug",
-      "Zurich"
+      {dgettext("jobs", "Aargau"), "Aargau"},
+      {dgettext("jobs", "Appenzell Ausserrhoden"), "Appenzell Ausserrhoden"},
+      {dgettext("jobs", "Appenzell Innerrhoden"), "Appenzell Innerrhoden"},
+      {dgettext("jobs", "Basel-Landschaft"), "Basel-Landschaft"},
+      {dgettext("jobs", "Basel-Stadt"), "Basel-Stadt"},
+      {dgettext("jobs", "Bern"), "Bern"},
+      {dgettext("jobs", "Fribourg"), "Fribourg"},
+      {dgettext("jobs", "Geneva"), "Geneva"},
+      {dgettext("jobs", "Glarus"), "Glarus"},
+      {dgettext("jobs", "Grisons"), "Grisons"},
+      {dgettext("jobs", "Jura"), "Jura"},
+      {dgettext("jobs", "Lucerne"), "Lucerne"},
+      {dgettext("jobs", "Neuchâtel"), "Neuchâtel"},
+      {dgettext("jobs", "Nidwalden"), "Nidwalden"},
+      {dgettext("jobs", "Obwalden"), "Obwalden"},
+      {dgettext("jobs", "Schaffhausen"), "Schaffhausen"},
+      {dgettext("jobs", "Schwyz"), "Schwyz"},
+      {dgettext("jobs", "Solothurn"), "Solothurn"},
+      {dgettext("jobs", "St. Gallen"), "St. Gallen"},
+      {dgettext("jobs", "Ticino"), "Ticino"},
+      {dgettext("jobs", "Thurgau"), "Thurgau"},
+      {dgettext("jobs", "Uri"), "Uri"},
+      {dgettext("jobs", "Vaud"), "Vaud"},
+      {dgettext("jobs", "Valais"), "Valais"},
+      {dgettext("jobs", "Zug"), "Zug"},
+      {dgettext("jobs", "Zurich"), "Zurich"}
     ]
   end
 end

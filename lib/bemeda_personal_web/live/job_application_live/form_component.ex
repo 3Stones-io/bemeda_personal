@@ -18,7 +18,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
         <.input
           field={@form[:cover_letter]}
           type="textarea"
-          label="Cover Letter"
+          label={dgettext("jobs", "Cover Letter")}
           rows={8}
           phx-debounce="blur"
         />
@@ -34,7 +34,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
         <SharedComponents.asset_preview
           show_asset_description={@show_video_description}
           media_asset={@job_application.media_asset}
-          type="Video"
+          type={dgettext("jobs", "Video")}
           asset_preview_id="video-preview-player"
         />
 
@@ -59,9 +59,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
             <.button
               class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
               disabled={!@enable_submit?}
-              phx-disable-with="Saving..."
+              phx-disable-with={dgettext("jobs", "Saving...")}
             >
-              Submit Application
+              {dgettext("jobs", "Submit Application")}
             </.button>
           </div>
         </:actions>
@@ -128,7 +128,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
       {:ok, job_application} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Application updated successfully")
+         |> put_flash(:info, dgettext("jobs", "Application updated successfully"))
          |> push_navigate(
            to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
          )}
@@ -156,7 +156,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Application submitted successfully")
+         |> put_flash(:info, dgettext("jobs", "Application submitted successfully"))
          |> push_navigate(
            to: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
          )}

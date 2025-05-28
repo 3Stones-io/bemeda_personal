@@ -20,33 +20,38 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
         class="space-y-6"
       >
         <div>
-          <.input field={f[:name]} type="text" label="Company Name" required />
+          <.input field={f[:name]} type="text" label={dgettext("companies", "Company Name")} required />
         </div>
 
         <div>
-          <.input field={f[:industry]} type="text" label="Industry" />
+          <.input field={f[:industry]} type="text" label={dgettext("companies", "Industry")} />
         </div>
 
         <div>
-          <.input field={f[:description]} type="textarea" label="Company Description" rows={4} />
+          <.input
+            field={f[:description]}
+            type="textarea"
+            label={dgettext("companies", "Company Description")}
+            rows={4}
+          />
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
           <div>
-            <.input field={f[:location]} type="text" label="Location" />
+            <.input field={f[:location]} type="text" label={dgettext("companies", "Location")} />
           </div>
 
           <div>
-            <.input field={f[:size]} type="text" label="Company Size" />
+            <.input field={f[:size]} type="text" label={dgettext("companies", "Company Size")} />
           </div>
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <.input field={f[:website_url]} type="url" label="Website URL" />
+          <.input field={f[:website_url]} type="url" label={dgettext("companies", "Website URL")} />
         </div>
 
         <div>
-          <p class="block text-base text-zinc-800 mb-2">Company Logo</p>
+          <p class="block text-base text-zinc-800 mb-2">{dgettext("companies", "Company Logo")}</p>
 
           <SharedComponents.asset_preview
             show_asset_description={@show_logo?}
@@ -62,7 +67,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
           >
             <img
               src={SharedHelpers.get_presigned_url(@company.media_asset.upload_id)}
-              alt="Company Logo"
+              alt={dgettext("companies", "Company Logo")}
               class="w-full h-auto"
             />
           </div>
@@ -90,15 +95,21 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
             navigate={~p"/companies"}
             class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Cancel
+            {dgettext("general", "Cancel")}
           </.link>
           <.button
             class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
             disabled={!@enable_submit?}
             type="submit"
-            phx-disable-with={if @action == :new, do: "Creating...", else: "Saving..."}
+            phx-disable-with={
+              if @action == :new,
+                do: dgettext("companies", "Creating..."),
+                else: dgettext("companies", "Saving...")
+            }
           >
-            {if @action == :new, do: "Create Company Profile", else: "Save Changes"}
+            {if @action == :new,
+              do: dgettext("companies", "Create Company Profile"),
+              else: dgettext("companies", "Save Changes")}
           </.button>
         </div>
       </.form>
@@ -159,7 +170,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
       {:ok, _company} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Company profile updated successfully.")
+         |> put_flash(:info, dgettext("companies", "Company profile updated successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -172,7 +183,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
       {:ok, _company} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Company profile created successfully.")
+         |> put_flash(:info, dgettext("companies", "Company profile created successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

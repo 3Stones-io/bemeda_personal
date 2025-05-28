@@ -1,6 +1,7 @@
 /_build/
 /.elixir_ls/
 /.git/
+/codegen/workspaces/
 /config/
 /cover/
 /deps/

@@ -5,8 +5,11 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Emails
+  alias BemedaPersonalWeb.Components.LanguageSwitcher
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
+
+  on_mount {BemedaPersonalWeb.LiveHelpers, :assign_locale}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -59,7 +62,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
                 navigate={~p"/jobs"}
                 class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
-                Jobs
+                {dgettext("navigation", "Jobs")}
               </.link>
 
               <.link
@@ -67,31 +70,32 @@ defmodule BemedaPersonalWeb.NavigationLive do
                 navigate={~p"/job_applications"}
                 class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
-                My Applications
+                {dgettext("navigation", "My Applications")}
               </.link>
 
               <.link
                 navigate={~p"/companies/new"}
                 class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
-                For Employers
+                {dgettext("navigation", "For Employers")}
               </.link>
             </div>
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+            <LanguageSwitcher.language_switcher id="language-switcher-desktop" locale={@locale} />
             <%= if @current_user do %>
               <.link
                 navigate={~p"/resume"}
                 class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Resume
+                {dgettext("navigation", "Resume")}
               </.link>
 
               <.link
                 navigate={~p"/users/settings"}
                 class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Settings
+                {dgettext("navigation", "Settings")}
               </.link>
 
               <span class="text-gray-500 text-sm font-medium">
@@ -104,7 +108,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
                     type="button"
                     class="text-gray-500 hover:text-gray-700 p-1 rounded-full focus:outline-none relative"
                   >
-                    <span class="sr-only">View notifications</span>
+                    <span class="sr-only">{dgettext("navigation", "View notifications")}</span>
                     <div
                       :if={@notifications_count > 0}
                       class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full"
@@ -121,21 +125,21 @@ defmodule BemedaPersonalWeb.NavigationLive do
                 method="delete"
                 class="bg-indigo-600 text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Log out
+                {dgettext("navigation", "Log out")}
               </.link>
             <% else %>
               <.link
                 navigate={~p"/users/log_in"}
                 class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Log in
+                {dgettext("navigation", "Log in")}
               </.link>
 
               <.link
                 navigate={~p"/users/register"}
                 class="bg-indigo-600 text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Sign up
+                {dgettext("navigation", "Sign up")}
               </.link>
             <% end %>
           </div>
@@ -147,7 +151,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
                   type="button"
                   class="text-gray-500 hover:text-gray-700 p-1 rounded-full focus:outline-none relative"
                 >
-                  <span class="sr-only">View notifications</span>
+                  <span class="sr-only">{dgettext("navigation", "View notifications")}</span>
                   <div
                     :if={@notifications_count > 0}
                     class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full"
@@ -165,7 +169,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               aria-expanded="false"
               phx-click={JS.toggle(to: "#mobile-menu")}
             >
-              <span class="sr-only">Open main menu</span>
+              <span class="sr-only">{dgettext("navigation", "Open main menu")}</span>
               <.icon name="hero-bars-3" class="block h-6 w-6" />
             </button>
           </div>
@@ -174,11 +178,14 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
       <div class="sm:hidden hidden bg-gray-50" id="mobile-menu">
         <div class="pt-2 pb-3 space-y-1">
+          <div class="px-3 py-2">
+            <LanguageSwitcher.language_switcher id="language-switcher-mobile" locale={@locale} />
+          </div>
           <.link
             navigate={~p"/jobs"}
             class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
           >
-            Jobs
+            {dgettext("navigation", "Jobs")}
           </.link>
 
           <%= if @current_user do %>
@@ -186,28 +193,28 @@ defmodule BemedaPersonalWeb.NavigationLive do
               navigate={~p"/job_applications"}
               class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
             >
-              My Applications
+              {dgettext("navigation", "My Applications")}
             </.link>
 
             <.link
               navigate={~p"/notifications"}
               class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
             >
-              Notifications
+              {dgettext("navigation", "Notifications")}
             </.link>
 
             <.link
               navigate={~p"/resume"}
               class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
             >
-              Resume
+              {dgettext("navigation", "Resume")}
             </.link>
 
             <.link
               navigate={~p"/users/settings"}
               class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
             >
-              Settings
+              {dgettext("navigation", "Settings")}
             </.link>
           <% end %>
 
@@ -215,7 +222,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             navigate={~p"/companies/new"}
             class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
           >
-            For Employers
+            {dgettext("navigation", "For Employers")}
           </.link>
 
           <%= if @current_user do %>
@@ -224,21 +231,21 @@ defmodule BemedaPersonalWeb.NavigationLive do
               method="delete"
               class="bg-indigo-600 text-white block px-3 py-2 rounded-md text-base font-medium"
             >
-              Log out
+              {dgettext("navigation", "Log out")}
             </.link>
           <% else %>
             <.link
               navigate={~p"/users/log_in"}
               class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
             >
-              Log in
+              {dgettext("navigation", "Log in")}
             </.link>
 
             <.link
               navigate={~p"/users/register"}
               class="bg-indigo-600 text-white block px-3 py-2 rounded-md text-base font-medium mt-1"
             >
-              Sign up
+              {dgettext("navigation", "Sign up")}
             </.link>
           <% end %>
         </div>

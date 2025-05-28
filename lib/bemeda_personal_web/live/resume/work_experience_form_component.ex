@@ -24,47 +24,56 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
         <.input
           field={@form[:company_name]}
           type="text"
-          label="Company Name"
-          placeholder="e.g., Google"
+          label={dgettext("resumes", "Company Name")}
+          placeholder={dgettext("resumes", "e.g., Google")}
           required
         />
         <.input
           field={@form[:title]}
           type="text"
-          label="Job Title"
-          placeholder="e.g., Software Engineer"
+          label={dgettext("resumes", "Job Title")}
+          placeholder={dgettext("resumes", "e.g., Software Engineer")}
           required
         />
         <.input
           field={@form[:location]}
           type="text"
-          label="Location"
-          placeholder="e.g., Mountain View, CA"
+          label={dgettext("resumes", "Location")}
+          placeholder={dgettext("resumes", "e.g., Mountain View, CA")}
         />
-        <.input field={@form[:start_date]} type="date" label="Start Date" required={true} />
+        <.input
+          field={@form[:start_date]}
+          type="date"
+          label={dgettext("resumes", "Start Date")}
+          required={true}
+        />
         <.input
           field={@form[:current]}
           type="checkbox"
-          label="I currently work here"
+          label={dgettext("resumes", "I currently work here")}
           phx-hook="CurrentCheckbox"
           data-end-date-id={@form[:end_date].id}
         />
         <.input
           field={@form[:end_date]}
           type="date"
-          label="End Date"
+          label={dgettext("resumes", "End Date")}
           disabled={@form[:current].value}
           label_class={@form[:current].value && "opacity-50"}
         />
         <.input
           field={@form[:description]}
           type="textarea"
-          label="Description"
-          placeholder="Describe your responsibilities, achievements, projects, etc."
+          label={dgettext("resumes", "Description")}
+          placeholder={
+            dgettext("resumes", "Describe your responsibilities, achievements, projects, etc.")
+          }
         />
 
         <:actions>
-          <.button phx-disable-with="Saving...">Save Work Experience</.button>
+          <.button phx-disable-with={dgettext("resumes", "Saving...")}>
+            {dgettext("resumes", "Save Work Experience")}
+          </.button>
         </:actions>
       </.simple_form>
     </div>
@@ -110,7 +119,7 @@ defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
       {:ok, _work_experience} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Work experience saved successfully")
+         |> put_flash(:info, dgettext("resumes", "Work experience saved successfully"))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

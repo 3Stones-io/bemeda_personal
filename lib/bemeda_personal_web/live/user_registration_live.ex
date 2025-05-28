@@ -9,13 +9,13 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Register for an account
+        {dgettext("auth", "Register for an account")}
         <:subtitle>
-          Already registered?
+          {dgettext("auth", "Already registered?")}
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Log in
+            {dgettext("auth", "Log in")}
           </.link>
-          to your account now.
+          {dgettext("auth", "to your account now.")}
         </:subtitle>
       </.header>
 
@@ -29,16 +29,28 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
         method="post"
       >
         <.error :if={@check_errors}>
-          Oops, something went wrong! Please check the errors below.
+          {dgettext("auth", "Oops, something went wrong! Please check the errors below.")}
         </.error>
 
-        <.input field={@form[:first_name]} type="text" label="First Name" required />
-        <.input field={@form[:last_name]} type="text" label="Last Name" required />
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <.input
+          field={@form[:first_name]}
+          type="text"
+          label={dgettext("auth", "First Name")}
+          required
+        />
+        <.input field={@form[:last_name]} type="text" label={dgettext("auth", "Last Name")} required />
+        <.input field={@form[:email]} type="email" label={dgettext("auth", "Email")} required />
+        <.input
+          field={@form[:password]}
+          type="password"
+          label={dgettext("auth", "Password")}
+          required
+        />
 
         <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
+          <.button phx-disable-with={dgettext("auth", "Creating account...")} class="w-full">
+            {dgettext("auth", "Create an account")}
+          </.button>
         </:actions>
       </.simple_form>
     </div>
@@ -59,7 +71,10 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
 
   @impl Phoenix.LiveView
   def handle_event("save", %{"user" => user_params}, socket) do
-    case Accounts.register_user(user_params) do
+    current_locale = socket.assigns.locale
+    user_params_with_locale = Map.put(user_params, "locale", current_locale)
+
+    case Accounts.register_user(user_params_with_locale) do
       {:ok, user} ->
         {:ok, _email} =
           Accounts.deliver_user_confirmation_instructions(

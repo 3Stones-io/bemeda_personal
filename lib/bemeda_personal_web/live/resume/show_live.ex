@@ -36,14 +36,14 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
   defp apply_action(socket, :show, _params) do
     socket
     |> assign(:form_component, nil)
-    |> assign(:page_title, "My Resume")
+    |> assign(:page_title, dgettext("resumes", "My Resume"))
   end
 
   defp apply_action(socket, :edit_resume, _params) do
     socket
     |> assign(:component_id, "resume-form")
     |> assign(:form_component, ResumeFormComponent)
-    |> assign(:page_title, "Edit Resume")
+    |> assign(:page_title, dgettext("resumes", "Edit Resume"))
   end
 
   defp apply_action(socket, :new_education, _params) do
@@ -51,7 +51,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     |> assign(:component_id, "education-form")
     |> assign(:education, %Resumes.Education{})
     |> assign(:form_component, EducationFormComponent)
-    |> assign(:page_title, "Add Education")
+    |> assign(:page_title, dgettext("resumes", "Add Education"))
   end
 
   defp apply_action(socket, :edit_education, %{"id" => id}) do
@@ -61,14 +61,14 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     |> assign(:component_id, "education-form")
     |> assign(:education, education)
     |> assign(:form_component, EducationFormComponent)
-    |> assign(:page_title, "Edit Education")
+    |> assign(:page_title, dgettext("resumes", "Edit Education"))
   end
 
   defp apply_action(socket, :new_work_experience, _params) do
     socket
     |> assign(:component_id, "work-experience-form")
     |> assign(:form_component, WorkExperienceFormComponent)
-    |> assign(:page_title, "Add Work Experience")
+    |> assign(:page_title, dgettext("resumes", "Add Work Experience"))
     |> assign(:work_experience, %Resumes.WorkExperience{})
   end
 
@@ -78,7 +78,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     socket
     |> assign(:component_id, "work-experience-form")
     |> assign(:form_component, WorkExperienceFormComponent)
-    |> assign(:page_title, "Edit Work Experience")
+    |> assign(:page_title, dgettext("resumes", "Edit Work Experience"))
     |> assign(:work_experience, work_experience)
   end
 
@@ -87,14 +87,14 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
     education = Resumes.get_education(id)
     {:ok, _education} = Resumes.delete_education(education)
 
-    {:noreply, put_flash(socket, :info, "Education entry deleted")}
+    {:noreply, put_flash(socket, :info, dgettext("resumes", "Education entry deleted"))}
   end
 
   def handle_event("delete-work-experience", %{"id" => id}, socket) do
     work_experience = Resumes.get_work_experience(id)
     {:ok, _work_experience} = Resumes.delete_work_experience(work_experience)
 
-    {:noreply, put_flash(socket, :info, "Work experience entry deleted")}
+    {:noreply, put_flash(socket, :info, dgettext("resumes", "Work experience entry deleted"))}
   end
 
   @impl Phoenix.LiveView

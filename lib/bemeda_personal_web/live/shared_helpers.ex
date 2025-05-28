@@ -1,6 +1,8 @@
 defmodule BemedaPersonalWeb.SharedHelpers do
   @moduledoc false
 
+  use Gettext, backend: BemedaPersonalWeb.Gettext
+
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Accounts.User
@@ -139,31 +141,31 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   @spec translate_status(atom) :: map()
   def translate_status(:action) do
     %{
-      "applied" => "Submit Application",
-      "interview_scheduled" => "Schedule Interview",
-      "interviewed" => "Mark as Interviewed",
-      "offer_accepted" => "Accept Offer",
-      "offer_declined" => "Decline Offer",
-      "offer_extended" => "Extend Offer",
-      "rejected" => "Reject Application",
-      "screening" => "Start Screening",
-      "under_review" => "Start Review",
-      "withdrawn" => "Withdraw Application"
+      "applied" => dgettext("jobs", "Submit Application"),
+      "interview_scheduled" => dgettext("jobs", "Schedule Interview"),
+      "interviewed" => dgettext("jobs", "Mark as Interviewed"),
+      "offer_accepted" => dgettext("jobs", "Accept Offer"),
+      "offer_declined" => dgettext("jobs", "Decline Offer"),
+      "offer_extended" => dgettext("jobs", "Extend Offer"),
+      "rejected" => dgettext("jobs", "Reject Application"),
+      "screening" => dgettext("jobs", "Start Screening"),
+      "under_review" => dgettext("jobs", "Start Review"),
+      "withdrawn" => dgettext("jobs", "Withdraw Application")
     }
   end
 
   def translate_status(:state) do
     %{
-      "applied" => "Applied",
-      "interview_scheduled" => "Interview Scheduled",
-      "interviewed" => "Interviewed",
-      "offer_accepted" => "Offer Accepted",
-      "offer_declined" => "Offer Declined",
-      "offer_extended" => "Offer Extended",
-      "rejected" => "Rejected",
-      "screening" => "Screening",
-      "under_review" => "Under Review",
-      "withdrawn" => "Withdrawn"
+      "applied" => dgettext("jobs", "Applied"),
+      "interview_scheduled" => dgettext("jobs", "Interview Scheduled"),
+      "interviewed" => dgettext("jobs", "Interviewed"),
+      "offer_accepted" => dgettext("jobs", "Offer Accepted"),
+      "offer_declined" => dgettext("jobs", "Offer Declined"),
+      "offer_extended" => dgettext("jobs", "Offer Extended"),
+      "rejected" => dgettext("jobs", "Rejected"),
+      "screening" => dgettext("jobs", "Screening"),
+      "under_review" => dgettext("jobs", "Under Review"),
+      "withdrawn" => dgettext("jobs", "Withdrawn")
     }
   end
 

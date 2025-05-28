@@ -73,7 +73,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
                   class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
-                  aria-label={gettext("close")}
+                  aria-label={dgettext("general", "close")}
                 >
                   <.icon name="hero-x-mark-solid" class="h-5 w-5" />
                 </button>
@@ -127,7 +127,11 @@ defmodule BemedaPersonalWeb.CoreComponents do
         {@title}
       </p>
       <p class="mt-2 text-sm leading-5">{msg}</p>
-      <button type="button" class="group absolute top-1 right-1 p-2" aria-label={gettext("close")}>
+      <button
+        type="button"
+        class="group absolute top-1 right-1 p-2"
+        aria-label={dgettext("general", "close")}
+      >
         <.icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
       </button>
     </div>
@@ -147,29 +151,29 @@ defmodule BemedaPersonalWeb.CoreComponents do
   def flash_group(assigns) do
     ~H"""
     <div id={@id}>
-      <.flash kind={:info} title={gettext("Success!")} flash={@flash} />
-      <.flash kind={:error} title={gettext("Error!")} flash={@flash} />
+      <.flash kind={:info} title={dgettext("notifications", "Success!")} flash={@flash} />
+      <.flash kind={:error} title={dgettext("notifications", "Error!")} flash={@flash} />
       <.flash
         id="client-error"
         kind={:error}
-        title={gettext("We can't find the internet")}
+        title={dgettext("notifications", "We can't find the internet")}
         phx-disconnected={show(".phx-client-error #client-error")}
         phx-connected={hide("#client-error")}
         hidden
       >
-        {gettext("Attempting to reconnect")}
+        {dgettext("notifications", "Attempting to reconnect")}
         <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
       </.flash>
 
       <.flash
         id="server-error"
         kind={:error}
-        title={gettext("Something went wrong!")}
+        title={dgettext("notifications", "Something went wrong!")}
         phx-disconnected={show(".phx-server-error #server-error")}
         phx-connected={hide("#server-error")}
         hidden
       >
-        {gettext("Hang in there while we get back on track")}
+        {dgettext("notifications", "Hang in there while we get back on track")}
         <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
       </.flash>
     </div>
@@ -437,7 +441,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
         <div class="p-2 space-y-1">
           <div>
             <label
-              :for={option <- @options}
+              :for={{label, option} <- @options}
               class={[
                 "p-2 hover:bg-zinc-50 rounded cursor-pointer",
                 !@nested_input? && "flex items-center",
@@ -450,7 +454,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
                 checked={@value && option in String.split(@value, ",", trim: true)}
                 class="peer rounded border-zinc-300 text-blue-600 focus:ring-blue-500 focus:ring-2 mr-3 main-checkbox"
               />
-              <span class="text-sm text-zinc-900 w-full p-2 option-label inline-block">{option}</span>
+              <span class="text-sm text-zinc-900 w-full p-2 option-label inline-block">{label}</span>
               <div
                 :if={@nested_input? && option == @show_nested_input}
                 class="mt-4 hidden peer-checked:block nested-input w-full"
@@ -680,7 +684,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
             <th :if={@action != []} class="relative p-0 pb-4">
-              <span class="sr-only">{gettext("Actions")}</span>
+              <span class="sr-only">{dgettext("general", "Actions")}</span>
             </th>
           </tr>
         </thead>
