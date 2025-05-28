@@ -16,6 +16,7 @@ msgstr ""
 msgid "About %{company}"
 msgstr "Über %{company}"
 
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Applicants"
@@ -47,11 +48,13 @@ msgstr "Unternehmensbeschreibung"
 msgid "Company Logo"
 msgstr "Unternehmenslogo"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Company Name"
 msgstr "Unternehmensname"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
@@ -86,6 +89,7 @@ msgstr "Erstellen Sie Ihr Unternehmensprofil"
 msgid "Creating..."
 msgstr "Erstellen..."
 
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Dashboard"
@@ -102,6 +106,7 @@ msgstr "Unternehmensprofil Bearbeiten"
 msgid "Get started by clicking the \"Post New Job\" button above."
 msgstr "Beginnen Sie, indem Sie auf die Schaltfläche \"Neue Stelle Veröffentlichen\" oben klicken."
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -156,6 +161,7 @@ msgid "Set up your company profile to start posting jobs and connecting with pot
 msgstr "Richten Sie Ihr Unternehmensprofil ein, um Jobs zu veröffentlichen und sich mit potenziellen Kandidaten zu vernetzen."
 
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "Tech"
 msgstr "Technik"
@@ -165,17 +171,20 @@ msgstr "Technik"
 msgid "View All Applicants"
 msgstr "Alle Bewerber Anzeigen"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "View All Jobs"
 msgstr "Alle Jobs Anzeigen"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Visit Website"
 msgstr "Website Besuchen"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -206,3 +215,78 @@ msgstr "Sie haben noch keine Jobs veröffentlicht."
 #, elixir-autogen, elixir-format
 msgid "You need to create a company profile before you can post jobs."
 msgstr "Sie müssen ein Unternehmensprofil erstellen, bevor Sie Jobs veröffentlichen können."
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "About the Company"
+msgstr "Über das Unternehmen"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "View Company Profile"
+msgstr "Unternehmensprofil Anzeigen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Consulting"
+msgstr "Beratung"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Education"
+msgstr "Bildung"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Finance"
+msgstr "Finanzen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Healthcare"
+msgstr "Gesundheitswesen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Manufacturing"
+msgstr "Fertigung"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Retail"
+msgstr "Einzelhandel"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Technology"
+msgstr "Technologie"
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View and manage applicants for %{job_title}."
+msgstr "Bewerber für %{job_title} anzeigen und verwalten."
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View and manage applicants for all job postings at %{company_name}."
+msgstr "Bewerber für alle Stellenausschreibungen bei %{company_name} anzeigen und verwalten."
+
+#: lib/bemeda_personal_web/live/company_applicant_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Applicant: %{name}"
+msgstr "Bewerber: %{name}"
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Applicants - %{name}"
+msgstr "Bewerber"
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Applicants - %{title}"
+msgstr "Bewerber"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Remote"
+msgstr "Remote"

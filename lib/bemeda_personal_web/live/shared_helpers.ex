@@ -182,6 +182,37 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def status_badge_color("withdrawn"), do: "bg-gray-100 text-gray-800"
   def status_badge_color(_status), do: "bg-gray-100 text-gray-800"
 
+  @spec translate_employment_type(String.t() | nil) :: String.t()
+  def translate_employment_type(nil), do: dgettext("general", "Not specified")
+  def translate_employment_type("Full-time"), do: dgettext("jobs", "Full-time")
+  def translate_employment_type("Part-time"), do: dgettext("jobs", "Part-time")
+  def translate_employment_type("Contract"), do: dgettext("jobs", "Contract")
+  def translate_employment_type("Temporary"), do: dgettext("jobs", "Temporary")
+  def translate_employment_type("Internship"), do: dgettext("jobs", "Internship")
+  def translate_employment_type(type), do: type
+
+  @spec translate_experience_level(String.t() | nil) :: String.t()
+  def translate_experience_level(nil), do: dgettext("general", "Not specified")
+  def translate_experience_level("Junior"), do: dgettext("jobs", "Junior")
+  def translate_experience_level("Mid-level"), do: dgettext("jobs", "Mid Level")
+  def translate_experience_level("Senior"), do: dgettext("jobs", "Senior Level")
+  def translate_experience_level("Lead"), do: dgettext("jobs", "Lead")
+  def translate_experience_level("Executive"), do: dgettext("jobs", "Executive")
+  def translate_experience_level("Entry Level"), do: dgettext("jobs", "Entry Level")
+  def translate_experience_level(level), do: level
+
+  @spec translate_industry(String.t() | nil) :: String.t()
+  def translate_industry(nil), do: dgettext("general", "Not specified")
+  def translate_industry("Technology"), do: dgettext("companies", "Technology")
+  def translate_industry("Tech"), do: dgettext("companies", "Tech")
+  def translate_industry("Healthcare"), do: dgettext("companies", "Healthcare")
+  def translate_industry("Finance"), do: dgettext("companies", "Finance")
+  def translate_industry("Education"), do: dgettext("companies", "Education")
+  def translate_industry("Manufacturing"), do: dgettext("companies", "Manufacturing")
+  def translate_industry("Retail"), do: dgettext("companies", "Retail")
+  def translate_industry("Consulting"), do: dgettext("companies", "Consulting")
+  def translate_industry(industry), do: industry
+
   @spec enqueue_email_notification_job(map()) :: {:ok, Oban.Job.t()} | {:error, any()}
   def enqueue_email_notification_job(args) do
     args

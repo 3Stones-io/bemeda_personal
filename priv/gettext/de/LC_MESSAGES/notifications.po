@@ -61,6 +61,7 @@ msgstr "Als ungelesen markieren"
 msgid "No notifications available at the moment."
 msgstr "Derzeit sind keine Benachrichtigungen verfügbar."
 
+#: lib/bemeda_personal_web/live/notification_live/index.ex
 #: lib/bemeda_personal_web/live/notification_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Notifications"

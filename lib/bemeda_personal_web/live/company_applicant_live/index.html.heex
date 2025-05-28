@@ -3,26 +3,32 @@
     <ol class="flex items-center space-x-2">
       <li>
         <.link navigate={~p"/companies"} class="text-gray-500 hover:text-gray-700">
-          Dashboard
+          {dgettext("companies", "Dashboard")}
         </.link>
       </li>
       <li class="flex items-center">
         <.icon name="hero-chevron-right" class="h-5 w-5 text-gray-400" />
-        <span class="ml-2 text-gray-700 font-medium">Applicants</span>
+        <span class="ml-2 text-gray-700 font-medium">{dgettext("companies", "Applicants")}</span>
       </li>
     </ol>
   </nav>
 
   <div class="mb-8">
     <div class="flex justify-between items-center">
-      <h1 class="text-3xl font-bold text-gray-900">Applicants</h1>
+      <h1 class="text-3xl font-bold text-gray-900">{dgettext("companies", "Applicants")}</h1>
     </div>
     <p :if={!@job_posting} class="mt-2 text-sm text-gray-600">
-      View and manage applicants for all job postings at {@company.name}.
+      {dgettext(
+        "companies",
+        "View and manage applicants for all job postings at %{company_name}.",
+        company_name: @company.name
+      )}
     </p>
 
     <p :if={@job_posting} class="mt-2 text-sm text-gray-600">
-      View and manage applicants for {@job_posting.title}.
+      {dgettext("companies", "View and manage applicants for %{job_title}.",
+        job_title: @job_posting.title
+      )}
     </p>
   </div>
 

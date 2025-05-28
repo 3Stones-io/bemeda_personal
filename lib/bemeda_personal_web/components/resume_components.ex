@@ -27,7 +27,7 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
             navigate={@add_path}
             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
           >
-            <.icon name="hero-plus" class="h-5 w-5 mr-2" /> Add
+            <.icon name="hero-plus" class="h-5 w-5 mr-2" /> {dgettext("general", "Add")}
           </.link>
         </div>
 
@@ -83,7 +83,11 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
       </div>
 
       <div :if={@can_update_resume} class="flex space-x-2">
-        <.link navigate={@edit_path} class="text-blue-500 hover:text-blue-600" title="Edit">
+        <.link
+          navigate={@edit_path}
+          class="text-blue-500 hover:text-blue-600"
+          title={dgettext("general", "Edit")}
+        >
           <.icon name="hero-pencil-square" class="h-5 w-5" />
         </.link>
 
@@ -94,9 +98,9 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
             )
             |> JS.hide(to: "##{@id}")
           }
-          data-confirm="Are you sure you want to delete this entry?"
+          data-confirm={dgettext("general", "Are you sure you want to delete this entry?")}
           class="text-red-500 hover:text-red-600"
-          title="Delete"
+          title={dgettext("general", "Delete")}
           id={"#{@delete_event}-#{@item.id}"}
         >
           <.icon name="hero-trash" class="h-5 w-5" />
@@ -181,7 +185,7 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
     <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
       <.profile_info_item icon_name="hero-map-pin">
         <:content>
-          {@resume.location || "Location not specified"}
+          {@resume.location || dgettext("resumes", "Location not specified")}
         </:content>
       </.profile_info_item>
 
@@ -193,7 +197,7 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
 
       <.profile_info_item icon_name="hero-phone">
         <:content>
-          {@resume.phone_number || "Phone not specified"}
+          {@resume.phone_number || dgettext("resumes", "Phone not specified")}
         </:content>
       </.profile_info_item>
 
@@ -204,7 +208,7 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
               {@resume.website_url}
             </a>
           <% else %>
-            Website not specified
+            {dgettext("resumes", "Website not specified")}
           <% end %>
         </:content>
       </.profile_info_item>
