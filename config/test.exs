@@ -46,3 +46,6 @@ config :bemeda_personal, :tigris,
 
 # Oban
 config :bemeda_personal, Oban, testing: :manual
+
+# Gettext
+config :bemeda_personal, BemedaPersonalWeb.Gettext, default_locale: "en"

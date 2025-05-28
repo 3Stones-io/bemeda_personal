@@ -1,0 +1,397 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new messages manually only if they're dynamic
+## messages that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+#
+msgid ""
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "An interview has been scheduled."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Application Status Updated"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Application Unsuccessful"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Application Withdrawn"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Email Address Update Request"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Job Application Received - %{job_title}"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Job Application Status Update - %{readable_status}"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | New Job Application Received - %{job_title}"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | New Message from %{sender_name}"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Password Reset Request"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Welcome - Confirm Your Account"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm Email Change"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm My Account"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Good news! We've extended an offer to you."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_received_email.ex
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_status_email.ex
+#: lib/bemeda_personal/accounts/email_templates/job_application_received_email.ex
+#: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
+#: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
+#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
+#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Hello %{user_name},"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Hi %{user_name},"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you didn't create an account with us, please ignore this email."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you didn't request a password reset, please ignore this email or contact us if you have concerns."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you didn't request to change your email address, please ignore this email or contact our support team immediately if you have concerns."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Completed"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Scheduled"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Job Offer Extended"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_status_email.ex
+#, elixir-autogen, elixir-format
+msgid "Manage Application"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Offer Accepted"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Offer Declined"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
+#, elixir-autogen, elixir-format
+msgid "Reset My Password"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_received_email.ex
+#, elixir-autogen, elixir-format
+msgid "Review Application"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Screening in Progress"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Thank you for attending the interview. We're reviewing your performance."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Thank you for joining BemedaPersonal. We're excited to have you on board!"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#, elixir-autogen, elixir-format
+msgid "Thank you for joining BemedaPersonal. We're excited to have you on board! To start using all our features, please confirm your account by clicking the button below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "The application status has been updated."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "The candidate has accepted your job offer!"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "The candidate has declined your job offer."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "The candidate has withdrawn their application."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "The interview with this candidate has been completed."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "This application is in the screening process."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "This application is under review by your team."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "This is an update regarding %{applicant_name}'s application for the position of \"%{job_title}\"."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_status_email.ex
+#, elixir-autogen, elixir-format
+msgid "This is an update regarding %{applicant_name}'s application for the position of:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "This is an update regarding your application for the position of \"%{job_title}\"."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "To confirm this change, please visit the link below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "To create a new password, please visit the link below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_received_email.ex
+#, elixir-autogen, elixir-format
+msgid "To review this application and take action, please click the button below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "To review this application and take action, please visit the link below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "To start using all our features, please confirm your account by visiting the link below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
+#, elixir-autogen, elixir-format
+msgid "To view and respond to this message, please click the button below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "To view and respond to this message, please visit the link below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_status_email.ex
+#, elixir-autogen, elixir-format
+msgid "To view the details of this application and take further action, please click the button below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "To view the details of this application and take further action, please visit the link below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/job_application_received_email.ex
+#: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
+#, elixir-autogen, elixir-format
+msgid "To view the details of your application and any next steps required, please click the button below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "To view the details of your application and any next steps required, please visit the link below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Under Review"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Unfortunately, we won't be moving forward with your application at this time."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
+#, elixir-autogen, elixir-format
+msgid "View & Reply"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
+#, elixir-autogen, elixir-format
+msgid "View Application Details"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/job_application_received_email.ex
+#, elixir-autogen, elixir-format
+msgid "View My Application"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "We received a request to reset the password for your BemedaPersonal account."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
+#, elixir-autogen, elixir-format
+msgid "We received a request to reset the password for your BemedaPersonal account. To create a new password, please click the button below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "We received a request to update the email address for your BemedaPersonal account."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
+#, elixir-autogen, elixir-format
+msgid "We received a request to update the email address for your BemedaPersonal account. To confirm this change, please click the button below:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
+#, elixir-autogen, elixir-format
+msgid "We're writing to inform you that the status of your application for the position of:"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/job_application_received_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "We've received your application for the position of \"%{job_title}\" at %{company_name}."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You have received a new message from %{sender_name}."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You have scheduled an interview with this candidate."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You're currently undergoing our screening process."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You've accepted our offer — welcome aboard!"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You've declined our offer. We wish you the best in your future endeavors."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You've extended an offer to this candidate."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/employer_job_application_received_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You've received a new application from %{applicant_name} for the position of \"%{job_title}\"."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You've rejected this candidate's application."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You've withdrawn your application."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Your application is currently being reviewed by our hiring team."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Your application status has been updated."
+msgstr ""

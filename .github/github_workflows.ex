@@ -67,6 +67,7 @@ defmodule GithubWorkflows do
       prettier: prettier_job(),
       sobelow: sobelow_job(),
       test: test_job(),
+      translations: translations_job(),
       unused_deps: unused_deps_job()
     ]
   end
@@ -377,6 +378,19 @@ defmodule GithubWorkflows do
             MIX_ENV: "test"
           ],
           run: "mix test --cover --warnings-as-errors"
+        ]
+      ]
+    )
+  end
+
+  defp translations_job do
+    elixir_job("Translations",
+      needs: :compile,
+      steps: [
+        [
+          name: "Check gettext and translations",
+          env: [MIX_ENV: "test"],
+          run: "make check_gettext check_translations"
         ]
       ]
     )

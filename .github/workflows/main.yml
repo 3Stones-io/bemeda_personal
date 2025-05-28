@@ -332,6 +332,34 @@ jobs:
         env:
           MIX_ENV: test
         run: mix test --cover --warnings-as-errors
+  translations:
+    needs: compile
+    name: Translations
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+      - id: setup-beam
+        name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+      - name: Restore dependencies cache
+        uses: actions/cache/restore@v4
+        with:
+          key: mix-${{ runner.os }}-${{ steps.setup-beam.outputs.elixir-version }}-${{ steps.setup-beam.outputs.otp-version }}-${{ github.sha }}
+          path: |
+            _build
+            deps
+          restore-keys: |
+            mix-${{ runner.os }}-${{ steps.setup-beam.outputs.elixir-version }}-${{ steps.setup-beam.outputs.otp-version }}-
+      - name: Check gettext and translations
+        env:
+          MIX_ENV: test
+        run: make check_gettext check_translations
   unused_deps:
     needs: compile
     name: Check unused deps
@@ -373,6 +401,7 @@ jobs:
       - prettier
       - sobelow
       - test
+      - translations
       - unused_deps
     runs-on: ubuntu-latest
     permissions:
