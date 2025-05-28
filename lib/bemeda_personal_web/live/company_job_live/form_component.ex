@@ -236,7 +236,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         <SharedComponents.asset_preview
           show_asset_description={@show_video_description}
           media_asset={@job_posting.media_asset}
-          type="Video"
+          type={dgettext("jobs", "Video")}
           asset_preview_id="video-preview-player"
         />
 
@@ -274,7 +274,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
             disabled={!@enable_submit?}
           >
-            {if(@action == :edit, do: "Save Changes", else: "Post Job")}
+            {if(@action == :edit,
+              do: dgettext("jobs", "Save Changes"),
+              else: dgettext("jobs", "Post Job")
+            )}
           </.button>
         </div>
       </.form>
@@ -340,7 +343,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:ok, _job_posting} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Job posted successfully.")
+         |> put_flash(:info, dgettext("jobs", "Job posted successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -353,7 +356,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
       {:ok, _job_posting} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Job updated successfully.")
+         |> put_flash(:info, dgettext("jobs", "Job updated successfully."))
          |> push_navigate(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
