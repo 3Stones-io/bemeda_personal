@@ -11,6 +11,7 @@ defmodule BemedaPersonal.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: phoenix_deps() ++ optimum_deps() ++ app_deps(),
+      gettext: [write_reference_line_numbers: false],
 
       # CI
       dialyzer: [

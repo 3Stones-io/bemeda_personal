@@ -1,0 +1,352 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr "Un lien pour confirmer votre changement d'email a été envoyé à la nouvelle adresse."
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr "Paramètres du compte"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Account created successfully!"
+msgstr "Compte créé avec succès !"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Already registered?"
+msgstr "Déjà inscrit ?"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "Changer l'email"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Change Password"
+msgstr "Changer le mot de passe"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Changing..."
+msgstr "Modification en cours..."
+
+#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm Account"
+msgstr "Confirmer le compte"
+
+#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm my account"
+msgstr "Confirmer mon compte"
+
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "Confirmer le nouveau mot de passe"
+
+#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Confirming..."
+msgstr "Confirmation en cours..."
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Create an account"
+msgstr "Créer un compte"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Creating account..."
+msgstr "Création du compte en cours..."
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "Don't have an account?"
+msgstr "Vous n'avez pas de compte ?"
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "Email"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr "Le lien de changement d'email est invalide ou a expiré."
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr "Email modifié avec succès."
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "First Name"
+msgstr "Prénom"
+
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "How companies have rated your applications"
+msgstr "Comment les entreprises ont évalué vos candidatures"
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+msgstr "Si votre email est dans notre système et n'a pas encore été confirmé, vous recevrez un email avec des instructions sous peu."
+
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions to reset your password shortly."
+msgstr "Si votre email est dans notre système, vous recevrez des instructions pour réinitialiser votre mot de passe sous peu."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Invalid email or password"
+msgstr "Email ou mot de passe invalide"
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "Keep me logged in"
+msgstr "Rester connecté"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Last Name"
+msgstr "Nom de famille"
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr "Se connecter"
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "Log in to account"
+msgstr "Se connecter au compte"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Logged out successfully."
+msgstr "Déconnexion réussie."
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "Logging in..."
+msgstr "Connexion en cours..."
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Manage your account email address and password settings"
+msgstr "Gérer l'adresse email et les paramètres de mot de passe de votre compte"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Name updated successfully."
+msgstr "Nom mis à jour avec succès."
+
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#, elixir-autogen, elixir-format
+msgid "No confirmation instructions received?"
+msgstr "Aucune instruction de confirmation reçue ?"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Oops, something went wrong! Please check the errors below."
+msgstr "Oups, quelque chose s'est mal passé ! Veuillez vérifier les erreurs ci-dessous."
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr "Mot de passe"
+
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Password reset successfully."
+msgstr "Mot de passe réinitialisé avec succès."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr "Mot de passe mis à jour avec succès !"
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Register"
+msgstr "S'inscrire"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Register for an account"
+msgstr "S'inscrire pour un compte"
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#, elixir-autogen, elixir-format
+msgid "Resend confirmation instructions"
+msgstr "Renvoyer les instructions de confirmation"
+
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Reset Password"
+msgstr "Réinitialiser le mot de passe"
+
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Reset password link is invalid or it has expired."
+msgstr "Le lien de réinitialisation du mot de passe est invalide ou a expiré."
+
+#: lib/bemeda_personal_web/live/user_reset_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Resetting..."
+msgstr "Réinitialisation en cours..."
+
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Send password reset instructions"
+msgstr "Envoyer les instructions de réinitialisation du mot de passe"
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "Sending..."
+msgstr "Envoi en cours..."
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "Sign up"
+msgstr "S'inscrire"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Update Name"
+msgstr "Mettre à jour le nom"
+
+#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#, elixir-autogen, elixir-format
+msgid "User confirmation link is invalid or it has expired."
+msgstr "Le lien de confirmation utilisateur est invalide ou a expiré."
+
+#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#, elixir-autogen, elixir-format
+msgid "User confirmed successfully."
+msgstr "Utilisateur confirmé avec succès."
+
+#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
+#, elixir-autogen, elixir-format
+msgid "We'll send a new confirmation link to your inbox"
+msgstr "Nous enverrons un nouveau lien de confirmation dans votre boîte de réception"
+
+#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
+#, elixir-autogen, elixir-format
+msgid "We'll send a password reset link to your inbox"
+msgstr "Nous enverrons un lien de réinitialisation du mot de passe dans votre boîte de réception"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
+msgstr "Bon retour !"
+
+#: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
+#, elixir-autogen, elixir-format
+msgid "You must be logged in to rate."
+msgstr "Vous devez être connecté pour évaluer."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "You must confirm your email address"
+msgstr "Vous devez confirmer votre adresse email"
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "You must log in to access this page."
+msgstr "Vous devez vous connecter pour accéder à cette page."
+
+#: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
+#, elixir-autogen, elixir-format
+msgid "You need to be logged in to rate"
+msgstr "Vous devez être connecté pour évaluer"
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Your Rating"
+msgstr "Votre évaluation"
+
+#: lib/bemeda_personal/accounts/user.ex
+#, elixir-autogen, elixir-format
+msgid "did not change"
+msgstr "n'a pas changé"
+
+#: lib/bemeda_personal/accounts/user.ex
+#, elixir-autogen, elixir-format
+msgid "does not match password"
+msgstr "ne correspond pas au mot de passe"
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "for an account now."
+msgstr "pour un compte maintenant."
+
+#: lib/bemeda_personal/accounts/user.ex
+#, elixir-autogen, elixir-format
+msgid "is not valid"
+msgstr "n'est pas valide"
+
+#: lib/bemeda_personal/accounts/user.ex
+#, elixir-autogen, elixir-format
+msgid "must have the @ sign and no spaces"
+msgstr "doit avoir le signe @ et aucun espace"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "to your account now."
+msgstr "à votre compte maintenant."

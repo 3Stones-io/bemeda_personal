@@ -1,0 +1,78 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
+
+#: lib/bemeda_personal_web/controllers/page_html/home.html.heex
+#, elixir-autogen, elixir-format
+msgid "Browse Jobs"
+msgstr "Parcourir les emplois"
+
+#: lib/bemeda_personal_web/controllers/page_html/home.html.heex
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "For Employers"
+msgstr "Pour les employeurs"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Jobs"
+msgstr "Emplois"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr "Se connecter"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "My Applications"
+msgstr "Mes candidatures"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Notifications"
+msgstr "Notifications"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Open main menu"
+msgstr "Ouvrir le menu principal"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Resume"
+msgstr "CV"
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Return to Home"
+msgstr "Retour à l'accueil"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr "Paramètres"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Sign up"
+msgstr "S'inscrire"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "View notifications"
+msgstr "Voir les notifications"
