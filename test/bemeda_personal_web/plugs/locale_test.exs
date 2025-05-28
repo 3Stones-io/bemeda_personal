@@ -11,8 +11,8 @@ defmodule BemedaPersonalWeb.Plugs.LocaleTest do
         |> init_test_session(%{})
         |> Locale.call([])
 
-      assert conn.assigns.locale == "de"
-      assert get_session(conn, :locale) == "de"
+      assert conn.assigns.locale == "en"
+      assert get_session(conn, :locale) == "en"
     end
 
     test "sets locale from session", %{conn: conn} do
@@ -31,8 +31,8 @@ defmodule BemedaPersonalWeb.Plugs.LocaleTest do
         |> init_test_session(%{locale: "unsupported"})
         |> Locale.call([])
 
-      assert conn.assigns.locale == "de"
-      assert get_session(conn, :locale) == "de"
+      assert conn.assigns.locale == "en"
+      assert get_session(conn, :locale) == "en"
     end
 
     test "uses user's saved locale preference when no session locale", %{conn: conn} do
@@ -64,7 +64,7 @@ defmodule BemedaPersonalWeb.Plugs.LocaleTest do
 
   describe "default_locale/0" do
     test "returns default locale" do
-      assert Locale.default_locale() == "de"
+      assert Locale.default_locale() == "en"
     end
   end
 
