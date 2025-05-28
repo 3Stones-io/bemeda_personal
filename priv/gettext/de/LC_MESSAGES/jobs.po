@@ -1,0 +1,528 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "%{applicant} applied for the %{position} position at %{company}."
+msgstr "%{applicant} hat sich für die Position %{position} bei %{company} beworben."
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Accept Offer"
+msgstr "Angebot Annehmen"
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Add notes about this status change..."
+msgstr "Notizen zu dieser Statusänderung hinzufügen..."
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Any"
+msgstr "Beliebig"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "Applicants will appear here when they apply to your job postings."
+msgstr "Bewerber erscheinen hier, wenn sie sich auf Ihre Stellenausschreibungen bewerben."
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "Application Created"
+msgstr "Bewerbung Erstellt"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "Application History"
+msgstr "Bewerbungsverlauf"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "Application Timeline"
+msgstr "Bewerbungs-Timeline"
+
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Application submitted successfully"
+msgstr "Bewerbung erfolgreich eingereicht"
+
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Application updated successfully"
+msgstr "Bewerbung erfolgreich aktualisiert"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Applied"
+msgstr "Beworben"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "Applied on"
+msgstr "Beworben am"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Apply Filters"
+msgstr "Filter Anwenden"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Apply to this job"
+msgstr "Auf diese Stelle bewerben"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "Back to application"
+msgstr "Zurück zur Bewerbung"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "Browse Jobs"
+msgstr "Jobs Durchsuchen"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Clear All"
+msgstr "Alle Löschen"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Contract"
+msgstr "Vertrag"
+
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Cover Letter"
+msgstr "Anschreiben"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Currency"
+msgstr "Währung"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Decline Offer"
+msgstr "Angebot Ablehnen"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Edit Your Application"
+msgstr "Ihre Bewerbung Bearbeiten"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Employment Type"
+msgstr "Beschäftigungsart"
+
+#: lib/bemeda_personal/jobs/job_application_filter.ex
+#, elixir-autogen, elixir-format
+msgid "End date must be after or equal to start date"
+msgstr "Enddatum muss nach oder gleich dem Startdatum sein"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Entry Level"
+msgstr "Einstiegslevel"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Executive"
+msgstr "Führungsebene"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Experience Level"
+msgstr "Erfahrungslevel"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Extend Offer"
+msgstr "Angebot Erweitern"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to update job application status."
+msgstr "Bewerbungsstatus konnte nicht aktualisiert werden."
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to update status"
+msgstr "Status konnte nicht aktualisiert werden"
+
+#: lib/bemeda_personal_web/live/job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Find your next career opportunity"
+msgstr "Finden Sie Ihre nächste Karrierechance"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Full-time"
+msgstr "Vollzeit"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Internship"
+msgstr "Praktikum"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Scheduled"
+msgstr "Vorstellungsgespräch Geplant"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Interviewed"
+msgstr "Interviewt"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Job Description"
+msgstr "Stellenbeschreibung"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Job Details"
+msgstr "Stellendetails"
+
+#: lib/bemeda_personal_web/live/job_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Job Listings"
+msgstr "Stellenausschreibungen"
+
+#: lib/bemeda_personal_web/live/job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Job Postings"
+msgstr "Stellenanzeigen"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Job Title"
+msgstr "Stellentitel"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Job application status updated successfully."
+msgstr "Bewerbungsstatus erfolgreich aktualisiert."
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Job posted successfully."
+msgstr "Stelle erfolgreich veröffentlicht."
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Job posting deleted successfully"
+msgstr "Stellenausschreibung erfolgreich gelöscht"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Job updated successfully."
+msgstr "Stelle erfolgreich aktualisiert."
+
+#: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
+#, elixir-autogen, elixir-format
+msgid "Jobs"
+msgstr "Jobs"
+
+#: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
+#, elixir-autogen, elixir-format
+msgid "Jobs at %{company}"
+msgstr "Jobs bei %{company}"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Location"
+msgstr "Standort"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Mark as Interviewed"
+msgstr "Als Interviewt Markieren"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Maximum Salary"
+msgstr "Maximales Gehalt"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Mid Level"
+msgstr "Mittleres Level"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Minimum Salary"
+msgstr "Mindestgehalt"
+
+#: lib/bemeda_personal_web/live/job_application_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "My Job Applications"
+msgstr "Meine Bewerbungen"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "No applicants found."
+msgstr "Keine Bewerber gefunden."
+
+#: lib/bemeda_personal_web/live/job_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "No job postings available at the moment."
+msgstr "Derzeit sind keine Stellenausschreibungen verfügbar."
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "No open positions at this time"
+msgstr "Derzeit keine offenen Stellen"
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Notes"
+msgstr "Notizen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Offer Accepted"
+msgstr "Angebot Angenommen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Offer Declined"
+msgstr "Angebot Abgelehnt"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Offer Extended"
+msgstr "Angebot Erweitert"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "On-site Only"
+msgstr "Nur Vor Ort"
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Open Jobs"
+msgstr "Offene Stellen"
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Open Positions"
+msgstr "Offene Positionen"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Part-time"
+msgstr "Teilzeit"
+
+#: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
+#: lib/bemeda_personal_web/live/job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Please check back later for new opportunities."
+msgstr "Schauen Sie später nach neuen Möglichkeiten."
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Post Job"
+msgstr "Stelle Veröffentlichen"
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Recent Jobs"
+msgstr "Aktuelle Jobs"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Reject Application"
+msgstr "Bewerbung Ablehnen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Rejected"
+msgstr "Abgelehnt"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Remote Only"
+msgstr "Nur Remote"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Remote Work Allowed"
+msgstr "Remote-Arbeit Erlaubt"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Review Application"
+msgstr "Bewerbung Prüfen"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Save Changes"
+msgstr "Änderungen Speichern"
+
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr "Speichern..."
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Schedule Interview"
+msgstr "Vorstellungsgespräch Planen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Screening"
+msgstr "Vorauswahl"
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select a status"
+msgstr "Status auswählen"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Senior Level"
+msgstr "Senior Level"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Show History"
+msgstr "Verlauf Anzeigen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Start Review"
+msgstr "Prüfung Starten"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Start Screening"
+msgstr "Vorauswahl Starten"
+
+#: lib/bemeda_personal/jobs/job_application_filter.ex
+#, elixir-autogen, elixir-format
+msgid "Start date must be before or equal to end date"
+msgstr "Startdatum muss vor oder gleich dem Enddatum sein"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "Start your job search by browsing available positions."
+msgstr "Beginnen Sie Ihre Jobsuche, indem Sie verfügbare Positionen durchsuchen."
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Status"
+msgstr "Status"
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Status updated successfully"
+msgstr "Status erfolgreich aktualisiert"
+
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Submit Application"
+msgstr "Bewerbung Einreichen"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Temporary"
+msgstr "Zeitarbeit"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Under Review"
+msgstr "In Prüfung"
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Update Status"
+msgstr "Status Aktualisieren"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "Updated by"
+msgstr "Aktualisiert von"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Video"
+msgstr "Video"
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "View All Jobs"
+msgstr "Alle Jobs Anzeigen"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "View Job"
+msgstr "Job Anzeigen"
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "View all jobs"
+msgstr "Alle Jobs anzeigen"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "View the timeline of your application status changes for the"
+msgstr "Zeigen Sie die Zeitleiste Ihrer Bewerbungsstatusänderungen für die"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Withdraw Application"
+msgstr "Bewerbung Zurückziehen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Withdrawn"
+msgstr "Zurückgezogen"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "You applied for the %{position} position at %{company}."
+msgstr "Sie haben sich für die Position %{position} bei %{company} beworben."
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "You are not authorized to delete this job posting"
+msgstr "Sie sind nicht berechtigt, diese Stellenausschreibung zu löschen"
+
+#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "You haven't applied for any jobs yet."
+msgstr "Sie haben sich noch für keine Jobs beworben."
+
+#: lib/bemeda_personal/jobs/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "must be less than or equal to salary maximum"
+msgstr "muss kleiner oder gleich dem maximalen Gehalt sein"
+
+#: lib/bemeda_personal_web/live/job_application_live/history.html.heex
+#, elixir-autogen, elixir-format
+msgid "position at"
+msgstr "Position bei"

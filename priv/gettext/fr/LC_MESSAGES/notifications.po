@@ -1,0 +1,92 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Attempting to reconnect"
+msgstr "Tentative de reconnexion"
+
+#: lib/bemeda_personal_web/live/notification_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Click to mark as read"
+msgstr "Cliquez pour marquer comme lu"
+
+#: lib/bemeda_personal_web/live/notification_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Click to mark as unread"
+msgstr "Cliquez pour marquer comme non lu"
+
+#: lib/bemeda_personal_web/live/notification_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Could not update notification status"
+msgstr "Impossible de mettre à jour le statut de la notification"
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Error!"
+msgstr "Erreur !"
+
+#: lib/bemeda_personal_web/live/notification_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "From"
+msgstr "De"
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Hang in there while we get back on track"
+msgstr "Patientez pendant que nous rétablissons la connexion"
+
+#: lib/bemeda_personal_web/live/notification_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Mark as read"
+msgstr "Marquer comme lu"
+
+#: lib/bemeda_personal_web/live/notification_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Mark as unread"
+msgstr "Marquer comme non lu"
+
+#: lib/bemeda_personal_web/live/notification_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "No notifications available at the moment."
+msgstr "Aucune notification disponible pour le moment."
+
+#: lib/bemeda_personal_web/live/notification_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Notifications"
+msgstr "Notifications"
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr "Quelque chose s'est mal passé !"
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Success!"
+msgstr "Succès !"
+
+#: lib/bemeda_personal_web/live/notification_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "System"
+msgstr "Système"
+
+#: lib/bemeda_personal_web/live/notification_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "To"
+msgstr "À"
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr "Nous ne trouvons pas la connexion internet"

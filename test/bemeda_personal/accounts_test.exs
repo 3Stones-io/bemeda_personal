@@ -553,7 +553,7 @@ defmodule BemedaPersonal.AccountsTest do
 
     test "new users have default locale" do
       user = user_fixture()
-      assert user.locale == :de
+      assert user.locale == :en
     end
   end
 

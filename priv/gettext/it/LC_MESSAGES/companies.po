@@ -1,0 +1,208 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "About %{company}"
+msgstr "Informazioni su %{company}"
+
+#: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Applicants"
+msgstr "Candidati"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Applicants will appear here when they apply to your job postings."
+msgstr "I candidati appariranno qui quando si candidano alle tue offerte di lavoro."
+
+#: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Back to Applicants"
+msgstr "Torna ai candidati"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Company Dashboard"
+msgstr "Dashboard aziendale"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Company Description"
+msgstr "Descrizione azienda"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Company Logo"
+msgstr "Logo aziendale"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Company Name"
+msgstr "Nome azienda"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Company Size"
+msgstr "Dimensioni azienda"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Company profile created successfully."
+msgstr "Profilo aziendale creato con successo."
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Company profile updated successfully."
+msgstr "Profilo aziendale aggiornato con successo."
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Create Company Profile"
+msgstr "Crea profilo aziendale"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Create Your Company Profile"
+msgstr "Crea il tuo profilo aziendale"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Creating..."
+msgstr "Creazione..."
+
+#: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Edit Company Profile"
+msgstr "Modifica profilo aziendale"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Get started by clicking the \"Post New Job\" button above."
+msgstr "Inizia cliccando il pulsante \"Pubblica nuovo lavoro\" qui sopra."
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Industry"
+msgstr "Settore"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Location"
+msgstr "Località"
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "No company description available."
+msgstr "Nessuna descrizione aziendale disponibile."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Open Positions"
+msgstr "Posizioni aperte"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Post New Job"
+msgstr "Pubblica nuovo lavoro"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Recent Applicants"
+msgstr "Candidati recenti"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Recent Jobs"
+msgstr "Lavori recenti"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Save Changes"
+msgstr "Salva modifiche"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr "Salvataggio..."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Set up your company profile to start posting jobs and connecting with potential candidates."
+msgstr "Configura il tuo profilo aziendale per iniziare a pubblicare lavori e connetterti con potenziali candidati."
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Tech"
+msgstr "Tecnologia"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View All Applicants"
+msgstr "Visualizza tutti i candidati"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View All Jobs"
+msgstr "Visualizza tutti i lavori"
+
+#: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Visit Website"
+msgstr "Visita sito web"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Website"
+msgstr "Sito web"
+
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Website URL"
+msgstr "URL sito web"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "You don't have any applicants yet."
+msgstr "Non hai ancora candidati."
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "You don't have permission to access this company."
+msgstr "Non hai il permesso di accedere a questa azienda."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "You haven't posted any jobs yet."
+msgstr "Non hai ancora pubblicato nessun lavoro."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "You need to create a company profile before you can post jobs."
+msgstr "Devi creare un profilo aziendale prima di poter pubblicare lavori."

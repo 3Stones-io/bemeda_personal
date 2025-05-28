@@ -1,0 +1,103 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new messages manually only if they're dynamic
+## messages that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+#
+msgid ""
+msgstr ""
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Browse Files"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
+#: lib/bemeda_personal_web/live/company_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Cancel"
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/page_html/home.html.heex
+#, elixir-autogen, elixir-format
+msgid "Career Opportunity"
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/page_html/home.html.heex
+#, elixir-autogen, elixir-format
+msgid "Connect with leading employers and discover job opportunities that match your skills and ambitions. Your journey to professional success starts here."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Copy to clipboard"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Drag and drop to upload your %{type}"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/page_html/home.html.heex
+#, elixir-autogen, elixir-format
+msgid "Find Your Next"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Max file size: %{size}"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Not specified"
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/page_html/home.html.heex
+#, elixir-autogen, elixir-format
+msgid "People working on laptops"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Rating"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
+#, elixir-autogen, elixir-format
+msgid "Remote"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Show %{type}"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Upload progress"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "or"
+msgstr ""

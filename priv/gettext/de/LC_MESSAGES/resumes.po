@@ -1,0 +1,338 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#, elixir-autogen, elixir-format
+msgid "Add Education"
+msgstr "Bildung hinzufügen"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#, elixir-autogen, elixir-format
+msgid "Add Work Experience"
+msgstr "Berufserfahrung hinzufügen"
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Add a professional headline"
+msgstr "Professionelle Überschrift hinzufügen"
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Add a summary of your professional experience and skills"
+msgstr "Zusammenfassung Ihrer Berufserfahrung und Fähigkeiten hinzufügen"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Briefly describe your professional background, skills, and career goals"
+msgstr "Beschreiben Sie kurz Ihren beruflichen Hintergrund, Ihre Fähigkeiten und Karriereziele"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Company Name"
+msgstr "Firmenname"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Contact Email"
+msgstr "Kontakt-E-Mail"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Degree"
+msgstr "Abschluss"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Describe your responsibilities, achievements, projects, etc."
+msgstr "Beschreiben Sie Ihre Verantwortlichkeiten, Erfolge, Projekte usw."
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Describe your studies, achievements, activities, etc."
+msgstr "Beschreiben Sie Ihr Studium, Erfolge, Aktivitäten usw."
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Description"
+msgstr "Beschreibung"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#, elixir-autogen, elixir-format
+msgid "Edit Education"
+msgstr "Bildung bearbeiten"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#, elixir-autogen, elixir-format
+msgid "Edit Resume"
+msgstr "Lebenslauf bearbeiten"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#, elixir-autogen, elixir-format
+msgid "Edit Work Experience"
+msgstr "Berufserfahrung bearbeiten"
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Education"
+msgstr "Bildung"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#, elixir-autogen, elixir-format
+msgid "Education entry deleted"
+msgstr "Bildungseintrag gelöscht"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Education saved successfully"
+msgstr "Bildung erfolgreich gespeichert"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "End Date"
+msgstr "Enddatum"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Field of Study"
+msgstr "Studienrichtung"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "I am currently studying here"
+msgstr "Ich studiere derzeit hier"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "I currently work here"
+msgstr "Ich arbeite derzeit hier"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Institution"
+msgstr "Institution"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Job Title"
+msgstr "Berufsbezeichnung"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Location"
+msgstr "Standort"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Make resume public"
+msgstr "Lebenslauf öffentlich machen"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "My Resume"
+msgstr "Mein Lebenslauf"
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "No education entries available."
+msgstr "Keine Bildungseinträge verfügbar."
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "No education entries yet. Click 'Add' to add your educational background."
+msgstr "Noch keine Bildungseinträge. Klicken Sie auf 'Hinzufügen', um Ihren Bildungshintergrund hinzuzufügen."
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "No work experience entries available."
+msgstr "Keine Berufserfahrungseinträge verfügbar."
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "No work experience entries yet. Click 'Add' to add your work history."
+msgstr "Noch keine Berufserfahrungseinträge. Klicken Sie auf 'Hinzufügen', um Ihre Arbeitshistorie hinzuzufügen."
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Phone Number"
+msgstr "Telefonnummer"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Professional Headline"
+msgstr "Professionelle Überschrift"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Professional Summary"
+msgstr "Professionelle Zusammenfassung"
+
+#: lib/bemeda_personal_web/live/resume/index_live.ex
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Resume"
+msgstr "Lebenslauf"
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Resume Not Found"
+msgstr "Lebenslauf nicht gefunden"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Resume updated successfully"
+msgstr "Lebenslauf erfolgreich aktualisiert"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Save Education"
+msgstr "Bildung speichern"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Save Resume"
+msgstr "Lebenslauf speichern"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Save Work Experience"
+msgstr "Berufserfahrung speichern"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr "Wird gespeichert..."
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Share URL:"
+msgstr "URL teilen:"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Start Date"
+msgstr "Startdatum"
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "The resume you're looking for doesn't exist or is not available for public viewing."
+msgstr "Der gesuchte Lebenslauf existiert nicht oder ist nicht für die öffentliche Ansicht verfügbar."
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "View Public"
+msgstr "Öffentlich anzeigen"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Website URL"
+msgstr "Website-URL"
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Work Experience"
+msgstr "Berufserfahrung"
+
+#: lib/bemeda_personal_web/live/resume/show_live.ex
+#, elixir-autogen, elixir-format
+msgid "Work experience entry deleted"
+msgstr "Berufserfahrungseintrag gelöscht"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Work experience saved successfully"
+msgstr "Berufserfahrung erfolgreich gespeichert"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Your personal website or portfolio"
+msgstr "Ihre persönliche Website oder Portfolio"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Your phone number"
+msgstr "Ihre Telefonnummer"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Your preferred contact email"
+msgstr "Ihre bevorzugte Kontakt-E-Mail"
+
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "Your resume is public"
+msgstr "Ihr Lebenslauf ist öffentlich"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Bachelor of Science"
+msgstr "z.B. Bachelor of Science"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Computer Science"
+msgstr "z.B. Informatik"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Google"
+msgstr "z.B. Google"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Mountain View, CA"
+msgstr "z.B. München, Deutschland"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., San Francisco, CA"
+msgstr "z.B. Berlin, Deutschland"
+
+#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Senior Software Engineer"
+msgstr "z.B. Senior Software Engineer"
+
+#: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Software Engineer"
+msgstr "z.B. Software Engineer"
+
+#: lib/bemeda_personal_web/live/resume/education_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Stanford University"
+msgstr "z.B. Technische Universität München"
+
+#: lib/bemeda_personal/resumes/date_validator.ex
+#, elixir-autogen, elixir-format
+msgid "end date must be after or equal to start date"
+msgstr "Enddatum muss nach oder gleich dem Startdatum sein"
+
+#: lib/bemeda_personal/resumes/work_experience.ex
+#, elixir-autogen, elixir-format
+msgid "end date must be blank for current job"
+msgstr "Enddatum muss für aktuelle Stelle leer sein"
+
+#: lib/bemeda_personal_web/live/resume/index_live.html.heex
+#: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#, elixir-autogen, elixir-format
+msgid "in"
+msgstr "in"

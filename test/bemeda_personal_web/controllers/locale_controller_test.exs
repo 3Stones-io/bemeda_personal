@@ -33,7 +33,7 @@ defmodule BemedaPersonalWeb.LocaleControllerTest do
       conn = get(conn, ~p"/locale/invalid")
 
       assert redirected_to(conn) == ~p"/"
-      assert get_session(conn, :locale) == "de"
+      assert get_session(conn, :locale) == "en"
     end
   end
 end

@@ -1,0 +1,42 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
+#, elixir-autogen, elixir-format
+msgid "Error submitting rating."
+msgstr "Fehler beim Einreichen der Bewertung."
+
+#: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
+#, elixir-autogen, elixir-format
+msgid "Rating submitted successfully"
+msgstr "Bewertung erfolgreich eingereicht"
+
+#: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
+#, elixir-autogen, elixir-format
+msgid "Rating submitted successfully."
+msgstr "Bewertung erfolgreich eingereicht."
+
+#: lib/bemeda_personal/ratings/rating.ex
+#, elixir-autogen, elixir-format
+msgid "You can only rate this entity once"
+msgstr "Sie können diese Entität nur einmal bewerten"
+
+#: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
+#, elixir-autogen, elixir-format
+msgid "You need to apply to a job before rating this company."
+msgstr "Sie müssen sich für eine Stelle bewerben, bevor Sie dieses Unternehmen bewerten können."
+
+#: lib/bemeda_personal/ratings/rating.ex
+#, elixir-autogen, elixir-format
+msgid "must be between 1 and 5"
+msgstr "muss zwischen 1 und 5 liegen"

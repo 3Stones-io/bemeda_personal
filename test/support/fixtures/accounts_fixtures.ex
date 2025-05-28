@@ -8,6 +8,10 @@ defmodule BemedaPersonal.AccountsFixtures do
 
   @type attrs :: keyword()
 
+  @default_locale Application.compile_env!(:bemeda_personal, BemedaPersonalWeb.Gettext)[
+                    :default_locale
+                  ]
+
   @spec unique_user_email() :: String.t()
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
 
@@ -28,9 +32,10 @@ defmodule BemedaPersonal.AccountsFixtures do
   end
 
   @spec user_fixture(attrs()) :: User.t()
-  def user_fixture(attrs \\ []) do
+  def user_fixture(attrs \\ [locale: "en"]) do
     {:ok, user} =
       attrs
+      |> maybe_set_locale()
       |> valid_user_attributes()
       |> BemedaPersonal.Accounts.register_user()
 
@@ -48,5 +53,13 @@ defmodule BemedaPersonal.AccountsFixtures do
     {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
     [_start, token | _end] = String.split(captured_email.text_body, "[TOKEN]")
     token
+  end
+
+  defp maybe_set_locale(attrs) when is_map(attrs) do
+    Map.put_new(attrs, :locale, @default_locale)
+  end
+
+  defp maybe_set_locale(attrs) when is_list(attrs) do
+    Keyword.put_new(attrs, :locale, @default_locale)
   end
 end
