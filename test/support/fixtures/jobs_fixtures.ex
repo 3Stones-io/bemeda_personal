@@ -23,22 +23,22 @@ defmodule BemedaPersonal.JobsFixtures do
     job_posting_attrs =
       %{
         "currency" => "USD",
-        "department" => "Administration",
-        "description" => "some description",
-        "employment_type" => "some employment_type",
-        "experience_level" => "some experience_level",
-        "gender" => "Male",
-        "language" => "English",
+        "department" => ["Administration"],
+        "description" => "some description that is long enough to meet validation requirements",
+        "employment_type" => "Permanent Position",
+        "experience_level" => "Mid-level",
+        "gender" => ["Male"],
+        "language" => ["English"],
         "location" => "some location",
-        "position" => "some position",
-        "region" => "Zurich",
+        "part_time_details" => ["Min"],
+        "position" => "Employee",
+        "region" => ["Zurich"],
         "remote_allowed" => true,
         "salary_max" => 42_000,
         "salary_min" => 42_000,
-        "shift_type" => "Day Shift",
+        "shift_type" => ["Day Shift"],
         "title" => "some title",
-        "workload" => "Full-time",
-        "part_time_details" => "some part_time_details",
+        "workload" => ["Full-time"],
         "years_of_experience" => "2-5 years"
       }
 

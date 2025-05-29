@@ -280,7 +280,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   attr :type, :string,
     default: "text",
     values:
-      ~w(chat-input checkbox color date datetime-local multi-select email file hidden month number password
+      ~w(chat-input checkbox color date datetime-local email file hidden month multi-select number password
                range search select tel text textarea time url week)
 
   attr :field, Phoenix.HTML.FormField,
@@ -405,18 +405,16 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   def input(%{type: "multi-select"} = assigns) do
     ~H"""
-    <div
-      id={"#{@id}-container"}
-      data-id={@id}
-      phx-hook="MultiSelectInput"
-      class="relative"
-      phx-feedback-for={@name}
-      {@rest}
-    >
+    <div class="relative" phx-feedback-for={@name} {@rest}>
       <button
         class="flex items-center justify-between w-full p-3 border-b border-zinc-300 hover:border-zinc-400 focus:border-b focus:border-zinc-400 focus:ring-0"
         type="button"
         id={"select-button-#{@id}"}
+        phx-click={
+          JS.toggle(to: "#select-dropdown-#{@id}")
+          |> JS.toggle_class("rotate-180", to: "#select-icon-#{@id}")
+        }
+        )}
       >
         <.label for={@id} class={@label_class} required={@rest[:required]}>
           {@label}
@@ -426,17 +424,10 @@ defmodule BemedaPersonalWeb.CoreComponents do
         </div>
       </button>
 
-      <input
-        type="text"
-        name={@name}
-        id={@id}
-        value={Phoenix.HTML.Form.normalize_value("text", @value)}
-        class="hidden"
-      />
-
       <div
         class="hidden absolute inset-x-[-4] z-10 w-full mt-1 bg-white border border-zinc-300 rounded-lg shadow-lg max-h-60 overflow-y-scroll"
         id={"select-dropdown-#{@id}"}
+        phx-click-away={JS.hide(to: "#select-dropdown-#{@id}")}
       >
         <div class="p-2 space-y-1">
           <div>
@@ -449,9 +440,10 @@ defmodule BemedaPersonalWeb.CoreComponents do
               ]}
             >
               <input
+                name={"#{@name}[]"}
                 type="checkbox"
                 value={option}
-                checked={@value && option in String.split(@value, ",", trim: true)}
+                checked={@value && option in @value}
                 class="peer rounded border-zinc-300 text-blue-600 focus:ring-blue-500 focus:ring-2 mr-3 main-checkbox"
               />
               <span class="text-sm text-zinc-900 w-full p-2 option-label inline-block">{label}</span>

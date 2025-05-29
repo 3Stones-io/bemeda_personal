@@ -16,18 +16,24 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Workers.EmailNotificationWorker
 
+  @create_attrs %{
+    description: "Build amazing applications",
+    employment_type: "Permanent Position",
+    experience_level: "Mid-level",
+    location: "Remote",
+    remote_allowed: true,
+    salary_max: 42_000,
+    salary_min: 42_000,
+    title: "Senior Developer"
+  }
+
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
       user = user_fixture()
       company = company_fixture(user_fixture(%{email: "company@example.com"}))
 
       job =
-        job_posting_fixture(company, %{
-          description: "Build amazing applications",
-          employment_type: "Full-time",
-          location: "Remote",
-          title: "Senior Developer"
-        })
+        job_posting_fixture(company, @create_attrs)
 
       job_application =
         job_application_fixture(user, job, %{

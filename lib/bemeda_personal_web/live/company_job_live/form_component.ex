@@ -1,6 +1,7 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
+  alias BemedaPersonal.EctoEnumHelper
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedComponents
@@ -42,12 +43,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Employment Type")}
             prompt={dgettext("jobs", "Select employment type")}
-            options={[
-              {dgettext("jobs", "Floater"), "Floater"},
-              {dgettext("jobs", "Permanent Position"), "Permanent Position"},
-              {dgettext("jobs", "Staff Pool"), "Staff Pool"},
-              {dgettext("jobs", "Temporary Assignment"), "Temporary Assignment"}
-            ]}
+            options={
+              EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :employment_type)
+            }
             phx-debounce="blur"
           />
 
@@ -56,12 +54,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Experience Level")}
             prompt={dgettext("jobs", "Select experience level")}
-            options={[
-              {dgettext("jobs", "Entry Level"), "Entry Level"},
-              {dgettext("jobs", "Mid Level"), "Mid Level"},
-              {dgettext("jobs", "Senior Level"), "Senior Level"},
-              {dgettext("jobs", "Executive"), "Executive"}
-            ]}
+            options={
+              EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :experience_level)
+            }
           />
         </div>
 
@@ -103,16 +98,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:currency]}
             type="select"
-            label="Currency"
-            options={[
-              {"CHF", "CHF"},
-              {"USD", "USD"},
-              {"EUR", "EUR"},
-              {"GBP", "GBP"},
-              {"CAD", "CAD"},
-              {"AUD", "AUD"},
-              {"JPY", "JPY"}
-            ]}
+            label={dgettext("jobs", "Currency")}
+            options={Ecto.Enum.values(Jobs.JobPosting, :currency)}
             phx-debounce="blur"
           />
         </div>
@@ -123,11 +110,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Position")}
             prompt={dgettext("jobs", "Select position")}
-            options={[
-              {dgettext("jobs", "Employee"), "Employee"},
-              {dgettext("jobs", "Specialist Role"), "Specialist Role"},
-              {dgettext("jobs", "Leadership Position"), "Leadership Position"}
-            ]}
+            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :position)}
             phx-debounce="blur"
           />
 
@@ -136,11 +119,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Years of Experience")}
             prompt={dgettext("jobs", "Select experience range")}
-            options={[
-              {dgettext("jobs", "Less than 2 years"), "Less than 2 years"},
-              {dgettext("jobs", "2-5 years"), "2-5 years"},
-              {dgettext("jobs", "More than 5 years"), "More than 5 years"}
-            ]}
+            options={
+              EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :years_of_experience)
+            }
             phx-debounce="blur"
           />
         </div>
@@ -150,7 +131,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:department]}
             type="multi-select"
             label={dgettext("jobs", "Department")}
-            options={departments()}
+            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :department)}
             phx-debounce="blur"
           />
 
@@ -158,13 +139,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:shift_type]}
             type="multi-select"
             label="Shift Type"
-            options={[
-              {dgettext("jobs", "Day Shift"), "Day Shift"},
-              {dgettext("jobs", "Early Shift"), "Early Shift"},
-              {dgettext("jobs", "Late Shift"), "Late Shift"},
-              {dgettext("jobs", "Night Shift"), "Night Shift"},
-              {dgettext("jobs", "Split Shift"), "Split Shift"}
-            ]}
+            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :shift_type)}
             phx-debounce="blur"
           />
         </div>
@@ -174,7 +149,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:region]}
             type="multi-select"
             label={dgettext("jobs", "Region")}
-            options={regions()}
+            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :region)}
             phx-debounce="blur"
           />
 
@@ -182,12 +157,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:language]}
             type="multi-select"
             label={dgettext("jobs", "Language")}
-            options={[
-              {dgettext("jobs", "English"), "English"},
-              {dgettext("jobs", "French"), "French"},
-              {dgettext("jobs", "German"), "German"},
-              {dgettext("jobs", "Italian"), "Italian"}
-            ]}
+            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :language)}
             phx-debounce="blur"
           />
         </div>
@@ -197,10 +167,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:gender]}
             type="multi-select"
             label={dgettext("jobs", "Gender")}
-            options={[
-              {dgettext("jobs", "Male"), "Male"},
-              {dgettext("jobs", "Female"), "Female"}
-            ]}
+            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :gender)}
             phx-debounce="blur"
           />
 
@@ -209,10 +176,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="multi-select"
             label={dgettext("jobs", "Workload")}
             prompt={dgettext("jobs", "Select workload")}
-            options={[
-              {dgettext("jobs", "Full-time"), "Full-time"},
-              {dgettext("jobs", "Part-time"), "Part-time"}
-            ]}
+            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :workload)}
             nested_input?={true}
             show_nested_input="Part-time"
             phx-debounce="blur"
@@ -223,10 +187,9 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
                 type="multi-select"
                 label={dgettext("jobs", "Workload Type")}
                 prompt={dgettext("jobs", "Select workload type")}
-                options={[
-                  {dgettext("jobs", "Min"), "Min"},
-                  {dgettext("jobs", "Max"), "Max"}
-                ]}
+                options={
+                  EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :part_time_details)
+                }
                 phx-debounce="blur"
               />
             </:nested_input>
@@ -373,58 +336,5 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   defp update_media_data_params(socket, job_params) do
     Map.put(job_params, "media_data", socket.assigns.media_data)
-  end
-
-  defp departments do
-    [
-      {dgettext("jobs", "Administration"), "Administration"},
-      {dgettext("jobs", "Acute Care"), "Acute Care"},
-      {dgettext("jobs", "Anesthesia"), "Anesthesia"},
-      {dgettext("jobs", "Day Clinic"), "Day Clinic"},
-      {dgettext("jobs", "Emergency Department"), "Emergency Department"},
-      {dgettext("jobs", "Home Care (Spitex)"), "Home Care (Spitex)"},
-      {dgettext("jobs", "Hospital / Clinic"), "Hospital / Clinic"},
-      {dgettext("jobs", "Intensive Care"), "Intensive Care"},
-      {dgettext("jobs", "Intermediate Care (IMC)"), "Intermediate Care (IMC)"},
-      {dgettext("jobs", "Long-Term Care"), "Long-Term Care"},
-      {dgettext("jobs", "Medical Practices"), "Medical Practices"},
-      {dgettext("jobs", "Operating Room"), "Operating Room"},
-      {dgettext("jobs", "Other"), "Other"},
-      {dgettext("jobs", "Psychiatry"), "Psychiatry"},
-      {dgettext("jobs", "Recovery Room (PACU)"), "Recovery Room (PACU)"},
-      {dgettext("jobs", "Rehabilitation"), "Rehabilitation"},
-      {dgettext("jobs", "Therapies"), "Therapies"}
-    ]
-  end
-
-  defp regions do
-    [
-      {dgettext("jobs", "Aargau"), "Aargau"},
-      {dgettext("jobs", "Appenzell Ausserrhoden"), "Appenzell Ausserrhoden"},
-      {dgettext("jobs", "Appenzell Innerrhoden"), "Appenzell Innerrhoden"},
-      {dgettext("jobs", "Basel-Landschaft"), "Basel-Landschaft"},
-      {dgettext("jobs", "Basel-Stadt"), "Basel-Stadt"},
-      {dgettext("jobs", "Bern"), "Bern"},
-      {dgettext("jobs", "Fribourg"), "Fribourg"},
-      {dgettext("jobs", "Geneva"), "Geneva"},
-      {dgettext("jobs", "Glarus"), "Glarus"},
-      {dgettext("jobs", "Grisons"), "Grisons"},
-      {dgettext("jobs", "Jura"), "Jura"},
-      {dgettext("jobs", "Lucerne"), "Lucerne"},
-      {dgettext("jobs", "Neuchâtel"), "Neuchâtel"},
-      {dgettext("jobs", "Nidwalden"), "Nidwalden"},
-      {dgettext("jobs", "Obwalden"), "Obwalden"},
-      {dgettext("jobs", "Schaffhausen"), "Schaffhausen"},
-      {dgettext("jobs", "Schwyz"), "Schwyz"},
-      {dgettext("jobs", "Solothurn"), "Solothurn"},
-      {dgettext("jobs", "St. Gallen"), "St. Gallen"},
-      {dgettext("jobs", "Ticino"), "Ticino"},
-      {dgettext("jobs", "Thurgau"), "Thurgau"},
-      {dgettext("jobs", "Uri"), "Uri"},
-      {dgettext("jobs", "Vaud"), "Vaud"},
-      {dgettext("jobs", "Valais"), "Valais"},
-      {dgettext("jobs", "Zug"), "Zug"},
-      {dgettext("jobs", "Zurich"), "Zurich"}
-    ]
   end
 end

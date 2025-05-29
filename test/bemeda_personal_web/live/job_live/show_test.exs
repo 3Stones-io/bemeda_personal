@@ -15,7 +15,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Senior",
           location: "New York",
           remote_allowed: true,
@@ -38,8 +38,8 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
       assert html =~ job.title
       assert html =~ job.description
       assert html =~ job.location
-      assert html =~ job.employment_type
-      assert html =~ job.experience_level
+      assert html =~ to_string(job.employment_type)
+      assert html =~ to_string(job.experience_level)
     end
 
     test "displays company information", %{conn: conn, job: job} do

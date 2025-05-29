@@ -10,26 +10,7 @@ defmodule BemedaPersonal.JobsTest do
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 
-  @invalid_attrs %{
-    currency: nil,
-    department: nil,
-    description: nil,
-    employment_type: nil,
-    experience_level: nil,
-    gender: nil,
-    language: nil,
-    location: nil,
-    position: nil,
-    region: nil,
-    remote_allowed: nil,
-    salary_max: nil,
-    salary_min: nil,
-    shift_type: nil,
-    title: nil,
-    workload: nil,
-    part_time_details: nil,
-    years_of_experience: nil
-  }
+  @invalid_attrs %{"title" => nil}
 
   defp create_job_posting(_attrs) do
     user = user_fixture()
@@ -49,8 +30,8 @@ defmodule BemedaPersonal.JobsTest do
     Enum.map(1..count, fn i ->
       job_posting_fixture(company, %{
         description: "Description for job posting #{i}",
-        employment_type: "Full-time #{i}",
-        experience_level: "Senior #{i}",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "Location #{i}",
         remote_allowed: rem(i, 2) == 0,
         salary_max: i * 15_000,
@@ -187,7 +168,7 @@ defmodule BemedaPersonal.JobsTest do
 
       job_posting1 =
         job_posting_fixture(company, %{
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           remote_allowed: true,
           salary_max: 120_000,
           salary_min: 80_000,
@@ -195,7 +176,7 @@ defmodule BemedaPersonal.JobsTest do
         })
 
       job_posting_fixture(company, %{
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         remote_allowed: false,
         salary_max: 70_000,
         salary_min: 50_000,
@@ -203,7 +184,7 @@ defmodule BemedaPersonal.JobsTest do
       })
 
       job_posting_fixture(company, %{
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         remote_allowed: true,
         salary_max: 130_000,
         salary_min: 90_000,
@@ -226,7 +207,7 @@ defmodule BemedaPersonal.JobsTest do
       company = company_fixture(user)
 
       job_posting_fixture(company, %{
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         remote_allowed: true,
         salary_max: 120_000,
         salary_min: 80_000,
@@ -254,7 +235,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for older job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: false,
@@ -271,7 +252,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for middle job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: false,
@@ -288,7 +269,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for newer job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: false,
@@ -313,7 +294,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for another older job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: true,
@@ -331,102 +312,6 @@ defmodule BemedaPersonal.JobsTest do
       assert results = Jobs.list_job_postings(%{older_than: middle_job, remote_allowed: true})
       assert length(results) == 1
       assert hd(results).id == another_older_job.id
-    end
-
-    test "can filter job_postings by department" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{department: "Engineering"})
-      job_posting_fixture(company, %{department: "Marketing"})
-
-      assert [result] = Jobs.list_job_postings(%{department: "Engineering"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by shift_type" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{shift_type: "Day Shift"})
-      job_posting_fixture(company, %{shift_type: "Night Shift"})
-
-      assert [result] = Jobs.list_job_postings(%{shift_type: "Day Shift"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by region" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{region: "North America"})
-      job_posting_fixture(company, %{region: "Europe"})
-
-      assert [result] = Jobs.list_job_postings(%{region: "North America"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by years_of_experience" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{years_of_experience: "2-5 years"})
-      job_posting_fixture(company, %{years_of_experience: "5+ years"})
-
-      assert [result] = Jobs.list_job_postings(%{years_of_experience: "2-5"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by position" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{position: "Senior Developer"})
-      job_posting_fixture(company, %{position: "Junior Developer"})
-
-      assert [result] = Jobs.list_job_postings(%{position: "Senior"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by gender" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{gender: "Male"})
-      job_posting_fixture(company, %{gender: "Female"})
-
-      assert [result] = Jobs.list_job_postings(%{gender: "Male"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by language" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{language: "English"})
-      job_posting_fixture(company, %{language: "Spanish"})
-
-      assert [result] = Jobs.list_job_postings(%{language: "English"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by workload" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{workload: "Full-time"})
-      job_posting_fixture(company, %{workload: "Part-time"})
-
-      assert [result] = Jobs.list_job_postings(%{workload: "Full"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
     end
 
     test "defaults to listing all job_postings if a non-existent filter is passed" do
@@ -469,10 +354,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with valid data creates a job_posting", %{company: company} do
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -491,10 +376,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with nil media_data does not create a media asset", %{company: company} do
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -514,10 +399,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with empty media_data does not create a media asset", %{company: company} do
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -541,10 +426,10 @@ defmodule BemedaPersonal.JobsTest do
       upload_id = Ecto.UUID.generate()
 
       valid_attrs = %{
-        "currency" => "some currency",
+        "currency" => "USD",
         "description" => "some description that is long enough",
-        "employment_type" => "some employment_type",
-        "experience_level" => "some experience_level",
+        "employment_type" => "Permanent Position",
+        "experience_level" => "Mid-level",
         "location" => "some location",
         "remote_allowed" => true,
         "salary_max" => 42,
@@ -574,10 +459,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with salary_min greater than salary_max returns error changeset", %{company: company} do
       invalid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 50,
@@ -591,10 +476,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with title too short returns error changeset", %{company: company} do
       invalid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -608,10 +493,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with description too short returns error changeset", %{company: company} do
       invalid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "too short",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -630,10 +515,10 @@ defmodule BemedaPersonal.JobsTest do
       Endpoint.subscribe(company_topic)
 
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,

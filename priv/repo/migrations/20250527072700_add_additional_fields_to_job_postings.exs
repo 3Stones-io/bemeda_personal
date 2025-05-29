@@ -3,15 +3,15 @@ defmodule BemedaPersonal.Repo.Migrations.AddAdditionalFieldsToJobPostings do
 
   def change do
     alter table(:job_postings) do
-      add :department, :string
-      add :shift_type, :string
-      add :region, :string
-      add :years_of_experience, :string
+      add :department, {:array, :string}
+      add :gender, {:array, :string}
+      add :language, {:array, :string}
+      add :part_time_details, {:array, :string}
       add :position, :string
-      add :gender, :string
-      add :language, :string
-      add :workload, :string
-      add :part_time_details, :string
+      add :region, {:array, :string}
+      add :shift_type, {:array, :string}
+      add :workload, {:array, :string}
+      add :years_of_experience, :string
     end
   end
 end
