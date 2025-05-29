@@ -336,3 +336,18 @@ msgstr "Enddatum muss für aktuelle Stelle leer sein"
 #, elixir-autogen, elixir-format
 msgid "in"
 msgstr "in"
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Location not specified"
+msgstr "Standort nicht angegeben"
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Phone not specified"
+msgstr "Telefon nicht angegeben"
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Website not specified"
+msgstr "Website nicht angegeben"

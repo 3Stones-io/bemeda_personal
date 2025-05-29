@@ -40,3 +40,8 @@ msgstr "Sie müssen sich für eine Stelle bewerben, bevor Sie dieses Unternehmen
 #, elixir-autogen, elixir-format
 msgid "must be between 1 and 5"
 msgstr "muss zwischen 1 und 5 liegen"
+
+#: lib/bemeda_personal_web/live/rating_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Share your experience..."
+msgstr "Teilen Sie Ihre Erfahrung..."

@@ -16,7 +16,7 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
      |> stream_configure(:notifications, dom_id: &"notification-#{&1.id}")
      |> assign(:end_of_timeline?, false)
      |> assign(:filters, filters)
-     |> assign(:page_title, "Notifications")
+     |> assign(:page_title, dgettext("notifications", "Notifications"))
      |> assign_notifications()}
   end
 

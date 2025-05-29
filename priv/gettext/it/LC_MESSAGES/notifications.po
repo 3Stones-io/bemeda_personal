@@ -61,6 +61,7 @@ msgstr "Contrassegna come non letto"
 msgid "No notifications available at the moment."
 msgstr "Nessuna notifica disponibile al momento."
 
+#: lib/bemeda_personal_web/live/notification_live/index.ex
 #: lib/bemeda_personal_web/live/notification_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Notifications"

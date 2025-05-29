@@ -18,7 +18,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "My Job Applications")
+     |> assign(:page_title, dgettext("jobs", "My Job Applications"))
      |> assign(:resume, Resumes.get_user_resume(current_user))}
   end
 
@@ -55,7 +55,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     socket
     |> assign(:job_application, %Jobs.JobApplication{})
     |> assign(:job_posting, job_posting)
-    |> assign(:page_title, "Apply to #{job_posting.title}")
+    |> assign(
+      :page_title,
+      dgettext("jobs", "Apply to %{job_title}", job_title: job_posting.title)
+    )
   end
 
   defp apply_action(socket, :edit, %{"job_id" => job_id, "id" => id}) do
@@ -65,7 +68,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     socket
     |> assign(:job_application, job_application)
     |> assign(:job_posting, job_posting)
-    |> assign(:page_title, "Edit application for #{job_posting.title}")
+    |> assign(
+      :page_title,
+      dgettext("jobs", "Edit application for %{job_title}", job_title: job_posting.title)
+    )
   end
 
   defp apply_action(socket, :index, _params) do
@@ -75,6 +81,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
     socket
     |> assign(:filter_params, filter_params)
-    |> assign(:page_title, "My Job Applications")
+    |> assign(:page_title, dgettext("jobs", "My Job Applications"))
   end
 end
