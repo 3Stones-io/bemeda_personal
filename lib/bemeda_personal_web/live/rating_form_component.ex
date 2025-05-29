@@ -42,7 +42,12 @@ defmodule BemedaPersonalWeb.RatingFormComponent do
 
         <div class="mb-4">
           <.label>Comment</.label>
-          <.input field={f[:comment]} type="textarea" rows="3" placeholder="Share your experience..." />
+          <.input
+            field={f[:comment]}
+            type="textarea"
+            rows="3"
+            placeholder={dgettext("ratings", "Share your experience...")}
+          />
         </div>
 
         <div class="flex justify-end space-x-3">

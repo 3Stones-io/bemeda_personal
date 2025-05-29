@@ -52,7 +52,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
             {@job.location}
           </span>
           <span :if={@job.remote_allowed} class="flex items-center gap-x-2">
-            <.icon name="hero-map-pin" class="w-4 h-4" /> Remote
+            <.icon name="hero-map-pin" class="w-4 h-4" /> {dgettext("jobs", "Remote")}
           </span>
           <span :if={@job.employment_type} class="flex items-center gap-x-2">
             <.icon name="hero-briefcase" class="w-4 h-4" />
@@ -77,7 +77,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <.link
           navigate={~p"/companies/#{@job.company_id}/applicants/#{@job.id}"}
           class="w-8 h-8 bg-green-100 rounded-full text-green-600 hover:bg-green-200 flex items-center justify-center"
-          title="View applicants"
+          title={dgettext("jobs", "View applicants")}
         >
           <.icon name="hero-users" class="w-4 h-4" />
         </.link>
@@ -85,7 +85,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <.link
           patch={~p"/companies/#{@job.company_id}/jobs/#{@job.id}/edit"}
           class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center"
-          title="Edit job"
+          title={dgettext("jobs", "Edit job")}
         >
           <.icon name="hero-pencil" class="w-4 h-4" />
         </.link>
@@ -96,9 +96,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
             JS.push("delete-job-posting", value: %{id: @job.id})
             |> JS.hide(to: "#job_postings-#{@job.id}")
           }
-          data-confirm="Are you sure you want to delete this job posting? This action cannot be undone."
+          data-confirm={
+            dgettext(
+              "jobs",
+              "Are you sure you want to delete this job posting? This action cannot be undone."
+            )
+          }
           class="w-8 h-8 bg-red-100 rounded-full text-red-600 hover:bg-red-200 flex items-center justify-center"
-          title="Delete job"
+          title={dgettext("jobs", "Delete job")}
         >
           <.icon name="hero-trash" class="w-4 h-4" />
         </.link>
@@ -114,39 +119,39 @@ defmodule BemedaPersonalWeb.JobsComponents do
     ~H"""
     <dl class="grid grid-cols-1 gap-x-4 gap-y-6">
       <div>
-        <dt class="text-sm font-medium text-gray-500">Location</dt>
+        <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Location")}</dt>
         <dd class="mt-1 text-sm text-gray-900 flex items-center">
           <.icon name="hero-map-pin" class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-          {@job.location || "Remote"}
+          {@job.location || dgettext("jobs", "Remote")}
         </dd>
       </div>
 
       <div>
-        <dt class="text-sm font-medium text-gray-500">Employment Type</dt>
+        <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Employment Type")}</dt>
         <dd class="mt-1 text-sm text-gray-900 flex items-center">
           <.icon name="hero-briefcase" class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-          {@job.employment_type || "Not specified"}
+          {@job.employment_type || dgettext("general", "Not specified")}
         </dd>
       </div>
 
       <div>
-        <dt class="text-sm font-medium text-gray-500">Experience Level</dt>
+        <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Experience Level")}</dt>
         <dd class="mt-1 text-sm text-gray-900">
-          {@job.experience_level || "Not specified"}
+          {@job.experience_level || dgettext("general", "Not specified")}
         </dd>
       </div>
 
       <div :if={@job.remote_allowed}>
-        <dt class="text-sm font-medium text-gray-500">Remote Work</dt>
+        <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Remote Work")}</dt>
         <dd class="mt-1 text-sm text-gray-900">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            Remote work allowed
+            {dgettext("jobs", "Remote work allowed")}
           </span>
         </dd>
       </div>
 
       <div :if={@job.salary_min && @job.salary_max}>
-        <dt class="text-sm font-medium text-gray-500">Salary Range</dt>
+        <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Salary Range")}</dt>
         <dd class="mt-1 text-sm text-gray-900 flex items-center">
           <.icon name="hero-currency-dollar" class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
           {@job.salary_min} - {@job.salary_max} {@job.currency || "USD"}
@@ -154,7 +159,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       </div>
 
       <div>
-        <dt class="text-sm font-medium text-gray-500">Posted</dt>
+        <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Posted")}</dt>
         <dd class="mt-1 text-sm text-gray-900">
           {Calendar.strftime(@job.inserted_at, "%B %d, %Y")}
         </dd>
@@ -171,12 +176,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
     ~H"""
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
-        <h2 class="text-lg font-medium text-gray-900">About the Company</h2>
+        <h2 class="text-lg font-medium text-gray-900">
+          {dgettext("companies", "About the Company")}
+        </h2>
       </div>
       <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
         <dl class="grid grid-cols-1 gap-x-4 gap-y-6">
           <div>
-            <dt class="text-sm font-medium text-gray-500">Company Name</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Company Name")}</dt>
             <dd class="mt-1 text-sm text-gray-900">
               <.link
                 navigate={~p"/company/#{@company.id}"}
@@ -188,17 +195,19 @@ defmodule BemedaPersonalWeb.JobsComponents do
           </div>
 
           <div :if={@company.industry}>
-            <dt class="text-sm font-medium text-gray-500">Industry</dt>
-            <dd class="mt-1 text-sm text-gray-900">{@company.industry}</dd>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Industry")}</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              {@company.industry}
+            </dd>
           </div>
 
           <div :if={@company.size}>
-            <dt class="text-sm font-medium text-gray-500">Company Size</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Company Size")}</dt>
             <dd class="mt-1 text-sm text-gray-900">{@company.size}</dd>
           </div>
 
           <div :if={@company.website_url}>
-            <dt class="text-sm font-medium text-gray-500">Website</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Website")}</dt>
             <dd class="mt-1 text-sm text-gray-900">
               <a
                 href={@company.website_url}
@@ -215,13 +224,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
               navigate={~p"/company/#{@company.id}"}
               class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              View Company Profile
+              {dgettext("companies", "View Company Profile")}
             </.link>
             <.link
               navigate={~p"/company/#{@company.id}/jobs"}
               class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              View All Jobs
+              {dgettext("companies", "View All Jobs")}
             </.link>
           </div>
         </dl>
@@ -240,7 +249,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <div>
         <h1 class="text-3xl font-bold text-gray-900">{@company.name}</h1>
         <p class="mt-2 text-sm text-gray-500">
-          {@company.industry} • {@company.location || "Remote"}
+          {@company.industry} • {@company.location || dgettext("companies", "Remote")}
         </p>
       </div>
       <div class="mt-4 md:mt-0">
@@ -251,7 +260,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           rel="noopener noreferrer"
           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Visit Website
+          {dgettext("companies", "Visit Website")}
         </a>
       </div>
     </div>
@@ -280,13 +289,16 @@ defmodule BemedaPersonalWeb.JobsComponents do
     """
   end
 
-  attr :back_link, :string, default: nil
-  attr :back_text, :string, default: "Back to Jobs"
+  attr :back_link, :string
+  attr :back_text, :string
   attr :job, :any, required: true
 
   @spec job_detail_header(assigns()) :: output()
   def job_detail_header(assigns) do
-    assigns = assign_new(assigns, :back_link, fn -> ~p"/jobs" end)
+    assigns =
+      assigns
+      |> assign_new(:back_link, fn -> ~p"/jobs" end)
+      |> assign_new(:back_text, fn -> dgettext("jobs", "Back to Jobs") end)
 
     ~H"""
     <div class="mb-8">
@@ -323,13 +335,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
       @class
     ]}>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold">Filters</h2>
+        <h2 class="text-lg font-semibold">{dgettext("jobs", "Filters")}</h2>
         <div class="flex space-x-2">
           <button
             phx-click={JS.toggle(to: "#job_filters")}
             class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
           >
-            <.icon name="hero-funnel" class="w-4 h-4 mr-1" /> Filter
+            <.icon name="hero-funnel" class="w-4 h-4 mr-1" /> {dgettext("jobs", "Filter")}
           </button>
         </div>
       </div>
@@ -341,10 +353,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:title]}
-                  label="Job Title"
+                  label={dgettext("jobs", "Job Title")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="text"
-                  placeholder="Search by job title"
+                  placeholder={dgettext("jobs", "Search by job title")}
                   class="w-full"
                 />
               </div>
@@ -352,10 +364,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:location]}
-                  label="Location"
+                  label={dgettext("jobs", "Location")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="text"
-                  placeholder="Enter location"
+                  placeholder={dgettext("jobs", "Enter location")}
                   class="w-full"
                 />
               </div>
@@ -363,10 +375,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:employment_type]}
-                  label="Employment Type"
+                  label={dgettext("jobs", "Employment Type")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="select"
-                  prompt="Select employment type"
+                  prompt={dgettext("jobs", "Select employment type")}
                   options={Ecto.Enum.values(JobFilter, :employment_type)}
                   class="w-full"
                 />
@@ -375,10 +387,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:experience_level]}
-                  label="Experience Level"
+                  label={dgettext("jobs", "Experience Level")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="select"
-                  prompt="Select experience level"
+                  prompt={dgettext("jobs", "Select experience level")}
                   options={Ecto.Enum.values(JobFilter, :experience_level)}
                   class="w-full"
                 />
@@ -387,7 +399,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:remote_allowed]}
-                  label="Remote Work"
+                  label={dgettext("jobs", "Remote Work")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="select"
                   options={[
@@ -458,7 +470,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   "text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer",
                   SharedHelpers.status_badge_color(@applicant.state)
                 ]}
-                title={if(!Enum.empty?(@available_statuses), do: "Click to update status")}
+                title={
+                  if(!Enum.empty?(@available_statuses),
+                    do: dgettext("jobs", "Click to update status")
+                  )
+                }
               >
                 {SharedHelpers.translate_status(:state)[@applicant.state]}
               </button>
@@ -474,7 +490,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 phx-hook="JobApplicationStatusInputs"
               >
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
-                  <h3 class="text-lg font-medium text-gray-900">Update Status</h3>
+                  <h3 class="text-lg font-medium text-gray-900">
+                    {dgettext("jobs", "Update Status")}
+                  </h3>
                   <button
                     type="button"
                     class="text-gray-400 hover:text-gray-500"
@@ -514,7 +532,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
               :if={@applicant.tags && length(@applicant.tags) > @tag_limit}
               class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full"
             >
-              +{length(@applicant.tags) - @tag_limit} more
+              +{length(@applicant.tags) - @tag_limit} {dgettext("jobs", "more")}
             </div>
           </div>
         </div>
@@ -522,7 +540,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <div>
           <div :if={@show_job && @job} class="text-sm text-end">
             <p class="font-medium text-gray-900">{@job.title}</p>
-            <p class="text-gray-500">{@job.location || "Remote"}</p>
+            <p class="text-gray-500">{@job.location || dgettext("jobs", "Remote")}</p>
           </div>
         </div>
       </div>
@@ -531,7 +549,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <.link
           navigate={~p"/jobs/#{@applicant.job_posting_id}/job_applications/#{@applicant.id}"}
           class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center shadow-sm"
-          title="Chat with applicant"
+          title={dgettext("jobs", "Chat with applicant")}
         >
           <.icon name="hero-chat-bubble-left-right" class="w-4 h-4" />
         </.link>
@@ -556,33 +574,40 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <div class="px-4 py-5 sm:px-6">
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-semibold text-gray-900">Application Information</h2>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+            <h2 class="text-xl font-semibold text-gray-900">
+              {dgettext("jobs", "Application Information")}
+            </h2>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+              {dgettext("jobs", "Personal details and application.")}
+            </p>
           </div>
           <.link
             navigate={~p"/jobs/#{@application.job_posting_id}/job_applications/#{@application.id}"}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            <.icon name="hero-chat-bubble-left-right" class="w-4 h-4 mr-2" /> Chat with Applicant
+            <.icon name="hero-chat-bubble-left-right" class="w-4 h-4 mr-2" /> {dgettext(
+              "jobs",
+              "Chat with Applicant"
+            )}
           </.link>
         </div>
       </div>
       <div class="border-t border-gray-200">
         <dl>
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Full name</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Full name")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {"#{@application.user.first_name} #{@application.user.last_name}"}
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Email address</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Email address")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {@application.user.email}
             </dd>
           </div>
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Rating</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Rating")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <.live_component
                 current_user={@current_user}
@@ -597,19 +622,19 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Applied for</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Applied for")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {@job.title}
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Applied on</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Applied on")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {Calendar.strftime(@application.inserted_at, "%B %d, %Y")}
             </dd>
           </div>
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Tags</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Tags")}</dt>
             <dd class="text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <.form
                 :let={f}
@@ -638,13 +663,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
                     "hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   ]}
                 >
-                  Update Tags
+                  {dgettext("jobs", "Update Tags")}
                 </button>
               </.form>
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Cover letter</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Cover letter")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 prose max-w-none">
               <div class="md-to-html">
                 {SharedHelpers.to_html(@application.cover_letter)}
@@ -659,24 +684,29 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
     <div :if={@resume} class="bg-white shadow overflow-hidden sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
-        <h2 class="text-xl font-semibold text-gray-900">Resume Information</h2>
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">Applicant's resume details</p>
+        <h2 class="text-xl font-semibold text-gray-900">{dgettext("jobs", "Resume Information")}</h2>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+          {dgettext("jobs", "Applicant's resume details")}
+        </p>
       </div>
       <div class="border-t border-gray-200">
         <dl>
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Resume</dt>
+            <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Resume")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <div :if={@resume.is_public}>
                 <.link
                   navigate={~p"/resumes/#{@resume.id}"}
                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  <.icon name="hero-document-text" class="w-4 h-4 mr-2" /> View Resume
+                  <.icon name="hero-document-text" class="w-4 h-4 mr-2" /> {dgettext(
+                    "jobs",
+                    "View Resume"
+                  )}
                 </.link>
               </div>
               <div :if={!@resume.is_public} class="text-gray-500 italic">
-                Resume is not publicly available
+                {dgettext("jobs", "Resume is not publicly available")}
               </div>
             </dd>
           </div>
@@ -699,7 +729,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-semibold text-gray-700">
-            Filter Applications
+            {dgettext("jobs", "Filter Applications")}
           </h2>
           <button
             type="button"
@@ -713,10 +743,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
             }
           >
             <span id="expand-icon" class="inline-block">
-              <.icon name="hero-plus-circle" class="w-5 h-5" /> Show Filters
+              <.icon name="hero-plus-circle" class="w-5 h-5" /> {dgettext("jobs", "Show Filters")}
             </span>
             <span id="collapse-icon" class="hidden">
-              <.icon name="hero-minus-circle" class="w-5 h-5" /> Hide Filters
+              <.icon name="hero-minus-circle" class="w-5 h-5" /> {dgettext("jobs", "Hide Filters")}
             </span>
           </button>
         </div>
@@ -735,10 +765,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:applicant_name]}
-                  label="Applicant Name"
+                  label={dgettext("jobs", "Applicant Name")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="text"
-                  placeholder="Search by applicant name"
+                  placeholder={dgettext("jobs", "Search by applicant name")}
                   class="w-full"
                 />
               </div>
@@ -746,10 +776,10 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div :if={@show_job_title} class="mt-1">
                 <.input
                   field={f[:job_title]}
-                  label="Job Title"
+                  label={dgettext("jobs", "Job Title")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="text"
-                  placeholder="Search by job title"
+                  placeholder={dgettext("jobs", "Search by job title")}
                   class="w-full"
                 />
               </div>
@@ -757,7 +787,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:date_from]}
-                  label="Application Date From"
+                  label={dgettext("jobs", "Application Date From")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="date"
                 />
@@ -766,7 +796,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:date_to]}
-                  label="Application Date To"
+                  label={dgettext("jobs", "Application Date To")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="date"
                 />
@@ -775,7 +805,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div class="mt-1">
                 <.input
                   field={f[:state]}
-                  label="Application Status"
+                  label={dgettext("jobs", "Application Status")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="select"
                   options={
@@ -783,13 +813,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
                       {value, key}
                     end)
                   }
-                  prompt="Select a status"
+                  prompt={dgettext("jobs", "Select a status")}
                 />
               </div>
 
               <div class="mt-1">
                 <.tags_input
-                  label="Filter by Tags"
+                  label={dgettext("jobs", "Filter by Tags")}
                   label_class="block text-sm font-medium text-gray-700"
                 >
                   <:hidden_input>
@@ -864,7 +894,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <input
           type="text"
           class="flex-1 tag-input border-none p-0 focus:ring-0 text-sm"
-          placeholder="Type tag name and press Enter"
+          placeholder={dgettext("jobs", "Type tag name and press Enter")}
         />
       </div>
     </div>

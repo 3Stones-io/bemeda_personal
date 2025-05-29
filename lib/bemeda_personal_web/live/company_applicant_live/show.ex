@@ -30,7 +30,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
      |> assign(:application, application)
      |> assign(:company, company)
      |> assign(:job_posting, job_posting)
-     |> assign(:page_title, "Applicant: #{full_name}")
+     |> assign(:page_title, dgettext("companies", "Applicant: %{name}", name: full_name))
      |> assign(:resume, resume)
      |> assign(:tags_form, to_form(tags_form_fields))}
   end

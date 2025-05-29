@@ -336,3 +336,18 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "in"
 msgstr ""
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Location not specified"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Phone not specified"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Website not specified"
+msgstr ""

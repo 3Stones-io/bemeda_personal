@@ -14,32 +14,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
 
-  @candidate_messages %{
-    "applied" => "You have submitted your application",
-    "interview_scheduled" => "Your interview has been scheduled",
-    "interviewed" => "You have been interviewed",
-    "offer_accepted" => "You have accepted the offer",
-    "offer_declined" => "You have declined the offer",
-    "offer_extended" => "An offer has been extended to you",
-    "rejected" => "Your application has been rejected",
-    "screening" => "Your application is in the screening phase",
-    "under_review" => "Your application is now under review",
-    "withdrawn" => "You have withdrawn your application"
-  }
-
-  @employer_messages %{
-    "applied" => "This application has been submitted",
-    "interview_scheduled" => "An interview has been scheduled for this application",
-    "interviewed" => "This candidate has been interviewed",
-    "offer_accepted" => "The offer has been accepted",
-    "offer_declined" => "The offer has been declined",
-    "offer_extended" => "An offer has been extended for this position",
-    "rejected" => "This application has been rejected",
-    "screening" => "This application is now in the screening phase",
-    "under_review" => "This application is now under review",
-    "withdrawn" => "This application has been withdrawn"
-  }
-
   attr :chat_form, :any, required: true
   attr :class, :string, default: nil
   attr :rest, :global
@@ -63,7 +37,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
       <.input
         type="chat-input"
         id="message-input"
-        placeholder="Type a message or drag and drop a file..."
+        placeholder={dgettext("general", "Type a message or drag and drop a file...")}
         field={f[:content]}
         phx-debounce="1000"
       />
@@ -253,7 +227,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     <div class="w-full overflow-hidden rounded-lg">
       <img
         src={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
-        alt={@message.media_asset.file_name || "Image"}
+        alt={@message.media_asset.file_name || dgettext("general", "Image")}
         class="w-full h-auto object-contain max-h-[400px]"
       />
     </div>
@@ -265,8 +239,10 @@ defmodule BemedaPersonalWeb.ChatComponents do
     <div class="w-full bg-[#e9eef2] rounded-lg p-3 flex items-center">
       <.icon name="hero-document" class="h-6 w-6 text-[#075389] mr-3" />
       <div class="flex flex-col">
-        <span class="text-sm font-medium text-zinc-800">Uploading file...</span>
-        <span class="text-xs text-zinc-500">Processing...</span>
+        <span class="text-sm font-medium text-zinc-800">
+          {dgettext("general", "Uploading file...")}
+        </span>
+        <span class="text-xs text-zinc-500">{dgettext("general", "Processing...")}</span>
       </div>
     </div>
     """
@@ -323,9 +299,40 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   defp get_message_content(content, employer?)
 
-  defp get_message_content(content, true), do: Map.get(@employer_messages, content)
+  defp get_message_content(content, true) do
+    employer_messages = %{
+      "applied" => dgettext("jobs", "This application has been submitted"),
+      "interview_scheduled" =>
+        dgettext("jobs", "An interview has been scheduled for this application"),
+      "interviewed" => dgettext("jobs", "This candidate has been interviewed"),
+      "offer_accepted" => dgettext("jobs", "The offer has been accepted"),
+      "offer_declined" => dgettext("jobs", "The offer has been declined"),
+      "offer_extended" => dgettext("jobs", "An offer has been extended for this position"),
+      "rejected" => dgettext("jobs", "This application has been rejected"),
+      "screening" => dgettext("jobs", "This application is now in the screening phase"),
+      "under_review" => dgettext("jobs", "This application is now under review"),
+      "withdrawn" => dgettext("jobs", "This application has been withdrawn")
+    }
 
-  defp get_message_content(content, false), do: Map.get(@candidate_messages, content)
+    Map.get(employer_messages, content, content)
+  end
+
+  defp get_message_content(content, false) do
+    candidate_messages = %{
+      "applied" => dgettext("jobs", "You have submitted your application"),
+      "interview_scheduled" => dgettext("jobs", "Your interview has been scheduled"),
+      "interviewed" => dgettext("jobs", "You have been interviewed"),
+      "offer_accepted" => dgettext("jobs", "You have accepted the offer"),
+      "offer_declined" => dgettext("jobs", "You have declined the offer"),
+      "offer_extended" => dgettext("jobs", "An offer has been extended to you"),
+      "rejected" => dgettext("jobs", "Your application has been rejected"),
+      "screening" => dgettext("jobs", "Your application is in the screening phase"),
+      "under_review" => dgettext("jobs", "Your application is now under review"),
+      "withdrawn" => dgettext("jobs", "You have withdrawn your application")
+    }
+
+    Map.get(candidate_messages, content, content)
+  end
 
   defp additional_actions(%{extension: extension} = assigns) when extension in ["doc", "docx"] do
     ~H"""

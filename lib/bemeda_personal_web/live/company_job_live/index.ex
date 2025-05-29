@@ -32,20 +32,20 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     else
       socket
       |> assign(:job_posting, job_posting)
-      |> assign(:page_title, "Edit Job")
+      |> assign(:page_title, dgettext("jobs", "Edit Job"))
     end
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:job_posting, %JobPosting{})
-    |> assign(:page_title, "Post New Job")
+    |> assign(:page_title, dgettext("jobs", "Post New Job"))
   end
 
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:job_posting, nil)
-    |> assign(:page_title, "Company Jobs")
+    |> assign(:page_title, dgettext("jobs", "Company Jobs"))
   end
 
   defp assign_filter_params(socket, params) do

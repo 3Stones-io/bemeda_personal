@@ -32,7 +32,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     socket
     |> assign(:filter_params, params)
     |> assign(:job_posting, job_posting)
-    |> assign(:page_title, "Applicants - #{job_posting.title}")
+    |> assign(
+      :page_title,
+      dgettext("companies", "Applicants - %{title}", title: job_posting.title)
+    )
   end
 
   defp apply_action(socket, :index, %{"company_id" => company_id} = params) do
@@ -42,7 +45,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     |> assign(:company, company)
     |> assign(:filter_params, params)
     |> assign(:job_posting, nil)
-    |> assign(:page_title, "Applicants - #{company.name}")
+    |> assign(:page_title, dgettext("companies", "Applicants - %{name}", name: company.name))
   end
 
   @impl Phoenix.LiveView

@@ -47,6 +47,7 @@ msgstr "Copier dans le presse-papiers"
 msgid "Drag and drop to upload your %{type}"
 msgstr "Glissez-déposez pour télécharger votre %{type}"
 
+#: lib/bemeda_personal_web/components/resume_components.ex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
 msgid "Edit"
@@ -62,6 +63,7 @@ msgstr "Trouvez votre prochaine"
 msgid "Max file size: %{size}"
 msgstr "Taille maximale du fichier : %{size}"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Not specified"
@@ -101,3 +103,38 @@ msgstr "fermer"
 #, elixir-autogen, elixir-format
 msgid "or"
 msgstr "ou"
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Add"
+msgstr "Ajouter"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Processing..."
+msgstr "Traitement en cours..."
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Uploading file..."
+msgstr "Téléchargement du fichier..."
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Delete"
+msgstr "Supprimer"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Image"
+msgstr "Image"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Type a message or drag and drop a file..."
+msgstr "Tapez un message ou glissez-déposez un fichier..."
+
+#: lib/bemeda_personal_web/components/resume_components.ex
+#, elixir-autogen, elixir-format
+msgid "Are you sure you want to delete this entry?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette entrée ?"

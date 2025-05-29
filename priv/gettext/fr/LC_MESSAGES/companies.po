@@ -16,6 +16,7 @@ msgstr ""
 msgid "About %{company}"
 msgstr "À propos de %{company}"
 
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Applicants"
@@ -47,11 +48,13 @@ msgstr "Description de l'entreprise"
 msgid "Company Logo"
 msgstr "Logo de l'entreprise"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Company Name"
 msgstr "Nom de l'entreprise"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
@@ -86,6 +89,7 @@ msgstr "Créez votre profil d'entreprise"
 msgid "Creating..."
 msgstr "Création en cours..."
 
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Dashboard"
@@ -102,6 +106,7 @@ msgstr "Modifier le profil d'entreprise"
 msgid "Get started by clicking the \"Post New Job\" button above."
 msgstr "Commencez en cliquant sur le bouton \"Publier une nouvelle offre\" ci-dessus."
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -165,17 +170,20 @@ msgstr "Technologie"
 msgid "View All Applicants"
 msgstr "Voir tous les candidats"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "View All Jobs"
 msgstr "Voir toutes les offres"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Visit Website"
 msgstr "Visiter le site web"
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -206,3 +214,43 @@ msgstr "Vous n'avez encore publié aucune offre d'emploi."
 #, elixir-autogen, elixir-format
 msgid "You need to create a company profile before you can post jobs."
 msgstr "Vous devez créer un profil d'entreprise avant de pouvoir publier des offres d'emploi."
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "About the Company"
+msgstr "À propos de %{company}"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "View Company Profile"
+msgstr "Modifier le profil d'entreprise"
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View and manage applicants for %{job_title}."
+msgstr "Voir et gérer les candidats pour %{job_title}."
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View and manage applicants for all job postings at %{company_name}."
+msgstr "Voir et gérer les candidats pour toutes les offres d'emploi chez %{company_name}."
+
+#: lib/bemeda_personal_web/live/company_applicant_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Applicant: %{name}"
+msgstr "Candidat : %{name}"
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Applicants - %{name}"
+msgstr "Candidats"
+
+#: lib/bemeda_personal_web/live/company_applicant_live/index.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Applicants - %{title}"
+msgstr "Candidats"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Remote"
+msgstr "À distance"
