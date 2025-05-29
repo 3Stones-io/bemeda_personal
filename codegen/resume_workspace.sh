@@ -21,6 +21,9 @@ if [ ! -d "$WORKSPACE_PATH" ]; then
 fi
 
 cd "$WORKSPACE_PATH"
+
+git submodule update --init --recursive >/dev/null 2>&1
+
 CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 COMMIT_HASH=$(git rev-parse HEAD 2>/dev/null | cut -c1-8 || echo "unknown")
 

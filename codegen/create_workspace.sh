@@ -86,6 +86,8 @@ fi
 
 cd "$WORKSPACE_PATH"
 
+git submodule update --init --recursive >/dev/null 2>&1
+
 echo "📦 Workspace created - setup will happen in the new workspace"
 echo ""
 
