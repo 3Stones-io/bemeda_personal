@@ -128,16 +128,6 @@ msgstr "La date de fin doit être postérieure ou égale à la date de début"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Entry Level"
-msgstr "Niveau débutant"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Executive"
-msgstr "Cadre dirigeant"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Experience Level"
 msgstr "Niveau d'expérience"
 
@@ -160,11 +150,6 @@ msgstr "Échec de la mise à jour du statut"
 #, elixir-autogen, elixir-format
 msgid "Find your next career opportunity"
 msgstr "Trouvez votre prochaine opportunité de carrière"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Full-time"
-msgstr "Temps plein"
 
 #: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
@@ -249,11 +234,6 @@ msgstr "Salaire maximum"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Mid Level"
-msgstr "Niveau intermédiaire"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Minimum Salary"
 msgstr "Salaire minimum"
 
@@ -312,11 +292,6 @@ msgstr "Postes ouverts"
 #, elixir-autogen, elixir-format
 msgid "Open Positions"
 msgstr "Postes ouverts"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Part-time"
-msgstr "Temps partiel"
 
 #: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
 #: lib/bemeda_personal_web/live/job_live/index.html.heex
@@ -383,11 +358,6 @@ msgstr "Présélection"
 #, elixir-autogen, elixir-format
 msgid "Select a status"
 msgstr "Sélectionner un statut"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Senior Level"
-msgstr "Niveau senior"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -509,108 +479,8 @@ msgstr "poste chez"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "2-5 years"
-msgstr "2-5 ans"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Aargau"
-msgstr "Argovie"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Acute Care"
-msgstr "Soins aigus"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Administration"
-msgstr "Administration"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Anesthesia"
-msgstr "Anesthésie"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Appenzell Ausserrhoden"
-msgstr "Appenzell Rhodes-Extérieures"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Appenzell Innerrhoden"
-msgstr "Appenzell Rhodes-Intérieures"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Basel-Landschaft"
-msgstr "Bâle-Campagne"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Basel-Stadt"
-msgstr "Bâle-Ville"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Bern"
-msgstr "Berne"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Day Clinic"
-msgstr "Clinique de jour"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Day Shift"
-msgstr "Équipe de jour"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Department"
 msgstr "Département"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Early Shift"
-msgstr "Équipe du matin"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Emergency Department"
-msgstr "Service d'urgence"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Employee"
-msgstr "Employé(e)"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "English"
-msgstr "Anglais"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Female"
-msgstr "Féminin"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Floater"
-msgstr "Remplaçant(e)"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "French"
-msgstr "Français"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Fribourg"
-msgstr "Fribourg"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
@@ -619,143 +489,8 @@ msgstr "Genre"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Geneva"
-msgstr "Genève"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "German"
-msgstr "Allemand"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Glarus"
-msgstr "Glaris"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Grisons"
-msgstr "Grisons"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Home Care (Spitex)"
-msgstr "Soins à domicile (Spitex)"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Hospital / Clinic"
-msgstr "Hôpital / Clinique"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Intensive Care"
-msgstr "Soins intensifs"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Intermediate Care (IMC)"
-msgstr "Soins intermédiaires (IMC)"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Italian"
-msgstr "Italien"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Jura"
-msgstr "Jura"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Language"
 msgstr "Langue"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Late Shift"
-msgstr "Équipe du soir"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Leadership Position"
-msgstr "Poste de direction"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Less than 2 years"
-msgstr "Moins de 2 ans"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Long-Term Care"
-msgstr "Soins de longue durée"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Lucerne"
-msgstr "Lucerne"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Male"
-msgstr "Masculin"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Max"
-msgstr "Max"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Medical Practices"
-msgstr "Cabinets médicaux"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Min"
-msgstr "Min"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "More than 5 years"
-msgstr "Plus de 5 ans"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Neuchâtel"
-msgstr "Neuchâtel"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Nidwalden"
-msgstr "Nidwald"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Night Shift"
-msgstr "Équipe de nuit"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Obwalden"
-msgstr "Obwald"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Operating Room"
-msgstr "Salle d'opération"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Other"
-msgstr "Autre"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Permanent Position"
-msgstr "Poste permanent"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format, fuzzy
@@ -764,33 +499,8 @@ msgstr "Position"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Psychiatry"
-msgstr "Psychiatrie"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Recovery Room (PACU)"
-msgstr "Salle de réveil (PACU)"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Region"
 msgstr "Région"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Rehabilitation"
-msgstr "Réhabilitation"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Schaffhausen"
-msgstr "Schaffhouse"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Schwyz"
-msgstr "Schwyz"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
@@ -824,66 +534,6 @@ msgstr "Sélectionner le type de charge de travail"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Solothurn"
-msgstr "Soleure"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Specialist Role"
-msgstr "Rôle de spécialiste"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Split Shift"
-msgstr "Équipe fractionnée"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "St. Gallen"
-msgstr "Saint-Gall"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Staff Pool"
-msgstr "Pool de personnel"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Temporary Assignment"
-msgstr "Mission temporaire"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Therapies"
-msgstr "Thérapies"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Thurgau"
-msgstr "Thurgovie"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Ticino"
-msgstr "Tessin"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Uri"
-msgstr "Uri"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Valais"
-msgstr "Valais"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Vaud"
-msgstr "Vaud"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Workload"
 msgstr "Charge de travail"
 
@@ -899,10 +549,5 @@ msgstr "Années d'expérience"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Zug"
-msgstr "Zoug"
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Zurich"
-msgstr "Zurich"
+msgid "Currency"
+msgstr "Devise"
