@@ -100,8 +100,7 @@ defmodule BemedaPersonalWeb.I18n do
   def translate_position("Leadership Position"), do: dgettext("jobs", "Leadership Position")
   def translate_position("Specialist Role"), do: dgettext("jobs", "Specialist Role")
 
-  @spec translate_profession(String.t() | nil) :: String.t()
-  def translate_profession(nil), do: dgettext("general", "Not specified")
+  @spec translate_profession(enum_value()) :: translated_string()
   def translate_profession("Anesthesiologist"), do: dgettext("jobs", "Anesthesiologist")
 
   def translate_profession("Certified Anesthesia Nursing Specialist (NDS HF)"),
@@ -167,8 +166,6 @@ defmodule BemedaPersonalWeb.I18n do
 
   def translate_profession("Swiss Red Cross Nursing Assistant"),
     do: dgettext("jobs", "Swiss Red Cross Nursing Assistant")
-
-  def translate_profession(profession), do: profession
 
   @spec translate_region(enum_value()) :: translated_string()
   def translate_region("Aargau"), do: dgettext("jobs", "Aargau")
