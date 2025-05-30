@@ -41,7 +41,7 @@
         </div>
 
         <h3 class="text-lg font-medium">
-          {SharedHelpers.translate_status(:state)[transition.to_state]}
+          {I18n.translate_status(transition.to_state)}
         </h3>
 
         <p class="text-sm text-gray-500">{DateUtils.format_datetime(transition.inserted_at)}</p>

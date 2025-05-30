@@ -7,7 +7,7 @@
       />
 
       <span class="text-xs font-medium bg-purple-700 text-white rounded-full px-2 py-1">
-        {SharedHelpers.translate_status(:state)[@job_application.state]}
+        {I18n.translate_status(@job_application.state)}
       </span>
     </h1>
 
@@ -47,7 +47,7 @@
               }
               class="block w-full text-center px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
             >
-              {SharedHelpers.translate_status(:action)[status]}
+              {I18n.translate_status_action(status)}
             </.link>
           </div>
         </div>
@@ -84,7 +84,7 @@
     on_cancel={JS.push("hide-status-transition-modal")}
   >
     <.header>
-      {SharedHelpers.translate_status(:state)[@to_state]}
+      {I18n.translate_status(@to_state)}
     </.header>
 
     <.simple_form

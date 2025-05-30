@@ -93,6 +93,9 @@ defmodule BemedaPersonalWeb do
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 
+      alias BemedaPersonalWeb.I18n
+      alias BemedaPersonalWeb.SharedHelpers
+
       # Routes generation with the ~p sigil
       unquote(verified_routes())
     end

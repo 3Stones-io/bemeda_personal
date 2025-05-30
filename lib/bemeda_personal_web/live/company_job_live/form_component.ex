@@ -1,4 +1,6 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
+  @moduledoc false
+
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Jobs
@@ -42,12 +44,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Employment Type")}
             prompt={dgettext("jobs", "Select employment type")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :employment_type,
-                Ecto.Enum.values(Jobs.JobPosting, :employment_type)
-              )
-            }
+            options={get_translated_options(:employment_type)}
             phx-debounce="blur"
           />
 
@@ -56,12 +53,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Experience Level")}
             prompt={dgettext("jobs", "Select experience level")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :experience_level,
-                Ecto.Enum.values(Jobs.JobPosting, :experience_level)
-              )
-            }
+            options={get_translated_options(:experience_level)}
           />
         </div>
 
@@ -115,12 +107,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Position")}
             prompt={dgettext("jobs", "Select position")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :position,
-                Ecto.Enum.values(Jobs.JobPosting, :position)
-              )
-            }
+            options={get_translated_options(:position)}
             phx-debounce="blur"
           />
 
@@ -129,12 +116,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Years of Experience")}
             prompt={dgettext("jobs", "Select experience range")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :years_of_experience,
-                Ecto.Enum.values(Jobs.JobPosting, :years_of_experience)
-              )
-            }
+            options={get_translated_options(:years_of_experience)}
             phx-debounce="blur"
           />
         </div>
@@ -145,12 +127,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Profession")}
             prompt={dgettext("jobs", "Select profession")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :profession,
-                Ecto.Enum.values(Jobs.JobPosting, :profession)
-              )
-            }
+            options={get_translated_options(:profession)}
             phx-debounce="blur"
           />
         </div>
@@ -160,12 +137,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:department]}
             type="multi-select"
             label={dgettext("jobs", "Department")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :department,
-                Ecto.Enum.values(Jobs.JobPosting, :department)
-              )
-            }
+            options={get_translated_options(:department)}
             phx-debounce="blur"
           />
 
@@ -173,12 +145,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:shift_type]}
             type="multi-select"
             label="Shift Type"
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :shift_type,
-                Ecto.Enum.values(Jobs.JobPosting, :shift_type)
-              )
-            }
+            options={get_translated_options(:shift_type)}
             phx-debounce="blur"
           />
         </div>
@@ -188,12 +155,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:region]}
             type="multi-select"
             label={dgettext("jobs", "Region")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :region,
-                Ecto.Enum.values(Jobs.JobPosting, :region)
-              )
-            }
+            options={get_translated_options(:region)}
             phx-debounce="blur"
           />
 
@@ -201,12 +163,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:language]}
             type="multi-select"
             label={dgettext("jobs", "Language")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :language,
-                Ecto.Enum.values(Jobs.JobPosting, :language)
-              )
-            }
+            options={get_translated_options(:language)}
             phx-debounce="blur"
           />
         </div>
@@ -216,12 +173,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:gender]}
             type="multi-select"
             label={dgettext("jobs", "Gender")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :gender,
-                Ecto.Enum.values(Jobs.JobPosting, :gender)
-              )
-            }
+            options={get_translated_options(:gender)}
             phx-debounce="blur"
           />
 
@@ -230,12 +182,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="multi-select"
             label={dgettext("jobs", "Workload")}
             prompt={dgettext("jobs", "Select workload")}
-            options={
-              SharedHelpers.get_translated_enum_options(
-                :workload,
-                Ecto.Enum.values(Jobs.JobPosting, :workload)
-              )
-            }
+            options={get_translated_options(:workload)}
             nested_input?={true}
             show_nested_input="Part-time"
             phx-debounce="blur"
@@ -246,12 +193,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
                 type="multi-select"
                 label={dgettext("jobs", "Workload Type")}
                 prompt={dgettext("jobs", "Select workload type")}
-                options={
-                  SharedHelpers.get_translated_enum_options(
-                    :part_time_details,
-                    Ecto.Enum.values(Jobs.JobPosting, :part_time_details)
-                  )
-                }
+                options={get_translated_options(:part_time_details)}
                 phx-debounce="blur"
               />
             </:nested_input>
@@ -399,4 +341,29 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   defp update_media_data_params(socket, job_params) do
     Map.put(job_params, "media_data", socket.assigns.media_data)
   end
+
+  defp get_translated_options(field) do
+    Jobs.JobPosting
+    |> Ecto.Enum.values(field)
+    |> Stream.map(&to_string/1)
+    |> Enum.map(fn value -> {translate_enum_value(field, value), value} end)
+  end
+
+  defp translate_enum_value(:employment_type, value), do: I18n.translate_employment_type(value)
+  defp translate_enum_value(:experience_level, value), do: I18n.translate_experience_level(value)
+  defp translate_enum_value(:department, value), do: I18n.translate_department(value)
+  defp translate_enum_value(:gender, value), do: I18n.translate_gender(value)
+  defp translate_enum_value(:language, value), do: I18n.translate_language(value)
+
+  defp translate_enum_value(:part_time_details, value),
+    do: I18n.translate_part_time_details(value)
+
+  defp translate_enum_value(:position, value), do: I18n.translate_position(value)
+  defp translate_enum_value(:profession, value), do: I18n.translate_profession(value)
+  defp translate_enum_value(:region, value), do: I18n.translate_region(value)
+  defp translate_enum_value(:shift_type, value), do: I18n.translate_shift_type(value)
+  defp translate_enum_value(:workload, value), do: I18n.translate_workload(value)
+
+  defp translate_enum_value(:years_of_experience, value),
+    do: I18n.translate_years_of_experience(value)
 end

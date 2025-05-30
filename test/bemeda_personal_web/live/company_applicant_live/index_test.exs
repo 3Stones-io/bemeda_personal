@@ -9,7 +9,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Workers.EmailNotificationWorker
-  alias BemedaPersonalWeb.SharedHelpers
 
   setup %{conn: conn} do
     company_user = user_fixture(%{email: "company@example.com"})
@@ -320,7 +319,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       {:ok, view, html} = live(conn, ~p"/companies/#{company}/applicants")
 
-      assert html =~ SharedHelpers.translate_status(:state)[application.state]
+      assert html =~ I18n.translate_status(application.state)
 
       html2 =
         view
@@ -355,7 +354,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       {:ok, view, html} = live(conn, ~p"/companies/#{company}/applicants")
 
-      assert html =~ SharedHelpers.translate_status(:state)[application.state]
+      assert html =~ I18n.translate_status(application.state)
 
       view
       |> form("#status-update-form-#{application.id}", %{

@@ -16,7 +16,7 @@ msgstr ""
 msgid "%{applicant} applied for the %{position} position at %{company}."
 msgstr "%{applicant} a postulé pour le poste de %{position} chez %{company}."
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Accept Offer"
 msgstr "Accepter l'offre"
@@ -62,7 +62,7 @@ msgstr "Candidature soumise avec succès"
 msgid "Application updated successfully"
 msgstr "Candidature mise à jour avec succès"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Applied"
 msgstr "Postulé"
@@ -103,7 +103,7 @@ msgstr "Tout effacer"
 msgid "Cover Letter"
 msgstr "Lettre de motivation"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Decline Offer"
 msgstr "Refuser l'offre"
@@ -135,7 +135,7 @@ msgstr "La date de fin doit être postérieure ou égale à la date de début"
 msgid "Experience Level"
 msgstr "Niveau d'expérience"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Extend Offer"
 msgstr "Faire une offre"
@@ -155,12 +155,12 @@ msgstr "Échec de la mise à jour du statut"
 msgid "Find your next career opportunity"
 msgstr "Trouvez votre prochaine opportunité de carrière"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Interview Scheduled"
 msgstr "Entretien programmé"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Interviewed"
 msgstr "Entretien effectué"
@@ -230,7 +230,7 @@ msgstr "Emplois chez %{company}"
 msgid "Location"
 msgstr "Localisation"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Mark as Interviewed"
 msgstr "Marquer comme interviewé"
@@ -272,17 +272,17 @@ msgstr "Aucun poste ouvert en ce moment"
 msgid "Notes"
 msgstr "Notes"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Offer Accepted"
 msgstr "Offre acceptée"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Offer Declined"
 msgstr "Offre refusée"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Offer Extended"
 msgstr "Offre proposée"
@@ -319,12 +319,12 @@ msgstr "Publier l'offre"
 msgid "Recent Jobs"
 msgstr "Emplois récents"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Reject Application"
 msgstr "Rejeter la candidature"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Rejected"
 msgstr "Rejeté"
@@ -354,12 +354,12 @@ msgstr "Enregistrer les modifications"
 msgid "Saving..."
 msgstr "Enregistrement..."
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Schedule Interview"
 msgstr "Programmer un entretien"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Screening"
 msgstr "Présélection"
@@ -375,12 +375,12 @@ msgstr "Sélectionner un statut"
 msgid "Show History"
 msgstr "Afficher l'historique"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Start Review"
 msgstr "Commencer l'examen"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Start Screening"
 msgstr "Commencer la présélection"
@@ -405,13 +405,13 @@ msgstr "Statut"
 msgid "Status updated successfully"
 msgstr "Statut mis à jour avec succès"
 
+#: lib/bemeda_personal_web/i18n.ex
 #: lib/bemeda_personal_web/live/job_application_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "Submit Application"
 msgstr "Soumettre la candidature"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Under Review"
 msgstr "En cours d'examen"
@@ -454,12 +454,12 @@ msgstr "Voir tous les emplois"
 msgid "View the timeline of your application status changes for the"
 msgstr "Voir la chronologie des changements de statut de votre candidature pour le"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Withdraw Application"
 msgstr "Retirer la candidature"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Withdrawn"
 msgstr "Retiré"
@@ -918,367 +918,367 @@ msgstr "Votre entretien a été programmé"
 msgid "more"
 msgstr "plus"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "2-5 years"
 msgstr "2-5 ans"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Aargau"
 msgstr "Argovie"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Acute Care"
 msgstr "Soins Aigus"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Administration"
 msgstr "Administration"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Anesthesia"
 msgstr "Anesthésie"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Appenzell Ausserrhoden"
 msgstr "Appenzell Rhodes-Extérieures"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Appenzell Innerrhoden"
 msgstr "Appenzell Rhodes-Intérieures"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Basel-Landschaft"
 msgstr "Bâle-Campagne"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Basel-Stadt"
 msgstr "Bâle-Ville"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Bern"
 msgstr "Berne"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Day Clinic"
 msgstr "Clinique de Jour"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Day Shift"
 msgstr "Équipe de Jour"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Early Shift"
 msgstr "Équipe du Matin"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Emergency Department"
 msgstr "Service d'Urgence"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Employee"
 msgstr "Employé"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "English"
 msgstr "Anglais"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Executive"
 msgstr "Cadre Supérieur"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Female"
 msgstr "Féminin"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Floater"
 msgstr "Remplaçant"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "French"
 msgstr "Français"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Fribourg"
 msgstr "Fribourg"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Full-time"
 msgstr "Temps Plein"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Geneva"
 msgstr "Genève"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "German"
 msgstr "Allemand"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Glarus"
 msgstr "Glaris"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Grisons"
 msgstr "Grisons"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Home Care (Spitex)"
 msgstr "Soins à Domicile (Spitex)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Hospital / Clinic"
 msgstr "Hôpital / Clinique"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Intensive Care"
 msgstr "Soins Intensifs"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Intermediate Care (IMC)"
 msgstr "Soins Intermédiaires (IMC)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Italian"
 msgstr "Italien"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Junior"
 msgstr "Junior"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Jura"
 msgstr "Jura"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Late Shift"
 msgstr "Équipe du Soir"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Lead"
 msgstr "Chef d'Équipe"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Leadership Position"
 msgstr "Poste de Direction"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Less than 2 years"
 msgstr "Moins de 2 ans"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Long-Term Care"
 msgstr "Soins de Longue Durée"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Lucerne"
 msgstr "Lucerne"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Male"
 msgstr "Masculin"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Maximum"
 msgstr "Maximum"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Medical Practices"
 msgstr "Cabinets Médicaux"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Mid Level"
 msgstr "Niveau Intermédiaire"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Minimum"
 msgstr "Minimum"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "More than 5 years"
 msgstr "Plus de 5 ans"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Neuchâtel"
 msgstr "Neuchâtel"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Nidwalden"
 msgstr "Nidwald"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Night Shift"
 msgstr "Équipe de Nuit"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Obwalden"
 msgstr "Obwald"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Operating Room"
 msgstr "Salle d'Opération"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Other"
 msgstr "Autre"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Part-time"
 msgstr "Temps Partiel"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Permanent Position"
 msgstr "Poste Permanent"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Psychiatry"
 msgstr "Psychiatrie"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Recovery Room (PACU)"
 msgstr "Salle de Réveil (PACU)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Rehabilitation"
 msgstr "Réhabilitation"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Schaffhausen"
 msgstr "Schaffhouse"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Schwyz"
 msgstr "Schwyz"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Senior Level"
 msgstr "Niveau Senior"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Solothurn"
 msgstr "Soleure"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Specialist Role"
 msgstr "Rôle de Spécialiste"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Split Shift"
 msgstr "Équipe Fractionnée"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "St. Gallen"
 msgstr "Saint-Gall"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Staff Pool"
 msgstr "Réserve de Personnel"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Temporary Assignment"
 msgstr "Mission Temporaire"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Therapies"
 msgstr "Thérapies"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Thurgau"
 msgstr "Thurgovie"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Ticino"
 msgstr "Tessin"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Uri"
 msgstr "Uri"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Valais"
 msgstr "Valais"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Vaud"
 msgstr "Vaud"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Zug"
 msgstr "Zoug"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Zurich"
 msgstr "Zurich"
