@@ -161,7 +161,6 @@ msgid "Set up your company profile to start posting jobs and connecting with pot
 msgstr "Configurez votre profil d'entreprise pour commencer à publier des offres d'emploi et vous connecter avec des candidats potentiels."
 
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "Tech"
 msgstr "Technologie"
@@ -225,41 +224,6 @@ msgstr "À propos de %{company}"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "View Company Profile"
 msgstr "Modifier le profil d'entreprise"
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Consulting"
-msgstr "Conseil"
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Education"
-msgstr "Éducation"
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Finance"
-msgstr "Finance"
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Healthcare"
-msgstr "Santé"
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Manufacturing"
-msgstr "Fabrication"
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Retail"
-msgstr "Commerce de détail"
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Technology"
-msgstr "Technologie"
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
 #, elixir-autogen, elixir-format

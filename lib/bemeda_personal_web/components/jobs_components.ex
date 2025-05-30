@@ -197,7 +197,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           <div :if={@company.industry}>
             <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Industry")}</dt>
             <dd class="mt-1 text-sm text-gray-900">
-              {BemedaPersonalWeb.SharedHelpers.translate_industry(@company.industry)}
+              {@company.industry}
             </dd>
           </div>
 
@@ -249,8 +249,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <div>
         <h1 class="text-3xl font-bold text-gray-900">{@company.name}</h1>
         <p class="mt-2 text-sm text-gray-500">
-          {BemedaPersonalWeb.SharedHelpers.translate_industry(@company.industry)} • {@company.location ||
-            dgettext("companies", "Remote")}
+          {@company.industry} • {@company.location || dgettext("companies", "Remote")}
         </p>
       </div>
       <div class="mt-4 md:mt-0">

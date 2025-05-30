@@ -13,20 +13,87 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   @type changeset :: Ecto.Changeset.t()
   @type t :: %__MODULE__{}
 
+  @currencies [:AUD, :CAD, :CHF, :EUR, :GBP, :JPY, :USD]
+  @departments [
+    :"Acute Care",
+    :Administration,
+    :Anesthesia,
+    :"Day Clinic",
+    :"Emergency Department",
+    :"Home Care (Spitex)",
+    :"Hospital / Clinic",
+    :"Intensive Care",
+    :"Intermediate Care (IMC)",
+    :"Long-Term Care",
+    :"Medical Practices",
+    :"Operating Room",
+    :Other,
+    :Psychiatry,
+    :"Recovery Room (PACU)",
+    :Rehabilitation,
+    :Therapies
+  ]
+  @employment_types [:Floater, :"Permanent Position", :"Staff Pool", :"Temporary Assignment"]
+  @experience_levels [:Executive, :Junior, :Lead, :"Mid-level", :Senior]
+  @genders [:Female, :Male]
+  @languages [:English, :French, :German, :Italian]
+  @part_time_details [:Max, :Min]
+  @positions [:Employee, :"Leadership Position", :"Specialist Role"]
+  @regions [
+    :Aargau,
+    :"Appenzell Ausserrhoden",
+    :"Appenzell Innerrhoden",
+    :"Basel-Landschaft",
+    :"Basel-Stadt",
+    :Bern,
+    :Fribourg,
+    :Geneva,
+    :Glarus,
+    :Grisons,
+    :Jura,
+    :Lucerne,
+    :Neuchâtel,
+    :Nidwalden,
+    :Obwalden,
+    :Schaffhausen,
+    :Schwyz,
+    :Solothurn,
+    :"St. Gallen",
+    :Thurgau,
+    :Ticino,
+    :Uri,
+    :Valais,
+    :Vaud,
+    :Zug,
+    :Zurich
+  ]
+  @shift_types [:"Day Shift", :"Early Shift", :"Late Shift", :"Night Shift", :"Split Shift"]
+  @workloads [:"Full-time", :"Part-time"]
+  @years_of_experience [:"2-5 years", :"Less than 2 years", :"More than 5 years"]
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "job_postings" do
     belongs_to :company, Company
-    field :currency, :string
+    field :currency, Ecto.Enum, values: @currencies
+    field :department, {:array, Ecto.Enum}, values: @departments
     field :description, :string
-    field :employment_type, :string
-    field :experience_level, :string
+    field :employment_type, Ecto.Enum, values: @employment_types
+    field :experience_level, Ecto.Enum, values: @experience_levels
+    field :gender, {:array, Ecto.Enum}, values: @genders
+    field :language, {:array, Ecto.Enum}, values: @languages
     field :location, :string
     has_one :media_asset, MediaAsset
+    field :part_time_details, {:array, Ecto.Enum}, values: @part_time_details
+    field :position, Ecto.Enum, values: @positions
+    field :region, {:array, Ecto.Enum}, values: @regions
     field :remote_allowed, :boolean, default: false
     field :salary_max, :integer
     field :salary_min, :integer
+    field :shift_type, {:array, Ecto.Enum}, values: @shift_types
     field :title, :string
+    field :workload, {:array, Ecto.Enum}, values: @workloads
+    field :years_of_experience, Ecto.Enum, values: @years_of_experience
 
     timestamps(type: :utc_datetime)
   end
@@ -35,15 +102,24 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   def changeset(job_posting, attrs) do
     job_posting
     |> cast(attrs, [
-      :title,
+      :currency,
+      :department,
       :description,
-      :location,
       :employment_type,
       :experience_level,
-      :salary_min,
+      :gender,
+      :language,
+      :location,
+      :part_time_details,
+      :position,
+      :region,
+      :remote_allowed,
       :salary_max,
-      :currency,
-      :remote_allowed
+      :salary_min,
+      :shift_type,
+      :title,
+      :workload,
+      :years_of_experience
     ])
     |> validate_required([:title, :description])
     |> validate_length(:title, min: 5, max: 255)

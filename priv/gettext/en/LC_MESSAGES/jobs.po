@@ -98,20 +98,9 @@ msgstr ""
 msgid "Clear All"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Contract"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/job_application_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Cover Letter"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Currency"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/shared_helpers.ex
@@ -140,18 +129,6 @@ msgstr ""
 msgid "End date must be after or equal to start date"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Entry Level"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Executive"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
@@ -176,18 +153,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Find your next career opportunity"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Full-time"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Internship"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/shared_helpers.ex
@@ -276,12 +241,6 @@ msgid "Maximum Salary"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Mid Level"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Minimum Salary"
 msgstr ""
@@ -341,12 +300,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Open Positions"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Part-time"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/index.html.heex
@@ -417,12 +370,6 @@ msgstr ""
 msgid "Select a status"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Senior Level"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Show History"
@@ -462,12 +409,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "Submit Application"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Temporary"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/shared_helpers.ex
@@ -548,6 +489,143 @@ msgstr ""
 msgid "position at"
 msgstr ""
 
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Department"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Gender"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Language"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Position"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Region"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select employment type"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select experience level"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select experience range"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select position"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select workload"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select workload type"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Workload"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Workload Type"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Years of Experience"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Currency"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "An interview has been scheduled for this application"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "An offer has been extended for this position"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "An offer has been extended to you"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Applicant Name"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Applicant's resume details"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Application Date From"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Application Date To"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Application Information"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Application Status"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Applied for"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Apply to %{job_title}"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Are you sure you want to delete this job posting? This action cannot be undone."
+msgstr ""
+
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Back to Jobs"
@@ -555,7 +633,73 @@ msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
+msgid "Chat with Applicant"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Chat with applicant"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Click to update status"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Company Jobs"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Cover letter"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Delete job"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#: lib/bemeda_personal_web/live/company_job_live/show.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Edit Job"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Edit application for %{job_title}"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Edit job"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Email address"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Enter location"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
 msgid "Filter"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Filter Applications"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Filter by Tags"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
@@ -565,7 +709,43 @@ msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
+msgid "Full name"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Hide Filters"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Jobs for %{company}"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Manage your job postings"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Personal details and application."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Post New Job"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
 msgid "Posted"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Rating"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
@@ -585,64 +765,42 @@ msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
+msgid "Resume"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Resume Information"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Resume is not publicly available"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
 msgid "Salary Range"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
-msgid "Junior"
+msgid "Search by applicant name"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
-msgid "Lead"
+msgid "Search by job title"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_application_live/index.ex
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
-msgid "Apply to %{job_title}"
+msgid "Show Filters"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_application_live/index.ex
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
-msgid "Edit application for %{job_title}"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/chat_components.ex
-#, elixir-autogen, elixir-format
-msgid "An interview has been scheduled for this application"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/chat_components.ex
-#, elixir-autogen, elixir-format
-msgid "An offer has been extended for this position"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/chat_components.ex
-#, elixir-autogen, elixir-format
-msgid "An offer has been extended to you"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/index.ex
-#: lib/bemeda_personal_web/live/company_job_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Edit Job"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Jobs for %{company}"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
-#, elixir-autogen, elixir-format
-msgid "Manage your job postings"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/index.ex
-#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Post New Job"
+msgid "Tags"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/chat_components.ex
@@ -685,9 +843,29 @@ msgstr ""
 msgid "This candidate has been interviewed"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Type tag name and press Enter"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Update Tags"
+msgstr ""
+
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "View Applicants"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "View Resume"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "View applicants"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/chat_components.ex
@@ -737,185 +915,370 @@ msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
-msgid "Chat with applicant"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Delete job"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Edit job"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Enter location"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Search by applicant name"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Search by job title"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Type tag name and press Enter"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "View applicants"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Applicant Name"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Applicant's resume details"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Application Date From"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Application Date To"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Application Information"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Application Status"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Applied for"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Chat with Applicant"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Click to update status"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Company Jobs"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Cover letter"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Email address"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Filter Applications"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Filter by Tags"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Full name"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Hide Filters"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Personal details and application."
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Rating"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Resume"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Resume Information"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Resume is not publicly available"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Select employment type"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Select experience level"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Show Filters"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Tags"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Update Tags"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "View Resume"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Are you sure you want to delete this job posting? This action cannot be undone."
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
 msgid "more"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "2-5 years"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Aargau"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Acute Care"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Administration"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Anesthesia"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Appenzell Ausserrhoden"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Appenzell Innerrhoden"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Basel-Landschaft"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Basel-Stadt"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Bern"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Day Clinic"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Day Shift"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Early Shift"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Emergency Department"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Employee"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "English"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Executive"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Female"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Floater"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "French"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Fribourg"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Full-time"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Geneva"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "German"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Glarus"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Grisons"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Home Care (Spitex)"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Hospital / Clinic"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Intensive Care"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Intermediate Care (IMC)"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Italian"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Junior"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Jura"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Late Shift"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Lead"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Leadership Position"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Less than 2 years"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Long-Term Care"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Lucerne"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Male"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Maximum"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Medical Practices"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Mid Level"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Minimum"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "More than 5 years"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Neuchâtel"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Nidwalden"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Night Shift"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Obwalden"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Operating Room"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Other"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Part-time"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Permanent Position"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Psychiatry"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Recovery Room (PACU)"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Rehabilitation"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Schaffhausen"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Schwyz"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Senior Level"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Solothurn"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Specialist Role"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Split Shift"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "St. Gallen"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Staff Pool"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Temporary Assignment"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Therapies"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Thurgau"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Ticino"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Uri"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Valais"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Vaud"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Zug"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Zurich"
 msgstr ""

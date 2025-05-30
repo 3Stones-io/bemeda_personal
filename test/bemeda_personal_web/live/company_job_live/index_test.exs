@@ -115,11 +115,19 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       |> form("#company-job-form", %{
         "job_posting" => %{
           "description" => "We are looking for a talented software engineer to join our team.",
-          "employment_type" => "Full-time",
-          "experience_level" => "Mid Level",
+          "employment_type" => "Permanent Position",
+          "experience_level" => "Mid-level",
           "location" => "Remote",
           "remote_allowed" => true,
-          "title" => "Software Engineer"
+          "title" => "Software Engineer",
+          "department" => ["Other"],
+          "shift_type" => ["Day Shift"],
+          "region" => ["Zurich"],
+          "years_of_experience" => "2-5 years",
+          "position" => "Employee",
+          "gender" => ["Male", "Female"],
+          "language" => ["English"],
+          "workload" => ["Full-time"]
         }
       })
       |> render_submit()
@@ -151,8 +159,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       |> form("#company-job-form", %{
         "job_posting" => %{
           "description" => "We are looking for a talented software engineer to join our team.",
-          "employment_type" => "Full-time",
-          "experience_level" => "Mid Level",
+          "employment_type" => "Permanent Position",
+          "experience_level" => "Mid-level",
           "location" => "Remote",
           "remote_allowed" => true,
           "title" => "Software Engineer"
@@ -321,21 +329,21 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "Remote Software Engineer",
           remote_allowed: true,
-          employment_type: "Full-time"
+          employment_type: "Permanent Position"
         })
 
       onsite_job =
         job_posting_fixture(company, %{
           title: "Onsite Developer",
           remote_allowed: false,
-          employment_type: "Contract"
+          employment_type: "Staff Pool"
         })
 
       another_job =
         job_posting_fixture(company, %{
           title: "Marketing Specialist",
           remote_allowed: false,
-          employment_type: "Full-time"
+          employment_type: "Permanent Position"
         })
 
       conn = log_in_user(conn, user)
@@ -427,7 +435,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       another_job: another_job
     } do
       {:ok, view, _html} =
-        live(conn, ~p"/companies/#{company}/jobs?employment_type=Full-time&remote_allowed=true")
+        live(
+          conn,
+          ~p"/companies/#{company}/jobs?employment_type=Permanent Position&remote_allowed=true"
+        )
 
       html = render(view)
       assert html =~ remote_job.title
@@ -475,8 +486,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
             title: @create_attrs_job.title,
             description: @create_attrs_job.description,
             location: @create_attrs_job.location,
-            employment_type: "Full-time",
-            experience_level: "Senior Level",
+            employment_type: "Permanent Position",
+            experience_level: "Senior",
             remote_allowed: true
           }
         })

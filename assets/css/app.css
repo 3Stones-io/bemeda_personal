@@ -190,3 +190,24 @@ input[type='date'].unsupported {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
+
+.nested-multi-select-input-container {
+  display: grid;
+  grid-template-columns: 2em 1fr;
+  grid-template-areas:
+    'checkbox label'
+    'nested-input nested-input';
+  align-items: center;
+}
+
+.nested-multi-select-input-container .main-checkbox {
+  grid-area: checkbox;
+}
+
+.nested-multi-select-input-container .option-label {
+  grid-area: label;
+}
+
+.nested-multi-select-input-container .nested-input {
+  grid-area: nested-input;
+}

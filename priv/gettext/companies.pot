@@ -161,7 +161,6 @@ msgid "Set up your company profile to start posting jobs and connecting with pot
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
-#: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "Tech"
 msgstr ""
@@ -224,41 +223,6 @@ msgstr ""
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "View Company Profile"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Consulting"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Education"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Finance"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Healthcare"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Manufacturing"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Retail"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/shared_helpers.ex
-#, elixir-autogen, elixir-format
-msgid "Technology"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex

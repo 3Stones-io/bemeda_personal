@@ -10,7 +10,7 @@ defmodule BemedaPersonal.Jobs.JobFilter do
   @type changeset() :: Ecto.Changeset.t()
   @type t :: %__MODULE__{}
 
-  @employment_types [:"Full-time", :"Part-time", :Contract, :Internship]
+  @employment_types [:Floater, :"Permanent Position", :"Staff Pool", :"Temporary Assignment"]
   @experience_levels [:Junior, :"Mid-level", :Senior, :Lead, :Executive]
 
   @primary_key false

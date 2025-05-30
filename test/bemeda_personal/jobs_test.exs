@@ -10,17 +10,7 @@ defmodule BemedaPersonal.JobsTest do
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 
-  @invalid_attrs %{
-    currency: nil,
-    description: nil,
-    employment_type: nil,
-    experience_level: nil,
-    location: nil,
-    remote_allowed: nil,
-    salary_max: nil,
-    salary_min: nil,
-    title: nil
-  }
+  @invalid_attrs %{"title" => nil}
 
   defp create_job_posting(_attrs) do
     user = user_fixture()
@@ -40,8 +30,8 @@ defmodule BemedaPersonal.JobsTest do
     Enum.map(1..count, fn i ->
       job_posting_fixture(company, %{
         description: "Description for job posting #{i}",
-        employment_type: "Full-time #{i}",
-        experience_level: "Senior #{i}",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "Location #{i}",
         remote_allowed: rem(i, 2) == 0,
         salary_max: i * 15_000,
@@ -98,10 +88,10 @@ defmodule BemedaPersonal.JobsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      job_posting1 = job_posting_fixture(company, %{employment_type: "Full-time"})
-      job_posting_fixture(company, %{employment_type: "Part-time"})
+      job_posting1 = job_posting_fixture(company, %{employment_type: "Permanent Position"})
+      job_posting_fixture(company, %{employment_type: "Floater"})
 
-      assert [result] = Jobs.list_job_postings(%{employment_type: "Full"})
+      assert [result] = Jobs.list_job_postings(%{employment_type: "Permanent"})
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
     end
@@ -178,7 +168,7 @@ defmodule BemedaPersonal.JobsTest do
 
       job_posting1 =
         job_posting_fixture(company, %{
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           remote_allowed: true,
           salary_max: 120_000,
           salary_min: 80_000,
@@ -186,7 +176,7 @@ defmodule BemedaPersonal.JobsTest do
         })
 
       job_posting_fixture(company, %{
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         remote_allowed: false,
         salary_max: 70_000,
         salary_min: 50_000,
@@ -194,7 +184,7 @@ defmodule BemedaPersonal.JobsTest do
       })
 
       job_posting_fixture(company, %{
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         remote_allowed: true,
         salary_max: 130_000,
         salary_min: 90_000,
@@ -217,7 +207,7 @@ defmodule BemedaPersonal.JobsTest do
       company = company_fixture(user)
 
       job_posting_fixture(company, %{
-        employment_type: "Full-time",
+        employment_type: "Permanent Position",
         remote_allowed: true,
         salary_max: 120_000,
         salary_min: 80_000,
@@ -245,7 +235,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for older job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: false,
@@ -262,7 +252,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for middle job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: false,
@@ -279,7 +269,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for newer job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: false,
@@ -304,7 +294,7 @@ defmodule BemedaPersonal.JobsTest do
         |> BemedaPersonal.Jobs.JobPosting.changeset(%{
           currency: "USD",
           description: "Description for another older job",
-          employment_type: "Full-time",
+          employment_type: "Permanent Position",
           experience_level: "Mid-level",
           location: "Location",
           remote_allowed: true,
@@ -364,10 +354,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with valid data creates a job_posting", %{company: company} do
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -386,10 +376,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with nil media_data does not create a media asset", %{company: company} do
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -409,10 +399,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with empty media_data does not create a media asset", %{company: company} do
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -436,10 +426,10 @@ defmodule BemedaPersonal.JobsTest do
       upload_id = Ecto.UUID.generate()
 
       valid_attrs = %{
-        "currency" => "some currency",
+        "currency" => "USD",
         "description" => "some description that is long enough",
-        "employment_type" => "some employment_type",
-        "experience_level" => "some experience_level",
+        "employment_type" => "Permanent Position",
+        "experience_level" => "Mid-level",
         "location" => "some location",
         "remote_allowed" => true,
         "salary_max" => 42,
@@ -469,10 +459,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with salary_min greater than salary_max returns error changeset", %{company: company} do
       invalid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 50,
@@ -486,10 +476,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with title too short returns error changeset", %{company: company} do
       invalid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -503,10 +493,10 @@ defmodule BemedaPersonal.JobsTest do
 
     test "with description too short returns error changeset", %{company: company} do
       invalid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "too short",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,
@@ -525,10 +515,10 @@ defmodule BemedaPersonal.JobsTest do
       Endpoint.subscribe(company_topic)
 
       valid_attrs = %{
-        currency: "some currency",
+        currency: "USD",
         description: "some description that is long enough",
-        employment_type: "some employment_type",
-        experience_level: "some experience_level",
+        employment_type: "Permanent Position",
+        experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
         salary_max: 42,

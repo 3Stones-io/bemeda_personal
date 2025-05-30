@@ -36,7 +36,36 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           phx-debounce="blur"
         />
 
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
+          <.input
+            field={f[:employment_type]}
+            type="select"
+            label={dgettext("jobs", "Employment Type")}
+            prompt={dgettext("jobs", "Select employment type")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :employment_type,
+                Ecto.Enum.values(Jobs.JobPosting, :employment_type)
+              )
+            }
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:experience_level]}
+            type="select"
+            label={dgettext("jobs", "Experience Level")}
+            prompt={dgettext("jobs", "Select experience level")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :experience_level,
+                Ecto.Enum.values(Jobs.JobPosting, :experience_level)
+              )
+            }
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2 items-center">
           <.input
             field={f[:location]}
             type="text"
@@ -44,40 +73,14 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             phx-debounce="blur"
           />
 
-          <.input
-            field={f[:employment_type]}
-            type="select"
-            label={dgettext("jobs", "Employment Type")}
-            options={[
-              {dgettext("jobs", "Full-time"), "Full-time"},
-              {dgettext("jobs", "Part-time"), "Part-time"},
-              {dgettext("jobs", "Contract"), "Contract"},
-              {dgettext("jobs", "Temporary"), "Temporary"},
-              {dgettext("jobs", "Internship"), "Internship"}
-            ]}
-            phx-debounce="blur"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <.input
-            field={f[:experience_level]}
-            type="select"
-            label={dgettext("jobs", "Experience Level")}
-            options={[
-              {dgettext("jobs", "Entry Level"), "Entry Level"},
-              {dgettext("jobs", "Mid Level"), "Mid Level"},
-              {dgettext("jobs", "Senior Level"), "Senior Level"},
-              {dgettext("jobs", "Executive"), "Executive"}
-            ]}
-          />
-
-          <.input
-            field={f[:remote_allowed]}
-            type="checkbox"
-            label={dgettext("jobs", "Remote Work Allowed")}
-            phx-debounce="blur"
-          />
+          <div class="md:mt-8">
+            <.input
+              field={f[:remote_allowed]}
+              type="checkbox"
+              label={dgettext("jobs", "Remote Work Allowed")}
+              phx-debounce="blur"
+            />
+          </div>
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
@@ -101,16 +104,142 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:currency]}
             type="select"
             label={dgettext("jobs", "Currency")}
-            options={[
-              {"USD", "USD"},
-              {"EUR", "EUR"},
-              {"GBP", "GBP"},
-              {"CAD", "CAD"},
-              {"AUD", "AUD"},
-              {"JPY", "JPY"}
-            ]}
+            options={Ecto.Enum.values(Jobs.JobPosting, :currency)}
             phx-debounce="blur"
           />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
+          <.input
+            field={f[:position]}
+            type="select"
+            label={dgettext("jobs", "Position")}
+            prompt={dgettext("jobs", "Select position")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :position,
+                Ecto.Enum.values(Jobs.JobPosting, :position)
+              )
+            }
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:years_of_experience]}
+            type="select"
+            label={dgettext("jobs", "Years of Experience")}
+            prompt={dgettext("jobs", "Select experience range")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :years_of_experience,
+                Ecto.Enum.values(Jobs.JobPosting, :years_of_experience)
+              )
+            }
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
+            field={f[:department]}
+            type="multi-select"
+            label={dgettext("jobs", "Department")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :department,
+                Ecto.Enum.values(Jobs.JobPosting, :department)
+              )
+            }
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:shift_type]}
+            type="multi-select"
+            label="Shift Type"
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :shift_type,
+                Ecto.Enum.values(Jobs.JobPosting, :shift_type)
+              )
+            }
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
+            field={f[:region]}
+            type="multi-select"
+            label={dgettext("jobs", "Region")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :region,
+                Ecto.Enum.values(Jobs.JobPosting, :region)
+              )
+            }
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:language]}
+            type="multi-select"
+            label={dgettext("jobs", "Language")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :language,
+                Ecto.Enum.values(Jobs.JobPosting, :language)
+              )
+            }
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
+            field={f[:gender]}
+            type="multi-select"
+            label={dgettext("jobs", "Gender")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :gender,
+                Ecto.Enum.values(Jobs.JobPosting, :gender)
+              )
+            }
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:workload]}
+            type="multi-select"
+            label={dgettext("jobs", "Workload")}
+            prompt={dgettext("jobs", "Select workload")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :workload,
+                Ecto.Enum.values(Jobs.JobPosting, :workload)
+              )
+            }
+            nested_input?={true}
+            show_nested_input="Part-time"
+            phx-debounce="blur"
+          >
+            <:nested_input>
+              <.input
+                field={f[:part_time_details]}
+                type="multi-select"
+                label={dgettext("jobs", "Workload Type")}
+                prompt={dgettext("jobs", "Select workload type")}
+                options={
+                  SharedHelpers.get_translated_enum_options(
+                    :part_time_details,
+                    Ecto.Enum.values(Jobs.JobPosting, :part_time_details)
+                  )
+                }
+                phx-debounce="blur"
+              />
+            </:nested_input>
+          </.input>
         </div>
 
         <SharedComponents.asset_preview
