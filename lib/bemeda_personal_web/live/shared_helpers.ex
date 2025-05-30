@@ -253,6 +253,76 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def translate_position("Specialist Role"), do: dgettext("jobs", "Specialist Role")
   def translate_position(position), do: position
 
+  @spec translate_profession(String.t() | nil) :: String.t()
+  def translate_profession(nil), do: dgettext("general", "Not specified")
+  def translate_profession("Anesthesiologist"), do: dgettext("jobs", "Anesthesiologist")
+
+  def translate_profession("Certified Anesthesia Nursing Specialist (NDS HF)"),
+    do: dgettext("jobs", "Certified Anesthesia Nursing Specialist (NDS HF)")
+
+  def translate_profession("Certified Emergency Nursing Specialist (NDS HF)"),
+    do: dgettext("jobs", "Certified Emergency Nursing Specialist (NDS HF)")
+
+  def translate_profession("Certified Intensive Care Nursing Specialist (NDS HF)"),
+    do: dgettext("jobs", "Certified Intensive Care Nursing Specialist (NDS HF)")
+
+  def translate_profession("Certified Paramedic (HF)"),
+    do: dgettext("jobs", "Certified Paramedic (HF)")
+
+  def translate_profession("Certified Surgical Technician"),
+    do: dgettext("jobs", "Certified Surgical Technician")
+
+  def translate_profession("Health and Social Care Assistant (AGS)"),
+    do: dgettext("jobs", "Health and Social Care Assistant (AGS)")
+
+  def translate_profession("Health Care Assistant (FaGe)"),
+    do: dgettext("jobs", "Health Care Assistant (FaGe)")
+
+  def translate_profession("Internist"), do: dgettext("jobs", "Internist")
+
+  def translate_profession("Licensed Occupational Therapist"),
+    do: dgettext("jobs", "Licensed Occupational Therapist")
+
+  def translate_profession("Licensed Physiotherapist"),
+    do: dgettext("jobs", "Licensed Physiotherapist")
+
+  def translate_profession("Licensed Speech Therapist"),
+    do: dgettext("jobs", "Licensed Speech Therapist")
+
+  def translate_profession("Long-Term Care Specialist"),
+    do: dgettext("jobs", "Long-Term Care Specialist")
+
+  def translate_profession("Medical Practice Assistant (MPA)"),
+    do: dgettext("jobs", "Medical Practice Assistant (MPA)")
+
+  def translate_profession("Medical Secretary"), do: dgettext("jobs", "Medical Secretary")
+  def translate_profession("Nursing Assistant"), do: dgettext("jobs", "Nursing Assistant")
+
+  def translate_profession("Patient Positioning Nurse"),
+    do: dgettext("jobs", "Patient Positioning Nurse")
+
+  def translate_profession("Patient Sitter"), do: dgettext("jobs", "Patient Sitter")
+  def translate_profession("Registered Midwife"), do: dgettext("jobs", "Registered Midwife")
+
+  def translate_profession("Registered Nurse (AKP / DN II / HF / FH)"),
+    do: dgettext("jobs", "Registered Nurse (AKP / DN II / HF / FH)")
+
+  def translate_profession("Registered Nurse with Intermediate Care Qualification"),
+    do: dgettext("jobs", "Registered Nurse with Intermediate Care Qualification")
+
+  def translate_profession("Registered Radiologic Technologist (HF)"),
+    do: dgettext("jobs", "Registered Radiologic Technologist (HF)")
+
+  def translate_profession("Registered Surgical Technologist (HF)"),
+    do: dgettext("jobs", "Registered Surgical Technologist (HF)")
+
+  def translate_profession("Specialist Physician"), do: dgettext("jobs", "Specialist Physician")
+
+  def translate_profession("Swiss Red Cross Nursing Assistant"),
+    do: dgettext("jobs", "Swiss Red Cross Nursing Assistant")
+
+  def translate_profession(profession), do: profession
+
   @spec translate_region(String.t() | nil) :: String.t()
   def translate_region(nil), do: dgettext("general", "Not specified")
   def translate_region("Aargau"), do: dgettext("jobs", "Aargau")
@@ -325,6 +395,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   defp translate_enum_value(:language, value), do: translate_language(value)
   defp translate_enum_value(:part_time_details, value), do: translate_part_time_details(value)
   defp translate_enum_value(:position, value), do: translate_position(value)
+  defp translate_enum_value(:profession, value), do: translate_profession(value)
   defp translate_enum_value(:region, value), do: translate_region(value)
   defp translate_enum_value(:shift_type, value), do: translate_shift_type(value)
   defp translate_enum_value(:workload, value), do: translate_workload(value)

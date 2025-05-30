@@ -141,6 +141,22 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4">
           <.input
+            field={f[:profession]}
+            type="select"
+            label={dgettext("jobs", "Profession")}
+            prompt={dgettext("jobs", "Select profession")}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :profession,
+                Ecto.Enum.values(Jobs.JobPosting, :profession)
+              )
+            }
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
             field={f[:department]}
             type="multi-select"
             label={dgettext("jobs", "Department")}

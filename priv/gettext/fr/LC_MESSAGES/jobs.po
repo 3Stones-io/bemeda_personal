@@ -1282,3 +1282,133 @@ msgstr "Zoug"
 #, elixir-autogen, elixir-format
 msgid "Zurich"
 msgstr "Zurich"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Anesthesiologist"
+msgstr "Anesthésie"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Anesthesia Nursing Specialist (NDS HF)"
+msgstr "Spécialiste en Soins Infirmiers d'Anesthésie Certifiée (NDS HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Emergency Nursing Specialist (NDS HF)"
+msgstr "Spécialiste en Soins Infirmiers d'Urgence Certifiée (NDS HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Intensive Care Nursing Specialist (NDS HF)"
+msgstr "Spécialiste en Soins Intensifs Certifiée (NDS HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Paramedic (HF)"
+msgstr "Ambulancière Certifiée (HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Surgical Technician"
+msgstr "Technicienne Chirurgicale Certifiée"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Health Care Assistant (FaGe)"
+msgstr "Assistante en Soins et Santé Communautaire (ASSC)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Health and Social Care Assistant (AGS)"
+msgstr "Assistante en Soins et Accompagnement (ASA)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Internist"
+msgstr "Interniste"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Licensed Occupational Therapist"
+msgstr "Ergothérapeute Diplômée"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Licensed Physiotherapist"
+msgstr "Physiothérapeute Diplômée"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Licensed Speech Therapist"
+msgstr "Logopédiste Diplômée"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Long-Term Care Specialist"
+msgstr "Soins de Longue Durée"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Medical Practice Assistant (MPA)"
+msgstr "Cabinets Médicaux"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Medical Secretary"
+msgstr "Secrétaire Médicale"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Nursing Assistant"
+msgstr "Aide-Soignante"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Patient Positioning Nurse"
+msgstr "Infirmière de Positionnement Patient"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Patient Sitter"
+msgstr "Accompagnatrice de Patient"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Profession"
+msgstr "Profession"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Midwife"
+msgstr "Sage-Femme Diplômée"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Nurse (AKP / DN II / HF / FH)"
+msgstr "Infirmière Diplômée (AKP / DN II / HF / FH)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Nurse with Intermediate Care Qualification"
+msgstr "Infirmière Diplômée avec Qualification en Soins Intermédiaires"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Radiologic Technologist (HF)"
+msgstr "Technicienne en Radiologie Médicale Diplômée (HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Surgical Technologist (HF)"
+msgstr "Technicienne en Salle d'Opération Diplômée (HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Specialist Physician"
+msgstr "Médecin Spécialiste"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Swiss Red Cross Nursing Assistant"
+msgstr "Aide-Soignante Croix-Rouge Suisse"

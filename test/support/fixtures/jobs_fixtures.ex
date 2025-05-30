@@ -32,6 +32,7 @@ defmodule BemedaPersonal.JobsFixtures do
         "location" => "some location",
         "part_time_details" => ["Min"],
         "position" => "Employee",
+        "profession" => "Anesthesiologist",
         "region" => ["Zurich"],
         "remote_allowed" => true,
         "salary_max" => 42_000,

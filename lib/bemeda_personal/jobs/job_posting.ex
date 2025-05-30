@@ -39,6 +39,33 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   @languages [:English, :French, :German, :Italian]
   @part_time_details [:Max, :Min]
   @positions [:Employee, :"Leadership Position", :"Specialist Role"]
+  @professions [
+    :Anesthesiologist,
+    :"Certified Anesthesia Nursing Specialist (NDS HF)",
+    :"Certified Emergency Nursing Specialist (NDS HF)",
+    :"Certified Intensive Care Nursing Specialist (NDS HF)",
+    :"Certified Paramedic (HF)",
+    :"Certified Surgical Technician",
+    :"Health and Social Care Assistant (AGS)",
+    :"Health Care Assistant (FaGe)",
+    :Internist,
+    :"Licensed Occupational Therapist",
+    :"Licensed Physiotherapist",
+    :"Licensed Speech Therapist",
+    :"Long-Term Care Specialist",
+    :"Medical Practice Assistant (MPA)",
+    :"Medical Secretary",
+    :"Nursing Assistant",
+    :"Patient Positioning Nurse",
+    :"Patient Sitter",
+    :"Registered Midwife",
+    :"Registered Nurse (AKP / DN II / HF / FH)",
+    :"Registered Nurse with Intermediate Care Qualification",
+    :"Registered Radiologic Technologist (HF)",
+    :"Registered Surgical Technologist (HF)",
+    :"Specialist Physician",
+    :"Swiss Red Cross Nursing Assistant"
+  ]
   @regions [
     :Aargau,
     :"Appenzell Ausserrhoden",
@@ -86,6 +113,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
     has_one :media_asset, MediaAsset
     field :part_time_details, {:array, Ecto.Enum}, values: @part_time_details
     field :position, Ecto.Enum, values: @positions
+    field :profession, Ecto.Enum, values: @professions
     field :region, {:array, Ecto.Enum}, values: @regions
     field :remote_allowed, :boolean, default: false
     field :salary_max, :integer
@@ -112,6 +140,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
       :location,
       :part_time_details,
       :position,
+      :profession,
       :region,
       :remote_allowed,
       :salary_max,

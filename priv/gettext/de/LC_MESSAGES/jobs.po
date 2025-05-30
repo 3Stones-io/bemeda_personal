@@ -1282,3 +1282,138 @@ msgstr "Zug"
 #, elixir-autogen, elixir-format
 msgid "Zurich"
 msgstr "Zürich"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Anesthesiologist"
+msgstr "Anästhesie"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Anesthesia Nursing Specialist (NDS HF)"
+msgstr "Zertifizierte Anästhesiepflege-Spezialistin (NDS HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Emergency Nursing Specialist (NDS HF)"
+msgstr "Zertifizierte Notfallpflege-Spezialistin (NDS HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Intensive Care Nursing Specialist (NDS HF)"
+msgstr "Zertifizierte Intensivpflege-Spezialistin (NDS HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Paramedic (HF)"
+msgstr "Zertifizierte Rettungssanitäterin (HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Surgical Technician"
+msgstr "Zertifizierte Operationstechnikerin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Health Care Assistant (FaGe)"
+msgstr "Fachfrau Gesundheit (FaGe)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Health and Social Care Assistant (AGS)"
+msgstr "Assistentin Gesundheit und Soziales (AGS)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Internist"
+msgstr "Internistin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Licensed Occupational Therapist"
+msgstr "Lizenzierte Ergotherapeutin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Licensed Physiotherapist"
+msgstr "Lizenzierte Physiotherapeutin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Licensed Speech Therapist"
+msgstr "Lizenzierte Logopädin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Long-Term Care Specialist"
+msgstr "Langzeitpflege"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Medical Practice Assistant (MPA)"
+msgstr "Arztpraxen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Medical Secretary"
+msgstr "Medizinische Sekretärin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Nursing Assistant"
+msgstr "Pflegeassistentin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Patient Positioning Nurse"
+msgstr "Patientenlagerungs-Pflegefachfrau"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Patient Sitter"
+msgstr "Patientenbetreuerin"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Profession"
+msgstr "Beruf"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Midwife"
+msgstr "Diplomierte Hebamme"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Nurse (AKP / DN II / HF / FH)"
+msgstr "Diplomierte Pflegefachfrau (AKP / DN II / HF / FH)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Nurse with Intermediate Care Qualification"
+msgstr "Diplomierte Pflegefachfrau mit Intermediate Care Qualifikation"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Radiologic Technologist (HF)"
+msgstr "Diplomierte Radiologietechnologin (HF)"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Surgical Technologist (HF)"
+msgstr "Diplomierte Operationstechnologin (HF)"
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Select profession"
+msgstr "Position auswählen"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Specialist Physician"
+msgstr "Fachärztin"
+
+#: lib/bemeda_personal_web/live/shared_helpers.ex
+#, elixir-autogen, elixir-format
+msgid "Swiss Red Cross Nursing Assistant"
+msgstr "Schweizerisches Rotes Kreuz Pflegeassistentin"
