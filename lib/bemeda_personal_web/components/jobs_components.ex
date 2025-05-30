@@ -5,9 +5,9 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   alias BemedaPersonal.Jobs.JobFilter
   alias BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent
+  alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents
-  alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
@@ -476,7 +476,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   )
                 }
               >
-                {SharedHelpers.translate_status(:state)[@applicant.state]}
+                {I18n.translate_status(@applicant.state)}
               </button>
 
               <div
@@ -808,11 +808,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   label={dgettext("jobs", "Application Status")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="select"
-                  options={
-                    Enum.map(SharedHelpers.translate_status(:state), fn {key, value} ->
-                      {value, key}
-                    end)
-                  }
+                  options={get_status_options()}
                   prompt={dgettext("jobs", "Select a status")}
                 />
               </div>
@@ -899,5 +895,23 @@ defmodule BemedaPersonalWeb.JobsComponents do
       </div>
     </div>
     """
+  end
+
+  defp get_status_options do
+    Enum.map(
+      %{
+        "applied" => "Applied",
+        "interview_scheduled" => "Interview Scheduled",
+        "interviewed" => "Interviewed",
+        "offer_accepted" => "Offer Accepted",
+        "offer_declined" => "Offer Declined",
+        "offer_extended" => "Offer Extended",
+        "rejected" => "Rejected",
+        "screening" => "Screening",
+        "under_review" => "Under Review",
+        "withdrawn" => "Withdrawn"
+      },
+      fn {key, _value} -> {I18n.translate_status(key), key} end
+    )
   end
 end

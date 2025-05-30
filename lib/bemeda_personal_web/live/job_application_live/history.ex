@@ -3,7 +3,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
 
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
-  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView
   def handle_params(%{"id" => job_application_id}, _url, socket) do

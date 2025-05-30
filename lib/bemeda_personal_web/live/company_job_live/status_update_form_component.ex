@@ -5,7 +5,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobApplicationStateTransition
-  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -25,11 +24,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
             label={dgettext("jobs", "Status")}
             type="select"
             prompt={dgettext("jobs", "Select a status")}
-            options={
-              Enum.map(@available_statuses, fn key ->
-                {SharedHelpers.translate_status(:action)[key], key}
-              end)
-            }
+            options={status_options(@available_statuses)}
             required
           />
         </div>
@@ -113,5 +108,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent do
          |> put_flash(:error, dgettext("jobs", "Failed to update status"))
          |> assign(:update_job_application_status_form, changeset)}
     end
+  end
+
+  defp status_options(available_statuses) do
+    Enum.map(available_statuses, fn key ->
+      {I18n.translate_status_action(key), key}
+    end)
   end
 end

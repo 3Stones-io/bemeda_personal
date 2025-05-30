@@ -123,8 +123,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
         )
 
       for transition <- transitions do
-        assert html =~
-                 BemedaPersonalWeb.SharedHelpers.translate_status(:state)[transition.to_state]
+        assert html =~ I18n.translate_status(transition.to_state)
 
         formatted_date = DateUtils.format_datetime(transition.inserted_at)
         assert html =~ formatted_date

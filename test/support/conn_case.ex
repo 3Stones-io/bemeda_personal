@@ -34,6 +34,8 @@ defmodule BemedaPersonalWeb.ConnCase do
       import BemedaPersonalWeb.ConnCase
       import Phoenix.ConnTest
       import Plug.Conn
+
+      alias BemedaPersonalWeb.I18n
     end
   end
 
