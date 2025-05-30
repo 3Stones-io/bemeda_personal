@@ -64,6 +64,7 @@ msgid "Max file size: %{size}"
 msgstr "Maximale Dateigröße: %{size}"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/i18n.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Not specified"

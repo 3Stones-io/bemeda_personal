@@ -1283,92 +1283,92 @@ msgstr "Zugo"
 msgid "Zurich"
 msgstr "Zurigo"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Anesthesiologist"
 msgstr "Anestesia"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Certified Anesthesia Nursing Specialist (NDS HF)"
 msgstr "Specialista Infermieristica in Anestesia Certificata (NDS HF)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Certified Emergency Nursing Specialist (NDS HF)"
 msgstr "Specialista Infermieristica d'Emergenza Certificata (NDS HF)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Certified Intensive Care Nursing Specialist (NDS HF)"
 msgstr "Specialista Infermieristica in Terapia Intensiva Certificata (NDS HF)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Certified Paramedic (HF)"
 msgstr "Paramedico Certificato (HF)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Certified Surgical Technician"
 msgstr "Tecnico Chirurgico Certificato"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Health Care Assistant (FaGe)"
 msgstr "Operatrice Sociosanitaria (OSS)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Health and Social Care Assistant (AGS)"
 msgstr "Assistente di Cura e Assistenza (ACA)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Internist"
 msgstr "Internista"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Licensed Occupational Therapist"
 msgstr "Terapista Occupazionale Abilitata"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Licensed Physiotherapist"
 msgstr "Fisioterapista Abilitata"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Licensed Speech Therapist"
 msgstr "Logopedista Abilitata"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Long-Term Care Specialist"
 msgstr "Cure a Lungo Termine"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Medical Practice Assistant (MPA)"
 msgstr "Studi Medici"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Medical Secretary"
 msgstr "Segretaria Medica"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Nursing Assistant"
 msgstr "Assistente Infermieristica"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Patient Positioning Nurse"
 msgstr "Infermiera di Posizionamento Paziente"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Patient Sitter"
 msgstr "Assistente al Paziente"
@@ -1378,27 +1378,27 @@ msgstr "Assistente al Paziente"
 msgid "Profession"
 msgstr "Professione"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Registered Midwife"
 msgstr "Ostetrica Diplomata"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Registered Nurse (AKP / DN II / HF / FH)"
 msgstr "Infermiera Diplomata (AKP / DN II / HF / FH)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Registered Nurse with Intermediate Care Qualification"
 msgstr "Infermiera Diplomata con Qualifica in Cure Intermedie"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Registered Radiologic Technologist (HF)"
 msgstr "Tecnico di Radiologia Medica Diplomato (HF)"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Registered Surgical Technologist (HF)"
 msgstr "Tecnico di Sala Operatoria Diplomato (HF)"
@@ -1408,12 +1408,12 @@ msgstr "Tecnico di Sala Operatoria Diplomato (HF)"
 msgid "Select profession"
 msgstr "Seleziona posizione"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Specialist Physician"
 msgstr "Medico Specialista"
 
-#: lib/bemeda_personal_web/live/shared_helpers.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Swiss Red Cross Nursing Assistant"
 msgstr "Assistente Infermieristica Croce Rossa Svizzera"
