@@ -65,6 +65,7 @@ msgstr "Taille maximale du fichier : %{size}"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
+#: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "Not specified"
 msgstr "Non spécifié"

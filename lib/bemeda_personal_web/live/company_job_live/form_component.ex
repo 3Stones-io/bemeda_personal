@@ -1,7 +1,6 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
-  alias BemedaPersonal.EctoEnumHelper
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedComponents
@@ -44,7 +43,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             label={dgettext("jobs", "Employment Type")}
             prompt={dgettext("jobs", "Select employment type")}
             options={
-              EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :employment_type)
+              SharedHelpers.get_translated_enum_options(
+                :employment_type,
+                Ecto.Enum.values(Jobs.JobPosting, :employment_type)
+              )
             }
             phx-debounce="blur"
           />
@@ -55,7 +57,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             label={dgettext("jobs", "Experience Level")}
             prompt={dgettext("jobs", "Select experience level")}
             options={
-              EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :experience_level)
+              SharedHelpers.get_translated_enum_options(
+                :experience_level,
+                Ecto.Enum.values(Jobs.JobPosting, :experience_level)
+              )
             }
           />
         </div>
@@ -110,7 +115,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="select"
             label={dgettext("jobs", "Position")}
             prompt={dgettext("jobs", "Select position")}
-            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :position)}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :position,
+                Ecto.Enum.values(Jobs.JobPosting, :position)
+              )
+            }
             phx-debounce="blur"
           />
 
@@ -120,7 +130,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             label={dgettext("jobs", "Years of Experience")}
             prompt={dgettext("jobs", "Select experience range")}
             options={
-              EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :years_of_experience)
+              SharedHelpers.get_translated_enum_options(
+                :years_of_experience,
+                Ecto.Enum.values(Jobs.JobPosting, :years_of_experience)
+              )
             }
             phx-debounce="blur"
           />
@@ -131,7 +144,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:department]}
             type="multi-select"
             label={dgettext("jobs", "Department")}
-            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :department)}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :department,
+                Ecto.Enum.values(Jobs.JobPosting, :department)
+              )
+            }
             phx-debounce="blur"
           />
 
@@ -139,7 +157,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:shift_type]}
             type="multi-select"
             label="Shift Type"
-            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :shift_type)}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :shift_type,
+                Ecto.Enum.values(Jobs.JobPosting, :shift_type)
+              )
+            }
             phx-debounce="blur"
           />
         </div>
@@ -149,7 +172,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:region]}
             type="multi-select"
             label={dgettext("jobs", "Region")}
-            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :region)}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :region,
+                Ecto.Enum.values(Jobs.JobPosting, :region)
+              )
+            }
             phx-debounce="blur"
           />
 
@@ -157,7 +185,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:language]}
             type="multi-select"
             label={dgettext("jobs", "Language")}
-            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :language)}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :language,
+                Ecto.Enum.values(Jobs.JobPosting, :language)
+              )
+            }
             phx-debounce="blur"
           />
         </div>
@@ -167,7 +200,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:gender]}
             type="multi-select"
             label={dgettext("jobs", "Gender")}
-            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :gender)}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :gender,
+                Ecto.Enum.values(Jobs.JobPosting, :gender)
+              )
+            }
             phx-debounce="blur"
           />
 
@@ -176,7 +214,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             type="multi-select"
             label={dgettext("jobs", "Workload")}
             prompt={dgettext("jobs", "Select workload")}
-            options={EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :workload)}
+            options={
+              SharedHelpers.get_translated_enum_options(
+                :workload,
+                Ecto.Enum.values(Jobs.JobPosting, :workload)
+              )
+            }
             nested_input?={true}
             show_nested_input="Part-time"
             phx-debounce="blur"
@@ -188,7 +231,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
                 label={dgettext("jobs", "Workload Type")}
                 prompt={dgettext("jobs", "Select workload type")}
                 options={
-                  EctoEnumHelper.translated_enum_options(Jobs.JobPosting, "jobs", :part_time_details)
+                  SharedHelpers.get_translated_enum_options(
+                    :part_time_details,
+                    Ecto.Enum.values(Jobs.JobPosting, :part_time_details)
+                  )
                 }
                 phx-debounce="blur"
               />
