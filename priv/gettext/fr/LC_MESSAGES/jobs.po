@@ -921,12 +921,12 @@ msgstr "plus"
 #: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "2-5 years"
-msgstr ""
+msgstr "2-5 ans"
 
 #: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
 msgid "Aargau"
-msgstr ""
+msgstr "Argovie"
 
 #: lib/bemeda_personal_web/live/shared_helpers.ex
 #, elixir-autogen, elixir-format
