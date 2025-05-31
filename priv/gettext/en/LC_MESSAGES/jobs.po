@@ -505,7 +505,7 @@ msgid "Language"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Position"
 msgstr ""
 
@@ -592,27 +592,27 @@ msgid "Applicant's resume details"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Application Date From"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Application Date To"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Application Information"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Application Status"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Applied for"
 msgstr ""
 
@@ -652,7 +652,7 @@ msgid "Company Jobs"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Cover letter"
 msgstr ""
 
@@ -663,7 +663,7 @@ msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/index.ex
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Edit Job"
 msgstr ""
 
@@ -673,7 +673,7 @@ msgid "Edit application for %{job_title}"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Edit job"
 msgstr ""
 
@@ -693,7 +693,7 @@ msgid "Filter"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Filter Applications"
 msgstr ""
 
@@ -718,7 +718,7 @@ msgid "Hide Filters"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/index.html.heex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Jobs for %{company}"
 msgstr ""
 
@@ -734,7 +734,7 @@ msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/index.ex
 #: lib/bemeda_personal_web/live/company_job_live/index.html.heex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Post New Job"
 msgstr ""
 
@@ -749,17 +749,17 @@ msgid "Rating"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Remote"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Remote Work"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Remote work allowed"
 msgstr ""
 
@@ -849,12 +849,12 @@ msgid "Type tag name and press Enter"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Update Tags"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "View Applicants"
 msgstr ""
 
@@ -1009,7 +1009,7 @@ msgid "Female"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Floater"
 msgstr ""
 
@@ -1119,7 +1119,7 @@ msgid "Male"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Maximum"
 msgstr ""
 
@@ -1134,7 +1134,7 @@ msgid "Mid Level"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Minimum"
 msgstr ""
 
@@ -1284,7 +1284,7 @@ msgid "Zurich"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Anesthesiologist"
 msgstr ""
 
@@ -1344,12 +1344,12 @@ msgid "Licensed Speech Therapist"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Long-Term Care Specialist"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Medical Practice Assistant (MPA)"
 msgstr ""
 
@@ -1404,7 +1404,7 @@ msgid "Registered Surgical Technologist (HF)"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Select profession"
 msgstr ""
 

@@ -241,14 +241,14 @@ msgid "Applicant: %{name}"
 msgstr "Bewerber: %{name}"
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Applicants - %{name}"
-msgstr "Bewerber"
+msgstr "Bewerber - %{name}"
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Applicants - %{title}"
-msgstr "Bewerber"
+msgstr "Bewerber - %{title}"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format

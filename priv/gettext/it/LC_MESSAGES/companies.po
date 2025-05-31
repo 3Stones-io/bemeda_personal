@@ -216,12 +216,12 @@ msgid "You need to create a company profile before you can post jobs."
 msgstr "Devi creare un profilo aziendale prima di poter pubblicare lavori."
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "About the Company"
 msgstr "Informazioni sull'azienda"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "View Company Profile"
 msgstr "Visualizza profilo aziendale"
 
@@ -241,14 +241,14 @@ msgid "Applicant: %{name}"
 msgstr "Candidato: %{name}"
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Applicants - %{name}"
-msgstr "Candidati"
+msgstr "Candidati - %{name}"
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Applicants - %{title}"
-msgstr "Candidati"
+msgstr "Candidati - %{title}"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
