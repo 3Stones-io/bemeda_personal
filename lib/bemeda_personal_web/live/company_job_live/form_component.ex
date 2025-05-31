@@ -123,6 +123,17 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4">
           <.input
+            field={f[:profession]}
+            type="select"
+            label={dgettext("jobs", "Profession")}
+            prompt={dgettext("jobs", "Select profession")}
+            options={get_translated_options(:profession)}
+            phx-debounce="blur"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
             field={f[:department]}
             type="multi-select"
             label={dgettext("jobs", "Department")}
@@ -348,6 +359,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
     do: I18n.translate_part_time_details(value)
 
   defp translate_enum_value(:position, value), do: I18n.translate_position(value)
+  defp translate_enum_value(:profession, value), do: I18n.translate_profession(value)
   defp translate_enum_value(:region, value), do: I18n.translate_region(value)
   defp translate_enum_value(:shift_type, value), do: I18n.translate_shift_type(value)
   defp translate_enum_value(:workload, value), do: I18n.translate_workload(value)
