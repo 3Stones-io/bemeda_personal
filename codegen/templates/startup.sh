@@ -25,6 +25,10 @@ echo "📦 Copying build artifacts from main branch..."
 
 REPO_ROOT="$(cd ../../../ && pwd)"
 
+if [ -f "$REPO_ROOT/.elixir_ls" ]; then
+    cp "$REPO_ROOT/.elixir_ls" .
+fi
+
 if [ -d "$REPO_ROOT/deps" ]; then
     cp -r "$REPO_ROOT/deps" .
 fi
