@@ -69,6 +69,25 @@ resume:
 ls:
 	@./list_workspaces.sh
 
+setup_completions:
+	@echo "🚀 Setting up Makefile autocompletion..."
+	@if [ "$$SHELL" = "/bin/zsh" ] || [ "$$SHELL" = "/usr/bin/zsh" ]; then \
+		RC_FILE="$$HOME/.zshrc"; \
+	else \
+		RC_FILE="$$HOME/.bashrc"; \
+	fi; \
+	if grep -q "bash_completion.sh" "$$RC_FILE" 2>/dev/null; then \
+		echo "   ⚠️  Completion already appears to be set up in $$RC_FILE"; \
+	else \
+		echo "" >> "$$RC_FILE"; \
+		echo "# Optimum Codegen Makefile autocompletion" >> "$$RC_FILE"; \
+		echo "source \"$$(pwd)/bash_completion.sh\"" >> "$$RC_FILE"; \
+		echo "   ✅ Added to $$RC_FILE"; \
+	fi
+	@echo "   ✅ Setup complete!"
+	@echo "   💡 Restart your terminal or run 'source $$RC_FILE' for autocompletion"
+	@echo "   🎯 Try: make new <TAB>"
+
 help:
 	@echo "🚀 Optimum Codegen"
 	@echo "================="
@@ -80,6 +99,7 @@ help:
 	@echo "  make clean                       🧹 Remove ALL feature workspaces (with confirmation)"
 	@echo "  make resume <name>               🔄 Resume feature workspace"
 	@echo "  make ls                          📋 List all feature workspaces"
+	@echo "  make setup_completions           🚀 Enable tab autocompletion"
 	@echo ""
 	@echo "📋 Recommended Workflow:"
 	@echo "  1. (Optional) Ask Cursor to create a plan in plans/<name>.md"
@@ -94,6 +114,7 @@ help:
 	@echo "  make clean"
 	@echo "  make resume dashboard-redesign"
 	@echo "  make ls"
+	@echo "  make setup_completions"
 
 # Default target shows help
 .DEFAULT_GOAL := help
