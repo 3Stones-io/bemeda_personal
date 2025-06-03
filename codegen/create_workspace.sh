@@ -6,21 +6,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-check_playwright_status() {
-    echo "🎭 Checking Playwright MCP server status..."
-
-    if lsof -i :8931 >/dev/null 2>&1; then
-        echo "   ✅ Playwright MCP server is running on port 8931"
-        return 0
-    else
-        echo "   ❌ Playwright MCP server is not running on port 8931"
-
-        cd "$SCRIPT_DIR"
-        make playwright
-        return $?
-    fi
-}
-
 FEATURE_NAME="$1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -29,8 +14,6 @@ WORKSPACE_PATH="${REPO_ROOT}/codegen/workspaces/${WORKSPACE_NAME}"
 BRANCH_NAME="feature/${FEATURE_NAME}"
 
 echo "🌳 Creating feature workspace for: $FEATURE_NAME"
-
-check_playwright_status
 
 mkdir -p "$REPO_ROOT/codegen/workspaces"
 
@@ -75,6 +58,40 @@ get_next_port() {
     done
 }
 
+get_next_playwright_port() {
+    local base_port=8901
+    local current_port=$base_port
+
+    while true; do
+        local port_in_use=false
+
+        for workspace_dir in "$REPO_ROOT"/codegen/workspaces/*; do
+            if [ -d "$workspace_dir" ] && [ -f "$workspace_dir/.env" ]; then
+                if grep -q "^PLAYWRIGHT_MCP_PORT=$current_port" "$workspace_dir/.env" 2>/dev/null; then
+                    port_in_use=true
+                    break
+                fi
+            fi
+        done
+
+        if ! $port_in_use && lsof -i :$current_port >/dev/null 2>&1; then
+            port_in_use=true
+        fi
+
+        if ! $port_in_use; then
+            echo $current_port
+            return
+        fi
+
+        ((current_port++))
+
+        if [ $current_port -gt 9000 ]; then
+            echo "❌ Error: Could not find available Playwright MCP port (checked up to 9000)"
+            exit 1
+        fi
+    done
+}
+
 echo "📁 Creating feature workspace at: $WORKSPACE_PATH"
 cd "$REPO_ROOT"
 
@@ -91,37 +108,30 @@ git submodule update --init --recursive >/dev/null 2>&1
 echo "📦 Workspace created - setup will happen in the new workspace"
 echo ""
 
+NEXT_PORT=$(get_next_port)
+NEXT_PLAYWRIGHT_PORT=$(get_next_playwright_port)
+PARTITION=$((NEXT_PORT - 4000))
+
 if [ -f "$REPO_ROOT/.env" ]; then
     cp "$REPO_ROOT/.env" "$WORKSPACE_PATH/.env"
-
-    NEXT_PORT=$(get_next_port)
-    PARTITION=$((NEXT_PORT - 4000))
-
     echo "" >>"$WORKSPACE_PATH/.env"
-    echo "
-    echo "PORT=$NEXT_PORT" >>"$WORKSPACE_PATH/.env"
-    echo "MIX_DEV_PARTITION=$PARTITION" >>"$WORKSPACE_PATH/.env"
-    echo "MIX_TEST_PARTITION=$PARTITION" >>"$WORKSPACE_PATH/.env"
-else
-    
-    NEXT_PORT=$(get_next_port)
-    PARTITION=$((NEXT_PORT - 4000))
-    echo "
-    echo "PORT=$NEXT_PORT" >>"$WORKSPACE_PATH/.env"
-    echo "MIX_DEV_PARTITION=$PARTITION" >>"$WORKSPACE_PATH/.env"
-    echo "MIX_TEST_PARTITION=$PARTITION" >>"$WORKSPACE_PATH/.env"
 fi
 
-echo "⚙️  Setting up workspace (port: $NEXT_PORT, partition: $PARTITION)..."
+echo "PORT=$NEXT_PORT" >>"$WORKSPACE_PATH/.env"
+echo "PLAYWRIGHT_MCP_PORT=$NEXT_PLAYWRIGHT_PORT" >>"$WORKSPACE_PATH/.env"
+echo "MIX_DEV_PARTITION=$PARTITION" >>"$WORKSPACE_PATH/.env"
+echo "MIX_TEST_PARTITION=$PARTITION" >>"$WORKSPACE_PATH/.env"
 
-if [ -f "$WORKSPACE_PATH/.cursor/mcp.json" ]; then
+echo "⚙️  Setting up workspace (port: $NEXT_PORT, playwright: $NEXT_PLAYWRIGHT_PORT, partition: $PARTITION)..."
 
+if [ -f "$SCRIPT_DIR/templates/mcp.json" ]; then
+    cp "$SCRIPT_DIR/templates/mcp.json" "$WORKSPACE_PATH/.cursor/"
     if [[ "$OSTYPE" == "darwin"* ]]; then
-
-        sed -i '' "s/localhost:4000/localhost:$NEXT_PORT/g" "$WORKSPACE_PATH/.cursor/mcp.json"
+        sed -i '' "s|{{PLAYWRIGHT_MCP_PORT}}|$NEXT_PLAYWRIGHT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
+        sed -i '' "s|{{PORT}}|$NEXT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
     else
-
-        sed -i "s/localhost:4000/localhost:$NEXT_PORT/g" "$WORKSPACE_PATH/.cursor/mcp.json"
+        sed -i "s|{{PLAYWRIGHT_MCP_PORT}}|$NEXT_PLAYWRIGHT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
+        sed -i "s|{{PORT}}|$NEXT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
     fi
 fi
 
@@ -170,10 +180,11 @@ fi
 
 echo ""
 echo "🎉 Workspace ready: $FEATURE_NAME"
-echo "🔌 Port: $NEXT_PORT | 🗄️ Partition: $PARTITION | 🌿 Branch: $BRANCH_NAME"
+echo "🔌 Port: $NEXT_PORT | 🎭 Playwright: $NEXT_PLAYWRIGHT_PORT | 🗄️ Partition: $PARTITION | 🌿 Branch: $BRANCH_NAME"
 echo "🗄️  Database (dev): bemeda_personal_dev$PARTITION | Database (test): bemeda_personal_test$PARTITION"
 echo ""
 echo "🌐 Server will be available at: http://localhost:$NEXT_PORT"
+echo "🎭 Playwright MCP will be available at: http://localhost:$NEXT_PLAYWRIGHT_PORT"
 echo "📁 $WORKSPACE_PATH"
 if [ -f "$WORKSPACE_PATH/PLAN.md" ]; then
     echo "📋 Plan: PLAN.md"

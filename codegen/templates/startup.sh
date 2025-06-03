@@ -19,6 +19,7 @@ fi
 
 echo "✅ Environment variables loaded"
 echo "🔌 Port: ${PORT:-4000}"
+echo "🎭 Playwright MCP Port: ${PLAYWRIGHT_MCP_PORT:-9222}"
 echo "🗄️  Database: bemeda_personal_dev${MIX_DEV_PARTITION:-0}"
 
 echo "📦 Copying build artifacts from main branch..."
@@ -51,6 +52,28 @@ if [ -f ".cursor/mcp.json" ]; then
     echo "🔧 MCP servers configured and should start automatically"
     echo "   If MCP servers show 'No tools available', manually restart them in:"
     echo "   Cursor Settings (Cmd+Shift+J) → MCP → Click the restart button for each server"
+fi
+
+echo "🎭 Starting Playwright MCP server..."
+npx @playwright/mcp@latest --port $PLAYWRIGHT_MCP_PORT --headless 2>&1 &
+echo "   🚀 Playwright MCP server started in background"
+echo "   ⏳ Waiting for server to be ready..."
+
+max_attempts=10
+attempt=0
+while [ $attempt -lt $max_attempts ]; do
+    if lsof -i :$PLAYWRIGHT_MCP_PORT >/dev/null 2>&1; then
+        echo "   ✅ Playwright MCP server is ready on port $PLAYWRIGHT_MCP_PORT"
+        echo "   📊 Process ID: $(lsof -ti tcp:$PLAYWRIGHT_MCP_PORT | head -1)"
+        break
+    fi
+    sleep 1
+    attempt=$((attempt + 1))
+done
+
+if [ $attempt -eq $max_attempts ]; then
+    echo "   ❌ Failed to start Playwright MCP server within 10 seconds"
+    exit 1
 fi
 
 echo ""
