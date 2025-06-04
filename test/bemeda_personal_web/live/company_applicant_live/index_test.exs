@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Workers.EmailNotificationWorker
+  alias Phoenix.Socket.Broadcast
 
   setup %{conn: conn} do
     company_user = user_fixture(%{email: "company@example.com"})
@@ -366,6 +367,37 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       assert updated_job_application = Jobs.get_job_application!(application.id)
       refute updated_job_application.state == "under_review"
+    end
+
+    test "updates applicants list when new application is created via broadcast", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job: job
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+
+      new_applicant =
+        user_fixture(%{first_name: "New", last_name: "Applicant", email: "new@example.com"})
+
+      {:ok, new_application} =
+        Jobs.create_job_application(new_applicant, job, %{
+          cover_letter: "I am very interested in this position"
+        })
+
+      send(view.pid, %Broadcast{
+        event: "company_job_application_created",
+        payload: %{job_application: new_application}
+      })
+
+      Process.sleep(50)
+
+      updated_html = render(view)
+
+      assert updated_html =~ "New Applicant"
+      assert updated_html =~ "new@example.com"
     end
   end
 
