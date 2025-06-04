@@ -28,6 +28,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
 
   defp apply_action(socket, :index, %{"job_id" => job_id} = params) do
     job_posting = Jobs.get_job_posting!(job_id)
+    params = Map.put(params, "job_posting_id", job_posting.id)
 
     socket
     |> assign(:filter_params, params)

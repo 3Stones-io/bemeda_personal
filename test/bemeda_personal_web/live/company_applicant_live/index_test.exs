@@ -367,6 +367,32 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert updated_job_application = Jobs.get_job_application!(application.id)
       refute updated_job_application.state == "under_review"
     end
+
+    test "updates applicants list when someone applies for the job", %{
+      conn: conn,
+      company_user: user,
+      company: company,
+      job: job
+    } do
+      conn = log_in_user(conn, user)
+
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+
+      new_applicant =
+        user_fixture(%{first_name: "New", last_name: "Applicant", email: "new@example.com"})
+
+      {:ok, _new_application} =
+        Jobs.create_job_application(new_applicant, job, %{
+          cover_letter: "I am very interested in this position"
+        })
+
+      Process.sleep(50)
+
+      updated_html = render(view)
+
+      assert updated_html =~ "New Applicant"
+      assert updated_html =~ "new@example.com"
+    end
   end
 
   describe "/companies/:company_id/applicants/:job_id" do
@@ -377,6 +403,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       job: job,
       job_application: application
     } do
+      job_2 = job_posting_fixture(company, %{title: "Second Job"})
+      job_application_2 = job_application_fixture(user, job_2)
+
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
@@ -385,6 +414,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert html =~ "Applicants"
       assert html =~ job.title
       assert html =~ "#{application.user.first_name} #{application.user.last_name}"
+      refute html =~ "#{job_application_2.user.first_name} #{job_application_2.user.last_name}"
     end
 
     test "filters job-specific applicants by name through form", %{
