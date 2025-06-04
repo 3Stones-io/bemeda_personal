@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 echo "🚀 Initializing feature workspace..."
