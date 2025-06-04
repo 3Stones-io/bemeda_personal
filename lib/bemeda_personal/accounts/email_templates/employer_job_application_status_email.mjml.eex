@@ -16,7 +16,7 @@
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
         <%= dgettext("emails", "To view the details of this application and take further action, please click the button below:") %>
       </mj-text>
-      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: dgettext("emails", "Manage Application"), cta_url: @url} %>
+      <%= render_dynamic_component CtaButtonComponent, %{cta_text: dgettext("emails", "Manage Application"), cta_url: @url} %>
     </mj-column>
   </mj-section>
 </mj-body>
