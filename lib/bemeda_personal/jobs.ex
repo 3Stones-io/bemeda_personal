@@ -617,7 +617,7 @@ defmodule BemedaPersonal.Jobs do
         job_application =
           Repo.preload(
             job_application,
-            [:job_posting, :media_asset, :user]
+            [:job_posting, :media_asset, :tags, :user]
           )
 
         :ok =
