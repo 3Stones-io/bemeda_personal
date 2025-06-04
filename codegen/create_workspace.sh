@@ -2,17 +2,35 @@
 set -e
 
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 <feature-name>"
-    echo "Example: $0 dashboard-redesign"
+    echo "Usage: $0 <feature-name> [window-position] [total-windows] [layout-strategy]"
+    echo "Example: $0 dashboard-redesign 2 4 quad_quarters"
     exit 1
 fi
 
 FEATURE_NAME="$1"
+WINDOW_POSITION="${2:-1}"
+TOTAL_WINDOWS="${3:-1}"
+LAYOUT_STRATEGY="${4:-}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WORKSPACE_NAME="${FEATURE_NAME}"
 WORKSPACE_PATH="${REPO_ROOT}/codegen/workspaces/${WORKSPACE_NAME}"
 BRANCH_NAME="feature/${FEATURE_NAME}"
+
+determine_layout_strategy() {
+    local total="$1"
+    case $total in
+    1) echo "single_fullscreen" ;;
+    2) echo "dual_split" ;;
+    3) echo "triple_mixed" ;;
+    4) echo "quad_quarters_second_monitor" ;;
+    *) echo "multi_quarters_both_monitors" ;;
+    esac
+}
+
+if [ -z "$LAYOUT_STRATEGY" ]; then
+    LAYOUT_STRATEGY=$(determine_layout_strategy "$TOTAL_WINDOWS")
+fi
 
 echo "🌳 Creating feature workspace for: $FEATURE_NAME"
 
@@ -159,14 +177,37 @@ fi
 if [ -f "$SCRIPT_DIR/templates/startup.sh" ]; then
     cp "$SCRIPT_DIR/templates/startup.sh" "$WORKSPACE_PATH/"
     chmod +x "$WORKSPACE_PATH/startup.sh"
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/startup.sh"
+        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/startup.sh"
+        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/startup.sh"
+    else
+        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/startup.sh"
+        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/startup.sh"
+        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/startup.sh"
+    fi
 fi
 
 if [ -f "$SCRIPT_DIR/plans/${FEATURE_NAME}.md" ]; then
     cp "$SCRIPT_DIR/plans/${FEATURE_NAME}.md" "$WORKSPACE_PATH/PLAN.md"
 fi
 
-if command -v cursor >/dev/null 2>&1; then
+if [ -f "$SCRIPT_DIR/templates/position-window.sh" ]; then
+    cp "$SCRIPT_DIR/templates/position-window.sh" "$WORKSPACE_PATH/"
 
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/position-window.sh"
+        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/position-window.sh"
+        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/position-window.sh"
+    else
+        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/position-window.sh"
+        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/position-window.sh"
+        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/position-window.sh"
+    fi
+fi
+
+if command -v cursor >/dev/null 2>&1; then
     if [ -f "$WORKSPACE_PATH/${FEATURE_NAME}.code-workspace" ]; then
         cursor "$WORKSPACE_PATH/${FEATURE_NAME}.code-workspace" &
     else

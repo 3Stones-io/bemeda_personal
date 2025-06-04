@@ -15,20 +15,28 @@ batch:
 		echo "   ❌ No plans directory found"; \
 		exit 1; \
 	fi
-	@plan_count=$$(ls plans/*.md 2>/dev/null | wc -l); \
+	@plan_count=$$(ls plans/*.md 2>/dev/null | wc -l | xargs); \
 	if [ $$plan_count -eq 0 ]; then \
 		echo "   ❌ No plan files found in plans/ directory"; \
 		exit 1; \
-	fi
-	@echo "   📋 Found $$plan_count plan(s) to process"
-	@for plan in plans/*.md; do \
+	fi; \
+	echo "   📋 Found $$plan_count plan(s) to process"; \
+	sleep_duration=$$((3 + plan_count / 2)); \
+	echo "   ⏱️  Using $$sleep_duration second delay between workspaces"; \
+	window_pos=1; \
+	for plan in plans/*.md; do \
 		if [ -f "$$plan" ]; then \
 			name=$$(basename "$$plan" .md); \
-			echo "   🎨 Creating codegen feature: $$name"; \
-			$(MAKE) new "$$name" || echo "   ⚠️  Failed to create workspace for $$name"; \
+			echo "   🎨 Creating codegen feature: $$name (window $$window_pos of $$plan_count)"; \
+			./create_workspace.sh "$$name" "$$window_pos" "$$plan_count" || echo "   ⚠️  Failed to create workspace for $$name"; \
+			window_pos=$$((window_pos + 1)); \
+			if [ $$window_pos -le $$plan_count ]; then \
+				echo "   ⏳ Waiting $$sleep_duration seconds for workspace to initialize..."; \
+				sleep $$sleep_duration; \
+			fi; \
 		fi; \
-	done
-	@echo "   ✅ Finished processing all plans"
+	done; \
+	echo "   ✅ Finished processing all plans"
 
 clean:
 	@echo "🧹 Removing all feature workspaces..."

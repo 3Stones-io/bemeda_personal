@@ -6,13 +6,17 @@ echo "🚀 Initializing feature workspace..."
 WORKSPACE_ROOT="$(pwd)"
 FEATURE_NAME="$(basename "$WORKSPACE_ROOT")"
 
+WINDOW_POSITION="{{WINDOW_POSITION}}"
+TOTAL_WINDOWS="{{TOTAL_WINDOWS}}"
+LAYOUT_STRATEGY="{{LAYOUT_STRATEGY}}"
+
+echo "🖥️  Positioning Cursor window ($WINDOW_POSITION of $TOTAL_WINDOWS)..."
+./position-window.sh
+
 echo "🔧 Activating mise and loading environment..."
 if command -v mise >/dev/null 2>&1; then
-
     mise trust 2>/dev/null || true
-
     eval "$(mise activate bash)"
-
     eval "$(mise env)"
 else
     echo "⚠️  mise not found, environment variables may not be loaded"
