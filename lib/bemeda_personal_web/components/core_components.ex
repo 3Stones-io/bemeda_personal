@@ -443,7 +443,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
                 name={"#{@name}[]"}
                 type="checkbox"
                 value={option}
-                checked={@value && option in @value}
+                checked={@value && String.to_existing_atom(option) in @value}
                 class="peer rounded border-zinc-300 text-blue-600 focus:ring-blue-500 focus:ring-2 mr-3 main-checkbox"
               />
               <span class="text-sm text-zinc-900 w-full p-2 option-label inline-block">{label}</span>
