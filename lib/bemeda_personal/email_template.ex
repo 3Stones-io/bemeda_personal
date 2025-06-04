@@ -5,6 +5,7 @@ defmodule BemedaPersonal.EmailTemplate do
     mjml_template = Keyword.fetch!(opts, :mjml_template)
 
     quote do
+      alias BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent
       use Gettext, backend: BemedaPersonalWeb.Gettext
 
       use MjmlEEx,
