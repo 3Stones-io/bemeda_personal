@@ -32,23 +32,30 @@ batch:
 
 clean:
 	@echo "🧹 Removing all feature workspaces..."
-	@if ! ./list_workspaces.sh 2>/dev/null | grep "^📁" | grep -v "Main Repository" | head -1 >/dev/null; then \
+	@WORKSPACES=$$(./list_workspaces.sh 2>/dev/null | grep "^📁" | grep -v "Main Repository" | sed 's/^📁 //'); \
+	if [ -z "$$WORKSPACES" ]; then \
 		echo "   ℹ️  No feature workspaces found to remove"; \
 		exit 0; \
-	fi
-	@echo "   📋 Found workspaces to remove:"
-	@./list_workspaces.sh 2>/dev/null | grep "^📁" | grep -v "Main Repository" | sed 's/^📁 //' | sed 's/^/      - /'
-	@echo "   ⚠️  This will remove ALL feature workspaces. Continue? [y/N]"; \
+	fi; \
+	echo "   📋 Found workspaces to remove:"; \
+	echo "$$WORKSPACES" | sed 's/^/      - /'; \
+	echo "   ⚠️  This will remove ALL feature workspaces. Continue? [y/N]"; \
 	read -r confirm; \
 	if [ "$$confirm" != "y" ] && [ "$$confirm" != "Y" ]; then \
 		echo "   ❌ Operation cancelled"; \
 		exit 1; \
-	fi
-	@for workspace in $$(./list_workspaces.sh 2>/dev/null | grep "^📁" | grep -v "Main Repository" | sed 's/^📁 //'); do \
+	fi; \
+	for workspace in $$WORKSPACES; do \
 		echo "   🗑️  Removing workspace: $$workspace"; \
 		$(MAKE) rm "$$workspace" || echo "   ⚠️  Failed to remove workspace: $$workspace"; \
-	done
-	@echo "   ✅ Finished removing all workspaces"
+	done; \
+	echo "   ✅ Finished removing all workspaces"; \
+	echo ""; \
+	echo "💡 Tip: Feature branches are preserved by default"; \
+	echo "   To also remove orphaned feature branches, run: make clean-branches"
+
+clean-branches:
+	@./clean_branches.sh
 
 rm:
 	@if [ -z "$(filter-out $@,$(MAKECMDGOALS))" ]; then \
@@ -97,6 +104,7 @@ help:
 	@echo "  make batch                       🎯 Create feature workspaces from all available plans"
 	@echo "  make rm <name>                   🗑️  Remove feature workspace"
 	@echo "  make clean                       🧹 Remove ALL feature workspaces (with confirmation)"
+	@echo "  make clean-branches              🌿 Remove all orphaned feature branches (with confirmation)"
 	@echo "  make resume <name>               🔄 Resume feature workspace"
 	@echo "  make ls                          📋 List all feature workspaces"
 	@echo "  make setup_completions           🚀 Enable tab autocompletion"
@@ -106,12 +114,14 @@ help:
 	@echo "  2. Run: make new <name> (automatically starts Playwright and includes the plan if it exists)"
 	@echo "  3. Or run: make batch to create feature workspaces from all available plans"
 	@echo "  4. Use: make clean to remove all workspaces when done"
+	@echo "  5. Use: make clean-branches to remove orphaned feature branches"
 	@echo ""
 	@echo "📝 Examples:"
 	@echo "  make new dashboard-redesign"
 	@echo "  make batch"
 	@echo "  make rm dashboard-redesign"
 	@echo "  make clean"
+	@echo "  make clean-branches"
 	@echo "  make resume dashboard-redesign"
 	@echo "  make ls"
 	@echo "  make setup_completions"

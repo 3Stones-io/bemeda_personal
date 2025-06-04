@@ -13,7 +13,7 @@ _make_codegen_completion() {
 
     # Main make targets
     if [[ ${COMP_CWORD} == 1 ]]; then
-        opts="new batch rm clean resume ls help"
+        opts="new batch rm clean clean-branches resume ls help"
         COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
         return 0
     fi
