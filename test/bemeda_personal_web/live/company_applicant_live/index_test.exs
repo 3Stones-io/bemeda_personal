@@ -377,6 +377,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       job: job,
       job_application: application
     } do
+      job_2 = job_posting_fixture(company, %{title: "Second Job"})
+      job_application_2 = job_application_fixture(user, job_2)
+
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
@@ -385,6 +388,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert html =~ "Applicants"
       assert html =~ job.title
       assert html =~ "#{application.user.first_name} #{application.user.last_name}"
+      refute html =~ "#{job_application_2.user.first_name} #{job_application_2.user.last_name}"
     end
 
     test "filters job-specific applicants by name through form", %{

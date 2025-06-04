@@ -905,6 +905,11 @@ defmodule BemedaPersonal.JobsTest do
         topic: ^user_job_application_topic,
         payload: %{job_application: ^job_application}
       }
+
+      assert Ecto.assoc_loaded?(job_application.job_posting)
+      assert Ecto.assoc_loaded?(job_application.user)
+      assert Ecto.assoc_loaded?(job_application.media_asset)
+      assert Ecto.assoc_loaded?(job_application.tags)
     end
   end
 
