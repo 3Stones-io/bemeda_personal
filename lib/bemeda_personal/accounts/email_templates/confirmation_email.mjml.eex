@@ -7,7 +7,7 @@
       <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
         <%= dgettext("emails", "Thank you for joining BemedaPersonal. We're excited to have you on board! To start using all our features, please confirm your account by clicking the button below:") %>
       </mj-text>
-      <%= render_dynamic_component BemedaPersonal.Accounts.EmailTemplates.CtaButtonComponent, %{cta_text: dgettext("emails", "Confirm My Account"), cta_url: @url} %>
+      <%= render_dynamic_component CtaButtonComponent, %{cta_text: dgettext("emails", "Confirm My Account"), cta_url: @url} %>
       <mj-text align="center" font-size="15px" font-family="Montserrat, Arial, sans-serif" color="#555" padding="24px 0 12px 0">
         <%= dgettext("emails", "If you didn't create an account with us, please ignore this email.") %>
       </mj-text>
