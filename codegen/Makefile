@@ -9,6 +9,62 @@ new:
 	fi
 	@./create_workspace.sh $(filter-out $@,$(MAKECMDGOALS))
 
+batch:
+	@echo "🚀 Creating codegen features from all available plans..."
+	@if [ ! -d "plans" ]; then \
+		echo "   ❌ No plans directory found"; \
+		exit 1; \
+	fi
+	@plan_count=$$(ls plans/*.md 2>/dev/null | wc -l | xargs); \
+	if [ $$plan_count -eq 0 ]; then \
+		echo "   ❌ No plan files found in plans/ directory"; \
+		exit 1; \
+	fi; \
+	echo "   📋 Found $$plan_count plan(s) to process"; \
+	sleep_duration=$$((3 + plan_count / 2)); \
+	echo "   ⏱️  Using $$sleep_duration second delay between workspaces"; \
+	window_pos=1; \
+	for plan in plans/*.md; do \
+		if [ -f "$$plan" ]; then \
+			name=$$(basename "$$plan" .md); \
+			echo "   🎨 Creating codegen feature: $$name (window $$window_pos of $$plan_count)"; \
+			./create_workspace.sh "$$name" "$$window_pos" "$$plan_count" || echo "   ⚠️  Failed to create workspace for $$name"; \
+			window_pos=$$((window_pos + 1)); \
+			if [ $$window_pos -le $$plan_count ]; then \
+				echo "   ⏳ Waiting $$sleep_duration seconds for workspace to initialize..."; \
+				sleep $$sleep_duration; \
+			fi; \
+		fi; \
+	done; \
+	echo "   ✅ Finished processing all plans"
+
+clean:
+	@echo "🧹 Removing all feature workspaces..."
+	@WORKSPACES=$$(./list_workspaces.sh 2>/dev/null | grep "^📁" | grep -v "Main Repository" | sed 's/^📁 //'); \
+	if [ -z "$$WORKSPACES" ]; then \
+		echo "   ℹ️  No feature workspaces found to remove"; \
+		exit 0; \
+	fi; \
+	echo "   📋 Found workspaces to remove:"; \
+	echo "$$WORKSPACES" | sed 's/^/      - /'; \
+	echo "   ⚠️  This will remove ALL feature workspaces. Continue? [y/N]"; \
+	read -r confirm; \
+	if [ "$$confirm" != "y" ] && [ "$$confirm" != "Y" ]; then \
+		echo "   ❌ Operation cancelled"; \
+		exit 1; \
+	fi; \
+	for workspace in $$WORKSPACES; do \
+		echo "   🗑️  Removing workspace: $$workspace"; \
+		$(MAKE) rm "$$workspace" || echo "   ⚠️  Failed to remove workspace: $$workspace"; \
+	done; \
+	echo "   ✅ Finished removing all workspaces"; \
+	echo ""; \
+	echo "💡 Tip: Feature branches are preserved by default"; \
+	echo "   To also remove orphaned feature branches, run: make clean-branches"
+
+clean-branches:
+	@./clean_branches.sh
+
 rm:
 	@if [ -z "$(filter-out $@,$(MAKECMDGOALS))" ]; then \
 		echo "Usage: make rm <feature-name>"; \
@@ -28,51 +84,24 @@ resume:
 ls:
 	@./list_workspaces.sh
 
-playwright:
-	@echo "🎭 Starting Playwright MCP server..."
-	@if lsof -i :8931 >/dev/null 2>&1; then \
-		echo "   ✅ Playwright MCP server is already running on port 8931"; \
+setup_completions:
+	@echo "🚀 Setting up Makefile autocompletion..."
+	@if [ "$$SHELL" = "/bin/zsh" ] || [ "$$SHELL" = "/usr/bin/zsh" ]; then \
+		RC_FILE="$$HOME/.zshrc"; \
 	else \
-		npx @playwright/mcp@latest --port 8931 >/dev/null 2>&1 & \
-		echo "   🚀 Playwright MCP server started in background"; \
-		echo "   ⏳ Waiting for server to be ready..."; \
-		max_attempts=30; \
-		attempt=0; \
-		while [ $$attempt -lt $$max_attempts ]; do \
-			if lsof -i :8931 >/dev/null 2>&1; then \
-				echo "   ✅ Playwright MCP server is ready on port 8931"; \
-				echo "   📊 Process ID: $$(lsof -ti tcp:8931 | head -1)"; \
-				break; \
-			fi; \
-			sleep 1; \
-			attempt=$$((attempt + 1)); \
-		done; \
-		if [ $$attempt -eq $$max_attempts ]; then \
-			echo "   ❌ Failed to start Playwright MCP server within 30 seconds"; \
-			exit 1; \
-		fi; \
-	fi
-
-kill-playwright:
-	@echo "⛔ Stopping Playwright MCP server..."
-	@if lsof -i :8931 >/dev/null 2>&1; then \
-		lsof -ti tcp:8931 | xargs kill -9 2>/dev/null; \
-		echo "   ✅ Playwright MCP server stopped"; \
+		RC_FILE="$$HOME/.bashrc"; \
+	fi; \
+	if grep -q "bash_completion.sh" "$$RC_FILE" 2>/dev/null; then \
+		echo "   ⚠️  Completion already appears to be set up in $$RC_FILE"; \
 	else \
-		echo "   ℹ️  Playwright MCP server was not running"; \
+		echo "" >> "$$RC_FILE"; \
+		echo "# Optimum Codegen Makefile autocompletion" >> "$$RC_FILE"; \
+		echo "source \"$$(pwd)/bash_completion.sh\"" >> "$$RC_FILE"; \
+		echo "   ✅ Added to $$RC_FILE"; \
 	fi
-
-status:
-	@./list_workspaces.sh
-	@echo ""
-	@echo "🎭 Playwright MCP Server Status:"
-	@if lsof -i :8931 >/dev/null 2>&1; then \
-		echo "   ✅ Running on port 8931"; \
-		echo "   📊 Process: $$(lsof -ti tcp:8931 | head -1)"; \
-	else \
-		echo "   ❌ Not running"; \
-		echo "   💡 Start with: make playwright"; \
-	fi
+	@echo "   ✅ Setup complete!"
+	@echo "   💡 Restart your terminal or run 'source $$RC_FILE' for autocompletion"
+	@echo "   🎯 Try: make new <TAB>"
 
 help:
 	@echo "🚀 Optimum Codegen"
@@ -80,25 +109,30 @@ help:
 	@echo ""
 	@echo "⚡ Commands:"
 	@echo "  make new <name>                  🎨 Create new feature workspace"
+	@echo "  make batch                       🎯 Create feature workspaces from all available plans"
 	@echo "  make rm <name>                   🗑️  Remove feature workspace"
+	@echo "  make clean                       🧹 Remove ALL feature workspaces (with confirmation)"
+	@echo "  make clean-branches              🌿 Remove all orphaned feature branches (with confirmation)"
 	@echo "  make resume <name>               🔄 Resume feature workspace"
 	@echo "  make ls                          📋 List all feature workspaces"
-	@echo "  make playwright                  🎭 Start playwright MCP server on port 8931 (background)"
-	@echo "  make kill-playwright             ⛔ Stop playwright MCP server"
-	@echo "  make status                      📊 List workspaces and check playwright MCP server status"
+	@echo "  make setup_completions           🚀 Enable tab autocompletion"
 	@echo ""
 	@echo "📋 Recommended Workflow:"
 	@echo "  1. (Optional) Ask Cursor to create a plan in plans/<name>.md"
 	@echo "  2. Run: make new <name> (automatically starts Playwright and includes the plan if it exists)"
+	@echo "  3. Or run: make batch to create feature workspaces from all available plans"
+	@echo "  4. Use: make clean to remove all workspaces when done"
+	@echo "  5. Use: make clean-branches to remove orphaned feature branches"
 	@echo ""
 	@echo "📝 Examples:"
 	@echo "  make new dashboard-redesign"
+	@echo "  make batch"
 	@echo "  make rm dashboard-redesign"
+	@echo "  make clean"
+	@echo "  make clean-branches"
 	@echo "  make resume dashboard-redesign"
 	@echo "  make ls"
-	@echo "  make status"
-	@echo "  make playwright"
-	@echo "  make kill-playwright"
+	@echo "  make setup_completions"
 
 # Default target shows help
 .DEFAULT_GOAL := help
