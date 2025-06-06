@@ -6,6 +6,28 @@ export default ChatInput = {
     const hook = this
     const chatInput = hook.el
     const fileInput = chatInput.querySelector('#hidden-file-input')
+    const messageInput = chatInput.querySelector('#message-input')
+    const chatMessagesContainer = document.querySelector('#chat-messages')
+
+    const scrollToBottom = () => {
+      chatMessagesContainer.scrollTo({
+        top: chatMessagesContainer.scrollHeight,
+        behavior: 'instant',
+      })
+    }
+
+    chatInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault()
+
+        chatInput.dispatchEvent(new Event('submit', { bubbles: true }))
+        messageInput.value = ''
+      }
+    })
+
+    chatInput.addEventListener('submit', () => {
+      setTimeout(scrollToBottom, 50)
+    })
 
     const restoreDropzoneStyles = () => {
       chatInput.classList.remove('border-2')
@@ -37,6 +59,8 @@ export default ChatInput = {
               message_id: messageId,
               status: 'uploaded',
             })
+
+            setTimeout(scrollToBottom, 100)
           })
         }
       )
