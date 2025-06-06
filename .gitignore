@@ -50,5 +50,6 @@ npm-debug.log
 /.vscode/
 /codegen/node_modules/
 /codegen/plans/
+/codegen/workspaces/
 *.code-workspace
 PLAN.md
