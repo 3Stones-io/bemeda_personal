@@ -1,6 +1,6 @@
 <section class="w-full py-2 max-w-full min-h-screen">
-  <div class="text-white flex justify-between items-center py-4 mb-4 bg-indigo-500">
-    <h1 class="text-xl font-semibold px-4">
+  <div class="text-white flex justify-between items-center p-4 mb-4 bg-indigo-500">
+    <h1 class="text-xl font-semibold">
       <ChatComponents.chat_contact_name
         is_employer?={@is_employer?}
         job_application={@job_application}
@@ -25,10 +25,10 @@
         </.link>
 
         <button
-          class="text-white hover:text-white/50 ml-4"
+          class="text-white text-xs md:text-sm ml-4 bg-purple-700 hover:opacity-75 px-3 py-1.5 rounded-full flex items-center gap-1"
           phx-click={JS.toggle(to: "#status-menu")}
         >
-          <.icon name="hero-ellipsis-vertical" class="h-6 w-6" />
+          {dgettext("jobs", "Update Status")}
         </button>
       </div>
 
