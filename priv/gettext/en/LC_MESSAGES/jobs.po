@@ -21,11 +21,6 @@ msgstr ""
 msgid "Accept Offer"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Add notes about this status change..."
-msgstr ""
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Any"
@@ -145,11 +140,6 @@ msgstr ""
 msgid "Failed to update job application status."
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to update status"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/job_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Find your next career opportunity"
@@ -266,7 +256,6 @@ msgstr ""
 msgid "No open positions at this time"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Notes"
@@ -365,7 +354,6 @@ msgid "Screening"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select a status"
 msgstr ""
@@ -395,16 +383,6 @@ msgstr ""
 msgid "Start your job search by browsing available positions."
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Status"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Status updated successfully"
-msgstr ""
-
 #: lib/bemeda_personal_web/i18n.ex
 #: lib/bemeda_personal_web/live/job_application_live/form_component.ex
 #, elixir-autogen, elixir-format
@@ -416,8 +394,6 @@ msgstr ""
 msgid "Under Review"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Update Status"
@@ -639,11 +615,6 @@ msgstr ""
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Chat with applicant"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Click to update status"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/index.ex
@@ -1416,4 +1387,9 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Swiss Red Cross Nursing Assistant"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Status - update in chat interface"
 msgstr ""
