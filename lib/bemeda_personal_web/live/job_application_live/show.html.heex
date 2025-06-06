@@ -64,7 +64,7 @@
     </div>
   </div>
 
-  <div id="chat-messages" phx-update="stream" class="px-4 h-[80svh] overflow-y-scroll">
+  <div id="chat-messages" phx-update="stream" class="px-4 h-[80svh] overflow-y-scroll pb-12">
     <ChatComponents.chat_container
       :for={{dom_id, message} <- @streams.messages}
       id={dom_id}
