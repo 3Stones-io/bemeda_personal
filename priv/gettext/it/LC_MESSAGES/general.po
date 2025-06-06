@@ -21,7 +21,6 @@ msgstr "Azioni"
 msgid "Browse Files"
 msgstr "Sfoglia file"
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Cancel"

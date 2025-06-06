@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
-  alias BemedaPersonalWeb.CompanyJobLive.StatusUpdateFormComponent
   alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents
@@ -436,7 +435,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
   end
 
   attr :applicant, :any, required: true
-  attr :available_statuses, :list, default: []
   attr :current_user, :any, required: true
   attr :id, :string, required: true
   attr :job, :any, default: nil
@@ -444,7 +442,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
   attr :show_job, :boolean, default: false
   attr :tag_limit, :integer, default: 3
   attr :target, :string, default: nil
-  attr :update_job_application_status_form, Phoenix.HTML.Form
 
   @spec applicant_card(assigns()) :: output()
   def applicant_card(assigns) do
@@ -463,52 +460,15 @@ defmodule BemedaPersonalWeb.JobsComponents do
             </h3>
 
             <div class="relative">
-              <button
-                type="button"
-                phx-click={JS.toggle(to: "#status-menu-#{@applicant.id}")}
+              <span
                 class={[
-                  "text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer",
+                  "text-xs font-medium px-2.5 py-1 rounded-full",
                   SharedHelpers.status_badge_color(@applicant.state)
                 ]}
-                title={
-                  if(!Enum.empty?(@available_statuses),
-                    do: dgettext("jobs", "Click to update status")
-                  )
-                }
+                title={dgettext("jobs", "Status - update in chat interface")}
               >
                 {I18n.translate_status(@applicant.state)}
-              </button>
-
-              <div
-                :if={!Enum.empty?(@available_statuses)}
-                id={"status-menu-#{@applicant.id}"}
-                phx-click-away={JS.hide(to: "#status-menu-#{@applicant.id}")}
-                class={[
-                  "hidden absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg p-4 z-50",
-                  "max-h-[80vh] overflow-y-auto min-w-[350px] max-w-[90vw]"
-                ]}
-                phx-hook="JobApplicationStatusInputs"
-              >
-                <div class="flex justify-between items-center mb-4 border-b pb-2">
-                  <h3 class="text-lg font-medium text-gray-900">
-                    {dgettext("jobs", "Update Status")}
-                  </h3>
-                  <button
-                    type="button"
-                    class="text-gray-400 hover:text-gray-500"
-                    phx-click={JS.hide(to: "#status-menu-#{@applicant.id}")}
-                  >
-                    <.icon name="hero-x-mark" class="h-5 w-5" />
-                  </button>
-                </div>
-                <.live_component
-                  module={StatusUpdateFormComponent}
-                  id={"status-update-form-#{@applicant.id}"}
-                  applicant={@applicant}
-                  available_statuses={@available_statuses}
-                  current_user={@current_user}
-                />
-              </div>
+              </span>
             </div>
           </div>
 
