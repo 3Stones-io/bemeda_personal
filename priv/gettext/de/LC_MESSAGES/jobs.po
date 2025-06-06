@@ -162,6 +162,7 @@ msgstr "Interviewt"
 msgid "Job Description"
 msgstr "Stellenbeschreibung"
 
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
