@@ -13,7 +13,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   @type changeset :: Ecto.Changeset.t()
   @type t :: %__MODULE__{}
 
-  @currencies [:AUD, :CAD, :CHF, :EUR, :GBP, :JPY, :USD]
+  @currencies [:CHF, :AUD, :CAD, :EUR, :GBP, :JPY, :USD]
   @departments [
     :"Acute Care",
     :Administration,
