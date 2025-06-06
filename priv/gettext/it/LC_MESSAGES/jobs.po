@@ -108,6 +108,7 @@ msgstr "Lettera di Presentazione"
 msgid "Decline Offer"
 msgstr "Rifiuta Offerta"
 
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #: lib/bemeda_personal_web/live/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Edit"
