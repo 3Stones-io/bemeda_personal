@@ -48,6 +48,11 @@ if [ -d "$REPO_ROOT/assets/node_modules" ]; then
     cp -r "$REPO_ROOT/assets/node_modules" assets/
 fi
 
+if [ -d "$REPO_ROOT/priv/plts" ]; then
+    mkdir -p priv
+    cp -r "$REPO_ROOT/priv/plts" priv/
+fi
+
 echo "📦 Running mix setup..."
 echo "   This will install dependencies, setup database, and build assets..."
 mix setup
