@@ -174,18 +174,18 @@ if [ -f "$SCRIPT_DIR/templates/feature-workspace.code-workspace" ]; then
     cp "$SCRIPT_DIR/templates/feature-workspace.code-workspace" "$WORKSPACE_PATH/${FEATURE_NAME}.code-workspace"
 fi
 
-if [ -f "$SCRIPT_DIR/templates/startup.sh" ]; then
-    cp "$SCRIPT_DIR/templates/startup.sh" "$WORKSPACE_PATH/"
-    chmod +x "$WORKSPACE_PATH/startup.sh"
+if [ -f "$SCRIPT_DIR/templates/.vscode/startup.sh" ]; then
+    cp "$SCRIPT_DIR/templates/.vscode/startup.sh" "$WORKSPACE_PATH/.vscode/"
+    chmod +x "$WORKSPACE_PATH/.vscode/startup.sh"
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/startup.sh"
-        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/startup.sh"
-        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/startup.sh"
+        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/startup.sh"
+        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/startup.sh"
+        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/startup.sh"
     else
-        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/startup.sh"
-        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/startup.sh"
-        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/startup.sh"
+        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/startup.sh"
+        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/startup.sh"
+        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/startup.sh"
     fi
 fi
 
@@ -193,17 +193,18 @@ if [ -f "$SCRIPT_DIR/plans/${FEATURE_NAME}.md" ]; then
     cp "$SCRIPT_DIR/plans/${FEATURE_NAME}.md" "$WORKSPACE_PATH/PLAN.md"
 fi
 
-if [ -f "$SCRIPT_DIR/templates/position-window.sh" ]; then
-    cp "$SCRIPT_DIR/templates/position-window.sh" "$WORKSPACE_PATH/"
+if [ -f "$SCRIPT_DIR/templates/.vscode/position-window.sh" ]; then
+    cp "$SCRIPT_DIR/templates/.vscode/position-window.sh" "$WORKSPACE_PATH/.vscode/"
+    chmod +x "$WORKSPACE_PATH/.vscode/position-window.sh"
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/position-window.sh"
-        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/position-window.sh"
-        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/position-window.sh"
+        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
+        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
+        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
     else
-        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/position-window.sh"
-        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/position-window.sh"
-        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/position-window.sh"
+        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
+        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
+        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
     fi
 fi
 

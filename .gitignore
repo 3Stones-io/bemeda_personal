@@ -47,5 +47,8 @@ npm-debug.log
 /package-lock.json
 
 # Optimum Codegen
+/.vscode/
 /codegen/node_modules/
 /codegen/plans/
+*.code-workspace
+PLAN.md

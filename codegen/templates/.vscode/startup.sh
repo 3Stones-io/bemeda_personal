@@ -11,7 +11,7 @@ TOTAL_WINDOWS="{{TOTAL_WINDOWS}}"
 LAYOUT_STRATEGY="{{LAYOUT_STRATEGY}}"
 
 echo "🖥️  Positioning Cursor window ($WINDOW_POSITION of $TOTAL_WINDOWS)..."
-./position-window.sh
+./.vscode/position-window.sh
 
 echo "🔧 Activating mise and loading environment..."
 if command -v mise >/dev/null 2>&1; then
