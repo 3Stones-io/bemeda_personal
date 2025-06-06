@@ -22,20 +22,6 @@ export default ChatInput = {
 
         chatInput.dispatchEvent(new Event('submit', { bubbles: true }))
         messageInput.value = ''
-
-        setTimeout(scrollToBottom, 50)
-      }
-
-      if (event.shiftKey && event.key === 'Enter') {
-        event.preventDefault()
-
-        const start = messageInput.selectionStart
-        const end = messageInput.selectionEnd
-        messageInput.value =
-          messageInput.value.substring(0, start) +
-          '\n' +
-          messageInput.value.substring(end)
-        messageInput.selectionStart = messageInput.selectionEnd = start + 1
       }
     })
 
