@@ -26,7 +26,7 @@
     </div>
 
     <div class="relative">
-      <div class="flex items-center gap-x-2">
+      <div class="hidden sm:flex items-center gap-x-2">
         <.link
           :if={!@is_employer?}
           navigate={
@@ -46,6 +46,45 @@
         >
           {dgettext("jobs", "Show History")}
         </.link>
+      </div>
+
+      <div class="sm:hidden relative">
+        <button
+          phx-click={
+            JS.toggle(to: "#job-actions-menu", in: "fade-in-scale", out: "fade-out-scale")
+          }
+          class="text-white hover:text-white/50 px-3 py-1.5 text-sm flex items-center gap-1"
+        >
+          <.icon name="hero-ellipsis-vertical" class="w-5 h-5" />
+        </button>
+
+        <div
+          id="job-actions-menu"
+          phx-click-away={JS.hide(to: "#job-actions-menu", transition: "fade-out-scale")}
+          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 hidden"
+        >
+          <div class="py-1">
+            <.link
+              :if={!@is_employer?}
+              navigate={
+                ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/edit"
+              }
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              title={dgettext("jobs", "Edit Your Application")}
+            >
+              {dgettext("jobs", "Edit")}
+            </.link>
+
+            <.link
+              patch={
+                ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/history"
+              }
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              {dgettext("jobs", "Show History")}
+            </.link>
+          </div>
+        </div>
       </div>
     </div>
   </div>
