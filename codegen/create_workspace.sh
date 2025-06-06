@@ -17,6 +17,8 @@ WORKSPACE_NAME="${FEATURE_NAME}"
 WORKSPACE_PATH="${REPO_ROOT}/codegen/workspaces/${WORKSPACE_NAME}"
 BRANCH_NAME="feature/${FEATURE_NAME}"
 
+source "$SCRIPT_DIR/utils.sh"
+
 determine_layout_strategy() {
     local total="$1"
     case $total in
@@ -38,8 +40,8 @@ mkdir -p "$REPO_ROOT/codegen/workspaces"
 
 if [ -d "$WORKSPACE_PATH" ]; then
     echo "💡 Feature workspace '$FEATURE_NAME' already exists!"
-    echo "   Use 'make resume $FEATURE_NAME' to reopen it in Cursor"
-    echo "   Or use 'make rm $FEATURE_NAME' to remove and recreate it"
+    echo "   Use '$OCG_CMD resume $FEATURE_NAME' to reopen it in Cursor"
+    echo "   Or use '$OCG_CMD rm $FEATURE_NAME' to remove and recreate it"
     exit 0
 fi
 
@@ -235,4 +237,4 @@ fi
 echo ""
 echo "🚀 Further setup will continue in the new Cursor window"
 echo ""
-echo "To remove: make rm $FEATURE_NAME"
+echo "To remove: $OCG_CMD rm $FEATURE_NAME"

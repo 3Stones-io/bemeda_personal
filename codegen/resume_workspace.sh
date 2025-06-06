@@ -12,12 +12,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WORKSPACE_PATH="${REPO_ROOT}/codegen/workspaces/${FEATURE_NAME}"
 
+source "$SCRIPT_DIR/utils.sh"
+
 echo "🔄 Resuming feature workspace: $FEATURE_NAME"
 
 if [ ! -d "$WORKSPACE_PATH" ]; then
     echo "❌ Feature workspace '$FEATURE_NAME' does not exist!"
-    echo "   Use 'make new $FEATURE_NAME' to create it"
-    echo "   Or use 'make ls' to see available workspaces"
+    echo "   Use '$OCG_CMD new $FEATURE_NAME' to create it"
+    echo "   Or use '$OCG_CMD ls' to see available workspaces"
     exit 1
 fi
 
