@@ -103,11 +103,6 @@ msgstr ""
 msgid "Cover Letter"
 msgstr ""
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Decline Offer"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Edit"
@@ -153,16 +148,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Find your next career opportunity"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Interview Scheduled"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Interviewed"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
@@ -230,11 +215,6 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Mark as Interviewed"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Maximum Salary"
@@ -279,11 +259,6 @@ msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Offer Declined"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Offer Extended"
 msgstr ""
 
@@ -319,16 +294,6 @@ msgstr ""
 msgid "Recent Jobs"
 msgstr ""
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Reject Application"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Rejected"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote Only"
@@ -354,16 +319,6 @@ msgstr ""
 msgid "Saving..."
 msgstr ""
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Schedule Interview"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Screening"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #, elixir-autogen, elixir-format
@@ -373,16 +328,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Show History"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Start Review"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Start Screening"
 msgstr ""
 
 #: lib/bemeda_personal/jobs/job_application_filter.ex
@@ -405,15 +350,9 @@ msgstr ""
 msgid "Status updated successfully"
 msgstr ""
 
-#: lib/bemeda_personal_web/i18n.ex
 #: lib/bemeda_personal_web/live/job_application_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Submit Application"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Under Review"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
@@ -1416,4 +1355,9 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Swiss Red Cross Nursing Assistant"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Resume Application"
 msgstr ""

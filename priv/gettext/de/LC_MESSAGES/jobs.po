@@ -103,11 +103,6 @@ msgstr "Alle Löschen"
 msgid "Cover Letter"
 msgstr "Anschreiben"
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Decline Offer"
-msgstr "Angebot Ablehnen"
-
 #: lib/bemeda_personal_web/live/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Edit"
@@ -154,16 +149,6 @@ msgstr "Status konnte nicht aktualisiert werden"
 #, elixir-autogen, elixir-format
 msgid "Find your next career opportunity"
 msgstr "Finden Sie Ihre nächste Karrierechance"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Interview Scheduled"
-msgstr "Vorstellungsgespräch Geplant"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Interviewed"
-msgstr "Interviewt"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
@@ -230,11 +215,6 @@ msgstr "Jobs bei %{company}"
 msgid "Location"
 msgstr "Standort"
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Mark as Interviewed"
-msgstr "Als Interviewt Markieren"
-
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Maximum Salary"
@@ -279,11 +259,6 @@ msgstr "Angebot Angenommen"
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Offer Declined"
-msgstr "Angebot Abgelehnt"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Offer Extended"
 msgstr "Angebot Erweitert"
 
@@ -319,16 +294,6 @@ msgstr "Stelle Veröffentlichen"
 msgid "Recent Jobs"
 msgstr "Aktuelle Jobs"
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Reject Application"
-msgstr "Bewerbung Ablehnen"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Rejected"
-msgstr "Abgelehnt"
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote Only"
@@ -354,16 +319,6 @@ msgstr "Änderungen Speichern"
 msgid "Saving..."
 msgstr "Speichern..."
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Schedule Interview"
-msgstr "Vorstellungsgespräch Planen"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Screening"
-msgstr "Vorauswahl"
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #, elixir-autogen, elixir-format
@@ -374,16 +329,6 @@ msgstr "Status auswählen"
 #, elixir-autogen, elixir-format
 msgid "Show History"
 msgstr "Verlauf Anzeigen"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Start Review"
-msgstr "Prüfung Starten"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Start Screening"
-msgstr "Vorauswahl Starten"
 
 #: lib/bemeda_personal/jobs/job_application_filter.ex
 #, elixir-autogen, elixir-format
@@ -405,16 +350,10 @@ msgstr "Status"
 msgid "Status updated successfully"
 msgstr "Status erfolgreich aktualisiert"
 
-#: lib/bemeda_personal_web/i18n.ex
 #: lib/bemeda_personal_web/live/job_application_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Submit Application"
 msgstr "Bewerbung Einreichen"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Under Review"
-msgstr "In Prüfung"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
@@ -1417,3 +1356,8 @@ msgstr "Fachärztin"
 #, elixir-autogen, elixir-format
 msgid "Swiss Red Cross Nursing Assistant"
 msgstr "Schweizerisches Rotes Kreuz Pflegeassistentin"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Resume Application"
+msgstr "Bewerbung Fortsetzen"
