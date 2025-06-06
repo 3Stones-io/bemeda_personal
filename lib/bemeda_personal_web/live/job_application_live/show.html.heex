@@ -1,65 +1,90 @@
 <section class="w-full py-2 max-w-full min-h-screen">
-  <div class="text-white flex justify-between items-center py-4 mb-4 bg-indigo-500">
-    <h1 class="text-xl font-semibold px-4">
-      <ChatComponents.chat_contact_name
-        is_employer?={@is_employer?}
-        job_application={@job_application}
-      />
+  <div class="text-white flex justify-between items-center p-4 mb-4 bg-indigo-500">
+    <div class="flex items-center gap-2">
+      <h1 class="text-xl font-semibold">
+        <ChatComponents.chat_contact_name
+          is_employer?={@is_employer?}
+          job_application={@job_application}
+        />
+      </h1>
 
-      <span class="text-xs font-medium bg-purple-700 text-white rounded-full px-2 py-1">
-        {I18n.translate_status(@job_application.state)}
-      </span>
-    </h1>
+      <button
+        :for={status <- @available_statuses}
+        class={[
+          "px-3 py-1.5 text-sm font-medium rounded-xl transition-colors duration-150 ease-in-out",
+          SharedHelpers.status_badge_color(status)
+        ]}
+      >
+        <.link phx-click={
+          JS.push("show-status-transition-modal",
+            value: %{to_state: status}
+          )
+        }>
+          {I18n.translate_status_action(status)}
+        </.link>
+      </button>
+    </div>
 
     <div class="relative">
-      <div class="flex items-center">
+      <div class="hidden sm:flex items-center gap-x-2">
         <.link
-          :if={@job_application.user_id == @current_user.id}
+          :if={!@is_employer?}
           navigate={
             ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/edit"
           }
-          class="text-white hover:text-white/50"
+          class="text-white hover:text-white/50 px-3 py-1.5 text-sm outline rounded-xl"
           title={dgettext("jobs", "Edit Your Application")}
         >
-          <.icon name="hero-pencil-square" class="h-5 w-5" />
+          {dgettext("jobs", "Edit")}
         </.link>
-
-        <button
-          class="text-white hover:text-white/50 ml-4"
-          phx-click={JS.toggle(to: "#status-menu")}
-        >
-          <.icon name="hero-ellipsis-vertical" class="h-6 w-6" />
-        </button>
-      </div>
-
-      <div
-        phx-click-away={JS.hide(to: "#status-menu")}
-        id="status-menu"
-        class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
-      >
-        <div class="border-b border-gray-200 pb-2 mb-2">
-          <div :for={status <- @available_statuses} class="px-3 py-1">
-            <.link
-              phx-click={
-                JS.push("show-status-transition-modal",
-                  value: %{to_state: status}
-                )
-              }
-              class="block w-full text-center px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors duration-150 ease-in-out"
-            >
-              {I18n.translate_status_action(status)}
-            </.link>
-          </div>
-        </div>
 
         <.link
           patch={
             ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/history"
           }
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          class="text-white hover:text-white/50 px-3 py-1.5 text-sm outline rounded-xl"
         >
           {dgettext("jobs", "Show History")}
         </.link>
+      </div>
+
+      <div class="sm:hidden relative">
+        <button
+          phx-click={
+            JS.toggle(to: "#job-actions-menu", in: "fade-in-scale", out: "fade-out-scale")
+          }
+          class="text-white hover:text-white/50 px-3 py-1.5 text-sm flex items-center gap-1"
+        >
+          <.icon name="hero-ellipsis-vertical" class="w-5 h-5" />
+        </button>
+
+        <div
+          id="job-actions-menu"
+          phx-click-away={JS.hide(to: "#job-actions-menu", transition: "fade-out-scale")}
+          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 hidden"
+        >
+          <div class="py-1">
+            <.link
+              :if={!@is_employer?}
+              navigate={
+                ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/edit"
+              }
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              title={dgettext("jobs", "Edit Your Application")}
+            >
+              {dgettext("jobs", "Edit")}
+            </.link>
+
+            <.link
+              patch={
+                ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/history"
+              }
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              {dgettext("jobs", "Show History")}
+            </.link>
+          </div>
+        </div>
       </div>
     </div>
   </div>
