@@ -103,6 +103,22 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert result =~ "can&#39;t be blank"
     end
 
+    test "form shows checked checkbox after change", %{company: company, conn: conn, user: user} do
+      {:ok, view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/companies/#{company.id}/jobs/new")
+
+      refute html =~ ~r/input[^>]*type="checkbox"[^>]*checked/
+
+      result =
+        view
+        |> form("#company-job-form", %{job_posting: %{region: ["Zurich"]}})
+        |> render_change()
+
+      assert result =~ ~r/input[^>]*type="checkbox"[^>]*checked/
+    end
+
     test "creates a job posting", %{company: company, conn: conn, user: user} do
       {:ok, view, _html} =
         conn
