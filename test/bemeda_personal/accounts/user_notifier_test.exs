@@ -20,7 +20,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
     job_application =
       user
-      |> job_application_fixture(job_posting, %{state: "interview_scheduled"})
+      |> job_application_fixture(job_posting, %{state: "offer_extended"})
       |> Repo.preload(job_posting: [company: :admin_user])
 
     %{
@@ -122,12 +122,12 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
-        subject: "BemedaPersonal | Job Application Status Update - Interview Scheduled",
+        subject: "BemedaPersonal | Job Application Status Update - Job Offer Extended",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="APPLICATION_URL"/,
         text_body: ~r/APPLICATION_URL/,
         text_body: ~r/Software Engineer/,
-        text_body: ~r/An interview has been scheduled./
+        text_body: ~r/Good news! We've extended an offer to you./
       )
     end
   end
@@ -158,12 +158,12 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
-        subject: "BemedaPersonal | Job Application Status Update - Interview Scheduled",
+        subject: "BemedaPersonal | Job Application Status Update - Job Offer Extended",
         to: [{"Admin User", "admin@example.com"}],
         html_body: ~r/<a href="APPLICATION_URL"/,
         text_body: ~r/APPLICATION_URL/,
         text_body: ~r/Software Engineer/,
-        text_body: ~r/You have scheduled an interview with this candidate./
+        text_body: ~r/You've extended an offer to this candidate./
       )
     end
   end

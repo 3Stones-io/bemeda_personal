@@ -961,4 +961,23 @@ defmodule BemedaPersonal.Jobs do
     |> preload([:transitioned_by])
     |> Repo.all()
   end
+
+  @doc """
+  Returns the latest state transition for a job application.
+
+  ## Examples
+
+      iex> get_latest_withdraw_state_transition(job_application)
+      %JobApplicationStateTransition{}
+
+  """
+  @spec get_latest_withdraw_state_transition(job_application()) ::
+          JobApplicationStateTransition.t() | nil
+  def get_latest_withdraw_state_transition(job_application) do
+    JobApplicationStateTransition
+    |> where([t], t.job_application_id == ^job_application.id and t.to_state == "withdrawn")
+    |> order_by([t], desc: t.inserted_at)
+    |> limit(1)
+    |> Repo.one()
+  end
 end

@@ -325,8 +325,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
         view
         |> form("#status-update-form-#{application.id}", %{
           "job_application_state_transition" => %{
-            "to_state" => "under_review",
-            "notes" => "Started initial screening"
+            "to_state" => "offer_extended",
+            "notes" => "Extending an offer to the candidate"
           }
         })
         |> render_submit()
@@ -339,9 +339,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
         }
       )
 
-      assert html2 =~ "Under Review"
+      assert html2 =~ "Offer Extended"
       assert updated_job_application = Jobs.get_job_application!(application.id)
-      assert updated_job_application.state == "under_review"
+      assert updated_job_application.state == "offer_extended"
     end
 
     test "handles error case when updating applicant status", %{
@@ -365,7 +365,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       |> render_submit()
 
       assert updated_job_application = Jobs.get_job_application!(application.id)
-      refute updated_job_application.state == "under_review"
+      refute updated_job_application.state == "offer_extended"
     end
 
     test "updates applicants list when someone applies for the job", %{

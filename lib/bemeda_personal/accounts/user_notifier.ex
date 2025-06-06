@@ -28,52 +28,20 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @from {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"}
 
   @status_messages %{
-    "interview_scheduled" => dgettext("emails", "Interview Scheduled"),
-    "interviewed" => dgettext("emails", "Interview Completed"),
     "offer_accepted" => dgettext("emails", "Offer Accepted"),
-    "offer_declined" => dgettext("emails", "Offer Declined"),
     "offer_extended" => dgettext("emails", "Job Offer Extended"),
-    "rejected" => dgettext("emails", "Application Unsuccessful"),
-    "screening" => dgettext("emails", "Screening in Progress"),
-    "under_review" => dgettext("emails", "Under Review"),
     "withdrawn" => dgettext("emails", "Application Withdrawn")
   }
 
   @applicant_status_descriptions %{
-    "interview_scheduled" => dgettext("emails", "An interview has been scheduled."),
-    "interviewed" =>
-      dgettext(
-        "emails",
-        "Thank you for attending the interview. We're reviewing your performance."
-      ),
     "offer_accepted" => dgettext("emails", "You've accepted our offer — welcome aboard!"),
-    "offer_declined" =>
-      dgettext(
-        "emails",
-        "You've declined our offer. We wish you the best in your future endeavors."
-      ),
     "offer_extended" => dgettext("emails", "Good news! We've extended an offer to you."),
-    "rejected" =>
-      dgettext(
-        "emails",
-        "Unfortunately, we won't be moving forward with your application at this time."
-      ),
-    "screening" => dgettext("emails", "You're currently undergoing our screening process."),
-    "under_review" =>
-      dgettext("emails", "Your application is currently being reviewed by our hiring team."),
     "withdrawn" => dgettext("emails", "You've withdrawn your application.")
   }
 
   @employer_status_descriptions %{
-    "interview_scheduled" =>
-      dgettext("emails", "You have scheduled an interview with this candidate."),
-    "interviewed" => dgettext("emails", "The interview with this candidate has been completed."),
     "offer_accepted" => dgettext("emails", "The candidate has accepted your job offer!"),
-    "offer_declined" => dgettext("emails", "The candidate has declined your job offer."),
     "offer_extended" => dgettext("emails", "You've extended an offer to this candidate."),
-    "rejected" => dgettext("emails", "You've rejected this candidate's application."),
-    "screening" => dgettext("emails", "This application is in the screening process."),
-    "under_review" => dgettext("emails", "This application is under review by your team."),
     "withdrawn" => dgettext("emails", "The candidate has withdrawn their application.")
   }
 

@@ -567,45 +567,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       job_application: job_application
     } do
-      {:ok, job_application_under_review} =
-        Jobs.update_job_application_status(
-          job_application,
-          job_application.user,
-          %{
-            "to_state" => "under_review"
-          }
-        )
-
-      {:ok, job_application_screening} =
-        Jobs.update_job_application_status(
-          job_application_under_review,
-          job_application.user,
-          %{
-            "to_state" => "screening"
-          }
-        )
-
-      {:ok, job_application_interview_scheduled} =
-        Jobs.update_job_application_status(
-          job_application_screening,
-          job_application.user,
-          %{
-            "to_state" => "interview_scheduled"
-          }
-        )
-
-      {:ok, job_application_interviewed} =
-        Jobs.update_job_application_status(
-          job_application_interview_scheduled,
-          job_application.user,
-          %{
-            "to_state" => "interviewed"
-          }
-        )
-
       {:ok, job_application_offer_extended} =
         Jobs.update_job_application_status(
-          job_application_interviewed,
+          job_application,
           job_application.user,
           %{
             "to_state" => "offer_extended"
@@ -693,6 +657,45 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert updated_html =~ "Withdrawn"
     end
 
+    test "user can reverse a withdrawn application", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "withdrawn"})
+
+      view
+      |> form("#job-application-state-transition-form")
+      |> render_submit(%{
+        "job_application_state_transition" => %{}
+      })
+
+      html1 = render(view)
+
+      assert html1 =~ "Resume Application"
+      assert html1 =~ "Withdrawn"
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "applied"})
+
+      view
+      |> form("#job-application-state-transition-form")
+      |> render_submit(%{
+        "job_application_state_transition" => %{
+          "notes" => "I would like to reactivate my application."
+        }
+      })
+
+      html2 = render(view)
+      assert html2 =~ "Applied"
+      job = Jobs.get_job_application!(job_application.id)
+      assert job.state == "applied"
+    end
+
     test "status messages are shown at each stage", %{
       conn: conn,
       job_application: job_application
@@ -710,13 +713,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert initial_messages_html =~ job_application.cover_letter
 
-      render_hook(view, "show-status-transition-modal", %{"to_state" => "under_review"})
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
 
       view
       |> form("#job-application-state-transition-form")
       |> render_submit(%{
         "job_application_state_transition" => %{
-          "notes" => "Application looks good, moving to review."
+          "notes" => "We'd like to extend an offer."
         }
       })
 
@@ -739,15 +742,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         |> element("#chat-messages")
         |> render()
 
-      assert updated_messages_html =~ "application is now under review"
+      assert updated_messages_html =~ "offer has been extended"
 
-      render_hook(updated_view, "show-status-transition-modal", %{"to_state" => "screening"})
+      render_hook(updated_view, "show-status-transition-modal", %{"to_state" => "offer_accepted"})
 
       updated_view
       |> form("#job-application-state-transition-form")
       |> render_submit(%{
         "job_application_state_transition" => %{
-          "notes" => "Moving to screening phase."
+          "notes" => "Accepting the offer."
         }
       })
 
@@ -759,19 +762,19 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         }
       )
 
-      {:ok, screening_view, _html} =
+      {:ok, accepted_view, _html} =
         live(
           conn,
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      screening_messages_html =
-        screening_view
+      accepted_messages_html =
+        accepted_view
         |> element("#chat-messages")
         |> render()
 
-      assert screening_messages_html =~ "screening phase"
-      assert screening_messages_html =~ "under review"
+      assert accepted_messages_html =~ "You have accepted the offer"
+      assert accepted_messages_html =~ "An offer has been extended to you"
     end
   end
 end
