@@ -31,24 +31,24 @@ echo "📦 Copying build artifacts from main branch..."
 
 REPO_ROOT="$(cd ../../../ && pwd)"
 
-if [ -f "$REPO_ROOT/.elixir_ls" ]; then
-    cp "$REPO_ROOT/.elixir_ls" .
+if [ -d "$REPO_ROOT/.elixir_ls" ] && [ ! -d ".elixir_ls" ]; then
+    cp -r "$REPO_ROOT/.elixir_ls" .
 fi
 
-if [ -d "$REPO_ROOT/deps" ]; then
+if [ -d "$REPO_ROOT/deps" ] && [ ! -d "deps" ]; then
     cp -r "$REPO_ROOT/deps" .
 fi
 
-if [ -d "$REPO_ROOT/_build" ]; then
+if [ -d "$REPO_ROOT/_build" ] && [ ! -d "_build" ]; then
     cp -r "$REPO_ROOT/_build" .
 fi
 
-if [ -d "$REPO_ROOT/assets/node_modules" ]; then
+if [ -d "$REPO_ROOT/assets/node_modules" ] && [ ! -d "assets/node_modules" ]; then
     mkdir -p assets
     cp -r "$REPO_ROOT/assets/node_modules" assets/
 fi
 
-if [ -d "$REPO_ROOT/priv/plts" ]; then
+if [ -d "$REPO_ROOT/priv/plts" ] && [ ! -d "priv/plts" ]; then
     mkdir -p priv
     cp -r "$REPO_ROOT/priv/plts" priv/
 fi
