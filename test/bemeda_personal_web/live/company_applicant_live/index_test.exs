@@ -8,7 +8,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Jobs
-  alias BemedaPersonal.Workers.EmailNotificationWorker
+  alias BemedaPersonalWeb.I18n
 
   setup %{conn: conn} do
     company_user = user_fixture(%{email: "company@example.com"})
@@ -309,7 +309,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       refute empty_input_html =~ "value="
     end
 
-    test "shows applicant's status and can update it", %{
+    test "shows applicant's status", %{
       company_user: user,
       company: company,
       conn: conn,
@@ -317,55 +317,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, view, html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company}/applicants")
 
       assert html =~ I18n.translate_status(application.state)
-
-      html2 =
-        view
-        |> form("#status-update-form-#{application.id}", %{
-          "job_application_state_transition" => %{
-            "to_state" => "under_review",
-            "notes" => "Started initial screening"
-          }
-        })
-        |> render_submit()
-
-      assert_enqueued(
-        worker: EmailNotificationWorker,
-        args: %{
-          job_application_id: application.id,
-          type: "job_application_status_update"
-        }
-      )
-
-      assert html2 =~ "Under Review"
-      assert updated_job_application = Jobs.get_job_application!(application.id)
-      assert updated_job_application.state == "under_review"
-    end
-
-    test "handles error case when updating applicant status", %{
-      company_user: user,
-      company: company,
-      conn: conn,
-      job_application: application
-    } do
-      conn = log_in_user(conn, user)
-
-      {:ok, view, html} = live(conn, ~p"/companies/#{company}/applicants")
-
-      assert html =~ I18n.translate_status(application.state)
-
-      view
-      |> form("#status-update-form-#{application.id}", %{
-        "job_application_state_transition" => %{
-          "notes" => "Some notes"
-        }
-      })
-      |> render_submit()
-
-      assert updated_job_application = Jobs.get_job_application!(application.id)
-      refute updated_job_application.state == "under_review"
+      assert html =~ "Status - update in chat interface"
     end
 
     test "updates applicants list when someone applies for the job", %{

@@ -21,11 +21,6 @@ msgstr "%{applicant} hat sich für die Position %{position} bei %{company} bewor
 msgid "Accept Offer"
 msgstr "Angebot Annehmen"
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Add notes about this status change..."
-msgstr "Notizen zu dieser Statusänderung hinzufügen..."
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Any"
@@ -145,11 +140,6 @@ msgstr "Angebot Erweitern"
 msgid "Failed to update job application status."
 msgstr "Bewerbungsstatus konnte nicht aktualisiert werden."
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to update status"
-msgstr "Status konnte nicht aktualisiert werden"
-
 #: lib/bemeda_personal_web/live/job_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Find your next career opportunity"
@@ -172,6 +162,7 @@ msgstr "Interviewt"
 msgid "Job Description"
 msgstr "Stellenbeschreibung"
 
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -266,7 +257,6 @@ msgstr "Derzeit sind keine Stellenausschreibungen verfügbar."
 msgid "No open positions at this time"
 msgstr "Derzeit keine offenen Stellen"
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Notes"
@@ -365,7 +355,6 @@ msgid "Screening"
 msgstr "Vorauswahl"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select a status"
 msgstr "Status auswählen"
@@ -395,16 +384,6 @@ msgstr "Startdatum muss vor oder gleich dem Enddatum sein"
 msgid "Start your job search by browsing available positions."
 msgstr "Beginnen Sie Ihre Jobsuche, indem Sie verfügbare Positionen durchsuchen."
 
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Status"
-msgstr "Status"
-
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Status updated successfully"
-msgstr "Status erfolgreich aktualisiert"
-
 #: lib/bemeda_personal_web/i18n.ex
 #: lib/bemeda_personal_web/live/job_application_live/form_component.ex
 #, elixir-autogen, elixir-format
@@ -416,8 +395,6 @@ msgstr "Bewerbung Einreichen"
 msgid "Under Review"
 msgstr "In Prüfung"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/company_job_live/status_update_form_component.ex
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Update Status"
@@ -640,11 +617,6 @@ msgstr "Chat mit Bewerber"
 #, elixir-autogen, elixir-format
 msgid "Chat with applicant"
 msgstr "Chat mit Bewerber"
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Click to update status"
-msgstr "Klicken Sie, um den Status zu aktualisieren"
 
 #: lib/bemeda_personal_web/live/company_job_live/index.ex
 #, elixir-autogen, elixir-format
@@ -1417,3 +1389,8 @@ msgstr "Fachärztin"
 #, elixir-autogen, elixir-format
 msgid "Swiss Red Cross Nursing Assistant"
 msgstr "Schweizerisches Rotes Kreuz Pflegeassistentin"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Status - update in chat interface"
+msgstr "Status - im Chat-Interface aktualisieren"
