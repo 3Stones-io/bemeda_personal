@@ -102,7 +102,7 @@ defmodule BemedaPersonal.Jobs.JobPosting do
   @foreign_key_type :binary_id
   schema "job_postings" do
     belongs_to :company, Company
-    field :currency, Ecto.Enum, values: @currencies
+    field :currency, Ecto.Enum, values: @currencies, default: :CHF
     field :department, {:array, Ecto.Enum}, values: @departments
     field :description, :string
     field :employment_type, Ecto.Enum, values: @employment_types
