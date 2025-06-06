@@ -21,39 +21,114 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
         phx-submit="save"
         class="space-y-6"
       >
-        <.input
-          field={f[:title]}
-          type="text"
-          label={dgettext("jobs", "Job Title")}
-          required
-          phx-debounce="blur"
-        />
+        <div class="space-y-6">
+          <h3 class="text-lg font-medium text-gray-900">{dgettext("jobs", "Job Details")}</h3>
 
-        <.input
-          field={f[:description]}
-          type="textarea"
-          label={dgettext("jobs", "Job Description")}
-          rows={6}
-          required
-          phx-debounce="blur"
-        />
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
           <.input
-            field={f[:employment_type]}
-            type="select"
-            label={dgettext("jobs", "Employment Type")}
-            prompt={dgettext("jobs", "Select employment type")}
-            options={get_translated_options(:employment_type)}
+            field={f[:title]}
+            type="text"
+            label={dgettext("jobs", "Job Title")}
+            required
             phx-debounce="blur"
           />
 
           <.input
-            field={f[:experience_level]}
+            field={f[:description]}
+            type="textarea"
+            label={dgettext("jobs", "Job Description")}
+            rows={6}
+            required
+            phx-debounce="blur"
+          />
+
+          <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+            <.input
+              field={f[:profession]}
+              type="select"
+              label={dgettext("jobs", "Profession")}
+              prompt={dgettext("jobs", "Select profession")}
+              options={get_translated_options(:profession)}
+              phx-debounce="blur"
+            />
+
+            <.input
+              field={f[:department]}
+              type="multi-select"
+              label={dgettext("jobs", "Department")}
+              options={get_translated_options(:department)}
+              phx-debounce="blur"
+            />
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+            <.input
+              field={f[:employment_type]}
+              type="select"
+              label={dgettext("jobs", "Employment Type")}
+              prompt={dgettext("jobs", "Select employment type")}
+              options={get_translated_options(:employment_type)}
+              phx-debounce="blur"
+            />
+
+            <.input
+              field={f[:workload]}
+              type="multi-select"
+              label={dgettext("jobs", "Workload")}
+              prompt={dgettext("jobs", "Select workload")}
+              options={get_translated_options(:workload)}
+              nested_input?={true}
+              show_nested_input="Part-time"
+              phx-debounce="blur"
+            >
+              <:nested_input>
+                <.input
+                  field={f[:part_time_details]}
+                  type="multi-select"
+                  label={dgettext("jobs", "Workload Type")}
+                  prompt={dgettext("jobs", "Select workload type")}
+                  options={get_translated_options(:part_time_details)}
+                  phx-debounce="blur"
+                />
+              </:nested_input>
+            </.input>
+          </div>
+
+          <.input
+            field={f[:shift_type]}
+            type="multi-select"
+            label="Shift Type"
+            options={get_translated_options(:shift_type)}
+            phx-debounce="blur"
+          />
+
+          <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
+            <.input
+              field={f[:experience_level]}
+              type="select"
+              label={dgettext("jobs", "Experience Level")}
+              prompt={dgettext("jobs", "Select experience level")}
+              options={get_translated_options(:experience_level)}
+            />
+
+            <.input
+              field={f[:years_of_experience]}
+              type="select"
+              label={dgettext("jobs", "Years of Experience")}
+              prompt={dgettext("jobs", "Select experience range")}
+              options={get_translated_options(:years_of_experience)}
+              phx-debounce="blur"
+            />
+          </div>
+
+          <.input
+            field={f[:position]}
             type="select"
-            label={dgettext("jobs", "Experience Level")}
-            prompt={dgettext("jobs", "Select experience level")}
-            options={get_translated_options(:experience_level)}
+            label={dgettext("jobs", "Position")}
+            prompt={dgettext("jobs", "Select position")}
+            options={get_translated_options(:position)}
+            phx-debounce="blur"
           />
         </div>
 
@@ -73,6 +148,32 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
               phx-debounce="blur"
             />
           </div>
+        </div>
+
+        <.input
+          field={f[:region]}
+          type="multi-select"
+          label={dgettext("jobs", "Region")}
+          options={get_translated_options(:region)}
+          phx-debounce="blur"
+        />
+
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
+          <.input
+            field={f[:language]}
+            type="multi-select"
+            label={dgettext("jobs", "Language")}
+            options={get_translated_options(:language)}
+            phx-debounce="blur"
+          />
+
+          <.input
+            field={f[:gender]}
+            type="multi-select"
+            label={dgettext("jobs", "Gender")}
+            options={get_translated_options(:gender)}
+            phx-debounce="blur"
+          />
         </div>
 
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
@@ -99,105 +200,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             options={Ecto.Enum.values(Jobs.JobPosting, :currency)}
             phx-debounce="blur"
           />
-        </div>
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
-          <.input
-            field={f[:position]}
-            type="select"
-            label={dgettext("jobs", "Position")}
-            prompt={dgettext("jobs", "Select position")}
-            options={get_translated_options(:position)}
-            phx-debounce="blur"
-          />
-
-          <.input
-            field={f[:years_of_experience]}
-            type="select"
-            label={dgettext("jobs", "Years of Experience")}
-            prompt={dgettext("jobs", "Select experience range")}
-            options={get_translated_options(:years_of_experience)}
-            phx-debounce="blur"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
-          <.input
-            field={f[:profession]}
-            type="select"
-            label={dgettext("jobs", "Profession")}
-            prompt={dgettext("jobs", "Select profession")}
-            options={get_translated_options(:profession)}
-            phx-debounce="blur"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
-          <.input
-            field={f[:department]}
-            type="multi-select"
-            label={dgettext("jobs", "Department")}
-            options={get_translated_options(:department)}
-            phx-debounce="blur"
-          />
-
-          <.input
-            field={f[:shift_type]}
-            type="multi-select"
-            label="Shift Type"
-            options={get_translated_options(:shift_type)}
-            phx-debounce="blur"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
-          <.input
-            field={f[:region]}
-            type="multi-select"
-            label={dgettext("jobs", "Region")}
-            options={get_translated_options(:region)}
-            phx-debounce="blur"
-          />
-
-          <.input
-            field={f[:language]}
-            type="multi-select"
-            label={dgettext("jobs", "Language")}
-            options={get_translated_options(:language)}
-            phx-debounce="blur"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4">
-          <.input
-            field={f[:gender]}
-            type="multi-select"
-            label={dgettext("jobs", "Gender")}
-            options={get_translated_options(:gender)}
-            phx-debounce="blur"
-          />
-
-          <.input
-            field={f[:workload]}
-            type="multi-select"
-            label={dgettext("jobs", "Workload")}
-            prompt={dgettext("jobs", "Select workload")}
-            options={get_translated_options(:workload)}
-            nested_input?={true}
-            show_nested_input="Part-time"
-            phx-debounce="blur"
-          >
-            <:nested_input>
-              <.input
-                field={f[:part_time_details]}
-                type="multi-select"
-                label={dgettext("jobs", "Workload Type")}
-                prompt={dgettext("jobs", "Select workload type")}
-                options={get_translated_options(:part_time_details)}
-                phx-debounce="blur"
-              />
-            </:nested_input>
-          </.input>
         </div>
 
         <SharedComponents.asset_preview
@@ -234,7 +236,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           phx-update="ignore"
         />
 
-        <div class="flex justify-end space-x-3">
+        <div class="flex justify-end space-x-3 pt-6">
           <.button
             type="submit"
             id="job-posting-form-submit-button"
