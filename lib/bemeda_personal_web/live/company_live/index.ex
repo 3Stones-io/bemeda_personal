@@ -85,7 +85,6 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
       when event in [
              "company_job_application_status_updated",
              "company_job_application_updated",
-             "company_job_application_created",
              "job_application_created",
              "job_application_updated"
            ] do

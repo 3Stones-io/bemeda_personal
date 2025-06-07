@@ -1793,7 +1793,7 @@ defmodule BemedaPersonal.JobsTest do
           "to_state" => "offer_extended"
         })
 
-      assert Jobs.get_latest_withdraw_state_transition(job_application) == nil
+      refute Jobs.get_latest_withdraw_state_transition(job_application)
     end
 
     test "returns the latest withdrawn transition when it exists", %{
@@ -1808,7 +1808,7 @@ defmodule BemedaPersonal.JobsTest do
 
       transition = Jobs.get_latest_withdraw_state_transition(updated_application)
 
-      assert transition != nil
+      assert %Jobs.JobApplicationStateTransition{} = transition
       assert transition.to_state == "withdrawn"
       assert transition.notes == "Withdrawing application"
       assert transition.job_application_id == job_application.id

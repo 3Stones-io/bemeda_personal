@@ -7,8 +7,7 @@ defmodule BemedaPersonal.Repo.Migrations.UpdateJobApplicationStatusesToAllowedVa
     SET state = CASE
       WHEN state = 'rejected' THEN 'withdrawn'
       WHEN state = 'offer_declined' THEN 'withdrawn'
-      WHEN state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn') THEN 'applied'
-      ELSE state
+      ELSE 'applied'
     END
     WHERE state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
     """
