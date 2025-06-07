@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Companies
+  alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
 
   describe "Company Dashboard" do
@@ -345,6 +346,31 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> live(~p"/companies/#{company.id}/jobs/new")
 
       assert has_element?(view, "form[phx-submit='save']")
+    end
+
+    test "updates applicants list when someone applies for the job", %{conn: conn} do
+      company_user = user_fixture()
+      company = company_fixture(company_user)
+      job_posting = job_posting_fixture(company)
+
+      job_applicant =
+        user_fixture(%{first_name: "New", last_name: "Applicant", email: "new@example.com"})
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(company_user)
+        |> live(~p"/companies")
+
+      {:ok, _new_application} =
+        Jobs.create_job_application(job_applicant, job_posting, %{
+          cover_letter: "I am very interested in this position"
+        })
+
+      Process.sleep(50)
+
+      updated_html = render(view)
+      assert updated_html =~ "New Applicant"
+      assert updated_html =~ "new@example.com"
     end
   end
 end
