@@ -43,7 +43,7 @@ try
             delay 0.2
             -- Move to next display first
             key code 124 using {control down, option down, command down}
-            delay 1.0
+            delay 0.5
             -- Execute positioning shortcut
             $shortcut
             delay 0.2

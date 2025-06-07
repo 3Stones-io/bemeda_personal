@@ -84,55 +84,58 @@ resume:
 ls:
 	@./list_workspaces.sh
 
-setup_completions:
-	@echo "🚀 Setting up Makefile autocompletion..."
-	@if [ "$$SHELL" = "/bin/zsh" ] || [ "$$SHELL" = "/usr/bin/zsh" ]; then \
-		RC_FILE="$$HOME/.zshrc"; \
-	else \
-		RC_FILE="$$HOME/.bashrc"; \
-	fi; \
-	if grep -q "bash_completion.sh" "$$RC_FILE" 2>/dev/null; then \
-		echo "   ⚠️  Completion already appears to be set up in $$RC_FILE"; \
-	else \
-		echo "" >> "$$RC_FILE"; \
-		echo "# Optimum Codegen Makefile autocompletion" >> "$$RC_FILE"; \
-		echo "source \"$$(pwd)/bash_completion.sh\"" >> "$$RC_FILE"; \
-		echo "   ✅ Added to $$RC_FILE"; \
-	fi
-	@echo "   ✅ Setup complete!"
-	@echo "   💡 Restart your terminal or run 'source $$RC_FILE' for autocompletion"
-	@echo "   🎯 Try: make new <TAB>"
+install:
+	@./install.sh
+
+uninstall:
+	@./uninstall.sh
 
 help:
 	@echo "🚀 Optimum Codegen"
 	@echo "================="
 	@echo ""
-	@echo "⚡ Commands:"
-	@echo "  make new <name>                  🎨 Create new feature workspace"
-	@echo "  make batch                       🎯 Create feature workspaces from all available plans"
-	@echo "  make rm <name>                   🗑️  Remove feature workspace"
-	@echo "  make clean                       🧹 Remove ALL feature workspaces (with confirmation)"
-	@echo "  make clean-branches              🌿 Remove all orphaned feature branches (with confirmation)"
-	@echo "  make resume <name>               🔄 Resume feature workspace"
-	@echo "  make ls                          📋 List all feature workspaces"
-	@echo "  make setup_completions           🚀 Enable tab autocompletion"
-	@echo ""
-	@echo "📋 Recommended Workflow:"
-	@echo "  1. (Optional) Ask Cursor to create a plan in plans/<name>.md"
-	@echo "  2. Run: make new <name> (automatically starts Playwright and includes the plan if it exists)"
-	@echo "  3. Or run: make batch to create feature workspaces from all available plans"
-	@echo "  4. Use: make clean to remove all workspaces when done"
-	@echo "  5. Use: make clean-branches to remove orphaned feature branches"
-	@echo ""
-	@echo "📝 Examples:"
-	@echo "  make new dashboard-redesign"
-	@echo "  make batch"
-	@echo "  make rm dashboard-redesign"
-	@echo "  make clean"
-	@echo "  make clean-branches"
-	@echo "  make resume dashboard-redesign"
-	@echo "  make ls"
-	@echo "  make setup_completions"
+	@. ./utils.sh; \
+	if [ "$$OCG_CLI" = "true" ]; then \
+		EXTRA_CMD="  $$OCG_CMD uninstall                   🗑️  Remove global CLI installation"; \
+		TIP=""; \
+	else \
+		EXTRA_CMD="  $$OCG_CMD install                     📦 Install CLI globally (ocg/optimum_codegen commands)"; \
+		TIP="💡 Install globally with 'make install' to use 'ocg' commands from anywhere!"; \
+	fi; \
+	echo "⚡ Commands:"; \
+	echo "  $$OCG_CMD new <name>                  🎨 Create new feature workspace"; \
+	echo "  $$OCG_CMD batch                       🎯 Create feature workspaces from all available plans"; \
+	echo "  $$OCG_CMD rm <name>                   🗑️  Remove feature workspace"; \
+	echo "  $$OCG_CMD clean                       🧹 Remove ALL feature workspaces (with confirmation)"; \
+	echo "  $$OCG_CMD clean-branches              🌿 Remove all orphaned feature branches (with confirmation)"; \
+	echo "  $$OCG_CMD resume <name>               🔄 Resume feature workspace"; \
+	echo "  $$OCG_CMD ls                          📋 List all feature workspaces"; \
+	echo "$$EXTRA_CMD"; \
+	echo ""; \
+	echo "📋 Recommended Workflow:"; \
+	echo "  1. (Optional) Ask Cursor to create a plan in plans/<name>.md"; \
+	echo "  2. Run: $$OCG_CMD new <name> (automatically starts Playwright and includes the plan if it exists)"; \
+	echo "  3. Or run: $$OCG_CMD batch to create feature workspaces from all available plans"; \
+	echo "  4. Use: $$OCG_CMD clean to remove all workspaces when done"; \
+	echo "  5. Use: $$OCG_CMD clean-branches to remove orphaned feature branches"; \
+	echo ""; \
+	echo "📝 Examples:"; \
+	echo "  $$OCG_CMD new dashboard-redesign"; \
+	echo "  $$OCG_CMD batch"; \
+	echo "  $$OCG_CMD rm dashboard-redesign"; \
+	echo "  $$OCG_CMD clean"; \
+	echo "  $$OCG_CMD clean-branches"; \
+	echo "  $$OCG_CMD resume dashboard-redesign"; \
+	echo "  $$OCG_CMD ls"; \
+	if [ "$$OCG_CLI" = "true" ]; then \
+		echo "  $$OCG_CMD uninstall"; \
+	else \
+		echo "  $$OCG_CMD install                     # Then use: ocg new dashboard-redesign"; \
+	fi; \
+	if [ -n "$$TIP" ]; then \
+		echo ""; \
+		echo "$$TIP"; \
+	fi
 
 # Default target shows help
 .DEFAULT_GOAL := help
