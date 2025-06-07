@@ -147,25 +147,15 @@ echo "⚙️  Setting up workspace (port: $NEXT_PORT, playwright: $NEXT_PLAYWRIG
 
 if [ -f "$SCRIPT_DIR/templates/mcp.json" ]; then
     cp "$SCRIPT_DIR/templates/mcp.json" "$WORKSPACE_PATH/.cursor/"
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s|{{PLAYWRIGHT_MCP_PORT}}|$NEXT_PLAYWRIGHT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
-        sed -i '' "s|{{PORT}}|$NEXT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
-    else
-        sed -i "s|{{PLAYWRIGHT_MCP_PORT}}|$NEXT_PLAYWRIGHT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
-        sed -i "s|{{PORT}}|$NEXT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
-    fi
+    sed -i '' "s|{{PLAYWRIGHT_MCP_PORT}}|$NEXT_PLAYWRIGHT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
+    sed -i '' "s|{{PORT}}|$NEXT_PORT|g" "$WORKSPACE_PATH/.cursor/mcp.json"
 fi
 
 mkdir -p "$WORKSPACE_PATH/.vscode"
 
 if [ -f "$SCRIPT_DIR/templates/.vscode/settings.json" ]; then
     cp "$SCRIPT_DIR/templates/.vscode/settings.json" "$WORKSPACE_PATH/.vscode/"
-
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s/4000/$NEXT_PORT/g" "$WORKSPACE_PATH/.vscode/settings.json"
-    else
-        sed -i "s/4000/$NEXT_PORT/g" "$WORKSPACE_PATH/.vscode/settings.json"
-    fi
+    sed -i '' "s/4000/$NEXT_PORT/g" "$WORKSPACE_PATH/.vscode/settings.json"
 fi
 
 if [ -f "$SCRIPT_DIR/templates/.vscode/tasks.json" ]; then
@@ -179,62 +169,39 @@ fi
 if [ -f "$SCRIPT_DIR/templates/.vscode/startup.sh" ]; then
     cp "$SCRIPT_DIR/templates/.vscode/startup.sh" "$WORKSPACE_PATH/.vscode/"
     chmod +x "$WORKSPACE_PATH/.vscode/startup.sh"
-
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/startup.sh"
-        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/startup.sh"
-        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/startup.sh"
-    else
-        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/startup.sh"
-        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/startup.sh"
-        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/startup.sh"
-    fi
+    sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/startup.sh"
+    sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/startup.sh"
+    sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/startup.sh"
 fi
 
 if [ -f "$SCRIPT_DIR/plans/${FEATURE_NAME}.md" ]; then
     cp "$SCRIPT_DIR/plans/${FEATURE_NAME}.md" "$WORKSPACE_PATH/PLAN.md"
 fi
 
+if [ -f "$SCRIPT_DIR/templates/NEW_CONTEXT.md" ]; then
+    cp "$SCRIPT_DIR/templates/NEW_CONTEXT.md" "$WORKSPACE_PATH/CONTEXT.md"
+    sed -i '' "s|{{PORT}}|$NEXT_PORT|g" "$WORKSPACE_PATH/CONTEXT.md"
+    sed -i '' "s|{{PARTITION}}|$PARTITION|g" "$WORKSPACE_PATH/CONTEXT.md"
+    sed -i '' "s|{{FEATURE_NAME}}|$FEATURE_NAME|g" "$WORKSPACE_PATH/CONTEXT.md"
+fi
+
 if [ -f "$SCRIPT_DIR/templates/.vscode/position-window.sh" ]; then
     cp "$SCRIPT_DIR/templates/.vscode/position-window.sh" "$WORKSPACE_PATH/.vscode/"
     chmod +x "$WORKSPACE_PATH/.vscode/position-window.sh"
-
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
-        sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
-        sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
-    else
-        sed -i "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
-        sed -i "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
-        sed -i "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
-    fi
+    sed -i '' "s|{{WINDOW_POSITION}}|$WINDOW_POSITION|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
+    sed -i '' "s|{{TOTAL_WINDOWS}}|$TOTAL_WINDOWS|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
+    sed -i '' "s|{{LAYOUT_STRATEGY}}|$LAYOUT_STRATEGY|g" "$WORKSPACE_PATH/.vscode/position-window.sh"
 fi
 
-if command -v cursor >/dev/null 2>&1; then
-    if [ -f "$WORKSPACE_PATH/${FEATURE_NAME}.code-workspace" ]; then
-        cursor "$WORKSPACE_PATH/${FEATURE_NAME}.code-workspace" &
-    else
-        cursor "$WORKSPACE_PATH" &
-    fi
-
-    echo "✅ Workspace created successfully!"
-else
-    echo "❌ Cursor command not found. Please install Cursor or open the workspace manually:"
-    echo "   📁 $WORKSPACE_PATH"
-fi
+open_cursor_workspace "$WORKSPACE_PATH" "$FEATURE_NAME" "✅ Workspace created successfully!"
 
 echo ""
 echo "🎉 Workspace ready: $FEATURE_NAME"
 echo "🔌 Port: $NEXT_PORT | 🎭 Playwright: $NEXT_PLAYWRIGHT_PORT | 🗄️ Partition: $PARTITION | 🌿 Branch: $BRANCH_NAME"
-echo "🗄️  Database (dev): bemeda_personal_dev$PARTITION | Database (test): bemeda_personal_test$PARTITION"
-echo ""
 echo "🌐 Server will be available at: http://localhost:$NEXT_PORT"
-echo "🎭 Playwright MCP will be available at: http://localhost:$NEXT_PLAYWRIGHT_PORT"
 echo "📁 $WORKSPACE_PATH"
 if [ -f "$WORKSPACE_PATH/PLAN.md" ]; then
     echo "📋 Plan: PLAN.md"
 fi
-echo ""
-echo "🚀 Further setup will continue in the new Cursor window"
 echo ""
 echo "To remove: $OCG_CMD rm $FEATURE_NAME"
