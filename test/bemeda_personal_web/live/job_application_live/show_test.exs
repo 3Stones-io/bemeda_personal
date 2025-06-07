@@ -560,7 +560,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      assert html =~ "Applied"
+      assert html =~ "Withdraw Application"
     end
 
     test "user can transition a job application status", %{
@@ -582,7 +582,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application_offer_extended.job_posting_id}/job_applications/#{job_application_offer_extended.id}"
         )
 
-      assert html =~ "Offer Extended"
+      assert html =~ "An offer has been extended to you"
 
       render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_accepted"})
 
@@ -617,7 +617,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application_offer_accepted.job_posting_id}/job_applications/#{job_application_offer_accepted.id}"
         )
 
-      assert updated_html =~ "Offer Accepted"
+      assert updated_html =~ "You have accepted the offer"
     end
 
     test "user can withdraw their application", %{
@@ -654,7 +654,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      assert updated_html =~ "Withdrawn"
+      assert updated_html =~ "You have withdrawn your application"
     end
 
     test "user can reverse a withdrawn application", %{
@@ -678,7 +678,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       html1 = render(view)
 
       assert html1 =~ "Resume Application"
-      assert html1 =~ "Withdrawn"
 
       render_hook(view, "show-status-transition-modal", %{"to_state" => "applied"})
 
@@ -691,7 +690,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       })
 
       html2 = render(view)
-      assert html2 =~ "Applied"
+      assert html2 =~ "Withdraw Application"
       job = Jobs.get_job_application!(job_application.id)
       assert job.state == "applied"
     end
@@ -775,6 +774,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert accepted_messages_html =~ "You have accepted the offer"
       assert accepted_messages_html =~ "An offer has been extended to you"
+    end
+
+    test "displays status update buttons for available transitions", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ "Withdraw Application"
+
+      refute html =~ "Start Review"
+      refute html =~ "Accept Offer"
+      refute html =~ "Decline Offer"
     end
   end
 end

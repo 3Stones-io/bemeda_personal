@@ -98,6 +98,7 @@ msgstr ""
 msgid "Cover Letter"
 msgstr ""
 
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #: lib/bemeda_personal_web/live/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Edit"
