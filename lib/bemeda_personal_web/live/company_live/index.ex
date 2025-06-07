@@ -74,7 +74,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     {:noreply,
      socket
      |> assign(:job_count, Jobs.company_jobs_count(socket.assigns.company.id))
-     |> stream_insert(:job_postings, payload.job_posting, at: 0)}
+     |> stream_insert(:job_postings, payload.job_posting)}
   end
 
   def handle_info(%Broadcast{event: "job_posting_deleted", payload: payload}, socket) do
@@ -89,7 +89,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
              "job_application_created",
              "job_application_updated"
            ] do
-    {:noreply, stream_insert(socket, :recent_applicants, payload.job_application, at: 0)}
+    {:noreply, stream_insert(socket, :recent_applicants, payload.job_application)}
   end
 
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])
