@@ -97,4 +97,143 @@ defmodule BemedaPersonal.DateUtilsTest do
       assert DateUtils.format_emails_date(older_date_2) == "01/01/2001"
     end
   end
+
+  describe "parse_date_string/1" do
+    test "parses ISO 8601 format" do
+      assert {:ok, ~D[2023-12-25]} = DateUtils.parse_date_string("2023-12-25")
+      assert {:ok, ~D[2023-01-01]} = DateUtils.parse_date_string("2023-01-01")
+      assert {:ok, ~D[2023-12-31]} = DateUtils.parse_date_string("2023-12-31")
+    end
+
+    test "parses DD/MM/YYYY format" do
+      assert {:ok, ~D[2023-12-25]} = DateUtils.parse_date_string("25/12/2023")
+      assert {:ok, ~D[2023-01-01]} = DateUtils.parse_date_string("01/01/2023")
+      assert {:ok, ~D[2023-12-31]} = DateUtils.parse_date_string("31/12/2023")
+    end
+
+    test "parses DD / MM / YYYY format with spaces" do
+      assert {:ok, ~D[2023-12-25]} = DateUtils.parse_date_string("25 / 12 / 2023")
+      assert {:ok, ~D[2023-01-01]} = DateUtils.parse_date_string("01 / 01 / 2023")
+      assert {:ok, ~D[2023-12-31]} = DateUtils.parse_date_string("31 / 12 / 2023")
+    end
+
+    test "parses DD-MM-YYYY format" do
+      assert {:ok, ~D[2023-12-25]} = DateUtils.parse_date_string("25-12-2023")
+      assert {:ok, ~D[2023-01-01]} = DateUtils.parse_date_string("01-01-2023")
+      assert {:ok, ~D[2023-12-31]} = DateUtils.parse_date_string("31-12-2023")
+    end
+
+    test "returns error for invalid format" do
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("invalid")
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("25/12")
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("25/12/23")
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("2023/12/25")
+    end
+
+    test "returns error for invalid date" do
+      assert {:error, :invalid_date} = DateUtils.parse_date_string("32/12/2023")
+      assert {:error, :invalid_date} = DateUtils.parse_date_string("31/13/2023")
+      assert {:error, :invalid_date} = DateUtils.parse_date_string("29/02/2023")
+      assert {:error, :invalid_date} = DateUtils.parse_date_string("00/01/2023")
+      assert {:error, :invalid_date} = DateUtils.parse_date_string("01/00/2023")
+    end
+
+    test "handles leap year correctly" do
+      assert {:ok, ~D[2024-02-29]} = DateUtils.parse_date_string("29/02/2024")
+      assert {:error, :invalid_date} = DateUtils.parse_date_string("29/02/2023")
+    end
+
+    test "returns error for invalid components" do
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("aa/12/2023")
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("25/bb/2023")
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("25/12/cccc")
+    end
+  end
+
+  describe "parse_date_string_safe/1" do
+    test "returns date for valid formats" do
+      assert ~D[2023-12-25] = DateUtils.parse_date_string_safe("2023-12-25")
+      assert ~D[2023-12-25] = DateUtils.parse_date_string_safe("25/12/2023")
+      assert ~D[2023-12-25] = DateUtils.parse_date_string_safe("25 / 12 / 2023")
+      assert ~D[2023-12-25] = DateUtils.parse_date_string_safe("25-12-2023")
+    end
+
+    test "returns nil for invalid formats" do
+      assert is_nil(DateUtils.parse_date_string_safe("invalid"))
+      assert is_nil(DateUtils.parse_date_string_safe("32/12/2023"))
+      assert is_nil(DateUtils.parse_date_string_safe("25/13/2023"))
+      assert is_nil(DateUtils.parse_date_string_safe("aa/12/2023"))
+    end
+  end
+
+  describe "ensure_date/1" do
+    test "returns date when given a Date struct" do
+      date = ~D[2023-12-25]
+      assert DateUtils.ensure_date(date) == date
+    end
+
+    test "parses and returns date when given a valid string" do
+      assert DateUtils.ensure_date("2023-12-25") == ~D[2023-12-25]
+      assert DateUtils.ensure_date("25/12/2023") == ~D[2023-12-25]
+      assert DateUtils.ensure_date("25 / 12 / 2023") == ~D[2023-12-25]
+      assert DateUtils.ensure_date("25-12-2023") == ~D[2023-12-25]
+    end
+
+    test "returns nil for invalid strings" do
+      assert is_nil(DateUtils.ensure_date("invalid"))
+      assert is_nil(DateUtils.ensure_date("32/12/2023"))
+      assert is_nil(DateUtils.ensure_date("25/13/2023"))
+    end
+
+    test "returns nil for non-string, non-date inputs" do
+      assert is_nil(DateUtils.ensure_date(nil))
+      assert is_nil(DateUtils.ensure_date(123))
+      assert is_nil(DateUtils.ensure_date(%{}))
+      assert is_nil(DateUtils.ensure_date([]))
+    end
+  end
+
+  describe "date_to_datetime_range/1" do
+    test "creates start and end of day datetimes" do
+      date = ~D[2023-12-25]
+      {start_dt, end_dt} = DateUtils.date_to_datetime_range(date)
+
+      assert start_dt == ~U[2023-12-25 00:00:00.000Z]
+      assert end_dt == ~U[2023-12-25 23:59:59.999Z]
+    end
+
+    test "handles different dates correctly" do
+      date1 = ~D[2023-01-01]
+      {start_dt1, end_dt1} = DateUtils.date_to_datetime_range(date1)
+
+      assert start_dt1 == ~U[2023-01-01 00:00:00.000Z]
+      assert end_dt1 == ~U[2023-01-01 23:59:59.999Z]
+
+      # Leap year
+      date2 = ~D[2024-02-29]
+      {start_dt2, end_dt2} = DateUtils.date_to_datetime_range(date2)
+
+      assert start_dt2 == ~U[2024-02-29 00:00:00.000Z]
+      assert end_dt2 == ~U[2024-02-29 23:59:59.999Z]
+    end
+  end
+
+  describe "date_string_to_datetime_range/1" do
+    test "converts valid date strings to datetime ranges" do
+      assert {:ok, {start_dt, end_dt}} = DateUtils.date_string_to_datetime_range("2023-12-25")
+      assert start_dt == ~U[2023-12-25 00:00:00.000Z]
+      assert end_dt == ~U[2023-12-25 23:59:59.999Z]
+
+      assert {:ok, {start_dt2, end_dt2}} = DateUtils.date_string_to_datetime_range("25/12/2023")
+      assert start_dt2 == ~U[2023-12-25 00:00:00.000Z]
+      assert end_dt2 == ~U[2023-12-25 23:59:59.999Z]
+    end
+
+    test "returns error for invalid date strings" do
+      assert {:error, :invalid_format} = DateUtils.date_string_to_datetime_range("invalid")
+      assert {:error, :invalid_date} = DateUtils.date_string_to_datetime_range("32/12/2023")
+      assert {:error, :invalid_date} = DateUtils.date_string_to_datetime_range("25/13/2023")
+      assert {:error, :invalid_format} = DateUtils.date_string_to_datetime_range("aa/12/2023")
+    end
+  end
 end
