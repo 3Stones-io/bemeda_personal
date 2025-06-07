@@ -29,13 +29,13 @@ _codegen_completion() {
 
     # Complete arguments
     case "$prev" in
-        new)
-            [[ -d "$script_dir/plans" ]] && COMPREPLY=($(compgen -W "$(find "$script_dir/plans" -name "*.md" -not -name "*.old" -exec basename {} .md \; 2>/dev/null)" -- "$cur"))
-            ;;
-        rm|resume)
-            local repo_root="$(cd "$script_dir/.." && pwd)"
-            [[ -d "$repo_root" ]] && cd "$repo_root" && COMPREPLY=($(compgen -W "$(git worktree list --porcelain 2>/dev/null | grep "^worktree" | cut -d' ' -f2 | xargs -I {} basename {} | grep -v "$(basename "$repo_root")")" -- "$cur"))
-            ;;
+    new)
+        [[ -d "$script_dir/plans" ]] && COMPREPLY=($(compgen -W "$(find "$script_dir/plans" -name "*.md" -not -name "*.old" -exec basename {} .md \; 2>/dev/null)" -- "$cur"))
+        ;;
+    rm | resume)
+        local repo_root="$(cd "$script_dir/.." && pwd)"
+        [[ -d "$repo_root" ]] && cd "$repo_root" && COMPREPLY=($(compgen -W "$(git worktree list --porcelain 2>/dev/null | grep "^worktree" | cut -d' ' -f2 | xargs -I {} basename {} | grep -v "$(basename "$repo_root")")" -- "$cur"))
+        ;;
     esac
 }
 

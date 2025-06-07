@@ -6,9 +6,135 @@ echo "🚀 Initializing feature workspace..."
 WORKSPACE_ROOT="$(pwd)"
 FEATURE_NAME="$(basename "$WORKSPACE_ROOT")"
 
-WINDOW_POSITION="{{WINDOW_POSITION}}"
-TOTAL_WINDOWS="{{TOTAL_WINDOWS}}"
-LAYOUT_STRATEGY="{{LAYOUT_STRATEGY}}"
+prepare_context() {
+    local mode="$1"
+
+    if [ "$mode" = "resume" ]; then
+        if [ ! -f "RESUME_CONTEXT.md" ]; then
+            return 1
+        fi
+
+        local git_status commit_log
+        git_status=$(git status --porcelain 2>/dev/null || echo "# Unable to get git status")
+
+        if git show-ref --verify --quiet refs/heads/main; then
+            if [ "$(git rev-list --count main..HEAD 2>/dev/null)" -gt 0 ]; then
+                commit_log+=$(git log --oneline main..HEAD 2>/dev/null || echo "# Unable to get commit log")
+            else
+                commit_log="# No commits ahead of main branch"
+            fi
+        else
+            commit_log="# Main branch not found"
+        fi
+
+        local context=$(cat "RESUME_CONTEXT.md")
+        context="${context//\{\{GIT_STATUS\}\}/$git_status}"
+        context="${context//\{\{COMMIT_LOG\}\}/$commit_log}"
+
+        echo "$context" | pbcopy
+        rm "RESUME_CONTEXT.md"
+    else
+        if [ -f "CONTEXT.md" ]; then
+            cat "CONTEXT.md" | pbcopy
+            rm "CONTEXT.md"
+        else
+            return 1
+        fi
+    fi
+}
+
+open_cursor_chat() {
+    if ! pgrep -f "Cursor" >/dev/null 2>&1; then
+        return 1
+    fi
+
+    osascript <<EOF >/dev/null 2>&1
+tell application "Cursor"
+    activate
+    delay 1
+    
+    -- Ensure Cursor window is frontmost and focused
+    tell application "System Events"
+        tell process "Cursor"
+            set frontmost to true
+            delay 0.5
+        end tell
+        
+        -- Open Cursor chat with Cmd+L
+        keystroke "l" using {command down}
+        delay 1
+        
+        -- Clear any existing content in chat
+        keystroke "a" using {command down}
+        delay 0.5
+        
+        -- Paste the content using Cmd+V
+        keystroke "v" using {command down}
+        delay 0.5
+        
+        -- Don't auto-submit, let user review and press Enter manually
+    end tell
+end tell
+EOF
+}
+
+open_mcp_settings() {
+    osascript <<EOF >/dev/null 2>&1
+tell application "Cursor"
+    activate
+    delay 1
+    
+    -- Ensure Cursor window is frontmost and focused
+    tell application "System Events"
+        tell process "Cursor"
+            set frontmost to true
+            delay 0.5
+        end tell
+        
+        -- Open MCP settings with Ctrl+Cmd+Shift+Option+M
+        keystroke "m" using {control down, command down, shift down, option down}
+        delay 0.5
+    end tell
+end tell
+EOF
+}
+
+setup_automation() {
+    local mode="$1"
+
+    if prepare_context "$mode"; then
+        open_cursor_chat &
+
+        if [ -f ".cursor/mcp.json" ]; then
+            open_mcp_settings &
+        fi
+
+        return 0
+    else
+        return 1
+    fi
+}
+
+if [ -f ".ocg_resume" ]; then
+    WORKSPACE_MODE="resume"
+    echo "🔄 Resume mode detected"
+    rm ".ocg_resume" # Clean up flag file
+
+    export WINDOW_POSITION="1"
+    export TOTAL_WINDOWS="1"
+    export LAYOUT_STRATEGY="single_fullscreen"
+
+    setup_automation "resume"
+else
+    WORKSPACE_MODE="new"
+    echo "🆕 New workspace mode"
+
+    export WINDOW_POSITION="{{WINDOW_POSITION}}"
+    export TOTAL_WINDOWS="{{TOTAL_WINDOWS}}"
+    export LAYOUT_STRATEGY="{{LAYOUT_STRATEGY}}"
+
+    setup_automation "new"
+fi
 
 echo "🖥️  Positioning Cursor window ($WINDOW_POSITION of $TOTAL_WINDOWS)..."
 ./.vscode/position-window.sh
@@ -55,11 +181,6 @@ echo "   This will install dependencies, setup database, and build assets..."
 mix setup
 echo "✅ Setup complete - dependencies, database, and assets ready"
 
-if [ -f ".cursor/mcp.json" ]; then
-    echo "🔧 MCP servers configured"
-    echo "   💡 Use Ctrl+Cmd+Shift+Option+M to open MCP settings and toggle servers when ready"
-fi
-
 echo "🎭 Starting Playwright MCP server..."
 npx @playwright/mcp@latest --port $PLAYWRIGHT_MCP_PORT --headless 2>&1 &
 echo "   🚀 Playwright MCP server started in background"
@@ -81,106 +202,6 @@ if [ $attempt -eq $max_attempts ]; then
     echo "   ❌ Failed to start Playwright MCP server within 10 seconds"
     exit 1
 fi
-
-# Function to copy resume context to clipboard
-copy_resume_context() {
-    if [ ! -f "RESUME_CONTEXT.md" ]; then
-        return 1
-    fi
-
-    # Get git status
-    local git_status=$(git status --porcelain 2>/dev/null || echo "# Unable to get git status")
-    if [ -z "$git_status" ]; then
-        git_status="# Working directory clean"
-    fi
-
-    # Get commit log (difference between main and current branch)
-    local commit_log=""
-    if git rev-parse --verify main >/dev/null 2>&1; then
-        local commit_count=$(git rev-list --count main..HEAD 2>/dev/null || echo "0")
-        if [ "$commit_count" -gt 0 ]; then
-            commit_log="Commits ahead of main: $commit_count"$'\n\n'
-            commit_log+=$(git log --oneline main..HEAD 2>/dev/null || echo "# Unable to get commit log")
-        else
-            commit_log="# No commits ahead of main branch"
-        fi
-    else
-        commit_log="# Main branch not found"
-    fi
-
-    # Fill placeholders in the resume context file
-    local context=$(cat "RESUME_CONTEXT.md")
-    context="${context//\{\{GIT_STATUS\}\}/$git_status}"
-    context="${context//\{\{COMMIT_LOG\}\}/$commit_log}"
-
-    echo "$context" | pbcopy
-    rm "RESUME_CONTEXT.md"
-}
-
-# Function to copy CONTEXT.md to clipboard
-copy_feature_context() {
-    if [ -f "CONTEXT.md" ]; then
-        cat "CONTEXT.md" | pbcopy
-        rm "CONTEXT.md"
-    else
-        return 1
-    fi
-}
-
-open_cursor_chat() {
-    local context_type="$1"
-
-    # Check if Cursor is running
-    if ! pgrep -f "Cursor" >/dev/null 2>&1; then
-        return 1
-    fi
-
-    # AppleScript to open chat and paste
-    osascript <<'EOF' >/dev/null 2>&1
-tell application "Cursor"
-    activate
-    delay 1
-    
-    tell application "System Events"
-        -- Open Cursor chat with Cmd+L
-        keystroke "l" using {command down}
-        delay 1
-        
-        -- Clear any existing content in chat
-        keystroke "a" using {command down}
-        delay 0.5
-        
-        -- Paste the content using Cmd+V
-        keystroke "v" using {command down}
-        delay 0.5
-        
-        -- Don't auto-submit, let user review and press Enter manually
-    end tell
-end tell
-EOF
-}
-
-open_mcp_settings() {
-    # AppleScript to open MCP settings using keyboard shortcut
-    osascript <<'EOF' >/dev/null 2>&1
-tell application "Cursor"
-    activate
-    delay 1
-    
-    -- Ensure Cursor window is frontmost and focused
-    tell application "System Events"
-        tell process "Cursor"
-            set frontmost to true
-            delay 0.5
-        end tell
-        
-        -- Open MCP settings with Ctrl+Cmd+Shift+Option+M
-        keystroke "m" using {control down, command down, shift down, option down}
-        delay 0.5
-    end tell
-end tell
-EOF
-}
 
 show_workspace_summary() {
     local mode="$1"
@@ -207,37 +228,7 @@ show_workspace_summary() {
     echo "👉 Review the content and press Enter when ready to submit"
 }
 
-# Detect if this is a resume operation and handle accordingly
-if [ -f ".ocg_resume" ]; then
-    echo "🔄 Resume mode detected - loading resume context..."
-    rm ".ocg_resume" # Clean up flag file
-
-    copy_resume_context
-
-    if [ $? -eq 0 ]; then
-        echo "🤖 Setting up Cursor automation..."
-        open_cursor_chat "resume context" &
-
-        if [ -f ".cursor/mcp.json" ]; then
-            open_mcp_settings &
-        fi
-
-        show_workspace_summary "resume" &
-    fi
-else
-    echo "🆕 New workspace mode - using feature context..."
-
-    if [ -f ".cursor/mcp.json" ]; then
-        echo "🤖 Setting up Cursor automation..."
-
-        copy_feature_context
-        if [ $? -eq 0 ]; then
-            open_cursor_chat "feature context" &
-            open_mcp_settings &
-            show_workspace_summary "new" &
-        fi
-    fi
-fi
+show_workspace_summary "$WORKSPACE_MODE" &
 
 echo ""
 echo "🚀 Starting Phoenix server..."

@@ -3,10 +3,6 @@ set -e
 
 # Position Cursor window using Rectangle shortcuts
 
-WINDOW_POSITION="{{WINDOW_POSITION}}"
-TOTAL_WINDOWS="{{TOTAL_WINDOWS}}"
-LAYOUT_STRATEGY="{{LAYOUT_STRATEGY}}"
-
 echo "🖥️  Positioning window $WINDOW_POSITION of $TOTAL_WINDOWS ($LAYOUT_STRATEGY)"
 
 check_rectangle_running() {

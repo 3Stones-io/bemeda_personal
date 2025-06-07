@@ -21,7 +21,7 @@ batch:
 		exit 1; \
 	fi; \
 	echo "   📋 Found $$plan_count plan(s) to process"; \
-	sleep_duration=$$((3 + plan_count / 2)); \
+	sleep_duration=$$((5 + plan_count)); \
 	echo "   ⏱️  Using $$sleep_duration second delay between workspaces"; \
 	window_pos=1; \
 	for plan in plans/*.md; do \
@@ -36,7 +36,7 @@ batch:
 			fi; \
 		fi; \
 	done; \
-	echo "   ✅ Finished processing all plans"
+	echo "   ✅ Finished creating all workspaces"
 
 clean:
 	@echo "🧹 Removing all feature workspaces..."
