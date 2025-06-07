@@ -6,7 +6,7 @@ defmodule BemedaPersonal.Jobs.JobApplicationStateMachine do
   @transitions %{
     "applied" => ["offer_extended", "withdrawn"],
     "offer_extended" => ["offer_accepted", "withdrawn"],
-    "withdrawn" => ["applied", "offer_extended"]
+    "withdrawn" => ["applied", "offer_accepted"]
   }
 
   use Fsmx.Fsm, transitions: @transitions

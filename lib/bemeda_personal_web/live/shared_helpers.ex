@@ -120,7 +120,11 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       |> Jobs.get_job_application!()
       |> Jobs.get_latest_withdraw_state_transition()
 
-    [latest_transition.from_state]
+    if latest_transition.from_state == "offer_extended" do
+      ["offer_accepted"]
+    else
+      [latest_transition.from_state]
+    end
   end
 
   defp get_available_statuses_by_role(
