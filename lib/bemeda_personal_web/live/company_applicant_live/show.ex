@@ -43,7 +43,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
       {:ok, updated_application} ->
         {:noreply, assign(socket, :application, updated_application)}
 
-      _error ->
+      {:error, _reason} ->
         {:noreply, socket}
     end
   end
