@@ -3,10 +3,6 @@ set -e
 
 # Position Cursor window using Rectangle shortcuts
 
-WINDOW_POSITION="{{WINDOW_POSITION}}"
-TOTAL_WINDOWS="{{TOTAL_WINDOWS}}"
-LAYOUT_STRATEGY="{{LAYOUT_STRATEGY}}"
-
 echo "🖥️  Positioning window $WINDOW_POSITION of $TOTAL_WINDOWS ($LAYOUT_STRATEGY)"
 
 check_rectangle_running() {
@@ -43,7 +39,7 @@ try
             delay 0.2
             -- Move to next display first
             key code 124 using {control down, option down, command down}
-            delay 1.0
+            delay 0.5
             -- Execute positioning shortcut
             $shortcut
             delay 0.2

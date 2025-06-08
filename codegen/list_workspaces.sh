@@ -5,6 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 PARENT_DIR="$(dirname "$REPO_ROOT")"
 
+source "$SCRIPT_DIR/utils.sh"
+
 echo "🌳 Optimum Codegen Feature Workspaces Overview"
 echo "======================================="
 echo ""
@@ -111,7 +113,7 @@ echo "$WORKSPACES" | while IFS= read -r line; do
 done
 
 echo "💡 Tips:"
-echo "   • Create new feature workspace: make new <feature-name> (auto-starts server)"
-echo "   • Resume existing workspace: make resume <feature-name>"
-echo "   • Remove feature workspace: make rm <feature-name>"
-echo "   • Show all commands: make help"
+echo "   • Create new feature workspace: $OCG_CMD new <feature-name> (auto-starts server)"
+echo "   • Resume existing workspace: $OCG_CMD resume <feature-name>"
+echo "   • Remove feature workspace: $OCG_CMD rm <feature-name>"
+echo "   • Show all commands: $OCG_CMD help"
