@@ -1865,7 +1865,7 @@ defmodule BemedaPersonal.JobsTest do
 
       final_transition = Jobs.get_latest_withdraw_state_transition(withdrawn_app_2)
 
-      assert final_transition != nil
+      assert %Jobs.JobApplicationStateTransition{} = final_transition
       assert final_transition.to_state == "withdrawn"
       assert final_transition.notes == "Second withdrawal"
       assert final_transition.job_application_id == job_application.id
