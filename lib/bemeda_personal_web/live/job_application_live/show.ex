@@ -37,23 +37,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("send-message", %{"message" => message_params}, socket) do
-    case Chat.create_message(
-           socket.assigns.current_user,
-           socket.assigns.job_application,
-           message_params
-         ) do
-      {:ok, message} ->
-        changeset = Chat.change_message(%Chat.Message{})
-
-        enqueue_email_notification(message, socket)
-
-        {:noreply,
-         socket
-         |> stream_insert(:messages, message)
-         |> assign_chat_form(changeset)}
-
-      {:error, changeset} ->
-        {:noreply, assign_chat_form(socket, changeset)}
+    if String.trim(message_params["content"]) == "" do
+      {:noreply, socket}
+    else
+      send_message(socket, message_params)
     end
   end
 
@@ -213,6 +200,27 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     |> assign(:is_employer?, is_employer)
     |> assign_available_statuses(job_application)
     |> assign_chat_form(changeset)
+  end
+
+  defp send_message(socket, message_params) do
+    case Chat.create_message(
+           socket.assigns.current_user,
+           socket.assigns.job_application,
+           message_params
+         ) do
+      {:ok, message} ->
+        changeset = Chat.change_message(%Chat.Message{})
+
+        enqueue_email_notification(message, socket)
+
+        {:noreply,
+         socket
+         |> stream_insert(:messages, message)
+         |> assign_chat_form(changeset)}
+
+      {:error, changeset} ->
+        {:noreply, assign_chat_form(socket, changeset)}
+    end
   end
 
   defp assign_chat_form(socket, changeset) do
