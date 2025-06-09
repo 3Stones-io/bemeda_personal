@@ -9,13 +9,6 @@ export default ChatInput = {
     const messageInput = chatInput.querySelector('#message-input')
     const chatMessagesContainer = document.querySelector('#chat-messages')
 
-    const scrollToBottom = () => {
-      chatMessagesContainer.scrollTo({
-        top: chatMessagesContainer.scrollHeight,
-        behavior: 'instant',
-      })
-    }
-
     chatInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault()
@@ -25,8 +18,11 @@ export default ChatInput = {
       }
     })
 
-    chatInput.addEventListener('submit', () => {
-      setTimeout(scrollToBottom, 50)
+    hook.handleEvent('scroll_to_message', ({ message_id }) => {
+      const message = chatMessagesContainer.querySelector(
+        `#message-${message_id}`
+      )
+      message.scrollIntoView({ behavior: 'instant' })
     })
 
     const restoreDropzoneStyles = () => {
@@ -59,8 +55,6 @@ export default ChatInput = {
               message_id: messageId,
               status: 'uploaded',
             })
-
-            setTimeout(scrollToBottom, 100)
           })
         }
       )
