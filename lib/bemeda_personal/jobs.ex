@@ -8,13 +8,14 @@ defmodule BemedaPersonal.Jobs do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.JobApplicationFilters
   alias BemedaPersonal.Jobs.JobApplicationStateTransition
-  alias BemedaPersonal.Jobs.JobApplicationTag
   alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.Jobs.JobPostingFilters
   alias BemedaPersonal.Jobs.Tag
   alias BemedaPersonal.MediaDataUtils
+  alias BemedaPersonal.QueryBuilder
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
@@ -60,59 +61,13 @@ defmodule BemedaPersonal.Jobs do
   """
   @spec list_job_postings(map(), non_neg_integer()) :: [job_posting()]
   def list_job_postings(filters \\ %{}, limit \\ 10) do
-    filter_query = fn filters ->
-      Enum.reduce(filters, dynamic(true), &apply_filter/2)
-    end
-
     from(job_posting in JobPosting, as: :job_posting)
-    |> where(^filter_query.(filters))
+    |> QueryBuilder.apply_filters(filters, JobPostingFilters.filter_config())
     |> order_by([j], desc: j.inserted_at)
     |> limit(^limit)
     |> Repo.all()
     |> Repo.preload([:company, :media_asset])
   end
-
-  defp apply_filter({:company_id, company_id}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.company_id == ^company_id)
-  end
-
-  defp apply_filter({:title, title}, dynamic) do
-    pattern = "%#{title}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.title, ^pattern))
-  end
-
-  defp apply_filter({:employment_type, employment_type}, dynamic) do
-    pattern = "%#{employment_type}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.employment_type, ^pattern))
-  end
-
-  defp apply_filter({:experience_level, experience_level}, dynamic) do
-    pattern = "%#{experience_level}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.experience_level, ^pattern))
-  end
-
-  defp apply_filter({:remote_allowed, remote_allowed}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.remote_allowed == ^remote_allowed)
-  end
-
-  defp apply_filter({:location, location}, dynamic) do
-    pattern = "%#{location}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.location, ^pattern))
-  end
-
-  defp apply_filter({:salary_range, [min, max]}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.salary_min <= ^max and j.salary_max >= ^min)
-  end
-
-  defp apply_filter({:newer_than, %JobPosting{} = job_posting}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.inserted_at > ^job_posting.inserted_at)
-  end
-
-  defp apply_filter({:older_than, %JobPosting{} = job_posting}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.inserted_at < ^job_posting.inserted_at)
-  end
-
-  defp apply_filter(_other, dynamic), do: dynamic
 
   @doc """
   Gets a single job_posting.
@@ -331,157 +286,22 @@ defmodule BemedaPersonal.Jobs do
   def list_job_applications(filters \\ %{}, limit \\ 10)
 
   def list_job_applications(%{company_id: _company_id} = filters, limit) do
-    job_post_with_applications_query()
-    |> list_applications(filters, limit)
+    from(job_application in JobApplication, as: :job_application)
+    |> QueryBuilder.apply_filters(filters, JobApplicationFilters.filter_config())
+    |> order_by([ja], desc: ja.inserted_at)
+    |> limit(^limit)
+    |> Repo.all()
     |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   def list_job_applications(filters, limit) do
-    job_application_query()
-    |> list_applications(filters, limit)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
-  end
-
-  defp list_applications(query, filters, limit) do
-    filter_query = apply_job_application_filters()
-
-    query_with_joins =
-      if needs_job_posting_join?(filters), do: job_post_with_applications_query(), else: query
-
-    query_with_joins
-    |> where(^filter_query.(filters))
-    |> order_by([job_application: ja], desc: ja.inserted_at)
+    from(job_application in JobApplication, as: :job_application)
+    |> QueryBuilder.apply_filters(filters, JobApplicationFilters.filter_config())
+    |> order_by([ja], desc: ja.inserted_at)
     |> limit(^limit)
     |> Repo.all()
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
-
-  defp job_application_query do
-    from job_application in JobApplication, as: :job_application
-  end
-
-  defp job_post_with_applications_query do
-    from job_application in JobApplication,
-      as: :job_application,
-      left_join: job_posting in JobPosting,
-      as: :job_posting,
-      on: job_application.job_posting_id == job_posting.id
-  end
-
-  defp apply_job_application_filters do
-    fn filters ->
-      Enum.reduce(filters, dynamic(true), &apply_job_application_filter/2)
-    end
-  end
-
-  defp apply_job_application_filter({:user_id, user_id}, dynamic) do
-    dynamic([job_application: ja], ^dynamic and ja.user_id == ^user_id)
-  end
-
-  defp apply_job_application_filter({:job_posting_id, job_posting_id}, dynamic) do
-    dynamic([job_application: ja], ^dynamic and ja.job_posting_id == ^job_posting_id)
-  end
-
-  defp apply_job_application_filter({:company_id, company_id}, dynamic) do
-    dynamic([job_application: ja, job_posting: jp], ^dynamic and jp.company_id == ^company_id)
-  end
-
-  defp apply_job_application_filter({:date_range, %{from: from_date, to: to_date}}, dynamic)
-       when is_nil(from_date) or is_nil(to_date),
-       do: dynamic
-
-  defp apply_job_application_filter({:date_range, %{from: from_date, to: to_date}}, dynamic) do
-    with %Date{} = from_date <- DateUtils.ensure_date(from_date),
-         %Date{} = to_date <- DateUtils.ensure_date(to_date) do
-      {from_datetime, _end_dt} = DateUtils.date_to_datetime_range(from_date)
-      {_start_dt, to_datetime} = DateUtils.date_to_datetime_range(to_date)
-
-      dynamic(
-        [job_application: ja],
-        ^dynamic and ja.inserted_at >= ^from_datetime and ja.inserted_at <= ^to_datetime
-      )
-    else
-      _no_match -> dynamic
-    end
-  end
-
-  defp apply_job_application_filter({:date_from, from_date}, dynamic) when is_nil(from_date),
-    do: dynamic
-
-  defp apply_job_application_filter({:date_from, from_date}, dynamic) do
-    case DateUtils.ensure_date(from_date) do
-      nil ->
-        dynamic
-
-      date ->
-        {from_datetime, _end_dt} = DateUtils.date_to_datetime_range(date)
-        dynamic([job_application: ja], ^dynamic and ja.inserted_at >= ^from_datetime)
-    end
-  end
-
-  defp apply_job_application_filter({:date_to, to_date}, dynamic) when is_nil(to_date),
-    do: dynamic
-
-  defp apply_job_application_filter({:date_to, to_date}, dynamic) do
-    case DateUtils.ensure_date(to_date) do
-      nil ->
-        dynamic
-
-      date ->
-        {_start_dt, to_datetime} = DateUtils.date_to_datetime_range(date)
-        dynamic([job_application: ja], ^dynamic and ja.inserted_at <= ^to_datetime)
-    end
-  end
-
-  defp apply_job_application_filter({:applicant_name, name}, dynamic) do
-    pattern = "%#{name}%"
-
-    dynamic(
-      [job_application: ja],
-      ^dynamic and
-        exists(
-          from u in BemedaPersonal.Accounts.User,
-            where:
-              u.id == parent_as(:job_application).user_id and
-                (ilike(fragment("concat(?, ' ', ?)", u.first_name, u.last_name), ^pattern) or
-                   ilike(fragment("concat(?, ' ', ?)", u.last_name, u.first_name), ^pattern))
-        )
-    )
-  end
-
-  defp apply_job_application_filter({:job_title, title}, dynamic) do
-    pattern = "%#{title}%"
-
-    dynamic([job_application: ja, job_posting: jp], ^dynamic and ilike(jp.title, ^pattern))
-  end
-
-  defp apply_job_application_filter({:newer_than, job_application}, dynamic) do
-    dynamic([job_application: ja], ^dynamic and ja.inserted_at > ^job_application.inserted_at)
-  end
-
-  defp apply_job_application_filter({:older_than, job_application}, dynamic) do
-    dynamic([job_application: ja], ^dynamic and ja.inserted_at < ^job_application.inserted_at)
-  end
-
-  defp apply_job_application_filter({:tags, tags}, dynamic) do
-    dynamic(
-      [job_application: ja],
-      ^dynamic and
-        ja.id in subquery(
-          from jat in JobApplicationTag,
-            join: t in Tag,
-            on: t.id == jat.tag_id,
-            where: t.name in ^tags,
-            group_by: jat.job_application_id,
-            select: jat.job_application_id
-        )
-    )
-  end
-
-  defp apply_job_application_filter({:state, state}, dynamic) do
-    dynamic([job_application: ja], ^dynamic and ja.state == ^state)
-  end
-
-  defp apply_job_application_filter(_other, dynamic), do: dynamic
 
   @doc """
   Gets a single job application.
@@ -785,12 +605,6 @@ defmodule BemedaPersonal.Jobs do
       event,
       message
     )
-  end
-
-  defp needs_job_posting_join?(filters) do
-    filters
-    |> Map.keys()
-    |> Enum.any?(fn key -> key in [:company_id, :job_title] end)
   end
 
   @spec update_job_application_status(job_application(), user(), attrs()) ::

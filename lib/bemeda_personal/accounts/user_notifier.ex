@@ -97,6 +97,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
   @spec deliver_confirmation_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
   def deliver_confirmation_instructions(user, url) do
+    put_locale(user)
     user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
@@ -128,6 +129,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @spec deliver_reset_password_instructions(recipient(), url()) ::
           {:ok, email()} | {:error, any()}
   def deliver_reset_password_instructions(user, url) do
+    put_locale(user)
     user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
@@ -158,6 +160,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
   @spec deliver_update_email_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
   def deliver_update_email_instructions(user, url) do
+    put_locale(user)
     user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
@@ -188,6 +191,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
   @spec deliver_new_message(recipient(), message(), url()) :: {:ok, email()} | {:error, any()}
   def deliver_new_message(recipient, message, url) do
+    put_locale(recipient)
     user_name = "#{recipient.first_name} #{recipient.last_name}"
     sender_name = "#{message.sender.first_name} #{message.sender.last_name}"
 
@@ -221,6 +225,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @spec deliver_user_job_application_received(job_application(), url()) ::
           {:ok, email} | {:error, any()}
   def deliver_user_job_application_received(job_application, url) do
+    put_locale(job_application.user)
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     company_name = job_application.job_posting.company.name
@@ -256,6 +261,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @spec deliver_user_job_application_status(job_application(), url()) ::
           {:ok, email} | {:error, any()}
   def deliver_user_job_application_status(job_application, url) do
+    put_locale(job_application.user)
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
@@ -302,6 +308,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @spec deliver_employer_job_application_received(job_application(), url()) ::
           {:ok, email} | {:error, any()}
   def deliver_employer_job_application_received(job_application, url) do
+    put_locale(job_application.job_posting.company.admin_user)
     admin_user = job_application.job_posting.company.admin_user
     employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
     applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
@@ -382,5 +389,11 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       html_body,
       text_body
     )
+  end
+
+  defp put_locale(user) do
+    user.locale
+    |> Atom.to_string()
+    |> Gettext.put_locale()
   end
 end

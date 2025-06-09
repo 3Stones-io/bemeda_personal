@@ -10,7 +10,7 @@ defmodule BemedaPersonal.DateUtils do
   @doc """
   Format a date to a string.
   """
-  @spec format_date(date()) :: date_string()
+  @spec format_date(date() | nil) :: date_string()
   def format_date(nil), do: ""
 
   def format_date(%Date{} = date) do
