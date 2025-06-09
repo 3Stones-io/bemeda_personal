@@ -90,6 +90,9 @@ defmodule BemedaPersonalWeb do
       # Core UI components
       import BemedaPersonalWeb.CoreComponents
 
+      import BemedaPersonalWeb.Components.Shared.ButtonComponent
+      import BemedaPersonalWeb.Components.Shared.DateComponent
+
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 

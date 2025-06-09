@@ -16,7 +16,7 @@ msgstr ""
 msgid "Actions"
 msgstr "Azioni"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Browse Files"
 msgstr "Sfoglia file"
@@ -41,7 +41,7 @@ msgstr "Connettiti con i principali datori di lavoro e scopri opportunità di la
 msgid "Copy to clipboard"
 msgstr "Copia negli appunti"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Drag and drop to upload your %{type}"
 msgstr "Trascina e rilascia per caricare il tuo %{type}"
@@ -57,12 +57,12 @@ msgstr "Modifica"
 msgid "Find Your Next"
 msgstr "Trova la tua prossima"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Max file size: %{size}"
 msgstr "Dimensione massima del file: %{size}"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Not specified"
@@ -83,12 +83,12 @@ msgstr "Valutazione"
 msgid "Remote"
 msgstr "Remoto"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Show %{type}"
 msgstr "Mostra %{type}"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Upload progress"
 msgstr "Progresso caricamento"
@@ -98,7 +98,7 @@ msgstr "Progresso caricamento"
 msgid "close"
 msgstr "chiudi"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "or"
 msgstr "o"

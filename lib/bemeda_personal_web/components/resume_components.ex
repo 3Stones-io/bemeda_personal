@@ -4,6 +4,10 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.DateUtils
+  alias BemedaPersonalWeb.Components.Shared.ActionGroupComponent
+  alias BemedaPersonalWeb.Components.Shared.CardComponent
+  alias BemedaPersonalWeb.Components.Shared.DetailItemComponent
+  alias BemedaPersonalWeb.Components.Shared.EmptyStateComponent
   alias Phoenix.LiveView.JS
 
   attr :id, :string, default: nil
@@ -18,9 +22,9 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
   @spec resume_section(map()) :: Phoenix.LiveView.Rendered.t()
   def resume_section(assigns) do
     ~H"""
-    <div class="bg-white shadow-sm outline outline-gray-200 rounded-lg overflow-hidden mb-8">
-      <div class="p-6">
-        <div class="flex justify-between items-center mb-4">
+    <CardComponent.simple_card class="mb-8">
+      <:header>
+        <div class="flex justify-between items-center">
           <h2 class="text-xl font-bold text-gray-800">{@title}</h2>
           <.link
             :if={@can_update_resume}
@@ -30,11 +34,13 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
             <.icon name="hero-plus" class="h-5 w-5 mr-2" /> {dgettext("general", "Add")}
           </.link>
         </div>
-
+      </:header>
+      <:body>
         <div class="space-y-6" id={@id} phx-update="stream">
-          <p class="only:block hidden text-center py-8 text-gray-500" id={"empty-state-#{@id}"}>
-            {@empty_state_message}
-          </p>
+          <EmptyStateComponent.resume_section_empty_state
+            message={@empty_state_message}
+            id={"empty-state-#{@id}"}
+          />
 
           <div
             :for={{dom_id, item} <- @items}
@@ -44,8 +50,8 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
             {render_slot(@resume_item, item)}
           </div>
         </div>
-      </div>
-    </div>
+      </:body>
+    </CardComponent.simple_card>
     """
   end
 
@@ -57,9 +63,41 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
   attr :edit_path, :string, required: true
   attr :delete_event, :string, required: true
   attr :can_update_resume, :boolean, default: false
+  attr :delete_id_prefix, :string, default: "delete"
 
   @spec resume_item(map()) :: Phoenix.LiveView.Rendered.t()
   def resume_item(assigns) do
+    delete_event =
+      assigns.delete_event
+      |> JS.push(value: %{id: assigns.item.id})
+      |> JS.hide(to: "##{assigns.id}")
+
+    actions =
+      if assigns.can_update_resume do
+        [
+          %{
+            type: :edit,
+            path: assigns.edit_path,
+            title: dgettext("general", "Edit"),
+            icon: "hero-pencil-square",
+            method: :navigate
+          },
+          %{
+            type: :delete,
+            title: dgettext("general", "Delete"),
+            icon: "hero-trash",
+            method: :event,
+            event: delete_event,
+            confirm: dgettext("general", "Are you sure you want to delete this entry?"),
+            id: "#{assigns.delete_id_prefix}-#{assigns.item.id}"
+          }
+        ]
+      else
+        []
+      end
+
+    assigns = assign(assigns, :actions, actions)
+
     ~H"""
     <div class="flex justify-between">
       <div>
@@ -82,30 +120,7 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
         </p>
       </div>
 
-      <div :if={@can_update_resume} class="flex space-x-2">
-        <.link
-          navigate={@edit_path}
-          class="text-blue-500 hover:text-blue-600"
-          title={dgettext("general", "Edit")}
-        >
-          <.icon name="hero-pencil-square" class="h-5 w-5" />
-        </.link>
-
-        <.link
-          phx-click={
-            JS.push(@delete_event,
-              value: %{id: @item.id}
-            )
-            |> JS.hide(to: "##{@id}")
-          }
-          data-confirm={dgettext("general", "Are you sure you want to delete this entry?")}
-          class="text-red-500 hover:text-red-600"
-          title={dgettext("general", "Delete")}
-          id={"#{@delete_event}-#{@item.id}"}
-        >
-          <.icon name="hero-trash" class="h-5 w-5" />
-        </.link>
-      </div>
+      <ActionGroupComponent.action_group :if={@can_update_resume} actions={@actions} />
     </div>
     """
   end
@@ -121,15 +136,16 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
   @spec resume_profile(map()) :: Phoenix.LiveView.Rendered.t()
   def resume_profile(assigns) do
     ~H"""
-    <div class="bg-white shadow-sm outline outline-gray-200 rounded-lg overflow-hidden mb-8">
-      <div class="p-6">
-        <div class="flex justify-between items-center mb-4">
+    <CardComponent.simple_card class="mb-8">
+      <:header>
+        <div class="flex justify-between items-center">
           <h1 class="text-2xl font-bold text-gray-800">{@title}</h1>
           <div class="flex space-x-2">
             {render_slot(@actions)}
           </div>
         </div>
-
+      </:header>
+      <:body>
         <.resume_header
           resume={@resume}
           headline_default={@headline_default}
@@ -137,8 +153,8 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
         />
 
         <.resume_contact_info resume={@resume} email_fallback={@email_fallback} />
-      </div>
-    </div>
+      </:body>
+    </CardComponent.simple_card>
     """
   end
 
@@ -148,10 +164,11 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
 
   defp profile_info_item(assigns) do
     ~H"""
-    <p class="flex items-center">
-      <.icon name={@icon_name} class="h-5 w-5 mr-2 text-gray-500" />
-      {render_slot(@content)}
-    </p>
+    <DetailItemComponent.profile_info_item icon={@icon_name}>
+      <:content>
+        {render_slot(@content)}
+      </:content>
+    </DetailItemComponent.profile_info_item>
     """
   end
 

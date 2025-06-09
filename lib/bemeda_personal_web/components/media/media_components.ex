@@ -1,10 +1,13 @@
-defmodule BemedaPersonalWeb.SharedComponents do
-  @moduledoc false
+defmodule BemedaPersonalWeb.Components.Media.MediaComponents do
+  @moduledoc """
+  Components for handling media assets, file uploads, and video playback.
+  """
 
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.FileSizeUtils
   alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()

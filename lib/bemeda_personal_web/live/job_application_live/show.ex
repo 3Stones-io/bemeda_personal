@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.Media
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
+  alias BemedaPersonalWeb.Components.JobApplication.StatusComponent
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 

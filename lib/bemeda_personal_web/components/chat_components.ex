@@ -8,7 +8,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonalWeb.Components.Document.DocumentTemplateComponent
-  alias BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonalWeb.Components.Media.MediaComponents
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()
@@ -109,7 +109,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
       </div>
 
       <div class={@class}>
-        <SharedComponents.video_player media_asset={@message.media_asset} />
+        <MediaComponents.video_player media_asset={@message.media_asset} />
       </div>
     </div>
     """
@@ -169,7 +169,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
          } = assigns
        ) do
     ~H"""
-    <SharedComponents.video_player class="w-full" media_asset={@message.media_asset} />
+    <MediaComponents.video_player class="w-full" media_asset={@message.media_asset} />
     """
   end
 

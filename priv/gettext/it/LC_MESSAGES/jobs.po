@@ -21,12 +21,12 @@ msgstr "%{applicant} ha fatto domanda per la posizione di %{position} presso %{c
 msgid "Accept Offer"
 msgstr "Accetta Offerta"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Any"
 msgstr "Qualsiasi"
 
-#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/shared/empty_state_component.ex
 #, elixir-autogen, elixir-format
 msgid "Applicants will appear here when they apply to your job postings."
 msgstr "I candidati appariranno qui quando faranno domanda per i tuoi annunci di lavoro."
@@ -63,12 +63,13 @@ msgid "Applied"
 msgstr "Candidato"
 
 #: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Applied on"
 msgstr "Candidato il"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Apply Filters"
 msgstr "Applica Filtri"
@@ -83,12 +84,13 @@ msgstr "Candidati per questo lavoro"
 msgid "Back to application"
 msgstr "Torna alla candidatura"
 
-#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/shared/empty_state_component.ex
 #, elixir-autogen, elixir-format
 msgid "Browse Jobs"
 msgstr "Sfoglia Lavori"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Clear All"
 msgstr "Cancella Tutto"
@@ -114,7 +116,7 @@ msgstr "Modifica"
 msgid "Edit Your Application"
 msgstr "Modifica la Tua Candidatura"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Employment Type"
@@ -125,7 +127,7 @@ msgstr "Tipo di Impiego"
 msgid "End date must be after or equal to start date"
 msgstr "La data di fine deve essere successiva o uguale alla data di inizio"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Experience Level"
@@ -180,7 +182,8 @@ msgstr "Elenco Lavori"
 msgid "Job Postings"
 msgstr "Annunci di Lavoro"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Job Title"
@@ -216,7 +219,7 @@ msgstr "Lavori"
 msgid "Jobs at %{company}"
 msgstr "Lavori presso %{company}"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Location"
@@ -243,7 +246,7 @@ msgstr "Stipendio Minimo"
 msgid "My Job Applications"
 msgstr "Le Mie Candidature"
 
-#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/shared/empty_state_component.ex
 #, elixir-autogen, elixir-format
 msgid "No applicants found."
 msgstr "Nessun candidato trovato."
@@ -278,7 +281,7 @@ msgstr "Offerta Rifiutata"
 msgid "Offer Extended"
 msgstr "Offerta Estesa"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "On-site Only"
 msgstr "Solo in Sede"
@@ -320,7 +323,7 @@ msgstr "Rifiuta Candidatura"
 msgid "Rejected"
 msgstr "Rifiutato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote Only"
 msgstr "Solo Remoto"
@@ -355,7 +358,7 @@ msgstr "Programma Colloquio"
 msgid "Screening"
 msgstr "Selezione"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Select a status"
 msgstr "Seleziona uno stato"
@@ -380,7 +383,7 @@ msgstr "Inizia Selezione"
 msgid "Start date must be before or equal to end date"
 msgstr "La data di inizio deve essere precedente o uguale alla data di fine"
 
-#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/shared/empty_state_component.ex
 #, elixir-autogen, elixir-format
 msgid "Start your job search by browsing available positions."
 msgstr "Inizia la tua ricerca di lavoro sfogliando le posizioni disponibili."
@@ -452,7 +455,7 @@ msgstr "Hai fatto domanda per la posizione di %{position} presso %{company}."
 msgid "You are not authorized to delete this job posting"
 msgstr "Non sei autorizzato a eliminare questo annuncio di lavoro"
 
-#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/shared/empty_state_component.ex
 #, elixir-autogen, elixir-format
 msgid "You haven't applied for any jobs yet."
 msgstr "Non hai ancora fatto domanda per nessun lavoro."
@@ -492,13 +495,13 @@ msgstr "Posizione"
 msgid "Region"
 msgstr "Regione"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select employment type"
 msgstr "Seleziona tipo di impiego"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select experience level"
@@ -559,37 +562,37 @@ msgstr "È stata estesa un'offerta per questa posizione"
 msgid "An offer has been extended to you"
 msgstr "Ti è stata estesa un'offerta"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Applicant Name"
 msgstr "Nome del candidato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Applicant's resume details"
 msgstr "Dettagli del curriculum del candidato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Application Date From"
 msgstr "Data candidatura da"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Application Date To"
 msgstr "Data candidatura a"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Application Information"
 msgstr "Informazioni candidatura"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Application Status"
 msgstr "Stato candidatura"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Applied for"
 msgstr "Candidato per"
@@ -599,22 +602,22 @@ msgstr "Candidato per"
 msgid "Apply to %{job_title}"
 msgstr "Candidati per %{job_title}"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Are you sure you want to delete this job posting? This action cannot be undone."
 msgstr "Sei sicuro di voler eliminare questo annuncio di lavoro? Questa azione non può essere annullata."
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Back to Jobs"
 msgstr "Torna ai lavori"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Chat with Applicant"
 msgstr "Chatta con il candidato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Chat with applicant"
 msgstr "Chatta con il candidato"
@@ -624,12 +627,12 @@ msgstr "Chatta con il candidato"
 msgid "Company Jobs"
 msgstr "Lavori dell'azienda"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Cover letter"
 msgstr "Lettera di presentazione"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Delete job"
 msgstr "Elimina lavoro"
@@ -645,47 +648,47 @@ msgstr "Modifica lavoro"
 msgid "Edit application for %{job_title}"
 msgstr "Modifica candidatura per %{job_title}"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Edit job"
 msgstr "Modifica lavoro"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Email address"
 msgstr "Indirizzo email"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Enter location"
 msgstr "Inserisci posizione"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Filter"
 msgstr "Filtra"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Filter Applications"
 msgstr "Filtra candidature"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Filter by Tags"
 msgstr "Filtra per tag"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Filters"
 msgstr "Filtri"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Full name"
 msgstr "Nome completo"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Hide Filters"
 msgstr "Nascondi filtri"
@@ -700,7 +703,7 @@ msgstr "Lavori per %{company}"
 msgid "Manage your job postings"
 msgstr "Gestisci i tuoi annunci di lavoro"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Personal details and application."
 msgstr "Dettagli personali e candidatura."
@@ -711,67 +714,69 @@ msgstr "Dettagli personali e candidatura."
 msgid "Post New Job"
 msgstr "Pubblica nuovo lavoro"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Posted"
 msgstr "Pubblicato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Rating"
 msgstr "Valutazione"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote"
 msgstr "Remoto"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote Work"
 msgstr "Lavoro remoto"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote work allowed"
 msgstr "Lavoro remoto consentito"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Resume"
 msgstr "Curriculum"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Resume Information"
 msgstr "Informazioni del curriculum"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Resume is not publicly available"
 msgstr "Il curriculum non è disponibile pubblicamente"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "Salary Range"
 msgstr "Fascia salariale"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Search by applicant name"
 msgstr "Cerca per nome candidato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Search by job title"
 msgstr "Cerca per titolo lavoro"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/job_application_filter_components.ex
 #, elixir-autogen, elixir-format
 msgid "Show Filters"
 msgstr "Mostra filtri"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Tags"
 msgstr "Tag"
@@ -816,12 +821,12 @@ msgstr "Questa candidatura è ora in revisione"
 msgid "This candidate has been interviewed"
 msgstr "Questo candidato è stato intervistato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/shared/tags_input_component.ex
 #, elixir-autogen, elixir-format
 msgid "Type tag name and press Enter"
 msgstr "Digita il nome del tag e premi Invio"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "Update Tags"
 msgstr "Aggiorna tag"
@@ -831,12 +836,12 @@ msgstr "Aggiorna tag"
 msgid "View Applicants"
 msgstr "Visualizza candidati"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "View Resume"
 msgstr "Visualizza curriculum"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #, elixir-autogen, elixir-format
 msgid "View applicants"
 msgstr "Visualizza candidati"
@@ -886,7 +891,7 @@ msgstr "La tua candidatura è ora in revisione"
 msgid "Your interview has been scheduled"
 msgstr "Il tuo colloquio è stato programmato"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/applicant_components.ex
 #, elixir-autogen, elixir-format
 msgid "more"
 msgstr "altro"
@@ -1391,7 +1396,7 @@ msgstr "Medico Specialista"
 msgid "Swiss Red Cross Nursing Assistant"
 msgstr "Assistente Infermieristica Croce Rossa Svizzera"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/status_component.ex
 #, elixir-autogen, elixir-format
 msgid "Status - update in chat interface"
 msgstr "Stato - aggiorna nell'interfaccia chat"

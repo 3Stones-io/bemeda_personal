@@ -101,7 +101,7 @@ msgstr "deve essere maggiore o uguale a %{number}"
 msgid "must be equal to %{number}"
 msgstr "deve essere uguale a %{number}"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Unsupported file type."
 msgstr "Tipo di file non supportato."

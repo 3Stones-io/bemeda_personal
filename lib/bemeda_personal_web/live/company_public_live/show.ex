@@ -4,8 +4,9 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonalWeb.Components.Company.RatingComponent
+  alias BemedaPersonalWeb.Components.Job.JobComponents
+  alias BemedaPersonalWeb.Components.Shared.EmptyStateComponent
   alias BemedaPersonalWeb.Endpoint
-  alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias Phoenix.Socket.Broadcast
 

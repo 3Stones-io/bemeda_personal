@@ -16,7 +16,7 @@ msgstr ""
 msgid "Actions"
 msgstr "Actions"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Browse Files"
 msgstr "Parcourir les fichiers"
@@ -41,7 +41,7 @@ msgstr "Connectez-vous avec des employeurs de premier plan et découvrez des opp
 msgid "Copy to clipboard"
 msgstr "Copier dans le presse-papiers"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Drag and drop to upload your %{type}"
 msgstr "Glissez-déposez pour télécharger votre %{type}"
@@ -57,12 +57,12 @@ msgstr "Modifier"
 msgid "Find Your Next"
 msgstr "Trouvez votre prochaine"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Max file size: %{size}"
 msgstr "Taille maximale du fichier : %{size}"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/job/job_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Not specified"
@@ -83,12 +83,12 @@ msgstr "Évaluation"
 msgid "Remote"
 msgstr "À distance"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Show %{type}"
 msgstr "Afficher %{type}"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "Upload progress"
 msgstr "Progression du téléchargement"
@@ -98,7 +98,7 @@ msgstr "Progression du téléchargement"
 msgid "close"
 msgstr "fermer"
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/media/media_components.ex
 #, elixir-autogen, elixir-format
 msgid "or"
 msgstr "ou"

@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.NotificationLive.Index do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Emails
+  alias BemedaPersonalWeb.Components.Shared.EmptyStateComponent
   alias BemedaPersonalWeb.Endpoint
 
   @impl Phoenix.LiveView

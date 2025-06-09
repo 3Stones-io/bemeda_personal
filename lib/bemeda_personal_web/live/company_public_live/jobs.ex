@@ -2,8 +2,8 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Jobs do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Companies
+  alias BemedaPersonalWeb.Components.Company.CompanyComponents
   alias BemedaPersonalWeb.Components.Job.JobListComponent
-  alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
   def mount(%{"id" => id}, _session, socket) do

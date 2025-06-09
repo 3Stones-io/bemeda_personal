@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonalWeb.Components.Company.RatingComponent
+  alias BemedaPersonalWeb.Components.Shared.CardComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
 
@@ -20,16 +21,14 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
       </.header>
 
       <div class="space-y-12 divide-y">
-        <div class="mb-6 bg-white shadow overflow-hidden sm:rounded-lg">
-          <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-            <div>
-              <h2 class="text-xl font-semibold text-gray-900">{dgettext("auth", "Your Rating")}</h2>
-              <p class="mt-1 text-sm text-gray-500">
-                {dgettext("auth", "How companies have rated your applications")}
-              </p>
-            </div>
-          </div>
-          <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+        <CardComponent.card class="mb-6">
+          <:header>
+            <h2 class="text-xl font-semibold text-gray-900">{dgettext("auth", "Your Rating")}</h2>
+            <p class="mt-1 text-sm text-gray-500">
+              {dgettext("auth", "How companies have rated your applications")}
+            </p>
+          </:header>
+          <:body>
             <.live_component
               can_rate?={false}
               class="mb-2"
@@ -39,8 +38,8 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
               id={"rating-display-user-settings-#{@current_user.id}"}
               module={RatingComponent}
             />
-          </div>
-        </div>
+          </:body>
+        </CardComponent.card>
 
         <div>
           <.simple_form

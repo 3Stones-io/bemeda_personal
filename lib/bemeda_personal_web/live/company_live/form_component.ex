@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonalWeb.Components.Media.MediaComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -52,7 +52,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
         <div>
           <p class="block text-base text-zinc-800 mb-2">{dgettext("companies", "Company Logo")}</p>
 
-          <SharedComponents.asset_preview
+          <MediaComponents.asset_preview
             show_asset_description={@show_logo?}
             media_asset={@company.media_asset}
             type="Logo"
@@ -71,7 +71,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
             />
           </div>
 
-          <SharedComponents.file_input_component
+          <MediaComponents.file_input_component
             accept="image/*"
             class={@show_logo? && "hidden"}
             events_target="company-form"
@@ -81,7 +81,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
             type="image"
           />
 
-          <SharedComponents.file_upload_progress
+          <MediaComponents.file_upload_progress
             id="logo-upload-progress"
             class="hidden"
             phx-update="ignore"

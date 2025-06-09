@@ -136,19 +136,6 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     end)
   end
 
-  @spec status_badge_color(String.t()) :: String.t()
-  def status_badge_color("applied"), do: "bg-blue-100 text-blue-800"
-  def status_badge_color("interview_scheduled"), do: "bg-green-100 text-green-800"
-  def status_badge_color("interviewed"), do: "bg-teal-100 text-teal-800"
-  def status_badge_color("offer_accepted"), do: "bg-green-100 text-green-800"
-  def status_badge_color("offer_declined"), do: "bg-red-100 text-red-800"
-  def status_badge_color("offer_extended"), do: "bg-yellow-100 text-yellow-800"
-  def status_badge_color("rejected"), do: "bg-red-100 text-red-800"
-  def status_badge_color("screening"), do: "bg-indigo-100 text-indigo-800"
-  def status_badge_color("under_review"), do: "bg-purple-100 text-purple-800"
-  def status_badge_color("withdrawn"), do: "bg-gray-100 text-gray-800"
-  def status_badge_color(_status), do: "bg-gray-100 text-gray-800"
-
   @spec enqueue_email_notification_job(map()) :: {:ok, Oban.Job.t()} | {:error, any()}
   def enqueue_email_notification_job(args) do
     args

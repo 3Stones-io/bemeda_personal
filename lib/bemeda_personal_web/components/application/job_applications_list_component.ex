@@ -6,13 +6,16 @@ defmodule BemedaPersonalWeb.Components.Application.JobApplicationsListComponent 
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobApplicationFilter
-  alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.Components.JobApplication.ApplicantComponents
+  alias BemedaPersonalWeb.Components.JobApplication.JobApplicationFilterComponents
+  alias BemedaPersonalWeb.Components.JobApplication.StatusComponent
+  alias BemedaPersonalWeb.Components.Shared.EmptyStateComponent
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
     ~H"""
     <div>
-      <JobsComponents.job_application_filters
+      <JobApplicationFilterComponents.job_application_filters
         :if={@list_type == :recruiter}
         form={@filters_form}
         target={@myself}
@@ -28,22 +31,14 @@ defmodule BemedaPersonalWeb.Components.Application.JobApplicationsListComponent 
         phx-page-loading
         class="divide-y divide-gray-200"
       >
-        <div
-          id="applicants-empty"
-          class="only:block hidden px-4 py-5 sm:px-6 text-center border-t border-gray-200"
-        >
-          <p class="text-gray-500">{dgettext("jobs", "No applicants found.")}</p>
-          <p class="mt-2 text-sm text-gray-500">
-            {dgettext("jobs", "Applicants will appear here when they apply to your job postings.")}
-          </p>
-        </div>
+        <EmptyStateComponent.applicants_empty_state id="applicants-empty" />
 
         <div
           :for={{dom_id, application} <- @streams.job_applications}
           class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200"
           id={dom_id}
         >
-          <JobsComponents.applicant_card
+          <ApplicantComponents.applicant_card
             applicant={application}
             current_user={@current_user}
             id={"applicant-#{application.id}"}
@@ -63,21 +58,7 @@ defmodule BemedaPersonalWeb.Components.Application.JobApplicationsListComponent 
         phx-page-loading
         id={@id}
       >
-        <div
-          id="applications-empty"
-          class="only:block hidden px-4 py-5 sm:px-6 text-center border-t border-gray-200"
-        >
-          <p class="text-gray-500">{dgettext("jobs", "You haven't applied for any jobs yet.")}</p>
-          <p class="mt-2 text-sm text-gray-500">
-            {dgettext("jobs", "Start your job search by browsing available positions.")}
-          </p>
-          <.link
-            navigate={~p"/jobs"}
-            class="mt-4 inline-block px-4 py-2 bg-indigo-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {dgettext("jobs", "Browse Jobs")}
-          </.link>
-        </div>
+        <EmptyStateComponent.applications_empty_state id="applications-empty" />
 
         <div
           :for={{id, application} <- @streams.job_applications}
@@ -96,12 +77,10 @@ defmodule BemedaPersonalWeb.Components.Application.JobApplicationsListComponent 
                     <span class="text-lg font-semibold text-gray-900">
                       {application.job_posting.title}
                     </span>
-                    <span class={[
-                      "text-xs font-medium w-[fit-content] px-2 py-1 rounded-full cursor-pointer",
-                      SharedHelpers.status_badge_color(application.state)
-                    ]}>
-                      {I18n.translate_status(application.state)}
-                    </span>
+                    <StatusComponent.status_badge
+                      class="px-2.5 py-1 w-[fit-content]"
+                      status={application.state}
+                    />
                   </h3>
                   <p class="text-sm text-gray-600 mt-1">{application.job_posting.company.name}</p>
                 </div>

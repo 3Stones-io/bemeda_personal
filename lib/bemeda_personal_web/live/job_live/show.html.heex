@@ -1,49 +1,52 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <JobsComponents.job_detail_header job={@job_posting} back_link={~p"/jobs"} />
+  <JobComponents.job_detail_header job={@job_posting} back_link={~p"/jobs"} />
 
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2">
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-          <h2 class="text-xl font-semibold text-gray-900">
-            {dgettext("jobs", "Job Description")}
-          </h2>
-          <.link
-            :if={!@application}
-            navigate={~p"/jobs/#{@job_posting.id}/job_applications/new"}
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {dgettext("jobs", "Apply to this job")}
-          </.link>
+      <CardComponent.card>
+        <:header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-gray-900">
+              {dgettext("jobs", "Job Description")}
+            </h2>
+            <.link_button
+              :if={!@application}
+              navigate={~p"/jobs/#{@job_posting.id}/job_applications/new"}
+              variant={:primary}
+            >
+              {dgettext("jobs", "Apply to this job")}
+            </.link_button>
 
-          <.link
-            :if={@application}
-            navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@application.id}"}
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {dgettext("jobs", "Review Application")}
-          </.link>
-        </div>
+            <.link_button
+              :if={@application}
+              navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@application.id}"}
+              variant={:primary}
+            >
+              {dgettext("jobs", "Review Application")}
+            </.link_button>
+          </div>
+        </:header>
+        <:body>
+          <MediaComponents.video_player media_asset={@job_posting.media_asset} />
 
-        <SharedComponents.video_player media_asset={@job_posting.media_asset} />
-
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
-          {SharedHelpers.to_html(@job_posting.description)}
-        </div>
-      </div>
+          <div class="prose max-w-none md-to-html">
+            {SharedHelpers.to_html(@job_posting.description)}
+          </div>
+        </:body>
+      </CardComponent.card>
     </div>
 
     <div>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6">
+      <CardComponent.card>
+        <:header>
           <h2 class="text-lg font-medium text-gray-900">{dgettext("jobs", "Job Details")}</h2>
-        </div>
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 mb-4">
-          <JobsComponents.job_details job={@job_posting} />
-        </div>
-      </div>
+        </:header>
+        <:body>
+          <JobComponents.job_details job={@job_posting} />
+        </:body>
+      </CardComponent.card>
 
-      <JobsComponents.company_details_card company={@job_posting.company} />
+      <CompanyComponents.details_card company={@job_posting.company} />
     </div>
   </div>
 </div>

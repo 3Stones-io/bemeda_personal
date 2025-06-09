@@ -23,9 +23,7 @@
             {dgettext("notifications", "To")}: {@notification.recipient.email}
           </p>
         </div>
-        <p class="text-sm text-gray-500">
-          {format_date(@notification.inserted_at)}
-        </p>
+        <.formatted_date date={@notification.inserted_at} format={:datetime} />
       </div>
     </div>
 

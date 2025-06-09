@@ -58,21 +58,23 @@
     </div>
 
     <div class="flex items-center gap-4 mt-4">
-      <.link
+      <.link_button
         navigate={~p"/company/#{@company.id}/jobs"}
-        class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        variant={:primary}
+        class="px-5 py-2.5"
       >
         {dgettext("jobs", "View All Jobs")}
-      </.link>
-      <.link
+      </.link_button>
+      <.link_button
         :if={@company.website_url}
         href={@company.website_url}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center px-5 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        variant={:outline}
+        class="px-5 py-2.5"
       >
         {dgettext("companies", "Visit Website")}
-      </.link>
+      </.link_button>
     </div>
   </div>
 
@@ -154,12 +156,13 @@
     </div>
 
     <div id="recent-jobs" phx-update="stream">
-      <p
-        id="empty-jobs"
-        class="hidden bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500 only:block"
-      >
-        {dgettext("jobs", "No open positions at this time")}
-      </p>
+      <div id="empty-jobs" class="hidden only:block">
+        <EmptyStateComponent.simple_empty_state
+          message={dgettext("jobs", "No open positions at this time")}
+          id="company-jobs-empty"
+          class="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500"
+        />
+      </div>
 
       <div
         :for={{job_id, job} <- @streams.job_postings}
@@ -167,7 +170,7 @@
         id={job_id}
         role="list"
       >
-        <JobsComponents.job_posting_card
+        <JobComponents.job_posting_card
           id={"card-#{job_id}"}
           job={job}
           job_view={:job}

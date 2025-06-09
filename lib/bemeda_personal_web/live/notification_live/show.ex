@@ -28,8 +28,4 @@ defmodule BemedaPersonalWeb.NotificationLive.Show do
      |> assign(:notification, updated_notification)
      |> assign(:page_title, updated_notification.subject)}
   end
-
-  defp format_date(date) do
-    Calendar.strftime(date, "%d %b %Y at %I:%M %p")
-  end
 end

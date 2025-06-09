@@ -3,192 +3,183 @@
     <h1 class="text-3xl font-bold text-gray-900">{dgettext("companies", "Company Dashboard")}</h1>
   </div>
 
-  <div :if={@company && @live_action != :new} class="bg-white shadow sm:rounded-lg mb-8">
-    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <div>
-        <h2 class="text-xl font-semibold text-gray-900">{@company.name}</h2>
-        <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
-        <.live_component
-          can_rate?={false}
-          current_user={@current_user}
-          entity_id={@company.id}
-          entity_name={@company.name}
-          entity_type="Company"
-          id={"rating-component-#{@company.id}"}
-          module={RatingComponent}
-        />
-      </div>
-      <div>
-        <.link
-          patch={~p"/companies/#{@company}/edit"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          {dgettext("companies", "Edit Company Profile")}
-        </.link>
-      </div>
-    </div>
-    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-      <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-        <div>
-          <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Location")}</dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {@company.location || dgettext("general", "Not specified")}
-          </dd>
+  <div :if={@company && @live_action != :new} class="mb-8">
+    <CardComponent.card>
+      <:header>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900">{@company.name}</h2>
+            <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
+            <.live_component
+              can_rate?={false}
+              current_user={@current_user}
+              entity_id={@company.id}
+              entity_name={@company.name}
+              entity_type="Company"
+              id={"rating-component-#{@company.id}"}
+              module={RatingComponent}
+            />
+          </div>
+          <div>
+            <.link_button patch={~p"/companies/#{@company}/edit"} variant={:primary}>
+              {dgettext("companies", "Edit Company Profile")}
+            </.link_button>
+          </div>
         </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            {dgettext("companies", "Company Size")}
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {@company.size || dgettext("general", "Not specified")}
-          </dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            {dgettext("companies", "Open Positions")}
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">{@job_count}</dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Website")}</dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            <%= if @company.website_url do %>
-              <a
-                href={@company.website_url}
-                target="_blank"
-                class="text-indigo-600 hover:text-indigo-900"
-              >
-                {@company.website_url}
-              </a>
-            <% else %>
-              {dgettext("general", "Not specified")}
-            <% end %>
-          </dd>
-        </div>
-      </dl>
-    </div>
-  </div>
-
-  <div
-    :if={@company && @live_action != :new}
-    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
-  >
-    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">{dgettext("companies", "Recent Jobs")}</h2>
-      <div>
-        <.link
-          navigate={~p"/companies/#{@company.id}/jobs"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          {dgettext("companies", "View All Jobs")}
-        </.link>
-        <.link
-          navigate={~p"/companies/#{@company.id}/jobs/new"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          {dgettext("companies", "Post New Job")}
-        </.link>
-      </div>
-    </div>
-
-    <div class="border-t border-gray-200">
-      <div id="job-postings-container" phx-update="stream">
-        <div id="no-jobs-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
-          <p class="text-gray-500">{dgettext("companies", "You haven't posted any jobs yet.")}</p>
-          <p class="mt-2 text-sm text-gray-500">
-            {dgettext("companies", "Get started by clicking the \"Post New Job\" button above.")}
-          </p>
-        </div>
-
-        <div
-          :for={{job_id, job} <- @streams.job_postings}
-          id={job_id}
-          class="odd:bg-gray-100 hover:bg-gray-200"
-          role="list"
-        >
-          <JobsComponents.job_posting_card
-            id={"card-#{job_id}"}
-            job_view={:company_job}
-            job={job}
-            show_company_name={false}
+      </:header>
+      <:body>
+        <DetailItemComponent.detail_grid>
+          <DetailItemComponent.detail_item
+            label={dgettext("companies", "Location")}
+            value={@company.location || dgettext("general", "Not specified")}
           />
-        </div>
-      </div>
-    </div>
+
+          <DetailItemComponent.detail_item
+            label={dgettext("companies", "Company Size")}
+            value={@company.size || dgettext("general", "Not specified")}
+          />
+
+          <DetailItemComponent.detail_item
+            label={dgettext("companies", "Open Positions")}
+            value={@job_count}
+          />
+
+          <DetailItemComponent.detail_item
+            :if={@company.website_url}
+            label={dgettext("companies", "Website")}
+            value={@company.website_url}
+            link={@company.website_url}
+            external_link={true}
+          />
+
+          <DetailItemComponent.detail_item
+            :if={!@company.website_url}
+            label={dgettext("companies", "Website")}
+            value={dgettext("general", "Not specified")}
+          />
+        </DetailItemComponent.detail_grid>
+      </:body>
+    </CardComponent.card>
   </div>
 
-  <div
-    :if={@company && @live_action != :new}
-    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
-  >
-    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">
-        {dgettext("companies", "Recent Applicants")}
-      </h2>
-      <div>
-        <.link
-          navigate={~p"/companies/#{@company.id}/applicants"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          {dgettext("companies", "View All Applicants")}
-        </.link>
-      </div>
-    </div>
+  <div :if={@company && @live_action != :new} class="mb-8">
+    <CardComponent.card>
+      <:header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-900">
+            {dgettext("companies", "Recent Applicants")}
+          </h2>
+          <div>
+            <.link_button navigate={~p"/companies/#{@company.id}/applicants"} variant={:primary}>
+              {dgettext("companies", "View All Applicants")}
+            </.link_button>
+          </div>
+        </div>
+      </:header>
+      <:body>
+        <div id="recent-applicants-container" phx-update="stream">
+          <div id="no-applicants-message" class="text-center only:block hidden">
+            <EmptyStateComponent.simple_empty_state
+              message={dgettext("companies", "You don't have any applicants yet.")}
+              id="no-applicants-empty"
+            />
+            <p class="mt-2 text-sm text-gray-500">
+              {dgettext(
+                "companies",
+                "Applicants will appear here when they apply to your job postings."
+              )}
+            </p>
+          </div>
 
-    <div class="border-t border-gray-200">
-      <div id="recent-applicants-container" phx-update="stream">
-        <div id="no-applicants-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
-          <p class="text-gray-500">
-            {dgettext("companies", "You don't have any applicants yet.")}
-          </p>
-          <p class="mt-2 text-sm text-gray-500">
+          <div
+            :for={{dom_id, application} <- @streams.recent_applicants}
+            id={dom_id}
+            class="odd:bg-gray-100 hover:bg-gray-200"
+          >
+            <ApplicantComponents.applicant_card
+              applicant={application}
+              current_user={@current_user}
+              id={"applicant-card-#{application.id}"}
+              job={application.job_posting}
+              show_job={true}
+            />
+          </div>
+        </div>
+      </:body>
+    </CardComponent.card>
+  </div>
+
+  <div :if={@company && @live_action != :new} class="mb-8">
+    <CardComponent.card>
+      <:header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-900">
+            {dgettext("companies", "Recent Jobs")}
+          </h2>
+          <div>
+            <.link_button navigate={~p"/companies/#{@company.id}/jobs"} variant={:primary}>
+              {dgettext("companies", "View All Jobs")}
+            </.link_button>
+            <.link_button navigate={~p"/companies/#{@company.id}/jobs/new"} variant={:primary}>
+              {dgettext("companies", "Post New Job")}
+            </.link_button>
+          </div>
+        </div>
+      </:header>
+      <:body>
+        <div id="job-postings-container" phx-update="stream">
+          <div id="no-jobs-message" class="text-center only:block hidden">
+            <EmptyStateComponent.simple_empty_state
+              message={dgettext("companies", "You haven't posted any jobs yet.")}
+              id="no-jobs-empty"
+            />
+            <p class="mt-2 text-sm text-gray-500">
+              {dgettext("companies", "Get started by clicking the \"Post New Job\" button above.")}
+            </p>
+          </div>
+
+          <div
+            :for={{job_id, job} <- @streams.job_postings}
+            id={job_id}
+            class="odd:bg-gray-100 hover:bg-gray-200"
+            role="list"
+          >
+            <JobComponents.job_posting_card
+              id={"card-#{job_id}"}
+              job_view={:company_job}
+              job={job}
+              show_company_name={false}
+            />
+          </div>
+        </div>
+      </:body>
+    </CardComponent.card>
+  </div>
+
+  <div :if={!@company}>
+    <CardComponent.card>
+      <:header>
+        <h2 class="text-xl font-semibold text-gray-900">
+          {dgettext("companies", "Create Your Company Profile")}
+        </h2>
+        <p class="mt-1 text-sm text-gray-500">
+          {dgettext("companies", "You need to create a company profile before you can post jobs.")}
+        </p>
+      </:header>
+      <:body>
+        <div class="text-center">
+          <p class="text-gray-500 mb-4">
             {dgettext(
               "companies",
-              "Applicants will appear here when they apply to your job postings."
+              "Set up your company profile to start posting jobs and connecting with potential candidates."
             )}
           </p>
+          <.link_button patch={~p"/companies/new"} variant={:primary}>
+            {dgettext("companies", "Create Company Profile")}
+          </.link_button>
         </div>
-
-        <div
-          :for={{dom_id, application} <- @streams.recent_applicants}
-          id={dom_id}
-          class="odd:bg-gray-100 hover:bg-gray-200"
-        >
-          <JobsComponents.applicant_card
-            applicant={application}
-            current_user={@current_user}
-            id={"applicant-card-#{application.id}"}
-            job={application.job_posting}
-            show_job={true}
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div :if={!@company} class="bg-white shadow overflow-hidden sm:rounded-lg">
-    <div class="px-4 py-5 sm:px-6">
-      <h2 class="text-xl font-semibold text-gray-900">
-        {dgettext("companies", "Create Your Company Profile")}
-      </h2>
-      <p class="mt-1 text-sm text-gray-500">
-        {dgettext("companies", "You need to create a company profile before you can post jobs.")}
-      </p>
-    </div>
-    <div class="border-t border-gray-200 px-4 py-5 sm:px-6 text-center">
-      <p class="text-gray-500 mb-4">
-        {dgettext(
-          "companies",
-          "Set up your company profile to start posting jobs and connecting with potential candidates."
-        )}
-      </p>
-      <.link
-        patch={~p"/companies/new"}
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        {dgettext("companies", "Create Company Profile")}
-      </.link>
-    </div>
+      </:body>
+    </CardComponent.card>
   </div>
 </section>
 

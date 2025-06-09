@@ -8,18 +8,12 @@
     </p>
   </div>
   <div class="flex space-x-3 justify-end mb-8">
-    <.link
-      navigate={~p"/companies"}
-      class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-    >
+    <.link_button navigate={~p"/companies"} variant={:outline}>
       {dgettext("navigation", "Back to Dashboard")}
-    </.link>
-    <.link
-      patch={~p"/companies/#{@company.id}/jobs/new"}
-      class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-    >
+    </.link_button>
+    <.link_button patch={~p"/companies/#{@company.id}/jobs/new"} variant={:primary}>
       {dgettext("jobs", "Post New Job")}
-    </.link>
+    </.link_button>
   </div>
 
   <.live_component

@@ -8,12 +8,10 @@
         />
       </h1>
 
-      <button
+      <StatusComponent.status_button
         :for={status <- @available_statuses}
-        class={[
-          "px-3 py-1.5 text-sm font-medium rounded-xl transition-colors duration-150 ease-in-out",
-          SharedHelpers.status_badge_color(status)
-        ]}
+        status={status}
+        class="px-3 py-1.5"
       >
         <.link phx-click={
           JS.push("show-status-transition-modal",
@@ -22,7 +20,7 @@
         }>
           {I18n.translate_status_action(status)}
         </.link>
-      </button>
+      </StatusComponent.status_button>
     </div>
 
     <div class="relative">
@@ -124,9 +122,9 @@
       />
 
       <:actions>
-        <.button type="submit" class="bg-indigo-600 hover:bg-indigo-700">
+        <.styled_button type="submit" variant={:primary}>
           {dgettext("jobs", "Update Status")}
-        </.button>
+        </.styled_button>
       </:actions>
     </.simple_form>
   </.modal>

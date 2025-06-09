@@ -5,13 +5,14 @@ defmodule BemedaPersonalWeb.Components.Job.JobListComponent do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Jobs.JobFilter
-  alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.Components.Job.JobComponents
+  alias BemedaPersonalWeb.Components.Shared.EmptyStateComponent
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
     ~H"""
     <section class="group">
-      <JobsComponents.job_filters
+      <JobComponents.job_filters
         class="group-has-[#empty-job-postings.block]:hidden"
         form={@filters_form}
         target={@myself}
@@ -25,11 +26,11 @@ defmodule BemedaPersonalWeb.Components.Job.JobListComponent do
         phx-viewport-bottom={!@end_of_timeline? && JS.push("next-page", target: "##{@id}")}
         phx-page-loading
       >
-        <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
-          <p class="text-gray-500">{dgettext("jobs", "No job postings available at the moment.")}</p>
-          <p class="mt-2 text-sm text-gray-500">
-            {@empty_state_message}
-          </p>
+        <div class="hidden only:block" id="empty-job-postings">
+          <EmptyStateComponent.simple_empty_state
+            message={dgettext("jobs", "No job postings available at the moment.")}
+            id="job-postings-empty"
+          />
         </div>
         <div
           :for={{job_id, job} <- @streams.job_postings}
@@ -37,7 +38,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobListComponent do
           id={job_id}
           role="list"
         >
-          <JobsComponents.job_posting_card
+          <JobComponents.job_posting_card
             id={"card-#{job_id}"}
             job={job}
             job_view={@job_view}

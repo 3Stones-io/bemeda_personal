@@ -5,7 +5,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonalWeb.Components.Media.MediaComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -201,7 +201,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           />
         </div>
 
-        <SharedComponents.asset_preview
+        <MediaComponents.asset_preview
           show_asset_description={@show_video_description}
           media_asset={@job_posting.media_asset}
           type={dgettext("jobs", "Video")}
@@ -213,13 +213,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           id="video-preview-player"
           class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6 hidden"
         >
-          <SharedComponents.video_player
+          <MediaComponents.video_player
             class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6"
             media_asset={@job_posting.media_asset}
           />
         </div>
 
-        <SharedComponents.file_input_component
+        <MediaComponents.file_input_component
           accept="video/*"
           class={@show_video_description && "hidden"}
           events_target={@id}
@@ -229,7 +229,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           type="video"
         />
 
-        <SharedComponents.file_upload_progress
+        <MediaComponents.file_upload_progress
           id={"#{@id}-video"}
           class="job-form-video-upload-progress hidden"
           phx-update="ignore"

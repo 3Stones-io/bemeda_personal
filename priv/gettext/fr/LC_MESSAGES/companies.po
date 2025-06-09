@@ -48,13 +48,13 @@ msgstr "Description de l'entreprise"
 msgid "Company Logo"
 msgstr "Logo de l'entreprise"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Company Name"
 msgstr "Nom de l'entreprise"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
@@ -106,7 +106,7 @@ msgstr "Modifier le profil d'entreprise"
 msgid "Get started by clicking the \"Post New Job\" button above."
 msgstr "Commencez en cliquant sur le bouton \"Publier une nouvelle offre\" ci-dessus."
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #: lib/bemeda_personal_web/live/company_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -170,20 +170,20 @@ msgstr "Technologie"
 msgid "View All Applicants"
 msgstr "Voir tous les candidats"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "View All Jobs"
 msgstr "Voir toutes les offres"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #: lib/bemeda_personal_web/live/company_public_live/jobs.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Visit Website"
 msgstr "Visiter le site web"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -215,12 +215,12 @@ msgstr "Vous n'avez encore publié aucune offre d'emploi."
 msgid "You need to create a company profile before you can post jobs."
 msgstr "Vous devez créer un profil d'entreprise avant de pouvoir publier des offres d'emploi."
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #, elixir-autogen, elixir-format
 msgid "About the Company"
 msgstr "À propos de l'entreprise"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #, elixir-autogen, elixir-format
 msgid "View Company Profile"
 msgstr "Voir le profil d'entreprise"
@@ -250,7 +250,7 @@ msgstr "Candidats - %{name}"
 msgid "Applicants - %{title}"
 msgstr "Candidats - %{title}"
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/components/company/company_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote"
 msgstr "À distance"

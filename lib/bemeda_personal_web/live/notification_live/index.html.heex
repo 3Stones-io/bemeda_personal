@@ -8,10 +8,12 @@
     phx-viewport-bottom={!@end_of_timeline? && JS.push("next_page")}
     phx-page-loading
   >
-    <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
-      <p class="text-gray-500">
-        {dgettext("notifications", "No notifications available at the moment.")}
-      </p>
+    <div class="hidden only:block" id="empty-job-postings">
+      <EmptyStateComponent.simple_empty_state
+        message={dgettext("notifications", "No notifications available at the moment.")}
+        id="notifications-empty"
+        class="px-4 py-5 sm:px-6 text-center text-gray-500"
+      />
     </div>
 
     <div
@@ -42,9 +44,7 @@
                 ]}>
                   {String.replace(notification.subject, "BemedaPersonal | ", "")}
                 </p>
-                <p class="text-sm text-gray-500">
-                  {DateUtils.format_emails_date(notification.inserted_at)}
-                </p>
+                <.formatted_date date={notification.inserted_at} format={:datetime} />
               </div>
               <p class={[
                 "mt-1 text-sm truncate",
