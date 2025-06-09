@@ -7,9 +7,8 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media.MediaAsset
-  alias BemedaPersonalWeb.DocumentTemplateComponent
+  alias BemedaPersonalWeb.Components.Document.DocumentTemplateComponent
   alias BemedaPersonalWeb.SharedComponents
-  alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()

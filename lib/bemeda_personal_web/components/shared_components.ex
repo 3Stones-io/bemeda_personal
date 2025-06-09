@@ -5,7 +5,6 @@ defmodule BemedaPersonalWeb.SharedComponents do
 
   alias BemedaPersonal.FileSizeUtils
   alias BemedaPersonal.Media.MediaAsset
-  alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: map()
   @type output :: Phoenix.LiveView.Rendered.t()

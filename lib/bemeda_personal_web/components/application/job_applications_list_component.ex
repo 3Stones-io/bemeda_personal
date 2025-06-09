@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.JobApplicationsListComponent do
+defmodule BemedaPersonalWeb.Components.Application.JobApplicationsListComponent do
   @moduledoc false
 
   use BemedaPersonalWeb, :live_component

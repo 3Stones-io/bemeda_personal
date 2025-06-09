@@ -3,9 +3,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Components.Application.JobApplicationsListComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationLive.FormComponent
-  alias BemedaPersonalWeb.JobApplicationsListComponent
   alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView

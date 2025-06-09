@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.RatingComponent do
+defmodule BemedaPersonalWeb.Components.Company.RatingComponent do
   @moduledoc false
 
   use BemedaPersonalWeb, :live_component
@@ -7,7 +7,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
-  alias BemedaPersonalWeb.RatingFormComponent
+  alias BemedaPersonalWeb.Components.Company.RatingFormComponent
   alias Phoenix.LiveView.JS
 
   @impl Phoenix.LiveComponent

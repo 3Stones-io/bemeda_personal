@@ -7,7 +7,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
   alias BemedaPersonalWeb.Endpoint
-  alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.Socket.Broadcast
 
   require Logger

@@ -3,11 +3,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
+  alias BemedaPersonalWeb.Components.Company.RatingComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
-  alias BemedaPersonalWeb.RatingComponent
-  alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.Socket.Broadcast
 
   on_mount {RatingHooks, :default}

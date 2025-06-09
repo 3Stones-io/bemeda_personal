@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedComponents
-  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
   def render(assigns) do

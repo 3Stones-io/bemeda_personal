@@ -3,7 +3,6 @@ defmodule BemedaPersonalWeb.JobLive.Show do
 
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.SharedComponents
-  alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView
   def handle_params(%{"id" => id}, _url, socket) do

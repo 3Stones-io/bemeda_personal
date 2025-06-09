@@ -4,8 +4,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonalWeb.Components.Company.RatingComponent
   alias BemedaPersonalWeb.I18n
-  alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents
 
   @type assigns :: map()

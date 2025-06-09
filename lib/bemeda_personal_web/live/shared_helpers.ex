@@ -1,7 +1,7 @@
 defmodule BemedaPersonalWeb.SharedHelpers do
   @moduledoc false
 
-  import Phoenix.Component, only: [assign: 3]
+  use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs

@@ -12,7 +12,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Jobs
   alias BemedaPersonal.Ratings
-  alias BemedaPersonalWeb.RatingComponent
+  alias BemedaPersonalWeb.Components.Company.RatingComponent
   alias Phoenix.Socket.Broadcast
 
   @doc """

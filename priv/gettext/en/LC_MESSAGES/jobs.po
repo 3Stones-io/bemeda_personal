@@ -26,7 +26,7 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Applicants will appear here when they apply to your job postings."
 msgstr ""
@@ -62,8 +62,8 @@ msgstr ""
 msgid "Applied"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Applied on"
 msgstr ""
@@ -83,7 +83,7 @@ msgstr ""
 msgid "Back to application"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Browse Jobs"
 msgstr ""
@@ -103,8 +103,8 @@ msgstr ""
 msgid "Decline Offer"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
@@ -243,12 +243,12 @@ msgstr ""
 msgid "My Job Applications"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "No applicants found."
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_list_component.ex
+#: lib/bemeda_personal_web/components/job/job_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "No job postings available at the moment."
 msgstr ""
@@ -380,7 +380,7 @@ msgstr ""
 msgid "Start date must be before or equal to end date"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Start your job search by browsing available positions."
 msgstr ""
@@ -417,7 +417,7 @@ msgstr ""
 msgid "View All Jobs"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "View Job"
 msgstr ""
@@ -452,7 +452,7 @@ msgstr ""
 msgid "You are not authorized to delete this job posting"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_applications_list_component.ex
+#: lib/bemeda_personal_web/components/application/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "You haven't applied for any jobs yet."
 msgstr ""

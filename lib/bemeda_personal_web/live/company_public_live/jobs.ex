@@ -2,7 +2,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Jobs do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Companies
-  alias BemedaPersonalWeb.JobListComponent
+  alias BemedaPersonalWeb.Components.Job.JobListComponent
   alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveView
