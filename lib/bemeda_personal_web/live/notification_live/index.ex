@@ -63,10 +63,9 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
   end
 
   defp assign_notifications(socket, filters \\ %{}) do
-    notifications =
-      filters
-      |> Map.merge(socket.assigns.filters)
-      |> Emails.list_email_communications()
+    filters = Map.merge(filters, socket.assigns.filters)
+
+    notifications = Emails.list_email_communications(filters)
 
     first_notification = List.first(notifications)
     last_notification = List.last(notifications)
