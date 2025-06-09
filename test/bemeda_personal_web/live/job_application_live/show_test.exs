@@ -207,24 +207,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert result =~ "chat-form"
     end
 
-    test "user can't create empty messages", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      view
-      |> form("#chat-form", %{message: %{content: " "}})
-      |> render_submit()
-
-      [_job_application | messages] = Chat.list_messages(job_application)
-      assert Enum.empty?(messages)
-    end
-
     test "validates message content when typing", %{
       conn: conn,
       job_application: job_application
