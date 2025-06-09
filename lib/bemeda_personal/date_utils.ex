@@ -198,13 +198,11 @@ defmodule BemedaPersonal.DateUtils do
   defp parse_date_components(year, month, day) do
     with {y, ""} <- Integer.parse(year),
          {m, ""} <- Integer.parse(month),
-         {d, ""} <- Integer.parse(day) do
-      case Date.new(y, m, d) do
-        {:ok, date} -> {:ok, date}
-        {:error, _reason} -> {:error, :invalid_date}
-      end
+         {d, ""} <- Integer.parse(day),
+         {:ok, date} <- Date.new(y, m, d) do
+      {:ok, date}
     else
-      _parse_error -> {:error, :invalid_components}
+      _parse_error -> {:error, :invalid_date}
     end
   end
 end
