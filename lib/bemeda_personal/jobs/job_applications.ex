@@ -7,9 +7,10 @@ defmodule BemedaPersonal.Jobs.JobApplications do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.Jobs.JobApplicationFilters
   alias BemedaPersonal.Jobs.JobPosting
-  alias BemedaPersonal.Jobs.Shared.Filters
   alias BemedaPersonal.MediaDataUtils
+  alias BemedaPersonal.QueryBuilder
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
@@ -42,45 +43,13 @@ defmodule BemedaPersonal.Jobs.JobApplications do
 
   """
   @spec list_job_applications(map(), non_neg_integer()) :: [job_application()]
-  def list_job_applications(filters \\ %{}, limit \\ 10)
-
-  def list_job_applications(%{company_id: _company_id} = filters, limit) do
-    job_post_with_applications_query()
-    |> list_applications(filters, limit)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
-  end
-
-  def list_job_applications(filters, limit) do
-    job_application_query()
-    |> list_applications(filters, limit)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
-  end
-
-  defp list_applications(query, filters, limit) do
-    filter_query = Filters.apply_job_application_filters()
-
-    query_with_joins =
-      if Filters.needs_job_posting_join?(filters),
-        do: job_post_with_applications_query(),
-        else: query
-
-    query_with_joins
-    |> where(^filter_query.(filters))
+  def list_job_applications(filters \\ %{}, limit \\ 10) do
+    JobApplication
+    |> QueryBuilder.apply_filters(filters, JobApplicationFilters.filter_config())
     |> order_by([job_application: ja], desc: ja.inserted_at)
     |> limit(^limit)
     |> Repo.all()
-  end
-
-  defp job_application_query do
-    from job_application in JobApplication, as: :job_application
-  end
-
-  defp job_post_with_applications_query do
-    from job_application in JobApplication,
-      as: :job_application,
-      left_join: job_posting in JobPosting,
-      as: :job_posting,
-      on: job_application.job_posting_id == job_posting.id
+    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
   end
 
   @doc """

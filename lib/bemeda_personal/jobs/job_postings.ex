@@ -7,7 +7,9 @@ defmodule BemedaPersonal.Jobs.JobPostings do
 
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.Jobs.JobPostingFilters
   alias BemedaPersonal.MediaDataUtils
+  alias BemedaPersonal.QueryBuilder
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
@@ -47,59 +49,13 @@ defmodule BemedaPersonal.Jobs.JobPostings do
   """
   @spec list_job_postings(map(), non_neg_integer()) :: [job_posting()]
   def list_job_postings(filters \\ %{}, limit \\ 10) do
-    filter_query = fn filters ->
-      Enum.reduce(filters, dynamic(true), &apply_filter/2)
-    end
-
     from(job_posting in JobPosting, as: :job_posting)
-    |> where(^filter_query.(filters))
+    |> QueryBuilder.apply_filters(filters, JobPostingFilters.filter_config())
     |> order_by([j], desc: j.inserted_at)
     |> limit(^limit)
     |> Repo.all()
     |> Repo.preload([:company, :media_asset])
   end
-
-  defp apply_filter({:company_id, company_id}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.company_id == ^company_id)
-  end
-
-  defp apply_filter({:title, title}, dynamic) do
-    pattern = "%#{title}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.title, ^pattern))
-  end
-
-  defp apply_filter({:employment_type, employment_type}, dynamic) do
-    pattern = "%#{employment_type}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.employment_type, ^pattern))
-  end
-
-  defp apply_filter({:experience_level, experience_level}, dynamic) do
-    pattern = "%#{experience_level}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.experience_level, ^pattern))
-  end
-
-  defp apply_filter({:remote_allowed, remote_allowed}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.remote_allowed == ^remote_allowed)
-  end
-
-  defp apply_filter({:location, location}, dynamic) do
-    pattern = "%#{location}%"
-    dynamic([job_posting: j], ^dynamic and ilike(j.location, ^pattern))
-  end
-
-  defp apply_filter({:salary_range, [min, max]}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.salary_min <= ^max and j.salary_max >= ^min)
-  end
-
-  defp apply_filter({:newer_than, %JobPosting{} = job_posting}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.inserted_at > ^job_posting.inserted_at)
-  end
-
-  defp apply_filter({:older_than, %JobPosting{} = job_posting}, dynamic) do
-    dynamic([job_posting: j], ^dynamic and j.inserted_at < ^job_posting.inserted_at)
-  end
-
-  defp apply_filter(_other, dynamic), do: dynamic
 
   @doc """
   Gets a single job_posting.
