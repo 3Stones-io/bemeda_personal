@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
 
   @create_attrs %{

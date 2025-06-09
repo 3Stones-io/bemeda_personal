@@ -3,12 +3,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.DateUtils
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Workers.EmailNotificationWorker
 
@@ -308,7 +309,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      applications = Jobs.list_job_applications(%{job_posting_id: job.id})
+      applications = JobApplications.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
       created_application =
@@ -362,7 +363,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
              })
              |> render_submit()
 
-      applications = Jobs.list_job_applications(%{job_posting_id: job.id})
+      applications = JobApplications.list_job_applications(%{job_posting_id: job.id})
       assert length(applications) > 0
 
       created_application =
@@ -417,7 +418,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
       )
 
-      updated_application = Jobs.get_job_application!(job_application.id)
+      updated_application = JobApplications.get_job_application!(job_application.id)
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."
@@ -474,7 +475,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
         ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
       )
 
-      updated_application = Jobs.get_job_application!(job_application.id)
+      updated_application = JobApplications.get_job_application!(job_application.id)
 
       assert updated_application.cover_letter ==
                "Updated cover letter with more details about my experience."

@@ -3,12 +3,13 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.RatingsFixtures
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
 
   setup %{conn: conn} do
@@ -156,7 +157,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       |> element("#tags-input")
       |> render_hook("update_tags", %{tags: "qualified,urgent"})
 
-      job_application = Jobs.get_job_application!(application.id)
+      job_application = JobApplications.get_job_application!(application.id)
       assert "qualified" in Enum.map(job_application.tags, & &1.name)
       assert "urgent" in Enum.map(job_application.tags, & &1.name)
     end

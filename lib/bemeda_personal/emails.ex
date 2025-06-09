@@ -8,7 +8,7 @@ defmodule BemedaPersonal.Emails do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Emails.EmailCommunication
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Repo
 
   @type attrs :: map()

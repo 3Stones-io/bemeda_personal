@@ -1,7 +1,7 @@
 alias BemedaPersonal.Accounts.User
 alias BemedaPersonal.Accounts
 alias BemedaPersonal.Companies
-alias BemedaPersonal.Jobs
+alias BemedaPersonal.JobPostings
 alias BemedaPersonal.Repo
 
 get_or_create_user = fn email, attrs ->
@@ -287,13 +287,13 @@ update_job_inserted_at = fn job, seconds_offset ->
   updated_job
 end
 
-existing_tech_jobs = Jobs.list_job_postings(%{company_id: company1.id}, 1)
-existing_health_jobs = Jobs.list_job_postings(%{company_id: company2.id}, 1)
+existing_tech_jobs = JobPostings.list_job_postings(%{company_id: company1.id}, 1)
+existing_health_jobs = JobPostings.list_job_postings(%{company_id: company2.id}, 1)
 
 if Enum.empty?(existing_tech_jobs) do
   Enum.with_index(all_tech_jobs)
   |> Enum.each(fn {job_attrs, index} ->
-    {:ok, job} = Jobs.create_job_posting(company1, job_attrs)
+    {:ok, job} = JobPostings.create_job_posting(company1, job_attrs)
 
     update_job_inserted_at.(job, -7200 * (index + 1))
   end)
@@ -306,7 +306,7 @@ end
 if Enum.empty?(existing_health_jobs) do
   Enum.with_index(all_health_jobs)
   |> Enum.each(fn {job_attrs, index} ->
-    {:ok, job} = Jobs.create_job_posting(company2, job_attrs)
+    {:ok, job} = JobPostings.create_job_posting(company2, job_attrs)
     update_job_inserted_at.(job, -7200 * (index + 1))
   end)
 

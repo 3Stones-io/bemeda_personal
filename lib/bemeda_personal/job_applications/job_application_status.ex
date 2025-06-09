@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.JobApplicationStatus do
+defmodule BemedaPersonal.JobApplications.JobApplicationStatus do
   @moduledoc """
   Job application status transition management functionality.
   """
@@ -7,8 +7,8 @@ defmodule BemedaPersonal.Jobs.JobApplicationStatus do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat
-  alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.JobApplicationStateTransition
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplicationStateTransition
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset

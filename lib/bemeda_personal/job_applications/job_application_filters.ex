@@ -1,12 +1,12 @@
-defmodule BemedaPersonal.Jobs.JobApplicationFilters do
+defmodule BemedaPersonal.JobApplications.JobApplicationFilters do
   @moduledoc """
   Filter configuration for job applications.
   """
 
   import Ecto.Query
 
-  alias BemedaPersonal.Jobs.JobApplicationTag
-  alias BemedaPersonal.Jobs.Tag
+  alias BemedaPersonal.JobApplications.JobApplicationTag
+  alias BemedaPersonal.JobApplications.Tag
   alias BemedaPersonal.QueryBuilder
 
   @spec filter_config() :: QueryBuilder.t()

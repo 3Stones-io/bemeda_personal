@@ -4,7 +4,8 @@ defmodule BemedaPersonal.MediaTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.ChatFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.MediaFixtures
 
   alias BemedaPersonal.Media

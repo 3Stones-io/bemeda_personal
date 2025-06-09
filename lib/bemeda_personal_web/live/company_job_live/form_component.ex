@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   use BemedaPersonalWeb, :live_component
 
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
@@ -197,7 +197,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             field={f[:currency]}
             type="select"
             label={dgettext("jobs", "Currency")}
-            options={Ecto.Enum.values(Jobs.JobPosting, :currency)}
+            options={Ecto.Enum.values(JobPostings.JobPosting, :currency)}
             phx-debounce="blur"
           />
         </div>
@@ -256,7 +256,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def update(%{job_posting: job_posting} = assigns, socket) do
-    changeset = Jobs.change_job_posting(job_posting)
+    changeset = JobPostings.change_job_posting(job_posting)
 
     {:ok,
      socket
@@ -273,7 +273,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
 
     changeset =
       socket.assigns.job_posting
-      |> Jobs.change_job_posting(job_params)
+      |> JobPostings.change_job_posting(job_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :form, to_form(changeset, as: :job_posting))}
@@ -308,7 +308,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp save_job_posting(socket, :new, job_params) do
-    case Jobs.create_job_posting(socket.assigns.company, job_params) do
+    case JobPostings.create_job_posting(socket.assigns.company, job_params) do
       {:ok, _job_posting} ->
         {:noreply,
          socket
@@ -321,7 +321,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp save_job_posting(socket, :edit, job_params) do
-    case Jobs.update_job_posting(socket.assigns.job_posting, job_params) do
+    case JobPostings.update_job_posting(socket.assigns.job_posting, job_params) do
       {:ok, _job_posting} ->
         {:noreply,
          socket
@@ -345,7 +345,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp get_translated_options(field) do
-    Jobs.JobPosting
+    JobPostings.JobPosting
     |> Ecto.Enum.values(field)
     |> Stream.map(&to_string/1)
     |> Enum.map(fn value -> {translate_enum_value(field, value), value} end)

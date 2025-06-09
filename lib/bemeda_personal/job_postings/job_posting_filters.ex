@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.JobPostingFilters do
+defmodule BemedaPersonal.JobPostings.JobPostingFilters do
   @moduledoc """
   Filter configuration for job postings.
   """

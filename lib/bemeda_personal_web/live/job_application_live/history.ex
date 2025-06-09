@@ -2,14 +2,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.DateUtils
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
 
   @impl Phoenix.LiveView
   def handle_params(%{"id" => job_application_id}, _url, socket) do
-    job_application = Jobs.get_job_application!(job_application_id)
+    job_application = JobApplications.get_job_application!(job_application_id)
 
     transitions =
-      Jobs.list_job_application_state_transitions(job_application)
+      JobApplications.list_job_application_state_transitions(job_application)
 
     {:noreply,
      socket

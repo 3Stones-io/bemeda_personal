@@ -3,7 +3,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.ResumesFixtures
   import Mox
   import Phoenix.LiveViewTest
@@ -13,7 +14,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Documents.MockProcessor
   alias BemedaPersonal.Documents.MockStorage
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Workers.EmailNotificationWorker
 
   @create_attrs %{
@@ -568,7 +569,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_application: job_application
     } do
       {:ok, job_application_under_review} =
-        Jobs.update_job_application_status(
+        JobApplications.update_job_application_status(
           job_application,
           job_application.user,
           %{
@@ -577,7 +578,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       {:ok, job_application_screening} =
-        Jobs.update_job_application_status(
+        JobApplications.update_job_application_status(
           job_application_under_review,
           job_application.user,
           %{
@@ -586,7 +587,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       {:ok, job_application_interview_scheduled} =
-        Jobs.update_job_application_status(
+        JobApplications.update_job_application_status(
           job_application_screening,
           job_application.user,
           %{
@@ -595,7 +596,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       {:ok, job_application_interviewed} =
-        Jobs.update_job_application_status(
+        JobApplications.update_job_application_status(
           job_application_interview_scheduled,
           job_application.user,
           %{
@@ -604,7 +605,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       {:ok, job_application_offer_extended} =
-        Jobs.update_job_application_status(
+        JobApplications.update_job_application_status(
           job_application_interviewed,
           job_application.user,
           %{
@@ -639,7 +640,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       )
 
       {:ok, job_application_offer_accepted} =
-        Jobs.update_job_application_status(
+        JobApplications.update_job_application_status(
           job_application_offer_extended,
           job_application.user,
           %{

@@ -6,7 +6,7 @@ defmodule BemedaPersonal.Chat.Message do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Media.MediaAsset
 
   @type attrs :: map()

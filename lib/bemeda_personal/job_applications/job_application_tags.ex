@@ -1,12 +1,12 @@
-defmodule BemedaPersonal.Jobs.JobApplicationTags do
+defmodule BemedaPersonal.JobApplications.JobApplicationTags do
   @moduledoc """
   Job application tagging functionality.
   """
 
   import Ecto.Query, warn: false
 
-  alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.Tag
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobApplications.Tag
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset

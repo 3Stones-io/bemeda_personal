@@ -3,7 +3,8 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
@@ -73,7 +74,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
            ] do
     {:noreply,
      socket
-     |> assign(:job_count, Jobs.company_jobs_count(socket.assigns.company.id))
+     |> assign(:job_count, JobPostings.company_jobs_count(socket.assigns.company.id))
      |> stream_insert(:job_postings, payload.job_posting)}
   end
 
@@ -95,7 +96,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])
 
   defp assign_job_postings(socket, company) do
-    job_postings = Jobs.list_job_postings(%{company_id: company.id}, 5)
+    job_postings = JobPostings.list_job_postings(%{company_id: company.id}, 5)
 
     stream(socket, :job_postings, job_postings)
   end
@@ -103,7 +104,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   defp assign_recent_applicants(socket, nil), do: stream(socket, :recent_applicants, [])
 
   defp assign_recent_applicants(socket, company) do
-    recent_applicants = Jobs.list_job_applications(%{company_id: company.id}, 10)
+    recent_applicants = JobApplications.list_job_applications(%{company_id: company.id}, 10)
 
     stream(socket, :recent_applicants, recent_applicants)
   end
@@ -111,5 +112,5 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   defp assign_job_count(socket, nil), do: assign(socket, :job_count, 0)
 
   defp assign_job_count(socket, company),
-    do: assign(socket, :job_count, Jobs.company_jobs_count(company.id))
+    do: assign(socket, :job_count, JobPostings.company_jobs_count(company.id))
 end

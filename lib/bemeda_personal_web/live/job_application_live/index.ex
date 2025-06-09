@@ -1,7 +1,9 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationLive.FormComponent
@@ -50,10 +52,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   def handle_info(_event, socket), do: {:noreply, socket}
 
   defp apply_action(socket, :new, %{"job_id" => job_id}) do
-    job_posting = Jobs.get_job_posting!(job_id)
+    job_posting = JobPostings.get_job_posting!(job_id)
 
     socket
-    |> assign(:job_application, %Jobs.JobApplication{})
+    |> assign(:job_application, %JobApplication{})
     |> assign(:job_posting, job_posting)
     |> assign(
       :page_title,
@@ -62,8 +64,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"job_id" => job_id, "id" => id}) do
-    job_posting = Jobs.get_job_posting!(job_id)
-    job_application = Jobs.get_job_application!(id)
+    job_posting = JobPostings.get_job_posting!(job_id)
+    job_application = JobApplications.get_job_application!(id)
 
     socket
     |> assign(:job_application, job_application)

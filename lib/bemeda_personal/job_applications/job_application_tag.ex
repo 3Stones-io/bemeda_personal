@@ -1,12 +1,12 @@
-defmodule BemedaPersonal.Jobs.JobApplicationTag do
+defmodule BemedaPersonal.JobApplications.JobApplicationTag do
   @moduledoc false
 
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.Tag
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobApplications.Tag
 
   @type attrs() :: map()
   @type changeset() :: Ecto.Changeset.t()

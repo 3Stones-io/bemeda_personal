@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.JobPostings do
+defmodule BemedaPersonal.JobPostings.JobPostings do
   @moduledoc """
   Job postings management functionality.
   """
@@ -6,8 +6,8 @@ defmodule BemedaPersonal.Jobs.JobPostings do
   import Ecto.Query, warn: false
 
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.Jobs.JobPosting
-  alias BemedaPersonal.Jobs.JobPostingFilters
+  alias BemedaPersonal.JobPostings.JobPosting
+  alias BemedaPersonal.JobPostings.JobPostingFilters
   alias BemedaPersonal.MediaDataUtils
   alias BemedaPersonal.QueryBuilder
   alias BemedaPersonal.Repo
