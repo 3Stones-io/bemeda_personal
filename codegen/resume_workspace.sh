@@ -12,12 +12,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WORKSPACE_PATH="${REPO_ROOT}/codegen/workspaces/${FEATURE_NAME}"
 
+source "$SCRIPT_DIR/utils.sh"
+
 echo "🔄 Resuming feature workspace: $FEATURE_NAME"
 
 if [ ! -d "$WORKSPACE_PATH" ]; then
     echo "❌ Feature workspace '$FEATURE_NAME' does not exist!"
-    echo "   Use 'make new $FEATURE_NAME' to create it"
-    echo "   Or use 'make ls' to see available workspaces"
+    echo "   Use '$OCG_CMD new $FEATURE_NAME' to create it"
+    echo "   Or use '$OCG_CMD ls' to see available workspaces"
     exit 1
 fi
 
@@ -36,32 +38,33 @@ else
     PARTITION="not configured"
 fi
 
-echo "📁 Workspace: $WORKSPACE_PATH"
-echo "🌿 Branch: $CURRENT_BRANCH"
-echo "📝 HEAD: $COMMIT_HASH"
+# Create resume flag file for startup.sh to detect
+touch "$WORKSPACE_PATH/.ocg_resume"
+
+if [ -f "$SCRIPT_DIR/templates/RESUME_CONTEXT.md" ]; then
+    cp "$SCRIPT_DIR/templates/RESUME_CONTEXT.md" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+    sed -i '' "s|{{FEATURE_NAME}}|$FEATURE_NAME|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+    sed -i '' "s|{{CURRENT_BRANCH}}|$CURRENT_BRANCH|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+    sed -i '' "s|{{COMMIT_HASH}}|$COMMIT_HASH|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+    sed -i '' "s|{{PORT}}|${PORT:-4000}|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+    sed -i '' "s|{{PARTITION}}|${PARTITION:-0}|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+fi
+
+open_cursor_workspace "$WORKSPACE_PATH" "$FEATURE_NAME" "✅ Workspace resumed successfully!"
+
+PLAYWRIGHT_PORT=$(grep "^PLAYWRIGHT_MCP_PORT=" "$WORKSPACE_PATH/.env" 2>/dev/null | cut -d'=' -f2)
+
+echo ""
+echo "🎯 Workspace resumed: $FEATURE_NAME"
+if [ -n "$PORT" ] && [ "$PORT" != "not configured" ] && [ -n "$PLAYWRIGHT_PORT" ] && [ -n "$PARTITION" ]; then
+    echo "🔌 Port: $PORT | 🎭 Playwright: $PLAYWRIGHT_PORT | 🗄️ Partition: $PARTITION | 🌿 Branch: $CURRENT_BRANCH"
+fi
 if [ -n "$PORT" ] && [ "$PORT" != "not configured" ]; then
-    echo "🔌 Port: $PORT"
+    echo "🌐 Server will be available at: http://localhost:$PORT"
 fi
-if [ -n "$PARTITION" ] && [ "$PARTITION" != "not configured" ]; then
-    echo "🗄️ Partition: $PARTITION"
+echo "📁 $WORKSPACE_PATH"
+if [ -f "$WORKSPACE_PATH/PLAN.md" ]; then
+    echo "📋 Plan: PLAN.md"
 fi
-
-if command -v cursor >/dev/null 2>&1; then
-    echo ""
-    echo "🚀 Opening workspace in Cursor..."
-
-    if [ -f "$WORKSPACE_PATH/${FEATURE_NAME}.code-workspace" ]; then
-        cursor "$WORKSPACE_PATH/${FEATURE_NAME}.code-workspace" &
-    else
-        cursor "$WORKSPACE_PATH" &
-    fi
-
-    echo "✅ Workspace resumed successfully!"
-
-    if [ -n "$PORT" ] && [ "$PORT" != "not configured" ]; then
-        echo "🌐 Server will be available at: http://localhost:$PORT"
-    fi
-else
-    echo "❌ Cursor command not found. Please install Cursor or open the workspace manually:"
-    echo "   📁 $WORKSPACE_PATH"
-fi
+echo ""
+echo "To remove: $OCG_CMD rm $FEATURE_NAME"
