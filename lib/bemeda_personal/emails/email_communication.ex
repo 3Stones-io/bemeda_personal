@@ -7,7 +7,7 @@ defmodule BemedaPersonal.Emails.EmailCommunication do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()

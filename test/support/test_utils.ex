@@ -18,4 +18,13 @@ defmodule BemedaPersonal.TestUtils do
     |> DateTime.add(seconds_offset)
     |> DateTime.truncate(:second)
   end
+
+  @spec stringify_keys(map() | any()) :: map()
+  def stringify_keys(map) when is_map(map) do
+    map
+    |> Enum.map(fn {k, v} -> {to_string(k), v} end)
+    |> Enum.into(%{})
+  end
+
+  def stringify_keys(value), do: value
 end

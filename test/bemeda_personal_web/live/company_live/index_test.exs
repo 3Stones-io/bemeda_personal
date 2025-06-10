@@ -3,12 +3,13 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.RatingsFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Companies
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
 
   describe "Company Dashboard" do
@@ -362,7 +363,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> live(~p"/companies")
 
       {:ok, _new_application} =
-        Jobs.create_job_application(job_applicant, job_posting, %{
+        JobApplications.create_job_application(job_applicant, job_posting, %{
           cover_letter: "I am very interested in this position"
         })
 

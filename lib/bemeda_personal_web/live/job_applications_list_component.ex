@@ -4,8 +4,8 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.DateUtils
-  alias BemedaPersonal.Jobs
-  alias BemedaPersonal.Jobs.JobApplicationFilter
+  alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.JobApplications.JobApplicationFilter
   alias BemedaPersonalWeb.JobsComponents
 
   @impl Phoenix.LiveComponent
@@ -231,7 +231,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   end
 
   defp assign_job_applications(socket) do
-    job_applications = Jobs.list_job_applications(socket.assigns.filters)
+    job_applications = JobApplications.list_job_applications(socket.assigns.filters)
 
     first_job_application = List.first(job_applications)
     last_job_application = List.last(job_applications)
@@ -264,7 +264,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
     job_applications =
       filters
       |> Map.merge(socket.assigns.filters)
-      |> Jobs.list_job_applications()
+      |> JobApplications.list_job_applications()
 
     first_job_application = List.first(job_applications)
     last_job_application = List.last(job_applications)

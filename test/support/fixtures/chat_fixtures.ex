@@ -6,7 +6,7 @@ defmodule BemedaPersonal.ChatFixtures do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
 
   @type attrs :: map()
   @type job_application :: JobApplication.t()

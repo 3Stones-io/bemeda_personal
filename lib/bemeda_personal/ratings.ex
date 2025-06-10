@@ -7,7 +7,7 @@ defmodule BemedaPersonal.Ratings do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Ratings.Rating
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint

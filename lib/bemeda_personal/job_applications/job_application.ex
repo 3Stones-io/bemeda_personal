@@ -1,16 +1,16 @@
-defmodule BemedaPersonal.Jobs.JobApplication do
+defmodule BemedaPersonal.JobApplications.JobApplication do
   @moduledoc false
 
   use Ecto.Schema
-  use Fsmx.Struct, fsm: BemedaPersonal.Jobs.JobApplicationStateMachine
+  use Fsmx.Struct, fsm: BemedaPersonal.JobApplications.JobApplicationStateMachine
 
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.Jobs.JobApplicationTag
-  alias BemedaPersonal.Jobs.JobPosting
-  alias BemedaPersonal.Jobs.Tag
+  alias BemedaPersonal.JobApplications.JobApplicationTag
+  alias BemedaPersonal.JobApplications.Tag
+  alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.Media.MediaAsset
 
   @type attrs :: map()

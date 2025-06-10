@@ -3,10 +3,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
 
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Media.MediaAsset
 
   @create_attrs_job %{
@@ -125,7 +125,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/companies/#{company.id}/jobs/new")
 
-      job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
+      job_count_before = length(JobPostings.list_job_postings(%{company_id: company.id}))
 
       view
       |> form("#company-job-form", %{
@@ -148,7 +148,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       })
       |> render_submit()
 
-      job_count_after = length(Jobs.list_job_postings(%{company_id: company.id}))
+      job_count_after = length(JobPostings.list_job_postings(%{company_id: company.id}))
       assert job_count_after == job_count_before + 1
     end
 
@@ -158,7 +158,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/companies/#{company.id}/jobs/new")
 
-      job_count_before = length(Jobs.list_job_postings(%{company_id: company.id}))
+      job_count_before = length(JobPostings.list_job_postings(%{company_id: company.id}))
 
       view
       |> element("#job_posting-video-file-upload")
@@ -184,7 +184,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       })
       |> render_submit()
 
-      job_postings = Jobs.list_job_postings(%{company_id: company.id})
+      job_postings = JobPostings.list_job_postings(%{company_id: company.id})
       job_count_after = length(job_postings)
       assert job_count_after == job_count_before + 1
 
@@ -235,7 +235,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       job_posting: job_posting
     } do
       {:ok, job_posting} =
-        Jobs.update_job_posting(job_posting, %{
+        JobPostings.update_job_posting(job_posting, %{
           "media_data" => %{
             "file_name" => "test_video.mp4",
             "upload_id" => Ecto.UUID.generate()
@@ -269,7 +269,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       })
       |> render_submit()
 
-      updated_job = Jobs.get_job_posting!(job_posting.id)
+      updated_job = JobPostings.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
     end
 
@@ -310,7 +310,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       })
       |> render_submit()
 
-      updated_job = Jobs.get_job_posting!(job_posting.id)
+      updated_job = JobPostings.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
 
       assert %MediaAsset{

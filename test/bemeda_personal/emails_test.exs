@@ -4,7 +4,8 @@ defmodule BemedaPersonal.EmailsTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.EmailsFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
 
   alias BemedaPersonal.Emails
   alias BemedaPersonal.Emails.EmailCommunication

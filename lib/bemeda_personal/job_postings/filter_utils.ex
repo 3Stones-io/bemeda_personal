@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.FilterUtils do
+defmodule BemedaPersonal.JobPostings.FilterUtils do
   @moduledoc """
   Utility functions for working with filter modules.
   """

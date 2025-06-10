@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Jobs
-  alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.JobPostings
+  alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobListComponent
   alias Phoenix.Socket.Broadcast
@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    job_posting = Jobs.get_job_posting!(id)
+    job_posting = JobPostings.get_job_posting!(id)
 
     if job_posting.company_id != socket.assigns.company.id do
       push_patch(socket, to: ~p"/companies/#{socket.assigns.company.id}/jobs")
@@ -55,11 +55,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("delete-job-posting", %{"id" => id}, socket) do
-    job_posting = Jobs.get_job_posting!(id)
+    job_posting = JobPostings.get_job_posting!(id)
 
     # Verify the job posting belongs to this company
     if job_posting.company_id == socket.assigns.company.id do
-      {:ok, _deleted} = Jobs.delete_job_posting(job_posting)
+      {:ok, _deleted} = JobPostings.delete_job_posting(job_posting)
 
       {:noreply, put_flash(socket, :info, dgettext("jobs", "Job posting deleted successfully"))}
     else

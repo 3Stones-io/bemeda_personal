@@ -1,7 +1,7 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   use BemedaPersonalWeb, :live_component
 
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
@@ -72,7 +72,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
   @impl Phoenix.LiveComponent
   def update(%{job_application: job_application} = assigns, socket) do
-    changeset = Jobs.change_job_application(job_application)
+    changeset = JobApplications.change_job_application(job_application)
 
     {:ok,
      socket
@@ -89,7 +89,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
 
     changeset =
       socket.assigns.job_application
-      |> Jobs.change_job_application(job_application_params)
+      |> JobApplications.change_job_application(job_application_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
@@ -124,7 +124,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   end
 
   defp save_job_application(socket, :edit, job_application_params) do
-    case Jobs.update_job_application(socket.assigns.job_application, job_application_params) do
+    case JobApplications.update_job_application(
+           socket.assigns.job_application,
+           job_application_params
+         ) do
       {:ok, job_application} ->
         {:noreply,
          socket
@@ -139,7 +142,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
   end
 
   defp save_job_application(socket, :new, job_application_params) do
-    case Jobs.create_job_application(
+    case JobApplications.create_job_application(
            socket.assigns.current_user,
            socket.assigns.job_posting,
            job_application_params

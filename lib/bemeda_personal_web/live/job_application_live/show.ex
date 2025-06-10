@@ -2,7 +2,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Chat
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Media
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
@@ -106,7 +106,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         "to_state" => socket.assigns.to_state
       })
 
-    case Jobs.update_job_application_status(
+    case JobApplications.update_job_application_status(
            job_application,
            socket.assigns.current_user,
            transition_attrs
@@ -135,7 +135,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("show-status-transition-modal", %{"to_state" => to_state}, socket) do
-    changeset = Jobs.change_job_application_status(%Jobs.JobApplicationStateTransition{})
+    changeset =
+      JobApplications.change_job_application_status(
+        %JobApplications.JobApplicationStateTransition{}
+      )
 
     {:noreply,
      socket
@@ -195,7 +198,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
-    job_application = Jobs.get_job_application!(job_application_id)
+    job_application = JobApplications.get_job_application!(job_application_id)
     messages = Chat.list_messages(job_application)
     changeset = Chat.change_message(%Chat.Message{})
 

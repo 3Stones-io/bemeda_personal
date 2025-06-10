@@ -7,7 +7,8 @@ defmodule BemedaPersonal.Media.MediaAsset do
 
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobPostings.JobPosting
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -19,8 +20,8 @@ defmodule BemedaPersonal.Media.MediaAsset do
   schema "media_assets" do
     belongs_to :company, Company
     field :file_name, :string
-    belongs_to :job_application, Jobs.JobApplication
-    belongs_to :job_posting, Jobs.JobPosting
+    belongs_to :job_application, JobApplication
+    belongs_to :job_posting, JobPosting
     belongs_to :message, Message
     field :status, Ecto.Enum, values: [:pending, :uploaded, :failed]
     field :type, :string

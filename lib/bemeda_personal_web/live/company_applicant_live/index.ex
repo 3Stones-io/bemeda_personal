@@ -2,7 +2,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Companies
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationsListComponent
   alias Phoenix.Socket.Broadcast
@@ -27,7 +27,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   end
 
   defp apply_action(socket, :index, %{"job_id" => job_id} = params) do
-    job_posting = Jobs.get_job_posting!(job_id)
+    job_posting = JobPostings.get_job_posting!(job_id)
     params = Map.put(params, "job_posting_id", job_posting.id)
 
     socket
