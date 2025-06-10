@@ -9,7 +9,10 @@
             {dgettext("jobs", "Job Description")}
           </h2>
           <.link
-            :if={!@application}
+            :if={
+              !@application &&
+                !(@current_user && @job_posting.company.admin_user_id == @current_user.id)
+            }
             navigate={~p"/jobs/#{@job_posting.id}/job_applications/new"}
             class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
