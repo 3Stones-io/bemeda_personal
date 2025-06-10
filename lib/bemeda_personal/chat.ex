@@ -40,7 +40,18 @@ defmodule BemedaPersonal.Chat do
       |> Repo.all()
       |> Repo.preload([:media_asset, :sender])
 
-    [job_application | messages]
+    maybe_load_user_resume(job_application, messages)
+  end
+
+  defp maybe_load_user_resume(job_application, messages) do
+    job_application =
+      Repo.preload(job_application, user: [resume: [:user, :educations, :work_experiences]])
+
+    if job_application.user.resume && job_application.user.resume.is_public do
+      [job_application, job_application.user.resume | messages]
+    else
+      [job_application | messages]
+    end
   end
 
   @doc """

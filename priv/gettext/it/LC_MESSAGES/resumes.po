@@ -82,6 +82,7 @@ msgstr "Modifica CV"
 msgid "Edit Work Experience"
 msgstr "Modifica Esperienza Lavorativa"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
@@ -181,6 +182,7 @@ msgstr "Titolo Professionale"
 msgid "Professional Summary"
 msgstr "Riassunto Professionale"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #, elixir-autogen, elixir-format
@@ -245,6 +247,7 @@ msgstr "Visualizza Pubblico"
 msgid "Website URL"
 msgstr "URL Sito Web"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
@@ -331,12 +334,14 @@ msgstr "la data di fine deve essere successiva o uguale alla data di inizio"
 msgid "end date must be blank for current job"
 msgstr "la data di fine deve essere vuota per il lavoro attuale"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
 msgid "in"
 msgstr "in"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/components/resume_components.ex
 #, elixir-autogen, elixir-format
 msgid "Location not specified"
@@ -351,3 +356,18 @@ msgstr "Telefono non specificato"
 #, elixir-autogen, elixir-format
 msgid "Website not specified"
 msgstr "Sito web non specificato"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Email not provided"
+msgstr "Email non fornita"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "No summary provided"
+msgstr "Nessun riassunto fornito"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Professional"
+msgstr "Professionale"
