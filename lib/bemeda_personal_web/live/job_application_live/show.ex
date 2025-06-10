@@ -50,6 +50,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         {:noreply,
          socket
          |> stream_insert(:messages, message)
+         |> push_event("scroll_to_message", %{message_id: message.id})
          |> assign_chat_form(changeset)}
 
       {:error, changeset} ->
@@ -77,7 +78,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     upload_url = TigrisHelper.get_presigned_upload_url(upload_id)
 
     {:reply, %{upload_url: upload_url, message_id: message.id},
-     stream_insert(socket, :messages, message)}
+     socket
+     |> stream_insert(:messages, message)
+     |> push_event("scroll_to_message", %{message_id: message.id})}
   end
 
   def handle_event("update-message", %{"message_id" => message_id, "status" => status}, socket) do
@@ -155,7 +158,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_info(%Broadcast{event: "media_asset_updated", payload: %{message: message}}, socket) do
-    {:noreply, stream_insert(socket, :messages, message)}
+    {:noreply,
+     socket
+     |> stream_insert(:messages, message)
+     |> push_event("scroll_to_message", %{message_id: message.id})}
   end
 
   def handle_info(
