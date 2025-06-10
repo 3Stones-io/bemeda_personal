@@ -4,7 +4,8 @@ defmodule BemedaPersonal.ChatTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.ChatFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.ResumesFixtures
 
   alias BemedaPersonal.Chat
@@ -106,6 +107,19 @@ defmodule BemedaPersonal.ChatTest do
         topic: ^message_topic,
         payload: %{message: ^message}
       }
+    end
+
+    test "with empty string returns error", %{
+      job_application: job_application,
+      user: user
+    } do
+      empty_attrs = %{content: ""}
+
+      assert {:error, %Ecto.Changeset{} = changeset} =
+               Chat.create_message(user, job_application, empty_attrs)
+
+      assert changeset.errors[:content] == {"cannot be blank", [validation: :required]}
+      refute changeset.valid?
     end
   end
 

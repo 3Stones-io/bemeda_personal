@@ -7,7 +7,7 @@ defmodule BemedaPersonal.EmailsFixtures do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Emails.EmailCommunication
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
 
   @type attrs :: map()
   @type company :: Company.t()

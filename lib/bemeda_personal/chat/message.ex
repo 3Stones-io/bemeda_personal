@@ -6,7 +6,7 @@ defmodule BemedaPersonal.Chat.Message do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Media.MediaAsset
 
   @type attrs :: map()
@@ -27,6 +27,20 @@ defmodule BemedaPersonal.Chat.Message do
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(%__MODULE__{} = message, attrs) do
-    cast(message, attrs, [:content, :type])
+    message
+    |> cast(attrs, [:content, :type])
+    |> update_change(:content, &maybe_trim/1)
+    |> maybe_validate_content_required(attrs)
   end
+
+  defp maybe_validate_content_required(changeset, attrs) do
+    if Map.has_key?(attrs, "content") or Map.has_key?(attrs, :content) do
+      validate_required(changeset, [:content], message: "cannot be blank")
+    else
+      changeset
+    end
+  end
+
+  defp maybe_trim(nil), do: nil
+  defp maybe_trim(string), do: String.trim(string)
 end

@@ -7,7 +7,7 @@ defmodule BemedaPersonal.Chat do
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint

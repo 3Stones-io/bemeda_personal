@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
 
   describe "Job Index" do

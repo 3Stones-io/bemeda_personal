@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.Account.User
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.DateUtils
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonalWeb.DocumentTemplateComponent
