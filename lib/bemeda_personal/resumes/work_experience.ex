@@ -50,5 +50,8 @@ defmodule BemedaPersonal.Resumes.WorkExperience do
     |> DateValidator.validate_current_end_date(
       dgettext("resumes", "end date must be blank for current job")
     )
+    |> DateValidator.validate_start_date_completion(
+      dgettext("resumes", "either mark as current or provide an end date")
+    )
   end
 end

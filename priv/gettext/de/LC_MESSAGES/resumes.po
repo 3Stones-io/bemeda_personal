@@ -334,6 +334,11 @@ msgstr "Enddatum muss nach oder gleich dem Startdatum sein"
 msgid "end date must be blank for current job"
 msgstr "Enddatum muss für aktuelle Stelle leer sein"
 
+#: lib/bemeda_personal/resumes/work_experience.ex
+#, elixir-autogen, elixir-format
+msgid "either mark as current or provide an end date"
+msgstr "entweder als aktuell markieren oder ein Enddatum angeben"
+
 #: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
