@@ -2,51 +2,43 @@ defmodule BemedaPersonal.Repo.Migrations.UpdateJobApplicationStateTransitionsToA
   use Ecto.Migration
 
   def up do
+    # Update job applications with removed states to valid states
     execute """
-    CREATE TABLE job_application_state_transitions_backup AS
-    SELECT * FROM job_application_state_transitions
-    WHERE from_state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
-       OR to_state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
+    UPDATE job_applications
+    SET state = CASE
+        WHEN state IN ('under_review', 'screening', 'interview_scheduled', 'interviewed') THEN 'applied'
+        WHEN state IN ('offer_declined', 'rejected') THEN 'withdrawn'
+        ELSE state
+    END
+    WHERE state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
     """
 
+    # Update transitions to map removed states to valid ones
     execute """
     UPDATE job_application_state_transitions
-    SET from_state = 'applied',
+    SET
+        from_state = CASE
+            WHEN from_state IN ('under_review', 'screening', 'interview_scheduled', 'interviewed') THEN 'applied'
+            WHEN from_state IN ('offer_declined', 'rejected') THEN 'withdrawn'
+            ELSE from_state
+        END,
         to_state = CASE
-          WHEN to_state IN ('offer_extended', 'withdrawn') THEN to_state
-          ELSE 'offer_extended'
+            WHEN to_state IN ('under_review', 'screening', 'interview_scheduled', 'interviewed') THEN 'applied'
+            WHEN to_state IN ('offer_declined', 'rejected') THEN 'withdrawn'
+            ELSE to_state
         END
     WHERE from_state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
+       OR to_state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
     """
 
-    execute """
-    UPDATE job_application_state_transitions
-    SET to_state = CASE
-      WHEN from_state = 'applied' AND to_state NOT IN ('offer_extended', 'withdrawn') THEN 'offer_extended'
-      WHEN from_state = 'offer_extended' AND to_state NOT IN ('offer_accepted', 'withdrawn') THEN 'offer_accepted'
-      WHEN from_state = 'withdrawn' AND to_state NOT IN ('applied', 'offer_accepted') THEN 'applied'
-      WHEN from_state = 'offer_accepted' THEN to_state
-      ELSE to_state
-    END
-    WHERE to_state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
-      AND from_state IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
-    """
-
+    # Delete transitions that became no-ops (same from_state and to_state after mapping)
     execute """
     DELETE FROM job_application_state_transitions
-    WHERE from_state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
-       OR to_state NOT IN ('applied', 'offer_extended', 'offer_accepted', 'withdrawn')
+    WHERE from_state = to_state
     """
   end
 
   def down do
-    execute """
-    INSERT INTO job_application_state_transitions
-    SELECT * FROM job_application_state_transitions_backup
-    """
-
-    execute """
-    DROP TABLE job_application_state_transitions_backup
-    """
+    # No rollback - this is a one-way migration
   end
 end
