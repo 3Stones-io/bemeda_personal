@@ -111,43 +111,57 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     get_available_statuses_by_role(
       current_state,
       all_next_states,
+      job_application.id,
       is_job_applicant
     )
   end
 
-  defp get_available_statuses_by_role("rejected", _all_next_states, true), do: []
+  defp get_available_statuses_by_role("withdrawn", _all_next_states, job_application_id, true) do
+    latest_transition =
+      job_application_id
+      |> JobApplications.get_job_application!()
+      |> JobApplications.get_latest_withdraw_state_transition()
+
+    if latest_transition.from_state == "offer_extended" do
+      ["offer_accepted"]
+    else
+      [latest_transition.from_state]
+    end
+  end
 
   defp get_available_statuses_by_role(
          "offer_extended",
          _all_next_states,
+         _job_application_id,
          true
        ),
-       do: ["offer_accepted", "offer_declined", "withdrawn"]
+       do: ["offer_accepted", "withdrawn"]
 
-  defp get_available_statuses_by_role(current_state, _all_next_states, true)
-       when current_state in ["offer_accepted", "offer_declined", "withdrawn"],
+  defp get_available_statuses_by_role(current_state, _all_next_states, _job_application_id, true)
+       when current_state in ["offer_accepted", "withdrawn"],
        do: []
 
-  defp get_available_statuses_by_role(_current_state, _all_next_states, true), do: ["withdrawn"]
+  defp get_available_statuses_by_role(
+         _current_state,
+         _all_next_states,
+         _job_application_id,
+         true
+       ),
+       do: ["withdrawn"]
 
-  defp get_available_statuses_by_role("rejected", all_next_states, false), do: all_next_states
+  defp get_available_statuses_by_role("withdrawn", _all_next_states, _job_application_id, false),
+    do: []
 
-  defp get_available_statuses_by_role(_current_state, all_next_states, false) do
+  defp get_available_statuses_by_role(_current_state, all_next_states, _job_application_id, false) do
     Enum.filter(all_next_states, fn state ->
-      state not in ["offer_accepted", "offer_declined", "withdrawn"]
+      state not in ["offer_accepted", "withdrawn"]
     end)
   end
 
   @spec status_badge_color(String.t()) :: String.t()
   def status_badge_color("applied"), do: "bg-blue-100 text-blue-800"
-  def status_badge_color("interview_scheduled"), do: "bg-green-100 text-green-800"
-  def status_badge_color("interviewed"), do: "bg-teal-100 text-teal-800"
   def status_badge_color("offer_accepted"), do: "bg-green-100 text-green-800"
-  def status_badge_color("offer_declined"), do: "bg-red-100 text-red-800"
   def status_badge_color("offer_extended"), do: "bg-yellow-100 text-yellow-800"
-  def status_badge_color("rejected"), do: "bg-red-100 text-red-800"
-  def status_badge_color("screening"), do: "bg-indigo-100 text-indigo-800"
-  def status_badge_color("under_review"), do: "bg-purple-100 text-purple-800"
   def status_badge_color("withdrawn"), do: "bg-gray-100 text-gray-800"
   def status_badge_color(_status), do: "bg-gray-100 text-gray-800"
 

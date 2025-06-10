@@ -13,18 +13,8 @@ msgstr ""
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
-msgid "An interview has been scheduled."
-msgstr "Un entretien a été programmé."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
 msgid "Application Status Updated"
 msgstr "Statut de Candidature Mis à Jour"
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Application Unsuccessful"
-msgstr "Candidature Non Retenue"
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
@@ -119,16 +109,6 @@ msgstr "Si vous n'avez pas demandé de changer votre adresse email, veuillez ign
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
-msgid "Interview Completed"
-msgstr "Entretien Terminé"
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Interview Scheduled"
-msgstr "Entretien Programmé"
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
 msgid "Job Offer Extended"
 msgstr "Offre d'Emploi Proposée"
 
@@ -142,11 +122,6 @@ msgstr "Gérer la Candidature"
 msgid "Offer Accepted"
 msgstr "Offre Acceptée"
 
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Offer Declined"
-msgstr "Offre Refusée"
-
 #: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
 #, elixir-autogen, elixir-format
 msgid "Reset My Password"
@@ -156,16 +131,6 @@ msgstr "Réinitialiser Mon Mot de Passe"
 #, elixir-autogen, elixir-format
 msgid "Review Application"
 msgstr "Examiner la Candidature"
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Screening in Progress"
-msgstr "Sélection en Cours"
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Thank you for attending the interview. We're reviewing your performance."
-msgstr "Merci d'avoir participé à l'entretien. Nous examinons votre performance."
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
@@ -189,28 +154,8 @@ msgstr "Le candidat a accepté votre offre d'emploi !"
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
-msgid "The candidate has declined your job offer."
-msgstr "Le candidat a refusé votre offre d'emploi."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
 msgid "The candidate has withdrawn their application."
 msgstr "Le candidat a retiré sa candidature."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "The interview with this candidate has been completed."
-msgstr "L'entretien avec ce candidat a été terminé."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "This application is in the screening process."
-msgstr "Cette candidature est en cours de sélection."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "This application is under review by your team."
-msgstr "Cette candidature est en cours d'examen par votre équipe."
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
@@ -283,16 +228,6 @@ msgstr "Pour voir les détails de votre candidature et les prochaines étapes re
 msgid "To view the details of your application and any next steps required, please visit the link below:"
 msgstr "Pour voir les détails de votre candidature et les prochaines étapes requises, veuillez visiter le lien ci-dessous :"
 
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Under Review"
-msgstr "En Cours d'Examen"
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Unfortunately, we won't be moving forward with your application at this time."
-msgstr "Malheureusement, nous ne donnerons pas suite à votre candidature pour le moment."
-
 #: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
 #, elixir-autogen, elixir-format
 msgid "View & Reply"
@@ -347,23 +282,8 @@ msgstr "Vous avez reçu un nouveau message de %{sender_name}."
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
-msgid "You have scheduled an interview with this candidate."
-msgstr "Vous avez programmé un entretien avec ce candidat."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "You're currently undergoing our screening process."
-msgstr "Vous êtes actuellement en cours de processus de sélection."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
 msgid "You've accepted our offer — welcome aboard!"
 msgstr "Vous avez accepté notre offre — bienvenue à bord !"
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "You've declined our offer. We wish you the best in your future endeavors."
-msgstr "Vous avez refusé notre offre. Nous vous souhaitons le meilleur dans vos projets futurs."
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
@@ -378,18 +298,8 @@ msgstr "Vous avez reçu une nouvelle candidature de %{applicant_name} pour le po
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
-msgid "You've rejected this candidate's application."
-msgstr "Vous avez rejeté la candidature de ce candidat."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
 msgid "You've withdrawn your application."
 msgstr "Vous avez retiré votre candidature."
-
-#: lib/bemeda_personal/accounts/user_notifier.ex
-#, elixir-autogen, elixir-format
-msgid "Your application is currently being reviewed by our hiring team."
-msgstr "Votre candidature est actuellement examinée par notre équipe de recrutement."
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format

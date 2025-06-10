@@ -122,5 +122,12 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
 
       refute html =~ ~s(<video)
     end
+
+    test "employers cannot apply to jobs they post", %{conn: conn, job: job, user: user} do
+      conn = log_in_user(conn, user)
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
+
+      refute html =~ "Apply to this job"
+    end
   end
 end

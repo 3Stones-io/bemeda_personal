@@ -4,12 +4,9 @@ defmodule BemedaPersonal.JobApplications.JobApplicationStateMachine do
   @behaviour Fsmx.Fsm
 
   @transitions %{
-    "applied" => ["under_review", "withdrawn", "rejected"],
-    "under_review" => ["screening", "withdrawn", "rejected"],
-    "screening" => ["interview_scheduled", "withdrawn", "rejected"],
-    "interview_scheduled" => ["interviewed", "withdrawn", "rejected"],
-    "interviewed" => ["offer_extended", "withdrawn", "rejected"],
-    "offer_extended" => ["offer_accepted", "offer_declined", "withdrawn"]
+    "applied" => ["offer_extended", "withdrawn"],
+    "offer_extended" => ["offer_accepted", "withdrawn"],
+    "withdrawn" => ["applied", "offer_accepted"]
   }
 
   use Fsmx.Fsm, transitions: @transitions

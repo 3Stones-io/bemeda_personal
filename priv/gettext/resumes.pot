@@ -82,6 +82,7 @@ msgstr ""
 msgid "Edit Work Experience"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
@@ -181,6 +182,7 @@ msgstr ""
 msgid "Professional Summary"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #, elixir-autogen, elixir-format
@@ -245,6 +247,7 @@ msgstr ""
 msgid "Website URL"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
@@ -336,12 +339,14 @@ msgstr ""
 msgid "either mark as current or provide an end date"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
 msgid "in"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/components/resume_components.ex
 #, elixir-autogen, elixir-format
 msgid "Location not specified"
@@ -355,4 +360,19 @@ msgstr ""
 #: lib/bemeda_personal_web/components/resume_components.ex
 #, elixir-autogen, elixir-format
 msgid "Website not specified"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Email not provided"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "No summary provided"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Professional"
 msgstr ""

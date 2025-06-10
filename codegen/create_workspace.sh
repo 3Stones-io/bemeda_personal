@@ -180,9 +180,17 @@ fi
 
 if [ -f "$SCRIPT_DIR/templates/NEW_CONTEXT.md" ]; then
     cp "$SCRIPT_DIR/templates/NEW_CONTEXT.md" "$WORKSPACE_PATH/CONTEXT.md"
+
+    PLAN_TITLE="$FEATURE_NAME"
+    if [ -f "$WORKSPACE_PATH/PLAN.md" ]; then
+        PLAN_TITLE=$(head -n 1 "$WORKSPACE_PATH/PLAN.md" | sed 's/^# *//' | sed 's/ *$//')
+        PLAN_TITLE=$(echo "$PLAN_TITLE" | sed 's/[[\.*^$()+?{|&]/\\&/g')
+    fi
+
     sed -i '' "s|{{PORT}}|$NEXT_PORT|g" "$WORKSPACE_PATH/CONTEXT.md"
     sed -i '' "s|{{PARTITION}}|$PARTITION|g" "$WORKSPACE_PATH/CONTEXT.md"
     sed -i '' "s|{{FEATURE_NAME}}|$FEATURE_NAME|g" "$WORKSPACE_PATH/CONTEXT.md"
+    sed -i '' "s|{{PLAN_TITLE}}|$PLAN_TITLE|g" "$WORKSPACE_PATH/CONTEXT.md"
 fi
 
 if [ -f "$SCRIPT_DIR/templates/.vscode/position-window.sh" ]; then

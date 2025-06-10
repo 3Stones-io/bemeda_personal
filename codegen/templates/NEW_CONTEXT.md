@@ -1,4 +1,4 @@
-# New Feature Implementation
+# {{PLAN_TITLE}}
 
 Implement the feature described in PLAN.md for this Phoenix/Elixir project.
 
