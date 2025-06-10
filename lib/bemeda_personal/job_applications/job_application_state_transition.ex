@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.JobApplicationStateTransition do
+defmodule BemedaPersonal.JobApplications.JobApplicationStateTransition do
   @moduledoc false
 
   use Ecto.Schema
@@ -6,7 +6,7 @@ defmodule BemedaPersonal.Jobs.JobApplicationStateTransition do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()

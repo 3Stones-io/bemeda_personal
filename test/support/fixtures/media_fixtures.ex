@@ -5,12 +5,13 @@ defmodule BemedaPersonal.MediaFixtures do
   """
 
   alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Media
 
   @type attrs :: map()
-  @type job_application :: Jobs.JobApplication.t()
-  @type job_posting :: Jobs.JobPosting.t()
+  @type job_application :: JobApplications.JobApplication.t()
+  @type job_posting :: JobPostings.JobPosting.t()
   @type media_asset :: Media.MediaAsset.t()
   @type message :: Message.t()
 

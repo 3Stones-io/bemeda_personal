@@ -1,7 +1,7 @@
-defmodule BemedaPersonal.Jobs.JobFilterTest do
+defmodule BemedaPersonal.JobPostings.JobFilterTest do
   use BemedaPersonal.DataCase, async: true
 
-  alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonal.JobPostings.JobFilter
 
   describe "changeset/2" do
     test "creates a changeset with valid attributes" do

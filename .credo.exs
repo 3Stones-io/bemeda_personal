@@ -206,7 +206,7 @@
            order: [:shortdoc, :moduledoc, :use, :import, :alias, :require, :behaviour],
            files: %{
              excluded: [
-               "lib/bemeda_personal/jobs/job_application_state_machine.ex"
+               "lib/bemeda_personal/job_applications/job_application_state_machine.ex"
              ]
            }},
           {Credo.Check.Readability.WithCustomTaggedTuple, []},
@@ -222,8 +222,7 @@
                "lib/bemeda_personal_web.ex",
                "lib/bemeda_personal_web/endpoint.ex",
                "lib/bemeda_personal_web/router.ex",
-               "lib/bemeda_personal/application.ex",
-               "lib/bemeda_personal/jobs.ex"
+               "lib/bemeda_personal/application.ex"
              ]
            },
            max_deps: 20},

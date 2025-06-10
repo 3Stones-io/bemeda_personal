@@ -3,11 +3,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonalWeb.I18n
 
   setup %{conn: conn} do
@@ -144,9 +145,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       application2 = job_application_fixture(user, job)
       application3 = job_application_fixture(user, job)
 
-      Jobs.update_job_application_tags(application1, "urgent,qualified")
-      Jobs.update_job_application_tags(application2, "urgent")
-      Jobs.update_job_application_tags(application3, "another")
+      JobApplications.update_job_application_tags(application1, "urgent,qualified")
+      JobApplications.update_job_application_tags(application2, "urgent")
+      JobApplications.update_job_application_tags(application3, "another")
 
       {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
 
@@ -337,7 +338,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
         user_fixture(%{first_name: "New", last_name: "Applicant", email: "new@example.com"})
 
       {:ok, _new_application} =
-        Jobs.create_job_application(new_applicant, job, %{
+        JobApplications.create_job_application(new_applicant, job, %{
           cover_letter: "I am very interested in this position"
         })
 

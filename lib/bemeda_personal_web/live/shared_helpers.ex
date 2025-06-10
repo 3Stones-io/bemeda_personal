@@ -4,15 +4,17 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Jobs
-  alias BemedaPersonal.Jobs.JobApplicationStateMachine
+  alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplicationStateMachine
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonal.Workers.EmailNotificationWorker
   alias BemedaPersonalWeb.Endpoint
 
   require Logger
 
-  @type job_application :: Jobs.JobApplication.t()
+  @type job_application :: JobApplication.t()
   @type socket :: Phoenix.LiveView.Socket.t()
   @type user :: User.t()
 
@@ -47,7 +49,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   @spec assign_job_posting(socket(), Ecto.UUID.t()) ::
           {:noreply, socket()}
   def assign_job_posting(socket, job_id) do
-    job_posting = Jobs.get_job_posting!(job_id)
+    job_posting = JobPostings.get_job_posting!(job_id)
 
     if Phoenix.LiveView.connected?(socket) do
       Endpoint.subscribe("job_posting_assets_#{job_posting.id}")
@@ -71,7 +73,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       assign(
         socket,
         :application,
-        Jobs.get_user_job_application(
+        JobApplications.get_user_job_application(
           socket.assigns.current_user,
           socket.assigns.job_posting
         )

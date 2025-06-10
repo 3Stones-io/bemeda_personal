@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Companies
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
   alias BemedaPersonalWeb.RatingComponent
   alias Phoenix.Socket.Broadcast
@@ -83,7 +83,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
          "User",
          entity_id,
          %{
-           assigns: %{application: %Jobs.JobApplication{user_id: user_id}}
+           assigns: %{application: %JobApplications.JobApplication{user_id: user_id}}
          } = socket
        )
        when user_id == entity_id do
@@ -172,7 +172,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     with true <- can_rate?(socket),
          user = Accounts.get_user!(entity_id),
          {:ok, _rating} <- Ratings.rate_user(company, user, attrs) do
-      updated_application = Jobs.get_job_application!(application.id)
+      updated_application = JobApplications.get_job_application!(application.id)
 
       {:halt,
        socket

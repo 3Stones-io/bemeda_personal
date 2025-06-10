@@ -3,7 +3,8 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.RatingsFixtures
   import Phoenix.LiveViewTest
 

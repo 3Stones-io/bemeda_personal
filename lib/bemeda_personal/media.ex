@@ -7,8 +7,8 @@ defmodule BemedaPersonal.Media do
 
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint

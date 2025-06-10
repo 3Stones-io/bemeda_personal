@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.JobApplicationStateMachine do
+defmodule BemedaPersonal.JobApplications.JobApplicationStateMachine do
   @moduledoc false
 
   @behaviour Fsmx.Fsm

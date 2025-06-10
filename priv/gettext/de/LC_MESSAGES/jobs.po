@@ -120,7 +120,7 @@ msgstr "Ihre Bewerbung Bearbeiten"
 msgid "Employment Type"
 msgstr "Beschäftigungsart"
 
-#: lib/bemeda_personal/jobs/job_application_filter.ex
+#: lib/bemeda_personal/job_applications/job_application_filter.ex
 #, elixir-autogen, elixir-format
 msgid "End date must be after or equal to start date"
 msgstr "Enddatum muss nach oder gleich dem Startdatum sein"
@@ -375,7 +375,7 @@ msgstr "Prüfung Starten"
 msgid "Start Screening"
 msgstr "Vorauswahl Starten"
 
-#: lib/bemeda_personal/jobs/job_application_filter.ex
+#: lib/bemeda_personal/job_applications/job_application_filter.ex
 #, elixir-autogen, elixir-format
 msgid "Start date must be before or equal to end date"
 msgstr "Startdatum muss vor oder gleich dem Enddatum sein"
@@ -457,7 +457,7 @@ msgstr "Sie sind nicht berechtigt, diese Stellenausschreibung zu löschen"
 msgid "You haven't applied for any jobs yet."
 msgstr "Sie haben sich noch für keine Jobs beworben."
 
-#: lib/bemeda_personal/jobs/job_posting.ex
+#: lib/bemeda_personal/job_postings/job_posting.ex
 #, elixir-autogen, elixir-format
 msgid "must be less than or equal to salary maximum"
 msgstr "muss kleiner oder gleich dem maximalen Gehalt sein"

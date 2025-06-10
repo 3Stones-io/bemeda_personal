@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Jobs.JobPosting do
+defmodule BemedaPersonal.JobPostings.JobPosting do
   @moduledoc false
 
   use Ecto.Schema

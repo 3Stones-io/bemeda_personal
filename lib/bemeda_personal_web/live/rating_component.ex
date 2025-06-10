@@ -5,7 +5,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Companies
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
   alias BemedaPersonalWeb.RatingFormComponent
   alias Phoenix.LiveView.JS
@@ -194,7 +194,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
          %{assigns: %{current_user: current_user, entity_type: "Company", entity_id: entity_id}} =
            socket
        ) do
-    can_rate? = Jobs.user_has_applied_to_company_job?(current_user.id, entity_id)
+    can_rate? = JobApplications.user_has_applied_to_company_job?(current_user.id, entity_id)
     assign(socket, :can_rate?, can_rate?)
   end
 
@@ -206,7 +206,7 @@ defmodule BemedaPersonalWeb.RatingComponent do
 
     can_rate? =
       company && company.admin_user_id == current_user.id &&
-        Jobs.user_has_applied_to_company_job?(user_id, company.id)
+        JobApplications.user_has_applied_to_company_job?(user_id, company.id)
 
     assign(socket, :can_rate?, can_rate?)
   end
