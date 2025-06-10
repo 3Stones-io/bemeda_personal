@@ -137,7 +137,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert html =~ resume.headline
       assert html =~ resume.summary
-      assert html =~ resume.location
       assert html =~ resume.contact_email
       assert html =~ resume.phone_number
       assert html =~ resume.website_url

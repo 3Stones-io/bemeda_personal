@@ -65,7 +65,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
       assert html =~ "My Resume"
       assert html =~ resume.headline
       assert html =~ resume.summary
-      assert html =~ resume.location
     end
 
     test "can navigate to edit resume form", %{conn: conn, user: user} do
@@ -275,14 +274,12 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
 
       updated_headline = "Senior Software Engineer"
       updated_summary = "Experienced software engineer with a passion for Elixir and Phoenix."
-      updated_location = "San Francisco, CA"
 
       assert edit_live
              |> form("#resume-form", %{
                "resume" => %{
                  "headline" => updated_headline,
-                 "summary" => updated_summary,
-                 "location" => updated_location
+                 "summary" => updated_summary
                }
              })
              |> render_submit()
@@ -295,7 +292,6 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
 
       assert html =~ updated_headline
       assert html =~ updated_summary
-      assert html =~ updated_location
     end
   end
 

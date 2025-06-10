@@ -41,18 +41,30 @@ end
 
 user1 =
   get_or_create_user.("john.doe@example.com", %{
+    city: "San Francisco",
+    country: "United States",
     email: "john.doe@example.com",
-    password: "password123456",
     first_name: "John",
-    last_name: "Doe"
+    last_name: "Doe",
+    line1: "123 Tech Street",
+    line2: "Apt 4B",
+    password: "password123456",
+    street: "Tech Street",
+    zip_code: "94105"
   })
 
 user2 =
   get_or_create_user.("jane.smith@example.com", %{
+    city: "Boston",
+    country: "United States",
     email: "jane.smith@example.com",
-    password: "password123456",
     first_name: "Jane",
-    last_name: "Smith"
+    last_name: "Smith",
+    line1: "456 Health Avenue",
+    line2: "",
+    password: "password123456",
+    street: "Health Avenue",
+    zip_code: "02101"
   })
 
 company1 =

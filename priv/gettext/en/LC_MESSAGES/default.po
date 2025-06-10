@@ -1,0 +1,104 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Address Line 1"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Address Line 2"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "City"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Country"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Dr., Mr., Ms., etc. (optional)"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "First Name"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Gender"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Last Name"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Optional"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Personal Information"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Title"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Update Personal Info"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Updating..."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "ZIP Code"
+msgstr ""

@@ -44,6 +44,44 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       assert result =~ "should be at least 12 character"
       assert result =~ "can&#39;t be blank"
     end
+
+    test "renders errors for invalid address data", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      result =
+        lv
+        |> element("#registration_form")
+        |> render_change(
+          user: %{
+            "city" => "",
+            "country" => "",
+            "email" => "valid@example.com",
+            "first_name" => "Test",
+            "last_name" => "User",
+            "line1" => "",
+            "password" => "valid_password_123",
+            "zip_code" => ""
+          }
+        )
+
+      assert result =~ "Register"
+      assert result =~ "can&#39;t be blank"
+    end
+
+    test "renders personal info form fields", %{conn: conn} do
+      {:ok, _lv, html} = live(conn, ~p"/users/register")
+
+      assert html =~ "Personal Information"
+      assert html =~ "First Name"
+      assert html =~ "Last Name"
+      assert html =~ "Title"
+      assert html =~ "Gender"
+      assert html =~ "Address Line 1"
+      assert html =~ "Address Line 2"
+      assert html =~ "ZIP Code"
+      assert html =~ "City"
+      assert html =~ "Country"
+    end
   end
 
   describe "register user" do
@@ -86,10 +124,17 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       form =
         form(lv, "#registration_form",
           user: %{
-            first_name: "Test",
-            last_name: "User",
+            city: "Test City",
+            country: "Test Country",
             email: "test_locale@example.com",
-            password: "test_password_123"
+            first_name: "Test",
+            gender: "other",
+            last_name: "User",
+            line1: "123 Test Street",
+            line2: "Apt 1",
+            password: "test_password_123",
+            title: "Mr.",
+            zip_code: "12345"
           }
         )
 

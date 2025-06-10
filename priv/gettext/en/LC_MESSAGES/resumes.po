@@ -130,7 +130,6 @@ msgstr ""
 msgid "Job Title"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
 #: lib/bemeda_personal_web/live/resume/work_experience_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Location"
@@ -306,11 +305,6 @@ msgstr ""
 
 #: lib/bemeda_personal_web/live/resume/resume_form_component.ex
 #, elixir-autogen, elixir-format
-msgid "e.g., San Francisco, CA"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/resume/resume_form_component.ex
-#, elixir-autogen, elixir-format
 msgid "e.g., Senior Software Engineer"
 msgstr ""
 
@@ -339,12 +333,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
 msgid "in"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/chat_components.ex
-#: lib/bemeda_personal_web/components/resume_components.ex
-#, elixir-autogen, elixir-format
-msgid "Location not specified"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/resume_components.ex

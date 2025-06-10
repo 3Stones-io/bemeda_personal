@@ -24,7 +24,6 @@ defmodule BemedaPersonal.ResumesFixtures do
     Enum.into(attrs, %{
       headline: "Software Engineer",
       summary: "Experienced software engineer with a passion for building web applications.",
-      location: "New York, NY",
       is_public: true,
       contact_email: "contact@example.com",
       phone_number: "123-456-7890",

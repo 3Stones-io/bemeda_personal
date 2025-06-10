@@ -20,7 +20,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
 
       assert html =~ "Change Email"
       assert html =~ "Change Password"
-      assert html =~ "Update Name"
+      assert html =~ "Update Personal Info"
     end
 
     test "redirects if user is not logged in", %{conn: conn} do
@@ -215,54 +215,121 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
     end
   end
 
-  describe "update name form" do
+  describe "update personal info form" do
     setup %{conn: conn} do
       user = user_fixture(%{confirmed: true})
       %{conn: log_in_user(conn, user), user: user}
     end
 
-    test "updates the user name", %{conn: conn} do
-      new_first_name = "New"
-      new_last_name = "Name"
+    test "updates the user personal info with all fields", %{conn: conn, user: user} do
+      new_personal_info = %{
+        "city" => "Portland",
+        "country" => "USA",
+        "first_name" => "Jane",
+        "gender" => "Female",
+        "last_name" => "Smith",
+        "line1" => "456 Oak St",
+        "line2" => "Apt 2B",
+        "title" => "Dr.",
+        "zip_code" => "54321"
+      }
 
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
       result =
         lv
-        |> form("#name_form", %{
-          "user" => %{"first_name" => new_first_name, "last_name" => new_last_name}
+        |> form("#personal_info_form", %{"user" => new_personal_info})
+        |> render_submit()
+
+      assert result =~ "Personal info updated successfully"
+
+      updated_user = Accounts.get_user!(user.id)
+      assert updated_user.city == "Portland"
+      assert updated_user.country == "USA"
+      assert updated_user.first_name == "Jane"
+      assert updated_user.gender == "Female"
+      assert updated_user.last_name == "Smith"
+      assert updated_user.line1 == "456 Oak St"
+      assert updated_user.line2 == "Apt 2B"
+      assert updated_user.title == "Dr."
+      assert updated_user.zip_code == "54321"
+    end
+
+    test "validates required fields", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      result =
+        lv
+        |> form("#personal_info_form", %{
+          "user" => %{
+            "city" => "",
+            "country" => "",
+            "first_name" => "",
+            "last_name" => "",
+            "line1" => "",
+            "zip_code" => ""
+          }
         })
         |> render_submit()
 
-      assert result =~ "Name updated successfully"
-    end
-
-    test "renders errors with invalid data (phx-change)", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/settings")
-
-      result =
-        lv
-        |> element("#name_form")
-        |> render_change(%{
-          "user" => %{"first_name" => "", "last_name" => ""}
-        })
-
-      assert result =~ "Update Name"
       assert result =~ "can&#39;t be blank"
     end
 
-    test "renders errors with invalid data (phx-submit)", %{conn: conn} do
+    test "allows optional fields to be empty", %{conn: conn} do
+      personal_info_with_optional_empty = %{
+        "city" => "Boston",
+        "country" => "USA",
+        "first_name" => "John",
+        "gender" => "",
+        "last_name" => "Doe",
+        "line1" => "123 Main St",
+        "line2" => "",
+        "title" => "",
+        "zip_code" => "12345"
+      }
+
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
       result =
         lv
-        |> form("#name_form", %{
-          "user" => %{"first_name" => "", "last_name" => ""}
+        |> form("#personal_info_form", %{"user" => personal_info_with_optional_empty})
+        |> render_submit()
+
+      assert result =~ "Personal info updated successfully"
+    end
+
+    test "validates field lengths", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      result =
+        lv
+        |> form("#personal_info_form", %{
+          "user" => %{
+            "city" => String.duplicate("d", 150),
+            "gender" => String.duplicate("a", 51),
+            "line1" => String.duplicate("c", 300),
+            "title" => String.duplicate("b", 101)
+          }
         })
         |> render_submit()
 
-      assert result =~ "Update Name"
-      assert result =~ "can&#39;t be blank"
+      assert result =~ "should be at most"
+    end
+
+    test "renders personal info form fields", %{conn: conn} do
+      {:ok, _lv, html} = live(conn, ~p"/users/settings")
+
+      assert html =~ "Personal Information"
+      assert html =~ "First Name"
+      assert html =~ "Last Name"
+      assert html =~ "Title"
+      assert html =~ "Gender"
+      assert html =~ "Address Line 1"
+      assert html =~ "Address Line 2"
+      assert html =~ "ZIP Code"
+      assert html =~ "City"
+      assert html =~ "Country"
+      assert html =~ "Update Personal Info"
     end
   end
 

@@ -27,15 +27,21 @@ defmodule BemedaPersonalWeb.NavigationLive do
   defp assign_user(socket, token) do
     user = Accounts.get_user_by_session_token(token)
 
-    if connected?(socket) && user do
-      Endpoint.subscribe("users:#{user.id}:notifications_count")
+    if user do
+      if connected?(socket) do
+        Endpoint.subscribe("users:#{user.id}:notifications_count")
+      end
+
+      unread_count = Emails.unread_email_communications_count(user.id)
+
+      socket
+      |> assign(:current_user, user)
+      |> assign(:notifications_count, unread_count)
+    else
+      socket
+      |> assign(:current_user, nil)
+      |> assign(:notifications_count, 0)
     end
-
-    unread_count = Emails.unread_email_communications_count(user.id)
-
-    socket
-    |> assign(:current_user, user)
-    |> assign(:notifications_count, unread_count)
   end
 
   @impl Phoenix.LiveView

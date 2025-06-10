@@ -110,12 +110,13 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
     """
   end
 
-  attr :resume, :map, required: true
-  attr :title, :string, default: "Resume"
+  attr :can_update_resume, :boolean, default: false
   attr :email_fallback, :string, default: "Email not provided"
   attr :headline_default, :string, default: "Professional"
+  attr :resume, :map, required: true
   attr :summary_default, :string, default: "No summary provided"
-  attr :can_update_resume, :boolean, default: false
+  attr :title, :string, default: "Resume"
+  attr :user, :map, required: true
   slot :actions
 
   @spec resume_profile(map()) :: Phoenix.LiveView.Rendered.t()
@@ -136,7 +137,7 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
           summary_default={@summary_default}
         />
 
-        <.resume_contact_info resume={@resume} email_fallback={@email_fallback} />
+        <.resume_contact_info email_fallback={@email_fallback} resume={@resume} user={@user} />
       </div>
     </div>
     """
@@ -178,17 +179,12 @@ defmodule BemedaPersonalWeb.Components.ResumeComponents do
   end
 
   attr :resume, :map, required: true
+  attr :user, :map, required: true
   attr :email_fallback, :string, default: "Email not provided"
 
   defp resume_contact_info(assigns) do
     ~H"""
     <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
-      <.profile_info_item icon_name="hero-map-pin">
-        <:content>
-          {@resume.location || dgettext("resumes", "Location not specified")}
-        </:content>
-      </.profile_info_item>
-
       <.profile_info_item icon_name="hero-envelope">
         <:content>
           {@resume.contact_email || @email_fallback}

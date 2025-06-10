@@ -32,20 +32,46 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
           {dgettext("auth", "Oops, something went wrong! Please check the errors below.")}
         </.error>
 
-        <.input
-          field={@form[:first_name]}
-          type="text"
-          label={dgettext("auth", "First Name")}
-          required
-        />
-        <.input field={@form[:last_name]} type="text" label={dgettext("auth", "Last Name")} required />
-        <.input field={@form[:email]} type="email" label={dgettext("auth", "Email")} required />
-        <.input
-          field={@form[:password]}
-          type="password"
-          label={dgettext("auth", "Password")}
-          required
-        />
+        <.input field={@form[:email]} type="email" label={gettext("Email")} required />
+        <.input field={@form[:password]} type="password" label={gettext("Password")} required />
+
+        <h3 class="text-lg font-medium text-gray-900 mb-4">{gettext("Personal Information")}</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <.input field={@form[:first_name]} type="text" label={gettext("First Name")} required />
+          <.input field={@form[:last_name]} type="text" label={gettext("Last Name")} required />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <.input
+            field={@form[:title]}
+            type="text"
+            label={gettext("Title")}
+            placeholder={gettext("Dr., Mr., Ms., etc. (optional)")}
+          />
+          <.input
+            field={@form[:gender]}
+            type="text"
+            label={gettext("Gender")}
+            placeholder={gettext("Optional")}
+          />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <.input field={@form[:line1]} type="text" label={gettext("Address Line 1")} required />
+          <.input
+            field={@form[:line2]}
+            type="text"
+            label={gettext("Address Line 2")}
+            placeholder={gettext("Optional")}
+          />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <.input field={@form[:zip_code]} type="text" label={gettext("ZIP Code")} required />
+          <.input field={@form[:city]} type="text" label={gettext("City")} required />
+          <.input field={@form[:country]} type="text" label={gettext("Country")} required />
+        </div>
 
         <:actions>
           <.button phx-disable-with={dgettext("auth", "Creating account...")} class="w-full">
