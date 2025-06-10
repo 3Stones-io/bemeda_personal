@@ -24,6 +24,7 @@ defmodule BemedaPersonal.JobApplications do
     to: JobApplicationStatus
 
   defdelegate list_job_application_state_transitions(job_application), to: JobApplicationStatus
+  defdelegate get_latest_withdraw_state_transition(job_application), to: JobApplications
 
   # Tags Management
   defdelegate update_job_application_tags(job_application, tags), to: JobApplicationTags

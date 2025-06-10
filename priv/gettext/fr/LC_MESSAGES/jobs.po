@@ -98,11 +98,6 @@ msgstr "Tout effacer"
 msgid "Cover Letter"
 msgstr "Lettre de motivation"
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Decline Offer"
-msgstr "Refuser l'offre"
-
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #: lib/bemeda_personal_web/live/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
@@ -145,16 +140,6 @@ msgstr "Échec de la mise à jour du statut de candidature."
 #, elixir-autogen, elixir-format
 msgid "Find your next career opportunity"
 msgstr "Trouvez votre prochaine opportunité de carrière"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Interview Scheduled"
-msgstr "Entretien programmé"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Interviewed"
-msgstr "Entretien effectué"
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
@@ -222,11 +207,6 @@ msgstr "Emplois chez %{company}"
 msgid "Location"
 msgstr "Localisation"
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Mark as Interviewed"
-msgstr "Marquer comme interviewé"
-
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Maximum Salary"
@@ -270,11 +250,6 @@ msgstr "Offre acceptée"
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Offer Declined"
-msgstr "Offre refusée"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Offer Extended"
 msgstr "Offre proposée"
 
@@ -310,16 +285,6 @@ msgstr "Publier l'offre"
 msgid "Recent Jobs"
 msgstr "Emplois récents"
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Reject Application"
-msgstr "Rejeter la candidature"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Rejected"
-msgstr "Rejeté"
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Remote Only"
@@ -345,16 +310,6 @@ msgstr "Enregistrer les modifications"
 msgid "Saving..."
 msgstr "Enregistrement..."
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Schedule Interview"
-msgstr "Programmer un entretien"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Screening"
-msgstr "Présélection"
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Select a status"
@@ -364,16 +319,6 @@ msgstr "Sélectionner un statut"
 #, elixir-autogen, elixir-format
 msgid "Show History"
 msgstr "Afficher l'historique"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Start Review"
-msgstr "Commencer l'examen"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Start Screening"
-msgstr "Commencer la présélection"
 
 #: lib/bemeda_personal/job_applications/job_application_filter.ex
 #, elixir-autogen, elixir-format
@@ -385,16 +330,10 @@ msgstr "La date de début doit être antérieure ou égale à la date de fin"
 msgid "Start your job search by browsing available positions."
 msgstr "Commencez votre recherche d'emploi en parcourant les postes disponibles."
 
-#: lib/bemeda_personal_web/i18n.ex
 #: lib/bemeda_personal_web/live/job_application_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Submit Application"
 msgstr "Soumettre la candidature"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Under Review"
-msgstr "En cours d'examen"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -1390,6 +1329,11 @@ msgstr "Médecin Spécialiste"
 #, elixir-autogen, elixir-format
 msgid "Swiss Red Cross Nursing Assistant"
 msgstr "Aide-Soignante Croix-Rouge Suisse"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Resume Application"
+msgstr "Reprendre la candidature"
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #, elixir-autogen, elixir-format

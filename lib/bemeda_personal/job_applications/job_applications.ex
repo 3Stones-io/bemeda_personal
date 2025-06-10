@@ -8,6 +8,7 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobApplications.JobApplicationFilters
+  alias BemedaPersonal.JobApplications.JobApplicationStateTransition
   alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.MediaDataUtils
   alias BemedaPersonal.QueryBuilder
@@ -247,5 +248,24 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
       event,
       message
     )
+  end
+
+  @doc """
+  Returns the latest state transition for a job application.
+
+  ## Examples
+
+      iex> get_latest_withdraw_state_transition(job_application)
+      %JobApplicationStateTransition{}
+
+  """
+  @spec get_latest_withdraw_state_transition(job_application()) ::
+          JobApplicationStateTransition.t() | nil
+  def get_latest_withdraw_state_transition(job_application) do
+    JobApplicationStateTransition
+    |> where([t], t.job_application_id == ^job_application.id and t.to_state == "withdrawn")
+    |> order_by([t], desc: t.inserted_at)
+    |> limit(1)
+    |> Repo.one()
   end
 end

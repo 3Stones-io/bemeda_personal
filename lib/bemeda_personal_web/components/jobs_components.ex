@@ -861,14 +861,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
     Enum.map(
       %{
         "applied" => "Applied",
-        "interview_scheduled" => "Interview Scheduled",
-        "interviewed" => "Interviewed",
         "offer_accepted" => "Offer Accepted",
-        "offer_declined" => "Offer Declined",
         "offer_extended" => "Offer Extended",
-        "rejected" => "Rejected",
-        "screening" => "Screening",
-        "under_review" => "Under Review",
         "withdrawn" => "Withdrawn"
       },
       fn {key, _value} -> {I18n.translate_status(key), key} end
