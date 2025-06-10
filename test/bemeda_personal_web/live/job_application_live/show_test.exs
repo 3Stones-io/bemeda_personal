@@ -123,6 +123,51 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       refute html =~ ~s(<video controls)
     end
 
+    test "displays user's resume when user has a public resume", %{
+      conn: conn,
+      job_application: job_application,
+      resume: resume
+    } do
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ resume.headline
+      assert html =~ resume.summary
+      assert html =~ resume.location
+      assert html =~ resume.contact_email
+      assert html =~ resume.phone_number
+      assert html =~ resume.website_url
+    end
+
+    test "does not display user's resume when resume is private", %{
+      conn: conn,
+      job: job
+    } do
+      user = user_fixture()
+      resume_fixture(user, %{is_public: false})
+
+      job_application =
+        job_application_fixture(user, job, %{
+          cover_letter: "Application without public resume"
+        })
+
+      conn = log_in_user(conn, user)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      refute html =~ "Software Engineer"
+      refute html =~ "Experienced software engineer"
+      refute html =~ "New York, NY"
+      refute html =~ "contact@example.com"
+    end
+
     test "shows the cover letter in chat messages when viewing job application", %{
       conn: conn,
       job_application: job_application
@@ -136,7 +181,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ job_application.cover_letter
 
       messages = Chat.list_messages(job_application)
-      assert length(messages) == 1
+      assert length(messages) == 2
     end
 
     test "shows both video and cover letter when application has video", %{
@@ -169,7 +214,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "Application with video"
 
       messages = Chat.list_messages(job_application)
-      assert length(messages) == 1
+      assert length(messages) == 2
     end
 
     test "allows user to send new messages", %{
@@ -189,12 +234,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       |> render_submit()
 
       messages = Chat.list_messages(job_application)
-      assert length(messages) == 2
+      assert length(messages) == 3
 
       assert_enqueued(
         worker: EmailNotificationWorker,
         args: %{
-          message_id: Enum.at(messages, 1).id,
+          message_id: Enum.at(messages, 2).id,
           type: "new_message"
         }
       )
@@ -251,7 +296,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       updated_html = render(view)
       assert updated_html =~ "hero-arrow-up-on-square"
 
-      [_job_application_message, uploaded_message] = Chat.list_messages(job_application)
+      [_job_application, _resume, uploaded_message] = Chat.list_messages(job_application)
 
       assert uploaded_message
       assert uploaded_message.media_asset.file_name == "test-video.mp4"
@@ -285,7 +330,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{filename: "document.pdf", type: "application/pdf"}
       )
 
-      [_job_application_message, pdf_message] = Chat.list_messages(job_application)
+      [_job_application, _resume, pdf_message] = Chat.list_messages(job_application)
 
       assert pdf_message.media_asset.file_name == "document.pdf"
       assert pdf_message.media_asset.type == "application/pdf"
@@ -314,7 +359,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{filename: "profile.jpg", type: "image/jpeg"}
       )
 
-      [_job_application_message, _pdf_message, image_message] =
+      [_job_application, _resume, _pdf_message, image_message] =
         Chat.list_messages(job_application)
 
       assert image_message
