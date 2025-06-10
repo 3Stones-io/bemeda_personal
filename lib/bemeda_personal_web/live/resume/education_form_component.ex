@@ -57,7 +57,7 @@ defmodule BemedaPersonalWeb.Resume.EducationFormComponent do
           field={@form[:end_date]}
           type="date"
           label={dgettext("resumes", "End Date")}
-          required={true}
+          label_class={@form[:current].value && "opacity-50"}
           disabled={@form[:current].value}
         />
         <.input

@@ -26,23 +26,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
 
       conn = log_in_user(conn, user)
 
-      {:ok, under_review_app} =
+      {:ok, offer_extended_app} =
         JobApplications.update_job_application_status(job_application, company_user, %{
-          "notes" => "Candidate profile looks promising",
-          "to_state" => "under_review"
+          "notes" => "We'd like to extend an offer",
+          "to_state" => "offer_extended"
         })
 
-      {:ok, screening_app} =
-        JobApplications.update_job_application_status(under_review_app, company_user, %{
-          "notes" => "Moving to initial screening",
-          "to_state" => "screening"
+      {:ok, offer_accepted_app} =
+        JobApplications.update_job_application_status(offer_extended_app, company_user, %{
+          "notes" => "Candidate accepted the offer",
+          "to_state" => "offer_accepted"
         })
 
       %{
         company_user: company_user,
         company: company,
         conn: conn,
-        job_application: screening_app,
+        job_application: offer_accepted_app,
         job: job,
         user: user
       }
@@ -87,8 +87,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
         )
 
-      assert html =~ "Screening"
-      assert html =~ "Under Review"
+      assert html =~ "Offer Accepted"
+      assert html =~ "Offer Extended"
       assert html =~ "Application Created"
     end
 
@@ -177,8 +177,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
         )
 
-      assert html =~ "Candidate profile looks promising"
-      assert html =~ "Moving to initial screening"
+      assert html =~ "We&#39;d like to extend an offer"
+      assert html =~ "Candidate accepted the offer"
     end
 
     test "hides transition notes from candidates but shows them to company users", %{
@@ -195,8 +195,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
         )
 
-      refute candidate_html =~ "Candidate profile looks promising"
-      refute candidate_html =~ "Moving to initial screening"
+      refute candidate_html =~ "We&#39;d like to extend an offer"
+      refute candidate_html =~ "Candidate accepted the offer"
 
       company_conn = log_in_user(conn, company_user)
 
@@ -206,8 +206,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
         )
 
-      assert company_html =~ "Candidate profile looks promising"
-      assert company_html =~ "Moving to initial screening"
+      assert company_html =~ "We&#39;d like to extend an offer"
+      assert company_html =~ "Candidate accepted the offer"
     end
   end
 end

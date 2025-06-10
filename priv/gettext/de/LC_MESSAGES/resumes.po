@@ -82,6 +82,7 @@ msgstr "Lebenslauf bearbeiten"
 msgid "Edit Work Experience"
 msgstr "Berufserfahrung bearbeiten"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
@@ -181,6 +182,7 @@ msgstr "Professionelle Überschrift"
 msgid "Professional Summary"
 msgstr "Professionelle Zusammenfassung"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #, elixir-autogen, elixir-format
@@ -245,6 +247,7 @@ msgstr "Öffentlich anzeigen"
 msgid "Website URL"
 msgstr "Website-URL"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
@@ -331,12 +334,19 @@ msgstr "Enddatum muss nach oder gleich dem Startdatum sein"
 msgid "end date must be blank for current job"
 msgstr "Enddatum muss für aktuelle Stelle leer sein"
 
+#: lib/bemeda_personal/resumes/work_experience.ex
+#, elixir-autogen, elixir-format
+msgid "either mark as current or provide an end date"
+msgstr "entweder als aktuell markieren oder ein Enddatum angeben"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format
 msgid "in"
 msgstr "in"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/components/resume_components.ex
 #, elixir-autogen, elixir-format
 msgid "Location not specified"
@@ -351,3 +361,18 @@ msgstr "Telefon nicht angegeben"
 #, elixir-autogen, elixir-format
 msgid "Website not specified"
 msgstr "Website nicht angegeben"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Email not provided"
+msgstr "E-Mail nicht angegeben"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "No summary provided"
+msgstr "Keine Zusammenfassung angegeben"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen, elixir-format
+msgid "Professional"
+msgstr "Professionell"

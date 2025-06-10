@@ -43,11 +43,19 @@ touch "$WORKSPACE_PATH/.ocg_resume"
 
 if [ -f "$SCRIPT_DIR/templates/RESUME_CONTEXT.md" ]; then
     cp "$SCRIPT_DIR/templates/RESUME_CONTEXT.md" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+
+    PLAN_TITLE="$FEATURE_NAME"
+    if [ -f "$WORKSPACE_PATH/PLAN.md" ]; then
+        PLAN_TITLE=$(head -n 1 "$WORKSPACE_PATH/PLAN.md" | sed 's/^# *//' | sed 's/ *$//')
+        PLAN_TITLE=$(echo "$PLAN_TITLE" | sed 's/[[\.*^$()+?{|&]/\\&/g')
+    fi
+
     sed -i '' "s|{{FEATURE_NAME}}|$FEATURE_NAME|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
     sed -i '' "s|{{CURRENT_BRANCH}}|$CURRENT_BRANCH|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
     sed -i '' "s|{{COMMIT_HASH}}|$COMMIT_HASH|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
     sed -i '' "s|{{PORT}}|${PORT:-4000}|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
     sed -i '' "s|{{PARTITION}}|${PARTITION:-0}|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
+    sed -i '' "s|{{PLAN_TITLE}}|$PLAN_TITLE|g" "$WORKSPACE_PATH/RESUME_CONTEXT.md"
 fi
 
 open_cursor_workspace "$WORKSPACE_PATH" "$FEATURE_NAME" "✅ Workspace resumed successfully!"

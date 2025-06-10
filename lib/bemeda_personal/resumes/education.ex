@@ -48,5 +48,8 @@ defmodule BemedaPersonal.Resumes.Education do
     ])
     |> DateValidator.validate_end_date_after_start_date()
     |> DateValidator.validate_current_end_date("end date must be blank for current education")
+    |> DateValidator.validate_start_date_completion(
+      "either mark as current or provide an end date"
+    )
   end
 end

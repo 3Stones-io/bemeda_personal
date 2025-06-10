@@ -124,6 +124,51 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       refute html =~ ~s(<video controls)
     end
 
+    test "displays user's resume when user has a public resume", %{
+      conn: conn,
+      job_application: job_application,
+      resume: resume
+    } do
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ resume.headline
+      assert html =~ resume.summary
+      assert html =~ resume.location
+      assert html =~ resume.contact_email
+      assert html =~ resume.phone_number
+      assert html =~ resume.website_url
+    end
+
+    test "does not display user's resume when resume is private", %{
+      conn: conn,
+      job: job
+    } do
+      user = user_fixture()
+      resume_fixture(user, %{is_public: false})
+
+      job_application =
+        job_application_fixture(user, job, %{
+          cover_letter: "Application without public resume"
+        })
+
+      conn = log_in_user(conn, user)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      refute html =~ "Software Engineer"
+      refute html =~ "Experienced software engineer"
+      refute html =~ "New York, NY"
+      refute html =~ "contact@example.com"
+    end
+
     test "shows the cover letter in chat messages when viewing job application", %{
       conn: conn,
       job_application: job_application
@@ -137,7 +182,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ job_application.cover_letter
 
       messages = Chat.list_messages(job_application)
-      assert length(messages) == 1
+      assert length(messages) == 2
     end
 
     test "shows both video and cover letter when application has video", %{
@@ -170,7 +215,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "Application with video"
 
       messages = Chat.list_messages(job_application)
-      assert length(messages) == 1
+      assert length(messages) == 2
     end
 
     test "allows user to send new messages", %{
@@ -190,12 +235,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       |> render_submit()
 
       messages = Chat.list_messages(job_application)
-      assert length(messages) == 2
+      assert length(messages) == 3
 
       assert_enqueued(
         worker: EmailNotificationWorker,
         args: %{
-          message_id: Enum.at(messages, 1).id,
+          message_id: Enum.at(messages, 2).id,
           type: "new_message"
         }
       )
@@ -222,7 +267,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       |> form("#chat-form", %{message: %{content: " "}})
       |> render_submit()
 
-      [_job_application | messages] = Chat.list_messages(job_application)
+      [_job_application, _resume | messages] = Chat.list_messages(job_application)
       assert Enum.empty?(messages)
     end
 
@@ -270,7 +315,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       updated_html = render(view)
       assert updated_html =~ "hero-arrow-up-on-square"
 
-      [_job_application_message, uploaded_message] = Chat.list_messages(job_application)
+      [_job_application, _resume, uploaded_message] = Chat.list_messages(job_application)
 
       assert uploaded_message
       assert uploaded_message.media_asset.file_name == "test-video.mp4"
@@ -304,7 +349,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{filename: "document.pdf", type: "application/pdf"}
       )
 
-      [_job_application_message, pdf_message] = Chat.list_messages(job_application)
+      [_job_application, _resume, pdf_message] = Chat.list_messages(job_application)
 
       assert pdf_message.media_asset.file_name == "document.pdf"
       assert pdf_message.media_asset.type == "application/pdf"
@@ -333,7 +378,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{filename: "profile.jpg", type: "image/jpeg"}
       )
 
-      [_job_application_message, _pdf_message, image_message] =
+      [_job_application, _resume, _pdf_message, image_message] =
         Chat.list_messages(job_application)
 
       assert image_message
@@ -586,45 +631,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       job_application: job_application
     } do
-      {:ok, job_application_under_review} =
-        JobApplications.update_job_application_status(
-          job_application,
-          job_application.user,
-          %{
-            "to_state" => "under_review"
-          }
-        )
-
-      {:ok, job_application_screening} =
-        JobApplications.update_job_application_status(
-          job_application_under_review,
-          job_application.user,
-          %{
-            "to_state" => "screening"
-          }
-        )
-
-      {:ok, job_application_interview_scheduled} =
-        JobApplications.update_job_application_status(
-          job_application_screening,
-          job_application.user,
-          %{
-            "to_state" => "interview_scheduled"
-          }
-        )
-
-      {:ok, job_application_interviewed} =
-        JobApplications.update_job_application_status(
-          job_application_interview_scheduled,
-          job_application.user,
-          %{
-            "to_state" => "interviewed"
-          }
-        )
-
       {:ok, job_application_offer_extended} =
         JobApplications.update_job_application_status(
-          job_application_interviewed,
+          job_application,
           job_application.user,
           %{
             "to_state" => "offer_extended"
@@ -712,6 +721,44 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert updated_html =~ "You have withdrawn your application"
     end
 
+    test "user can reverse a withdrawn application", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "withdrawn"})
+
+      view
+      |> form("#job-application-state-transition-form")
+      |> render_submit(%{
+        "job_application_state_transition" => %{}
+      })
+
+      html1 = render(view)
+
+      assert html1 =~ "Resume Application"
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "applied"})
+
+      view
+      |> form("#job-application-state-transition-form")
+      |> render_submit(%{
+        "job_application_state_transition" => %{
+          "notes" => "I would like to reactivate my application."
+        }
+      })
+
+      html2 = render(view)
+      assert html2 =~ "Withdraw Application"
+      job = JobApplications.get_job_application!(job_application.id)
+      assert job.state == "applied"
+    end
+
     test "status messages are shown at each stage", %{
       conn: conn,
       job_application: job_application
@@ -729,13 +776,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert initial_messages_html =~ job_application.cover_letter
 
-      render_hook(view, "show-status-transition-modal", %{"to_state" => "under_review"})
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
 
       view
       |> form("#job-application-state-transition-form")
       |> render_submit(%{
         "job_application_state_transition" => %{
-          "notes" => "Application looks good, moving to review."
+          "notes" => "We'd like to extend an offer."
         }
       })
 
@@ -758,15 +805,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         |> element("#chat-messages")
         |> render()
 
-      assert updated_messages_html =~ "application is now under review"
+      assert updated_messages_html =~ "offer has been extended"
 
-      render_hook(updated_view, "show-status-transition-modal", %{"to_state" => "screening"})
+      render_hook(updated_view, "show-status-transition-modal", %{"to_state" => "offer_accepted"})
 
       updated_view
       |> form("#job-application-state-transition-form")
       |> render_submit(%{
         "job_application_state_transition" => %{
-          "notes" => "Moving to screening phase."
+          "notes" => "Accepting the offer."
         }
       })
 
@@ -778,19 +825,19 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         }
       )
 
-      {:ok, screening_view, _html} =
+      {:ok, accepted_view, _html} =
         live(
           conn,
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      screening_messages_html =
-        screening_view
+      accepted_messages_html =
+        accepted_view
         |> element("#chat-messages")
         |> render()
 
-      assert screening_messages_html =~ "screening phase"
-      assert screening_messages_html =~ "under review"
+      assert accepted_messages_html =~ "You have accepted the offer"
+      assert accepted_messages_html =~ "An offer has been extended to you"
     end
 
     test "displays status update buttons for available transitions", %{

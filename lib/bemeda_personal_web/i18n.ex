@@ -12,14 +12,8 @@ defmodule BemedaPersonalWeb.I18n do
   def translate_status(state) do
     state_translations = %{
       "applied" => dgettext("jobs", "Applied"),
-      "interview_scheduled" => dgettext("jobs", "Interview Scheduled"),
-      "interviewed" => dgettext("jobs", "Interviewed"),
       "offer_accepted" => dgettext("jobs", "Offer Accepted"),
-      "offer_declined" => dgettext("jobs", "Offer Declined"),
       "offer_extended" => dgettext("jobs", "Offer Extended"),
-      "rejected" => dgettext("jobs", "Rejected"),
-      "screening" => dgettext("jobs", "Screening"),
-      "under_review" => dgettext("jobs", "Under Review"),
       "withdrawn" => dgettext("jobs", "Withdrawn")
     }
 
@@ -29,15 +23,9 @@ defmodule BemedaPersonalWeb.I18n do
   @spec translate_status_action(enum_value()) :: translated_string()
   def translate_status_action(state) do
     action_translations = %{
-      "applied" => dgettext("jobs", "Submit Application"),
-      "interview_scheduled" => dgettext("jobs", "Schedule Interview"),
-      "interviewed" => dgettext("jobs", "Mark as Interviewed"),
+      "applied" => dgettext("jobs", "Resume Application"),
       "offer_accepted" => dgettext("jobs", "Accept Offer"),
-      "offer_declined" => dgettext("jobs", "Decline Offer"),
       "offer_extended" => dgettext("jobs", "Extend Offer"),
-      "rejected" => dgettext("jobs", "Reject Application"),
-      "screening" => dgettext("jobs", "Start Screening"),
-      "under_review" => dgettext("jobs", "Start Review"),
       "withdrawn" => dgettext("jobs", "Withdraw Application")
     }
 
