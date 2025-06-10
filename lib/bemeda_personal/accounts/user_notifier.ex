@@ -15,7 +15,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   alias BemedaPersonal.Accounts.EmailTemplates.UpdateEmailInstructions
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.Jobs.JobApplication
+  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Mailer
 
   @type email :: Swoosh.Email.t()

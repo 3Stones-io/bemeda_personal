@@ -3,11 +3,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.DateUtils
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
 
   describe "/jobs/:job_id/job_applications/:id/history" do
     setup %{conn: conn} do
@@ -26,13 +27,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
       conn = log_in_user(conn, user)
 
       {:ok, offer_extended_app} =
-        Jobs.update_job_application_status(job_application, company_user, %{
+        JobApplications.update_job_application_status(job_application, company_user, %{
           "notes" => "We'd like to extend an offer",
           "to_state" => "offer_extended"
         })
 
       {:ok, offer_accepted_app} =
-        Jobs.update_job_application_status(offer_extended_app, company_user, %{
+        JobApplications.update_job_application_status(offer_extended_app, company_user, %{
           "notes" => "Candidate accepted the offer",
           "to_state" => "offer_accepted"
         })
@@ -95,7 +96,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
       conn: conn,
       job_application: job_application
     } do
-      transitions = Jobs.list_job_application_state_transitions(job_application)
+      transitions = JobApplications.list_job_application_state_transitions(job_application)
       first_transition = List.last(transitions)
 
       {:ok, _view, html} =
@@ -114,7 +115,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
       conn: conn,
       job_application: job_application
     } do
-      transitions = Jobs.list_job_application_state_transitions(job_application)
+      transitions = JobApplications.list_job_application_state_transitions(job_application)
 
       {:ok, _view, html} =
         live(

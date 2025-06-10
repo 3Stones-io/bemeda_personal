@@ -3,8 +3,8 @@ defmodule BemedaPersonal.QueryBuilderTest do
 
   import Ecto.Query
 
-  alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.QueryBuilder
 
   describe "apply_filters/3" do

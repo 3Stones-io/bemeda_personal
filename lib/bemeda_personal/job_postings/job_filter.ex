@@ -1,11 +1,11 @@
-defmodule BemedaPersonal.Jobs.JobFilter do
+defmodule BemedaPersonal.JobPostings.JobFilter do
   @moduledoc false
 
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  alias BemedaPersonal.Jobs.FilterUtils
+  alias BemedaPersonal.JobPostings.FilterUtils
 
   @type changeset() :: Ecto.Changeset.t()
   @type t :: %__MODULE__{}

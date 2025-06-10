@@ -3,7 +3,8 @@ defmodule BemedaPersonal.DocumentsTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Mox
 
   alias BemedaPersonal.Chat

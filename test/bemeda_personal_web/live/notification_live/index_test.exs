@@ -4,7 +4,8 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.EmailsFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Emails

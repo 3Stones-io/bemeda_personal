@@ -2,7 +2,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Companies
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
@@ -32,11 +32,11 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
 
   defp apply_action(socket, :show, %{"id" => id}) do
     company = Companies.get_company!(id)
-    job_postings = Jobs.list_job_postings(%{company_id: company.id}, 10)
+    job_postings = JobPostings.list_job_postings(%{company_id: company.id}, 10)
 
     socket
     |> assign(:company, company)
-    |> assign(:job_count, Jobs.company_jobs_count(company.id))
+    |> assign(:job_count, JobPostings.company_jobs_count(company.id))
     |> assign(:page_title, company.name)
     |> stream(:job_postings, job_postings)
   end

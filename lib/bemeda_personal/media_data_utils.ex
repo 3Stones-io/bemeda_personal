@@ -2,8 +2,8 @@ defmodule BemedaPersonal.MediaDataUtils do
   @moduledoc false
 
   alias BemedaPersonal.Companies.Company
-  alias BemedaPersonal.Jobs.JobApplication
-  alias BemedaPersonal.Jobs.JobPosting
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.Media
 
   @type attrs :: map()

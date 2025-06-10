@@ -4,7 +4,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.ChatFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Swoosh.TestAssertions
 
   alias BemedaPersonal.Accounts.UserNotifier

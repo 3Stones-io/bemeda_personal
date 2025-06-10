@@ -10,7 +10,7 @@ defmodule BemedaPersonal.Documents do
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Documents.Processor
   alias BemedaPersonal.Documents.Storage
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Media
 
   require Logger
@@ -55,7 +55,12 @@ defmodule BemedaPersonal.Documents do
     {:ok, %Message{}}
 
   """
-  @spec generate_pdf(message_id(), variables(), Accounts.User.t(), Jobs.JobApplication.t()) ::
+  @spec generate_pdf(
+          message_id(),
+          variables(),
+          Accounts.User.t(),
+          JobApplications.JobApplication.t()
+        ) ::
           {:ok, Chat.Message.t()} | {:error, reason()}
   def generate_pdf(message_id, variables, user, job_application) do
     with {:ok, %Media.MediaAsset{upload_id: upload_id} = media_asset} <-

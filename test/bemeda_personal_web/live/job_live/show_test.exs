@@ -3,8 +3,10 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
+
+  alias BemedaPersonal.JobPostings
 
   describe "Job Show" do
     setup %{conn: conn} do
@@ -101,7 +103,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
 
     test "displays video player for job posting with video", %{conn: conn, job: job} do
       {:ok, job} =
-        BemedaPersonal.Jobs.update_job_posting(job, %{
+        JobPostings.update_job_posting(job, %{
           "media_data" => %{
             "file_name" => "test_video.mp4",
             "status" => :uploaded,

@@ -7,14 +7,14 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
   alias BemedaPersonal.Accounts.UserNotifier
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Emails
-  alias BemedaPersonal.Jobs
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonalWeb.Endpoint
 
   require Logger
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"type" => "job_application_received"} = args}) do
-    job_application = Jobs.get_job_application!(args["job_application_id"])
+    job_application = JobApplications.get_job_application!(args["job_application_id"])
 
     send_notification(
       fn -> UserNotifier.deliver_user_job_application_received(job_application, args["url"]) end,
@@ -37,7 +37,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"type" => "job_application_status_update"} = args}) do
-    job_application = Jobs.get_job_application!(args["job_application_id"])
+    job_application = JobApplications.get_job_application!(args["job_application_id"])
 
     send_notification(
       fn -> UserNotifier.deliver_user_job_application_status(job_application, args["url"]) end,

@@ -115,7 +115,7 @@ msgstr ""
 msgid "Employment Type"
 msgstr ""
 
-#: lib/bemeda_personal/jobs/job_application_filter.ex
+#: lib/bemeda_personal/job_applications/job_application_filter.ex
 #, elixir-autogen, elixir-format
 msgid "End date must be after or equal to start date"
 msgstr ""
@@ -320,7 +320,7 @@ msgstr ""
 msgid "Show History"
 msgstr ""
 
-#: lib/bemeda_personal/jobs/job_application_filter.ex
+#: lib/bemeda_personal/job_applications/job_application_filter.ex
 #, elixir-autogen, elixir-format
 msgid "Start date must be before or equal to end date"
 msgstr ""
@@ -396,7 +396,7 @@ msgstr ""
 msgid "You haven't applied for any jobs yet."
 msgstr ""
 
-#: lib/bemeda_personal/jobs/job_posting.ex
+#: lib/bemeda_personal/job_postings/job_posting.ex
 #, elixir-autogen, elixir-format
 msgid "must be less than or equal to salary maximum"
 msgstr ""

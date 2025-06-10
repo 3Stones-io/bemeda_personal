@@ -4,7 +4,8 @@ defmodule BemedaPersonal.ChatTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.ChatFixtures
   import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobsFixtures
+  import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobPostingsFixtures
 
   alias BemedaPersonal.Chat
   alias BemedaPersonalWeb.Endpoint

@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   use BemedaPersonalWeb, :html
 
-  alias BemedaPersonal.Jobs.JobFilter
+  alias BemedaPersonal.JobPostings.JobFilter
   alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents

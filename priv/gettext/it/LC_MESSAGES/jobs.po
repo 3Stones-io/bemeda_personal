@@ -115,7 +115,7 @@ msgstr "Modifica la Tua Candidatura"
 msgid "Employment Type"
 msgstr "Tipo di Impiego"
 
-#: lib/bemeda_personal/jobs/job_application_filter.ex
+#: lib/bemeda_personal/job_applications/job_application_filter.ex
 #, elixir-autogen, elixir-format
 msgid "End date must be after or equal to start date"
 msgstr "La data di fine deve essere successiva o uguale alla data di inizio"
@@ -320,7 +320,7 @@ msgstr "Seleziona uno stato"
 msgid "Show History"
 msgstr "Mostra Cronologia"
 
-#: lib/bemeda_personal/jobs/job_application_filter.ex
+#: lib/bemeda_personal/job_applications/job_application_filter.ex
 #, elixir-autogen, elixir-format
 msgid "Start date must be before or equal to end date"
 msgstr "La data di inizio deve essere precedente o uguale alla data di fine"
@@ -396,7 +396,7 @@ msgstr "Non sei autorizzato a eliminare questo annuncio di lavoro"
 msgid "You haven't applied for any jobs yet."
 msgstr "Non hai ancora fatto domanda per nessun lavoro."
 
-#: lib/bemeda_personal/jobs/job_posting.ex
+#: lib/bemeda_personal/job_postings/job_posting.ex
 #, elixir-autogen, elixir-format
 msgid "must be less than or equal to salary maximum"
 msgstr "deve essere minore o uguale al salario massimo"
