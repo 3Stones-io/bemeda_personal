@@ -43,11 +43,12 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
       user = user_fixture(%{user_type: :employer, confirmed: true})
       conn = log_in_user(conn, user)
 
-      {:ok, _lv, html} = live(conn, ~p"/jobs")
+      {:ok, _lv, html} = live(conn, ~p"/company/new")
 
       assert html =~ "Bemeda"
-      refute html =~ "Company Dashboard"
+      refute html =~ ~s{href="/company"}
       assert html =~ "Create Company"
+      refute html =~ ~s{href="/jobs"}
       assert html =~ "Settings"
       assert html =~ "Log out"
       assert html =~ user.email
@@ -64,11 +65,12 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
       _company = company_fixture(user)
       conn = log_in_user(conn, user)
 
-      {:ok, _lv, html} = live(conn, ~p"/jobs")
+      {:ok, _lv, html} = live(conn, ~p"/company")
 
       assert html =~ "Bemeda"
-      assert html =~ "Company Dashboard"
-      refute html =~ "Create Company"
+      assert html =~ ~s{href="/company"}
+      refute html =~ ~s{href="/company/new"}
+      refute html =~ ~s{href="/jobs"}
       assert html =~ user.email
       refute html =~ "My Applications"
       refute html =~ "Sign up"

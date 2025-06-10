@@ -70,6 +70,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
               <.link
+                :if={!@current_user || @current_user.user_type == :job_seeker}
                 navigate={~p"/jobs"}
                 class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
@@ -211,6 +212,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             <LanguageSwitcher.language_switcher id="language-switcher-mobile" locale={@locale} />
           </div>
           <.link
+            :if={!@current_user || @current_user.user_type == :job_seeker}
             navigate={~p"/jobs"}
             class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
           >
