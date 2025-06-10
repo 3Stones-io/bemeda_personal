@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
 
   alias BemedaPersonal.Account.User
   alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.Jobs.JobApplication
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Resumes.Resume
@@ -409,9 +410,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
               else: "Resume"}
           </h3>
           <p class="text-xs text-gray-500">
-            {dgettext("resumes", "Resume")} • {if @message.updated_at,
-              do: BemedaPersonal.DateUtils.format_emails_date(@message.updated_at),
-              else: ""}
+            {dgettext("resumes", "Resume")} • {DateUtils.format_emails_date(@message.updated_at)}
           </p>
         </div>
         <div class="flex-shrink-0">
@@ -624,7 +623,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
     <div class={"border-l-2 #{@border_color} pl-3"}>
       <h4 class="text-xs font-medium text-gray-800">{@title}</h4>
       <p class="text-xs text-gray-600">{@subtitle}</p>
-      <p :if={@location != ""} class="text-xs text-gray-500">{@location}</p>
+      <p :if={@location} class="text-xs text-gray-500">{@location}</p>
       <p class="text-xs text-gray-500">
         {format_date_range(@start_date, @end_date, @current)}
       </p>
