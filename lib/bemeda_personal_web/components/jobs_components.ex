@@ -23,7 +23,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
   def job_posting_card(assigns) do
     assigns =
       assign_new(assigns, :job_view_path, fn
-        %{job: job, job_view: :company_job} -> ~p"/companies/#{job.company_id}/jobs/#{job}"
+        %{job: job, job_view: :company_job} -> ~p"/company/jobs/#{job}"
         %{job: job, job_view: :job} -> ~p"/jobs/#{job}"
       end)
 
@@ -38,7 +38,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
         <p :if={@show_company_name} class="text-sm mb-2">
           <.link
-            navigate={~p"/company/#{@job.company_id}"}
+            navigate={~p"/companies/#{@job.company_id}"}
             class="text-indigo-600 hover:text-indigo-800"
           >
             {@job.company.name}
@@ -74,7 +74,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
       <div :if={@show_actions} class="flex absolute top-4 right-4 space-x-4">
         <.link
-          navigate={~p"/companies/#{@job.company_id}/applicants/#{@job.id}"}
+          navigate={~p"/company/applicants/#{@job.id}"}
           class="w-8 h-8 bg-green-100 rounded-full text-green-600 hover:bg-green-200 flex items-center justify-center"
           title={dgettext("jobs", "View applicants")}
         >
@@ -82,7 +82,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </.link>
 
         <.link
-          patch={~p"/companies/#{@job.company_id}/jobs/#{@job.id}/edit"}
+          patch={~p"/company/jobs/#{@job.id}/edit"}
           class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center"
           title={dgettext("jobs", "Edit job")}
         >
@@ -185,7 +185,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
             <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Company Name")}</dt>
             <dd class="mt-1 text-sm text-gray-900">
               <.link
-                navigate={~p"/company/#{@company.id}"}
+                navigate={~p"/companies/#{@company.id}"}
                 class="text-indigo-600 hover:text-indigo-900"
               >
                 {@company.name}
@@ -220,13 +220,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
           <div :if={@show_links} class="mt-4">
             <.link
-              navigate={~p"/company/#{@company.id}"}
+              navigate={~p"/companies/#{@company.id}"}
               class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               {dgettext("companies", "View Company Profile")}
             </.link>
             <.link
-              navigate={~p"/company/#{@company.id}/jobs"}
+              navigate={~p"/companies/#{@company.id}/jobs"}
               class="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               {dgettext("companies", "View All Jobs")}
@@ -275,7 +275,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
     <nav class="flex mb-4" aria-label="Breadcrumb">
       <ol class="flex items-center space-x-2">
         <li>
-          <.link navigate={~p"/company/#{@company.id}"} class="text-gray-500 hover:text-gray-700">
+          <.link navigate={~p"/companies/#{@company.id}"} class="text-gray-500 hover:text-gray-700">
             {@company.name}
           </.link>
         </li>
@@ -313,7 +313,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <h1 class="mt-2 text-3xl font-bold text-gray-900">{@job.title}</h1>
       <div class="mt-1">
         <p class="text-lg text-gray-700">
-          <.link navigate={~p"/company/#{@job.company.id}"} class="hover:text-indigo-600">
+          <.link navigate={~p"/companies/#{@job.company.id}"} class="hover:text-indigo-600">
             {@job.company.name}
           </.link>
         </p>
@@ -448,13 +448,13 @@ defmodule BemedaPersonalWeb.JobsComponents do
     ~H"""
     <div
       class="px-8 py-6 relative group cursor-pointer"
-      phx-click={JS.navigate(~p"/companies/#{@job.company_id}/applicant/#{@applicant.id}")}
+      phx-click={JS.navigate(~p"/company/applicant/#{@applicant.id}")}
     >
       <div class="flex justify-between items-start">
         <div class="flex-1">
           <div class="flex items-center gap-3">
             <h3 class="text-lg font-medium text-gray-900">
-              <.link navigate={~p"/companies/#{@job.company_id}/applicant/#{@applicant.id}"} id={@id}>
+              <.link navigate={~p"/company/applicant/#{@applicant.id}"} id={@id}>
                 {"#{@applicant.user.first_name} #{@applicant.user.last_name}"}
               </.link>
             </h3>

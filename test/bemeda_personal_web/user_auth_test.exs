@@ -341,7 +341,125 @@ defmodule BemedaPersonalWeb.UserAuthTest do
         UserAuth.on_mount(:require_no_existing_company, %{}, session, socket)
 
       assert {:redirect, %{to: path}} = updated_socket.redirected
-      assert path == ~p"/companies"
+      assert path == ~p"/company"
+    end
+  end
+
+  describe "on_mount :require_user_company" do
+    test "continues and assigns company if user has a company", %{conn: conn} do
+      user_with_company = user_fixture()
+      company = company_fixture(user_with_company)
+      user_with_company_token = Accounts.generate_user_session_token(user_with_company)
+
+      session =
+        conn
+        |> put_session(:user_token, user_with_company_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user_with_company}
+      }
+
+      {:cont, updated_socket} =
+        UserAuth.on_mount(:require_user_company, %{}, session, socket)
+
+      assert updated_socket.assigns.company.id == company.id
+    end
+
+    test "halts if user has no company", %{conn: conn} do
+      user_without_company = user_fixture()
+      user_without_company_token = Accounts.generate_user_session_token(user_without_company)
+
+      session =
+        conn
+        |> put_session(:user_token, user_without_company_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user_without_company}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:require_user_company, %{}, session, socket)
+
+      assert {:redirect, %{to: path}} = updated_socket.redirected
+      assert path == ~p"/company/new"
+
+      assert Phoenix.Flash.get(updated_socket.assigns.flash, :error) ==
+               "You need to create a company first."
+    end
+  end
+
+  describe "require_employer_user_type/2" do
+    test "allows access if user is an employer", %{conn: conn} do
+      employer_user = user_fixture(%{user_type: :employer})
+      conn = assign(conn, :current_user, employer_user)
+      result_conn = UserAuth.require_employer_user_type(conn, [])
+
+      refute result_conn.halted
+    end
+
+    test "redirects if user is a job seeker", %{conn: conn} do
+      job_seeker_user = user_fixture(%{user_type: :job_seeker})
+
+      conn =
+        conn
+        |> assign(:current_user, job_seeker_user)
+        |> fetch_flash()
+
+      result_conn = UserAuth.require_employer_user_type(conn, [])
+
+      assert result_conn.halted
+      assert redirected_to(result_conn) == ~p"/"
+
+      assert Phoenix.Flash.get(result_conn.assigns.flash, :error) ==
+               "You must be an employer to access this page."
+    end
+
+    test "redirects if user is not authenticated", %{conn: conn} do
+      conn =
+        conn
+        |> assign(:current_user, nil)
+        |> fetch_flash()
+
+      result_conn = UserAuth.require_employer_user_type(conn, [])
+
+      assert result_conn.halted
+      assert redirected_to(result_conn) == ~p"/"
+
+      assert Phoenix.Flash.get(result_conn.assigns.flash, :error) ==
+               "You must be an employer to access this page."
+    end
+  end
+
+  describe "require_user_company/2" do
+    test "allows access and assigns company if user has a company", %{conn: conn} do
+      user_with_company = user_fixture()
+      company = company_fixture(user_with_company)
+      conn = assign(conn, :current_user, user_with_company)
+      result_conn = UserAuth.require_user_company(conn, [])
+
+      refute result_conn.halted
+      assert result_conn.assigns.company.id == company.id
+    end
+
+    test "redirects if user has no company", %{conn: conn} do
+      user_without_company = user_fixture()
+
+      conn =
+        conn
+        |> assign(:current_user, user_without_company)
+        |> fetch_flash()
+
+      result_conn = UserAuth.require_user_company(conn, [])
+
+      assert result_conn.halted
+      assert redirected_to(result_conn) == ~p"/company/new"
+
+      assert Phoenix.Flash.get(result_conn.assigns.flash, :error) ==
+               "You need to create a company first."
     end
   end
 
@@ -443,7 +561,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       result_conn = UserAuth.require_admin_user(conn, [])
 
       assert result_conn.halted
-      assert redirected_to(result_conn) == ~p"/companies"
+      assert redirected_to(result_conn) == ~p"/company"
 
       assert Phoenix.Flash.get(result_conn.assigns.flash, :error) ==
                "You don't have permission to access this company."
@@ -466,7 +584,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       result_conn = UserAuth.require_no_existing_company(conn, [])
 
       assert result_conn.halted
-      assert redirected_to(result_conn) == ~p"/companies"
+      assert redirected_to(result_conn) == ~p"/company"
     end
   end
 end

@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
+  import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.EmailsFixtures
   import Phoenix.LiveViewTest
 
@@ -12,31 +13,72 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
       assert html =~ "Bemeda"
       assert html =~ "Log in"
       assert html =~ "Sign up"
+      assert html =~ "For Employers"
       refute html =~ "My Applications"
-      refute html =~ "Resume"
       refute html =~ "Settings"
       refute html =~ "Log out"
     end
 
-    test "renders navigation bar with user links when logged in", %{conn: conn} do
-      user = user_fixture(%{confirmed: true})
+    test "renders navigation bar with job seeker links when logged in as job seeker", %{
+      conn: conn
+    } do
+      user = user_fixture(%{user_type: :job_seeker, confirmed: true})
       conn = log_in_user(conn, user)
 
       {:ok, _lv, html} = live(conn, ~p"/jobs")
 
       assert html =~ "Bemeda"
       assert html =~ "My Applications"
-      assert html =~ "Resume"
       assert html =~ "Settings"
       assert html =~ "Log out"
       assert html =~ user.email
       refute html =~ "Sign up"
+      refute html =~ "For Employers"
+    end
+
+    test "renders navigation bar with employer links when logged in as employer without company",
+         %{
+           conn: conn
+         } do
+      user = user_fixture(%{user_type: :employer, confirmed: true})
+      conn = log_in_user(conn, user)
+
+      {:ok, _lv, html} = live(conn, ~p"/jobs")
+
+      assert html =~ "Bemeda"
+      refute html =~ "Company Dashboard"
+      assert html =~ "Create Company"
+      assert html =~ "Settings"
+      assert html =~ "Log out"
+      assert html =~ user.email
+      refute html =~ "My Applications"
+      refute html =~ "Sign up"
+      refute html =~ "For Employers"
+    end
+
+    test "renders navigation bar with employer links when logged in as employer with a company",
+         %{
+           conn: conn
+         } do
+      user = employer_user_fixture()
+      _company = company_fixture(user)
+      conn = log_in_user(conn, user)
+
+      {:ok, _lv, html} = live(conn, ~p"/jobs")
+
+      assert html =~ "Bemeda"
+      assert html =~ "Company Dashboard"
+      refute html =~ "Create Company"
+      assert html =~ user.email
+      refute html =~ "My Applications"
+      refute html =~ "Sign up"
+      refute html =~ "For Employers"
     end
   end
 
   describe "Notification badge" do
     setup %{conn: conn} do
-      user = user_fixture(%{confirmed: true})
+      user = user_fixture(%{user_type: :job_seeker, confirmed: true})
       conn = log_in_user(conn, user)
 
       %{conn: conn, user: user}

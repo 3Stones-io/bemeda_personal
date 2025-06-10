@@ -13,7 +13,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
   alias BemedaPersonal.Ratings
 
   setup %{conn: conn} do
-    company_user = user_fixture(confirmed: true)
+    company_user = employer_user_fixture(confirmed: true)
     company = company_fixture(company_user)
     job = job_posting_fixture(company)
 
@@ -39,14 +39,13 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     }
   end
 
-  describe "/companies/:company_id/applicant/:id" do
+  describe "/company/:company_id/applicant/:id" do
     test "redirects if user is not logged in", %{
-      company: company,
       conn: conn,
       job_application: application
     } do
       assert {:error, redirect} =
-               live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+               live(conn, ~p"/company/applicant/#{application.id}")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
@@ -54,23 +53,21 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "redirects if user is not admin of the company", %{
-      company: company,
       conn: conn,
       job_application: application
     } do
-      other_user = user_fixture(confirmed: true)
+      other_user = employer_user_fixture(confirmed: true)
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
                conn
                |> log_in_user(other_user)
-               |> live(~p"/companies/#{company.id}/applicant/#{application.id}")
+               |> live(~p"/company/applicant/#{application.id}")
 
-      assert path == ~p"/companies"
-      assert flash["error"] == "You don't have permission to access this company."
+      assert path == ~p"/company/new"
+      assert flash["error"] == "You need to create a company first."
     end
 
     test "renders applicant details page", %{
-      company: company,
       company_user: company_user,
       conn: conn,
       job: job,
@@ -79,7 +76,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(company_user)
-        |> live(~p"/companies/#{company.id}/applicant/#{application.id}")
+        |> live(~p"/company/applicant/#{application.id}")
 
       applicant_name = "#{application.user.first_name} #{application.user.last_name}"
 
@@ -89,7 +86,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "displays resume information when available", %{
-      company: company,
       company_user: company_user,
       conn: conn,
       job_application: application
@@ -97,7 +93,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(company_user)
-        |> live(~p"/companies/#{company.id}/applicant/#{application.id}")
+        |> live(~p"/company/applicant/#{application.id}")
 
       applicant_name = "#{application.user.first_name} #{application.user.last_name}"
       assert html =~ applicant_name
@@ -105,7 +101,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "allows user to navigate to the applicant chat page", %{
-      company: company,
       company_user: company_user,
       conn: conn,
       job: job,
@@ -114,7 +109,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       assert {:ok, view, _html} =
-               live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+               live(conn, ~p"/company/applicant/#{application.id}")
 
       assert {:error, {:live_redirect, %{to: path}}} =
                view
@@ -125,7 +120,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "provides a link back to applicants list", %{
-      company: company,
       company_user: company_user,
       conn: conn,
       job_application: application
@@ -133,7 +127,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       assert {:ok, view, _html} =
-               live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+               live(conn, ~p"/company/applicant/#{application.id}")
 
       assert view
              |> element("a", "Back to Applicants")
@@ -141,7 +135,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "allows updating tags for the application", %{
-      company: company,
       company_user: user,
       conn: conn,
       job_application: application
@@ -149,7 +142,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, user)
 
       {:ok, view, _html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       assert has_element?(view, "#tags-input")
 
@@ -165,7 +158,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
 
   describe "applicant ratings" do
     test "displays component with no ratings", %{
-      company: company,
       company_user: company_user,
       conn: conn,
       job_application: application
@@ -173,7 +165,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       {:ok, _view, html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       assert html =~ "Rating"
       assert html =~ "hero-star"
@@ -201,7 +193,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       {:ok, _view, html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       assert html =~ "Rating"
       assert html =~ "4.0"
@@ -242,7 +234,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       {:ok, _view, html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       assert html =~ "Rating"
       assert html =~ "4.0"
@@ -272,7 +264,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       {:ok, view, _html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       html =
         view
@@ -314,7 +306,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       {:ok, view, _html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       view
       |> element("button", "Rate")
@@ -351,7 +343,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       {:ok, view, html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       assert html =~ "(0)"
       assert html =~ "No ratings yet"
@@ -372,7 +364,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     end
 
     test "handles cancel action for rating form", %{
-      company: company,
       company_user: company_user,
       conn: conn,
       job_application: application
@@ -380,7 +371,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn = log_in_user(conn, company_user)
 
       {:ok, view, _html} =
-        live(conn, ~p"/companies/#{company.id}/applicant/#{application.id}")
+        live(conn, ~p"/company/applicant/#{application.id}")
 
       view
       |> element("button", "Rate")
@@ -425,7 +416,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(company_user)
-        |> live(~p"/companies/#{company.id}/applicant/#{application.id}")
+        |> live(~p"/company/applicant/#{application.id}")
 
       assert html =~ "Rating"
       assert html =~ "3.5"

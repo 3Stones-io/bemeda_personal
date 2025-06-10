@@ -23,6 +23,7 @@ defmodule BemedaPersonal.Accounts.User do
     field :last_name, :string
     field :locale, Ecto.Enum, values: [:de, :en, :fr, :it], default: :de
     field :password, :string, virtual: true, redact: true
+    field :user_type, Ecto.Enum, values: [:job_seeker, :employer], default: :job_seeker
 
     has_one :resume, BemedaPersonal.Resumes.Resume
 
@@ -55,7 +56,7 @@ defmodule BemedaPersonal.Accounts.User do
   @spec registration_changeset(t() | changeset(), attrs(), opts()) :: changeset()
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :first_name, :last_name, :locale, :password])
+    |> cast(attrs, [:email, :first_name, :last_name, :locale, :password, :user_type])
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_name()
@@ -215,4 +216,18 @@ defmodule BemedaPersonal.Accounts.User do
       add_error(changeset, :current_password, dgettext("auth", "is not valid"))
     end
   end
+
+  @doc """
+  Returns true if the user is a job seeker.
+  """
+  @spec job_seeker?(t()) :: boolean()
+  def job_seeker?(%__MODULE__{user_type: :job_seeker}), do: true
+  def job_seeker?(_user), do: false
+
+  @doc """
+  Returns true if the user is an employer.
+  """
+  @spec employer?(t()) :: boolean()
+  def employer?(%__MODULE__{user_type: :employer}), do: true
+  def employer?(_user), do: false
 end

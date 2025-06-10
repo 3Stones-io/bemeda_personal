@@ -19,7 +19,7 @@ defmodule BemedaPersonalWeb.PageControllerTest do
     refute response =~ "Log out"
   end
 
-  test "GET / when logged in shows user-specific navigation", %{conn: conn} do
+  test "GET / when logged in as job seeker redirects to jobs", %{conn: conn} do
     user = user_fixture()
 
     conn =
@@ -27,22 +27,18 @@ defmodule BemedaPersonalWeb.PageControllerTest do
       |> log_in_user(user)
       |> get(~p"/")
 
-    response = html_response(conn, 200)
+    assert redirected_to(conn) == ~p"/jobs"
+  end
 
-    assert response =~ "Find Your Next"
-    assert response =~ "Career Opportunity"
+  test "GET / when logged in as employer redirects to company", %{conn: conn} do
+    user = employer_user_fixture()
 
-    assert response =~ "Browse Jobs"
-    assert response =~ "For Employers"
-    assert response =~ "My Applications"
-    assert response =~ "Resume"
-    assert response =~ "Settings"
-    assert response =~ "Log out"
+    conn =
+      conn
+      |> log_in_user(user)
+      |> get(~p"/")
 
-    assert response =~ user.email
-
-    refute response =~ "Log in"
-    refute response =~ "Sign up"
+    assert redirected_to(conn) == ~p"/company"
   end
 
   test "navigation links lead to correct pages", %{conn: conn} do
@@ -50,8 +46,16 @@ defmodule BemedaPersonalWeb.PageControllerTest do
     response = html_response(conn, 200)
 
     assert response =~ ~s{href="/jobs"}
-    assert response =~ ~s{href="/companies/new"}
+    assert response =~ ~s{href="/company/new"}
     assert response =~ ~s{href="/users/log_in"}
     assert response =~ ~s{href="/users/register"}
+  end
+
+  test "navigation component is rendered for non-logged-in users", %{conn: conn} do
+    conn = get(conn, ~p"/")
+    response = html_response(conn, 200)
+
+    assert response =~ ~s{<nav class="bg-gray-50 border-b border-gray-200">}
+    assert response =~ ~s{Bemeda}
   end
 end

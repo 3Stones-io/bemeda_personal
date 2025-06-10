@@ -12,7 +12,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
   alias BemedaPersonalWeb.I18n
 
   setup %{conn: conn} do
-    company_user = user_fixture(%{email: "company@example.com"})
+    company_user = employer_user_fixture(%{email: "company@example.com"})
     company = company_fixture(company_user)
     job = job_posting_fixture(company)
 
@@ -53,25 +53,25 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     }
   end
 
-  describe "/companies/:company_id/applicants" do
-    test "redirects if user is not logged in", %{conn: conn, company: company} do
-      assert {:error, redirect} = live(conn, ~p"/companies/#{company}/applicants")
+  describe "/company/:company_id/applicants" do
+    test "redirects if user is not logged in", %{conn: conn} do
+      assert {:error, redirect} = live(conn, ~p"/company/applicants")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
       assert %{"error" => "You must log in to access this page."} = flash
     end
 
-    test "redirects if user is not admin of the company", %{conn: conn, company: company} do
-      other_user = user_fixture(%{email: "other@example.com"})
+    test "redirects if user is not admin of the company", %{conn: conn} do
+      other_user = employer_user_fixture(%{email: "other@example.com"})
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
                conn
                |> log_in_user(other_user)
-               |> live(~p"/companies/#{company}/applicants")
+               |> live(~p"/company/applicants")
 
-      assert path == ~p"/companies"
-      assert flash["error"] == "You don't have permission to access this company."
+      assert path == ~p"/company/new"
+      assert flash["error"] == "You need to create a company first."
     end
 
     test "renders all company applicants page", %{
@@ -83,7 +83,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company}/applicants")
+        |> live(~p"/company/applicants")
 
       assert html =~ "Applicants"
       assert html =~ company.name
@@ -94,12 +94,11 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     test "allows navigation to applicant details", %{
       conn: conn,
       company_user: user,
-      company: company,
       job_application: application
     } do
       conn = log_in_user(conn, user)
 
-      assert {:ok, view, html} = live(conn, ~p"/companies/#{company}/applicants")
+      assert {:ok, view, html} = live(conn, ~p"/company/applicants")
       assert html =~ "#{application.user.first_name} #{application.user.last_name}"
 
       assert {:error, {:live_redirect, %{to: path}}} =
@@ -107,19 +106,18 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
                |> element("#applicant-#{application.id}")
                |> render_click()
 
-      assert path == ~p"/companies/#{company}/applicant/#{application.id}"
+      assert path == ~p"/company/applicant/#{application.id}"
     end
 
     test "filters applicants by name through form submission", %{
       conn: conn,
       company_user: user,
-      company: company,
       applicant: applicant,
       second_applicant: second_applicant
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, view, _html} = live(conn, ~p"/company/applicants")
 
       view
       |> form("#job_application_filter_form", %{
@@ -136,7 +134,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     test "filters applicants by tag through form submission", %{
       conn: conn,
       company_user: user,
-      company: company,
       job: job
     } do
       conn = log_in_user(conn, user)
@@ -149,7 +146,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       JobApplications.update_job_application_tags(application2, "urgent")
       JobApplications.update_job_application_tags(application3, "another")
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, view, _html} = live(conn, ~p"/company/applicants")
 
       view
       |> element("#job_application_filter_form")
@@ -183,13 +180,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     test "filters applicants by date range through form submission", %{
       conn: conn,
       company_user: user,
-      company: company,
       applicant: applicant,
       second_applicant: second_applicant
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, view, _html} = live(conn, ~p"/company/applicants")
 
       view
       |> form("#job_application_filter_form", %{
@@ -221,13 +217,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     test "clear filters button works", %{
       conn: conn,
       company_user: user,
-      company: company,
       applicant: applicant,
       second_applicant: second_applicant
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, view, _html} = live(conn, ~p"/company/applicants")
 
       view
       |> form("#job_application_filter_form", %{
@@ -243,7 +238,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       |> element("button", "Clear All")
       |> render_click()
 
-      assert_patch(view, ~p"/companies/#{company}/applicants")
+      assert_patch(view, ~p"/company/applicants")
 
       clear_html = render(view)
       assert clear_html =~ applicant.first_name
@@ -262,7 +257,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       conn = log_in_user(conn, user)
 
       {:ok, view, html} =
-        live(conn, ~p"/companies/#{company}/applicants?applicant_name=#{applicant.first_name}")
+        live(conn, ~p"/company/applicants?applicant_name=#{applicant.first_name}")
 
       assert html =~ "Filter Applications"
       assert html =~ "#{applicant.first_name} #{applicant.last_name}"
@@ -281,7 +276,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       {:ok, date_view, _html} =
         live(
           conn,
-          ~p"/companies/#{company}/applicants?date_from=#{Date.to_string(today)}&date_to=#{Date.to_string(tomorrow)}"
+          ~p"/company/applicants?date_from=#{Date.to_string(today)}&date_to=#{Date.to_string(tomorrow)}"
         )
 
       date_from_html =
@@ -297,7 +292,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert date_from_html =~ "value=\"#{Date.to_string(today)}\""
       assert date_to_html =~ "value=\"#{Date.to_string(tomorrow)}\""
 
-      {:ok, unfiltered_view, unfiltered_html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, unfiltered_view, unfiltered_html} = live(conn, ~p"/company/applicants")
 
       assert unfiltered_html =~ "#{applicant.first_name} #{applicant.last_name}"
       assert unfiltered_html =~ "Second Applicant"
@@ -312,13 +307,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
     test "shows applicant's status", %{
       company_user: user,
-      company: company,
       conn: conn,
       job_application: application
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, _view, html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, _view, html} = live(conn, ~p"/company/applicants")
 
       assert html =~ I18n.translate_status(application.state)
       assert html =~ "Status - update in chat interface"
@@ -327,12 +321,11 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     test "updates applicants list when someone applies for the job", %{
       conn: conn,
       company_user: user,
-      company: company,
       job: job
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants")
+      {:ok, view, _html} = live(conn, ~p"/company/applicants")
 
       new_applicant =
         user_fixture(%{first_name: "New", last_name: "Applicant", email: "new@example.com"})
@@ -351,7 +344,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     end
   end
 
-  describe "/companies/:company_id/applicants/:job_id" do
+  describe "/company/:company_id/applicants/:job_id" do
     test "renders applicants for a specific job posting", %{
       conn: conn,
       company_user: user,
@@ -365,7 +358,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company}/applicants/#{job}")
+        |> live(~p"/company/applicants/#{job.id}")
 
       assert html =~ "Applicants"
       assert html =~ job.title
@@ -376,7 +369,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     test "filters job-specific applicants by name through form", %{
       conn: conn,
       company_user: user,
-      company: company,
       job: job,
       applicant: applicant
     } do
@@ -385,7 +377,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/applicants/#{job}")
+      {:ok, view, _html} = live(conn, ~p"/company/applicants/#{job.id}")
 
       view
       |> form("#job_application_filter_form", %{
@@ -402,7 +394,6 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
     test "handles URL query parameters for job-specific applicants", %{
       conn: conn,
       company_user: user,
-      company: company,
       job: job,
       applicant: applicant
     } do
@@ -414,7 +405,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       {:ok, view, html} =
         live(
           conn,
-          ~p"/companies/#{company}/applicants/#{job}?applicant_name=#{applicant.first_name}&date_from=#{Date.to_string(today)}&date_to=#{Date.to_string(tomorrow)}"
+          ~p"/company/applicants/#{job.id}?applicant_name=#{applicant.first_name}&date_from=#{Date.to_string(today)}&date_to=#{Date.to_string(tomorrow)}"
         )
 
       assert html =~ job.title
@@ -428,7 +419,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert applicant_name_html =~ "value=\"#{applicant.first_name}\""
 
       {:ok, unfiltered_view, unfiltered_html} =
-        live(conn, ~p"/companies/#{company}/applicants/#{job}")
+        live(conn, ~p"/company/applicants/#{job.id}")
 
       assert unfiltered_html =~ job.title
 

@@ -22,7 +22,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
 
   describe "Jobs" do
     setup %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job1 = job_posting_fixture(company, @create_attrs)
@@ -52,7 +52,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       job2: job2,
       job3: job3
     } do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       assert html =~ "Jobs at #{company.name}"
       assert html =~ company.industry
@@ -68,7 +68,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       conn: conn,
       job1: job1
     } do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       assert html =~ job1.title
       assert html =~ job1.location
@@ -79,7 +79,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       company: company,
       conn: conn
     } do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       if company.website_url do
         assert html =~ "Visit Website"
@@ -91,16 +91,16 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       company: company,
       conn: conn
     } do
-      {:ok, view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, view, html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       assert html =~ company.name
       assert html =~ "Jobs"
 
       {:ok, _view, html2} =
         view
-        |> element("a[href='/company/#{company.id}']")
+        |> element("a[href='/companies/#{company.id}']")
         |> render_click()
-        |> follow_redirect(conn, ~p"/company/#{company.id}")
+        |> follow_redirect(conn, ~p"/companies/#{company.id}")
 
       assert html2 =~ "About #{company.name}"
     end
@@ -113,7 +113,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
         job_posting_fixture(company, %{title: "Job #{i}"})
       end
 
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       assert html =~ "Job 4"
       assert html =~ "Job 9"
@@ -125,7 +125,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "shows company job page", %{conn: conn, company: company} do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       assert html =~ company.name
       assert html =~ company.industry
@@ -134,7 +134,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "lists all job postings", %{conn: conn, company: company} do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       assert html =~ "Jobs at #{company.name}"
       assert html =~ "Senior Software Engineer"
@@ -142,7 +142,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "filters jobs by title", %{conn: conn, company: company} do
-      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       view
       |> form("form[phx-submit=filter_jobs]", %{job_filter: %{title: "Senior"}})
@@ -155,7 +155,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "filters by remote_allowed=true", %{conn: conn, company: company} do
-      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       view
       |> form("form[phx-submit=filter_jobs]", %{job_filter: %{remote_allowed: "true"}})
@@ -168,7 +168,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "filters by remote_allowed=false", %{conn: conn, company: company} do
-      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       view
       |> form("form[phx-submit=filter_jobs]", %{job_filter: %{remote_allowed: "false"}})
@@ -181,14 +181,14 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "loads filters from URL parameters", %{conn: conn, company: company} do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}/jobs?title=Senior")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs?title=Senior")
 
       assert html =~ "Senior Software Engineer"
       refute html =~ "Junior Developer"
     end
 
     test "clear filters button works", %{conn: conn, company: company} do
-      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}/jobs")
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       view
       |> form("form[phx-submit=filter_jobs]", %{job_filter: %{title: "Senior"}})
@@ -203,7 +203,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       |> element("button", "Clear All")
       |> render_click()
 
-      assert_patch(view, ~p"/company/#{company.id}/jobs")
+      assert_patch(view, ~p"/companies/#{company.id}/jobs")
 
       clear_html = render(view)
 

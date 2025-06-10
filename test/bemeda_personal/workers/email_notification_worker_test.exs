@@ -49,7 +49,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       company: company,
       job_application: job_application
     } do
-      url = "http://localhost:4000/companies/#{company.id}/applicants/#{job_application.id}"
+      url = "http://localhost:4000/company/applicant/#{job_application.id}"
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{
@@ -93,7 +93,6 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
     test "broadcasts update_unread_count when notification is sent", %{
       admin_user: admin_user,
       applicant: applicant,
-      company: company,
       job_application: job_application
     } do
       applicant_notification_topic = "users:#{applicant.id}:notifications_count"
@@ -102,7 +101,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       Endpoint.subscribe(applicant_notification_topic)
       Endpoint.subscribe(admin_notification_topic)
 
-      url = "http://localhost:4000/companies/#{company.id}/applicants/#{job_application.id}"
+      url = "http://localhost:4000/company/applicant/#{job_application.id}"
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{
@@ -132,7 +131,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       company: company,
       job_application: job_application
     } do
-      url = "http://localhost:4000/companies/#{company.id}/applicants/#{job_application.id}"
+      url = "http://localhost:4000/company/applicant/#{job_application.id}"
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{
@@ -176,7 +175,6 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
     test "broadcasts update_unread_count when status notification is sent", %{
       admin_user: admin_user,
       applicant: applicant,
-      company: company,
       job_application: job_application
     } do
       applicant_notification_topic = "users:#{applicant.id}:notifications_count"
@@ -185,7 +183,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       Endpoint.subscribe(applicant_notification_topic)
       Endpoint.subscribe(admin_notification_topic)
 
-      url = "http://localhost:4000/companies/#{company.id}/applicants/#{job_application.id}"
+      url = "http://localhost:4000/company/applicant/#{job_application.id}"
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{
@@ -211,11 +209,10 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
   describe "perform/1 with new_message" do
     test "sends notification email about new message and creates email history", %{
       admin_user: admin_user,
-      company: company,
       message: message
     } do
       url =
-        "http://localhost:4000/companies/#{company.id}/applicants/#{message.job_application_id}"
+        "http://localhost:4000/company/applicant/#{message.job_application_id}"
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{
@@ -245,14 +242,13 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
 
     test "broadcasts update_unread_count when message notification is sent", %{
       admin_user: admin_user,
-      company: company,
       message: message
     } do
       notification_topic = "users:#{admin_user.id}:notifications_count"
       Endpoint.subscribe(notification_topic)
 
       url =
-        "http://localhost:4000/companies/#{company.id}/applicants/#{message.job_application_id}"
+        "http://localhost:4000/company/applicant/#{message.job_application_id}"
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{

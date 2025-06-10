@@ -32,8 +32,8 @@ defmodule BemedaPersonalWeb.Router do
       ] do
       live "/jobs", JobLive.Index, :index
       live "/jobs/:id", JobLive.Show, :show
-      live "/company/:id", CompanyPublicLive.Show, :show
-      live "/company/:id/jobs", CompanyPublicLive.Jobs, :jobs
+      live "/companies/:id", CompanyPublicLive.Show, :show
+      live "/companies/:id/jobs", CompanyPublicLive.Jobs, :jobs
     end
   end
 
@@ -70,6 +70,7 @@ defmodule BemedaPersonalWeb.Router do
         {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
       live "/users/register", UserRegistrationLive, :new
+      live "/users/register/:type", UserRegistrationLive, :register
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
@@ -109,20 +110,39 @@ defmodule BemedaPersonalWeb.Router do
     end
   end
 
-  scope "/companies", BemedaPersonalWeb do
-    pipe_through [:browser, :require_authenticated_user]
+  scope "/company", BemedaPersonalWeb do
+    pipe_through [
+      :browser,
+      :require_authenticated_user,
+      :require_employer_user_type,
+      :require_user_company
+    ]
 
-    live_session :user_companies,
+    live_session :user_company,
       on_mount: [
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.UserAuth, :require_user_company},
         {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
       live "/", CompanyLive.Index, :index
+      live "/edit", CompanyLive.Index, :edit
+      live "/jobs", CompanyJobLive.Index, :index
+      live "/jobs/new", CompanyJobLive.Index, :new
+      live "/jobs/:id", CompanyJobLive.Show, :show
+      live "/jobs/:id/edit", CompanyJobLive.Index, :edit
+      live "/applicants", CompanyApplicantLive.Index, :index
+      live "/applicants/:job_id", CompanyApplicantLive.Index, :index
+      live "/applicant/:id", CompanyApplicantLive.Show, :show
     end
   end
 
-  scope "/companies", BemedaPersonalWeb do
-    pipe_through [:browser, :require_authenticated_user, :require_no_existing_company]
+  scope "/company", BemedaPersonalWeb do
+    pipe_through [
+      :browser,
+      :require_authenticated_user,
+      :require_employer_user_type,
+      :require_no_existing_company
+    ]
 
     live_session :new_company,
       on_mount: [
@@ -131,29 +151,6 @@ defmodule BemedaPersonalWeb.Router do
         {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
       live "/new", CompanyLive.Index, :new
-    end
-  end
-
-  scope "/companies", BemedaPersonalWeb do
-    pipe_through [:browser, :require_authenticated_user, :require_admin_user]
-
-    live_session :require_admin_user,
-      on_mount: [
-        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
-        {BemedaPersonalWeb.UserAuth, :require_admin_user},
-        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
-      ] do
-      live "/:company_id/edit", CompanyLive.Index, :edit
-
-      live "/:company_id/jobs/new", CompanyJobLive.Index, :new
-      live "/:company_id/jobs", CompanyJobLive.Index, :index
-      live "/:company_id/jobs/:id", CompanyJobLive.Show, :show
-      live "/:company_id/jobs/:id/edit", CompanyJobLive.Index, :edit
-
-      # Applicant routes
-      live "/:company_id/applicants", CompanyApplicantLive.Index, :index
-      live "/:company_id/applicants/:job_id", CompanyApplicantLive.Index, :index
-      live "/:company_id/applicant/:id", CompanyApplicantLive.Show, :show
     end
   end
 
