@@ -6,8 +6,10 @@ defmodule BemedaPersonal.ChatTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
+  import BemedaPersonal.ResumesFixtures
 
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 
@@ -35,6 +37,21 @@ defmodule BemedaPersonal.ChatTest do
     } do
       [_job_application | messages] = Chat.list_messages(job_application)
       assert length(messages) == 1
+    end
+
+    test "includes user's public resume in the list when user has a public resume", %{
+      job_application: job_application
+    } do
+      resume_fixture(job_application.user, %{is_public: true})
+
+      result = Chat.list_messages(job_application)
+
+      assert length(result) == 3
+      [_job_application, resume | _messages] = result
+
+      assert %Resume{} = resume
+      assert resume.is_public == true
+      assert resume.user_id == job_application.user.id
     end
   end
 
