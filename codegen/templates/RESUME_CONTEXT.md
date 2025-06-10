@@ -1,4 +1,4 @@
-# Resuming Feature Implementation
+# Resuming: {{PLAN_TITLE}}
 
 ## Feature: {{FEATURE_NAME}}
 
