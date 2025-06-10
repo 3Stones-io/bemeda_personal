@@ -331,6 +331,11 @@ msgstr ""
 msgid "end date must be blank for current job"
 msgstr ""
 
+#: lib/bemeda_personal/resumes/work_experience.ex
+#, elixir-autogen, elixir-format
+msgid "either mark as current or provide an end date"
+msgstr ""
+
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #, elixir-autogen, elixir-format

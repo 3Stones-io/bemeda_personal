@@ -27,6 +27,19 @@ defmodule BemedaPersonal.Resumes.DateValidator do
     end
   end
 
+  @spec validate_start_date_completion(changeset(), error_message()) :: changeset()
+  def validate_start_date_completion(changeset, error_message) do
+    start_date = get_field(changeset, :start_date)
+    current = get_field(changeset, :current)
+    end_date = get_field(changeset, :end_date)
+
+    if start_date && !current && !end_date do
+      add_error(changeset, :end_date, error_message)
+    else
+      changeset
+    end
+  end
+
   defp validate_dates(nil, _end_date, changeset), do: changeset
 
   defp validate_dates(_start_date, nil, changeset), do: changeset
