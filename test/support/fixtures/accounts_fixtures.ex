@@ -33,6 +33,7 @@ defmodule BemedaPersonal.AccountsFixtures do
         line2: "Apt 1",
         password: valid_user_password(),
         title: "Mr.",
+        user_type: :job_seeker,
         zip_code: "12345"
       }
     )
@@ -53,6 +54,17 @@ defmodule BemedaPersonal.AccountsFixtures do
     else
       user
     end
+  end
+
+  @spec employer_user_fixture(attrs()) :: User.t()
+  def employer_user_fixture(attrs \\ [locale: "en"]) do
+    attrs =
+      case attrs do
+        attrs when is_map(attrs) -> Map.put(attrs, :user_type, :employer)
+        attrs when is_list(attrs) -> Keyword.put(attrs, :user_type, :employer)
+      end
+
+    user_fixture(attrs)
   end
 
   @spec extract_user_token(function()) :: String.t()

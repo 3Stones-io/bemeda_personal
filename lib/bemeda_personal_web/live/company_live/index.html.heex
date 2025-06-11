@@ -20,7 +20,7 @@
       </div>
       <div>
         <.link
-          patch={~p"/companies/#{@company}/edit"}
+          patch={~p"/company/edit"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {dgettext("companies", "Edit Company Profile")}
@@ -77,13 +77,13 @@
       <h2 class="text-xl font-semibold text-gray-900">{dgettext("companies", "Recent Jobs")}</h2>
       <div>
         <.link
-          navigate={~p"/companies/#{@company.id}/jobs"}
+          navigate={~p"/company/jobs"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {dgettext("companies", "View All Jobs")}
         </.link>
         <.link
-          navigate={~p"/companies/#{@company.id}/jobs/new"}
+          navigate={~p"/company/jobs/new"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {dgettext("companies", "Post New Job")}
@@ -127,7 +127,7 @@
       </h2>
       <div>
         <.link
-          navigate={~p"/companies/#{@company.id}/applicants"}
+          navigate={~p"/company/applicants"}
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {dgettext("companies", "View All Applicants")}
@@ -183,7 +183,7 @@
         )}
       </p>
       <.link
-        patch={~p"/companies/new"}
+        patch={~p"/company/new"}
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         {dgettext("companies", "Create Company Profile")}
@@ -196,7 +196,7 @@
   :if={@live_action in [:new, :edit]}
   id="company-modal"
   show
-  on_cancel={JS.patch(~p"/companies")}
+  on_cancel={JS.patch(~p"/company")}
 >
   <.live_component
     module={BemedaPersonalWeb.CompanyLive.FormComponent}
@@ -204,6 +204,6 @@
     company={@company}
     current_user={@current_user}
     id={@company.id || :new}
-    return_to={~p"/companies"}
+    return_to={~p"/company"}
   />
 </.modal>

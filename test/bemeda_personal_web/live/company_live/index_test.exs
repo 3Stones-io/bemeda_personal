@@ -14,7 +14,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
   describe "Company Dashboard" do
     test "redirects if user is not logged in", %{conn: conn} do
-      assert {:error, redirect} = live(conn, ~p"/companies")
+      assert {:error, redirect} = live(conn, ~p"/company")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
@@ -22,13 +22,13 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "renders company dashboard when user has a company", %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies")
+        |> live(~p"/company")
 
       assert html =~ company.name
       assert html =~ company.industry
@@ -43,7 +43,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "shows job count correctly", %{conn: conn} do
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
       job_posting_fixture(company)
       job_posting_fixture(company)
@@ -51,60 +51,56 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(company_admin)
-        |> live(~p"/companies")
+        |> live(~p"/company")
 
       assert html =~ "Open Positions"
       assert html =~ "2"
     end
 
     test "users can edit their company", %{conn: conn} do
-      company_admin = user_fixture(confirmed: true)
-      company = company_fixture(company_admin)
+      company_admin = employer_user_fixture(confirmed: true)
+      _company = company_fixture(company_admin)
 
       {:ok, view, _html} =
         conn
         |> log_in_user(company_admin)
-        |> live(~p"/companies")
+        |> live(~p"/company")
 
       assert view
-             |> element("a[href='/companies/#{company.id}/edit']")
+             |> element("a[href='/company/edit']")
              |> has_element?()
     end
 
     test "users can navigate to view all jobs", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      user = employer_user_fixture()
+      _company = company_fixture(user)
 
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies")
+        |> live(~p"/company")
 
       assert view
-             |> element("a[href='/companies/#{company.id}/jobs']")
+             |> element("a[href='/company/jobs']")
              |> has_element?()
     end
 
     test "users can navigate to create a company if they don't have one", %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
 
-      {:ok, view, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/companies")
+      assert {:error, {:redirect, %{to: path, flash: flash}}} =
+               conn
+               |> log_in_user(user)
+               |> live(~p"/company")
 
-      assert html =~ "Create Your Company Profile"
-      assert html =~ "You need to create a company profile before you can post jobs"
-
-      assert view
-             |> element("a[href='/companies/new']")
-             |> has_element?()
+      assert path == "/company/new"
+      assert flash["error"] == "You need to create a company first."
     end
   end
 
   describe "company ratings" do
     setup %{conn: conn} do
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
       user = user_fixture(confirmed: true)
 
@@ -117,7 +113,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "displays component with no ratings", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/companies")
+      {:ok, view, html} = live(conn, ~p"/company")
 
       assert html =~ "hero-star"
       assert html =~ "text-gray-300"
@@ -142,7 +138,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         score: 4
       })
 
-      {:ok, _view, html} = live(conn, ~p"/companies")
+      {:ok, _view, html} = live(conn, ~p"/company")
 
       assert html =~ "4.0"
       assert html =~ "(1)"
@@ -173,7 +169,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         score: 4
       })
 
-      {:ok, _view, html} = live(conn, ~p"/companies")
+      {:ok, _view, html} = live(conn, ~p"/company")
 
       assert html =~ "3.5"
       assert html =~ "(2)"
@@ -188,7 +184,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       job_posting = job_posting_fixture(company)
       job_application_fixture(user, job_posting)
 
-      {:ok, view, html} = live(conn, ~p"/companies")
+      {:ok, view, html} = live(conn, ~p"/company")
 
       assert html =~ "(0)"
       assert html =~ "No ratings yet"
@@ -211,24 +207,24 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
   describe "Create Company" do
     test "redirects if user is already has a company", %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       _company = company_fixture(user)
 
       assert {:error, {:redirect, %{to: path}}} =
                conn
                |> log_in_user(user)
-               |> live(~p"/companies/new")
+               |> live(~p"/company/new")
 
-      assert path == ~p"/companies"
+      assert path == ~p"/company"
     end
 
     test "renders company creation form", %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
 
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/new")
+        |> live(~p"/company/new")
 
       assert html =~ "Create Company Profile"
       assert html =~ "Company Name"
@@ -237,12 +233,12 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
 
     test "allows a user to create a company", %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
 
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/new")
+        |> live(~p"/company/new")
 
       _result =
         view
@@ -258,18 +254,18 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         })
         |> render_submit()
 
-      assert_redirect(view, ~p"/companies")
+      assert_redirect(view, ~p"/company")
 
       assert Companies.get_company_by_user(user)
     end
 
     test "shows validation errors", %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
 
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/new")
+        |> live(~p"/company/new")
 
       _result =
         view
@@ -287,8 +283,8 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     test "shows error with invalid data", %{conn: conn} do
       {:ok, view, _html} =
         conn
-        |> log_in_user(user_fixture())
-        |> live(~p"/companies/new")
+        |> log_in_user(employer_user_fixture())
+        |> live(~p"/company/new")
 
       assert render_submit(form(view, "#company-form", company: %{name: nil})) =~
                "can&#39;t be blank"
@@ -297,27 +293,27 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
   describe "Edit Company" do
     test "redirects if user is not admin of the company", %{conn: conn} do
-      user = user_fixture()
-      other_user = user_fixture(%{email: "other@example.com"})
-      company = company_fixture(user)
+      user = employer_user_fixture()
+      other_user = employer_user_fixture(%{email: "other@example.com"})
+      _company = company_fixture(user)
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
                conn
                |> log_in_user(other_user)
-               |> live(~p"/companies/#{company.id}/edit")
+               |> live(~p"/company/edit")
 
-      assert path == ~p"/companies"
-      assert flash["error"] == "You don't have permission to access this company."
+      assert path == "/company/new"
+      assert flash["error"] == "You need to create a company first."
     end
 
     test "allows admin to edit company", %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/edit")
+        |> live(~p"/company/edit")
 
       _result =
         view
@@ -329,7 +325,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         })
         |> render_submit()
 
-      assert_redirect(view, ~p"/companies")
+      assert_redirect(view, ~p"/company")
 
       updated_company = Companies.get_company!(company.id)
       assert updated_company.name == "Updated Company Name"
@@ -338,19 +334,19 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
   describe "Job Management" do
     test "allows creating a new job posting", %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user)
+      user = employer_user_fixture()
+      _company = company_fixture(user)
 
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/new")
+        |> live(~p"/company/jobs/new")
 
       assert has_element?(view, "form[phx-submit='save']")
     end
 
     test "updates applicants list when someone applies for the job", %{conn: conn} do
-      company_user = user_fixture()
+      company_user = employer_user_fixture()
       company = company_fixture(company_user)
       job_posting = job_posting_fixture(company)
 
@@ -360,7 +356,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(company_user)
-        |> live(~p"/companies")
+        |> live(~p"/company")
 
       {:ok, _new_application} =
         JobApplications.create_job_application(job_applicant, job_posting, %{

@@ -331,3 +331,38 @@ msgstr "zu Ihrem Konto jetzt."
 #, elixir-autogen, elixir-format
 msgid "Personal info updated successfully."
 msgstr "Persönliche Informationen erfolgreich aktualisiert."
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Already have an account?"
+msgstr "Haben Sie bereits ein Konto?"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Find great projects and build your career"
+msgstr "Finden Sie großartige Projekte und bauen Sie Ihre Karriere auf"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "I'm a client, hiring for a project"
+msgstr "Ich bin ein Kunde und stelle für ein Projekt ein"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "I'm a freelancer, looking for work"
+msgstr "Ich bin ein Freelancer und suche Arbeit"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Join as a client or freelancer"
+msgstr "Als Kunde oder Freelancer beitreten"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Post jobs and hire talented freelancers"
+msgstr "Jobs veröffentlichen und talentierte Freelancer einstellen"
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "You must be an employer to access this page."
+msgstr "Sie müssen ein Arbeitgeber sein, um auf diese Seite zuzugreifen."

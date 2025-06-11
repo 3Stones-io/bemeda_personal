@@ -152,7 +152,8 @@ defmodule BemedaPersonal.ResumesTest do
       newer_education =
         education_fixture(resume, %{start_date: ~D[2010-01-01], end_date: ~D[2014-01-01]})
 
-      current_education = education_fixture(resume, %{start_date: ~D[2020-01-01], end_date: nil})
+      current_education =
+        education_fixture(resume, %{start_date: ~D[2020-01-01], end_date: nil, current: true})
 
       educations = Resumes.list_educations(resume.id)
 
@@ -269,6 +270,35 @@ defmodule BemedaPersonal.ResumesTest do
                Resumes.create_or_update_education(%Education{}, resume, invalid_attrs)
 
       assert "end date must be blank for current education" in errors_on(changeset).end_date
+    end
+
+    test "either current is set or an end date is set", %{resume: resume} do
+      base_attrs = %{
+        institution: "Test University",
+        degree: "Test Degree",
+        field_of_study: "Test Field",
+        start_date: ~D[2020-01-01]
+      }
+
+      assert {:error, changeset} =
+               Resumes.create_or_update_education(%Education{}, resume, base_attrs)
+
+      assert "either mark as current or provide an end date" in errors_on(changeset).end_date
+
+      current_attrs = Map.put(base_attrs, :current, true)
+
+      assert {:ok, %Education{} = education} =
+               Resumes.create_or_update_education(%Education{}, resume, current_attrs)
+
+      assert education.current == true
+      assert education.end_date == nil
+
+      end_date_attrs = Map.put(base_attrs, :end_date, ~D[2024-01-01])
+
+      assert {:ok, %Education{} = education} =
+               Resumes.create_or_update_education(%Education{}, resume, end_date_attrs)
+
+      assert education.end_date == ~D[2024-01-01]
     end
 
     test "broadcasts education update event", %{resume: resume} do
@@ -502,6 +532,34 @@ defmodule BemedaPersonal.ResumesTest do
                Resumes.create_or_update_work_experience(%WorkExperience{}, resume, invalid_attrs)
 
       assert "end date must be blank for current job" in errors_on(changeset).end_date
+    end
+
+    test "either current is set or an end date is set", %{resume: resume} do
+      base_attrs = %{
+        company_name: "Test Company",
+        title: "Test Title",
+        start_date: ~D[2020-01-01]
+      }
+
+      assert {:error, changeset} =
+               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, base_attrs)
+
+      assert "either mark as current or provide an end date" in errors_on(changeset).end_date
+
+      current_attrs = Map.put(base_attrs, :current, true)
+
+      assert {:ok, %WorkExperience{} = work_experience} =
+               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, current_attrs)
+
+      assert work_experience.current == true
+      assert work_experience.end_date == nil
+
+      end_date_attrs = Map.put(base_attrs, :end_date, ~D[2024-01-01])
+
+      assert {:ok, %WorkExperience{} = work_experience} =
+               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, end_date_attrs)
+
+      assert work_experience.end_date == ~D[2024-01-01]
     end
 
     test "broadcasts work experience update event", %{resume: resume} do

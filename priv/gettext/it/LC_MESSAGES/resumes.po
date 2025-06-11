@@ -328,6 +328,11 @@ msgstr "la data di fine deve essere successiva o uguale alla data di inizio"
 msgid "end date must be blank for current job"
 msgstr "la data di fine deve essere vuota per il lavoro attuale"
 
+#: lib/bemeda_personal/resumes/work_experience.ex
+#, elixir-autogen, elixir-format
+msgid "either mark as current or provide an end date"
+msgstr "seleziona come lavoro attuale o fornisci una data di fine"
+
 #: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/live/resume/index_live.html.heex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex

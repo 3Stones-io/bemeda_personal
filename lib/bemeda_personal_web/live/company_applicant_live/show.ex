@@ -1,7 +1,6 @@
 defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonal.Companies
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Endpoint
@@ -12,8 +11,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
-  def handle_params(%{"company_id" => company_id, "id" => applicant_id}, _url, socket) do
-    company = Companies.get_company!(company_id)
+  def handle_params(%{"id" => applicant_id}, _url, socket) do
+    company = socket.assigns.company
     application = JobApplications.get_job_application!(applicant_id)
     job_posting = application.job_posting
     resume = Resumes.get_user_resume(application.user)

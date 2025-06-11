@@ -4,6 +4,7 @@
 
 - install [Git LFS](https://git-lfs.github.com) and clone the repo using `git clone --recurse-submodules https://github.com/3Stones-IO/bemeda_personal.git`
   - if you've already cloned the repo without submodules, run `git submodule update --init`
+  - to update submodules, run `git submodule foreach "git checkout main && git pull"`
 - install Elixir, Erlang and Node using [mise](https://mise.jdx.dev)
   - install mise using either `curl https://mise.run | sh` or `brew install mise`
   - make sure to activate it

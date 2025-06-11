@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Companies
   alias BemedaPersonal.Emails
   alias BemedaPersonalWeb.Components.LanguageSwitcher
   alias BemedaPersonalWeb.Endpoint
@@ -22,6 +23,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
     socket
     |> assign(:current_user, nil)
     |> assign(:notifications_count, 0)
+    |> assign(:user_company, nil)
   end
 
   defp assign_user(socket, token) do
@@ -33,14 +35,17 @@ defmodule BemedaPersonalWeb.NavigationLive do
       end
 
       unread_count = Emails.unread_email_communications_count(user.id)
+      user_company = Companies.get_company_by_user(user)
 
       socket
       |> assign(:current_user, user)
       |> assign(:notifications_count, unread_count)
+      |> assign(:user_company, user_company)
     else
       socket
       |> assign(:current_user, nil)
       |> assign(:notifications_count, 0)
+      |> assign(:user_company, nil)
     end
   end
 
@@ -65,6 +70,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
               <.link
+                :if={!@current_user || @current_user.user_type == :job_seeker}
                 navigate={~p"/jobs"}
                 class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
@@ -72,7 +78,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               </.link>
 
               <.link
-                :if={@current_user}
+                :if={@current_user && @current_user.user_type == :job_seeker}
                 navigate={~p"/job_applications"}
                 class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
@@ -80,10 +86,27 @@ defmodule BemedaPersonalWeb.NavigationLive do
               </.link>
 
               <.link
-                navigate={~p"/companies/new"}
+                :if={!@current_user}
+                navigate={~p"/company/new"}
                 class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 {dgettext("navigation", "For Employers")}
+              </.link>
+
+              <.link
+                :if={@current_user && @current_user.user_type == :employer && @user_company}
+                navigate={~p"/company"}
+                class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                {dgettext("navigation", "Company Dashboard")}
+              </.link>
+
+              <.link
+                :if={@current_user && @current_user.user_type == :employer && !@user_company}
+                navigate={~p"/company/new"}
+                class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                {dgettext("navigation", "Create Company")}
               </.link>
             </div>
           </div>
@@ -91,6 +114,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             <LanguageSwitcher.language_switcher id="language-switcher-desktop" locale={@locale} />
             <%= if @current_user do %>
               <.link
+                :if={@current_user.user_type == :job_seeker}
                 navigate={~p"/resume"}
                 class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
               >
@@ -188,6 +212,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             <LanguageSwitcher.language_switcher id="language-switcher-mobile" locale={@locale} />
           </div>
           <.link
+            :if={!@current_user || @current_user.user_type == :job_seeker}
             navigate={~p"/jobs"}
             class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
           >
@@ -196,6 +221,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
           <%= if @current_user do %>
             <.link
+              :if={@current_user.user_type == :job_seeker}
               navigate={~p"/job_applications"}
               class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
             >
@@ -210,6 +236,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             </.link>
 
             <.link
+              :if={@current_user.user_type == :job_seeker}
               navigate={~p"/resume"}
               class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
             >
@@ -225,10 +252,27 @@ defmodule BemedaPersonalWeb.NavigationLive do
           <% end %>
 
           <.link
-            navigate={~p"/companies/new"}
+            :if={!@current_user}
+            navigate={~p"/company/new"}
             class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
           >
             {dgettext("navigation", "For Employers")}
+          </.link>
+
+          <.link
+            :if={@current_user && @current_user.user_type == :employer && @user_company}
+            navigate={~p"/company"}
+            class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
+          >
+            {dgettext("navigation", "Company Dashboard")}
+          </.link>
+
+          <.link
+            :if={@current_user && @current_user.user_type == :employer && !@user_company}
+            navigate={~p"/company/new"}
+            class="text-gray-500 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
+          >
+            {dgettext("navigation", "Create Company")}
           </.link>
 
           <%= if @current_user do %>

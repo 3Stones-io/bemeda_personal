@@ -49,6 +49,10 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     |> assign(:page_title, dgettext("companies", "Edit Company Profile"))
   end
 
+  defp apply_action(socket, :edit, _params) do
+    assign(socket, :page_title, dgettext("companies", "Edit Company Profile"))
+  end
+
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:company, %Company{})

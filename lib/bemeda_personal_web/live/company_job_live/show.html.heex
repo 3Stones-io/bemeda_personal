@@ -10,14 +10,14 @@
           </h2>
           <div class="flex justify-between gap-x-2">
             <.link
-              navigate={~p"/companies/#{@job_posting.company_id}/jobs/#{@job_posting.id}/edit"}
+              navigate={~p"/company/jobs/#{@job_posting.id}/edit"}
               class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
             >
               {dgettext("jobs", "Edit Job")}
             </.link>
 
             <.link
-              navigate={~p"/companies/#{@job_posting.company_id}/applicants/#{@job_posting.id}"}
+              navigate={~p"/company/applicants/#{@job_posting.id}"}
               class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
             >
               {dgettext("jobs", "View Applicants")}
