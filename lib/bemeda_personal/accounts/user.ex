@@ -21,14 +21,12 @@ defmodule BemedaPersonal.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :email, :string
     field :first_name, :string
-    field :gender, :string
+    field :gender, Ecto.Enum, values: [:male, :female]
     field :hashed_password, :string, redact: true
     field :last_name, :string
-    field :line1, :string
-    field :line2, :string
     field :locale, Ecto.Enum, values: [:de, :en, :fr, :it], default: :de
     field :password, :string, virtual: true, redact: true
-    field :title, :string
+    field :street, :string
     field :user_type, Ecto.Enum, values: [:job_seeker, :employer], default: :job_seeker
     field :zip_code, :string
 
@@ -70,25 +68,16 @@ defmodule BemedaPersonal.Accounts.User do
       :first_name,
       :gender,
       :last_name,
-      :line1,
-      :line2,
+      :street,
       :locale,
       :password,
-      :title,
       :user_type,
       :zip_code
     ])
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_name()
-    |> validate_required([:city, :country, :line1, :zip_code])
-    |> validate_length(:city, min: 1, max: 100)
-    |> validate_length(:country, min: 1, max: 100)
-    |> validate_length(:gender, max: 50)
-    |> validate_length(:line1, min: 1, max: 255)
-    |> validate_length(:line2, max: 255)
-    |> validate_length(:title, max: 100)
-    |> validate_length(:zip_code, min: 1, max: 20)
+    |> validate_personal_info()
   end
 
   defp validate_email(changeset, opts) do
@@ -117,6 +106,15 @@ defmodule BemedaPersonal.Accounts.User do
     |> validate_required([:first_name, :last_name])
     |> validate_length(:first_name, min: 1, max: 255)
     |> validate_length(:last_name, min: 1, max: 255)
+  end
+
+  defp validate_personal_info(changeset) do
+    changeset
+    |> validate_required([:city, :country, :street, :zip_code])
+    |> validate_length(:city, min: 1, max: 100)
+    |> validate_length(:country, min: 1, max: 100)
+    |> validate_length(:street, min: 1, max: 255)
+    |> validate_length(:zip_code, min: 1, max: 20)
   end
 
   defp maybe_hash_password(changeset, opts) do
@@ -208,21 +206,14 @@ defmodule BemedaPersonal.Accounts.User do
       :first_name,
       :gender,
       :last_name,
-      :line1,
-      :line2,
-      :title,
+      :street,
+      :locale,
       :zip_code
     ])
-    |> validate_required([:city, :country, :first_name, :last_name, :line1, :zip_code])
-    |> validate_length(:city, min: 1, max: 100)
-    |> validate_length(:country, min: 1, max: 100)
+    |> validate_required([:first_name, :last_name])
     |> validate_length(:first_name, min: 1, max: 160)
-    |> validate_length(:gender, max: 50)
     |> validate_length(:last_name, min: 1, max: 160)
-    |> validate_length(:line1, min: 1, max: 255)
-    |> validate_length(:line2, max: 255)
-    |> validate_length(:title, max: 100)
-    |> validate_length(:zip_code, min: 1, max: 20)
+    |> validate_personal_info()
   end
 
   @doc """

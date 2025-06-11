@@ -27,12 +27,10 @@ defmodule BemedaPersonal.AccountsFixtures do
         country: "Test Country",
         email: unique_user_email(),
         first_name: "Test",
-        gender: "other",
+        gender: :male,
         last_name: "User",
-        line1: "123 Test Street",
-        line2: "Apt 1",
         password: valid_user_password(),
-        title: "Mr.",
+        street: "123 Test Street",
         user_type: :job_seeker,
         zip_code: "12345"
       }

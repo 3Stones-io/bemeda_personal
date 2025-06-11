@@ -14,18 +14,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
-msgid "Address Line 1"
-msgstr "Adresszeile 1"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Address Line 2"
-msgstr "Adresszeile 2"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
 msgid "City"
 msgstr "Stadt"
 
@@ -34,12 +22,6 @@ msgstr "Stadt"
 #, elixir-autogen, elixir-format
 msgid "Country"
 msgstr "Land"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Dr., Mr., Ms., etc. (optional)"
-msgstr "Dr., Herr, Frau, etc. (optional)"
 
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
@@ -61,31 +43,36 @@ msgstr "Geschlecht"
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
-msgid "Last Name"
-msgstr "Nachname"
+msgid "Male"
+msgstr "Männlich"
 
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
-msgid "Optional"
-msgstr "Optional"
+msgid "Female"
+msgstr "Weiblich"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Select gender (optional)"
+msgstr "Geschlecht auswählen (optional)"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Last Name"
+msgstr "Nachname"
 
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Password"
 msgstr "Passwort"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Personal Information"
 msgstr "Persönliche Informationen"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Title"
-msgstr "Titel"
 
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
@@ -102,3 +89,19 @@ msgstr "Aktualisiere..."
 #, elixir-autogen, elixir-format
 msgid "ZIP Code"
 msgstr "Postleitzahl"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Step 1: Basic Information"
+msgstr "Schritt 1: Grundinformationen"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Step 2: Personal Information"
+msgstr "Schritt 2: Persönliche Informationen"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Street"
+msgstr "Straße"

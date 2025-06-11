@@ -226,11 +226,9 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
         "city" => "Portland",
         "country" => "USA",
         "first_name" => "Jane",
-        "gender" => "Female",
+        "gender" => "female",
         "last_name" => "Smith",
-        "line1" => "456 Oak St",
-        "line2" => "Apt 2B",
-        "title" => "Dr.",
+        "street" => "456 Oak St",
         "zip_code" => "54321"
       }
 
@@ -247,11 +245,9 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert updated_user.city == "Portland"
       assert updated_user.country == "USA"
       assert updated_user.first_name == "Jane"
-      assert updated_user.gender == "Female"
+      assert updated_user.gender == :female
       assert updated_user.last_name == "Smith"
-      assert updated_user.line1 == "456 Oak St"
-      assert updated_user.line2 == "Apt 2B"
-      assert updated_user.title == "Dr."
+      assert updated_user.street == "456 Oak St"
       assert updated_user.zip_code == "54321"
     end
 
@@ -266,7 +262,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
             "country" => "",
             "first_name" => "",
             "last_name" => "",
-            "line1" => "",
+            "street" => "",
             "zip_code" => ""
           }
         })
@@ -280,11 +276,9 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
         "city" => "Boston",
         "country" => "USA",
         "first_name" => "John",
-        "gender" => "",
+        "gender" => nil,
         "last_name" => "Doe",
-        "line1" => "123 Main St",
-        "line2" => "",
-        "title" => "",
+        "street" => "123 Main St",
         "zip_code" => "12345"
       }
 
@@ -306,9 +300,7 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
         |> form("#personal_info_form", %{
           "user" => %{
             "city" => String.duplicate("d", 150),
-            "gender" => String.duplicate("a", 51),
-            "line1" => String.duplicate("c", 300),
-            "title" => String.duplicate("b", 101)
+            "street" => String.duplicate("c", 300)
           }
         })
         |> render_submit()
@@ -322,10 +314,8 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert html =~ "Personal Information"
       assert html =~ "First Name"
       assert html =~ "Last Name"
-      assert html =~ "Title"
       assert html =~ "Gender"
-      assert html =~ "Address Line 1"
-      assert html =~ "Address Line 2"
+      assert html =~ "Street"
       assert html =~ "ZIP Code"
       assert html =~ "City"
       assert html =~ "Country"

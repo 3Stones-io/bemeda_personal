@@ -17,7 +17,8 @@ get_or_create_user = fn email, attrs ->
             {:error, _changeset} -> user
           end
 
-        {:error, _changeset} ->
+        {:error, changeset} ->
+          IO.puts("Failed to register user #{email}: #{inspect(changeset.errors)}")
           # If registration fails, try to get the user again (race condition)
           Accounts.get_user_by_email(email)
       end
@@ -31,8 +32,13 @@ get_or_create_company = fn user, attrs ->
   case Companies.get_company_by_user(user) do
     nil ->
       case Companies.create_company(user, attrs) do
-        {:ok, company} -> company
-        {:error, _changeset} -> Companies.get_company_by_user(user)
+        {:ok, company} ->
+          company
+
+        {:error, changeset} ->
+          IO.puts("Failed to create company for user #{user.email}: #{inspect(changeset.errors)}")
+
+          Companies.get_company_by_user(user)
       end
 
     company ->
@@ -72,11 +78,17 @@ user2 =
 
 job_seeker =
   get_or_create_user.("alex.johnson@example.com", %{
+    city: "Seattle",
+    country: "United States",
     email: "alex.johnson@example.com",
-    password: "password123456",
     first_name: "Alex",
     last_name: "Johnson",
-    user_type: :job_seeker
+    line1: "789 Job Seeker Lane",
+    line2: "",
+    password: "password123456",
+    street: "Job Seeker Lane",
+    user_type: :job_seeker,
+    zip_code: "98101"
   })
 
 company1 =

@@ -1,4 +1,4 @@
-defmodule BemedaPersonal.Repo.Migrations.AddAddressFieldsToUsers do
+defmodule BemedaPersonal.Repo.Migrations.AddPersonalInfoFieldsToUsers do
   use Ecto.Migration
 
   def change do
@@ -6,9 +6,7 @@ defmodule BemedaPersonal.Repo.Migrations.AddAddressFieldsToUsers do
       add :city, :string
       add :country, :string
       add :gender, :string
-      add :line1, :string
-      add :line2, :string
-      add :title, :string
+      add :street, :string
       add :zip_code, :string
     end
   end

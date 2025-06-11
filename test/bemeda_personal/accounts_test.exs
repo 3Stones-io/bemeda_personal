@@ -107,7 +107,7 @@ defmodule BemedaPersonal.AccountsTest do
       assert changeset.required == [
                :city,
                :country,
-               :line1,
+               :street,
                :zip_code,
                :first_name,
                :last_name,
@@ -342,11 +342,9 @@ defmodule BemedaPersonal.AccountsTest do
         city: "Portland",
         country: "USA",
         first_name: "Jane",
-        gender: "Female",
+        gender: :female,
         last_name: "Smith",
-        line1: "456 Oak St",
-        line2: "Apt 2B",
-        title: "Dr.",
+        street: "456 Oak St",
         zip_code: "54321"
       }
 
@@ -354,11 +352,9 @@ defmodule BemedaPersonal.AccountsTest do
       assert updated_user.city == "Portland"
       assert updated_user.country == "USA"
       assert updated_user.first_name == "Jane"
-      assert updated_user.gender == "Female"
+      assert updated_user.gender == :female
       assert updated_user.last_name == "Smith"
-      assert updated_user.line1 == "456 Oak St"
-      assert updated_user.line2 == "Apt 2B"
-      assert updated_user.title == "Dr."
+      assert updated_user.street == "456 Oak St"
       assert updated_user.zip_code == "54321"
     end
 

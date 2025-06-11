@@ -366,3 +366,18 @@ msgstr "Jobs veröffentlichen und talentierte Freelancer einstellen"
 #, elixir-autogen, elixir-format
 msgid "You must be an employer to access this page."
 msgstr "Sie müssen ein Arbeitgeber sein, um auf diese Seite zuzugreifen."
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Back"
+msgstr "Zurück"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Continue"
+msgstr "Weiter"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Processing..."
+msgstr "Wird verarbeitet..."

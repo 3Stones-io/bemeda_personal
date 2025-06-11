@@ -26,10 +26,28 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       </:subtitle>
     </.header>
 
+    <div class="flex items-center justify-center mb-8 mt-6">
+      <div class="flex items-center">
+        <div class={[
+          "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium",
+          if(@current_step == 1, do: "bg-brand text-white", else: "bg-gray-200 text-gray-600")
+        ]}>
+          1
+        </div>
+        <div class="w-16 h-0.5 bg-gray-200 mx-2"></div>
+        <div class={[
+          "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium",
+          if(@current_step == 2, do: "bg-brand text-white", else: "bg-gray-200 text-gray-600")
+        ]}>
+          2
+        </div>
+      </div>
+    </div>
+
     <.simple_form
       for={@form}
       id="registration_form"
-      phx-submit="save"
+      phx-submit={if @current_step == 1, do: "next_step", else: "save"}
       phx-change="validate"
       phx-trigger-action={@trigger_submit}
       action={~p"/users/log_in?_action=registered"}
@@ -39,51 +57,31 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
         {dgettext("auth", "Oops, something went wrong! Please check the errors below.")}
       </.error>
 
-      <.input field={@form[:email]} type="email" label={gettext("Email")} required />
-      <.input field={@form[:password]} type="password" label={gettext("Password")} required />
-
-      <h3 class="text-lg font-medium text-gray-900 mb-4">{gettext("Personal Information")}</h3>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <.input field={@form[:first_name]} type="text" label={gettext("First Name")} required />
-        <.input field={@form[:last_name]} type="text" label={gettext("Last Name")} required />
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <.input
-          field={@form[:title]}
-          type="text"
-          label={gettext("Title")}
-          placeholder={gettext("Dr., Mr., Ms., etc. (optional)")}
-        />
-        <.input
-          field={@form[:gender]}
-          type="text"
-          label={gettext("Gender")}
-          placeholder={gettext("Optional")}
-        />
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <.input field={@form[:line1]} type="text" label={gettext("Address Line 1")} required />
-        <.input
-          field={@form[:line2]}
-          type="text"
-          label={gettext("Address Line 2")}
-          placeholder={gettext("Optional")}
-        />
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <.input field={@form[:zip_code]} type="text" label={gettext("ZIP Code")} required />
-        <.input field={@form[:city]} type="text" label={gettext("City")} required />
-        <.input field={@form[:country]} type="text" label={gettext("Country")} required />
-      </div>
+      {render_step(assigns)}
 
       <:actions>
-        <.button phx-disable-with={dgettext("auth", "Creating account...")} class="w-full">
-          {dgettext("auth", "Create an account")}
-        </.button>
+        <div class="flex gap-4">
+          <.button
+            :if={@current_step == 2}
+            type="button"
+            phx-click="previous_step"
+            class="flex-1 bg-gray-500 hover:bg-gray-600"
+          >
+            {dgettext("auth", "Back")}
+          </.button>
+          <.button
+            phx-disable-with={
+              if @current_step == 1,
+                do: dgettext("auth", "Processing..."),
+                else: dgettext("auth", "Creating account...")
+            }
+            class="flex-1"
+          >
+            {if @current_step == 1,
+              do: dgettext("auth", "Continue"),
+              else: dgettext("auth", "Create an account")}
+          </.button>
+        </div>
       </:actions>
     </.simple_form>
     """
@@ -104,7 +102,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
       <.link
         patch={~p"/users/register/employer"}
-        class="block p-6 border-2 border-gray-200 rounded-lg hover:border-brand-500 hover:bg-brand-50 transition-colors"
+        class="block p-6 border-2 border-gray-200 rounded-lg hover:border-brand hover:bg-brand transition-colors"
       >
         <div class="text-center">
           <div class="text-2xl mb-2">👔</div>
@@ -119,7 +117,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
 
       <.link
         patch={~p"/users/register/job_seeker"}
-        class="block p-6 border-2 border-gray-200 rounded-lg hover:border-brand-500 hover:bg-brand-50 transition-colors"
+        class="block p-6 border-2 border-gray-200 rounded-lg hover:border-brand hover:bg-brand transition-colors"
       >
         <div class="text-center">
           <div class="text-2xl mb-2">💼</div>
@@ -135,6 +133,49 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
     """
   end
 
+  defp render_step(%{current_step: 1} = assigns) do
+    ~H"""
+    <h3 class="text-lg font-medium text-gray-900 mb-4">{gettext("Step 1: Basic Information")}</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <.input field={@form[:first_name]} type="text" label={gettext("First Name")} required />
+      <.input field={@form[:last_name]} type="text" label={gettext("Last Name")} required />
+    </div>
+
+    <.input field={@form[:email]} type="email" label={gettext("Email")} required />
+    <.input field={@form[:password]} type="password" label={gettext("Password")} required />
+    """
+  end
+
+  defp render_step(%{current_step: 2} = assigns) do
+    ~H"""
+    <h3 class="text-lg font-medium text-gray-900 mb-4">{gettext("Step 2: Personal Information")}</h3>
+
+    <.input field={@form[:email]} type="hidden" />
+    <.input field={@form[:password]} type="hidden" />
+
+    <.input
+      field={@form[:gender]}
+      type="select"
+      label={gettext("Gender")}
+      prompt={gettext("Select gender (optional)")}
+      options={[
+        {gettext("Male"), :male},
+        {gettext("Female"), :female}
+      ]}
+    />
+
+    <.input field={@form[:street]} type="text" label={gettext("Street")} required />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <.input field={@form[:zip_code]} type="text" label={gettext("ZIP Code")} required />
+      <.input field={@form[:city]} type="text" label={gettext("City")} required />
+    </div>
+
+    <.input field={@form[:country]} type="text" label={gettext("Country")} required />
+    """
+  end
+
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     changeset = Accounts.change_user_registration(%User{})
@@ -142,6 +183,8 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
     socket =
       socket
       |> assign(:check_errors, false)
+      |> assign(:current_step, 1)
+      |> assign(:form_data, %{})
       |> assign(:trigger_submit, false)
       |> assign(:user_type, nil)
       |> assign_form(changeset)
@@ -175,12 +218,54 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
   end
 
   @impl Phoenix.LiveView
+  def handle_event("next_step", %{"user" => user_params}, socket) do
+    merged_params = Map.merge(socket.assigns.form_data, user_params)
+
+    changeset =
+      %User{}
+      |> Accounts.change_user_registration(merged_params)
+      |> Map.put(:action, :validate)
+
+    step1_fields = [:email, :first_name, :last_name, :password]
+
+    step1_errors =
+      Enum.any?(step1_fields, fn field ->
+        Keyword.has_key?(changeset.errors, field)
+      end)
+
+    if step1_errors do
+      {:noreply,
+       socket
+       |> assign(:check_errors, true)
+       |> assign_form(changeset)}
+    else
+      {:noreply,
+       socket
+       |> assign(:check_errors, false)
+       |> assign(:current_step, 2)
+       |> assign(:form_data, merged_params)
+       |> assign_form(changeset)}
+    end
+  end
+
+  def handle_event("previous_step", _params, socket) do
+    changeset = Accounts.change_user_registration(%User{}, socket.assigns.form_data)
+
+    {:noreply,
+     socket
+     |> assign(:check_errors, false)
+     |> assign(:current_step, 1)
+     |> assign_form(changeset)}
+  end
+
   def handle_event("save", %{"user" => user_params}, socket) do
     current_locale = socket.assigns.locale
     user_type = socket.assigns.user_type
 
+    merged_params = Map.merge(socket.assigns.form_data, user_params)
+
     user_params_with_type_and_locale =
-      user_params
+      merged_params
       |> Map.put("locale", current_locale)
       |> Map.put("user_type", user_type)
 
@@ -192,7 +277,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
             &url(~p"/users/confirm/#{&1}")
           )
 
-        changeset = Accounts.change_user_registration(user)
+        changeset = Accounts.change_user_registration(%User{}, merged_params)
 
         {:noreply,
          socket
@@ -208,8 +293,17 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
-    changeset = Accounts.change_user_registration(%User{}, user_params)
-    {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
+    merged_params = Map.merge(socket.assigns.form_data, user_params)
+
+    changeset =
+      %User{}
+      |> Accounts.change_user_registration(merged_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply,
+     socket
+     |> assign(:form_data, merged_params)
+     |> assign_form(changeset)}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do

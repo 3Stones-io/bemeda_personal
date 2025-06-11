@@ -68,35 +68,23 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
                 />
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <.input
-                  field={@personal_info_form[:title]}
-                  type="text"
-                  label={gettext("Title")}
-                  placeholder={gettext("Dr., Mr., Ms., etc. (optional)")}
-                />
-                <.input
-                  field={@personal_info_form[:gender]}
-                  type="text"
-                  label={gettext("Gender")}
-                  placeholder={gettext("Optional")}
-                />
-              </div>
+              <.input
+                field={@personal_info_form[:gender]}
+                type="select"
+                label={gettext("Gender")}
+                prompt={gettext("Select gender (optional)")}
+                options={[
+                  {gettext("Male"), :male},
+                  {gettext("Female"), :female}
+                ]}
+              />
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <.input
-                  field={@personal_info_form[:line1]}
-                  type="text"
-                  label={gettext("Address Line 1")}
-                  required
-                />
-                <.input
-                  field={@personal_info_form[:line2]}
-                  type="text"
-                  label={gettext("Address Line 2")}
-                  placeholder={gettext("Optional")}
-                />
-              </div>
+              <.input
+                field={@personal_info_form[:street]}
+                type="text"
+                label={gettext("Street")}
+                required
+              />
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <.input
