@@ -48,7 +48,6 @@ npm-debug.log
 
 # Optimum Codegen
 /.vscode/
-/codegen/node_modules/
 /codegen/plans/
 /codegen/workspaces/
 *.code-workspace
