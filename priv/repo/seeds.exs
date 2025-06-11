@@ -1,6 +1,7 @@
 alias BemedaPersonal.Accounts.User
 alias BemedaPersonal.Accounts
 alias BemedaPersonal.Companies
+alias BemedaPersonal.JobApplications
 alias BemedaPersonal.JobPostings
 alias BemedaPersonal.Repo
 
@@ -44,7 +45,8 @@ user1 =
     email: "john.doe@example.com",
     password: "password123456",
     first_name: "John",
-    last_name: "Doe"
+    last_name: "Doe",
+    user_type: :employer
   })
 
 user2 =
@@ -52,7 +54,17 @@ user2 =
     email: "jane.smith@example.com",
     password: "password123456",
     first_name: "Jane",
-    last_name: "Smith"
+    last_name: "Smith",
+    user_type: :employer
+  })
+
+job_seeker =
+  get_or_create_user.("alex.johnson@example.com", %{
+    email: "alex.johnson@example.com",
+    password: "password123456",
+    first_name: "Alex",
+    last_name: "Johnson",
+    user_type: :job_seeker
   })
 
 company1 =
@@ -315,4 +327,53 @@ else
   IO.puts("HealthPlus already has jobs, skipping job creation")
 end
 
+create_job_applications = fn ->
+  tech_jobs_list = JobPostings.list_job_postings(%{company_id: company1.id}, 1)
+  health_jobs_list = JobPostings.list_job_postings(%{company_id: company2.id}, 1)
+
+  existing_applications = JobApplications.list_job_applications(%{user_id: job_seeker.id})
+
+  if Enum.empty?(existing_applications) and not Enum.empty?(tech_jobs_list) and
+       not Enum.empty?(health_jobs_list) do
+    tech_jobs_to_apply = Enum.take(tech_jobs_list, 3)
+    health_jobs_to_apply = Enum.take(health_jobs_list, 2)
+
+    application_statuses = [:pending, :under_review, :interview_scheduled, :rejected, :accepted]
+
+    Enum.each(tech_jobs_to_apply, fn job ->
+      {:ok, _application} =
+        JobApplications.create_job_application(job_seeker, job, %{
+          cover_letter:
+            "I am very interested in this #{job.title} position at #{job.company.name}. My background in technology and passion for innovation make me a great fit for this role. I would love to contribute to your team's success.",
+          status: Enum.random(application_statuses)
+        })
+    end)
+
+    Enum.each(health_jobs_to_apply, fn job ->
+      {:ok, _application} =
+        JobApplications.create_job_application(job_seeker, job, %{
+          cover_letter:
+            "I am excited about the opportunity to work as a #{job.title} at #{job.company.name}. My interest in healthcare technology and commitment to improving patient outcomes align perfectly with your mission.",
+          status: Enum.random(application_statuses)
+        })
+    end)
+
+    IO.puts(
+      "Created #{length(tech_jobs_to_apply) + length(health_jobs_to_apply)} job applications for Alex Johnson"
+    )
+  else
+    if not Enum.empty?(existing_applications) do
+      IO.puts("Alex Johnson already has job applications, skipping application creation")
+    else
+      IO.puts("No jobs available to apply to, skipping application creation")
+    end
+  end
+end
+
+create_job_applications.()
+
 IO.puts("Seed data is now available!")
+IO.puts("Users created:")
+IO.puts("  - john.doe@example.com (employer) - TechInnovate")
+IO.puts("  - jane.smith@example.com (employer) - HealthPlus")
+IO.puts("  - alex.johnson@example.com (job seeker) - with job applications")

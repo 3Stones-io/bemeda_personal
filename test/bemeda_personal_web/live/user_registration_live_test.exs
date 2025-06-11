@@ -10,7 +10,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     test "renders registration page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register")
 
-      assert html =~ "Register"
+      assert html =~ "Join as a client or freelancer"
       assert html =~ "Log in"
     end
 
@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     end
 
     test "renders errors for invalid data", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
 
       result =
         lv
@@ -39,7 +39,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
           }
         )
 
-      assert result =~ "Register"
+      assert result =~ "Register for an account"
       assert result =~ "must have the @ sign and no spaces"
       assert result =~ "should be at least 12 character"
       assert result =~ "can&#39;t be blank"
@@ -48,10 +48,20 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
   describe "register user" do
     test "creates account and shows a confirmation message", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
 
       email = unique_user_email()
-      form = form(lv, "#registration_form", user: valid_user_attributes(email: email))
+
+      form =
+        form(lv, "#registration_form",
+          user: %{
+            first_name: "Test",
+            last_name: "User",
+            email: email,
+            password: valid_user_password()
+          }
+        )
+
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
@@ -64,7 +74,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     end
 
     test "renders errors for duplicated email", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+      {:ok, lv, _html} = live(conn, ~p"/users/register/employer")
 
       user = user_fixture(%{email: "test@email.com"})
 
@@ -81,7 +91,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     test "saves the locale preference", %{conn: conn} do
       conn = init_test_session(conn, %{locale: "it"})
 
-      {:ok, lv, _html} = live(conn, ~p"/users/register")
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
 
       form =
         form(lv, "#registration_form",
@@ -111,6 +121,26 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
         |> follow_redirect(conn, ~p"/users/log_in")
 
       assert login_html =~ "Log in"
+    end
+
+    test "navigates to employer registration when employer option is clicked", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      lv
+      |> element("a[href='/users/register/employer']")
+      |> render_click()
+
+      assert_patch(lv, ~p"/users/register/employer")
+    end
+
+    test "navigates to job seeker registration when job seeker option is clicked", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      lv
+      |> element("a[href='/users/register/job_seeker']")
+      |> render_click()
+
+      assert_patch(lv, ~p"/users/register/job_seeker")
     end
   end
 end

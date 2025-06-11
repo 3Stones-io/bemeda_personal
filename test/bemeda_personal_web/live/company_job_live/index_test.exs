@@ -17,31 +17,31 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
   }
 
   setup %{conn: conn} do
-    user = user_fixture()
+    user = employer_user_fixture()
     company = company_fixture(user)
 
     %{conn: conn, company: company, user: user}
   end
 
   describe "Index" do
-    test "redirects if user is not logged in", %{company: company, conn: conn} do
-      assert {:error, redirect} = live(conn, ~p"/companies/#{company.id}/jobs")
+    test "redirects if user is not logged in", %{conn: conn} do
+      assert {:error, redirect} = live(conn, ~p"/company/jobs")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
       assert %{"error" => "You must log in to access this page."} = flash
     end
 
-    test "redirects if user is not admin of the company", %{company: company, conn: conn} do
-      other_user = user_fixture(%{email: "other@example.com"})
+    test "redirects if user is not admin of the company", %{conn: conn} do
+      other_user = employer_user_fixture(%{email: "other@example.com"})
 
       assert {:error, {:redirect, %{to: path, flash: flash}}} =
                conn
                |> log_in_user(other_user)
-               |> live(~p"/companies/#{company.id}/jobs")
+               |> live(~p"/company/jobs")
 
-      assert path == ~p"/companies"
-      assert flash["error"] == "You don't have permission to access this company."
+      assert path == "/company/new"
+      assert flash["error"] == "You need to create a company first."
     end
 
     test "renders company jobs page with job list", %{company: company, conn: conn, user: user} do
@@ -51,44 +51,44 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
+        |> live(~p"/company/jobs")
 
       assert html =~ "Company Jobs"
       assert html =~ "Test Job 1"
       assert html =~ "Test Job 2"
     end
 
-    test "allows admin to create a new job", %{company: company, conn: conn, user: user} do
+    test "allows admin to create a new job", %{conn: conn, user: user} do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs")
+        |> live(~p"/company/jobs")
 
       view
       |> element("a", "Post New Job")
       |> render_click()
 
-      assert_patch(view, ~p"/companies/#{company.id}/jobs/new")
+      assert_patch(view, ~p"/company/jobs/new")
     end
   end
 
   describe "New" do
-    test "renders form for creating a job posting", %{company: company, conn: conn, user: user} do
+    test "renders form for creating a job posting", %{conn: conn, user: user} do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/new")
+        |> live(~p"/company/jobs/new")
 
       assert html =~ "Post Job"
       assert html =~ "Job Title"
       assert html =~ "Job Description"
     end
 
-    test "validates job posting data", %{company: company, conn: conn, user: user} do
+    test "validates job posting data", %{conn: conn, user: user} do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/new")
+        |> live(~p"/company/jobs/new")
 
       result =
         view
@@ -103,11 +103,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert result =~ "can&#39;t be blank"
     end
 
-    test "form shows checked checkbox after change", %{company: company, conn: conn, user: user} do
+    test "form shows checked checkbox after change", %{conn: conn, user: user} do
       {:ok, view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/new")
+        |> live(~p"/company/jobs/new")
 
       refute html =~ ~r/input[^>]*type="checkbox"[^>]*checked/
 
@@ -123,7 +123,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/new")
+        |> live(~p"/company/jobs/new")
 
       job_count_before = length(JobPostings.list_job_postings(%{company_id: company.id}))
 
@@ -156,7 +156,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/new")
+        |> live(~p"/company/jobs/new")
 
       job_count_before = length(JobPostings.list_job_postings(%{company_id: company.id}))
 
@@ -195,11 +195,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
              } = job_posting.media_asset
     end
 
-    test "shows video upload input on new job form", %{conn: conn, user: user, company: company} do
+    test "shows video upload input on new job form", %{conn: conn, user: user} do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/new")
+        |> live(~p"/company/jobs/new")
 
       assert html =~ "Drag and drop to upload your video"
       assert html =~ "Browse Files"
@@ -214,7 +214,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     end
 
     test "renders edit form for job posting", %{
-      company: company,
       conn: conn,
       job_posting: job_posting,
       user: user
@@ -222,7 +221,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+        |> live(~p"/company/jobs/#{job_posting.id}/edit")
 
       assert html =~ "Save Changes"
       assert html =~ job_posting.title
@@ -231,7 +230,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     test "Edit shows video filename for job posting with video", %{
       conn: conn,
       user: user,
-      company: company,
       job_posting: job_posting
     } do
       {:ok, job_posting} =
@@ -245,13 +243,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+        |> live(~p"/company/jobs/#{job_posting.id}/edit")
 
       assert html =~ "test_video.mp4"
     end
 
     test "updates job posting", %{
-      company: company,
       conn: conn,
       job_posting: job_posting,
       user: user
@@ -259,7 +256,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+        |> live(~p"/company/jobs/#{job_posting.id}/edit")
 
       view
       |> form("#company-job-form", %{
@@ -289,7 +286,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/companies/#{company.id}/jobs/#{job_posting.id}/edit")
+        |> live(~p"/company/jobs/#{job_posting.id}/edit")
 
       view
       |> element("#job_posting-video-file-upload")
@@ -322,23 +319,23 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       conn: conn,
       user: user
     } do
-      other_user = user_fixture(%{email: "other@example.com"})
+      other_user = employer_user_fixture(%{email: "other@example.com"})
       other_company = company_fixture(other_user)
       other_job = job_posting_fixture(other_company)
 
-      assert {:error, {:redirect, %{to: path, flash: flash}}} =
+      assert {:error, {:live_redirect, %{to: path, flash: flash}}} =
                conn
                |> log_in_user(user)
-               |> live(~p"/companies/#{other_company.id}/jobs/#{other_job.id}/edit")
+               |> live(~p"/company/jobs/#{other_job.id}/edit")
 
-      assert path == "/companies"
-      assert flash["error"] == "You don't have permission to access this company."
+      assert path == "/company/jobs"
+      assert flash == %{}
     end
   end
 
   describe "Filter functionality" do
     setup %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       remote_job =
@@ -376,12 +373,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "filters jobs by title", %{
       conn: conn,
-      company: company,
       onsite_job: onsite_job,
       remote_job: remote_job,
       another_job: another_job
     } do
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/jobs?title=Developer")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs?title=Developer")
 
       html = render(view)
       assert html =~ onsite_job.title
@@ -391,12 +387,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "filters by remote_allowed=true", %{
       conn: conn,
-      company: company,
       onsite_job: onsite_job,
       remote_job: remote_job,
       another_job: another_job
     } do
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/jobs?remote_allowed=true")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs?remote_allowed=true")
 
       html = render(view)
       assert html =~ remote_job.title
@@ -406,12 +401,11 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "filters by remote_allowed=false", %{
       conn: conn,
-      company: company,
       onsite_job: onsite_job,
       remote_job: remote_job,
       another_job: another_job
     } do
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/jobs?remote_allowed=false")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs?remote_allowed=false")
 
       html = render(view)
       refute html =~ remote_job.title
@@ -421,11 +415,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "filter clear button returns to unfiltered view", %{
       conn: conn,
-      company: company,
       onsite_job: onsite_job,
       remote_job: remote_job
     } do
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/jobs?title=Developer")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs?title=Developer")
 
       html = render(view)
       assert html =~ onsite_job.title
@@ -435,7 +428,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       |> element("button", "Clear All")
       |> render_click()
 
-      assert_patch(view, ~p"/companies/#{company.id}/jobs")
+      assert_patch(view, ~p"/company/jobs")
 
       clean_html = render(view)
 
@@ -445,7 +438,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "multiple filters can be combined", %{
       conn: conn,
-      company: company,
       onsite_job: onsite_job,
       remote_job: remote_job,
       another_job: another_job
@@ -453,7 +445,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       {:ok, view, _html} =
         live(
           conn,
-          ~p"/companies/#{company}/jobs?employment_type=Permanent Position&remote_allowed=true"
+          ~p"/company/jobs?employment_type=Permanent Position&remote_allowed=true"
         )
 
       html = render(view)
@@ -468,13 +460,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "lists all job_postings", %{
       conn: conn,
-      company: company,
       job_posting: job_posting,
       user: user
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, _view, html} = live(conn, ~p"/companies/#{company}/jobs")
+      {:ok, _view, html} = live(conn, ~p"/company/jobs")
 
       assert html =~ "Jobs for some name"
       assert html =~ job_posting.title
@@ -482,16 +473,16 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert html =~ job_posting.description
     end
 
-    test "saves new job_posting", %{conn: conn, company: company, user: user} do
+    test "saves new job_posting", %{conn: conn, user: user} do
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/jobs")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs")
 
       view
       |> element("a", "Post New Job")
       |> render_click()
 
-      assert_patch(view, ~p"/companies/#{company}/jobs/new")
+      assert_patch(view, ~p"/company/jobs/new")
 
       assert has_element?(view, "#company-job-form")
 
@@ -508,7 +499,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
           }
         })
         |> render_submit()
-        |> follow_redirect(conn, ~p"/companies/#{company}/jobs")
+        |> follow_redirect(conn, ~p"/company/jobs")
 
       assert render(updated_view) =~ @create_attrs_job.title
       assert render(updated_view) =~ "Job posted successfully"
@@ -516,19 +507,18 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "updates job_posting in listing", %{
       conn: conn,
-      company: company,
       job_posting: job_posting,
       user: user
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/jobs")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs")
 
       view
       |> element("a[title='Edit job']")
       |> render_click()
 
-      assert_patch(view, ~p"/companies/#{company}/jobs/#{job_posting}/edit")
+      assert_patch(view, ~p"/company/jobs/#{job_posting}/edit")
 
       {:ok, updated_view, _html} =
         view
@@ -538,7 +528,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
           }
         })
         |> render_submit()
-        |> follow_redirect(conn, ~p"/companies/#{company}/jobs")
+        |> follow_redirect(conn, ~p"/company/jobs")
 
       assert render(updated_view) =~ "Updated Title"
       assert render(updated_view) =~ "Job updated successfully"
@@ -546,13 +536,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
     test "deletes job_posting in listing", %{
       conn: conn,
-      company: company,
       job_posting: job_posting,
       user: user
     } do
       conn = log_in_user(conn, user)
 
-      {:ok, view, _html} = live(conn, ~p"/companies/#{company}/jobs")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs")
 
       assert has_element?(view, "a[title='Delete job']")
 
@@ -562,13 +551,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       assert render(view) =~ "Job posting deleted successfully"
 
-      {:ok, updated_view, _html} = live(conn, ~p"/companies/#{company}/jobs")
+      {:ok, updated_view, _html} = live(conn, ~p"/company/jobs")
       refute render(updated_view) =~ job_posting.title
     end
   end
 
   defp create_job_posting(%{conn: conn}) do
-    user = user_fixture()
+    user = employer_user_fixture()
     company = company_fixture(user)
     job_posting = job_posting_fixture(company, @create_attrs_job)
 

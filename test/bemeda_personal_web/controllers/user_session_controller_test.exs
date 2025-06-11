@@ -19,7 +19,10 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
 
       # Now do a logged in request and assert on the menu
       logged_in_conn = get(conn, ~p"/")
-      response = html_response(logged_in_conn, 200)
+      assert redirected_to(logged_in_conn) == ~p"/jobs"
+
+      jobs_conn = get(conn, ~p"/jobs")
+      response = html_response(jobs_conn, 200)
       assert response =~ user.email
       assert response =~ ~p"/users/settings"
       assert response =~ ~p"/users/log_out"

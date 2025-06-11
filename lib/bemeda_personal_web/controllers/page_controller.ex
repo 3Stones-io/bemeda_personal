@@ -6,8 +6,15 @@ defmodule BemedaPersonalWeb.PageController do
 
   @spec home(conn(), params()) :: conn()
   def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home, layout: false)
+    case conn.assigns[:current_user] do
+      %{user_type: :employer} ->
+        redirect(conn, to: ~p"/company")
+
+      %{user_type: :job_seeker} ->
+        redirect(conn, to: ~p"/jobs")
+
+      _other ->
+        render(conn, :home, layout: false)
+    end
   end
 end

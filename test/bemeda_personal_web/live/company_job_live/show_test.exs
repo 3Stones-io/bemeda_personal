@@ -8,7 +8,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
 
   describe "Job Show" do
     setup %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       conn = log_in_user(conn, user)
 
@@ -34,7 +34,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
     end
 
     test "renders job details page", %{conn: conn, job: job} do
-      {:ok, _view, html} = live(conn, ~p"/companies/#{job.company_id}/jobs/#{job.id}")
+      {:ok, _view, html} = live(conn, ~p"/company/jobs/#{job.id}")
 
       assert html =~ job.title
       assert html =~ job.description
@@ -44,7 +44,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
     end
 
     test "displays company information", %{conn: conn, job: job} do
-      {:ok, _view, html} = live(conn, ~p"/companies/#{job.company_id}/jobs/#{job.id}")
+      {:ok, _view, html} = live(conn, ~p"/company/jobs/#{job.id}")
 
       assert html =~ "some name"
       assert html =~ "some website_url"
@@ -56,7 +56,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
       conn: conn,
       job: job
     } do
-      {:ok, view, html} = live(conn, ~p"/companies/#{job.company_id}/jobs/#{job.id}")
+      {:ok, view, html} = live(conn, ~p"/company/jobs/#{job.id}")
 
       assert html =~ "Edit Job"
 
@@ -72,7 +72,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
     end
 
     test "allows navigation back to jobs list", %{conn: conn, job: job} do
-      {:ok, view, html} = live(conn, ~p"/companies/#{job.company_id}/jobs/#{job.id}")
+      {:ok, view, html} = live(conn, ~p"/company/jobs/#{job.id}")
 
       assert html =~ "Back to Jobs"
 
@@ -84,7 +84,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
 
   describe "job management actions" do
     setup %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       conn = log_in_user(conn, user)
 
@@ -103,7 +103,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
       conn: conn,
       job: job
     } do
-      {:ok, _view, html} = live(conn, ~p"/companies/#{job.company_id}/jobs/#{job.id}")
+      {:ok, _view, html} = live(conn, ~p"/company/jobs/#{job.id}")
 
       assert html =~ "View Applicants"
     end
@@ -112,7 +112,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
       conn: conn,
       job: job
     } do
-      {:ok, _view, html} = live(conn, ~p"/companies/#{job.company_id}/jobs/#{job.id}")
+      {:ok, _view, html} = live(conn, ~p"/company/jobs/#{job.id}")
 
       assert html =~ "View Public Posting" || html =~ job.title
     end

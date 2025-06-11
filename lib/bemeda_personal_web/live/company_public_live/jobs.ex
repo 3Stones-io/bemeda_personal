@@ -23,6 +23,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Jobs do
   def handle_info({:filters_updated, filters}, socket) do
     company = socket.assigns.company
 
-    {:noreply, push_patch(socket, to: ~p"/company/#{company}/jobs?#{filters}")}
+    {:noreply, push_patch(socket, to: ~p"/companies/#{company}/jobs?#{filters}")}
   end
 end

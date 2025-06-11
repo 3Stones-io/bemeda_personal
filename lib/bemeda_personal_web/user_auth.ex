@@ -212,7 +212,7 @@ defmodule BemedaPersonalWeb.UserAuth do
           :error,
           dgettext("companies", "You don't have permission to access this company.")
         )
-        |> Phoenix.LiveView.redirect(to: ~p"/companies")
+        |> Phoenix.LiveView.redirect(to: ~p"/company")
 
       {:halt, socket}
     end
@@ -224,11 +224,30 @@ defmodule BemedaPersonalWeb.UserAuth do
 
     if company do
       socket =
-        Phoenix.LiveView.redirect(socket, to: ~p"/companies")
+        Phoenix.LiveView.redirect(socket, to: ~p"/company")
 
       {:halt, socket}
     else
       {:cont, socket}
+    end
+  end
+
+  def on_mount(:require_user_company, _params, _session, socket) do
+    user = socket.assigns.current_user
+    company = Companies.get_company_by_user(user)
+
+    if company do
+      {:cont, Phoenix.Component.assign(socket, :company, company)}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(
+          :error,
+          dgettext("companies", "You need to create a company first.")
+        )
+        |> Phoenix.LiveView.redirect(to: ~p"/company/new")
+
+      {:halt, socket}
     end
   end
 
@@ -265,7 +284,7 @@ defmodule BemedaPersonalWeb.UserAuth do
         :error,
         dgettext("companies", "You don't have permission to access this company.")
       )
-      |> redirect(to: ~p"/companies")
+      |> redirect(to: ~p"/company")
       |> halt()
     end
   end
@@ -277,10 +296,39 @@ defmodule BemedaPersonalWeb.UserAuth do
 
     if company do
       conn
-      |> redirect(to: ~p"/companies")
+      |> redirect(to: ~p"/company")
       |> halt()
     else
       conn
+    end
+  end
+
+  @spec require_employer_user_type(conn(), params()) :: conn()
+  def require_employer_user_type(conn, _opts) do
+    case conn.assigns[:current_user] do
+      %{user_type: :employer} ->
+        conn
+
+      _other ->
+        conn
+        |> put_flash(:error, dgettext("auth", "You must be an employer to access this page."))
+        |> redirect(to: ~p"/")
+        |> halt()
+    end
+  end
+
+  @spec require_user_company(conn(), params()) :: conn()
+  def require_user_company(conn, _opts) do
+    user = conn.assigns[:current_user]
+    company = Companies.get_company_by_user(user)
+
+    if company do
+      assign(conn, :company, company)
+    else
+      conn
+      |> put_flash(:error, dgettext("companies", "You need to create a company first."))
+      |> redirect(to: ~p"/company/new")
+      |> halt()
     end
   end
 

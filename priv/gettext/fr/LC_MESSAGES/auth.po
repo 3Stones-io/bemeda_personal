@@ -350,3 +350,38 @@ msgstr "doit avoir le signe @ et aucun espace"
 #, elixir-autogen, elixir-format
 msgid "to your account now."
 msgstr "à votre compte maintenant."
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Already have an account?"
+msgstr "Vous avez déjà un compte ?"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Find great projects and build your career"
+msgstr "Trouvez de superbes projets et construisez votre carrière"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "I'm a client, hiring for a project"
+msgstr "Je suis un client, j'embauche pour un projet"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "I'm a freelancer, looking for work"
+msgstr "Je suis un freelance, je cherche du travail"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Join as a client or freelancer"
+msgstr "Rejoignez en tant que client ou freelance"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Post jobs and hire talented freelancers"
+msgstr "Publiez des emplois et embauchez des freelances talentueux"
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "You must be an employer to access this page."
+msgstr "Vous devez être un employeur pour accéder à cette page."

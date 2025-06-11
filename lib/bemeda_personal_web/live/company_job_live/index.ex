@@ -28,7 +28,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
     job_posting = JobPostings.get_job_posting!(id)
 
     if job_posting.company_id != socket.assigns.company.id do
-      push_patch(socket, to: ~p"/companies/#{socket.assigns.company.id}/jobs")
+      push_patch(socket, to: ~p"/company/jobs")
     else
       socket
       |> assign(:job_posting, job_posting)
@@ -74,8 +74,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({:filters_updated, filters}, socket) do
-    company = socket.assigns.company
-    {:noreply, push_patch(socket, to: ~p"/companies/#{company}/jobs?#{filters}")}
+    {:noreply, push_patch(socket, to: ~p"/company/jobs?#{filters}")}
   end
 
   def handle_info(%Broadcast{event: event, payload: payload}, socket)

@@ -254,3 +254,8 @@ msgstr "Candidats - %{title}"
 #, elixir-autogen, elixir-format
 msgid "Remote"
 msgstr "À distance"
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "You need to create a company first."
+msgstr "Vous devez créer un profil d'entreprise avant de pouvoir publier des offres d'emploi."

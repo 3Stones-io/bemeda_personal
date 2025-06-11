@@ -9,13 +9,13 @@
   </div>
   <div class="flex space-x-3 justify-end mb-8">
     <.link
-      navigate={~p"/companies"}
+      navigate={~p"/company"}
       class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     >
       {dgettext("navigation", "Back to Dashboard")}
     </.link>
     <.link
-      patch={~p"/companies/#{@company.id}/jobs/new"}
+      patch={~p"/company/jobs/new"}
       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     >
       {dgettext("jobs", "Post New Job")}
@@ -37,7 +37,7 @@
   :if={@live_action in [:new, :edit]}
   id="job-modal"
   show
-  on_cancel={JS.patch(~p"/companies/#{@company.id}/jobs")}
+  on_cancel={JS.patch(~p"/company/jobs")}
 >
   <.live_component
     module={BemedaPersonalWeb.CompanyJobLive.FormComponent}
@@ -46,6 +46,6 @@
     id="company-job-form"
     job_posting={@job_posting}
     live_action={@live_action}
-    return_to={~p"/companies/#{@company.id}/jobs"}
+    return_to={~p"/company/jobs"}
   />
 </.modal>

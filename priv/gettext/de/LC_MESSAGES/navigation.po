@@ -81,3 +81,13 @@ msgstr "Benachrichtigungen anzeigen"
 #, elixir-autogen, elixir-format
 msgid "Back to Dashboard"
 msgstr "Zurück zum Dashboard"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Company Dashboard"
+msgstr "Unternehmens-Dashboard"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Create Company"
+msgstr "Unternehmen erstellen"

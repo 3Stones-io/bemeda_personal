@@ -49,13 +49,22 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     |> assign(:page_title, dgettext("companies", "Applicants - %{name}", name: company.name))
   end
 
+  defp apply_action(socket, :index, params) do
+    company = socket.assigns.company
+
+    socket
+    |> assign(:filter_params, params)
+    |> assign(:job_posting, nil)
+    |> assign(:page_title, dgettext("companies", "Applicants - %{name}", name: company.name))
+  end
+
   @impl Phoenix.LiveView
   def handle_info({:filters_updated, filters}, socket) do
     path =
       if socket.assigns.job_posting do
-        ~p"/companies/#{socket.assigns.job_posting.company_id}/applicants/#{socket.assigns.job_posting.id}?#{filters}"
+        ~p"/company/applicants/#{socket.assigns.job_posting.id}?#{filters}"
       else
-        ~p"/companies/#{socket.assigns.company}/applicants?#{filters}"
+        ~p"/company/applicants?#{filters}"
       end
 
     {:noreply, push_patch(socket, to: path)}

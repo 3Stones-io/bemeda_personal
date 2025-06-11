@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       conn: conn,
       job_posting: job_posting
     } do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}")
 
       assert html =~ company.name
       assert html =~ company.industry
@@ -44,7 +44,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       assert html =~ company.name
       assert html =~ company.industry
@@ -56,7 +56,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     } do
       job_posting_fixture(company)
 
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}")
 
       assert html =~ "Open Positions"
       assert html =~ "2"
@@ -66,13 +66,13 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       company: company,
       conn: conn
     } do
-      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}")
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}")
 
       {:ok, _view, html} =
         view
         |> element("a", "View All Jobs")
         |> render_click()
-        |> follow_redirect(conn, ~p"/company/#{company.id}/jobs")
+        |> follow_redirect(conn, ~p"/companies/#{company.id}/jobs")
 
       assert html =~ "Jobs at #{company.name}"
     end
@@ -92,7 +92,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       company: company,
       conn: conn
     } do
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}")
 
       assert html =~ "Rating"
       assert html =~ "hero-star"
@@ -115,7 +115,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         score: 4
       })
 
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}")
 
       assert html =~ "Rating"
       assert html =~ "hero-star"
@@ -149,7 +149,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         score: 5
       })
 
-      {:ok, _view, html} = live(conn, ~p"/company/#{company.id}")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}")
 
       assert html =~ "Rating"
       assert html =~ "4.0"
@@ -165,7 +165,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       refute has_element?(view, "#rating-component-header-#{company.id} button", "Rate")
     end
@@ -181,7 +181,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       assert has_element?(view, "#rating-component-header-#{company.id} button", "Rate")
     end
@@ -206,7 +206,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       assert html =~ "Update Rating"
       refute html =~ ">Rate<"
@@ -223,7 +223,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       view
       |> element("#rating-component-header-#{company.id} button", "Rate")
@@ -246,7 +246,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       view
       |> element("#rating-component-header-#{company.id} button", "Rate")
@@ -286,7 +286,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       assert html =~ "3.0"
       assert html =~ "(1)"
@@ -319,7 +319,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
     } do
       job_application_fixture(user, job_posting)
 
-      {:ok, view, html} = live(conn, ~p"/company/#{company}")
+      {:ok, view, html} = live(conn, ~p"/companies/#{company}")
 
       assert html =~ "No ratings yet"
       refute html =~ "fill-current"
@@ -350,7 +350,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
         score: 4
       })
 
-      {:ok, view, _html} = live(conn, ~p"/company/#{company.id}")
+      {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}")
 
       header_rating =
         view
@@ -380,7 +380,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       header_before =
         view
@@ -433,7 +433,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/#{company.id}")
+        |> live(~p"/companies/#{company.id}")
 
       view
       |> element("#rating-component-header-#{company.id} button", "Rate")
