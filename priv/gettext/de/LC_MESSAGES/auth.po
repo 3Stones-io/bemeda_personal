@@ -90,7 +90,6 @@ msgstr "Haben Sie kein Konto?"
 #: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
 #: lib/bemeda_personal_web/live/user_login_live.ex
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Email"
@@ -105,12 +104,6 @@ msgstr "Der E-Mail-Änderungslink ist ungültig oder abgelaufen."
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
 msgstr "E-Mail erfolgreich geändert."
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "First Name"
-msgstr "Vorname"
 
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
 #: lib/bemeda_personal_web/live/user_login_live.ex
@@ -143,12 +136,6 @@ msgstr "Ungültige E-Mail oder Passwort"
 msgid "Keep me logged in"
 msgstr "Angemeldet bleiben"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Last Name"
-msgstr "Nachname"
-
 #: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
 #: lib/bemeda_personal_web/live/user_confirmation_live.ex
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
@@ -179,11 +166,6 @@ msgstr "Wird angemeldet..."
 msgid "Manage your account email address and password settings"
 msgstr "Verwalten Sie Ihre Konto-E-Mail-Adresse und Passwort-Einstellungen"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Name updated successfully."
-msgstr "Name erfolgreich aktualisiert."
-
 #: lib/bemeda_personal_web/live/user_reset_password_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
@@ -202,7 +184,6 @@ msgid "Oops, something went wrong! Please check the errors below."
 msgstr "Ups, etwas ist schief gelaufen! Bitte überprüfen Sie die Fehler unten."
 
 #: lib/bemeda_personal_web/live/user_login_live.ex
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Password"
 msgstr "Passwort"
@@ -265,11 +246,6 @@ msgstr "Wird gesendet..."
 #, elixir-autogen, elixir-format
 msgid "Sign up"
 msgstr "Registrieren"
-
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Update Name"
-msgstr "Name aktualisieren"
 
 #: lib/bemeda_personal_web/live/user_confirmation_live.ex
 #, elixir-autogen, elixir-format
@@ -351,6 +327,11 @@ msgstr "muss das @-Zeichen haben und keine Leerzeichen"
 msgid "to your account now."
 msgstr "zu Ihrem Konto jetzt."
 
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Personal info updated successfully."
+msgstr "Persönliche Informationen erfolgreich aktualisiert."
+
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Already have an account?"
@@ -364,7 +345,7 @@ msgstr "Finden Sie großartige Projekte und bauen Sie Ihre Karriere auf"
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "I'm a client, hiring for a project"
-msgstr "Ich bin ein Kunde und suche für ein Projekt"
+msgstr "Ich bin ein Kunde und stelle für ein Projekt ein"
 
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
@@ -385,3 +366,18 @@ msgstr "Jobs veröffentlichen und talentierte Freelancer einstellen"
 #, elixir-autogen, elixir-format
 msgid "You must be an employer to access this page."
 msgstr "Sie müssen ein Arbeitgeber sein, um auf diese Seite zuzugreifen."
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Back"
+msgstr "Zurück"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Continue"
+msgstr "Weiter"
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Processing..."
+msgstr "Wird verarbeitet..."

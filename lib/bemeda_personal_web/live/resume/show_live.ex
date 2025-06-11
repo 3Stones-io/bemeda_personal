@@ -19,6 +19,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
       socket
       |> stream_configure(:educations, dom_id: &"education-#{&1.id}")
       |> stream_configure(:work_experiences, dom_id: &"work-experience-#{&1.id}")
+      |> assign(:current_user, current_user)
       |> assign(:education, %Resumes.Education{})
       |> assign(:form_component, nil)
       |> assign(:component_id, nil)

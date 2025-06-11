@@ -17,7 +17,6 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
       assert html =~ "Resume"
       assert html =~ resume.headline
       assert html =~ resume.summary
-      assert html =~ resume.location
 
       assert html =~ "Education"
       assert html =~ education.institution
@@ -55,7 +54,6 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
           is_public: true,
           headline: nil,
           summary: nil,
-          location: nil,
           contact_email: nil,
           phone_number: nil,
           website_url: nil
@@ -65,7 +63,6 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
       assert html =~ "Professional"
       assert html =~ "No summary provided"
-      assert html =~ "Location not specified"
       assert html =~ "Email not provided"
       assert html =~ "Phone not specified"
       assert html =~ "Website not specified"

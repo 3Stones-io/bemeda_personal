@@ -532,10 +532,6 @@ defmodule BemedaPersonalWeb.ChatComponents do
     </div>
     <div class="grid grid-cols-1 gap-2 text-xs">
       <.contact_info_item
-        icon="hero-map-pin"
-        text={@message.location || dgettext("resumes", "Location not specified")}
-      />
-      <.contact_info_item
         icon="hero-envelope"
         text={
           @message.contact_email || (@message.user && @message.user.email) ||

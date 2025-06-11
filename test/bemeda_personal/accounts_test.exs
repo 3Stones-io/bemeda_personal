@@ -103,7 +103,17 @@ defmodule BemedaPersonal.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:first_name, :last_name, :password, :email]
+
+      assert changeset.required == [
+               :city,
+               :country,
+               :street,
+               :zip_code,
+               :first_name,
+               :last_name,
+               :password,
+               :email
+             ]
     end
 
     test "allows fields to be set" do
@@ -316,29 +326,41 @@ defmodule BemedaPersonal.AccountsTest do
     end
   end
 
-  describe "change_user_name/2" do
-    test "returns a user changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_name(%User{})
-      assert changeset.required == [:first_name, :last_name]
+  describe "change_user_personal_info/2" do
+    test "returns a user changeset for personal info" do
+      user = user_fixture()
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_personal_info(user, %{})
+      assert changeset.data == user
     end
   end
 
-  describe "update_user_name/2" do
-    test "updates the user name" do
+  describe "update_user_personal_info/2" do
+    test "updates the user personal info with valid data" do
       user = user_fixture()
 
-      {:ok, updated_user} =
-        Accounts.update_user_name(user, %{first_name: "John", last_name: "Doe"})
+      update_attrs = %{
+        city: "Portland",
+        country: "USA",
+        first_name: "Jane",
+        gender: :female,
+        last_name: "Smith",
+        street: "456 Oak St",
+        zip_code: "54321"
+      }
 
-      assert updated_user.first_name == "John"
-      assert updated_user.last_name == "Doe"
+      assert {:ok, updated_user} = Accounts.update_user_personal_info(user, update_attrs)
+      assert updated_user.city == "Portland"
+      assert updated_user.country == "USA"
+      assert updated_user.first_name == "Jane"
+      assert updated_user.gender == :female
+      assert updated_user.last_name == "Smith"
+      assert updated_user.street == "456 Oak St"
+      assert updated_user.zip_code == "54321"
     end
 
-    test "returns an error if the user name is invalid" do
+    test "returns error changeset with invalid data" do
       user = user_fixture()
-      {:error, changeset} = Accounts.update_user_name(user, %{first_name: "", last_name: ""})
-      assert "can't be blank" in errors_on(changeset).first_name
-      assert "can't be blank" in errors_on(changeset).last_name
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_user_personal_info(user, %{city: ""})
     end
   end
 

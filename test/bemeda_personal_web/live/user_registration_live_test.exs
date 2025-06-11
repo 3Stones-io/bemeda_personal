@@ -24,7 +24,21 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       assert {:ok, _conn} = result
     end
 
-    test "renders errors for invalid data", %{conn: conn} do
+    test "renders step 1 form fields", %{conn: conn} do
+      {:ok, _lv, html} = live(conn, ~p"/users/register/job_seeker")
+
+      assert html =~ "Step 1: Basic Information"
+      assert html =~ "First Name"
+      assert html =~ "Last Name"
+      assert html =~ "Email"
+      assert html =~ "Password"
+      assert html =~ "Continue"
+      refute html =~ "Gender"
+      refute html =~ "Street"
+      refute html =~ "Back"
+    end
+
+    test "renders errors for invalid step 1 data", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
 
       result =
@@ -44,25 +58,129 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       assert result =~ "should be at least 12 character"
       assert result =~ "can&#39;t be blank"
     end
+
+    test "shows step indicator", %{conn: conn} do
+      {:ok, _lv, html} = live(conn, ~p"/users/register/job_seeker")
+
+      assert html =~ "bg-brand text-white"
+      assert html =~ "bg-gray-200 text-gray-600"
+    end
+  end
+
+  describe "Step navigation" do
+    test "advances to step 2 with valid step 1 data", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      html =
+        lv
+        |> form("#registration_form",
+          user: %{
+            "first_name" => "John",
+            "last_name" => "Doe",
+            "email" => "john@example.com",
+            "password" => "valid_password_123"
+          }
+        )
+        |> render_submit()
+
+      assert html =~ "Step 2: Personal Information"
+      assert html =~ "Gender"
+      assert html =~ "Street"
+      assert html =~ "ZIP Code"
+      assert html =~ "City"
+      assert html =~ "Country"
+      assert html =~ "Back"
+      assert html =~ "Create an account"
+      refute html =~ "Continue"
+    end
+
+    test "does not advance to step 2 with invalid step 1 data", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      html =
+        lv
+        |> form("#registration_form",
+          user: %{
+            "first_name" => "",
+            "last_name" => "",
+            "email" => "invalid-email",
+            "password" => "short"
+          }
+        )
+        |> render_submit()
+
+      assert html =~ "Step 1: Basic Information"
+      assert html =~ "can&#39;t be blank"
+      assert html =~ "must have the @ sign and no spaces"
+      refute html =~ "Step 2: Personal Information"
+    end
+
+    test "goes back to step 1 when back button is clicked", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      lv
+      |> form("#registration_form",
+        user: %{
+          "first_name" => "John",
+          "last_name" => "Doe",
+          "email" => "john@example.com",
+          "password" => "valid_password_123"
+        }
+      )
+      |> render_submit()
+
+      html =
+        lv
+        |> element("button", "Back")
+        |> render_click()
+
+      assert html =~ "Step 1: Basic Information"
+      assert html =~ "Continue"
+      refute html =~ "Step 2: Personal Information"
+      refute html =~ "Back"
+    end
+
+    test "preserves form data when navigating between steps", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      lv
+      |> form("#registration_form",
+        user: %{
+          "first_name" => "John",
+          "last_name" => "Doe",
+          "email" => "john@example.com",
+          "password" => "valid_password_123"
+        }
+      )
+      |> render_submit()
+
+      html =
+        lv
+        |> element("button", "Back")
+        |> render_click()
+
+      assert html =~ "value=\"John\""
+      assert html =~ "value=\"Doe\""
+      assert html =~ "value=\"john@example.com\""
+    end
   end
 
   describe "register user" do
-    test "creates account and shows a confirmation message", %{conn: conn} do
+    test "creates account with 2-step process", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
 
-      email = unique_user_email()
+      valid_attributes = Map.drop(valid_user_attributes(), [:user_type])
 
-      form =
-        form(lv, "#registration_form",
-          user: %{
-            first_name: "Test",
-            last_name: "User",
-            email: email,
-            password: valid_user_password()
-          }
-        )
+      step1_attributes = Map.take(valid_attributes, [:email, :first_name, :last_name, :password])
 
+      lv
+      |> form("#registration_form", user: step1_attributes)
+      |> render_submit()
+
+      step2_attributes = Map.drop(valid_attributes, [:first_name, :last_name])
+      form = form(lv, "#registration_form", user: step2_attributes)
       render_submit(form)
+
       conn = follow_trigger_action(form, conn)
 
       assert redirected_to(conn) == ~p"/users/log_in"
@@ -73,19 +191,68 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       assert response =~ "You must confirm your email address"
     end
 
+    test "renders errors for invalid step 2 data", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      lv
+      |> form("#registration_form",
+        user: %{
+          "first_name" => "John",
+          "last_name" => "Doe",
+          "email" => "john@example.com",
+          "password" => "valid_password_123"
+        }
+      )
+      |> render_submit()
+
+      result =
+        lv
+        |> form("#registration_form",
+          user: %{
+            "city" => "",
+            "country" => "",
+            "street" => "",
+            "zip_code" => ""
+          }
+        )
+        |> render_submit()
+
+      assert result =~ "Step 2: Personal Information"
+      assert result =~ "can&#39;t be blank"
+    end
+
     test "renders errors for duplicated email", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register/employer")
 
       user = user_fixture(%{email: "test@email.com"})
 
-      result =
+      step1_result =
         lv
         |> form("#registration_form",
-          user: %{"email" => user.email, "password" => "valid_password"}
+          user: %{
+            "first_name" => "John",
+            "last_name" => "Doe",
+            "email" => user.email,
+            "password" => "valid_password_123"
+          }
         )
         |> render_submit()
 
-      assert result =~ "has already been taken"
+      assert step1_result =~ "Step 2: Personal Information"
+
+      step2_result =
+        lv
+        |> form("#registration_form",
+          user: %{
+            "city" => "Test City",
+            "country" => "Test Country",
+            "street" => "123 Main St",
+            "zip_code" => "12345"
+          }
+        )
+        |> render_submit()
+
+      assert step2_result =~ "has already been taken"
     end
 
     test "saves the locale preference", %{conn: conn} do
@@ -93,19 +260,28 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
 
-      form =
-        form(lv, "#registration_form",
-          user: %{
-            first_name: "Test",
-            last_name: "User",
-            email: "test_locale@example.com",
-            password: "test_password_123"
-          }
-        )
+      email = "test_locale@example.com"
 
-      render_submit(form)
+      valid_attributes =
+        [email: email]
+        |> valid_user_attributes()
+        |> Map.drop([:user_type])
 
-      user = Accounts.get_user_by_email("test_locale@example.com")
+      step1_attributes =
+        Map.take(valid_attributes, [:email, :first_name, :last_name, :password])
+
+      lv
+      |> form("#registration_form", user: step1_attributes)
+      |> render_submit()
+
+      step2_attributes =
+        Map.take(valid_attributes, [:gender, :street, :zip_code, :city, :country])
+
+      lv
+      |> form("#registration_form", user: step2_attributes)
+      |> render_submit()
+
+      user = Accounts.get_user_by_email(email)
       assert user.locale == :it
     end
   end

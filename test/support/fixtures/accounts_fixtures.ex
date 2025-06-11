@@ -23,11 +23,16 @@ defmodule BemedaPersonal.AccountsFixtures do
     Enum.into(
       attrs,
       %{
+        city: "Test City",
+        country: "Test Country",
         email: unique_user_email(),
         first_name: "Test",
+        gender: :male,
         last_name: "User",
         password: valid_user_password(),
-        user_type: :job_seeker
+        street: "123 Test Street",
+        user_type: :job_seeker,
+        zip_code: "12345"
       }
     )
   end

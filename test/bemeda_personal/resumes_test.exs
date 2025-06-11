@@ -465,7 +465,6 @@ defmodule BemedaPersonal.ResumesTest do
       attrs = %{
         company_name: "Example Corp",
         title: "Software Engineer",
-        location: "New York, NY",
         start_date: ~D[2019-06-01],
         end_date: ~D[2022-12-31],
         current: false,
@@ -478,7 +477,6 @@ defmodule BemedaPersonal.ResumesTest do
 
       assert work_experience.company_name == attrs.company_name
       assert work_experience.title == attrs.title
-      assert work_experience.location == attrs.location
       assert work_experience.start_date == attrs.start_date
       assert work_experience.end_date == attrs.end_date
       assert work_experience.current == attrs.current
@@ -504,9 +502,7 @@ defmodule BemedaPersonal.ResumesTest do
 
     test "with invalid data returns error changeset", %{resume: resume} do
       assert {:error, %Ecto.Changeset{}} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, %{
-                 location: "Some Location"
-               })
+               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, %{})
     end
 
     test "validates end date after start date", %{resume: resume} do

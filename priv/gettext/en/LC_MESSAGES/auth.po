@@ -90,7 +90,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
 #: lib/bemeda_personal_web/live/user_login_live.ex
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Email"
@@ -104,12 +103,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
-msgstr ""
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "First Name"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
@@ -143,12 +136,6 @@ msgstr ""
 msgid "Keep me logged in"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Last Name"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
 #: lib/bemeda_personal_web/live/user_confirmation_live.ex
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
@@ -179,11 +166,6 @@ msgstr ""
 msgid "Manage your account email address and password settings"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Name updated successfully."
-msgstr ""
-
 #: lib/bemeda_personal_web/live/user_reset_password_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
@@ -202,7 +184,6 @@ msgid "Oops, something went wrong! Please check the errors below."
 msgstr ""
 
 #: lib/bemeda_personal_web/live/user_login_live.ex
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Password"
 msgstr ""
@@ -264,11 +245,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/user_login_live.ex
 #, elixir-autogen, elixir-format
 msgid "Sign up"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Update Name"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/user_confirmation_live.ex
@@ -351,6 +327,11 @@ msgstr ""
 msgid "to your account now."
 msgstr ""
 
+#: lib/bemeda_personal_web/live/user_settings_live.ex
+#, elixir-autogen, elixir-format
+msgid "Personal info updated successfully."
+msgstr ""
+
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Already have an account?"
@@ -384,4 +365,19 @@ msgstr ""
 #: lib/bemeda_personal_web/user_auth.ex
 #, elixir-autogen, elixir-format
 msgid "You must be an employer to access this page."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Back"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Continue"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_registration_live.ex
+#, elixir-autogen, elixir-format
+msgid "Processing..."
 msgstr ""

@@ -400,39 +400,6 @@ defmodule BemedaPersonal.Accounts do
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user name.
-
-  ## Examples
-
-      iex> change_user_name(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  @spec change_user_name(user(), attrs()) :: changeset()
-  def change_user_name(user, attrs \\ %{}) do
-    User.name_changeset(user, attrs)
-  end
-
-  @doc """
-  Updates the user name.
-
-  ## Examples
-
-      iex> update_user_name(user, %{first_name: "John", last_name: "Doe"})
-      {:ok, %User{}}
-
-      iex> update_user_name(user, %{first_name: ""})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  @spec update_user_name(user(), attrs()) :: {:ok, user()} | {:error, changeset()}
-  def update_user_name(user, attrs) do
-    user
-    |> User.name_changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
   Updates the user locale preference.
 
   ## Examples
@@ -448,6 +415,39 @@ defmodule BemedaPersonal.Accounts do
   def update_user_locale(user, attrs) do
     user
     |> User.locale_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user personal info.
+
+  ## Examples
+
+      iex> change_user_personal_info(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  @spec change_user_personal_info(user(), attrs()) :: changeset()
+  def change_user_personal_info(%User{} = user, attrs \\ %{}) do
+    User.personal_info_changeset(user, attrs)
+  end
+
+  @doc """
+  Updates the user personal info.
+
+  ## Examples
+
+      iex> update_user_personal_info(user, %{gender: "female", title: "Dr."})
+      {:ok, %User{}}
+
+      iex> update_user_personal_info(user, %{title: "invalid_long_title"})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec update_user_personal_info(user(), attrs()) :: {:ok, user()} | {:error, changeset()}
+  def update_user_personal_info(%User{} = user, attrs) do
+    user
+    |> User.personal_info_changeset(attrs)
     |> Repo.update()
   end
 end

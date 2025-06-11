@@ -42,31 +42,78 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
           </div>
         </div>
 
-        <div>
-          <.simple_form
-            for={@name_form}
-            id="name_form"
-            phx-submit="update_name"
-            phx-change="validate_name"
-          >
-            <.input
-              field={@name_form[:first_name]}
-              type="text"
-              label={dgettext("auth", "First Name")}
-              required
-            />
-            <.input
-              field={@name_form[:last_name]}
-              type="text"
-              label={dgettext("auth", "Last Name")}
-              required
-            />
-            <:actions>
-              <.button phx-disable-with={dgettext("auth", "Changing...")}>
-                {dgettext("auth", "Update Name")}
-              </.button>
-            </:actions>
-          </.simple_form>
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              {gettext("Personal Information")}
+            </h3>
+            <.simple_form
+              for={@personal_info_form}
+              id="personal_info_form"
+              phx-submit="update_personal_info"
+              phx-change="validate_personal_info"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <.input
+                  field={@personal_info_form[:first_name]}
+                  type="text"
+                  label={gettext("First Name")}
+                  required
+                />
+                <.input
+                  field={@personal_info_form[:last_name]}
+                  type="text"
+                  label={gettext("Last Name")}
+                  required
+                />
+              </div>
+
+              <.input
+                field={@personal_info_form[:gender]}
+                type="select"
+                label={gettext("Gender")}
+                prompt={gettext("Select gender (optional)")}
+                options={[
+                  {gettext("Male"), :male},
+                  {gettext("Female"), :female}
+                ]}
+              />
+
+              <.input
+                field={@personal_info_form[:street]}
+                type="text"
+                label={gettext("Street")}
+                required
+              />
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <.input
+                  field={@personal_info_form[:zip_code]}
+                  type="text"
+                  label={gettext("ZIP Code")}
+                  required
+                />
+                <.input
+                  field={@personal_info_form[:city]}
+                  type="text"
+                  label={gettext("City")}
+                  required
+                />
+                <.input
+                  field={@personal_info_form[:country]}
+                  type="text"
+                  label={gettext("Country")}
+                  required
+                />
+              </div>
+
+              <:actions>
+                <.button phx-disable-with={gettext("Updating...")}>
+                  {gettext("Update Personal Info")}
+                </.button>
+              </:actions>
+            </.simple_form>
+          </div>
         </div>
 
         <div>
@@ -169,7 +216,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
     user = socket.assigns.current_user
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
-    name_changeset = Accounts.change_user_name(user)
+    personal_info_changeset = Accounts.change_user_personal_info(user)
 
     if connected?(socket) do
       Endpoint.subscribe("rating:User:#{user.id}")
@@ -177,12 +224,12 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
 
     socket =
       socket
+      |> assign(:current_email, user.email)
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
-      |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
-      |> assign(:name_form, to_form(name_changeset))
+      |> assign(:personal_info_form, to_form(personal_info_changeset))
       |> assign(:trigger_submit, false)
 
     {:ok, socket}
@@ -259,28 +306,28 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
     end
   end
 
-  def handle_event("validate_name", %{"user" => user_params}, socket) do
-    name_form =
+  def handle_event("validate_personal_info", %{"user" => user_params}, socket) do
+    personal_info_form =
       socket.assigns.current_user
-      |> Accounts.change_user_name(user_params)
+      |> Accounts.change_user_personal_info(user_params)
       |> Map.put(:action, :validate)
       |> to_form()
 
-    {:noreply, assign(socket, name_form: name_form)}
+    {:noreply, assign(socket, :personal_info_form, personal_info_form)}
   end
 
-  def handle_event("update_name", %{"user" => user_params}, socket) do
+  def handle_event("update_personal_info", %{"user" => user_params}, socket) do
     user = socket.assigns.current_user
 
-    case Accounts.update_user_name(user, user_params) do
-      {:ok, _user} ->
+    case Accounts.update_user_personal_info(user, user_params) do
+      {:ok, updated_user} ->
         {:noreply,
          socket
-         |> put_flash(:info, dgettext("auth", "Name updated successfully."))
-         |> assign(:name_form, to_form(Accounts.change_user_name(user)))}
+         |> put_flash(:info, dgettext("auth", "Personal info updated successfully."))
+         |> assign(:personal_info_form, to_form(Accounts.change_user_personal_info(updated_user)))}
 
       {:error, changeset} ->
-        {:noreply, assign(socket, :name_form, to_form(changeset))}
+        {:noreply, assign(socket, :personal_info_form, to_form(changeset))}
     end
   end
 end

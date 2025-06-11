@@ -15,15 +15,20 @@ defmodule BemedaPersonal.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
+    field :city, :string
     field :confirmed_at, :utc_datetime
+    field :country, :string
     field :current_password, :string, virtual: true, redact: true
     field :email, :string
     field :first_name, :string
+    field :gender, Ecto.Enum, values: [:male, :female]
     field :hashed_password, :string, redact: true
     field :last_name, :string
     field :locale, Ecto.Enum, values: [:de, :en, :fr, :it], default: :de
     field :password, :string, virtual: true, redact: true
+    field :street, :string
     field :user_type, Ecto.Enum, values: [:job_seeker, :employer], default: :job_seeker
+    field :zip_code, :string
 
     has_one :resume, BemedaPersonal.Resumes.Resume
 
@@ -56,10 +61,23 @@ defmodule BemedaPersonal.Accounts.User do
   @spec registration_changeset(t() | changeset(), attrs(), opts()) :: changeset()
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :first_name, :last_name, :locale, :password, :user_type])
+    |> cast(attrs, [
+      :city,
+      :country,
+      :email,
+      :first_name,
+      :gender,
+      :last_name,
+      :street,
+      :locale,
+      :password,
+      :user_type,
+      :zip_code
+    ])
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_name()
+    |> validate_personal_info()
   end
 
   defp validate_email(changeset, opts) do
@@ -88,6 +106,15 @@ defmodule BemedaPersonal.Accounts.User do
     |> validate_required([:first_name, :last_name])
     |> validate_length(:first_name, min: 1, max: 255)
     |> validate_length(:last_name, min: 1, max: 255)
+  end
+
+  defp validate_personal_info(changeset) do
+    changeset
+    |> validate_required([:city, :country, :street, :zip_code])
+    |> validate_length(:city, min: 1, max: 100)
+    |> validate_length(:country, min: 1, max: 100)
+    |> validate_length(:street, min: 1, max: 255)
+    |> validate_length(:zip_code, min: 1, max: 20)
   end
 
   defp maybe_hash_password(changeset, opts) do
@@ -158,16 +185,6 @@ defmodule BemedaPersonal.Accounts.User do
   end
 
   @doc """
-  A user changeset for updating name fields.
-  """
-  @spec name_changeset(t() | changeset(), attrs()) :: changeset()
-  def name_changeset(user, attrs) do
-    user
-    |> cast(attrs, [:first_name, :last_name])
-    |> validate_name()
-  end
-
-  @doc """
   A user changeset for updating the locale preference.
   """
   @spec locale_changeset(t() | changeset(), attrs()) :: changeset()
@@ -175,6 +192,28 @@ defmodule BemedaPersonal.Accounts.User do
     user
     |> cast(attrs, [:locale])
     |> validate_required([:locale])
+  end
+
+  @doc """
+  A user changeset for updating personal info fields.
+  """
+  @spec personal_info_changeset(t() | changeset(), attrs()) :: changeset()
+  def personal_info_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :city,
+      :country,
+      :first_name,
+      :gender,
+      :last_name,
+      :street,
+      :locale,
+      :zip_code
+    ])
+    |> validate_required([:first_name, :last_name])
+    |> validate_length(:first_name, min: 1, max: 160)
+    |> validate_length(:last_name, min: 1, max: 160)
+    |> validate_personal_info()
   end
 
   @doc """

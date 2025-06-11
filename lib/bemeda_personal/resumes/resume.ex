@@ -20,7 +20,6 @@ defmodule BemedaPersonal.Resumes.Resume do
     has_many :educations, Education
     field :headline, :string
     field :is_public, :boolean, default: false
-    field :location, :string
     field :phone_number, :string
     field :summary, :string
     belongs_to :user, User
@@ -35,7 +34,6 @@ defmodule BemedaPersonal.Resumes.Resume do
     cast(resume, attrs, [
       :headline,
       :summary,
-      :location,
       :is_public,
       :contact_email,
       :phone_number,

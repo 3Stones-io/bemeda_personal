@@ -38,12 +38,6 @@ defmodule BemedaPersonalWeb.Resume.ResumeFormComponent do
           }
         />
         <.input
-          field={@form[:location]}
-          type="text"
-          label={dgettext("resumes", "Location")}
-          placeholder={dgettext("resumes", "e.g., San Francisco, CA")}
-        />
-        <.input
           field={@form[:contact_email]}
           type="email"
           label={dgettext("resumes", "Contact Email")}

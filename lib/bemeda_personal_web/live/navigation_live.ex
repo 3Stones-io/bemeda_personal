@@ -42,10 +42,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
       |> assign(:notifications_count, unread_count)
       |> assign(:user_company, user_company)
     else
-      socket
-      |> assign(:current_user, nil)
-      |> assign(:notifications_count, 0)
-      |> assign(:user_company, nil)
+      assign_user(socket, nil)
     end
   end
 
