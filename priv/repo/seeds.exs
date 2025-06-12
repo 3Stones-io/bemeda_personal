@@ -53,10 +53,8 @@ user1 =
     email: "john.doe@example.com",
     first_name: "John",
     last_name: "Doe",
-    line1: "123 Tech Street",
-    line2: "Apt 4B",
     password: "password123456",
-    street: "Tech Street",
+    street: "123 Tech Street, Apt 4B",
     user_type: :employer,
     zip_code: "94105"
   })
@@ -68,10 +66,8 @@ user2 =
     email: "jane.smith@example.com",
     first_name: "Jane",
     last_name: "Smith",
-    line1: "456 Health Avenue",
-    line2: "",
     password: "password123456",
-    street: "Health Avenue",
+    street: "456 Health Avenue",
     user_type: :employer,
     zip_code: "02101"
   })
@@ -83,10 +79,8 @@ job_seeker =
     email: "alex.johnson@example.com",
     first_name: "Alex",
     last_name: "Johnson",
-    line1: "789 Job Seeker Lane",
-    line2: "",
     password: "password123456",
-    street: "Job Seeker Lane",
+    street: "789 Job Seeker Lane",
     user_type: :job_seeker,
     zip_code: "98101"
   })
