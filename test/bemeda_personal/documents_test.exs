@@ -21,7 +21,7 @@ defmodule BemedaPersonal.DocumentsTest do
     job = job_posting_fixture(company)
     job_application = job_application_fixture(user, job)
 
-    template_path = "test/support/fixtures/files/Копия \"Freelance Contract\".docx"
+    template_path = "test/support/fixtures/files/Job_Offer_Serial_Template.docx"
     upload_id = Ecto.UUID.generate()
 
     {:ok, message} =
@@ -69,19 +69,19 @@ defmodule BemedaPersonal.DocumentsTest do
 
       expect(MockProcessor, :extract_variables, fn _path ->
         [
-          "Sender.FirstName",
-          "Sender.LastName",
-          "Sender.Company"
+          "First_Name",
+          "Last_Name",
+          "Client_Company"
         ]
       end)
 
       {:ok, variables} = Documents.extract_template_variables(message.id)
 
       assert is_list(variables)
-      assert "Sender.FirstName" in variables
-      assert "Sender.LastName" in variables
-      assert "Sender.Company" in variables
-      refute "Client.FirstName" in variables
+      assert "First_Name" in variables
+      assert "Last_Name" in variables
+      assert "Client_Company" in variables
+      refute "Job_Title" in variables
     end
 
     test "handles no media asset case", %{message: message} do
@@ -138,9 +138,9 @@ defmodule BemedaPersonal.DocumentsTest do
       user: user
     } do
       variables = %{
-        "Sender.Company" => "ACME Corp",
-        "Sender.FirstName" => "John",
-        "Sender.LastName" => "Doe"
+        "Client_Company" => "ACME Corp",
+        "First_Name" => "John",
+        "Last_Name" => "Doe"
       }
 
       stub(MockStorage, :download_file, fn ^upload_id ->
@@ -226,9 +226,9 @@ defmodule BemedaPersonal.DocumentsTest do
       user: user
     } do
       variables = %{
-        "Sender.FirstName" => "John",
-        "Sender.LastName" => "Doe",
-        "Sender.Company" => "ACME Corp"
+        "First_Name" => "John",
+        "Last_Name" => "Doe",
+        "Client_Company" => "ACME Corp"
       }
 
       stub(MockStorage, :download_file, fn ^upload_id ->

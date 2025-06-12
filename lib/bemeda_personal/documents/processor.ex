@@ -16,14 +16,12 @@ defmodule BemedaPersonal.Documents.Processor do
 
   @doc """
   Extracts all variable placeholders from a document.
-  The variables are the text within square brackets.
+  The variables are the text within double square brackets.
 
   ## Examples
 
-      iex> Processor.extract_variables(
-      ...>   "test/support/fixtures/files/Копия \"Freelance Contract\".docx"
-      ...> )
-      ["Sender.FirstName", "Sender.LastName", "Sender.Company", ...]
+      iex> Processor.extract_variables("test/support/fixtures/files/Job_Offer_Serial_Template.docx")
+      ["Employee_Name", "Company_Name", "Start_Date", ...]
 
   """
   @spec extract_variables(file_path()) :: [variable()]
@@ -39,7 +37,7 @@ defmodule BemedaPersonal.Documents.Processor do
 
       iex> Processor.replace_variables(
       ...>   "path/to/document.docx",
-      ...>   %{"Sender.FirstName" => "John", "Sender.LastName" => "Doe"}
+      ...>   %{"Employee_Name" => "John Doe", "Company_Name" => "ACME Corp"}
       ...> )
       "path/to/processed_document.docx"
 
