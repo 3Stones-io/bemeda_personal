@@ -778,12 +778,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
 
       view
-      |> form("#job-application-state-transition-form")
-      |> render_submit(%{
-        "job_application_state_transition" => %{
-          "notes" => "We'd like to extend an offer."
-        }
-      })
+      |> element("#offer-confirmation-modal button", "Extend Offer")
+      |> render_click()
 
       assert_enqueued(
         worker: EmailNotificationWorker,
@@ -854,6 +850,239 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       refute html =~ "Start Review"
       refute html =~ "Accept Offer"
       refute html =~ "Decline Offer"
+    end
+  end
+
+  describe "offer extension" do
+    setup %{conn: conn} do
+      candidate = user_fixture()
+      employer = user_fixture(%{email: "employer@example.com"})
+      company = company_fixture(employer)
+      job = job_posting_fixture(company, @create_attrs)
+      job_application = job_application_fixture(candidate, job)
+
+      %{
+        candidate: candidate,
+        company: company,
+        conn: conn,
+        employer: employer,
+        job: job,
+        job_application: job_application
+      }
+    end
+
+    test "employer sees offer confirmation modal when extending offer", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      html = render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
+
+      assert html =~ "Extend Job Offer"
+      assert html =~ "Are you sure you want to extend an offer to"
+      assert html =~ job_application.user.first_name
+      assert html =~ job_application.user.last_name
+      assert html =~ "The candidate will be notified and can accept or decline the offer"
+      assert html =~ "Cancel"
+      assert html =~ "Extend Offer"
+    end
+
+    test "employer can cancel offer confirmation modal", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"}) =~
+               "Extend Job Offer"
+
+      refute render_hook(view, "hide-status-transition-modal", %{}) =~ "Extend Job Offer"
+    end
+
+    test "employer can successfully extend offer through confirmation modal", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
+
+      view
+      |> element("#offer-confirmation-modal button", "Extend Offer")
+      |> render_click()
+
+      updated_job_application = JobApplications.get_job_application!(job_application.id)
+      assert updated_job_application.state == "offer_extended"
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: job_application.id,
+          type: "job_application_status_update"
+        }
+      )
+    end
+
+    test "candidate sees enhanced offer response UI when offer is extended", %{
+      conn: conn,
+      candidate: candidate,
+      employer: employer,
+      job_application: job_application
+    } do
+      {:ok, offer_extended_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          employer,
+          %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
+        )
+
+      conn = log_in_user(conn, candidate)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
+        )
+
+      assert html =~ "Job Offer Extended!"
+      assert html =~ "has extended you a job offer for"
+      assert html =~ offer_extended_application.job_posting.company.name
+      assert html =~ offer_extended_application.job_posting.title
+      assert html =~ "Accept Offer"
+    end
+
+    test "candidate can accept offer through enhanced UI", %{
+      conn: conn,
+      candidate: candidate,
+      employer: employer,
+      job_application: job_application
+    } do
+      {:ok, offer_extended_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          employer,
+          %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
+        )
+
+      conn = log_in_user(conn, candidate)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
+        )
+
+      view
+      |> element("div.bg-green-50 button", "Accept Offer")
+      |> render_click()
+
+      assert render(view) =~ "Congratulations! You have accepted the job offer."
+    end
+
+    test "candidate can decline offer through status buttons", %{
+      conn: conn,
+      candidate: candidate,
+      employer: employer,
+      job_application: job_application
+    } do
+      {:ok, offer_extended_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          employer,
+          %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
+        )
+
+      conn = log_in_user(conn, candidate)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
+        )
+
+      view
+      |> element("button a", "Withdraw Application")
+      |> render_click()
+
+      assert render(view) =~ "Withdrawn"
+    end
+
+    test "enhanced offer UI only shows for candidates when offer is extended", %{
+      conn: conn,
+      candidate: candidate,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, candidate)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      refute html =~ "Job Offer Extended!"
+      refute html =~ "Accept Offer"
+
+      {:ok, offer_extended_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          employer,
+          %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
+        )
+
+      employer_conn = log_in_user(build_conn(), employer)
+
+      {:ok, _view, employer_html} =
+        live(
+          employer_conn,
+          ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
+        )
+
+      refute employer_html =~ "Job Offer Extended!"
+      refute employer_html =~ "Accept Offer"
+    end
+
+    test "other status transitions still use standard modal", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      html = render_hook(view, "show-status-transition-modal", %{"to_state" => "withdrawn"})
+
+      assert html =~ "job-application-state-transition-form"
+      refute html =~ "offer-confirmation-modal"
+      refute html =~ "Extend Job Offer"
     end
   end
 end

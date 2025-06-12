@@ -17,6 +17,7 @@ msgid "%{applicant} applied for the %{position} position at %{company}."
 msgstr "%{applicant} ha fatto domanda per la posizione di %{position} presso %{company}."
 
 #: lib/bemeda_personal_web/i18n.ex
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Accept Offer"
 msgstr "Accetta Offerta"
@@ -127,6 +128,7 @@ msgid "Experience Level"
 msgstr "Livello di Esperienza"
 
 #: lib/bemeda_personal_web/i18n.ex
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Extend Offer"
 msgstr "Estendi Offerta"
@@ -1339,3 +1341,43 @@ msgstr "Riprendi Candidatura"
 #, elixir-autogen, elixir-format
 msgid "Status - update in chat interface"
 msgstr "Stato - aggiorna nell'interfaccia chat"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "%{company} has extended you a job offer for %{position}."
+msgstr "%{company} ti ha fatto un'offerta di lavoro per la posizione di %{position}."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Are you sure you want to extend an offer to %{name}?"
+msgstr "Sei sicuro di voler fare un'offerta a %{name}?"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Cancel"
+msgstr "Annulla"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Congratulations! You have accepted the job offer."
+msgstr "Congratulazioni! Hai accettato l'offerta di lavoro."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Extend Job Offer"
+msgstr "Fai un'offerta di lavoro"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to accept the offer. Please try again."
+msgstr "Impossibile accettare l'offerta. Riprova."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Job Offer Extended!"
+msgstr "Offerta di lavoro proposta!"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "The candidate will be notified and can accept or decline the offer."
+msgstr "Il candidato sarà notificato e potrà accettare o rifiutare l'offerta."
