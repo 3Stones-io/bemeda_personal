@@ -1,4 +1,4 @@
-<section class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+<section id="company-dashboard" class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto">
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900">{dgettext("companies", "Company Dashboard")}</h1>
   </div>
@@ -66,6 +66,101 @@
           </dd>
         </div>
       </dl>
+    </div>
+  </div>
+
+  <div :if={@company && @live_action != :new} class="bg-white shadow sm:rounded-lg mb-8">
+    <div class="px-4 py-5 sm:px-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900">
+            {dgettext("companies", "Job Offer Template")}
+          </h2>
+          <p class="mt-2 text-sm text-gray-500">
+            {dgettext("companies", "Upload a DOCX template with [[Variable_Name]] placeholders")}
+          </p>
+        </div>
+        <div :if={@template} class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2">
+            <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <div class="w-1.5 h-1.5 rounded-full mr-1.5 bg-green-400"></div>
+              {I18n.translate_template_status(to_string(@template.status))}
+            </div>
+          </div>
+          <button
+            type="button"
+            phx-click={JS.push("delete_template")}
+            class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            title={dgettext("companies", "Delete template")}
+          >
+            <.icon name="hero-trash" class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div :if={@template} class="bg-gray-50 rounded-lg p-4 mb-6">
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <.icon name="hero-document-text" class="h-8 w-8 text-indigo-600" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">{@template.name}</p>
+              <p class="text-sm text-gray-500">
+                {dgettext("companies", "Uploaded")} {Calendar.strftime(
+                  @template.inserted_at,
+                  "%B %d, %Y"
+                )}
+              </p>
+              <div :if={@template.error_message} class="mt-1">
+                <p class="text-sm text-red-600">{@template.error_message}</p>
+              </div>
+            </div>
+            <div class="flex-shrink-0 flex items-center space-x-2">
+              <SharedComponents.download_button
+                upload_id={@template.media_asset && @template.media_asset.upload_id}
+                filename={@template.name}
+              />
+              <button
+                type="button"
+                phx-click={JS.push("delete_template")}
+                class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                title={dgettext("companies", "Delete template")}
+              >
+                <.icon name="hero-trash" class="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div :if={@template} class="mb-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-2">
+              {dgettext("companies", "Replace Template")}
+            </h3>
+            <p class="text-sm text-gray-600 mb-4">
+              {dgettext(
+                "companies",
+                "Upload a new DOCX template to replace the current one. The old template will be automatically removed."
+              )}
+            </p>
+          </div>
+
+          <SharedComponents.file_input_component
+            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            events_target="company-dashboard"
+            id="template-upload"
+            max_file_size={10_000_000}
+            type={dgettext("companies", "DOCX template")}
+          />
+
+          <SharedComponents.file_upload_progress
+            id="template-upload-progress"
+            class="hidden"
+            phx-update="ignore"
+          />
+        </div>
+      </div>
     </div>
   </div>
 

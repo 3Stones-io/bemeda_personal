@@ -259,3 +259,73 @@ msgstr ""
 #, elixir-autogen, elixir-format, fuzzy
 msgid "You need to create a company first."
 msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Delete template"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to upload template"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Invalid file type. Please upload a DOCX file"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Job Offer Template"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Only DOCX files are allowed"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template deleted successfully"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template uploaded successfully"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Upload a DOCX template with [[Variable_Name]] placeholders"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Uploaded"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Active"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Failed to delete template"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Replace Template"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Upload a new DOCX template to replace the current one. The old template will be automatically removed."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "DOCX template"
+msgstr ""

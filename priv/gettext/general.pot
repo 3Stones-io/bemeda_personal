@@ -137,3 +137,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Are you sure you want to delete this entry?"
 msgstr ""
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Download"
+msgstr ""

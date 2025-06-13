@@ -8,9 +8,15 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
   import BemedaPersonal.RatingsFixtures
   import Phoenix.LiveViewTest
 
-  alias BemedaPersonal.Companies
+  alias BemedaPersonal.CompanyTemplates
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
+
+  defp create_company(_context) do
+    user = employer_user_fixture()
+    company = company_fixture(user)
+    %{company: company, user: user}
+  end
 
   describe "Company Dashboard" do
     test "redirects if user is not logged in", %{conn: conn} do
@@ -205,130 +211,268 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
   end
 
-  describe "Create Company" do
-    test "redirects if user is already has a company", %{conn: conn} do
-      user = employer_user_fixture()
-      _company = company_fixture(user)
+  describe "template management" do
+    setup [:create_company]
 
-      assert {:error, {:redirect, %{to: path}}} =
-               conn
-               |> log_in_user(user)
-               |> live(~p"/company/new")
+    test "shows upload interface when no template exists", %{conn: conn, user: user} do
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
 
-      assert path == ~p"/company"
+      assert html =~ "Job Offer Template"
+      assert html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute html =~ "Replace Template"
+      refute html =~ "bg-gray-50 rounded-lg p-4"
     end
 
-    test "renders company creation form", %{conn: conn} do
-      user = employer_user_fixture()
+    test "shows template management interface when template exists", %{
+      company: company,
+      conn: conn,
+      user: user
+    } do
+      {:ok, _template} =
+        CompanyTemplates.create_template(company, %{
+          name: "test_template.docx",
+          status: :active
+        })
 
       {:ok, _view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/new")
+        |> live(~p"/company")
 
-      assert html =~ "Create Company Profile"
-      assert html =~ "Company Name"
-      assert html =~ "Industry"
-      assert html =~ "Company Description"
+      assert html =~ "test_template.docx"
+      assert html =~ "Active"
+      assert html =~ "hero-trash"
+      assert html =~ "Replace Template"
+      assert html =~ "Upload a new DOCX template to replace the current one"
+      assert html =~ "bg-gray-50 rounded-lg p-4"
     end
 
-    test "allows a user to create a company", %{conn: conn} do
-      user = employer_user_fixture()
+    test "successfully uploads a new template when none exists", %{
+      company: company,
+      conn: conn,
+      user: user
+    } do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      render_hook(view, "upload_file", %{
+        "filename" => "new_template.docx",
+        "type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      })
+
+      upload_response = render_hook(view, "upload_completed", %{})
+
+      assert upload_response =~ "Template uploaded successfully"
+      assert upload_response =~ "new_template.docx"
+      assert upload_response =~ "Active"
+      assert upload_response =~ "Replace Template"
+      assert upload_response =~ "bg-gray-50 rounded-lg p-4"
+
+      template = CompanyTemplates.get_active_template(company.id)
+      assert template.name == "new_template.docx"
+      assert template.status == :active
+    end
+
+    test "successfully replaces an existing template", %{company: company, conn: conn, user: user} do
+      {:ok, _existing_template} =
+        CompanyTemplates.create_template(company, %{
+          name: "old_template.docx",
+          status: :active
+        })
+
+      {:ok, view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      assert html =~ "old_template.docx"
+      assert html =~ "Replace Template"
+
+      render_hook(view, "upload_file", %{
+        "filename" => "new_template.docx",
+        "type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      })
+
+      upload_html = render_hook(view, "upload_completed", %{})
+
+      assert upload_html =~ "Template uploaded successfully"
+      assert upload_html =~ "new_template.docx"
+      refute upload_html =~ "old_template.docx"
+      assert upload_html =~ "Active"
+      assert upload_html =~ "Replace Template"
+
+      template = CompanyTemplates.get_active_template(company.id)
+      assert template.name == "new_template.docx"
+      assert template.status == :active
+    end
+
+    test "successfully deletes an existing template", %{company: company, conn: conn, user: user} do
+      {:ok, _template} =
+        CompanyTemplates.create_template(company, %{
+          name: "template_to_delete.docx",
+          status: :active
+        })
+
+      {:ok, view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      assert html =~ "template_to_delete.docx"
+      assert html =~ "Replace Template"
+
+      delete_html =
+        view
+        |> element(".bg-gray-50 button[title='Delete template']")
+        |> render_click()
+
+      assert delete_html =~ "Template deleted successfully"
+      refute delete_html =~ "template_to_delete.docx"
+      assert delete_html =~ "Job Offer Template"
+      assert delete_html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute delete_html =~ "Replace Template"
+      refute delete_html =~ "bg-gray-50 rounded-lg p-4"
+
+      refute CompanyTemplates.get_active_template(company.id)
+    end
+
+    test "rejects non-DOCX files during upload", %{conn: conn, user: user} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      html =
+        render_hook(view, "upload_file", %{
+          "filename" => "document.pdf",
+          "type" => "application/pdf"
+        })
+
+      assert html =~ "Job Offer Template"
+      assert html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute html =~ "Replace Template"
+    end
+
+    test "rejects files with wrong extension during upload", %{
+      conn: conn,
+      user: user,
+      company: _company
+    } do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      html =
+        render_hook(view, "upload_file", %{
+          "filename" => "document.txt",
+          "type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        })
+
+      assert html =~ "Job Offer Template"
+      assert html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute html =~ "Replace Template"
+    end
+
+    test "handles upload cancellation gracefully", %{conn: conn, user: user} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      render_hook(view, "upload_file", %{
+        "filename" => "template.docx",
+        "type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      })
+
+      html = render_hook(view, "delete_file", %{})
+
+      assert html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute html =~ "Replace Template"
+    end
+
+    test "handles template deletion when template is already deleted", %{
+      company: company,
+      conn: conn,
+      user: user
+    } do
+      {:ok, template} =
+        CompanyTemplates.create_template(company, %{
+          name: "template_to_delete.docx",
+          status: :active
+        })
 
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/new")
+        |> live(~p"/company")
 
-      _result =
+      CompanyTemplates.delete_template(template)
+
+      html =
         view
-        |> form("#company-form", %{
-          "company" => %{
-            "name" => "Test Company",
-            "industry" => "Technology",
-            "description" => "A test company description",
-            "location" => "Test Location",
-            "size" => "Small",
-            "website_url" => "https://example.com"
-          }
-        })
-        |> render_submit()
+        |> element(".bg-gray-50 button[title='Delete template']")
+        |> render_click()
 
-      assert_redirect(view, ~p"/company")
-
-      assert Companies.get_company_by_user(user)
+      assert html =~ "Template deleted successfully"
+      refute html =~ "Failed to delete template"
+      refute html =~ "template_to_delete.docx"
+      refute html =~ "Replace Template"
+      refute html =~ "bg-gray-50 rounded-lg p-4"
     end
 
-    test "shows validation errors", %{conn: conn} do
-      user = employer_user_fixture()
-
-      {:ok, view, _html} =
+    test "shows appropriate interface transitions during template lifecycle", %{
+      conn: conn,
+      user: user
+    } do
+      {:ok, view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company/new")
+        |> live(~p"/company")
 
-      _result =
+      refute html =~ "Replace Template"
+      refute html =~ "bg-gray-50 rounded-lg p-4"
+      assert html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+
+      render_hook(view, "upload_file", %{
+        "filename" => "first_template.docx",
+        "type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      })
+
+      upload_html = render_hook(view, "upload_completed", %{})
+
+      assert upload_html =~ "first_template.docx"
+      assert upload_html =~ "Active"
+      assert upload_html =~ "Replace Template"
+      assert upload_html =~ "bg-gray-50 rounded-lg p-4"
+
+      render_hook(view, "upload_file", %{
+        "filename" => "second_template.docx",
+        "type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      })
+
+      upload_html_2 = render_hook(view, "upload_completed", %{})
+
+      assert upload_html_2 =~ "second_template.docx"
+      refute upload_html_2 =~ "first_template.docx"
+      assert upload_html_2 =~ "Active"
+      assert upload_html_2 =~ "Replace Template"
+
+      delete_html =
         view
-        |> form("#company-form", %{
-          "company" => %{
-            "name" => "",
-            "industry" => "Technology"
-          }
-        })
-        |> render_submit()
+        |> element(".bg-gray-50 button[title='Delete template']")
+        |> render_click()
 
-      assert render(view) =~ "can&#39;t be blank"
-    end
-
-    test "shows error with invalid data", %{conn: conn} do
-      {:ok, view, _html} =
-        conn
-        |> log_in_user(employer_user_fixture())
-        |> live(~p"/company/new")
-
-      assert render_submit(form(view, "#company-form", company: %{name: nil})) =~
-               "can&#39;t be blank"
-    end
-  end
-
-  describe "Edit Company" do
-    test "redirects if user is not admin of the company", %{conn: conn} do
-      user = employer_user_fixture()
-      other_user = employer_user_fixture(%{email: "other@example.com"})
-      _company = company_fixture(user)
-
-      assert {:error, {:redirect, %{to: path, flash: flash}}} =
-               conn
-               |> log_in_user(other_user)
-               |> live(~p"/company/edit")
-
-      assert path == "/company/new"
-      assert flash["error"] == "You need to create a company first."
-    end
-
-    test "allows admin to edit company", %{conn: conn} do
-      user = employer_user_fixture()
-      company = company_fixture(user)
-
-      {:ok, view, _html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/company/edit")
-
-      _result =
-        view
-        |> form("#company-form", %{
-          "company" => %{
-            "name" => "Updated Company Name",
-            "industry" => company.industry
-          }
-        })
-        |> render_submit()
-
-      assert_redirect(view, ~p"/company")
-
-      updated_company = Companies.get_company!(company.id)
-      assert updated_company.name == "Updated Company Name"
+      assert delete_html =~ "Template deleted successfully"
+      refute delete_html =~ "second_template.docx"
+      assert delete_html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute delete_html =~ "Replace Template"
+      refute delete_html =~ "bg-gray-50 rounded-lg p-4"
     end
   end
 

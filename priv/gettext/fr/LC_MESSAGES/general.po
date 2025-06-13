@@ -137,3 +137,8 @@ msgstr "Tapez un message ou glissez-déposez un fichier..."
 #, elixir-autogen, elixir-format
 msgid "Are you sure you want to delete this entry?"
 msgstr "Êtes-vous sûr de vouloir supprimer cette entrée ?"
+
+#: lib/bemeda_personal_web/components/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Download"
+msgstr "Télécharger"

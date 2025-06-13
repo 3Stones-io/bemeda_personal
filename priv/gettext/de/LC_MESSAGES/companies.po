@@ -256,6 +256,76 @@ msgid "Remote"
 msgstr "Remote"
 
 #: lib/bemeda_personal_web/user_auth.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "You need to create a company first."
-msgstr "Sie müssen ein Unternehmensprofil erstellen, bevor Sie Jobs veröffentlichen können."
+msgstr "Sie müssen zuerst ein Unternehmen erstellen."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Delete template"
+msgstr "Vorlage Löschen"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to upload template"
+msgstr "Fehler beim Hochladen der Vorlage"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Invalid file type. Please upload a DOCX file"
+msgstr "Ungültiger Dateityp. Bitte laden Sie eine DOCX-Datei hoch"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Job Offer Template"
+msgstr "Stellenangebot-Vorlage"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Only DOCX files are allowed"
+msgstr "Nur DOCX-Dateien sind erlaubt"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template deleted successfully"
+msgstr "Vorlage erfolgreich gelöscht"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template uploaded successfully"
+msgstr "Vorlage erfolgreich hochgeladen"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Upload a DOCX template with [[Variable_Name]] placeholders"
+msgstr "Laden Sie eine DOCX-Vorlage mit [[Variable_Name]] Platzhaltern hoch"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Uploaded"
+msgstr "Hochgeladen"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Active"
+msgstr "Aktiv"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to delete template"
+msgstr "Fehler beim Löschen der Vorlage"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Replace Template"
+msgstr "Vorlage Ersetzen"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Upload a new DOCX template to replace the current one. The old template will be automatically removed."
+msgstr "Laden Sie eine neue DOCX-Vorlage hoch, um die aktuelle zu ersetzen. Die alte Vorlage wird automatisch entfernt."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "DOCX template"
+msgstr "DOCX-Vorlage"

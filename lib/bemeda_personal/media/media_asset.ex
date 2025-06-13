@@ -7,6 +7,7 @@ defmodule BemedaPersonal.Media.MediaAsset do
 
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.CompanyTemplates.CompanyTemplate
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobPostings.JobPosting
 
@@ -19,6 +20,7 @@ defmodule BemedaPersonal.Media.MediaAsset do
 
   schema "media_assets" do
     belongs_to :company, Company
+    belongs_to :company_template, CompanyTemplate
     field :file_name, :string
     belongs_to :job_application, JobApplication
     belongs_to :job_posting, JobPosting
@@ -32,6 +34,6 @@ defmodule BemedaPersonal.Media.MediaAsset do
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(%__MODULE__{} = media_asset, attrs) do
-    cast(media_asset, attrs, [:file_name, :status, :type, :upload_id])
+    cast(media_asset, attrs, [:company_template_id, :file_name, :status, :type, :upload_id])
   end
 end
