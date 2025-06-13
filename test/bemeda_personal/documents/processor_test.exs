@@ -18,91 +18,34 @@ defmodule BemedaPersonal.Documents.ProcessorTest do
   end
 
   describe "extract_variables/1" do
-    test "extracts variables from service contract document" do
-      doc_path = "test/support/fixtures/files/CLIENT SERVICE CONTRACT 29-01-22.docx"
+    test "extracts variables from job offer template with double brackets" do
+      doc_path = "test/support/fixtures/files/Job_Offer_Serial_Template.docx"
 
       assert variables = Processor.extract_variables(doc_path)
 
       expected_variables = [
-        "enter agency name",
-        "enter contractor name",
-        "enter contractor address",
-        "enter city, state, zip for contractor",
-        "enter email address for contractor",
-        "enter contractor telephone no.",
-        "enter contractor fax no.",
-        "provide detailed description of contract purpose",
-        "Insert table with deliverable due dates here",
-        "insert name of contract manager",
-        "enter start date",
-        "enter contract end date",
-        "write out the full dollar amount",
-        "insert rates and/or terms of compensation",
-        "enter contract manager's name",
-        "enter name of Contractor",
-        "enter Contractor address",
-        "enter Contractor city, state, zip",
-        "enter name of Department",
-        "enter Department address",
-        "enter Department city, state, zip",
-        "ENTER CONTACTOR NAME",
-        "ENTER DEPARTMENT NAME",
-        "is binding on all parties",
-        "shall/shall not be admissible in any succeeding judicial or quasi-judicial proceeding concerning the Contract.  Parties agree that the DRB shall proceed with any action in a judicial or quasi-judicial tribunal.",
-        "Department/Director of Department or his or her designee",
-        "shall/shall not be",
-        "insert the name of your agency",
-        "insert the name of the entity you are contracting with",
-        "insert start date",
-        "LIST AGREEMENT(S) THE ADDENDUM APPLIES TO",
-        "Insert Agency Name",
-        "Insert Name",
-        "identify specific activity or activities",
-        "CONTRACTOR'S NAME",
-        "DEPARTMENT NAME"
-      ]
-
-      assert Enum.sort(variables) == Enum.sort(expected_variables)
-    end
-
-    test "extracts variables from freelance contract document" do
-      doc_path = "test/support/fixtures/files/Копия \"Freelance Contract\".docx"
-
-      assert variables = Processor.extract_variables(doc_path)
-
-      expected_variables = [
-        "Sender.FirstName",
-        "Sender.LastName",
-        "Sender.Company",
-        "Sender.StreetAddress",
-        "Sender.City",
-        "Sender.Country",
-        "Sender.PostalCode",
-        "Sender.Phone",
-        "Sender.Email",
-        "Client.FirstName",
-        "Client.LastName",
-        "Client.Company",
-        "Client.StreetAddress",
-        "Client.City",
-        "Client.Country",
-        "Client.PostalCode",
-        "Client.Phone",
-        "Client.Email",
-        "INSERT THE NAME OF THE PUBLICATION COMPANY",
-        "SPECIFY THE STATE",
-        "SPECIFY PRINCIPAL PLACE OF BUSINESS OR ADDRESS",
-        "INSERT THE NAME OF THE WRITER",
-        "INSERT THE STATUS",
-        "INSERT THE NATIONALITY",
-        "INSERT THE ADDRESS",
-        "INSERT THE WEBSITE OF THE PUBLICATION COMPANY",
-        "INSERT THE SUBJECTS FOR THE WRITTEN ARTICLES",
-        "INSERT THE DEADLINE SCHEDULE",
-        "USD 0.00",
-        "Client Name",
-        "Client Signature",
-        "Date"
+        "Title",
+        "First_Name",
+        "Last_Name",
+        "Street",
+        "ZipCode",
+        "City",
+        "Date",
+        "Salutation",
+        "Job_Title",
+        "Client_Company",
+        "Work_Location",
+        "Workload",
+        "Contract_Type",
+        "Start_Date",
+        "Working_Hours",
+        "Gross_Salary",
+        "Offer_Deadline",
+        "Recruiter_Name",
+        "Recruiter_Position",
+        "Recruiter_Phone",
+        "Recruiter_Email",
+        "Candidate_Full_Name"
       ]
 
       assert Enum.sort(variables) == Enum.sort(expected_variables)
@@ -110,12 +53,15 @@ defmodule BemedaPersonal.Documents.ProcessorTest do
   end
 
   describe "replace_variables/2" do
-    test "replaces variables in the service contract document with provided values" do
-      source_path = "test/support/fixtures/files/CLIENT SERVICE CONTRACT 29-01-22.docx"
+    test "replaces variables in the job offer template with provided values" do
+      source_path = "test/support/fixtures/files/Job_Offer_Serial_Template.docx"
 
       values = %{
-        "enter agency name" => "ACME Corp",
-        "enter contractor name" => "John Doe"
+        "First_Name" => "John",
+        "Last_Name" => "Doe",
+        "Job_Title" => "Software Engineer",
+        "Client_Company" => "ACME Corp",
+        "Start_Date" => "2024-02-01"
       }
 
       assert output_file = Processor.replace_variables(source_path, values)
@@ -127,66 +73,25 @@ defmodule BemedaPersonal.Documents.ProcessorTest do
 
       variables = Processor.extract_variables(output_file)
 
-      refute "enter agency name" in variables
-      refute "enter contractor name" in variables
-
-      doc_content = get_content(output_file)
-
-      assert String.contains?(doc_content, "ACME Corp")
-      assert String.contains?(doc_content, "John Doe")
-    end
-
-    test "replaces variables in the freelance contract document with provided values" do
-      source_path = "test/support/fixtures/files/Копия \"Freelance Contract\".docx"
-
-      values = %{
-        "Sender.FirstName" => "John",
-        "Sender.LastName" => "Doe",
-        "Sender.Company" => "ACME Corp",
-        "Client.FirstName" => "Jane",
-        "Client.LastName" => "Smith"
-      }
-
-      assert output_file = Processor.replace_variables(source_path, values)
-      assert File.exists?(output_file)
-
-      on_exit(fn ->
-        File.rm(output_file)
-      end)
-
-      variables = Processor.extract_variables(output_file)
-
-      refute "Sender.FirstName" in variables
-      refute "Sender.LastName" in variables
-      refute "Sender.Company" in variables
-      refute "Client.FirstName" in variables
-      refute "Client.LastName" in variables
+      refute "First_Name" in variables
+      refute "Last_Name" in variables
+      refute "Job_Title" in variables
+      refute "Client_Company" in variables
+      refute "Start_Date" in variables
 
       doc_content = get_content(output_file)
 
       assert String.contains?(doc_content, "John")
       assert String.contains?(doc_content, "Doe")
+      assert String.contains?(doc_content, "Software Engineer")
       assert String.contains?(doc_content, "ACME Corp")
-      assert String.contains?(doc_content, "Jane")
-      assert String.contains?(doc_content, "Smith")
+      assert String.contains?(doc_content, "2024-02-01")
     end
   end
 
   describe "convert_to_pdf/1" do
-    test "converts service contract docx file to pdf" do
-      source_path = "test/support/fixtures/files/CLIENT SERVICE CONTRACT 29-01-22.docx"
-
-      pdf_path = Processor.convert_to_pdf(source_path)
-      assert File.exists?(pdf_path)
-      assert Path.extname(pdf_path) == ".pdf"
-
-      on_exit(fn ->
-        File.rm(pdf_path)
-      end)
-    end
-
-    test "converts freelance contract docx file to pdf" do
-      source_path = "test/support/fixtures/files/Копия \"Freelance Contract\".docx"
+    test "converts job offer template docx file to pdf" do
+      source_path = "test/support/fixtures/files/Job_Offer_Serial_Template.docx"
 
       pdf_path = Processor.convert_to_pdf(source_path)
       assert File.exists?(pdf_path)

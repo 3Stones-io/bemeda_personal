@@ -76,7 +76,7 @@ defmodule BemedaPersonal.Documents.FileProcessor do
 
   defp replace_variables_in_content(content, values) do
     Enum.reduce(values, content, fn {variable, value}, acc ->
-      pattern = ~r/\[([^]]*?)#{Regex.escape(variable)}([^]]*?)\]/s
+      pattern = ~r/\[\[([^]]*?)#{Regex.escape(variable)}([^]]*?)\]\]/s
 
       Regex.replace(pattern, acc, fn _full_match, prefix, suffix ->
         prefix <> value <> suffix
@@ -94,7 +94,7 @@ defmodule BemedaPersonal.Documents.FileProcessor do
   defp extract_variables_from_file(file_path) do
     content = File.read!(file_path)
 
-    ~r/\[([^\]\[]+)\]/
+    ~r/\[\[([^\[\]]+)\]\]/
     |> Regex.scan(content)
     |> Stream.map(fn [_match, capture] -> capture end)
     |> Stream.map(&remove_xml_tags/1)
