@@ -12,6 +12,7 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
   use Oban.Worker, max_attempts: 3
 
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.CompanyTemplates
   alias BemedaPersonal.Documents
   alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Repo
@@ -46,7 +47,8 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
   end
 
   defp generate_contract_pdf(job_offer) do
-    template_upload_id = get_or_upload_default_template()
+    company_id = job_offer.job_application.job_posting.company_id
+    template_upload_id = get_template_upload_id(company_id)
 
     with {:ok, doc_path} <- download_template(template_upload_id),
          doc_path <- Documents.Processor.replace_variables(doc_path, job_offer.variables),
@@ -79,6 +81,16 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
       "job_offer_updated",
       %{job_offer: job_offer}
     )
+  end
+
+  defp get_template_upload_id(company_id) do
+    case CompanyTemplates.get_active_template(company_id) do
+      %{media_asset: %{upload_id: upload_id}} when is_binary(upload_id) ->
+        upload_id
+
+      _template ->
+        get_or_upload_default_template()
+    end
   end
 
   defp get_or_upload_default_template do
