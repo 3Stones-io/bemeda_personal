@@ -273,6 +273,45 @@ defmodule BemedaPersonalWeb.ChatComponents do
     """
   end
 
+  defp chat_message(
+         %{message: %{media_asset: %MediaAsset{type: "application/pdf", status: :uploaded}}} =
+           assigns
+       ) do
+    ~H"""
+    <div
+      id={"pdf-preview-#{@message.id}"}
+      class="pdf-message w-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
+      phx-hook="PdfPreview"
+      data-pdf-url={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
+      data-upload-id={@message.media_asset.upload_id}
+    >
+      <div class="pdf-preview-container">
+        <div class="animate-pulse bg-gray-200 h-48 rounded-t-lg flex items-center justify-center">
+          <p class="text-gray-500 text-sm">Loading PDF preview...</p>
+        </div>
+      </div>
+
+      <div class="p-3 bg-gray-50 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <.icon name="hero-document-text" class="h-5 w-5 text-red-600 mr-2" />
+            <p class="text-sm font-medium text-gray-800">
+              {@message.media_asset.file_name}
+            </p>
+          </div>
+          <button
+            phx-click="download_pdf"
+            phx-value-upload-id={@message.media_asset.upload_id}
+            class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md font-medium transition-colors duration-200"
+          >
+            <.icon name="hero-arrow-down-tray" class="w-4 h-4 mr-1" /> Download
+          </button>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   defp chat_message(%{message: %{media_asset: %MediaAsset{status: :uploaded}}} = assigns) do
     assigns =
       assign_new(assigns, :extension, fn %{message: message} ->
