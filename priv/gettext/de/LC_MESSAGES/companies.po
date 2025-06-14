@@ -260,11 +260,6 @@ msgstr "Remote"
 msgid "You need to create a company first."
 msgstr "Sie müssen zuerst ein Unternehmen erstellen."
 
-#: lib/bemeda_personal_web/live/company_live/index.html.heex
-#, elixir-autogen, elixir-format
-msgid "Delete template"
-msgstr "Vorlage Löschen"
-
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #, elixir-autogen, elixir-format
 msgid "Failed to upload template"
@@ -285,11 +280,6 @@ msgstr "Stellenangebot-Vorlage"
 msgid "Only DOCX files are allowed"
 msgstr "Nur DOCX-Dateien sind erlaubt"
 
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Template deleted successfully"
-msgstr "Vorlage erfolgreich gelöscht"
-
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Upload a DOCX template with [[Variable_Name]] placeholders"
@@ -304,11 +294,6 @@ msgstr "Hochgeladen"
 #, elixir-autogen, elixir-format
 msgid "Active"
 msgstr "Aktiv"
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to delete template"
-msgstr "Fehler beim Löschen der Vorlage"
 
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
@@ -337,11 +322,6 @@ msgstr[1] "%{count} Variablen"
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to deactivate template"
-msgstr "Fehler beim Deaktivieren der Vorlage"
-
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Preview Variables"
@@ -356,11 +336,6 @@ msgstr "Verarbeitung"
 #, elixir-autogen, elixir-format
 msgid "Processing template..."
 msgstr "Vorlage wird verarbeitet..."
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Template deactivated successfully"
-msgstr "Vorlage erfolgreich deaktiviert"
 
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #, elixir-autogen, elixir-format
@@ -396,3 +371,18 @@ msgstr "In Ihrer Vorlage gefundene Variablen"
 #, elixir-autogen, elixir-format
 msgid "Your template doesn't contain any variables in the [[Variable_Name]] format."
 msgstr "Ihre Vorlage enthält keine Variablen im Format [[Variable_Name]]."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Archive template"
+msgstr "Vorlage archivieren"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to archive template"
+msgstr "Fehler beim Archivieren der Vorlage"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template archived successfully"
+msgstr "Vorlage erfolgreich archiviert"

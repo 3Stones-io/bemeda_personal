@@ -260,11 +260,6 @@ msgstr "À distance"
 msgid "You need to create a company first."
 msgstr "Vous devez d'abord créer une entreprise."
 
-#: lib/bemeda_personal_web/live/company_live/index.html.heex
-#, elixir-autogen, elixir-format
-msgid "Delete template"
-msgstr "Supprimer le modèle"
-
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #, elixir-autogen, elixir-format
 msgid "Failed to upload template"
@@ -285,11 +280,6 @@ msgstr "Modèle d'offre d'emploi"
 msgid "Only DOCX files are allowed"
 msgstr "Seuls les fichiers DOCX sont autorisés"
 
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Template deleted successfully"
-msgstr "Modèle supprimé avec succès"
-
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Upload a DOCX template with [[Variable_Name]] placeholders"
@@ -304,11 +294,6 @@ msgstr "Téléchargé"
 #, elixir-autogen, elixir-format
 msgid "Active"
 msgstr "Actif"
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to delete template"
-msgstr "Échec de la suppression du modèle"
 
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
@@ -337,11 +322,6 @@ msgstr[1] "%{count} variables"
 msgid "Failed"
 msgstr "Échec"
 
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to deactivate template"
-msgstr "Échec de la désactivation du modèle"
-
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Preview Variables"
@@ -356,11 +336,6 @@ msgstr "Traitement"
 #, elixir-autogen, elixir-format
 msgid "Processing template..."
 msgstr "Traitement du modèle..."
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Template deactivated successfully"
-msgstr "Modèle désactivé avec succès"
 
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #, elixir-autogen, elixir-format
@@ -396,3 +371,18 @@ msgstr "Variables trouvées dans votre modèle"
 #, elixir-autogen, elixir-format
 msgid "Your template doesn't contain any variables in the [[Variable_Name]] format."
 msgstr "Votre modèle ne contient aucune variable au format [[Nom_Variable]]."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Archive template"
+msgstr "Archiver le modèle"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to archive template"
+msgstr "Échec de l'archivage du modèle"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template archived successfully"
+msgstr "Modèle archivé avec succès"

@@ -154,20 +154,22 @@ defmodule BemedaPersonal.CompanyTemplates do
   end
 
   @doc """
-  Deletes a company template.
+  Archives a company template by setting its status to :inactive.
+
+  This preserves the template data while making it inactive.
 
   ## Examples
 
-      iex> delete_template(template)
+      iex> archive_template(template)
       {:ok, %CompanyTemplate{}}
 
-      iex> delete_template(template)
+      iex> archive_template(template)
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec delete_template(template()) :: {:ok, template()} | {:error, changeset()}
-  def delete_template(%CompanyTemplate{} = template) do
-    Repo.delete(template, allow_stale: true)
+  @spec archive_template(template()) :: {:ok, template()} | {:error, changeset()}
+  def archive_template(%CompanyTemplate{} = template) do
+    update_template(template, %{status: :inactive})
   end
 
   @doc """

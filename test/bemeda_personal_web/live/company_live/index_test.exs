@@ -283,7 +283,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
       assert html =~ "test_template.docx"
       assert html =~ "Active"
-      assert html =~ "hero-trash"
+      assert html =~ "hero-archive-box"
       assert html =~ "Replace Template"
       assert html =~ "Upload a new DOCX template to replace the current one"
       assert html =~ "bg-gray-50 rounded-lg p-4"
@@ -376,10 +376,10 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert old_template.status == :active
     end
 
-    test "successfully deletes an existing template", %{company: company, conn: conn, user: user} do
+    test "successfully archives an existing template", %{company: company, conn: conn, user: user} do
       {:ok, _template} =
         CompanyTemplates.create_template(company, %{
-          name: "template_to_delete.docx",
+          name: "template_to_archive.docx",
           status: :active
         })
 
@@ -388,20 +388,20 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company")
 
-      assert html =~ "template_to_delete.docx"
+      assert html =~ "template_to_archive.docx"
       assert html =~ "Replace Template"
 
-      delete_html =
+      archive_html =
         view
-        |> element(".bg-gray-50 button[title='Delete template']")
+        |> element(".bg-gray-50 button[title='Archive template']")
         |> render_click()
 
-      assert delete_html =~ "Template deleted successfully"
-      refute delete_html =~ "template_to_delete.docx"
-      assert delete_html =~ "Job Offer Template"
-      assert delete_html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
-      refute delete_html =~ "Replace Template"
-      refute delete_html =~ "bg-gray-50 rounded-lg p-4"
+      assert archive_html =~ "Template archived successfully"
+      refute archive_html =~ "template_to_archive.docx"
+      assert archive_html =~ "Job Offer Template"
+      assert archive_html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute archive_html =~ "Replace Template"
+      refute archive_html =~ "bg-gray-50 rounded-lg p-4"
 
       refute CompanyTemplates.get_active_template(company.id)
     end
@@ -461,14 +461,14 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       refute html =~ "Replace Template"
     end
 
-    test "handles template deletion when template is already deleted", %{
+    test "handles template archiving when template is already archived", %{
       company: company,
       conn: conn,
       user: user
     } do
       {:ok, template} =
         CompanyTemplates.create_template(company, %{
-          name: "template_to_delete.docx",
+          name: "template_to_archive.docx",
           status: :active
         })
 
@@ -477,16 +477,16 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company")
 
-      CompanyTemplates.delete_template(template)
+      CompanyTemplates.update_template(template, %{status: :archived})
 
       html =
         view
-        |> element(".bg-gray-50 button[title='Delete template']")
+        |> element(".bg-gray-50 button[title='Archive template']")
         |> render_click()
 
-      assert html =~ "Template deleted successfully"
-      refute html =~ "Failed to delete template"
-      refute html =~ "template_to_delete.docx"
+      assert html =~ "Template archived successfully"
+      refute html =~ "Failed to archive template"
+      refute html =~ "template_to_archive.docx"
       refute html =~ "Replace Template"
       refute html =~ "bg-gray-50 rounded-lg p-4"
     end
@@ -528,22 +528,22 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert upload_html_2 =~ "Processing"
       assert upload_html_2 =~ "Replace Template"
 
-      delete_html =
+      archive_html =
         view
-        |> element(".bg-gray-50 button[title='Delete template']")
+        |> element(".bg-gray-50 button[title='Archive template']")
         |> render_click()
 
-      assert delete_html =~ "Template deleted successfully"
-      refute delete_html =~ "second_template.docx"
-      assert delete_html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
-      refute delete_html =~ "Replace Template"
-      refute delete_html =~ "bg-gray-50 rounded-lg p-4"
+      assert archive_html =~ "Template archived successfully"
+      refute archive_html =~ "second_template.docx"
+      assert archive_html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
+      refute archive_html =~ "Replace Template"
+      refute archive_html =~ "bg-gray-50 rounded-lg p-4"
     end
 
-    test "handles deactivate template action", %{conn: conn, user: user, company: company} do
+    test "handles archive template action", %{conn: conn, user: user, company: company} do
       {:ok, _template} =
         CompanyTemplates.create_template(company, %{
-          name: "template_to_deactivate.docx",
+          name: "template_to_archive.docx",
           status: :active
         })
 
@@ -552,19 +552,19 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company")
 
-      html = render_hook(view, "deactivate_template", %{})
+      html = render_hook(view, "archive_template", %{})
 
-      assert html =~ "Template deactivated successfully"
-      refute html =~ "template_to_deactivate.docx"
+      assert html =~ "Template archived successfully"
+      refute html =~ "template_to_archive.docx"
     end
 
-    test "handles deactivate template when no template exists", %{conn: conn, user: user} do
+    test "handles archive template when no template exists", %{conn: conn, user: user} do
       {:ok, view, _html} =
         conn
         |> log_in_user(user)
         |> live(~p"/company")
 
-      assert render_hook(view, "deactivate_template", %{}) =~ "Upload a DOCX template"
+      assert render_hook(view, "archive_template", %{}) =~ "Upload a DOCX template"
     end
 
     test "handles show variables modal", %{conn: conn, user: user, company: company} do

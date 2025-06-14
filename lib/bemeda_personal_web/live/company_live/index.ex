@@ -119,19 +119,6 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     {:noreply, assign(socket, :template_data, %{})}
   end
 
-  def handle_event("delete_template", _params, socket) do
-    case CompanyTemplates.delete_template(socket.assigns.template) do
-      {:ok, _deleted_template} ->
-        {:noreply,
-         socket
-         |> assign(:template, nil)
-         |> put_flash(:info, dgettext("companies", "Template deleted successfully"))}
-
-      {:error, _changeset} ->
-        {:noreply, put_flash(socket, :error, dgettext("companies", "Failed to delete template"))}
-    end
-  end
-
   def handle_event("show_variables", _params, socket) do
     {:noreply, assign(socket, :show_variables_modal, true)}
   end
@@ -143,25 +130,22 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
      |> assign(:show_variables_modal, false)}
   end
 
-  def handle_event("deactivate_template", _params, socket) do
+  def handle_event("archive_template", _params, socket) do
     case socket.assigns.template do
       nil ->
         {:noreply, socket}
 
       template ->
-        case CompanyTemplates.update_template(
-               template,
-               %{status: :uploading}
-             ) do
+        case CompanyTemplates.archive_template(template) do
           {:ok, _template} ->
             {:noreply,
              socket
              |> assign(:template, nil)
-             |> put_flash(:info, dgettext("companies", "Template deactivated successfully"))}
+             |> put_flash(:info, dgettext("companies", "Template archived successfully"))}
 
           {:error, _changeset} ->
             {:noreply,
-             put_flash(socket, :error, dgettext("companies", "Failed to deactivate template"))}
+             put_flash(socket, :error, dgettext("companies", "Failed to archive template"))}
         end
     end
   end

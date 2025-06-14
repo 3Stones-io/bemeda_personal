@@ -260,11 +260,6 @@ msgstr ""
 msgid "You need to create a company first."
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_live/index.html.heex
-#, elixir-autogen, elixir-format
-msgid "Delete template"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #, elixir-autogen, elixir-format
 msgid "Failed to upload template"
@@ -285,11 +280,6 @@ msgstr ""
 msgid "Only DOCX files are allowed"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Template deleted successfully"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Upload a DOCX template with [[Variable_Name]] placeholders"
@@ -303,11 +293,6 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Active"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to delete template"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
@@ -337,11 +322,6 @@ msgstr[1] ""
 msgid "Failed"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to deactivate template"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Preview Variables"
@@ -355,11 +335,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Processing template..."
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Template deactivated successfully"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_live/index.ex
@@ -395,4 +370,19 @@ msgstr ""
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Your template doesn't contain any variables in the [[Variable_Name]] format."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Archive template"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to archive template"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template archived successfully"
 msgstr ""

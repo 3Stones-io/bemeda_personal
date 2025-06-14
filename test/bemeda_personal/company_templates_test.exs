@@ -150,15 +150,26 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
   end
 
-  describe "delete_template/1" do
-    test "deletes template successfully" do
+  describe "archive_template/1" do
+    test "archives template successfully" do
       user = user_fixture()
       company = company_fixture(user)
-      template = template_fixture(company, %{name: "to_delete.docx"})
+      template = template_fixture(company, %{name: "to_archive.docx", status: :active})
 
-      assert {:ok, deleted_template} = CompanyTemplates.delete_template(template)
-      assert deleted_template.id == template.id
+      assert {:ok, archived_template} = CompanyTemplates.archive_template(template)
+      assert archived_template.id == template.id
+      assert archived_template.status == :inactive
       refute CompanyTemplates.get_active_template(company.id)
+    end
+
+    test "archives inactive template successfully" do
+      user = user_fixture()
+      company = company_fixture(user)
+      template = template_fixture(company, %{name: "to_archive.docx", status: :inactive})
+
+      assert {:ok, archived_template} = CompanyTemplates.archive_template(template)
+      assert archived_template.id == template.id
+      assert archived_template.status == :inactive
     end
   end
 
