@@ -6,27 +6,32 @@ export default FileUpload = {
     const hook = this
     const fileUploadInput = hook.el
     const fileUploadInputsContainer = fileUploadInput.querySelector(
-      '#file-upload-inputs-container'
+      '[id$="-file-upload-inputs-container"]'
     )
     const eventsTarget = fileUploadInput.dataset.eventsTarget
 
-    const input = fileUploadInput.querySelector('#hidden-file-input')
+    const input = fileUploadInput.querySelector('[id$="-hidden-file-input"]')
     const assetDescription = document.querySelector('#asset-description')
 
     const uploadProgressElement = document.querySelector(
       '.file-upload-progress'
     )
 
-    const filenameElement =
-      uploadProgressElement.querySelector('#upload-filename')
-    const fileSizeElement = uploadProgressElement.querySelector('#upload-size')
-    const percentageElement =
-      uploadProgressElement.querySelector('#upload-percentage')
-    const progressBar = uploadProgressElement.querySelector(
-      '#upload-progress-bar'
+    const filenameElement = uploadProgressElement?.querySelector(
+      '[id$="-upload-filename"]'
     )
-    const progressElement =
-      uploadProgressElement.querySelector('#upload-progress')
+    const fileSizeElement = uploadProgressElement?.querySelector(
+      '[id$="-upload-size"]'
+    )
+    const percentageElement = uploadProgressElement?.querySelector(
+      '[id$="-upload-percentage"]'
+    )
+    const progressBar = uploadProgressElement?.querySelector(
+      '[id$="-upload-progress-bar"]'
+    )
+    const progressElement = uploadProgressElement?.querySelector(
+      '[id$="-upload-progress"]'
+    )
 
     let currentUpload
 

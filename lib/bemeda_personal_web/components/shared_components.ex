@@ -35,7 +35,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
   @spec file_input_component(assigns()) :: output()
   def file_input_component(assigns) do
     ~H"""
-    <div
+    <label
       id={"#{@id}-file-upload"}
       class={[
         "relative w-full",
@@ -47,7 +47,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
       data-events-target={@events_target}
     >
       <div
-        id="file-upload-inputs-container"
+        id={"#{@id}-file-upload-inputs-container"}
         class="text-center flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-8 bg-gray-50 cursor-pointer"
       >
         <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
@@ -58,31 +58,28 @@ defmodule BemedaPersonalWeb.SharedComponents do
         </h3>
         <p class="mb-4 text-sm text-gray-500">{dgettext("general", "or")}</p>
         <div>
-          <label
-            for="hidden-file-input"
-            class="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
+          <div class="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             {dgettext("general", "Browse Files")}
             <input
-              id="hidden-file-input"
+              id={"#{@id}-hidden-file-input"}
               type="file"
               class="hidden"
               accept={@accept}
               data-max-file-size={@max_file_size}
             />
-          </label>
+          </div>
         </div>
         <p class="mt-2 text-xs text-gray-500">
           {dgettext("general", "Max file size: %{size}", size: FileSizeUtils.pretty(@max_file_size))}
         </p>
       </div>
-      <p id="file-upload-error" class="mt-2 text-sm text-red-600 text-center mt-4 hidden">
+      <p id={"#{@id}-file-upload-error"} class="mt-2 text-sm text-red-600 text-center mt-4 hidden">
         <.icon name="hero-exclamation-circle" class="h-4 w-4" /> {dgettext(
           "errors",
           "Unsupported file type."
         )}
       </p>
-    </div>
+    </label>
     """
   end
 
@@ -104,12 +101,12 @@ defmodule BemedaPersonalWeb.SharedComponents do
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center space-x-2">
           <.icon name="hero-paper-clip" class="h-5 w-5 text-gray-400" />
-          <span class="text-sm font-medium text-gray-700" id="upload-filename"></span>
+          <span class="text-sm font-medium text-gray-700" id={"#{@id}-upload-filename"}></span>
         </div>
       </div>
       <div class="relative w-full">
         <div
-          id="upload-progress"
+          id={"#{@id}-upload-progress"}
           role="progressbar"
           aria-label={dgettext("general", "Upload progress")}
           aria-valuemin="0"
@@ -119,14 +116,14 @@ defmodule BemedaPersonalWeb.SharedComponents do
           <div
             class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
             style="width: 0%"
-            id="upload-progress-bar"
+            id={"#{@id}-upload-progress-bar"}
           >
           </div>
         </div>
       </div>
       <div class="flex justify-between mt-2">
-        <span id="upload-size" class="text-xs text-gray-500"></span>
-        <span id="upload-percentage" class="text-xs text-gray-500"></span>
+        <span id={"#{@id}-upload-size"} class="text-xs text-gray-500"></span>
+        <span id={"#{@id}-upload-percentage"} class="text-xs text-gray-500"></span>
       </div>
     </div>
     """
@@ -180,6 +177,35 @@ defmodule BemedaPersonalWeb.SharedComponents do
         </div>
       </div>
     </div>
+    """
+  end
+
+  @doc """
+  Renders a download button/link for files stored in object storage.
+
+  ## Examples
+
+      <.download_button upload_id="abc123" filename="document.pdf" />
+      <.download_button upload_id="abc123" filename="template.docx" class="custom-class" />
+
+  """
+  attr :upload_id, :string, required: true
+  attr :filename, :string, required: true
+
+  attr :class, :string,
+    default:
+      "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+
+  attr :icon_class, :string, default: "h-4 w-4 mr-2"
+  attr :rest, :global
+
+  @spec download_button(assigns()) :: output()
+  def download_button(assigns) do
+    ~H"""
+    <a href={SharedHelpers.get_presigned_url(@upload_id)} download={@filename} class={@class} {@rest}>
+      <.icon name="hero-arrow-down-tray" class={@icon_class} />
+      {dgettext("general", "Download")}
+    </a>
     """
   end
 end

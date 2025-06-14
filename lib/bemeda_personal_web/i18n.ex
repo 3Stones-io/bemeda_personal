@@ -202,4 +202,10 @@ defmodule BemedaPersonalWeb.I18n do
 
   def translate_years_of_experience("More than 5 years"),
     do: dgettext("jobs", "More than 5 years")
+
+  @spec translate_template_status(enum_value()) :: translated_string()
+  def translate_template_status("active"), do: dgettext("companies", "Active")
+  def translate_template_status("failed"), do: dgettext("companies", "Failed")
+  def translate_template_status("processing"), do: dgettext("companies", "Processing")
+  def translate_template_status("uploading"), do: dgettext("companies", "Uploading")
 end

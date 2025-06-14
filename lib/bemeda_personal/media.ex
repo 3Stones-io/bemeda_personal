@@ -7,6 +7,7 @@ defmodule BemedaPersonal.Media do
 
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.CompanyTemplates.CompanyTemplate
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.Media.MediaAsset
@@ -16,6 +17,7 @@ defmodule BemedaPersonal.Media do
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type company :: Company.t()
+  @type company_template :: CompanyTemplate.t()
   @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
   @type media_asset :: MediaAsset.t()
@@ -94,13 +96,27 @@ defmodule BemedaPersonal.Media do
 
       iex> create_media_asset(message, %{field: value})
       {:ok, %MediaAsset{}}
+
+      iex> create_media_asset(company_template, %{field: value})
+      {:ok, %MediaAsset{}}
+
   """
-  @spec create_media_asset(company() | job_application() | job_posting() | message(), attrs()) ::
+  @spec create_media_asset(
+          company() | company_template() | job_application() | job_posting() | message(),
+          attrs()
+        ) ::
           {:ok, media_asset()} | {:error, changeset()}
   def create_media_asset(%Company{} = company, attrs) do
     %MediaAsset{}
     |> MediaAsset.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:company, company)
+    |> Repo.insert()
+  end
+
+  def create_media_asset(%CompanyTemplate{} = company_template, attrs) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:company_template, company_template)
     |> Repo.insert()
   end
 
@@ -196,8 +212,6 @@ defmodule BemedaPersonal.Media do
       %{media_asset: media_asset, message: message}
     )
   end
-
-  defp broadcast_to_parent(_media_asset), do: :ok
 
   @doc """
   Deletes a media asset.

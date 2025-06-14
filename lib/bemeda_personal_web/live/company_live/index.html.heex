@@ -1,4 +1,4 @@
-<section class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+<section id="company-dashboard" class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto">
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900">{dgettext("companies", "Company Dashboard")}</h1>
   </div>
@@ -66,6 +66,138 @@
           </dd>
         </div>
       </dl>
+    </div>
+  </div>
+
+  <div :if={@company && @live_action != :new} class="bg-white shadow sm:rounded-lg mb-8">
+    <div class="px-4 py-5 sm:px-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900">
+            {dgettext("companies", "Job Offer Template")}
+          </h2>
+          <p class="mt-2 text-sm text-gray-500">
+            {dgettext("companies", "Upload a DOCX template with [[Variable_Name]] placeholders")}
+          </p>
+        </div>
+        <div :if={@template} class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2">
+            <div class={[
+              "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+              case @template.status do
+                :active -> "bg-green-100 text-green-800"
+                :processing -> "bg-yellow-100 text-yellow-800"
+                :failed -> "bg-red-100 text-red-800"
+                _ -> "bg-gray-100 text-gray-800"
+              end
+            ]}>
+              <div class={[
+                "w-1.5 h-1.5 rounded-full mr-1.5",
+                case @template.status do
+                  :active -> "bg-green-400"
+                  :processing -> "bg-yellow-400 animate-pulse"
+                  :failed -> "bg-red-400"
+                  _ -> "bg-gray-400"
+                end
+              ]}>
+              </div>
+              {I18n.translate_template_status(Atom.to_string(@template.status))}
+            </div>
+          </div>
+          <button
+            :if={@template.status == :active}
+            type="button"
+            phx-click="show_variables"
+            class="text-sm text-indigo-600 hover:text-indigo-900"
+          >
+            {dgettext("companies", "Preview Variables")}
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div :if={@template} class="bg-gray-50 rounded-lg p-4 mb-6">
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <.icon name="hero-document-text" class="h-8 w-8 text-indigo-600" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">{@template.name}</p>
+              <p class="text-sm text-gray-500">
+                {dgettext("companies", "Uploaded")} {Calendar.strftime(
+                  @template.inserted_at,
+                  "%B %d, %Y"
+                )}
+              </p>
+              <div :if={@template.error_message} class="mt-1">
+                <p class="text-sm text-red-600">{@template.error_message}</p>
+              </div>
+              <div :if={@template.status == :processing} class="mt-1">
+                <p class="text-sm text-yellow-600">
+                  <.icon name="hero-arrow-path" class="animate-spin h-4 w-4 inline mr-1" />
+                  {dgettext("companies", "Processing template...")}
+                </p>
+              </div>
+              <div :if={@template.status == :active and @template.variables != []} class="mt-1">
+                <p class="text-sm text-gray-500">
+                  {dngettext(
+                    "companies",
+                    "%{count} variable",
+                    "%{count} variables",
+                    length(@template.variables),
+                    count: length(@template.variables)
+                  )}
+                </p>
+              </div>
+            </div>
+            <div class="flex-shrink-0 flex items-center space-x-2">
+              <SharedComponents.download_button
+                upload_id={
+                  @template.media_asset && Ecto.assoc_loaded?(@template.media_asset) &&
+                    @template.media_asset.upload_id
+                }
+                filename={@template.name}
+              />
+              <button
+                type="button"
+                phx-click={JS.push("archive_template")}
+                class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                title={dgettext("companies", "Archive template")}
+              >
+                <.icon name="hero-archive-box" class="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div :if={@template} class="mb-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-2">
+              {dgettext("companies", "Replace Template")}
+            </h3>
+            <p class="text-sm text-gray-600 mb-4">
+              {dgettext(
+                "companies",
+                "Upload a new DOCX template to replace the current one. The old template will be automatically removed."
+              )}
+            </p>
+          </div>
+
+          <SharedComponents.file_input_component
+            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            events_target="company-dashboard"
+            id="template-upload"
+            max_file_size={10_000_000}
+            type={dgettext("companies", "DOCX template")}
+          />
+
+          <SharedComponents.file_upload_progress
+            id="template-upload-progress"
+            class="hidden"
+            phx-update="ignore"
+          />
+        </div>
+      </div>
     </div>
   </div>
 
@@ -206,4 +338,50 @@
     id={@company.id || :new}
     return_to={~p"/company"}
   />
+</.modal>
+
+<.modal :if={@show_variables_modal} id="variables-modal" show on_cancel={JS.push("close_modal")}>
+  <div class="mb-4">
+    <h3 class="text-lg font-medium text-gray-900">
+      {dgettext("companies", "Template Variables")}
+    </h3>
+    <p class="mt-1 text-sm text-gray-500">
+      {dgettext("companies", "Variables found in your template")}
+    </p>
+  </div>
+
+  <div class="mt-4">
+    <div
+      :if={@template && @template.variables != []}
+      class="grid grid-cols-2 md:grid-cols-3 gap-2"
+    >
+      <div
+        :for={variable <- @template.variables}
+        class="inline-flex items-center py-1 px-2 bg-gray-50 rounded text-sm"
+      >
+        <span class="text-gray-400 font-mono">[[</span>
+        <span class="font-medium text-gray-900 mx-1">{variable}</span>
+        <span class="text-gray-400 font-mono">]]</span>
+      </div>
+    </div>
+
+    <div :if={@template && @template.variables == []} class="text-center py-8">
+      <.icon name="hero-document-text" class="mx-auto h-12 w-12 text-gray-400" />
+      <h3 class="mt-2 text-sm font-medium text-gray-900">
+        {dgettext("companies", "No variables found")}
+      </h3>
+      <p class="mt-1 text-sm text-gray-500">
+        {dgettext(
+          "companies",
+          "Your template doesn't contain any variables in the [[Variable_Name]] format."
+        )}
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-6 flex justify-end">
+    <.button type="button" phx-click="close_modal" class="w-full">
+      {dgettext("companies", "Close")}
+    </.button>
+  </div>
 </.modal>
