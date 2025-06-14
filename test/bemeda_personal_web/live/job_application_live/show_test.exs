@@ -368,8 +368,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       pdf_html = render(view)
 
-      assert pdf_html =~
-               ~s(<a href="https://fly.storage.tigris.dev/tigris-bucket/#{pdf_message.media_asset.upload_id})
+      assert pdf_html =~ "phx-click=\"download_pdf\""
+      assert pdf_html =~ "phx-value-upload-id=\"#{pdf_message.media_asset.upload_id}\""
 
       assert pdf_html =~ "hero-document"
       assert pdf_html =~ "document.pdf"
@@ -1346,23 +1346,25 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
     end
   end
 
+  defp setup_basic_test_data(conn) do
+    user = user_fixture()
+    company = company_fixture(user_fixture(%{email: "company@example.com"}))
+    job = job_posting_fixture(company, @create_attrs)
+    job_application = job_application_fixture(user, job)
+
+    conn = log_in_user(conn, user)
+
+    %{
+      company: company,
+      conn: conn,
+      job: job,
+      job_application: job_application,
+      user: user
+    }
+  end
+
   describe "error handling and edge cases" do
-    setup %{conn: conn} do
-      user = user_fixture()
-      company = company_fixture(user_fixture(%{email: "company@example.com"}))
-      job = job_posting_fixture(company, @create_attrs)
-      job_application = job_application_fixture(user, job)
-
-      conn = log_in_user(conn, user)
-
-      %{
-        company: company,
-        conn: conn,
-        job: job,
-        job_application: job_application,
-        user: user
-      }
-    end
+    setup %{conn: conn}, do: setup_basic_test_data(conn)
 
     test "handles job application status update with notes parameter", %{
       conn: conn,
@@ -1454,6 +1456,114 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         })
 
       assert html =~ "Job application status updated successfully"
+    end
+  end
+
+  describe "PDF preview functionality" do
+    setup %{conn: conn}, do: setup_basic_test_data(conn)
+
+    test "displays PDF preview for PDF messages", %{
+      company: company,
+      conn: conn,
+      job_application: job_application
+    } do
+      upload_id = Ecto.UUID.generate()
+
+      {:ok, _pdf_message} =
+        Chat.create_message_with_media(
+          company.admin_user,
+          job_application,
+          %{
+            "content" => "Contract PDF",
+            "media_data" => %{
+              "file_name" => "contract.pdf",
+              "status" => :uploaded,
+              "type" => "application/pdf",
+              "upload_id" => upload_id
+            }
+          }
+        )
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ "phx-hook=\"PdfPreview\""
+      assert html =~ "pdf-preview-container"
+      assert html =~ "Loading PDF preview..."
+      assert html =~ "contract.pdf"
+      assert html =~ "Download"
+      assert html =~ upload_id
+    end
+
+    test "handles PDF download event", %{
+      conn: conn,
+      job_application: job_application,
+      company: company
+    } do
+      upload_id = Ecto.UUID.generate()
+
+      {:ok, _pdf_message} =
+        Chat.create_message_with_media(
+          company.admin_user,
+          job_application,
+          %{
+            "content" => "Contract PDF",
+            "media_data" => %{
+              "file_name" => "contract.pdf",
+              "status" => :uploaded,
+              "type" => "application/pdf",
+              "upload_id" => upload_id
+            }
+          }
+        )
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert {:error, {:redirect, %{to: redirect_url}}} =
+               render_hook(view, "download_pdf", %{"upload_id" => upload_id})
+
+      assert redirect_url =~ upload_id
+    end
+
+    test "shows error state when PDF preview fails", %{
+      conn: conn,
+      job_application: job_application,
+      company: company
+    } do
+      invalid_upload_id = Ecto.UUID.generate()
+
+      {:ok, _pdf_message} =
+        Chat.create_message_with_media(
+          company.admin_user,
+          job_application,
+          %{
+            "content" => "Invalid PDF",
+            "media_data" => %{
+              "file_name" => "invalid.pdf",
+              "status" => :uploaded,
+              "type" => "application/pdf",
+              "upload_id" => invalid_upload_id
+            }
+          }
+        )
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ "phx-hook=\"PdfPreview\""
+      assert html =~ "pdf-preview-container"
+      assert html =~ "invalid.pdf"
+      assert html =~ invalid_upload_id
     end
   end
 end
