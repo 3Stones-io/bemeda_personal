@@ -28,6 +28,7 @@ import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
 import DocumentTemplate from './hooks/document_template'
 import FileUpload from './hooks/file_upload'
+import PdfPreview from './hooks/pdf_preview'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
 import TagsInput from './hooks/tags_input'
@@ -40,6 +41,7 @@ const Hooks = {
   CurrentCheckbox,
   DocumentTemplate,
   FileUpload,
+  PdfPreview,
   RatingsTooltip,
   RatingsTooltipContent,
   TagsInput,

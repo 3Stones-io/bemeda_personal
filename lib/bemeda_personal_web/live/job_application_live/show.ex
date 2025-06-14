@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   alias BemedaPersonal.Chat
   alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Media
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
@@ -18,7 +19,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      socket
      |> stream_configure(:messages, dom_id: &"message-#{&1.id}")
      |> stream(:messages, [])
-     |> assign(:show_status_transition_modal, false)}
+     |> assign(:show_status_transition_modal, false)
+     |> assign(:show_offer_details_modal, false)}
   end
 
   @impl Phoenix.LiveView
@@ -94,43 +96,73 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "update-job-application-status",
-        %{"job_application_state_transition" => transition_params},
-        socket
-      ) do
+  def handle_event("update-job-application-status", params, socket) do
     job_application = socket.assigns.job_application
+    to_state = socket.assigns.to_state
 
     transition_attrs =
-      Map.merge(transition_params, %{
-        "to_state" => socket.assigns.to_state
-      })
+      case params do
+        %{"job_application_state_transition" => transition_params} ->
+          Map.put(transition_params, "to_state", to_state)
+
+        %{"notes" => notes} ->
+          %{"notes" => notes, "to_state" => to_state}
+      end
+
+    update_job_application_status(
+      to_state,
+      job_application,
+      socket.assigns.current_user,
+      transition_attrs,
+      socket
+    )
+  end
+
+  def handle_event("accept_offer", _params, socket) do
+    job_application = socket.assigns.job_application
 
     case JobApplications.update_job_application_status(
            job_application,
            socket.assigns.current_user,
-           transition_attrs
+           %{"to_state" => "offer_accepted", "notes" => "Offer accepted"}
          ) do
       {:ok, updated_job_application} ->
-        SharedHelpers.enqueue_email_notification_job(%{
-          job_application_id: updated_job_application.id,
-          type: "job_application_status_update",
-          url:
-            url(
-              ~p"/jobs/#{updated_job_application.job_posting_id}/job_applications/#{updated_job_application.id}"
-            )
-        })
+        enqueue_status_update_notification(updated_job_application)
 
         {:noreply,
-         socket
-         |> assign(:show_status_transition_modal, false)
-         |> put_flash(:info, dgettext("jobs", "Job application status updated successfully."))}
+         put_flash(
+           socket,
+           :info,
+           dgettext("jobs", "Congratulations! You have accepted the job offer.")
+         )}
 
       {:error, _changeset} ->
         {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "Failed to accept the offer. Please try again.")
+         )}
+    end
+  end
+
+  def handle_event("show-status-transition-modal", %{"to_state" => "offer_extended"}, socket) do
+    job_application = socket.assigns.job_application
+
+    case JobOffers.get_job_offer_by_application(job_application.id) do
+      nil ->
+        {:noreply,
          socket
-         |> assign(:show_status_transition_modal, false)
-         |> put_flash(:error, dgettext("jobs", "Failed to update job application status."))}
+         |> assign(:show_offer_details_modal, true)
+         |> assign(:to_state, "offer_extended")}
+
+      _existing_offer ->
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "An offer has already been extended for this application.")
+         )}
     end
   end
 
@@ -148,7 +180,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("hide-status-transition-modal", _params, socket) do
-    {:noreply, assign(socket, :show_status_transition_modal, false)}
+    {:noreply,
+     socket
+     |> assign(:show_offer_details_modal, false)
+     |> assign(:show_status_transition_modal, false)}
+  end
+
+  def handle_event("download_pdf", %{"upload_id" => upload_id}, socket) do
+    download_url = SharedHelpers.get_presigned_url(upload_id)
+
+    {:noreply, redirect(socket, external: download_url)}
   end
 
   @impl Phoenix.LiveView
@@ -173,7 +214,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       )
       when event in [
              "media_asset_updated",
+             "company_job_application_created",
              "company_job_application_updated",
+             "user_job_application_created",
              "user_job_application_updated"
            ] do
     {:noreply, assign(socket, :job_application, job_application)}
@@ -193,14 +236,34 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      |> assign_available_statuses(job_application)}
   end
 
+  def handle_info(
+        %Broadcast{event: "job_offer_updated", payload: %{job_offer: job_offer}},
+        socket
+      ) do
+    {:noreply, assign(socket, :job_offer, job_offer)}
+  end
+
   def handle_info({:flash, type, message}, socket) do
     {:noreply, put_flash(socket, type, message)}
+  end
+
+  def handle_info(:offer_cancelled, socket) do
+    {:noreply, assign(socket, :show_offer_details_modal, false)}
+  end
+
+  def handle_info({:offer_submitted, job_offer}, socket) do
+    {:noreply,
+     socket
+     |> assign(:job_offer, job_offer)
+     |> assign(:show_offer_details_modal, false)}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
     job_application = JobApplications.get_job_application!(job_application_id)
     messages = Chat.list_messages(job_application)
     changeset = Chat.change_message(%Chat.Message{})
+
+    job_offer = JobOffers.get_job_offer_by_application(job_application_id)
 
     job_posting = job_application.job_posting
 
@@ -218,6 +281,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     socket
     |> stream(:messages, messages)
     |> assign(:job_application, job_application)
+    |> assign(:job_offer, job_offer)
     |> assign(:job_posting, job_posting)
     |> assign(:is_employer?, is_employer)
     |> assign_available_statuses(job_application)
@@ -253,6 +317,45 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       recipient_id: recipient_id,
       type: "new_message",
       url: url(~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}")
+    })
+  end
+
+  defp update_job_application_status(
+         _to_state,
+         job_application,
+         current_user,
+         transition_attrs,
+         socket
+       ) do
+    case JobApplications.update_job_application_status(
+           job_application,
+           current_user,
+           transition_attrs
+         ) do
+      {:ok, updated_job_application} ->
+        enqueue_status_update_notification(updated_job_application)
+
+        {:noreply,
+         socket
+         |> assign(:show_status_transition_modal, false)
+         |> put_flash(:info, dgettext("jobs", "Job application status updated successfully."))}
+
+      {:error, _changeset} ->
+        {:noreply,
+         socket
+         |> assign(:show_status_transition_modal, false)
+         |> put_flash(:error, dgettext("jobs", "Failed to update job application status."))}
+    end
+  end
+
+  defp enqueue_status_update_notification(updated_job_application) do
+    SharedHelpers.enqueue_email_notification_job(%{
+      job_application_id: updated_job_application.id,
+      type: "job_application_status_update",
+      url:
+        url(
+          ~p"/jobs/#{updated_job_application.job_posting_id}/job_applications/#{updated_job_application.id}"
+        )
     })
   end
 end

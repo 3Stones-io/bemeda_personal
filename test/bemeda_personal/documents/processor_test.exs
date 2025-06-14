@@ -87,6 +87,32 @@ defmodule BemedaPersonal.Documents.ProcessorTest do
       assert String.contains?(doc_content, "ACME Corp")
       assert String.contains?(doc_content, "2024-02-01")
     end
+
+    test "replaces unprovided variables with empty strings" do
+      source_path = "test/support/fixtures/files/Job_Offer_Serial_Template.docx"
+
+      values = %{
+        "First_Name" => "Jane",
+        "Last_Name" => "Smith"
+      }
+
+      assert output_file = Processor.replace_variables(source_path, values)
+      assert File.exists?(output_file)
+
+      on_exit(fn ->
+        File.rm(output_file)
+      end)
+
+      assert Processor.extract_variables(output_file) == []
+
+      doc_content = get_content(output_file)
+
+      assert String.contains?(doc_content, "Jane")
+      assert String.contains?(doc_content, "Smith")
+
+      refute String.contains?(doc_content, "[[")
+      refute String.contains?(doc_content, "]]")
+    end
   end
 
   describe "convert_to_pdf/1" do

@@ -210,8 +210,12 @@ defmodule BemedaPersonal.MediaTest do
       assert_receive %Broadcast{
         event: "media_asset_updated",
         topic: ^topic,
-        payload: %{media_asset: ^updated_media_asset, message: ^message}
+        payload: %{media_asset: ^updated_media_asset, message: broadcasted_message}
       }
+
+      assert broadcasted_message.id == message.id
+      assert broadcasted_message.media_asset.id == updated_media_asset.id
+      assert broadcasted_message.media_asset.status == :failed
     end
   end
 

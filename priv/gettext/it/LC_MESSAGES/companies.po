@@ -256,6 +256,133 @@ msgid "Remote"
 msgstr "Remoto"
 
 #: lib/bemeda_personal_web/user_auth.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "You need to create a company first."
-msgstr "Devi creare un profilo aziendale prima di poter pubblicare lavori."
+msgstr "Devi prima creare un'azienda."
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to upload template"
+msgstr "Caricamento del modello fallito"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Invalid file type. Please upload a DOCX file"
+msgstr "Tipo di file non valido. Si prega di caricare un file DOCX"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Job Offer Template"
+msgstr "Modello di offerta di lavoro"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Only DOCX files are allowed"
+msgstr "Sono consentiti solo file DOCX"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Upload a DOCX template with [[Variable_Name]] placeholders"
+msgstr "Carica un modello DOCX con segnaposto [[Nome_Variabile]]"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Uploaded"
+msgstr "Caricato"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Active"
+msgstr "Attivo"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Replace Template"
+msgstr "Sostituisci modello"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Upload a new DOCX template to replace the current one. The old template will be automatically removed."
+msgstr "Carica un nuovo modello DOCX per sostituire quello attuale. Il vecchio modello verrà automaticamente rimosso."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "DOCX template"
+msgstr "Modello DOCX"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "%{count} variable"
+msgid_plural "%{count} variables"
+msgstr[0] "%{count} variabile"
+msgstr[1] "%{count} variabili"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Failed"
+msgstr "Fallito"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Preview Variables"
+msgstr "Anteprima variabili"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Processing"
+msgstr "Elaborazione"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Processing template..."
+msgstr "Elaborazione modello..."
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template uploaded and processing started"
+msgstr "Modello caricato ed elaborazione avviata"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Uploading"
+msgstr "Caricamento"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Close"
+msgstr "Chiudi"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "No variables found"
+msgstr "Nessuna variabile trovata"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Template Variables"
+msgstr "Variabili del modello"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Variables found in your template"
+msgstr "Variabili trovate nel tuo modello"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Your template doesn't contain any variables in the [[Variable_Name]] format."
+msgstr "Il tuo modello non contiene variabili nel formato [[Nome_Variabile]]."
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Archive template"
+msgstr "Archivia modello"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to archive template"
+msgstr "Archiviazione del modello fallita"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template archived successfully"
+msgstr "Modello archiviato con successo"
