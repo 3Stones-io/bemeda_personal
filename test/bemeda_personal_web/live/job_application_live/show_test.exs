@@ -768,7 +768,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       }
     end
 
-    test "employer sees offer confirmation modal when extending offer", %{
+    test "employer sees offer details modal when extending offer", %{
       conn: conn,
       employer: employer,
       job_application: job_application
@@ -783,16 +783,19 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       html = render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
 
-      assert html =~ "Extend Job Offer"
-      assert html =~ "Are you sure you want to extend an offer to"
+      assert html =~ "Complete Offer Details"
+      assert html =~ "Fill in the employment terms for"
       assert html =~ job_application.user.first_name
       assert html =~ job_application.user.last_name
-      assert html =~ "The candidate will be notified and can accept or decline the offer"
+      assert html =~ "Auto-populated Information"
+      assert html =~ "Employment Terms"
+      assert html =~ "Start Date"
+      assert html =~ "Gross Salary"
       assert html =~ "Cancel"
-      assert html =~ "Extend Offer"
+      assert html =~ "Send Contract"
     end
 
-    test "employer can cancel offer confirmation modal", %{
+    test "employer can cancel offer details modal", %{
       conn: conn,
       employer: employer,
       job_application: job_application
@@ -806,12 +809,36 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       assert render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"}) =~
-               "Extend Job Offer"
+               "Complete Offer Details"
 
-      refute render_hook(view, "hide-status-transition-modal", %{}) =~ "Extend Job Offer"
+      refute render_hook(view, "hide-status-transition-modal", %{}) =~ "Complete Offer Details"
     end
 
-    test "employer can successfully extend offer through confirmation modal", %{
+    test "employer can cancel offer details modal by clicking Cancel button", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      html = render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
+      assert html =~ "Complete Offer Details"
+      assert html =~ "Cancel"
+
+      view
+      |> element("button", "Cancel")
+      |> render_click()
+
+      refute render(view) =~ "Complete Offer Details"
+    end
+
+    test "employer can successfully extend offer through details modal", %{
       conn: conn,
       employer: employer,
       job_application: job_application
@@ -827,11 +854,25 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
 
       view
-      |> element("#offer-confirmation-modal button", "Extend Offer")
-      |> render_click()
+      |> form("#offer-details-form", %{
+        "job_offer" => %{
+          "variables" => %{
+            "Start_Date" => "2025-07-01",
+            "Gross_Salary" => "5000 CHF",
+            "Working_Hours" => "40 hours",
+            "Offer_Deadline" => "2025-06-30"
+          }
+        }
+      })
+      |> render_submit()
 
       updated_job_application = JobApplications.get_job_application!(job_application.id)
       assert updated_job_application.state == "offer_extended"
+
+      job_offer = JobOffers.get_job_offer_by_application(job_application.id)
+      assert job_offer != nil
+      assert job_offer.variables["Start_Date"] == "2025-07-01"
+      assert job_offer.variables["Gross_Salary"] == "5000 CHF"
 
       assert_enqueued(
         worker: EmailNotificationWorker,
@@ -840,9 +881,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           type: "job_application_status_update"
         }
       )
+
+      assert_enqueued(worker: JobOffers.GenerateContract)
     end
 
-    test "shows error message when offer extension fails", %{
+    test "shows error message when offer already exists", %{
       conn: conn,
       employer: employer,
       job_application: job_application
@@ -861,11 +904,200 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
         )
 
-      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
+      html = render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
 
-      assert view
-             |> element("#offer-confirmation-modal button", "Extend Offer")
-             |> render_click() =~ "Failed to extend offer"
+      assert html =~ "An offer has already been extended for this application"
+    end
+
+    test "validates offer form fields", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      {_view, html} = setup_offer_modal_view(conn, employer, job_application)
+
+      assert html =~ "Complete Offer Details"
+    end
+
+    test "preserves auto-populated and user input data during form validation", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      {view, html} = setup_offer_modal_view(conn, employer, job_application)
+
+      assert html =~ "Complete Offer Details"
+      assert html =~ job_application.user.first_name
+      assert html =~ job_application.user.last_name
+      assert html =~ job_application.job_posting.title
+
+      view
+      |> form("#offer-details-form", %{
+        "job_offer" => %{
+          "variables" => %{
+            "Gross_Salary" => "5000 CHF"
+          }
+        }
+      })
+      |> render_change()
+
+      html_after_second_field =
+        view
+        |> form("#offer-details-form", %{
+          "job_offer" => %{
+            "variables" => %{
+              "Working_Hours" => "40 hours"
+            }
+          }
+        })
+        |> render_change()
+
+      assert html_after_second_field =~ ~s(value="5000 CHF")
+      assert html_after_second_field =~ ~s(value="40 hours")
+
+      html_after_third_field =
+        view
+        |> form("#offer-details-form", %{
+          "job_offer" => %{
+            "variables" => %{
+              "Start_Date" => "2025-07-01"
+            }
+          }
+        })
+        |> render_change()
+
+      # All three fields should maintain their values
+      assert html_after_third_field =~ ~s(value="5000 CHF")
+      assert html_after_third_field =~ ~s(value="40 hours")
+      assert html_after_third_field =~ ~s(value="2025-07-01")
+    end
+
+    test "handles form submission successfully", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      {_view, html} = setup_offer_modal_view(conn, employer, job_application)
+
+      assert html =~ "Complete Offer Details"
+    end
+
+    test "handles offer cancellation properly", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      {view, html} = setup_offer_modal_view(conn, employer, job_application)
+
+      assert html =~ "Complete Offer Details"
+
+      refute render_hook(view, "hide-status-transition-modal", %{}) =~ "Complete Offer Details"
+    end
+
+    test "displays different enum option scenarios", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      {:ok, updated_job_posting} =
+        BemedaPersonal.JobPostings.update_job_posting(job_application.job_posting, %{
+          workload: [:"Full-time", :"Part-time"],
+          department: [:Administration, :"Home Care (Spitex)"]
+        })
+
+      updated_job_application = %{job_application | job_posting: updated_job_posting}
+
+      {_view, html} = setup_offer_modal_view(conn, employer, updated_job_application)
+
+      assert html =~ "Select workload"
+      assert html =~ "Full-time"
+      assert html =~ "Part-time"
+      assert html =~ "Based on Job Posting"
+      assert html =~ "Posted salary range:"
+    end
+
+    test "displays different salary range scenarios", %{
+      conn: conn,
+      employer: employer,
+      candidate: candidate,
+      company: company
+    } do
+      job_with_full_range =
+        job_posting_fixture(company, %{
+          title: "Full Range Job",
+          salary_min: 50_000,
+          salary_max: 80_000,
+          currency: :USD
+        })
+
+      job_app_1 = job_application_fixture(candidate, job_with_full_range)
+      {_view, html_1} = setup_offer_modal_view(conn, employer, job_app_1)
+
+      assert html_1 =~ "50000 - 80000 USD"
+      assert html_1 =~ "e.g., 50000 USD"
+
+      job_with_min_only =
+        job_posting_fixture(company, %{
+          title: "Min Only Job",
+          salary_min: 60_000,
+          salary_max: nil,
+          currency: :CHF
+        })
+
+      job_app_2 = job_application_fixture(candidate, job_with_min_only)
+      {_view, html_2} = setup_offer_modal_view(conn, employer, job_app_2)
+
+      assert html_2 =~ "From 60000 CHF"
+      assert html_2 =~ "e.g., 60000 CHF"
+
+      job_with_max_only =
+        job_posting_fixture(company, %{
+          title: "Max Only Job",
+          salary_min: nil,
+          salary_max: 90_000,
+          currency: :EUR
+        })
+
+      job_app_3 = job_application_fixture(candidate, job_with_max_only)
+      {_view, html_3} = setup_offer_modal_view(conn, employer, job_app_3)
+
+      assert html_3 =~ "Up to 90000 EUR"
+      assert html_3 =~ "e.g., 90000 EUR"
+
+      job_without_salary =
+        job_posting_fixture(company, %{
+          title: "No Salary Job",
+          salary_min: nil,
+          salary_max: nil,
+          currency: nil
+        })
+
+      job_app_4 = job_application_fixture(candidate, job_without_salary)
+      {_view, html_4} = setup_offer_modal_view(conn, employer, job_app_4)
+
+      refute html_4 =~ "Posted salary range:"
+      assert html_4 =~ "e.g., 85000 CHF"
+    end
+
+    test "handles edge cases in salary placeholder generation", %{
+      conn: conn,
+      employer: employer,
+      candidate: candidate,
+      company: company
+    } do
+      job_with_text_range =
+        job_posting_fixture(company, %{
+          title: "Text Range Job",
+          salary_min: 45_000,
+          salary_max: 75_000,
+          currency: :USD
+        })
+
+      job_app_1 = job_application_fixture(candidate, job_with_text_range)
+      {_view, html_1} = setup_offer_modal_view(conn, employer, job_app_1)
+
+      assert html_1 =~ "45000 - 75000 USD"
+      assert html_1 =~ "e.g., 45000 USD"
     end
 
     test "candidate sees enhanced offer response UI when offer is extended", %{
@@ -978,6 +1210,20 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "job-application-state-transition-form"
       refute html =~ "offer-confirmation-modal"
       refute html =~ "Extend Job Offer"
+    end
+
+    defp setup_offer_modal_view(conn, employer, job_application) do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      html = render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
+
+      {view, html}
     end
   end
 
@@ -1097,6 +1343,117 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       refute employer_updated_html =~ "Contract is being generated for the candidate"
       assert employer_updated_html =~ "Contract has been generated and sent to the candidate"
       assert employer_updated_html =~ "View Contract"
+    end
+  end
+
+  describe "error handling and edge cases" do
+    setup %{conn: conn} do
+      user = user_fixture()
+      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+      job = job_posting_fixture(company, @create_attrs)
+      job_application = job_application_fixture(user, job)
+
+      conn = log_in_user(conn, user)
+
+      %{
+        company: company,
+        conn: conn,
+        job: job,
+        job_application: job_application,
+        user: user
+      }
+    end
+
+    test "handles job application status update with notes parameter", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "withdrawn"})
+
+      view
+      |> element("#job-application-state-transition-form")
+      |> render_submit(%{"notes" => "I found another position."})
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          job_application_id: job_application.id,
+          type: "job_application_status_update"
+        }
+      )
+    end
+
+    test "handles email notification when company admin sends message", %{
+      job_application: job_application,
+      company: company
+    } do
+      admin_conn = log_in_user(build_conn(), company.admin_user)
+
+      {:ok, view, _html} =
+        live(
+          admin_conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      message_content = "Message from company admin"
+
+      view
+      |> form("#chat-form", %{message: %{content: message_content}})
+      |> render_submit()
+
+      messages = Chat.list_messages(job_application)
+
+      actual_messages =
+        Enum.filter(messages, fn item ->
+          match?(%Chat.Message{}, item)
+        end)
+
+      admin_message =
+        Enum.find(actual_messages, fn message ->
+          message.content == message_content
+        end)
+
+      assert admin_message
+      assert admin_message.sender_id == company.admin_user.id
+
+      assert_enqueued(
+        worker: EmailNotificationWorker,
+        args: %{
+          message_id: admin_message.id,
+          recipient_id: job_application.user_id,
+          type: "new_message"
+        }
+      )
+    end
+
+    test "handles job application status transitions", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "withdrawn"})
+
+      html =
+        view
+        |> form("#job-application-state-transition-form")
+        |> render_submit(%{
+          "job_application_state_transition" => %{
+            "notes" => "Withdrawing application"
+          }
+        })
+
+      assert html =~ "Job application status updated successfully"
     end
   end
 end

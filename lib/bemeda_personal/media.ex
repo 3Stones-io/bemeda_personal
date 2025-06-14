@@ -190,10 +190,15 @@ defmodule BemedaPersonal.Media do
   end
 
   defp broadcast_to_parent(%MediaAsset{message: %Message{} = message} = media_asset) do
+    updated_message =
+      Message
+      |> Repo.get!(message.id)
+      |> Repo.preload([:media_asset, :sender])
+
     Endpoint.broadcast(
       "job_application_messages:#{message.job_application_id}:media_assets",
       "media_asset_updated",
-      %{media_asset: media_asset, message: message}
+      %{media_asset: media_asset, message: updated_message}
     )
   end
 

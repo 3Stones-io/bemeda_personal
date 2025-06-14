@@ -76,16 +76,16 @@ defmodule BemedaPersonal.Documents.FileProcessor do
 
   defp replace_variables_in_content(content, values) do
     Enum.reduce(values, content, fn {variable, value}, acc ->
-      pattern = ~r/\[\[([^]]*?)#{Regex.escape(variable)}([^]]*?)\]\]/s
+      simple_pattern = ~r/\[\[#{Regex.escape(variable)}\]\]/
+      acc = Regex.replace(simple_pattern, acc, value)
 
-      Regex.replace(pattern, acc, fn _full_match, prefix, suffix ->
-        prefix <> value <> suffix
-      end)
+      xml_split_pattern = ~r/\[\[([^]]*?<w:t>#{Regex.escape(variable)}<\/w:t>[^]]*?)\]\]/s
+      Regex.replace(xml_split_pattern, acc, value)
     end)
   end
 
   defp remove_placeholders(content) do
-    Regex.replace(~r/\[\[([^\[\]]+)\]\]/, content, "")
+    Regex.replace(~r/\[\[([^\[\]]+)\]\]/, content, fn _full_match, _variable -> "" end)
   end
 
   defp output_file_path(document_path) do
@@ -109,7 +109,10 @@ defmodule BemedaPersonal.Documents.FileProcessor do
   end
 
   defp remove_xml_tags(variable) do
-    Regex.replace(~r/<[^>]+>/, variable, "")
+    variable
+    |> String.replace(~r/<[^>]*>/, "")
+    |> String.replace(~r/\s+/, " ")
+    |> String.trim()
   end
 
   defp extract_document(document_path) do

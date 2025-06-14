@@ -135,12 +135,26 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
   end
 
   defp format_workload(workload_list) when is_list(workload_list) do
-    Enum.map_join(workload_list, ", ", fn workload ->
-      workload
-      |> Atom.to_string()
-      |> I18n.translate_workload()
-    end)
+    case workload_list do
+      [] ->
+        I18n.translate_workload("Full-time")
+
+      workloads ->
+        Enum.map_join(workloads, ", ", fn workload ->
+          workload
+          |> Atom.to_string()
+          |> I18n.translate_workload()
+        end)
+    end
   end
 
-  defp format_workload(nil), do: ""
+  defp format_workload(nil) do
+    I18n.translate_workload("Full-time")
+  end
+
+  defp format_workload(workload) when is_atom(workload) do
+    workload
+    |> Atom.to_string()
+    |> I18n.translate_workload()
+  end
 end

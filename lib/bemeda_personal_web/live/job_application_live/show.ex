@@ -5,12 +5,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Media
-  alias BemedaPersonal.Repo
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.SharedHelpers
-  alias Ecto.Multi
   alias Phoenix.Socket.Broadcast
 
   require Logger
@@ -22,7 +20,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      |> stream_configure(:messages, dom_id: &"message-#{&1.id}")
      |> stream(:messages, [])
      |> assign(:show_status_transition_modal, false)
-     |> assign(:show_offer_confirmation_modal, false)}
+     |> assign(:show_offer_details_modal, false)}
   end
 
   @impl Phoenix.LiveView
@@ -98,37 +96,21 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "update-job-application-status",
-        %{"job_application_state_transition" => transition_params},
-        socket
-      ) do
+  def handle_event("update-job-application-status", params, socket) do
     job_application = socket.assigns.job_application
+    to_state = socket.assigns.to_state
 
     transition_attrs =
-      Map.merge(transition_params, %{
-        "to_state" => socket.assigns.to_state
-      })
+      case params do
+        %{"job_application_state_transition" => transition_params} ->
+          Map.put(transition_params, "to_state", to_state)
+
+        %{"notes" => notes} ->
+          %{"notes" => notes, "to_state" => to_state}
+      end
 
     update_job_application_status(
-      socket.assigns.to_state,
-      job_application,
-      socket.assigns.current_user,
-      transition_attrs,
-      socket
-    )
-  end
-
-  def handle_event("update-job-application-status", %{"notes" => notes}, socket) do
-    job_application = socket.assigns.job_application
-
-    transition_attrs = %{
-      "notes" => notes,
-      "to_state" => socket.assigns.to_state
-    }
-
-    update_job_application_status(
-      socket.assigns.to_state,
+      to_state,
       job_application,
       socket.assigns.current_user,
       transition_attrs,
@@ -165,16 +147,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("show-status-transition-modal", %{"to_state" => "offer_extended"}, socket) do
-    changeset =
-      JobApplications.change_job_application_status(
-        %JobApplications.JobApplicationStateTransition{}
-      )
+    job_application = socket.assigns.job_application
 
-    {:noreply,
-     socket
-     |> assign(:job_application_state_transition_form, to_form(changeset))
-     |> assign(:show_offer_confirmation_modal, true)
-     |> assign(:to_state, "offer_extended")}
+    case JobOffers.get_job_offer_by_application(job_application.id) do
+      nil ->
+        {:noreply,
+         socket
+         |> assign(:show_offer_details_modal, true)
+         |> assign(:to_state, "offer_extended")}
+
+      _existing_offer ->
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "An offer has already been extended for this application.")
+         )}
+    end
   end
 
   def handle_event("show-status-transition-modal", %{"to_state" => to_state}, socket) do
@@ -193,8 +182,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   def handle_event("hide-status-transition-modal", _params, socket) do
     {:noreply,
      socket
-     |> assign(:show_status_transition_modal, false)
-     |> assign(:show_offer_confirmation_modal, false)}
+     |> assign(:show_offer_details_modal, false)
+     |> assign(:show_status_transition_modal, false)}
   end
 
   @impl Phoenix.LiveView
@@ -219,7 +208,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       )
       when event in [
              "media_asset_updated",
+             "company_job_application_created",
              "company_job_application_updated",
+             "user_job_application_created",
              "user_job_application_updated"
            ] do
     {:noreply, assign(socket, :job_application, job_application)}
@@ -248,6 +239,17 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   def handle_info({:flash, type, message}, socket) do
     {:noreply, put_flash(socket, type, message)}
+  end
+
+  def handle_info(:offer_cancelled, socket) do
+    {:noreply, assign(socket, :show_offer_details_modal, false)}
+  end
+
+  def handle_info({:offer_submitted, job_offer}, socket) do
+    {:noreply,
+     socket
+     |> assign(:job_offer, job_offer)
+     |> assign(:show_offer_details_modal, false)}
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
@@ -313,59 +315,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   defp update_job_application_status(
-         "offer_extended",
-         job_application,
-         current_user,
-         transition_attrs,
-         socket
-       ) do
-    variables = JobOffers.auto_populate_variables(job_application)
-
-    result =
-      Multi.new()
-      |> Multi.run(:update_status, fn _repo, _changes ->
-        JobApplications.update_job_application_status(
-          job_application,
-          current_user,
-          transition_attrs
-        )
-      end)
-      |> Multi.run(:create_offer, fn _repo, _changes ->
-        JobOffers.create_job_offer(%{
-          job_application_id: job_application.id,
-          status: :pending,
-          variables: variables
-        })
-      end)
-      |> Multi.run(:generate_pdf, fn _repo, %{create_offer: job_offer} ->
-        %{job_offer_id: job_offer.id}
-        |> JobOffers.GenerateContract.new()
-        |> Oban.insert()
-      end)
-      |> Repo.transaction()
-
-    case result do
-      {:ok, %{update_status: updated_job_application, create_offer: job_offer}} ->
-        enqueue_status_update_notification(updated_job_application)
-
-        {:noreply,
-         socket
-         |> assign(:job_offer, job_offer)
-         |> assign(:show_offer_confirmation_modal, false)
-         |> put_flash(
-           :info,
-           dgettext("jobs", "Offer extended successfully. Contract is being generated.")
-         )}
-
-      {:error, _operation, _value, _changes} ->
-        {:noreply,
-         socket
-         |> assign(:show_offer_confirmation_modal, false)
-         |> put_flash(:error, dgettext("jobs", "Failed to extend offer."))}
-    end
-  end
-
-  defp update_job_application_status(
          _to_state,
          job_application,
          current_user,
@@ -382,14 +331,12 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
         {:noreply,
          socket
-         |> assign(:show_offer_confirmation_modal, false)
          |> assign(:show_status_transition_modal, false)
          |> put_flash(:info, dgettext("jobs", "Job application status updated successfully."))}
 
       {:error, _changeset} ->
         {:noreply,
          socket
-         |> assign(:show_offer_confirmation_modal, false)
          |> assign(:show_status_transition_modal, false)
          |> put_flash(:error, dgettext("jobs", "Failed to update job application status."))}
     end

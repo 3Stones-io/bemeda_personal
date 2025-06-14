@@ -128,7 +128,6 @@ msgid "Experience Level"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Extend Offer"
 msgstr ""
@@ -456,6 +455,7 @@ msgid "Select position"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select workload"
 msgstr ""
@@ -466,6 +466,7 @@ msgid "Select workload type"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "Workload"
 msgstr ""
@@ -1347,12 +1348,7 @@ msgstr ""
 msgid "%{company} has extended you a job offer for %{position}."
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Are you sure you want to extend an offer to %{name}?"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr ""
@@ -1360,11 +1356,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_application_live/show.ex
 #, elixir-autogen, elixir-format
 msgid "Congratulations! You have accepted the job offer."
-msgstr ""
-
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Extend Job Offer"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/job_application_live/show.ex
@@ -1377,17 +1368,12 @@ msgstr ""
 msgid "Job Offer Extended!"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "The candidate will be notified and can accept or decline the offer."
-msgstr ""
-
-#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "Failed to extend offer."
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "Offer extended successfully. Contract is being generated."
 msgstr ""
@@ -1421,3 +1407,113 @@ msgstr "Mr."
 #, elixir-autogen, elixir-format
 msgid "Ms."
 msgstr "Ms."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "An offer has already been extended for this application."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Auto-populated Information"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Based on Job Posting"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Candidate:"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Company:"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Complete Offer Details"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Employment Terms"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Fill in the employment terms for %{name}"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "From"
+msgstr "From"
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Gross Salary"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Location:"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Offer Deadline"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Position:"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Posted salary range:"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Recruiter Phone"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Recruiter Position"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Send Contract"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Start Date"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Up to"
+msgstr "Up to"
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Working Hours per Week"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., %{amount} %{currency}"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., 85000 %{currency}"
+msgstr ""

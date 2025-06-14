@@ -31,7 +31,7 @@ defmodule BemedaPersonal.JobOffers.JobOffer do
       :status,
       :variables
     ])
-    |> validate_required([:job_application_id, :status, :variables])
+    |> validate_required([:job_application_id, :status])
     |> unique_constraint(:job_application_id, name: :job_offers_job_application_id_index)
   end
 end

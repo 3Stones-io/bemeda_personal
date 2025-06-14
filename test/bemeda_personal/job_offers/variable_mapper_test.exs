@@ -99,7 +99,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
       assert variables["Salutation"] == ""
       assert variables["Title"] == ""
       assert variables["Work_Location"] == ""
-      assert variables["Workload"] == ""
+      assert variables["Workload"] == "Full-time"
     end
 
     test "generates consistent date for all applications" do

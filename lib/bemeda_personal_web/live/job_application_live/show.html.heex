@@ -195,45 +195,17 @@
   <ChatComponents.chat_form chat_form={@chat_form} class="fixed inset-x-[2%] bottom-[2%]" />
 
   <.modal
-    :if={@show_offer_confirmation_modal}
-    id="offer-confirmation-modal"
+    :if={@show_offer_details_modal}
+    id="offer-details-modal"
     show
     on_cancel={JS.push("hide-status-transition-modal")}
   >
-    <.header>
-      <div class="flex items-center gap-2">
-        <.icon name="hero-briefcase" class="w-6 h-6 text-indigo-600" />
-        {dgettext("jobs", "Extend Job Offer")}
-      </div>
-      <:subtitle>
-        {dgettext("jobs", "Are you sure you want to extend an offer to %{name}?",
-          name: "#{@job_application.user.first_name} #{@job_application.user.last_name}"
-        )}
-      </:subtitle>
-    </.header>
-
-    <p class="text-sm text-gray-600 mb-4">
-      {dgettext("jobs", "The candidate will be notified and can accept or decline the offer.")}
-    </p>
-
-    <div class="flex gap-3 justify-end">
-      <.button
-        type="button"
-        phx-click="hide-status-transition-modal"
-        class="!bg-gray-500 hover:!bg-gray-600 !text-white"
-      >
-        {dgettext("jobs", "Cancel")}
-      </.button>
-      <.button
-        phx-click="update-job-application-status"
-        phx-value-notes=""
-        class="!bg-green-600 hover:!bg-green-700 !text-white"
-        autofocus
-      >
-        <.icon name="hero-paper-airplane" class="w-4 h-4 mr-2" />
-        {dgettext("jobs", "Extend Offer")}
-      </.button>
-    </div>
+    <.live_component
+      module={BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent}
+      id="offer-details-component"
+      job_application={@job_application}
+      current_user={@current_user}
+    />
   </.modal>
 
   <.modal
