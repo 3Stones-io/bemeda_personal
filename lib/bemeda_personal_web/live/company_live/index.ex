@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
+  alias BemedaPersonal.Workers.ProcessTemplate
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
@@ -30,6 +31,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
     if connected?(socket) && company do
       Endpoint.subscribe("company:#{current_user.id}")
+      Endpoint.subscribe("company:#{company.id}:templates")
       Endpoint.subscribe("job_application:company:#{company.id}")
       Endpoint.subscribe("job_posting:company:#{company.id}")
       Endpoint.subscribe("rating:Company:#{company.id}")
@@ -37,7 +39,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
     template =
       if company do
-        CompanyTemplates.get_active_template(company.id)
+        CompanyTemplates.get_current_template(company.id)
       end
 
     {:ok,
@@ -47,6 +49,8 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
      |> assign(:company, company)
      |> assign(:template, template)
      |> assign(:template_data, %{})
+     |> assign(:show_template_modal, false)
+     |> assign(:show_variables_modal, false)
      |> assign_job_count(company)
      |> assign_job_postings(company)
      |> assign_recent_applicants(company)}
@@ -96,43 +100,18 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   def handle_event("upload_completed", _params, socket) do
+    company = socket.assigns.company
     template_data = socket.assigns.template_data
 
-    template_attrs = %{
-      name: template_data.file_name
-    }
-
-    media_attrs = %{
-      file_name: template_data.file_name,
-      upload_id: Map.get(template_data, :upload_id),
-      status: :uploaded,
-      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    }
-
-    multi =
-      Ecto.Multi.new()
-      |> Ecto.Multi.run(:template, fn _repo, _changes ->
-        CompanyTemplates.replace_active_template(socket.assigns.company, template_attrs)
-      end)
-      |> Ecto.Multi.run(:media_asset, fn _repo, %{template: template} ->
-        Media.create_media_asset(template, media_attrs)
-      end)
-
-    case Repo.transaction(multi) do
-      {:ok, %{template: template}} ->
-        template_with_media = Repo.preload(template, :media_asset)
-
-        {:noreply,
-         socket
-         |> assign(:template, template_with_media)
-         |> assign(:template_data, %{})
-         |> put_flash(:info, dgettext("companies", "Template uploaded successfully"))}
-
-      {:error, _operation, _changeset, _changes} ->
-        {:noreply,
-         socket
-         |> assign(:template_data, %{})
-         |> put_flash(:error, dgettext("companies", "Failed to upload template"))}
+    with %{file_name: _file_name} <- template_data,
+         template_attrs = build_template_attrs(template_data),
+         media_attrs = build_media_attrs(template_data),
+         multi = build_upload_transaction(company, template_attrs, media_attrs),
+         {:ok, %{template: template}} <- Repo.transaction(multi) do
+      handle_upload_success(socket, template)
+    else
+      _reason ->
+        handle_upload_error(socket)
     end
   end
 
@@ -150,6 +129,40 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
       {:error, _changeset} ->
         {:noreply, put_flash(socket, :error, dgettext("companies", "Failed to delete template"))}
+    end
+  end
+
+  def handle_event("show_variables", _params, socket) do
+    {:noreply, assign(socket, :show_variables_modal, true)}
+  end
+
+  def handle_event("close_modal", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:show_template_modal, false)
+     |> assign(:show_variables_modal, false)}
+  end
+
+  def handle_event("deactivate_template", _params, socket) do
+    case socket.assigns.template do
+      nil ->
+        {:noreply, socket}
+
+      template ->
+        case CompanyTemplates.update_template(
+               template,
+               %{status: :uploading}
+             ) do
+          {:ok, _template} ->
+            {:noreply,
+             socket
+             |> assign(:template, nil)
+             |> put_flash(:info, dgettext("companies", "Template deactivated successfully"))}
+
+          {:error, _changeset} ->
+            {:noreply,
+             put_flash(socket, :error, dgettext("companies", "Failed to deactivate template"))}
+        end
     end
   end
 
@@ -185,6 +198,11 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
              "job_application_updated"
            ] do
     {:noreply, stream_insert(socket, :recent_applicants, payload.job_application, at: 0)}
+  end
+
+  def handle_info(%Broadcast{event: "template_status_updated", payload: template}, socket) do
+    template_with_media = Repo.preload(template, :media_asset)
+    {:noreply, assign(socket, :template, template_with_media)}
   end
 
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])
@@ -224,5 +242,55 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
       true ->
         {:ok, params}
     end
+  end
+
+  defp build_media_attrs(template_data) do
+    %{
+      file_name: template_data.file_name,
+      upload_id: Map.get(template_data, :upload_id),
+      status: :uploaded,
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    }
+  end
+
+  defp build_template_attrs(template_data) do
+    %{
+      name: template_data.file_name,
+      status: :processing
+    }
+  end
+
+  defp build_upload_transaction(company, template_attrs, media_attrs) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:template, fn _repo, _changes ->
+      CompanyTemplates.replace_active_template(company, template_attrs)
+    end)
+    |> Ecto.Multi.run(:media_asset, fn _repo, %{template: template} ->
+      Media.create_media_asset(template, media_attrs)
+    end)
+  end
+
+  defp handle_upload_success(socket, template) do
+    template_with_media = Repo.preload(template, :media_asset)
+
+    %{"template_id" => template.id}
+    |> ProcessTemplate.new()
+    |> Oban.insert()
+
+    {:noreply,
+     socket
+     |> assign(:template, template_with_media)
+     |> assign(:template_data, %{})
+     |> put_flash(
+       :info,
+       dgettext("companies", "Template uploaded and processing started")
+     )}
+  end
+
+  defp handle_upload_error(socket) do
+    {:noreply,
+     socket
+     |> assign(:template_data, %{})
+     |> put_flash(:error, dgettext("companies", "Failed to upload template"))}
   end
 end

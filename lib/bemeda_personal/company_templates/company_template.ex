@@ -23,8 +23,11 @@ defmodule BemedaPersonal.CompanyTemplates.CompanyTemplate do
     belongs_to :company, Company
     has_one :media_asset, MediaAsset
     field :name, :string
-    field :status, Ecto.Enum, values: [:active, :inactive], default: :active
     field :variables, {:array, :string}, default: []
+
+    field :status, Ecto.Enum,
+      values: [:uploading, :processing, :active, :inactive, :failed],
+      default: :uploading
 
     field :error_message, :string
 
@@ -38,9 +41,8 @@ defmodule BemedaPersonal.CompanyTemplates.CompanyTemplate do
 
       iex> changeset(%CompanyTemplate{}, %{name: "Template.docx"})
       %Ecto.Changeset{}
-
   """
-  @spec changeset(t() | Ecto.Changeset.t(), attrs()) :: Ecto.Changeset.t()
+  @spec changeset(t(), attrs()) :: Ecto.Changeset.t()
   def changeset(template, attrs) do
     template
     |> cast(attrs, [

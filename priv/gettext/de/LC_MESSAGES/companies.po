@@ -290,11 +290,6 @@ msgstr "Nur DOCX-Dateien sind erlaubt"
 msgid "Template deleted successfully"
 msgstr "Vorlage erfolgreich gelöscht"
 
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Template uploaded successfully"
-msgstr "Vorlage erfolgreich hochgeladen"
-
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Upload a DOCX template with [[Variable_Name]] placeholders"
@@ -329,3 +324,75 @@ msgstr "Laden Sie eine neue DOCX-Vorlage hoch, um die aktuelle zu ersetzen. Die 
 #, elixir-autogen, elixir-format
 msgid "DOCX template"
 msgstr "DOCX-Vorlage"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "%{count} variable"
+msgid_plural "%{count} variables"
+msgstr[0] "%{count} Variable"
+msgstr[1] "%{count} Variablen"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to deactivate template"
+msgstr "Fehler beim Deaktivieren der Vorlage"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Preview Variables"
+msgstr "Variablen Vorschau"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Processing"
+msgstr "Verarbeitung"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Processing template..."
+msgstr "Vorlage wird verarbeitet..."
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template deactivated successfully"
+msgstr "Vorlage erfolgreich deaktiviert"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Template uploaded and processing started"
+msgstr "Vorlage hochgeladen und Verarbeitung gestartet"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Uploading"
+msgstr "Hochladen"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Close"
+msgstr "Schließen"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "No variables found"
+msgstr "Keine Variablen gefunden"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Template Variables"
+msgstr "Vorlagen-Variablen"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Variables found in your template"
+msgstr "In Ihrer Vorlage gefundene Variablen"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Your template doesn't contain any variables in the [[Variable_Name]] format."
+msgstr "Ihre Vorlage enthält keine Variablen im Format [[Variable_Name]]."

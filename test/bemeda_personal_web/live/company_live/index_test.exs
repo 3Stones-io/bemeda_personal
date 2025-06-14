@@ -6,11 +6,15 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.RatingsFixtures
+  import Ecto.Query
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.CompanyTemplates
+  alias BemedaPersonal.CompanyTemplates.CompanyTemplate
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
+  alias BemedaPersonal.Repo
+  alias BemedaPersonalWeb.Endpoint
 
   defp create_company(_context) do
     user = employer_user_fixture()
@@ -226,6 +230,41 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       refute html =~ "bg-gray-50 rounded-lg p-4"
     end
 
+    test "handles template_status_updated broadcast", %{conn: conn, user: user, company: company} do
+      {:ok, template} =
+        CompanyTemplates.create_template(company, %{
+          name: "processing_template.docx",
+          status: :processing
+        })
+
+      {:ok, view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      assert html =~ "processing_template.docx"
+      assert html =~ "Processing"
+
+      updated_template = %{
+        template
+        | status: :active,
+          variables: ["FirstName", "LastName", "Position"]
+      }
+
+      Endpoint.broadcast(
+        "company:#{company.id}:templates",
+        "template_status_updated",
+        updated_template
+      )
+
+      Process.sleep(10)
+
+      updated_html = render(view)
+      assert updated_html =~ "processing_template.docx"
+      assert updated_html =~ "Active"
+      refute updated_html =~ "Processing"
+    end
+
     test "shows template management interface when template exists", %{
       company: company,
       conn: conn,
@@ -267,15 +306,26 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
       upload_response = render_hook(view, "upload_completed", %{})
 
-      assert upload_response =~ "Template uploaded successfully"
+      assert upload_response =~ "Template uploaded and processing started"
       assert upload_response =~ "new_template.docx"
-      assert upload_response =~ "Active"
+      assert upload_response =~ "Processing"
       assert upload_response =~ "Replace Template"
       assert upload_response =~ "bg-gray-50 rounded-lg p-4"
 
-      template = CompanyTemplates.get_active_template(company.id)
-      assert template.name == "new_template.docx"
-      assert template.status == :active
+      query =
+        from(t in CompanyTemplate,
+          where: t.company_id == ^company.id,
+          order_by: [desc: t.inserted_at],
+          preload: [:media_asset]
+        )
+
+      templates = Repo.all(query)
+
+      assert %CompanyTemplate{} =
+               template =
+               Enum.find(templates, &(&1.name == "new_template.docx"))
+
+      assert template.status == :processing
     end
 
     test "successfully replaces an existing template", %{company: company, conn: conn, user: user} do
@@ -300,15 +350,30 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
       upload_html = render_hook(view, "upload_completed", %{})
 
-      assert upload_html =~ "Template uploaded successfully"
+      assert upload_html =~ "Template uploaded and processing started"
       assert upload_html =~ "new_template.docx"
       refute upload_html =~ "old_template.docx"
-      assert upload_html =~ "Active"
+      assert upload_html =~ "Processing"
       assert upload_html =~ "Replace Template"
 
-      template = CompanyTemplates.get_active_template(company.id)
-      assert template.name == "new_template.docx"
-      assert template.status == :active
+      query =
+        from(t in CompanyTemplate,
+          where: t.company_id == ^company.id,
+          order_by: [desc: t.inserted_at],
+          preload: [:media_asset]
+        )
+
+      templates = Repo.all(query)
+
+      assert %CompanyTemplate{} =
+               new_template = Enum.find(templates, &(&1.name == "new_template.docx"))
+
+      assert new_template.status == :processing
+
+      assert %CompanyTemplate{} =
+               old_template = Enum.find(templates, &(&1.name == "old_template.docx"))
+
+      assert old_template.status == :active
     end
 
     test "successfully deletes an existing template", %{company: company, conn: conn, user: user} do
@@ -447,7 +512,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       upload_html = render_hook(view, "upload_completed", %{})
 
       assert upload_html =~ "first_template.docx"
-      assert upload_html =~ "Active"
+      assert upload_html =~ "Processing"
       assert upload_html =~ "Replace Template"
       assert upload_html =~ "bg-gray-50 rounded-lg p-4"
 
@@ -460,7 +525,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
 
       assert upload_html_2 =~ "second_template.docx"
       refute upload_html_2 =~ "first_template.docx"
-      assert upload_html_2 =~ "Active"
+      assert upload_html_2 =~ "Processing"
       assert upload_html_2 =~ "Replace Template"
 
       delete_html =
@@ -473,6 +538,66 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert delete_html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
       refute delete_html =~ "Replace Template"
       refute delete_html =~ "bg-gray-50 rounded-lg p-4"
+    end
+
+    test "handles deactivate template action", %{conn: conn, user: user, company: company} do
+      {:ok, _template} =
+        CompanyTemplates.create_template(company, %{
+          name: "template_to_deactivate.docx",
+          status: :active
+        })
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      html = render_hook(view, "deactivate_template", %{})
+
+      assert html =~ "Template deactivated successfully"
+      refute html =~ "template_to_deactivate.docx"
+    end
+
+    test "handles deactivate template when no template exists", %{conn: conn, user: user} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      assert render_hook(view, "deactivate_template", %{}) =~ "Upload a DOCX template"
+    end
+
+    test "handles show variables modal", %{conn: conn, user: user, company: company} do
+      {:ok, _template} =
+        CompanyTemplates.create_template(company, %{
+          name: "template_with_variables.docx",
+          status: :active,
+          variables: ["FirstName", "LastName", "Position"]
+        })
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      html = render_hook(view, "show_variables", %{})
+
+      assert html =~ "template_with_variables.docx"
+      assert html =~ "FirstName"
+      assert html =~ "LastName"
+      assert html =~ "Position"
+    end
+
+    test "handles close modal action", %{conn: conn, user: user} do
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      html = render_hook(view, "close_modal", %{})
+
+      assert html =~ "Upload a DOCX template"
+      refute html =~ "template_with_variables.docx"
     end
   end
 

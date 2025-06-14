@@ -41,7 +41,7 @@ defmodule BemedaPersonal.CompanyTemplates.CompanyTemplateTest do
     end
 
     test "valid changeset with all statuses" do
-      for status <- [:active, :inactive] do
+      for status <- [:uploading, :processing, :active, :failed] do
         attrs = %{
           name: "template.docx",
           status: status
@@ -114,12 +114,12 @@ defmodule BemedaPersonal.CompanyTemplates.CompanyTemplateTest do
 
       attrs1 = %{
         name: "template1.docx",
-        status: :inactive
+        status: :uploading
       }
 
       attrs2 = %{
         name: "template2.docx",
-        status: :inactive
+        status: :uploading
       }
 
       assert {:ok, _template1} = CompanyTemplates.create_template(company, attrs1)
