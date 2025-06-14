@@ -1363,7 +1363,7 @@ msgid "Congratulations! You have accepted the job offer."
 msgstr "Félicitations ! Vous avez accepté l'offre d'emploi."
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Extend Job Offer"
 msgstr "Faire une offre d'emploi"
 
@@ -1373,7 +1373,7 @@ msgid "Failed to accept the offer. Please try again."
 msgstr "Impossible d'accepter l'offre. Veuillez réessayer."
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Job Offer Extended!"
 msgstr "Offre d'emploi proposée !"
 
@@ -1381,3 +1381,43 @@ msgstr "Offre d'emploi proposée !"
 #, elixir-autogen, elixir-format
 msgid "The candidate will be notified and can accept or decline the offer."
 msgstr "Le candidat sera notifié et pourra accepter ou décliner l'offre."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to extend offer."
+msgstr "Impossible d'étendre l'offre."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Offer extended successfully. Contract is being generated."
+msgstr "Offre étendue avec succès. Le contrat est en cours de génération."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Contract has been generated and sent to the candidate."
+msgstr "Le contrat a été généré et envoyé au candidat."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Contract is being generated for the candidate..."
+msgstr "Le contrat est en cours de génération pour le candidat..."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Contract is being generated..."
+msgstr "Le contrat est en cours de génération..."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "View Contract"
+msgstr "Voir le contrat"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Mr."
+msgstr "Monsieur"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Ms."
+msgstr "Madame"

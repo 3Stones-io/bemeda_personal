@@ -123,7 +123,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       |> JobApplications.get_latest_withdraw_state_transition()
 
     if latest_transition.from_state == "offer_extended" do
-      ["offer_accepted"]
+      []
     else
       [latest_transition.from_state]
     end

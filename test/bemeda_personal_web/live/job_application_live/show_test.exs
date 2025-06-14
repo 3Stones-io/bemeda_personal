@@ -15,7 +15,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   alias BemedaPersonal.Documents.MockProcessor
   alias BemedaPersonal.Documents.MockStorage
   alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.JobOffers
+  alias BemedaPersonal.Repo
   alias BemedaPersonal.Workers.EmailNotificationWorker
+  alias BemedaPersonalWeb.Endpoint
 
   @create_attrs %{
     description: "Build amazing applications",
@@ -399,6 +402,34 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert image_html =~
                ~s(<img src="https://fly.storage.tigris.dev/tigris-bucket/#{image_message.media_asset.upload_id})
     end
+
+    test "user can accept job offers", %{
+      conn: conn,
+      job_application: job_application,
+      company: company
+    } do
+      job_application = Repo.preload(job_application, job_posting: [company: :admin_user])
+
+      {:ok, job_application_with_offer} =
+        JobApplications.update_job_application_status(
+          job_application,
+          company.admin_user,
+          %{"to_state" => "offer_extended"}
+        )
+
+      {:ok, view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application_with_offer.job_posting_id}/job_applications/#{job_application_with_offer.id}"
+        )
+
+      assert html =~ "Job Offer Extended!"
+      assert html =~ "Accept Offer"
+
+      assert view
+             |> element("div.bg-green-50 button", "Accept Offer")
+             |> render_click() =~ "Congratulations! You have accepted the job offer."
+    end
   end
 
   describe "document template processing" do
@@ -626,63 +657,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "Withdraw Application"
     end
 
-    test "user can transition a job application status", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, job_application_offer_extended} =
-        JobApplications.update_job_application_status(
-          job_application,
-          job_application.user,
-          %{
-            "to_state" => "offer_extended"
-          }
-        )
-
-      {:ok, view, html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application_offer_extended.job_posting_id}/job_applications/#{job_application_offer_extended.id}"
-        )
-
-      assert html =~ "An offer has been extended to you"
-
-      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_accepted"})
-
-      view
-      |> form("#job-application-state-transition-form")
-      |> render_submit(%{
-        "job_application_state_transition" => %{
-          "notes" => "I'm happy to accept this position."
-        }
-      })
-
-      assert_enqueued(
-        worker: EmailNotificationWorker,
-        args: %{
-          job_application_id: job_application_offer_extended.id,
-          type: "job_application_status_update"
-        }
-      )
-
-      {:ok, job_application_offer_accepted} =
-        JobApplications.update_job_application_status(
-          job_application_offer_extended,
-          job_application.user,
-          %{
-            "to_state" => "offer_accepted"
-          }
-        )
-
-      {:ok, _updated_view, updated_html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application_offer_accepted.job_posting_id}/job_applications/#{job_application_offer_accepted.id}"
-        )
-
-      assert updated_html =~ "You have accepted the offer"
-    end
-
     test "user can withdraw their application", %{
       conn: conn,
       job_application: job_application
@@ -756,83 +730,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html2 =~ "Withdraw Application"
       job = JobApplications.get_job_application!(job_application.id)
       assert job.state == "applied"
-    end
-
-    test "status messages are shown at each stage", %{
-      conn: conn,
-      job_application: job_application
-    } do
-      {:ok, view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      initial_messages_html =
-        view
-        |> element("#chat-messages")
-        |> render()
-
-      assert initial_messages_html =~ job_application.cover_letter
-
-      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
-
-      view
-      |> element("#offer-confirmation-modal button", "Extend Offer")
-      |> render_click()
-
-      assert_enqueued(
-        worker: EmailNotificationWorker,
-        args: %{
-          job_application_id: job_application.id,
-          type: "job_application_status_update"
-        }
-      )
-
-      {:ok, updated_view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      updated_messages_html =
-        updated_view
-        |> element("#chat-messages")
-        |> render()
-
-      assert updated_messages_html =~ "offer has been extended"
-
-      render_hook(updated_view, "show-status-transition-modal", %{"to_state" => "offer_accepted"})
-
-      updated_view
-      |> form("#job-application-state-transition-form")
-      |> render_submit(%{
-        "job_application_state_transition" => %{
-          "notes" => "Accepting the offer."
-        }
-      })
-
-      assert_enqueued(
-        worker: EmailNotificationWorker,
-        args: %{
-          job_application_id: job_application.id,
-          type: "job_application_status_update"
-        }
-      )
-
-      {:ok, accepted_view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
-        )
-
-      accepted_messages_html =
-        accepted_view
-        |> element("#chat-messages")
-        |> render()
-
-      assert accepted_messages_html =~ "You have accepted the offer"
-      assert accepted_messages_html =~ "An offer has been extended to you"
     end
 
     test "displays status update buttons for available transitions", %{
@@ -945,6 +842,32 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       )
     end
 
+    test "shows error message when offer extension fails", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      JobOffers.create_job_offer(%{
+        job_application_id: job_application.id,
+        status: :pending,
+        variables: %{}
+      })
+
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      render_hook(view, "show-status-transition-modal", %{"to_state" => "offer_extended"})
+
+      assert view
+             |> element("#offer-confirmation-modal button", "Extend Offer")
+             |> render_click() =~ "Failed to extend offer"
+    end
+
     test "candidate sees enhanced offer response UI when offer is extended", %{
       conn: conn,
       candidate: candidate,
@@ -973,7 +896,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "Accept Offer"
     end
 
-    test "candidate can accept offer through enhanced UI", %{
+    test "candidate can decline offer by withdrawing application", %{
       conn: conn,
       candidate: candidate,
       employer: employer,
@@ -994,37 +917,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
         )
 
-      view
-      |> element("div.bg-green-50 button", "Accept Offer")
-      |> render_click()
-
-      assert render(view) =~ "Congratulations! You have accepted the job offer."
-    end
-
-    test "candidate can decline offer through status buttons", %{
-      conn: conn,
-      candidate: candidate,
-      employer: employer,
-      job_application: job_application
-    } do
-      {:ok, offer_extended_application} =
-        JobApplications.update_job_application_status(
-          job_application,
-          employer,
-          %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
-        )
-
-      conn = log_in_user(conn, candidate)
-
-      {:ok, view, _html} =
-        live(
-          conn,
-          ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
-        )
-
-      view
-      |> element("button a", "Withdraw Application")
-      |> render_click()
+      assert view
+             |> element("button a", "Withdraw Application")
+             |> render_click() =~ "Withdrawn"
 
       assert render(view) =~ "Withdrawn"
     end
@@ -1083,6 +978,125 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "job-application-state-transition-form"
       refute html =~ "offer-confirmation-modal"
       refute html =~ "Extend Job Offer"
+    end
+  end
+
+  describe "job offer updates" do
+    setup %{conn: conn} do
+      candidate = user_fixture()
+      employer = user_fixture(%{email: "employer@example.com"})
+      company = company_fixture(employer)
+      job = job_posting_fixture(company, @create_attrs)
+
+      job_application =
+        candidate
+        |> job_application_fixture(job)
+        |> Repo.preload(job_posting: [company: :admin_user])
+
+      job_offer =
+        JobOffers.create_job_offer(%{
+          job_application_id: job_application.id,
+          status: :pending,
+          variables: %{
+            "First_Name" => candidate.first_name,
+            "Last_Name" => candidate.last_name,
+            "Job_Title" => job.title
+          }
+        })
+
+      %{
+        candidate: candidate,
+        company: company,
+        conn: conn,
+        employer: employer,
+        job: job,
+        job_application: job_application,
+        job_offer: elem(job_offer, 1)
+      }
+    end
+
+    test "contract status updates in real-time for both candidate and employer", %{
+      conn: conn,
+      candidate: candidate,
+      employer: employer,
+      job_application: job_application,
+      job_offer: job_offer
+    } do
+      {:ok, updated_job_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          employer,
+          %{"to_state" => "offer_extended"}
+        )
+
+      candidate_conn = log_in_user(conn, candidate)
+
+      {:ok, candidate_view, candidate_html} =
+        live(
+          candidate_conn,
+          ~p"/jobs/#{updated_job_application.job_posting_id}/job_applications/#{updated_job_application.id}"
+        )
+
+      assert candidate_html =~ "Contract is being generated"
+      refute candidate_html =~ "View Contract"
+
+      employer_conn = log_in_user(build_conn(), employer)
+
+      {:ok, employer_view, employer_html} =
+        live(
+          employer_conn,
+          ~p"/jobs/#{updated_job_application.job_posting_id}/job_applications/#{updated_job_application.id}"
+        )
+
+      assert employer_html =~ "Contract is being generated for the candidate"
+      refute employer_html =~ "Contract has been generated and sent to the candidate"
+
+      upload_id = Ecto.UUID.generate()
+
+      {:ok, contract_message} =
+        Chat.create_message_with_media(
+          employer,
+          updated_job_application,
+          %{
+            "content" => "Contract generated",
+            "media_data" => %{
+              "file_name" => "contract.pdf",
+              "status" => :uploaded,
+              "type" => "application/pdf",
+              "upload_id" => upload_id
+            }
+          }
+        )
+
+      updated_job_offer = %{
+        job_offer
+        | status: :extended,
+          message: contract_message,
+          message_id: contract_message.id
+      }
+
+      Endpoint.broadcast(
+        "job_application:user:#{candidate.id}",
+        "job_offer_updated",
+        %{job_offer: updated_job_offer}
+      )
+
+      Endpoint.broadcast(
+        "job_application:company:#{job_application.job_posting.company_id}",
+        "job_offer_updated",
+        %{job_offer: updated_job_offer}
+      )
+
+      :timer.sleep(10)
+
+      candidate_updated_html = render(candidate_view)
+      refute candidate_updated_html =~ "Contract is being generated"
+      assert candidate_updated_html =~ "View Contract"
+
+      employer_updated_html = render(employer_view)
+      refute employer_updated_html =~ "Contract is being generated for the candidate"
+      assert employer_updated_html =~ "Contract has been generated and sent to the candidate"
+      assert employer_updated_html =~ "View Contract"
     end
   end
 end

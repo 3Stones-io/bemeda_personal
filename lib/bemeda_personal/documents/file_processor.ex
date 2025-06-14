@@ -84,6 +84,10 @@ defmodule BemedaPersonal.Documents.FileProcessor do
     end)
   end
 
+  defp remove_placeholders(content) do
+    Regex.replace(~r/\[\[([^\[\]]+)\]\]/, content, "")
+  end
+
   defp output_file_path(document_path) do
     dir = Path.dirname(document_path)
     ext = Path.extname(document_path)
@@ -138,7 +142,12 @@ defmodule BemedaPersonal.Documents.FileProcessor do
   defp process_document_files(documents, values) do
     Enum.each(documents, fn file_path ->
       content = File.read!(file_path)
-      updated_content = replace_variables_in_content(content, values)
+
+      updated_content =
+        content
+        |> replace_variables_in_content(values)
+        |> remove_placeholders()
+
       File.write!(file_path, updated_content)
     end)
   end

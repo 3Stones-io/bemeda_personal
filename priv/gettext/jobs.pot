@@ -1381,3 +1381,43 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "The candidate will be notified and can accept or decline the offer."
 msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to extend offer."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Offer extended successfully. Contract is being generated."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Contract has been generated and sent to the candidate."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Contract is being generated for the candidate..."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Contract is being generated..."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "View Contract"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Mr."
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Ms."
+msgstr ""

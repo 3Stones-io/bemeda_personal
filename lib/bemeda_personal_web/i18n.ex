@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.I18n do
   use Gettext, backend: BemedaPersonalWeb.Gettext
 
   @type enum_value :: String.t()
+  @type locale :: String.t()
   @type translated_string :: String.t()
 
   @spec translate_status(enum_value()) :: translated_string()
@@ -72,6 +73,10 @@ defmodule BemedaPersonalWeb.I18n do
   @spec translate_gender(enum_value()) :: translated_string()
   def translate_gender("Female"), do: dgettext("jobs", "Female")
   def translate_gender("Male"), do: dgettext("jobs", "Male")
+
+  @spec translate_title(enum_value()) :: translated_string()
+  def translate_title("female"), do: dgettext("jobs", "Ms.")
+  def translate_title("male"), do: dgettext("jobs", "Mr.")
 
   @spec translate_language(enum_value()) :: translated_string()
   def translate_language("English"), do: dgettext("jobs", "English")
