@@ -313,6 +313,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @spec deliver_employer_job_application_status(job_application(), url()) ::
           {:ok, email} | {:error, any()}
   def deliver_employer_job_application_status(job_application, url) do
+    put_locale(job_application.job_posting.company.admin_user)
     admin_user = job_application.job_posting.company.admin_user
     employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
     applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"

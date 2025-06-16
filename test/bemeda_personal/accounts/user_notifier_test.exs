@@ -360,5 +360,41 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         text_body: ~r/APPLICATION_URL/
       )
     end
+
+    test "employer receives status update emails in their locale" do
+      english_applicant =
+        user_fixture(%{
+          first_name: "John",
+          last_name: "Smith",
+          email: "john_smith@example.com",
+          locale: :en
+        })
+
+      english_admin =
+        user_fixture(%{
+          first_name: "Sarah",
+          last_name: "Johnson",
+          email: "sarah@example.com",
+          locale: :en
+        })
+
+      company = company_fixture(english_admin)
+      job_posting = job_posting_fixture(company, %{title: "Software Engineer"})
+
+      job_application =
+        english_applicant
+        |> job_application_fixture(job_posting, %{state: "offer_extended"})
+        |> Repo.preload(job_posting: [company: :admin_user])
+
+      UserNotifier.deliver_employer_job_application_status(job_application, "STATUS_URL")
+
+      assert_email_sent(
+        from: {"BemedaPersonal", "contact@bemeda-personal.optimum.ba"},
+        subject: ~r/BemedaPersonal \| Job Application Status Update/,
+        to: [{"Sarah Johnson", "sarah@example.com"}],
+        text_body: ~r/Hi Sarah Johnson,/,
+        text_body: ~r/STATUS_URL/
+      )
+    end
   end
 end
