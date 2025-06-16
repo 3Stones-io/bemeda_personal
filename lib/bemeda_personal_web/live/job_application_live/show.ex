@@ -186,7 +186,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      |> assign(:show_status_transition_modal, false)}
   end
 
-  def handle_event("download_pdf", %{"upload_id" => upload_id}, socket) do
+  def handle_event("download_pdf", %{"upload-id" => upload_id}, socket) do
     download_url = SharedHelpers.get_presigned_url(upload_id)
 
     {:noreply, redirect(socket, external: download_url)}

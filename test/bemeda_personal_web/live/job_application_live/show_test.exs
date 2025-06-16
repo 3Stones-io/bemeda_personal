@@ -1527,7 +1527,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       assert {:error, {:redirect, %{to: redirect_url}}} =
-               render_hook(view, "download_pdf", %{"upload_id" => upload_id})
+               render_hook(view, "download_pdf", %{"upload-id" => upload_id})
 
       assert redirect_url =~ upload_id
     end
