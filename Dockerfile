@@ -93,6 +93,8 @@ ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/app"
 RUN chown nobody /app
+RUN mkdir -p /home/nobody && chown nobody:nogroup /home/nobody
+ENV HOME=/home/nobody
 
 # set runner ENV
 ENV MIX_ENV="prod"
