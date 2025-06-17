@@ -208,11 +208,13 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Maximum Salary"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Minimum Salary"
@@ -407,6 +409,7 @@ msgstr ""
 msgid "position at"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Department"
@@ -427,6 +430,7 @@ msgstr ""
 msgid "Position"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Region"
@@ -444,6 +448,7 @@ msgstr ""
 msgid "Select experience level"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select experience range"
@@ -465,6 +470,7 @@ msgstr ""
 msgid "Select workload type"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
@@ -476,11 +482,13 @@ msgstr ""
 msgid "Workload Type"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Years of Experience"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Currency"
@@ -1288,6 +1296,7 @@ msgstr ""
 msgid "Patient Sitter"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Profession"
@@ -1318,6 +1327,7 @@ msgstr ""
 msgid "Registered Surgical Technologist (HF)"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select profession"
@@ -1516,4 +1526,50 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "e.g., 85000 %{currency}"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Basic Search"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Languages"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Position Type"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Professional Requirements"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Schedule & Compensation"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Select currency"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Select position type"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Shift Type"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Work Environment"
 msgstr ""

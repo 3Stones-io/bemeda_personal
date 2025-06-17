@@ -92,7 +92,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       job_posting1 = job_posting_fixture(company, %{employment_type: "Permanent Position"})
       job_posting_fixture(company, %{employment_type: "Floater"})
 
-      assert [result] = JobPostings.list_job_postings(%{employment_type: "Permanent"})
+      assert [result] = JobPostings.list_job_postings(%{employment_type: "Permanent Position"})
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
     end
@@ -753,6 +753,73 @@ defmodule BemedaPersonal.JobPostingsTest do
       changeset = JobPostings.change_job_posting(job_posting, @invalid_attrs)
       assert %Ecto.Changeset{valid?: false} = changeset
       assert errors_on(changeset)[:title] == ["can't be blank"]
+    end
+  end
+
+  describe "JobPosting.changeset/2 validations" do
+    test "validates title length" do
+      changeset_1 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "abc",
+          description: "Valid description that is long enough"
+        })
+
+      refute changeset_1.valid?
+      assert "should be at least 5 character(s)" in errors_on(changeset_1).title
+
+      long_title = String.duplicate("a", 260)
+
+      changeset_2 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: long_title,
+          description: "Valid description that is long enough"
+        })
+
+      refute changeset_2.valid?
+      assert "should be at most 255 character(s)" in errors_on(changeset_2).title
+    end
+
+    test "validates description length" do
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{title: "Valid Title", description: "short"})
+
+      refute changeset.valid?
+      assert "should be at least 10 character(s)" in errors_on(changeset).description
+    end
+
+    test "validates salary range" do
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: "Valid description that is long enough",
+          salary_min: 100_000,
+          salary_max: 50_000
+        })
+
+      refute changeset.valid?
+      assert "must be less than or equal to salary maximum" in errors_on(changeset).salary_min
+    end
+
+    test "validates salary numbers are non-negative" do
+      changeset_1 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: "Valid description that is long enough",
+          salary_min: -1000
+        })
+
+      refute changeset_1.valid?
+      assert "must be greater than or equal to 0" in errors_on(changeset_1).salary_min
+
+      changeset_2 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: "Valid description that is long enough",
+          salary_max: -5000
+        })
+
+      refute changeset_2.valid?
+      assert "must be greater than or equal to 0" in errors_on(changeset_2).salary_max
     end
   end
 end
