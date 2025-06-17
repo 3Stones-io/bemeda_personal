@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   use BemedaPersonalWeb, :html
 
-  alias BemedaPersonal.JobPostings.JobFilter
+  alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedComponents
@@ -345,72 +345,251 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </div>
       </div>
 
-      <div class="overflow-hidden transition-all duration-300 hidden" id="job_filters">
+      <div class="transition-all duration-300 hidden" id="job_filters">
         <.form :let={f} for={@form} phx-submit="filter_jobs" phx-target={@target}>
-          <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4 mb-6">
-            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div class="mt-1">
-                <.input
-                  field={f[:title]}
-                  label={dgettext("jobs", "Job Title")}
-                  label_class="block text-sm font-medium text-gray-700"
-                  type="text"
-                  placeholder={dgettext("jobs", "Search by job title")}
-                  class="w-full"
-                />
+          <div class="space-y-6">
+            <div class="bg-white shadow sm:rounded-lg">
+              <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                <h3 class="text-sm font-medium text-gray-900">{dgettext("jobs", "Basic Search")}</h3>
               </div>
+              <div class="p-4">
+                <div class="mb-6">
+                  <.input
+                    field={f[:search]}
+                    label={dgettext("jobs", "Search Jobs")}
+                    type="text"
+                    placeholder={dgettext("jobs", "Search in job titles and descriptions...")}
+                    class="w-full text-lg py-3"
+                  />
+                  <p class="mt-1 text-sm text-gray-500">
+                    {dgettext(
+                      "jobs",
+                      "Search across job titles and descriptions using keywords"
+                    )}
+                  </p>
+                </div>
 
-              <div class="mt-1">
-                <.input
-                  field={f[:location]}
-                  label={dgettext("jobs", "Location")}
-                  label_class="block text-sm font-medium text-gray-700"
-                  type="text"
-                  placeholder={dgettext("jobs", "Enter location")}
-                  class="w-full"
-                />
-              </div>
+                <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
+                  <div>
+                    <.input
+                      field={f[:location]}
+                      label={dgettext("jobs", "Location")}
+                      type="text"
+                      placeholder={dgettext("jobs", "Enter location")}
+                      class="w-full"
+                    />
+                  </div>
 
-              <div class="mt-1">
-                <.input
-                  field={f[:employment_type]}
-                  label={dgettext("jobs", "Employment Type")}
-                  label_class="block text-sm font-medium text-gray-700"
-                  type="select"
-                  prompt={dgettext("jobs", "Select employment type")}
-                  options={Ecto.Enum.values(JobFilter, :employment_type)}
-                  class="w-full"
-                />
-              </div>
-
-              <div class="mt-1">
-                <.input
-                  field={f[:experience_level]}
-                  label={dgettext("jobs", "Experience Level")}
-                  label_class="block text-sm font-medium text-gray-700"
-                  type="select"
-                  prompt={dgettext("jobs", "Select experience level")}
-                  options={Ecto.Enum.values(JobFilter, :experience_level)}
-                  class="w-full"
-                />
-              </div>
-
-              <div class="mt-1">
-                <.input
-                  field={f[:remote_allowed]}
-                  label={dgettext("jobs", "Remote Work")}
-                  label_class="block text-sm font-medium text-gray-700"
-                  type="select"
-                  options={[
-                    {dgettext("jobs", "Any"), ""},
-                    {dgettext("jobs", "Remote Only"), "true"},
-                    {dgettext("jobs", "On-site Only"), "false"}
-                  ]}
-                  class="w-full"
-                />
+                  <div>
+                    <.input
+                      field={f[:remote_allowed]}
+                      label={dgettext("jobs", "Remote Work")}
+                      type="select"
+                      options={[
+                        {dgettext("jobs", "Any"), ""},
+                        {dgettext("jobs", "Remote Only"), "true"},
+                        {dgettext("jobs", "On-site Only"), "false"}
+                      ]}
+                      class="w-full"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="mt-6 flex justify-end gap-x-2">
+
+            <div class="bg-white shadow sm:rounded-lg">
+              <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                <button
+                  type="button"
+                  phx-click={JS.toggle(to: "#professional_filters")}
+                  class="flex items-center justify-between w-full text-left"
+                >
+                  <h3 class="text-sm font-medium text-gray-900">
+                    {dgettext("jobs", "Professional Requirements")}
+                  </h3>
+                  <.icon name="hero-chevron-down" class="w-4 h-4 text-gray-500" />
+                </button>
+              </div>
+              <div class="p-4 hidden" id="professional_filters">
+                <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div>
+                    <.input
+                      field={f[:profession]}
+                      label={dgettext("jobs", "Profession")}
+                      type="select"
+                      prompt={dgettext("jobs", "Select profession")}
+                      options={get_translated_filter_options(:profession)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:employment_type]}
+                      label={dgettext("jobs", "Employment Type")}
+                      type="select"
+                      prompt={dgettext("jobs", "Select employment type")}
+                      options={get_translated_filter_options(:employment_types)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:experience_level]}
+                      label={dgettext("jobs", "Experience Level")}
+                      type="select"
+                      prompt={dgettext("jobs", "Select experience level")}
+                      options={get_translated_filter_options(:experience_levels)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:years_of_experience]}
+                      label={dgettext("jobs", "Years of Experience")}
+                      type="select"
+                      prompt={dgettext("jobs", "Select experience range")}
+                      options={get_translated_filter_options(:years_of_experience_options)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:position]}
+                      label={dgettext("jobs", "Position Type")}
+                      type="select"
+                      prompt={dgettext("jobs", "Select position type")}
+                      options={get_translated_filter_options(:positions)}
+                      class="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white shadow sm:rounded-lg">
+              <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                <button
+                  type="button"
+                  phx-click={JS.toggle(to: "#work_environment_filters")}
+                  class="flex items-center justify-between w-full text-left"
+                >
+                  <h3 class="text-sm font-medium text-gray-900">
+                    {dgettext("jobs", "Work Environment")}
+                  </h3>
+                  <.icon name="hero-chevron-down" class="w-4 h-4 text-gray-500" />
+                </button>
+              </div>
+
+              <div class="p-4 hidden" id="work_environment_filters">
+                <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div>
+                    <.input
+                      field={f[:department]}
+                      label={dgettext("jobs", "Department")}
+                      type="multi-select"
+                      options={get_translated_filter_options(:departments)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:region]}
+                      label={dgettext("jobs", "Region")}
+                      type="multi-select"
+                      options={get_translated_filter_options(:regions)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:language]}
+                      label={dgettext("jobs", "Languages")}
+                      type="multi-select"
+                      options={get_translated_filter_options(:languages)}
+                      class="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white shadow sm:rounded-lg">
+              <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                <button
+                  type="button"
+                  phx-click={JS.toggle(to: "#schedule_compensation_filters")}
+                  class="flex items-center justify-between w-full text-left"
+                >
+                  <h3 class="text-sm font-medium text-gray-900">
+                    {dgettext("jobs", "Schedule & Compensation")}
+                  </h3>
+                  <.icon name="hero-chevron-down" class="w-4 h-4 text-gray-500" />
+                </button>
+              </div>
+
+              <div class="p-4 hidden" id="schedule_compensation_filters">
+                <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div>
+                    <.input
+                      field={f[:workload]}
+                      label={dgettext("jobs", "Workload")}
+                      type="multi-select"
+                      options={get_translated_filter_options(:workloads)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:shift_type]}
+                      label={dgettext("jobs", "Shift Type")}
+                      type="multi-select"
+                      options={get_translated_filter_options(:shift_types)}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:currency]}
+                      label={dgettext("jobs", "Currency")}
+                      type="select"
+                      prompt={dgettext("jobs", "Select currency")}
+                      options={Enum.map(Enums.currencies(), &{&1, &1})}
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:salary_min]}
+                      label={dgettext("jobs", "Minimum Salary")}
+                      type="number"
+                      placeholder="0"
+                      class="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <.input
+                      field={f[:salary_max]}
+                      label={dgettext("jobs", "Maximum Salary")}
+                      type="number"
+                      placeholder="200000"
+                      class="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-x-3 pt-4">
               <button
                 type="button"
                 phx-click="clear_filters"
@@ -868,4 +1047,35 @@ defmodule BemedaPersonalWeb.JobsComponents do
       fn {key, _value} -> {I18n.translate_status(key), key} end
     )
   end
+
+  defp get_translated_filter_options(field) do
+    field
+    |> get_enum_values()
+    |> Stream.map(&to_string/1)
+    |> Enum.map(fn value -> {translate_filter_enum_value_fun(field).(value), value} end)
+  end
+
+  defp get_enum_values(:departments), do: Enums.departments()
+  defp get_enum_values(:employment_types), do: Enums.employment_types()
+  defp get_enum_values(:experience_levels), do: Enums.experience_levels()
+  defp get_enum_values(:languages), do: Enums.languages()
+  defp get_enum_values(:positions), do: Enums.positions()
+  defp get_enum_values(:profession), do: Enums.professions()
+  defp get_enum_values(:regions), do: Enums.regions()
+  defp get_enum_values(:shift_types), do: Enums.shift_types()
+  defp get_enum_values(:workloads), do: Enums.workloads()
+  defp get_enum_values(:years_of_experience_options), do: Enums.years_of_experience()
+
+  defp translate_filter_enum_value_fun(:departments), do: &I18n.translate_department/1
+  defp translate_filter_enum_value_fun(:languages), do: &I18n.translate_language/1
+  defp translate_filter_enum_value_fun(:employment_types), do: &I18n.translate_employment_type/1
+  defp translate_filter_enum_value_fun(:experience_levels), do: &I18n.translate_experience_level/1
+  defp translate_filter_enum_value_fun(:positions), do: &I18n.translate_position/1
+  defp translate_filter_enum_value_fun(:profession), do: &I18n.translate_profession/1
+  defp translate_filter_enum_value_fun(:regions), do: &I18n.translate_region/1
+  defp translate_filter_enum_value_fun(:shift_types), do: &I18n.translate_shift_type/1
+  defp translate_filter_enum_value_fun(:workloads), do: &I18n.translate_workload/1
+
+  defp translate_filter_enum_value_fun(:years_of_experience_options),
+    do: &I18n.translate_years_of_experience/1
 end

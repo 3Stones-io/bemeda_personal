@@ -73,14 +73,14 @@ defmodule BemedaPersonal.JobPostingsTest do
       assert [] = JobPostings.list_job_postings(%{company_id: company.id})
     end
 
-    test "can filter job_postings by title" do
+    test "can search for job_postings by title and description" do
       user = user_fixture()
       company = company_fixture(user)
 
       job_posting1 = job_posting_fixture(company, %{title: "Software Engineer"})
       job_posting_fixture(company, %{title: "Product Manager"})
 
-      assert [result] = JobPostings.list_job_postings(%{title: "Engineer"})
+      assert [result] = JobPostings.list_job_postings(%{search: "Engineer"})
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
     end
@@ -92,7 +92,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       job_posting1 = job_posting_fixture(company, %{employment_type: "Permanent Position"})
       job_posting_fixture(company, %{employment_type: "Floater"})
 
-      assert [result] = JobPostings.list_job_postings(%{employment_type: "Permanent"})
+      assert [result] = JobPostings.list_job_postings(%{employment_type: "Permanent Position"})
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
     end
@@ -198,7 +198,7 @@ defmodule BemedaPersonal.JobPostingsTest do
                JobPostings.list_job_postings(%{
                  remote_allowed: true,
                  salary_range: [75_000, 125_000],
-                 title: "Engineer"
+                 search: "Engineer"
                })
 
       assert result.id == job_posting1.id
@@ -221,7 +221,7 @@ defmodule BemedaPersonal.JobPostingsTest do
                JobPostings.list_job_postings(%{
                  remote_allowed: false,
                  salary_min: 100_000,
-                 title: "Engineer"
+                 search: "Engineer"
                })
     end
 
@@ -334,6 +334,138 @@ defmodule BemedaPersonal.JobPostingsTest do
       assert length(JobPostings.list_job_postings()) == 10
       assert length(JobPostings.list_job_postings(%{}, 5)) == 5
       assert length(JobPostings.list_job_postings(%{}, 20)) == 15
+    end
+  end
+
+  describe "count_job_postings/1" do
+    setup :create_job_posting
+
+    test "returns count of all job_postings when no filter is passed", %{
+      job_posting: _job_posting
+    } do
+      assert JobPostings.count_job_postings() == 1
+      assert JobPostings.count_job_postings(%{}) == 1
+    end
+
+    test "can count job_postings by company_id", %{job_posting: job_posting} do
+      user = user_fixture()
+      other_company = company_fixture(user)
+      job_posting_fixture(other_company)
+
+      assert JobPostings.count_job_postings(%{company_id: job_posting.company_id}) == 1
+      assert JobPostings.count_job_postings(%{company_id: other_company.id}) == 1
+      assert JobPostings.count_job_postings() == 2
+    end
+
+    test "returns zero when a company has no job_postings" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      assert JobPostings.count_job_postings(%{company_id: company.id}) == 0
+    end
+
+    test "can count job_postings with search filter", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting_fixture(company, %{
+        title: "Healthcare Developer",
+        description: "Medical software development role"
+      })
+
+      assert JobPostings.count_job_postings() == 2
+
+      assert JobPostings.count_job_postings(%{search: "Healthcare"}) == 1
+      assert JobPostings.count_job_postings(%{search: "Developer"}) == 1
+      assert JobPostings.count_job_postings(%{search: "nonexistent"}) == 0
+    end
+
+    test "can count job_postings by employment_type", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting_fixture(company, %{employment_type: "Temporary Assignment"})
+
+      assert JobPostings.count_job_postings(%{employment_type: "Permanent Position"}) == 1
+      assert JobPostings.count_job_postings(%{employment_type: "Temporary Assignment"}) == 1
+      assert JobPostings.count_job_postings() == 2
+    end
+
+    test "can count job_postings by remote_allowed", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting_fixture(company, %{remote_allowed: false})
+
+      assert JobPostings.count_job_postings(%{remote_allowed: true}) == 1
+      assert JobPostings.count_job_postings(%{remote_allowed: false}) == 1
+      assert JobPostings.count_job_postings() == 2
+    end
+
+    test "can count job_postings by salary range" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting_fixture(company, %{salary_min: 50_000, salary_max: 70_000})
+      job_posting_fixture(company, %{salary_min: 80_000, salary_max: 100_000})
+      job_posting_fixture(company, %{salary_min: 120_000, salary_max: 150_000})
+
+      assert JobPostings.count_job_postings(%{salary_min: 75_000}) == 2
+      assert JobPostings.count_job_postings(%{salary_min: 90_000}) == 2
+      assert JobPostings.count_job_postings(%{salary_min: 125_000}) == 1
+
+      assert JobPostings.count_job_postings(%{salary_max: 45_000}) == 1
+      assert JobPostings.count_job_postings(%{salary_max: 75_000}) == 2
+      assert JobPostings.count_job_postings(%{salary_max: 125_000}) == 4
+    end
+
+    test "can count job_postings by multiple filters" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting_fixture(company, %{
+        title: "Remote Healthcare Developer",
+        employment_type: "Temporary Assignment",
+        remote_allowed: true,
+        salary_min: 80_000,
+        salary_max: 120_000
+      })
+
+      job_posting_fixture(company, %{
+        title: "On-site Developer",
+        employment_type: "Permanent Position",
+        remote_allowed: false,
+        salary_min: 60_000,
+        salary_max: 90_000
+      })
+
+      assert JobPostings.count_job_postings(%{
+               search: "Healthcare",
+               employment_type: "Temporary Assignment",
+               remote_allowed: true
+             }) == 1
+
+      assert JobPostings.count_job_postings(%{
+               employment_type: "Permanent Position",
+               remote_allowed: false
+             }) == 1
+
+      assert JobPostings.count_job_postings(%{
+               salary_min: 75_000,
+               employment_type: "Temporary Assignment"
+             }) == 1
+    end
+
+    test "count matches list_job_postings results", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      create_multiple_job_postings(company, 25)
+
+      filters = %{company_id: company.id}
+      job_list = JobPostings.list_job_postings(filters, 100)
+      job_count = JobPostings.count_job_postings(filters)
+
+      assert length(job_list) == job_count
+      assert job_count == 25
     end
   end
 
@@ -753,6 +885,73 @@ defmodule BemedaPersonal.JobPostingsTest do
       changeset = JobPostings.change_job_posting(job_posting, @invalid_attrs)
       assert %Ecto.Changeset{valid?: false} = changeset
       assert errors_on(changeset)[:title] == ["can't be blank"]
+    end
+  end
+
+  describe "JobPosting.changeset/2 validations" do
+    test "validates title length" do
+      changeset_1 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "abc",
+          description: "Valid description that is long enough"
+        })
+
+      refute changeset_1.valid?
+      assert "should be at least 5 character(s)" in errors_on(changeset_1).title
+
+      long_title = String.duplicate("a", 260)
+
+      changeset_2 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: long_title,
+          description: "Valid description that is long enough"
+        })
+
+      refute changeset_2.valid?
+      assert "should be at most 255 character(s)" in errors_on(changeset_2).title
+    end
+
+    test "validates description length" do
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{title: "Valid Title", description: "short"})
+
+      refute changeset.valid?
+      assert "should be at least 10 character(s)" in errors_on(changeset).description
+    end
+
+    test "validates salary range" do
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: "Valid description that is long enough",
+          salary_min: 100_000,
+          salary_max: 50_000
+        })
+
+      refute changeset.valid?
+      assert "must be less than or equal to salary maximum" in errors_on(changeset).salary_min
+    end
+
+    test "validates salary numbers are non-negative" do
+      changeset_1 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: "Valid description that is long enough",
+          salary_min: -1000
+        })
+
+      refute changeset_1.valid?
+      assert "must be greater than or equal to 0" in errors_on(changeset_1).salary_min
+
+      changeset_2 =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: "Valid description that is long enough",
+          salary_max: -5000
+        })
+
+      refute changeset_2.valid?
+      assert "must be greater than or equal to 0" in errors_on(changeset_2).salary_max
     end
   end
 end

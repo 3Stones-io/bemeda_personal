@@ -5,6 +5,7 @@ defmodule BemedaPersonal.JobPostings do
 
   alias BemedaPersonal.JobPostings.JobPostings
 
+  defdelegate count_job_postings(filters \\ %{}), to: JobPostings
   defdelegate list_job_postings(filters \\ %{}, limit \\ 10), to: JobPostings
   defdelegate get_job_posting!(id), to: JobPostings
   defdelegate create_job_posting(company, attrs \\ %{}), to: JobPostings

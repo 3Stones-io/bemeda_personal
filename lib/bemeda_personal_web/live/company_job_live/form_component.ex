@@ -98,7 +98,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
           <.input
             field={f[:shift_type]}
             type="multi-select"
-            label="Shift Type"
+            label={dgettext("jobs", "Shift Type")}
             options={get_translated_options(:shift_type)}
             phx-debounce="blur"
           />
