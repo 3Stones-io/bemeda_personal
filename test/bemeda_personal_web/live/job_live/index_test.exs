@@ -71,8 +71,8 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
       assert html =~ job3.title
     end
 
-    test "filters by job title", %{conn: conn, job1: job1, job2: job2, job3: job3} do
-      {:ok, view, _html} = live(conn, ~p"/jobs?title=Software")
+    test "filters by job search", %{conn: conn, job1: job1, job2: job2, job3: job3} do
+      {:ok, view, _html} = live(conn, ~p"/jobs?search=Software")
 
       html = render(view)
       assert html =~ job1.title

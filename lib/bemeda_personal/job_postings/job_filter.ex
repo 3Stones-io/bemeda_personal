@@ -26,8 +26,8 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     field :remote_allowed, :boolean
     field :salary_max, :integer
     field :salary_min, :integer
+    field :search, :string
     field :shift_type, {:array, Ecto.Enum}, values: Enums.shift_types()
-    field :title, :string
     field :workload, {:array, Ecto.Enum}, values: Enums.workloads()
     field :years_of_experience, Ecto.Enum, values: Enums.years_of_experience()
   end
@@ -46,8 +46,8 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     :remote_allowed,
     :salary_max,
     :salary_min,
+    :search,
     :shift_type,
-    :title,
     :workload,
     :years_of_experience
   ]
@@ -75,5 +75,9 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
   @spec to_params(changeset()) :: map()
   def to_params(%Ecto.Changeset{valid?: true} = changeset) do
     FilterUtils.changeset_to_params(changeset)
+  end
+
+  def to_params(%Ecto.Changeset{valid?: false}) do
+    %{}
   end
 end

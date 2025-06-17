@@ -1573,3 +1573,18 @@ msgstr "Schichttyp"
 #, elixir-autogen, elixir-format
 msgid "Work Environment"
 msgstr "Arbeitsumgebung"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Search Jobs"
+msgstr "Jobs durchsuchen"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Search across job titles and descriptions using keywords"
+msgstr "Durchsuchen Sie Stellentitel, Beschreibungen und Standorte mit Stichwörtern"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Search in job titles and descriptions..."
+msgstr "Suche in Titeln, Beschreibungen und Standorten..."

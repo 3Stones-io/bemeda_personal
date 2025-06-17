@@ -1,7 +1,6 @@
 defmodule BemedaPersonal.JobPostings.JobFilterTest do
   use BemedaPersonal.DataCase, async: true
 
-  alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonal.JobPostings.JobFilter
 
   describe "changeset/2" do
@@ -11,7 +10,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
         experience_level: "Senior",
         location: "New York",
         remote_allowed: "true",
-        title: "Developer"
+        search: "Healthcare Jobs"
       }
 
       changeset = JobFilter.changeset(%JobFilter{}, valid_attrs)
@@ -196,6 +195,24 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       assert "must be less than or equal to salary maximum" in errors_on(invalid_changeset).salary_min
     end
 
+    test "validates search field for any string value" do
+      valid_changeset = JobFilter.changeset(%JobFilter{}, %{search: "nurse intensive care"})
+      assert valid_changeset.valid?
+
+      empty_changeset = JobFilter.changeset(%JobFilter{}, %{search: ""})
+      assert empty_changeset.valid?
+
+      nil_changeset = JobFilter.changeset(%JobFilter{}, %{search: nil})
+      assert nil_changeset.valid?
+
+      long_search_changeset =
+        JobFilter.changeset(%JobFilter{}, %{
+          search: "a very long search term with multiple keywords and phrases"
+        })
+
+      assert long_search_changeset.valid?
+    end
+
     test "treats empty values as valid" do
       changeset =
         JobFilter.changeset(%JobFilter{}, %{
@@ -211,8 +228,8 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
           remote_allowed: "",
           salary_max: nil,
           salary_min: nil,
+          search: "",
           shift_type: [],
-          title: "",
           workload: [],
           years_of_experience: ""
         })
@@ -228,7 +245,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
         experience_level: :Senior,
         location: "New York",
         remote_allowed: true,
-        title: "Developer"
+        search: "Software Developer"
       }
 
       changeset = JobFilter.changeset(filter, %{})
@@ -238,7 +255,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       assert params[:experience_level] == :Senior
       assert params[:location] == "New York"
       assert params[:remote_allowed] == true
-      assert params[:title] == "Developer"
+      assert params[:search] == "Software Developer"
     end
 
     test "converts remote_allowed from string to boolean" do
@@ -289,12 +306,26 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       assert params[:salary_max] == 100_000
     end
 
+    test "handles search field correctly" do
+      changeset = JobFilter.changeset(%JobFilter{}, %{search: "nurse intensive care"})
+      params = JobFilter.to_params(changeset)
+      assert params[:search] == "nurse intensive care"
+
+      empty_changeset = JobFilter.changeset(%JobFilter{}, %{search: ""})
+      empty_params = JobFilter.to_params(empty_changeset)
+      refute Map.has_key?(empty_params, :search)
+
+      nil_changeset = JobFilter.changeset(%JobFilter{}, %{search: nil})
+      nil_params = JobFilter.to_params(nil_changeset)
+      refute Map.has_key?(nil_params, :search)
+    end
+
     test "excludes empty values from filters" do
-      filter = %JobFilter{location: "New York", remote_allowed: "", title: ""}
+      filter = %JobFilter{location: "New York", remote_allowed: "", search: ""}
       changeset = JobFilter.changeset(filter, %{})
       params = JobFilter.to_params(changeset)
 
-      refute Map.has_key?(params, :title)
+      refute Map.has_key?(params, :search)
       assert params[:location] == "New York"
       refute Map.has_key?(params, :remote_allowed)
     end
@@ -325,7 +356,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
         remote_allowed: true,
         salary_max: 100_000,
         salary_min: nil,
-        title: "Developer"
+        search: "Developer"
       }
 
       changeset = JobFilter.changeset(filter, %{})
@@ -338,7 +369,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       assert params[:remote_allowed] == true
       refute Map.has_key?(params, :salary_min)
       assert params[:salary_max] == 100_000
-      assert params[:title] == "Developer"
+      assert params[:search] == "Developer"
     end
 
     test "converts values correctly after applying changeset" do
@@ -350,7 +381,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
           profession: "Registered Nurse (AKP / DN II / HF / FH)",
           remote_allowed: "true",
           salary_min: 75_000,
-          title: "Engineer"
+          search: "Software Engineer"
         })
 
       params = JobFilter.to_params(changeset)
@@ -361,7 +392,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       assert params[:profession] == :"Registered Nurse (AKP / DN II / HF / FH)"
       assert params[:remote_allowed] == true
       assert params[:salary_min] == 75_000
-      assert params[:title] == "Engineer"
+      assert params[:search] == "Software Engineer"
     end
   end
 end

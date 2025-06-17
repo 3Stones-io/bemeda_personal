@@ -353,17 +353,23 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 <h3 class="text-sm font-medium text-gray-900">{dgettext("jobs", "Basic Search")}</h3>
               </div>
               <div class="p-4">
-                <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <div>
-                    <.input
-                      field={f[:title]}
-                      label={dgettext("jobs", "Job Title")}
-                      type="text"
-                      placeholder={dgettext("jobs", "Search by job title")}
-                      class="w-full"
-                    />
-                  </div>
+                <div class="mb-6">
+                  <.input
+                    field={f[:search]}
+                    label={dgettext("jobs", "Search Jobs")}
+                    type="text"
+                    placeholder={dgettext("jobs", "Search in job titles and descriptions...")}
+                    class="w-full text-lg py-3"
+                  />
+                  <p class="mt-1 text-sm text-gray-500">
+                    {dgettext(
+                      "jobs",
+                      "Search across job titles and descriptions using keywords"
+                    )}
+                  </p>
+                </div>
 
+                <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
                   <div>
                     <.input
                       field={f[:location]}

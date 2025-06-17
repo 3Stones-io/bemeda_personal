@@ -371,13 +371,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       }
     end
 
-    test "filters jobs by title", %{
+    test "filters jobs by search", %{
       conn: conn,
       onsite_job: onsite_job,
       remote_job: remote_job,
       another_job: another_job
     } do
-      {:ok, view, _html} = live(conn, ~p"/company/jobs?title=Developer")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs?search=Developer")
 
       html = render(view)
       assert html =~ onsite_job.title
@@ -418,7 +418,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       onsite_job: onsite_job,
       remote_job: remote_job
     } do
-      {:ok, view, _html} = live(conn, ~p"/company/jobs?title=Developer")
+      {:ok, view, _html} = live(conn, ~p"/company/jobs?search=Developer")
 
       html = render(view)
       assert html =~ onsite_job.title

@@ -1573,3 +1573,18 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Work Environment"
 msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Search Jobs"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Search across job titles and descriptions using keywords"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Search in job titles and descriptions..."
+msgstr ""

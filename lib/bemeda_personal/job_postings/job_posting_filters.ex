@@ -25,7 +25,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFilters do
       position: &QueryBuilder.exact_match_filter(:position, &1),
       profession: &QueryBuilder.exact_match_filter(:profession, &1),
       remote_allowed: &QueryBuilder.boolean_filter(:remote_allowed, &1),
-      title: &QueryBuilder.ilike_filter(:title, &1),
+      search: &full_text_search_filter/1,
       years_of_experience: &QueryBuilder.exact_match_filter(:years_of_experience, &1)
     }
   end
@@ -87,4 +87,32 @@ defmodule BemedaPersonal.JobPostings.JobPostingFilters do
       dynamic([{^alias, entity}], ^dynamic and field(entity, :inserted_at) < ^inserted_at)
     end
   end
+
+  defp full_text_search_filter(search_term) when is_binary(search_term) and search_term != "" do
+    cleaned_term =
+      search_term
+      |> String.trim()
+      |> String.downcase()
+
+    search_query = cleaned_term
+
+    ilike_pattern = "%#{cleaned_term}%"
+
+    fn _value, dynamic, alias ->
+      dynamic(
+        [{^alias, entity}],
+        ^dynamic and
+          (fragment(
+             "to_tsvector('english', coalesce(?, '') || ' ' || coalesce(?, '')) @@ plainto_tsquery('english', ?)",
+             field(entity, :title),
+             field(entity, :description),
+             ^search_query
+           ) or
+             ilike(field(entity, :title), ^ilike_pattern) or
+             ilike(field(entity, :description), ^ilike_pattern))
+      )
+    end
+  end
+
+  defp full_text_search_filter(_search_term), do: fn _value, dynamic, _alias -> dynamic end
 end

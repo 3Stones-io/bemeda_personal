@@ -141,11 +141,11 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       assert html =~ "Junior Developer"
     end
 
-    test "filters jobs by title", %{conn: conn, company: company} do
+    test "filters jobs by search", %{conn: conn, company: company} do
       {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       view
-      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{title: "Senior"}})
+      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{search: "Senior"}})
       |> render_submit()
 
       html = render(view)
@@ -181,7 +181,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
     end
 
     test "loads filters from URL parameters", %{conn: conn, company: company} do
-      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs?title=Senior")
+      {:ok, _view, html} = live(conn, ~p"/companies/#{company.id}/jobs?search=Senior")
 
       assert html =~ "Senior Software Engineer"
       refute html =~ "Junior Developer"
@@ -191,7 +191,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       {:ok, view, _html} = live(conn, ~p"/companies/#{company.id}/jobs")
 
       view
-      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{title: "Senior"}})
+      |> form("form[phx-submit=filter_jobs]", %{job_filter: %{search: "Senior"}})
       |> render_submit()
 
       filtered_html = render(view)

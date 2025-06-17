@@ -73,14 +73,14 @@ defmodule BemedaPersonal.JobPostingsTest do
       assert [] = JobPostings.list_job_postings(%{company_id: company.id})
     end
 
-    test "can filter job_postings by title" do
+    test "can search for job_postings by title and description" do
       user = user_fixture()
       company = company_fixture(user)
 
       job_posting1 = job_posting_fixture(company, %{title: "Software Engineer"})
       job_posting_fixture(company, %{title: "Product Manager"})
 
-      assert [result] = JobPostings.list_job_postings(%{title: "Engineer"})
+      assert [result] = JobPostings.list_job_postings(%{search: "Engineer"})
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
     end
@@ -198,7 +198,7 @@ defmodule BemedaPersonal.JobPostingsTest do
                JobPostings.list_job_postings(%{
                  remote_allowed: true,
                  salary_range: [75_000, 125_000],
-                 title: "Engineer"
+                 search: "Engineer"
                })
 
       assert result.id == job_posting1.id
@@ -221,7 +221,7 @@ defmodule BemedaPersonal.JobPostingsTest do
                JobPostings.list_job_postings(%{
                  remote_allowed: false,
                  salary_min: 100_000,
-                 title: "Engineer"
+                 search: "Engineer"
                })
     end
 

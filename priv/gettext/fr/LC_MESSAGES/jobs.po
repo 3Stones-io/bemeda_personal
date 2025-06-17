@@ -1573,3 +1573,18 @@ msgstr "Type d'Équipe"
 #, elixir-autogen, elixir-format
 msgid "Work Environment"
 msgstr "Environnement de Travail"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format
+msgid "Search Jobs"
+msgstr "Rechercher des Emplois"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Search across job titles and descriptions using keywords"
+msgstr "Recherchez dans les titres d'emploi, descriptions et lieux avec des mots-clés"
+
+#: lib/bemeda_personal_web/components/jobs_components.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Search in job titles and descriptions..."
+msgstr "Recherche dans les titres, descriptions et lieux..."
