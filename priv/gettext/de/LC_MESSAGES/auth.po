@@ -21,11 +21,6 @@ msgstr "Ein Link zur Bestätigung Ihrer E-Mail-Änderung wurde an die neue Adres
 msgid "Account Settings"
 msgstr "Kontoeinstellungen"
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Account created successfully!"
-msgstr "Konto erfolgreich erstellt!"
-
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Already registered?"
@@ -193,11 +188,6 @@ msgstr "Passwort"
 msgid "Password reset successfully."
 msgstr "Passwort erfolgreich zurückgesetzt."
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Password updated successfully!"
-msgstr "Passwort erfolgreich aktualisiert!"
-
 #: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
 #: lib/bemeda_personal_web/live/user_confirmation_live.ex
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
@@ -266,11 +256,6 @@ msgstr "Wir senden einen neuen Bestätigungslink an Ihren Posteingang"
 #, elixir-autogen, elixir-format
 msgid "We'll send a password reset link to your inbox"
 msgstr "Wir senden einen Passwort-Zurücksetzungslink an Ihren Posteingang"
-
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Welcome back!"
-msgstr "Willkommen zurück!"
 
 #: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
 #, elixir-autogen, elixir-format
@@ -381,3 +366,18 @@ msgstr "Weiter"
 #, elixir-autogen, elixir-format
 msgid "Processing..."
 msgstr "Wird verarbeitet..."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Account created successfully!"
+msgstr "Konto erfolgreich erstellt!"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr "Passwort erfolgreich aktualisiert!"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
+msgstr "Willkommen zurück!"

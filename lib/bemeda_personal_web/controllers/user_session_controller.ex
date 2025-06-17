@@ -9,20 +9,24 @@ defmodule BemedaPersonalWeb.UserSessionController do
 
   @spec create(conn(), params()) :: conn()
   def create(conn, %{"_action" => "registered"} = params) do
-    create(conn, params, dgettext("auth", "Account created successfully!"))
+    create(conn, params, &account_created_message/0)
   end
 
   def create(conn, %{"_action" => "password_updated"} = params) do
     conn
     |> put_session(:user_return_to, ~p"/users/settings")
-    |> create(params, dgettext("auth", "Password updated successfully!"))
+    |> create(params, &password_updated_message/0)
   end
 
   def create(conn, params) do
-    create(conn, params, dgettext("auth", "Welcome back!"))
+    create(conn, params, &welcome_back_message/0)
   end
 
-  defp create(conn, %{"user" => user_params}, info) do
+  defp welcome_back_message, do: dgettext("auth", "Welcome back!")
+  defp account_created_message, do: dgettext("auth", "Account created successfully!")
+  defp password_updated_message, do: dgettext("auth", "Password updated successfully!")
+
+  defp create(conn, %{"user" => user_params}, message_func) do
     %{"email" => email, "password" => password} = user_params
 
     case Accounts.get_user_by_email_and_password(email, password) do
@@ -39,8 +43,14 @@ defmodule BemedaPersonalWeb.UserSessionController do
         |> redirect(to: ~p"/users/log_in")
 
       user ->
+        user_locale = Atom.to_string(user.locale)
+        Gettext.put_locale(BemedaPersonalWeb.Gettext, user_locale)
+
+        translated_message = message_func.()
+
         conn
-        |> put_flash(:info, info)
+        |> put_session(:locale, user_locale)
+        |> put_flash(:info, translated_message)
         |> UserAuth.log_in_user(user, user_params)
     end
   end

@@ -75,9 +75,12 @@ defmodule BemedaPersonalWeb.UserAuth do
   defp renew_session(conn) do
     delete_csrf_token()
 
+    current_locale = get_session(conn, :locale)
+
     conn
     |> configure_session(renew: true)
     |> clear_session()
+    |> put_session(:locale, current_locale)
   end
 
   @doc """

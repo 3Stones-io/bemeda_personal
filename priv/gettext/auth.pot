@@ -21,11 +21,6 @@ msgstr ""
 msgid "Account Settings"
 msgstr ""
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Account created successfully!"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Already registered?"
@@ -193,11 +188,6 @@ msgstr ""
 msgid "Password reset successfully."
 msgstr ""
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Password updated successfully!"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
 #: lib/bemeda_personal_web/live/user_confirmation_live.ex
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
@@ -265,11 +255,6 @@ msgstr ""
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
 #, elixir-autogen, elixir-format
 msgid "We'll send a password reset link to your inbox"
-msgstr ""
-
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Welcome back!"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
@@ -380,4 +365,19 @@ msgstr ""
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Processing..."
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Account created successfully!"
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
 msgstr ""
