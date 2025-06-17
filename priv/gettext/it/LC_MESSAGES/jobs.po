@@ -1588,3 +1588,13 @@ msgstr "Cerca nei titoli di lavoro, descrizioni e località utilizzando parole c
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Search in job titles and descriptions..."
 msgstr "Cerca in titoli, descrizioni e località..."
+
+#: lib/bemeda_personal_web/live/job_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "%{count} jobs found"
+msgstr "%{count} lavori trovati"
+
+#: lib/bemeda_personal_web/live/job_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "1 job found"
+msgstr "1 lavoro trovato"

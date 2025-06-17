@@ -18,6 +18,17 @@ defmodule BemedaPersonalWeb.JobListComponent do
       />
 
       <div
+        :if={@total_count > 0}
+        class="border-t border-gray-200 group-has-[#empty-job-postings.hidden]:border-0 bg-gray-50 px-4 py-3 text-sm text-gray-600"
+      >
+        <p class="text-gray-700 font-medium">
+          {if @total_count == 1,
+            do: dgettext("jobs", "1 job found"),
+            else: dgettext("jobs", "%{count} jobs found", count: @total_count)}
+        </p>
+      </div>
+
+      <div
         class="border-t border-gray-200 group-has-[#empty-job-postings.hidden]:border-0"
         id={@id}
         phx-update="stream"
@@ -56,6 +67,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
      socket
      |> assign(:end_of_timeline?, false)
      |> assign(:filters_form, %JobFilter{})
+     |> assign(:total_count, 0)
      |> stream(:job_postings, [], dom_id: &"job_postings-#{&1.id}")}
   end
 
@@ -128,6 +140,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
 
   defp assign_jobs(socket) do
     jobs = JobPostings.list_job_postings(socket.assigns.filters)
+    total_count = JobPostings.count_job_postings(socket.assigns.filters)
 
     first_job = List.first(jobs)
     last_job = List.last(jobs)
@@ -136,6 +149,7 @@ defmodule BemedaPersonalWeb.JobListComponent do
     |> Phoenix.LiveView.stream(:job_postings, jobs, reset: true, limit: 10)
     |> assign(:first_job, first_job)
     |> assign(:last_job, last_job)
+    |> assign(:total_count, total_count)
   end
 
   defp maybe_insert_jobs(socket, filters, first_or_last_job, opts \\ [])

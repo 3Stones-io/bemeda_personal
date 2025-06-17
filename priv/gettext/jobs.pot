@@ -1588,3 +1588,13 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Search in job titles and descriptions..."
 msgstr ""
+
+#: lib/bemeda_personal_web/live/job_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "%{count} jobs found"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_list_component.ex
+#, elixir-autogen, elixir-format
+msgid "1 job found"
+msgstr ""

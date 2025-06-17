@@ -337,6 +337,138 @@ defmodule BemedaPersonal.JobPostingsTest do
     end
   end
 
+  describe "count_job_postings/1" do
+    setup :create_job_posting
+
+    test "returns count of all job_postings when no filter is passed", %{
+      job_posting: _job_posting
+    } do
+      assert JobPostings.count_job_postings() == 1
+      assert JobPostings.count_job_postings(%{}) == 1
+    end
+
+    test "can count job_postings by company_id", %{job_posting: job_posting} do
+      user = user_fixture()
+      other_company = company_fixture(user)
+      job_posting_fixture(other_company)
+
+      assert JobPostings.count_job_postings(%{company_id: job_posting.company_id}) == 1
+      assert JobPostings.count_job_postings(%{company_id: other_company.id}) == 1
+      assert JobPostings.count_job_postings() == 2
+    end
+
+    test "returns zero when a company has no job_postings" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      assert JobPostings.count_job_postings(%{company_id: company.id}) == 0
+    end
+
+    test "can count job_postings with search filter", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting_fixture(company, %{
+        title: "Healthcare Developer",
+        description: "Medical software development role"
+      })
+
+      assert JobPostings.count_job_postings() == 2
+
+      assert JobPostings.count_job_postings(%{search: "Healthcare"}) == 1
+      assert JobPostings.count_job_postings(%{search: "Developer"}) == 1
+      assert JobPostings.count_job_postings(%{search: "nonexistent"}) == 0
+    end
+
+    test "can count job_postings by employment_type", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting_fixture(company, %{employment_type: "Temporary Assignment"})
+
+      assert JobPostings.count_job_postings(%{employment_type: "Permanent Position"}) == 1
+      assert JobPostings.count_job_postings(%{employment_type: "Temporary Assignment"}) == 1
+      assert JobPostings.count_job_postings() == 2
+    end
+
+    test "can count job_postings by remote_allowed", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting_fixture(company, %{remote_allowed: false})
+
+      assert JobPostings.count_job_postings(%{remote_allowed: true}) == 1
+      assert JobPostings.count_job_postings(%{remote_allowed: false}) == 1
+      assert JobPostings.count_job_postings() == 2
+    end
+
+    test "can count job_postings by salary range" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting_fixture(company, %{salary_min: 50_000, salary_max: 70_000})
+      job_posting_fixture(company, %{salary_min: 80_000, salary_max: 100_000})
+      job_posting_fixture(company, %{salary_min: 120_000, salary_max: 150_000})
+
+      assert JobPostings.count_job_postings(%{salary_min: 75_000}) == 2
+      assert JobPostings.count_job_postings(%{salary_min: 90_000}) == 2
+      assert JobPostings.count_job_postings(%{salary_min: 125_000}) == 1
+
+      assert JobPostings.count_job_postings(%{salary_max: 45_000}) == 1
+      assert JobPostings.count_job_postings(%{salary_max: 75_000}) == 2
+      assert JobPostings.count_job_postings(%{salary_max: 125_000}) == 4
+    end
+
+    test "can count job_postings by multiple filters" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      job_posting_fixture(company, %{
+        title: "Remote Healthcare Developer",
+        employment_type: "Temporary Assignment",
+        remote_allowed: true,
+        salary_min: 80_000,
+        salary_max: 120_000
+      })
+
+      job_posting_fixture(company, %{
+        title: "On-site Developer",
+        employment_type: "Permanent Position",
+        remote_allowed: false,
+        salary_min: 60_000,
+        salary_max: 90_000
+      })
+
+      assert JobPostings.count_job_postings(%{
+               search: "Healthcare",
+               employment_type: "Temporary Assignment",
+               remote_allowed: true
+             }) == 1
+
+      assert JobPostings.count_job_postings(%{
+               employment_type: "Permanent Position",
+               remote_allowed: false
+             }) == 1
+
+      assert JobPostings.count_job_postings(%{
+               salary_min: 75_000,
+               employment_type: "Temporary Assignment"
+             }) == 1
+    end
+
+    test "count matches list_job_postings results", %{job_posting: _job_posting} do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      create_multiple_job_postings(company, 25)
+
+      filters = %{company_id: company.id}
+      job_list = JobPostings.list_job_postings(filters, 100)
+      job_count = JobPostings.count_job_postings(filters)
+
+      assert length(job_list) == job_count
+      assert job_count == 25
+    end
+  end
+
   describe "get_job_posting!/1" do
     setup :create_job_posting
 

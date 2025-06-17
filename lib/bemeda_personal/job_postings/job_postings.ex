@@ -250,6 +250,32 @@ defmodule BemedaPersonal.JobPostings.JobPostings do
     |> Repo.one()
   end
 
+  @doc """
+  Returns the count of job postings matching the given filters.
+
+  ## Examples
+
+      iex> count_job_postings()
+      10
+
+      iex> count_job_postings(%{company_id: company_id})
+      5
+
+      iex> count_job_postings(%{salary_range: [50000, 100_000]})
+      3
+
+      iex> count_job_postings(%{title: "Engineer", remote_allowed: true})
+      2
+
+  """
+  @spec count_job_postings(map()) :: non_neg_integer()
+  def count_job_postings(filters \\ %{}) do
+    from(job_posting in JobPosting, as: :job_posting)
+    |> QueryBuilder.apply_filters(filters, JobPostingFilters.filter_config())
+    |> select([j], count(j.id))
+    |> Repo.one()
+  end
+
   defp broadcast_event(topic, event, message) do
     Endpoint.broadcast(
       topic,
