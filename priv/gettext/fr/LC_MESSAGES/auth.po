@@ -21,11 +21,6 @@ msgstr "Un lien pour confirmer votre changement d'email a été envoyé à la no
 msgid "Account Settings"
 msgstr "Paramètres du compte"
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Account created successfully!"
-msgstr "Compte créé avec succès !"
-
 #: lib/bemeda_personal_web/live/user_registration_live.ex
 #, elixir-autogen, elixir-format
 msgid "Already registered?"
@@ -193,11 +188,6 @@ msgstr "Mot de passe"
 msgid "Password reset successfully."
 msgstr "Mot de passe réinitialisé avec succès."
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Password updated successfully!"
-msgstr "Mot de passe mis à jour avec succès !"
-
 #: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
 #: lib/bemeda_personal_web/live/user_confirmation_live.ex
 #: lib/bemeda_personal_web/live/user_forgot_password_live.ex
@@ -266,11 +256,6 @@ msgstr "Nous enverrons un nouveau lien de confirmation dans votre boîte de réc
 #, elixir-autogen, elixir-format
 msgid "We'll send a password reset link to your inbox"
 msgstr "Nous enverrons un lien de réinitialisation du mot de passe dans votre boîte de réception"
-
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Welcome back!"
-msgstr "Bon retour !"
 
 #: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
 #, elixir-autogen, elixir-format
@@ -381,3 +366,18 @@ msgstr "Continuer"
 #, elixir-autogen, elixir-format
 msgid "Processing..."
 msgstr "Traitement en cours..."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Account created successfully!"
+msgstr "Compte créé avec succès !"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr "Mot de passe mis à jour avec succès !"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
+msgstr "Bon retour !"
