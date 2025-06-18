@@ -19,7 +19,7 @@ servers:
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
 proxy:
   ssl: true
-  host: bemeda-personal.optimum.ba
+  host: bemeda-personal.ch
   # Proxy connects to your container on port 80 by default.
   app_port: 4256
   healthcheck:
@@ -46,7 +46,7 @@ builder:
 #
 env:
   clear:
-    PHX_HOST: bemeda-personal.optimum.ba
+    PHX_HOST: bemeda-personal.ch
     POOL_SIZE: 10
     PORT: 4256
   secret:
