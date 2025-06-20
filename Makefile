@@ -16,7 +16,7 @@ check_gettext:
 		echo '\nTo fix this:' && \
 		echo '1. Run "mix gettext.extract --merge" locally' && \
 		echo '2. Review and commit the changes' && \
-		echo '3. If new strings were added, use Cursor to translate them' && \
+		echo '3. If new strings were added, use Claude to translate them' && \
 		echo '4. Run "make show_missing_translations" to check for missing translations' && \
 		echo '5. Push the updates to your branch\n' && \
 		exit 1; \
@@ -31,7 +31,7 @@ check_translations:
 		echo ""; \
 		echo "To fix this:"; \
 		echo "1. Run 'make show_missing_translations' to see detailed missing translations"; \
-		echo "2. Use Cursor to translate the missing strings"; \
+		echo "2. Use Claude to translate the missing strings"; \
 		echo "3. Commit the updated translation files"; \
 		exit 1; \
 	else \
