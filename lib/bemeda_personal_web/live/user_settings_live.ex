@@ -77,6 +77,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
                   {gettext("Male"), :male},
                   {gettext("Female"), :female}
                 ]}
+                force_errors={@personal_info_form.source.action == :insert}
               />
 
               <.input
@@ -84,6 +85,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
                 type="text"
                 label={gettext("Street")}
                 required
+                force_errors={@personal_info_form.source.action == :insert}
               />
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -302,7 +304,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
         {:noreply, assign(socket, trigger_submit: true, password_form: password_form)}
 
       {:error, changeset} ->
-        {:noreply, assign(socket, password_form: to_form(changeset))}
+        {:noreply, assign(socket, password_form: to_form(Map.put(changeset, :action, :insert)))}
     end
   end
 
@@ -327,7 +329,8 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
          |> assign(:personal_info_form, to_form(Accounts.change_user_personal_info(updated_user)))}
 
       {:error, changeset} ->
-        {:noreply, assign(socket, :personal_info_form, to_form(changeset))}
+        {:noreply,
+         assign(socket, :personal_info_form, to_form(Map.put(changeset, :action, :insert)))}
     end
   end
 end

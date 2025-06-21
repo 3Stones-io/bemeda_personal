@@ -436,4 +436,132 @@ defmodule BemedaPersonalWeb.UserSettingsLiveTest do
       assert updated_html =~ "fill-current"
     end
   end
+
+  describe "Progressive validation behavior" do
+    setup %{conn: conn} do
+      user = user_fixture(%{confirmed: true})
+      %{conn: log_in_user(conn, user), user: user}
+    end
+
+    test "email form shows progressive then complete validation", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      # During editing - only show error for touched email field
+      result =
+        lv
+        |> element("#email_form")
+        |> render_change(%{
+          "action" => "update_email",
+          "user" => %{"email" => "invalid"}
+          # Note: not providing current_password yet
+        })
+
+      assert result =~ "must have the @ sign"
+      # current_password error should not show yet
+      refute result =~ "is not valid"
+
+      # After submission - show ALL errors
+      submit_result =
+        lv
+        |> element("#email_form")
+        |> render_submit(%{
+          "action" => "update_email",
+          "current_password" => "",
+          "user" => %{"email" => "invalid"}
+        })
+
+      # email error
+      assert submit_result =~ "must have the @ sign"
+      # current_password error now visible
+      assert submit_result =~ "is not valid"
+    end
+
+    test "personal info form shows progressive then complete validation", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      # During editing - only show error for touched field
+      result =
+        lv
+        |> element("#personal_info_form")
+        |> render_change(%{
+          "user" => %{"first_name" => ""}
+          # Note: not touching other required fields yet
+        })
+
+      # first_name error
+      assert result =~ "can&#39;t be blank"
+      # Other required fields should not show errors yet during editing
+
+      # After submission - show ALL errors for invalid fields
+      submit_result =
+        lv
+        |> element("#personal_info_form")
+        |> render_submit(%{
+          "user" => %{
+            # invalid
+            "first_name" => "",
+            # invalid
+            "last_name" => "",
+            # invalid
+            "street" => "",
+            # valid
+            "zip_code" => "12345",
+            # invalid
+            "city" => "",
+            # invalid
+            "country" => ""
+          }
+        })
+
+      # ALL required field errors should now be visible
+      # first_name
+      assert submit_result =~ "can&#39;t be blank"
+      # last_name
+      assert submit_result =~ "can&#39;t be blank"
+      # street
+      assert submit_result =~ "can&#39;t be blank"
+      # city
+      assert submit_result =~ "can&#39;t be blank"
+      # country
+      assert submit_result =~ "can&#39;t be blank"
+      # zip_code should not show error as it's valid
+    end
+
+    test "password form shows progressive then complete validation", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      # During editing - only show error for touched password field
+      result =
+        lv
+        |> element("#password_form")
+        |> render_change(%{
+          "user" => %{"password" => "short"}
+          # Note: not providing current_password or confirmation yet
+        })
+
+      # password error
+      assert result =~ "should be at least 12 character"
+      # current_password error should not show yet
+      refute result =~ "can&#39;t be blank"
+
+      # After submission - show ALL errors
+      submit_result =
+        lv
+        |> element("#password_form")
+        |> render_submit(%{
+          "current_password" => "",
+          "user" => %{
+            "password" => "short",
+            "password_confirmation" => "different"
+          }
+        })
+
+      # password error
+      assert submit_result =~ "should be at least 12 character"
+      # confirmation error
+      assert submit_result =~ "does not match password"
+      # current_password error now visible
+      assert submit_result =~ "is not valid"
+    end
+  end
 end

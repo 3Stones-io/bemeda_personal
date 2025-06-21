@@ -53,7 +53,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       action={~p"/users/log_in?_action=registered"}
       method="post"
     >
-      <.error :if={@check_errors}>
+      <.error :if={@form.errors != []}>
         {dgettext("auth", "Oops, something went wrong! Please check the errors below.")}
       </.error>
 
@@ -138,12 +138,36 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
     <h3 class="text-lg font-medium text-gray-900 mb-4">{gettext("Step 1: Basic Information")}</h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <.input field={@form[:first_name]} type="text" label={gettext("First Name")} required />
-      <.input field={@form[:last_name]} type="text" label={gettext("Last Name")} required />
+      <.input
+        field={@form[:first_name]}
+        type="text"
+        label={gettext("First Name")}
+        required
+        force_errors={@form.source.action == :insert}
+      />
+      <.input
+        field={@form[:last_name]}
+        type="text"
+        label={gettext("Last Name")}
+        required
+        force_errors={@form.source.action == :insert}
+      />
     </div>
 
-    <.input field={@form[:email]} type="email" label={gettext("Email")} required />
-    <.input field={@form[:password]} type="password" label={gettext("Password")} required />
+    <.input
+      field={@form[:email]}
+      type="email"
+      label={gettext("Email")}
+      required
+      force_errors={@form.source.action == :insert}
+    />
+    <.input
+      field={@form[:password]}
+      type="password"
+      label={gettext("Password")}
+      required
+      force_errors={@form.source.action == :insert}
+    />
     """
   end
 
@@ -163,16 +187,41 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
         {gettext("Male"), :male},
         {gettext("Female"), :female}
       ]}
+      force_errors={@form.source.action == :insert}
     />
 
-    <.input field={@form[:street]} type="text" label={gettext("Street")} required />
+    <.input
+      field={@form[:street]}
+      type="text"
+      label={gettext("Street")}
+      required
+      force_errors={@form.source.action == :insert}
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <.input field={@form[:zip_code]} type="text" label={gettext("ZIP Code")} required />
-      <.input field={@form[:city]} type="text" label={gettext("City")} required />
+      <.input
+        field={@form[:zip_code]}
+        type="text"
+        label={gettext("ZIP Code")}
+        required
+        force_errors={@form.source.action == :insert}
+      />
+      <.input
+        field={@form[:city]}
+        type="text"
+        label={gettext("City")}
+        required
+        force_errors={@form.source.action == :insert}
+      />
     </div>
 
-    <.input field={@form[:country]} type="text" label={gettext("Country")} required />
+    <.input
+      field={@form[:country]}
+      type="text"
+      label={gettext("Country")}
+      required
+      force_errors={@form.source.action == :insert}
+    />
     """
   end
 
@@ -182,7 +231,6 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
 
     socket =
       socket
-      |> assign(:check_errors, false)
       |> assign(:current_step, 1)
       |> assign(:form_data, %{})
       |> assign(:trigger_submit, false)
@@ -224,7 +272,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
     changeset =
       %User{}
       |> Accounts.change_user_registration(merged_params)
-      |> Map.put(:action, :validate)
+      |> Map.put(:action, :insert)
 
     step1_fields = [:email, :first_name, :last_name, :password]
 
@@ -234,14 +282,10 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       end)
 
     if step1_errors do
-      {:noreply,
-       socket
-       |> assign(:check_errors, true)
-       |> assign_form(changeset)}
+      {:noreply, assign_form(socket, changeset)}
     else
       {:noreply,
        socket
-       |> assign(:check_errors, false)
        |> assign(:current_step, 2)
        |> assign(:form_data, merged_params)
        |> assign_form(changeset)}
@@ -253,7 +297,6 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
 
     {:noreply,
      socket
-     |> assign(:check_errors, false)
      |> assign(:current_step, 1)
      |> assign_form(changeset)}
   end
@@ -285,10 +328,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
          |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply,
-         socket
-         |> assign(check_errors: true)
-         |> assign_form(changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
@@ -308,11 +348,6 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     form = to_form(changeset, as: "user")
-
-    if changeset.valid? do
-      assign(socket, form: form, check_errors: false)
-    else
-      assign(socket, form: form)
-    end
+    assign(socket, form: form)
   end
 end

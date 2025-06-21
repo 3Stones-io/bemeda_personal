@@ -319,4 +319,119 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       assert_patch(lv, ~p"/users/register/job_seeker")
     end
   end
+
+  describe "Progressive validation behavior" do
+    test "shows errors only for touched fields during editing", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      # User starts typing email - should show email errors only
+      result =
+        lv
+        |> element("#registration_form")
+        |> render_change(user: %{"email" => "invalid"})
+
+      assert result =~ "must have the @ sign and no spaces"
+      # No password error yet - check for absence of password-specific error message
+      refute result =~ "should be at least 12 character"
+
+      # User continues with empty password - still no password error until touched
+      change_result =
+        lv
+        |> element("#registration_form")
+        |> render_change(user: %{"email" => "invalid", "password" => ""})
+
+      assert change_result =~ "must have the @ sign and no spaces"
+      # Password not touched yet
+      refute change_result =~ "should be at least 12 character"
+    end
+
+    test "shows ALL field errors after form submission attempt", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      # Submit form with multiple invalid fields
+      result =
+        lv
+        |> element("#registration_form")
+        |> render_submit(
+          user: %{
+            "email" => "invalid",
+            "password" => "short",
+            "first_name" => "",
+            "last_name" => ""
+          }
+        )
+
+      # ALL field errors should now be visible
+      # email error
+      assert result =~ "must have the @ sign and no spaces"
+      # password error
+      assert result =~ "should be at least 12 character"
+      # first_name error
+      assert result =~ "can&#39;t be blank"
+      # last_name error
+      assert result =~ "can&#39;t be blank"
+
+      # Generic error should also be present
+      assert result =~ "Oops, something went wrong! Please check the errors below."
+    end
+
+    test "shows errors for invalid fields after submission, even if some fields are valid", %{
+      conn: conn
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      # Submit with mix of valid and invalid fields
+      result =
+        lv
+        |> element("#registration_form")
+        |> render_submit(
+          user: %{
+            # valid
+            "email" => "valid@example.com",
+            # invalid
+            "password" => "short",
+            # valid
+            "first_name" => "John",
+            # invalid
+            "last_name" => ""
+          }
+        )
+
+      # Should show errors for invalid fields only
+      # email is valid, no error
+      refute result =~ "must have the @ sign"
+      # password error
+      assert result =~ "should be at least 12 character"
+      # first_name is valid ("John"), should not show error
+      # last_name is invalid (""), should show error
+      # Since both use same error message, check count: should be exactly 1 "can't be blank" (for last_name only)
+      blank_error_count =
+        result
+        |> String.split("can&#39;t be blank")
+        |> length()
+        |> Kernel.-(1)
+
+      assert blank_error_count == 1
+    end
+
+    test "removes field error when field becomes valid during editing", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      # First make field invalid
+      result =
+        lv
+        |> element("#registration_form")
+        |> render_change(user: %{"email" => "invalid"})
+
+      assert result =~ "must have the @ sign"
+
+      # Then fix the field
+      fixed_result =
+        lv
+        |> element("#registration_form")
+        |> render_change(user: %{"email" => "valid@example.com"})
+
+      refute fixed_result =~ "must have the @ sign"
+    end
+  end
 end

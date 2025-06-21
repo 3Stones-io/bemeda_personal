@@ -297,6 +297,10 @@ defmodule BemedaPersonalWeb.CoreComponents do
   attr :nested_input?, :boolean, default: false, doc: "the nested input flag"
   attr :show_nested_input, :string, default: nil, doc: "the nested input flag"
 
+  attr :force_errors, :boolean,
+    default: false,
+    doc: "force showing errors regardless of field interaction"
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
@@ -304,7 +308,8 @@ defmodule BemedaPersonalWeb.CoreComponents do
   slot :nested_input, doc: "the slot for the nested input"
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+    force_errors = Map.get(assigns, :force_errors, false)
+    errors = if Phoenix.Component.used_input?(field) or force_errors, do: field.errors, else: []
 
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
