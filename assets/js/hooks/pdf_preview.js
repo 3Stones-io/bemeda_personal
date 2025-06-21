@@ -20,11 +20,45 @@ async function loadPdfJs() {
 
 export default PdfPreview = {
   mounted() {
+    this.initializeTranslations()
     this.generatePreview()
   },
 
   updated() {
     this.generatePreview()
+  },
+
+  initializeTranslations() {
+    this.translations = {
+      loadingText: this.el.dataset.loadingText || 'Loading PDF preview...',
+      previewUnavailable:
+        this.el.dataset.errorPreviewUnavailable || 'Preview unavailable',
+      detailsUnavailable:
+        this.el.dataset.errorDetailsUnavailable || 'Unable to load PDF preview',
+      invalidPdf: this.el.dataset.errorInvalidPdf || 'Invalid PDF file',
+      fileCorrupted:
+        this.el.dataset.errorFileCorrupted ||
+        'The file appears to be corrupted',
+      pdfNotFound: this.el.dataset.errorNotFound || 'PDF not found',
+      fileNotLoaded:
+        this.el.dataset.errorFileNotLoaded || 'The file could not be loaded',
+      loadingError: this.el.dataset.errorLoading || 'Loading error',
+      viewerUnavailable:
+        this.el.dataset.errorViewerUnavailable ||
+        'PDF viewer temporarily unavailable',
+      loadingTimeout: this.el.dataset.errorTimeout || 'Loading timeout',
+      timeoutDetails:
+        this.el.dataset.errorTimeoutDetails ||
+        'The PDF is taking too long to load',
+      serviceUnavailable:
+        this.el.dataset.errorServiceUnavailable || 'Service unavailable',
+      viewerNotLoaded:
+        this.el.dataset.errorViewerNotLoaded ||
+        'PDF viewer could not be loaded',
+      accessFileMessage:
+        this.el.dataset.accessFileMessage ||
+        'Use the download button below to access the file',
+    }
   },
 
   async generatePreview() {
@@ -34,8 +68,7 @@ export default PdfPreview = {
     if (!pdfUrl || !previewContainer) return
 
     try {
-      previewContainer.innerHTML =
-        '<div class="animate-pulse bg-gray-200 h-48 rounded flex items-center justify-center"><p class="text-gray-500 text-sm">Loading PDF preview...</p></div>'
+      previewContainer.innerHTML = `<div class="animate-pulse bg-gray-200 h-48 rounded flex items-center justify-center"><p class="text-gray-500 text-sm">${this.translations.loadingText}</p></div>`
 
       const pdfjs = await loadPdfJs()
 
@@ -74,27 +107,27 @@ export default PdfPreview = {
       console.error('PDF preview generation failed:', error)
 
       // Determine error message based on error type
-      let errorMessage = 'Preview unavailable'
-      let errorDetail = 'Unable to load PDF preview'
+      let errorMessage = this.translations.previewUnavailable
+      let errorDetail = this.translations.detailsUnavailable
 
       if (error.name === 'InvalidPDFException') {
-        errorMessage = 'Invalid PDF file'
-        errorDetail = 'The file appears to be corrupted'
+        errorMessage = this.translations.invalidPdf
+        errorDetail = this.translations.fileCorrupted
       } else if (
         error.name === 'MissingPDFException' ||
         error.message?.includes('404')
       ) {
-        errorMessage = 'PDF not found'
-        errorDetail = 'The file could not be loaded'
+        errorMessage = this.translations.pdfNotFound
+        errorDetail = this.translations.fileNotLoaded
       } else if (error.message?.includes('worker')) {
-        errorMessage = 'Loading error'
-        errorDetail = 'PDF viewer temporarily unavailable'
+        errorMessage = this.translations.loadingError
+        errorDetail = this.translations.viewerUnavailable
       } else if (error.message?.includes('timeout')) {
-        errorMessage = 'Loading timeout'
-        errorDetail = 'The PDF is taking too long to load'
+        errorMessage = this.translations.loadingTimeout
+        errorDetail = this.translations.timeoutDetails
       } else if (error.message?.includes('PDF viewer unavailable')) {
-        errorMessage = 'Service unavailable'
-        errorDetail = 'PDF viewer could not be loaded'
+        errorMessage = this.translations.serviceUnavailable
+        errorDetail = this.translations.viewerNotLoaded
       }
 
       previewContainer.innerHTML = `
@@ -105,7 +138,7 @@ export default PdfPreview = {
             </svg>
             <p class="mt-2 text-sm font-medium text-red-800">${errorMessage}</p>
             <p class="mt-1 text-xs text-red-600">${errorDetail}</p>
-            <p class="mt-2 text-xs text-gray-500">Use the download button below to access the file</p>
+            <p class="mt-2 text-xs text-gray-500">${this.translations.accessFileMessage}</p>
           </div>
         </div>
       `

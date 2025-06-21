@@ -91,3 +91,10 @@ msgstr "Dashboard Aziendale"
 #, elixir-autogen, elixir-format
 msgid "Create Company"
 msgstr "Crea Azienda"
+
+# Accessibility labels
+#: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
+#: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
+#, elixir-autogen
+msgid "Breadcrumb"
+msgstr "Breadcrumb"

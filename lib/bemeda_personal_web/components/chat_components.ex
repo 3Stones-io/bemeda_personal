@@ -284,10 +284,26 @@ defmodule BemedaPersonalWeb.ChatComponents do
       phx-hook="PdfPreview"
       data-pdf-url={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
       data-upload-id={@message.media_asset.upload_id}
+      data-loading-text={dgettext("general", "Loading PDF preview...")}
+      data-error-preview-unavailable={dgettext("general", "Preview unavailable")}
+      data-error-details-unavailable={dgettext("general", "Unable to load PDF preview")}
+      data-error-invalid-pdf={dgettext("general", "Invalid PDF file")}
+      data-error-file-corrupted={dgettext("general", "The file appears to be corrupted")}
+      data-error-not-found={dgettext("general", "PDF not found")}
+      data-error-file-not-loaded={dgettext("general", "The file could not be loaded")}
+      data-error-loading={dgettext("general", "Loading error")}
+      data-error-viewer-unavailable={dgettext("general", "PDF viewer temporarily unavailable")}
+      data-error-timeout={dgettext("general", "Loading timeout")}
+      data-error-timeout-details={dgettext("general", "The PDF is taking too long to load")}
+      data-error-service-unavailable={dgettext("general", "Service unavailable")}
+      data-error-viewer-not-loaded={dgettext("general", "PDF viewer could not be loaded")}
+      data-access-file-message={
+        dgettext("general", "Use the download button below to access the file")
+      }
     >
       <div class="pdf-preview-container">
         <div class="animate-pulse bg-gray-200 h-48 rounded-t-lg flex items-center justify-center">
-          <p class="text-gray-500 text-sm">Loading PDF preview...</p>
+          <p class="text-gray-500 text-sm">{dgettext("general", "Loading PDF preview...")}</p>
         </div>
       </div>
 
@@ -304,7 +320,10 @@ defmodule BemedaPersonalWeb.ChatComponents do
             phx-value-upload-id={@message.media_asset.upload_id}
             class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md font-medium transition-colors duration-200"
           >
-            <.icon name="hero-arrow-down-tray" class="w-4 h-4 mr-1" /> Download
+            <.icon name="hero-arrow-down-tray" class="w-4 h-4 mr-1" /> {dgettext(
+              "general",
+              "Download"
+            )}
           </button>
         </div>
       </div>

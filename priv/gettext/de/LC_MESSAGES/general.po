@@ -138,7 +138,92 @@ msgstr "Schreiben Sie eine Nachricht oder ziehen Sie eine Datei per Drag & Drop.
 msgid "Are you sure you want to delete this entry?"
 msgstr "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?"
 
+#: lib/bemeda_personal_web/components/chat_components.ex
 #: lib/bemeda_personal_web/components/shared_components.ex
 #, elixir-autogen, elixir-format
 msgid "Download"
 msgstr "Herunterladen"
+
+# UI interaction messages for JavaScript hooks
+msgid "Read More"
+msgstr "Mehr lesen"
+
+msgid "Read Less"
+msgstr "Weniger lesen"
+
+# File upload and PDF preview messages
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Loading PDF preview..."
+msgstr "PDF-Vorschau wird geladen..."
+
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Preview unavailable"
+msgstr "Vorschau nicht verfügbar"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Unable to load PDF preview"
+msgstr "PDF-Vorschau kann nicht geladen werden"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Invalid PDF file"
+msgstr "Ungültige PDF-Datei"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "The file appears to be corrupted"
+msgstr "Die Datei scheint beschädigt zu sein"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "PDF not found"
+msgstr "PDF nicht gefunden"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "The file could not be loaded"
+msgstr "Die Datei konnte nicht geladen werden"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Loading error"
+msgstr "Ladefehler"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "PDF viewer temporarily unavailable"
+msgstr "PDF-Viewer vorübergehend nicht verfügbar"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Loading timeout"
+msgstr "Ladezeit überschritten"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "The PDF is taking too long to load"
+msgstr "Das Laden der PDF-Datei dauert zu lange"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Service unavailable"
+msgstr "Service nicht verfügbar"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "PDF viewer could not be loaded"
+msgstr "PDF-Viewer konnte nicht geladen werden"
+
+msgid "An error has occurred, please try again"
+msgstr "Ein Fehler ist aufgetreten, bitte versuchen Sie es erneut"
+
+#: lib/bemeda_personal_web/components/chat_components.ex
+#, elixir-autogen
+msgid "Use the download button below to access the file"
+msgstr "Verwenden Sie die Download-Schaltfläche unten, um auf die Datei zuzugreifen"

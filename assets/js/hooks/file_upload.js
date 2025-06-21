@@ -2,7 +2,17 @@ import 'dragster'
 import * as UpChunk from '@mux/upchunk'
 
 export default FileUpload = {
+  initializeTranslations() {
+    this.translations = {
+      uploadError:
+        this.el.dataset.uploadErrorText ||
+        'An error has occurred, please try again',
+      completed: this.el.dataset.uploadCompletedText || 'Completed',
+    }
+  },
+
   mounted() {
+    this.initializeTranslations()
     const hook = this
     const fileUploadInput = hook.el
     const fileUploadInputsContainer = fileUploadInput.querySelector(
@@ -100,15 +110,14 @@ export default FileUpload = {
 
             progressBar.classList.remove('bg-indigo-600')
             progressBar.classList.add('bg-red-600')
-            percentageElement.textContent =
-              'An error has occurred, please try again'
+            percentageElement.textContent = hook.translations.uploadError
           })
 
           currentUpload.on('success', (_entry) => {
             progressBar.classList.remove('bg-blue-500')
             progressBar.classList.add('bg-green-600')
             progressBar.classList.remove('processing-bar')
-            percentageElement.textContent = 'Completed'
+            percentageElement.textContent = hook.translations.completed
 
             hook.pushEventTo(`#${eventsTarget}`, 'upload_completed')
           })
