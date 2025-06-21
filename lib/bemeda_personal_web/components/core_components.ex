@@ -468,21 +468,21 @@ defmodule BemedaPersonalWeb.CoreComponents do
     ~H"""
     <div>
       <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
-      <div class="mt-2 relative">
+      <div class="relative">
         <input
           type="date"
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value("date", @value)}
           class={[
-            "block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 pr-10",
+            "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 pr-10",
             @input_class,
             @errors == [] && "border-zinc-300 focus:border-zinc-400",
             @errors != [] && "border-rose-400 focus:border-rose-400"
           ]}
           {@rest}
         />
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none top-0">
           <.icon name="hero-calendar" class="h-5 w-5 text-gray-400" />
         </div>
       </div>

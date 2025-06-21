@@ -98,8 +98,9 @@ input[type='date'] {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding-right: 2.5rem !important; /* Space for our custom calendar icon */
   background-color: white;
+  line-height: 0.5rem !important; /* Force minimal line-height for Safari */
+  font-size: 0.875rem !important; /* Force same font-size as text inputs */
 }
 
 /* Remove the default calendar icon */
@@ -115,40 +116,30 @@ input[type='date']::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
-/* Add custom calendar icon using background image */
-input[type='date']::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: contain;
-  pointer-events: none;
-}
 
 /* Chrome, Safari, Edge - Date picker styles */
 ::-webkit-datetime-edit {
-  padding: 0.25rem 0;
+  padding: 0;
   color: #4b5563;
+  line-height: 1.5rem; /* Force consistent line height */
+  height: auto;
 }
 
 ::-webkit-datetime-edit-fields-wrapper {
   padding: 0;
+  height: auto;
+  line-height: 1.5rem;
 }
 
 ::-webkit-datetime-edit-text {
   color: #6b7280;
-  padding: 0 0.25rem;
+  padding: 0;
 }
 
 ::-webkit-datetime-edit-month-field,
 ::-webkit-datetime-edit-day-field,
 ::-webkit-datetime-edit-year-field {
-  padding: 0 0.25rem;
+  padding: 0;
   color: #1f2937;
 }
 
