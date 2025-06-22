@@ -295,14 +295,14 @@ defmodule BemedaPersonalWeb.CoreComponents do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
-  attr :label_class, :string, default: nil, doc: "the class for the label"
+
+  attr :label_class, :string,
+    default: "block text-sm font-semibold leading-6 text-zinc-800",
+    doc: "the class for the label"
+
   attr :input_class, :string, default: nil, doc: "the class for the input"
   attr :nested_input?, :boolean, default: false, doc: "the nested input flag"
   attr :show_nested_input, :string, default: nil, doc: "the nested input flag"
-
-  attr :force_errors, :boolean,
-    default: false,
-    doc: "force showing errors regardless of field interaction"
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
@@ -311,12 +311,18 @@ defmodule BemedaPersonalWeb.CoreComponents do
   slot :nested_input, doc: "the slot for the nested input"
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    force_errors = Map.get(assigns, :force_errors, false)
-    errors = if Phoenix.Component.used_input?(field) or force_errors, do: field.errors, else: []
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    label_class =
+      if(errors != [],
+        do: "block text-sm font-semibold leading-6 text-red-600",
+        else: assigns.label_class
+      )
 
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
     |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:label_class, label_class)
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
@@ -361,7 +367,11 @@ defmodule BemedaPersonalWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class={[
+          "mt-2 block w-full rounded-md border bg-white shadow-sm focus:ring-0 sm:text-sm",
+          @errors == [] && "border-gray-300 focus:border-zinc-400",
+          @errors != [] && "border-rose-400 focus:border-rose-400"
+        ]}
         multiple={@multiple}
         {@rest}
       >
@@ -501,9 +511,16 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
+    {required, rest} = Map.pop(assigns.rest, :required)
+
+    assigns =
+      assigns
+      |> assign(:required, required)
+      |> assign(:rest, rest)
+
     ~H"""
     <div>
-      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
+      <.label for={@id} class={@label_class} required={@required}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -523,71 +540,6 @@ defmodule BemedaPersonalWeb.CoreComponents do
   end
 
   @doc """
-  Renders a date input with calendar icon and styling.
-
-  ## Examples
-
-      <.date_input field={@form[:start_date]} label="Start Date" />
-      <.date_input field={@form[:end_date]} label="End Date" disabled={true} />
-  """
-  attr :id, :any, default: nil
-  attr :name, :any
-  attr :label, :string, default: nil
-  attr :value, :any
-  attr :required, :boolean, default: false
-  attr :disabled, :boolean, default: false
-  attr :label_class, :string, default: nil
-  attr :input_class, :string, default: nil
-  attr :errors, :list, default: []
-
-  attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:start_date]"
-
-  attr :rest, :global,
-    include: ~w(autocomplete min max pattern placeholder readonly required step)
-
-  def date_input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
-
-    assigns
-    |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
-    |> assign_new(:name, fn -> field.name end)
-    |> assign_new(:value, fn -> field.value end)
-    |> date_input()
-  end
-
-  def date_input(assigns) do
-    ~H"""
-    <div>
-      <.label for={@id} class={@label_class} required={@required}>{@label}</.label>
-      <div class="mt-2 relative">
-        <input
-          type="date"
-          name={@name}
-          id={@id}
-          value={Phoenix.HTML.Form.normalize_value("date", @value)}
-          class={[
-            "block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 border-zinc-300 focus:border-zinc-400 pr-10",
-            @disabled && "opacity-50 pointer-events-none",
-            @errors == [] && "border-zinc-300 focus:border-zinc-400",
-            @errors != [] && "border-rose-400 focus:border-rose-400",
-            @input_class
-          ]}
-          required={@required}
-          disabled={@disabled}
-          {@rest}
-        />
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <.icon name="hero-calendar" class="h-5 w-5 text-gray-400" />
-        </div>
-      </div>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
-
-  @doc """
   Renders a label.
   """
   attr :for, :string, default: nil
@@ -597,12 +549,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label
-      for={@for}
-      class={[
-        @class
-      ]}
-    >
+    <label for={@for} class={@class}>
       {render_slot(@inner_block)}<span :if={@required} class="text-red-600"> * </span>
     </label>
     """

@@ -108,6 +108,40 @@ defmodule BemedaPersonal.Accounts do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
   end
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for Step 1 of user registration (basic information).
+
+  This changeset validates only the fields relevant to Step 1:
+  - email, first_name, last_name, password
+
+  ## Examples
+
+      iex> change_user_registration_step1(%User{})
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  @spec change_user_registration_step1(user(), attrs()) :: changeset()
+  def change_user_registration_step1(%User{} = user, attrs \\ %{}) do
+    User.registration_step1_changeset(user, attrs, hash_password: false, validate_email: false)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for Step 2 of user registration (personal information).
+
+  This changeset validates only the fields relevant to Step 2:
+  - gender, street, zip_code, city, country
+
+  ## Examples
+
+      iex> change_user_registration_step2(%User{})
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  @spec change_user_registration_step2(user(), attrs()) :: changeset()
+  def change_user_registration_step2(%User{} = user, attrs \\ %{}) do
+    User.registration_step2_changeset(user, attrs, hash_password: false, validate_email: false)
+  end
+
   ## Settings
 
   @doc """

@@ -77,7 +77,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
                   {gettext("Male"), :male},
                   {gettext("Female"), :female}
                 ]}
-                force_errors={@personal_info_form.source.action == :insert}
               />
 
               <.input
@@ -85,7 +84,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
                 type="text"
                 label={gettext("Street")}
                 required
-                force_errors={@personal_info_form.source.action == :insert}
               />
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -80,6 +80,65 @@ defmodule BemedaPersonal.Accounts.User do
     |> validate_personal_info()
   end
 
+  @doc """
+  A user changeset for Step 1 of registration (basic information).
+
+  This changeset validates only the fields relevant to Step 1:
+  - email, first_name, last_name, password
+
+  ## Options
+
+    * `:hash_password` - Hashes the password so it can be stored securely
+      in the database and ensures the password field is cleared to prevent
+      leaks in the logs. If password hashing is not needed and clearing the
+      password field is not desired (like when using this changeset for
+      validations on a LiveView form), this option can be set to `false`.
+      Defaults to `true`.
+
+    * `:validate_email` - Validates the uniqueness of the email, in case
+      you don't want to validate the uniqueness of the email (like when
+      using this changeset for validations on a LiveView form before
+      submitting the form), this option can be set to `false`.
+      Defaults to `true`.
+  """
+  @spec registration_step1_changeset(t() | changeset(), attrs(), opts()) :: changeset()
+  def registration_step1_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :first_name, :last_name, :password])
+    |> validate_email(opts)
+    |> validate_password(opts)
+    |> validate_name()
+  end
+
+  @doc """
+  A user changeset for Step 2 of registration (personal information).
+
+  This changeset validates only the fields relevant to Step 2:
+  - gender, street, zip_code, city, country
+
+  For final form submission validation, it also casts Step 1 fields
+  to ensure complete validation when displaying errors.
+  """
+  @spec registration_step2_changeset(t() | changeset(), attrs(), opts()) :: changeset()
+  def registration_step2_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [
+      :city,
+      :country,
+      :email,
+      :first_name,
+      :gender,
+      :last_name,
+      :password,
+      :street,
+      :zip_code
+    ])
+    |> validate_email(opts)
+    |> validate_name()
+    |> validate_password(opts)
+    |> validate_personal_info()
+  end
+
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])

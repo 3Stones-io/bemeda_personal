@@ -53,7 +53,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       action={~p"/users/log_in?_action=registered"}
       method="post"
     >
-      <.error :if={@form.errors != []}>
+      <.error :if={@form.source.action == :insert and @form.errors != []}>
         {dgettext("auth", "Oops, something went wrong! Please check the errors below.")}
       </.error>
 
@@ -142,31 +142,25 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
         field={@form[:first_name]}
         type="text"
         label={gettext("First Name")}
+        phx-debounce="blur"
         required
-        force_errors={@form.source.action == :insert}
       />
       <.input
         field={@form[:last_name]}
         type="text"
         label={gettext("Last Name")}
+        phx-debounce="blur"
         required
-        force_errors={@form.source.action == :insert}
       />
     </div>
 
-    <.input
-      field={@form[:email]}
-      type="email"
-      label={gettext("Email")}
-      required
-      force_errors={@form.source.action == :insert}
-    />
+    <.input field={@form[:email]} type="email" label={gettext("Email")} phx-debounce="blur" required />
     <.input
       field={@form[:password]}
       type="password"
       label={gettext("Password")}
+      phx-debounce="blur"
       required
-      force_errors={@form.source.action == :insert}
     />
     """
   end
@@ -176,6 +170,8 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
     <h3 class="text-lg font-medium text-gray-900 mb-4">{gettext("Step 2: Personal Information")}</h3>
 
     <.input field={@form[:email]} type="hidden" />
+    <.input field={@form[:first_name]} type="hidden" />
+    <.input field={@form[:last_name]} type="hidden" />
     <.input field={@form[:password]} type="hidden" />
 
     <.input
@@ -187,47 +183,35 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
         {gettext("Male"), :male},
         {gettext("Female"), :female}
       ]}
-      force_errors={@form.source.action == :insert}
+      phx-debounce="blur"
     />
 
-    <.input
-      field={@form[:street]}
-      type="text"
-      label={gettext("Street")}
-      required
-      force_errors={@form.source.action == :insert}
-    />
+    <.input field={@form[:street]} type="text" label={gettext("Street")} phx-debounce="blur" required />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <.input
         field={@form[:zip_code]}
         type="text"
         label={gettext("ZIP Code")}
+        phx-debounce="blur"
         required
-        force_errors={@form.source.action == :insert}
       />
-      <.input
-        field={@form[:city]}
-        type="text"
-        label={gettext("City")}
-        required
-        force_errors={@form.source.action == :insert}
-      />
+      <.input field={@form[:city]} type="text" label={gettext("City")} phx-debounce="blur" required />
     </div>
 
     <.input
       field={@form[:country]}
       type="text"
       label={gettext("Country")}
+      phx-debounce="blur"
       required
-      force_errors={@form.source.action == :insert}
     />
     """
   end
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    changeset = Accounts.change_user_registration(%User{})
+    changeset = Accounts.change_user_registration_step1(%User{})
 
     socket =
       socket
@@ -256,7 +240,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       if socket.assigns[:form] do
         socket
       else
-        changeset = Accounts.change_user_registration(%User{})
+        changeset = Accounts.change_user_registration_step1(%User{})
         assign_form(socket, changeset)
       end
 
@@ -269,36 +253,33 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
   def handle_event("next_step", %{"user" => user_params}, socket) do
     merged_params = Map.merge(socket.assigns.form_data, user_params)
 
-    changeset =
+    step1_changeset =
       %User{}
-      |> Accounts.change_user_registration(merged_params)
+      |> Accounts.change_user_registration_step1(merged_params)
       |> Map.put(:action, :insert)
 
-    step1_fields = [:email, :first_name, :last_name, :password]
+    if step1_changeset.valid? do
+      step2_changeset = Accounts.change_user_registration_step2(%User{}, merged_params)
 
-    step1_errors =
-      Enum.any?(step1_fields, fn field ->
-        Keyword.has_key?(changeset.errors, field)
-      end)
-
-    if step1_errors do
-      {:noreply, assign_form(socket, changeset)}
-    else
       {:noreply,
        socket
        |> assign(:current_step, 2)
        |> assign(:form_data, merged_params)
-       |> assign_form(changeset)}
+       |> assign_form(step2_changeset)}
+    else
+      {:noreply, assign_form(socket, step1_changeset)}
     end
   end
 
   def handle_event("previous_step", _params, socket) do
-    changeset = Accounts.change_user_registration(%User{}, socket.assigns.form_data)
+    step1_changeset = Accounts.change_user_registration_step1(%User{}, socket.assigns.form_data)
 
-    {:noreply,
-     socket
-     |> assign(:current_step, 1)
-     |> assign_form(changeset)}
+    socket =
+      socket
+      |> assign(:current_step, 1)
+      |> assign_form(step1_changeset)
+
+    {:noreply, socket}
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
@@ -333,21 +314,27 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
-    merged_params = Map.merge(socket.assigns.form_data, user_params)
-
     changeset =
-      %User{}
-      |> Accounts.change_user_registration(merged_params)
+      socket.assigns.current_step
+      |> change_step(user_params)
       |> Map.put(:action, :validate)
 
     {:noreply,
      socket
-     |> assign(:form_data, merged_params)
+     |> assign(:form_data, user_params)
      |> assign_form(changeset)}
+  end
+
+  defp change_step(1, user_params) do
+    Accounts.change_user_registration_step1(%User{}, user_params)
+  end
+
+  defp change_step(2, user_params) do
+    Accounts.change_user_registration_step2(%User{}, user_params)
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     form = to_form(changeset, as: "user")
-    assign(socket, form: form)
+    assign(socket, :form, form)
   end
 end
