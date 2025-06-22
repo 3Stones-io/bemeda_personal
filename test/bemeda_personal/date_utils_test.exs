@@ -8,33 +8,36 @@ defmodule BemedaPersonal.DateUtilsTest do
       assert DateUtils.format_date(nil) == ""
     end
 
-    test "formats date in MM/DD/YYYY format" do
+    test "formats date in DD/MM/YYYY format" do
       date = ~D[2023-04-15]
-      assert DateUtils.format_date(date) == "4/15/2023"
+      assert DateUtils.format_date(date) == "15/4/2023"
     end
 
     test "handles single-digit months and days" do
       date = ~D[2023-01-05]
-      assert DateUtils.format_date(date) == "1/5/2023"
+      assert DateUtils.format_date(date) == "5/1/2023"
     end
   end
 
   describe "format_datetime/1" do
-    test "formats datetime in 'Month Day, Year at HH:MM AM/PM' format" do
+    test "formats datetime in 'DD Month YYYY at HH:MM' format" do
       datetime = ~U[2023-04-15 14:30:00Z]
       formatted = DateUtils.format_datetime(datetime)
-      assert formatted =~ "April 15, 2023 at"
+      assert formatted =~ "15 April 2023 at 14:30"
     end
 
-    test "handles AM/PM correctly" do
-      am_time = ~U[2023-04-15 09:30:00Z]
-      pm_time = ~U[2023-04-15 14:30:00Z]
+    test "handles 24-hour format correctly" do
+      morning_time = ~U[2023-04-15 09:30:00Z]
+      afternoon_time = ~U[2023-04-15 14:30:00Z]
+      evening_time = ~U[2023-04-15 22:45:00Z]
 
-      am_formatted = DateUtils.format_datetime(am_time)
-      pm_formatted = DateUtils.format_datetime(pm_time)
+      morning_formatted = DateUtils.format_datetime(morning_time)
+      afternoon_formatted = DateUtils.format_datetime(afternoon_time)
+      evening_formatted = DateUtils.format_datetime(evening_time)
 
-      assert am_formatted =~ "AM" or am_formatted =~ "PM"
-      assert pm_formatted =~ "AM" or pm_formatted =~ "PM"
+      assert morning_formatted =~ "09:30"
+      assert afternoon_formatted =~ "14:30"
+      assert evening_formatted =~ "22:45"
     end
 
     test "handles different months correctly" do
@@ -42,9 +45,9 @@ defmodule BemedaPersonal.DateUtilsTest do
       june = ~U[2023-06-15 14:30:00Z]
       december = ~U[2023-12-15 14:30:00Z]
 
-      assert DateUtils.format_datetime(january) =~ "January"
-      assert DateUtils.format_datetime(june) =~ "June"
-      assert DateUtils.format_datetime(december) =~ "December"
+      assert DateUtils.format_datetime(january) =~ "15 January 2023"
+      assert DateUtils.format_datetime(june) =~ "15 June 2023"
+      assert DateUtils.format_datetime(december) =~ "15 December 2023"
     end
   end
 
@@ -95,6 +98,38 @@ defmodule BemedaPersonal.DateUtilsTest do
 
       older_date_2 = ~U[2001-01-01 12:00:00Z]
       assert DateUtils.format_emails_date(older_date_2) == "01/01/2001"
+    end
+  end
+
+  describe "format_date_dots/1" do
+    test "returns an empty string when nil is provided" do
+      assert DateUtils.format_date_dots(nil) == ""
+    end
+
+    test "formats date in DD.MM.YYYY format" do
+      date = ~D[2023-04-15]
+      assert DateUtils.format_date_dots(date) == "15.04.2023"
+    end
+
+    test "handles single-digit months and days with padding" do
+      date = ~D[2023-01-05]
+      assert DateUtils.format_date_dots(date) == "05.01.2023"
+    end
+  end
+
+  describe "format_date_padded/1" do
+    test "returns an empty string when nil is provided" do
+      assert DateUtils.format_date_padded(nil) == ""
+    end
+
+    test "formats date with zero-padding DD/MM/YYYY" do
+      date = ~D[2023-04-15]
+      assert DateUtils.format_date_padded(date) == "15/04/2023"
+    end
+
+    test "handles single-digit months and days with padding" do
+      date = ~D[2023-01-05]
+      assert DateUtils.format_date_padded(date) == "05/01/2023"
     end
   end
 

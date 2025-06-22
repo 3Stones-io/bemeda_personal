@@ -30,6 +30,6 @@ defmodule BemedaPersonalWeb.NotificationLive.Show do
   end
 
   defp format_date(date) do
-    Calendar.strftime(date, "%d %b %Y at %I:%M %p")
+    Calendar.strftime(date, "%d %b %Y at %H:%M")
   end
 end

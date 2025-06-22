@@ -160,7 +160,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <div>
         <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Posted")}</dt>
         <dd class="mt-1 text-sm text-gray-900">
-          {Calendar.strftime(@job.inserted_at, "%B %d, %Y")}
+          {Calendar.strftime(@job.inserted_at, "%d %B %Y")}
         </dd>
       </div>
     </dl>
@@ -769,7 +769,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Applied on")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              {Calendar.strftime(@application.inserted_at, "%B %d, %Y")}
+              {Calendar.strftime(@application.inserted_at, "%d %B %Y")}
             </dd>
           </div>
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

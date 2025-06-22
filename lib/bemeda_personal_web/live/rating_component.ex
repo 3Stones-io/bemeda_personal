@@ -331,6 +331,6 @@ defmodule BemedaPersonalWeb.RatingComponent do
   end
 
   defp format_date(datetime) do
-    Calendar.strftime(datetime, "%b %d, %Y")
+    Calendar.strftime(datetime, "%d %b %Y")
   end
 end

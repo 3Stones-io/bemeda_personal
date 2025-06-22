@@ -14,15 +14,55 @@ defmodule BemedaPersonal.DateUtils do
   def format_date(nil), do: ""
 
   def format_date(%Date{} = date) do
-    "#{date.month}/#{date.day}/#{date.year}"
+    "#{date.day}/#{date.month}/#{date.year}"
   end
 
   @doc """
-  Format a datetime to a string in the format "Month Day, Year at HH:MM AM/PM".
+  Format a datetime to a string in the format "DD Month YYYY at HH:MM".
   """
   @spec format_datetime(datetime()) :: String.t()
   def format_datetime(datetime) do
-    Calendar.strftime(datetime, "%B %d, %Y at %I:%M %p")
+    Calendar.strftime(datetime, "%d %B %Y at %H:%M")
+  end
+
+  @doc """
+  Format date in European style with dots (DD.MM.YYYY).
+  """
+  @spec format_date_dots(date() | nil) :: date_string()
+  def format_date_dots(nil), do: ""
+
+  def format_date_dots(%Date{} = date) do
+    day =
+      date.day
+      |> Integer.to_string()
+      |> String.pad_leading(2, "0")
+
+    month =
+      date.month
+      |> Integer.to_string()
+      |> String.pad_leading(2, "0")
+
+    "#{day}.#{month}.#{date.year}"
+  end
+
+  @doc """
+  Format date with zero-padding (DD/MM/YYYY).
+  """
+  @spec format_date_padded(date() | nil) :: date_string()
+  def format_date_padded(nil), do: ""
+
+  def format_date_padded(%Date{} = date) do
+    day =
+      date.day
+      |> Integer.to_string()
+      |> String.pad_leading(2, "0")
+
+    month =
+      date.month
+      |> Integer.to_string()
+      |> String.pad_leading(2, "0")
+
+    "#{day}/#{month}/#{date.year}"
   end
 
   @doc """

@@ -126,7 +126,7 @@
               <p class="text-sm text-gray-500">
                 {dgettext("companies", "Uploaded")} {Calendar.strftime(
                   @template.inserted_at,
-                  "%B %d, %Y"
+                  "%d %B %Y"
                 )}
               </p>
               <div :if={@template.error_message} class="mt-1">
