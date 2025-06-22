@@ -79,6 +79,7 @@ msgstr ""
 msgid "Create Company Profile"
 msgstr ""
 
+#: lib/bemeda_personal_web/live/company_live/index.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Create Your Company Profile"
@@ -385,4 +386,14 @@ msgstr ""
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #, elixir-autogen, elixir-format
 msgid "Template archived successfully"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Company profile created successfully!"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "You already have a company profile."
 msgstr ""

@@ -328,7 +328,7 @@
   :if={@live_action in [:new, :edit]}
   id="company-modal"
   show
-  on_cancel={JS.patch(~p"/company")}
+  on_cancel={if @company.id, do: JS.patch(~p"/company"), else: JS.navigate(~p"/")}
 >
   <.live_component
     module={BemedaPersonalWeb.CompanyLive.FormComponent}

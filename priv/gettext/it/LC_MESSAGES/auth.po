@@ -381,3 +381,18 @@ msgstr "Password aggiornata con successo!"
 #, elixir-autogen, elixir-format
 msgid "Welcome back!"
 msgstr "Bentornato!"
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "This page is for job seekers only. Access your company dashboard instead."
+msgstr "Questa pagina è riservata ai cercatori di lavoro. Accedi invece al tuo dashboard aziendale."
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "You must be logged in as a job seeker to access this page."
+msgstr "Devi essere loggato come cercatore di lavoro per accedere a questa pagina."
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "You must be logged in as an employer to access this page."
+msgstr "Devi essere loggato come datore di lavoro per accedere a questa pagina."

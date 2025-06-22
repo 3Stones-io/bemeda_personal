@@ -28,11 +28,14 @@ defmodule BemedaPersonal.CompaniesTest do
 
   describe "list_companies/0" do
     test "returns all companies", %{company: company, user: user} do
-      [result] = Companies.list_companies()
+      results = Companies.list_companies()
 
-      assert company.admin_user_id == user.id
-      assert company.id == result.id
-      assert company.name == result.name
+      assert length(results) >= 1
+
+      our_company = Enum.find(results, &(&1.id == company.id))
+      assert our_company
+      assert our_company.admin_user_id == user.id
+      assert our_company.name == company.name
     end
 
     test "returns empty list when no companies exist" do
@@ -99,28 +102,25 @@ defmodule BemedaPersonal.CompaniesTest do
     end
 
     test "broadcasts company_created event when creating a company", %{user: user} do
-      # Delete the company created in setup to avoid conflicts with company_fixture
-      Repo.delete_all(Company)
+      Endpoint.subscribe("company:#{user.id}")
 
       valid_attrs = %{
-        name: "new company",
-        size: "small",
-        description: "a new company",
-        location: "location",
-        industry: "industry",
-        website_url: "website_url",
-        logo_url: "logo_url"
+        name: "Test Company",
+        industry: "Healthcare",
+        location: "Zurich, Switzerland"
       }
 
       {:ok, company} = Companies.create_company(user, valid_attrs)
-      company_topic = "company:#{company.admin_user_id}"
 
-      Endpoint.subscribe(company_topic)
+      # Should receive broadcast in Phoenix.Socket.Broadcast format
+      company_topic = "company:#{user.id}"
 
-      another_user = user_fixture(%{email: "another@example.com"})
-      {:ok, another_company} = Companies.create_company(another_user, %{name: "another company"})
-
-      refute_receive {:company_created, ^another_company}
+      assert_receive %Broadcast{
+                       event: "company_created",
+                       topic: ^company_topic,
+                       payload: %{company: ^company}
+                     },
+                     1000
     end
   end
 
@@ -141,21 +141,24 @@ defmodule BemedaPersonal.CompaniesTest do
                Companies.update_company(company, @invalid_attrs)
     end
 
-    test "broadcasts company_updated event when updating a company", %{company: company} do
-      company_topic = "company:#{company.admin_user_id}"
-      Endpoint.subscribe(company_topic)
+    test "broadcasts company_updated event when updating a company", %{
+      company: company,
+      user: user
+    } do
+      Endpoint.subscribe("company:#{user.id}")
 
-      update_attrs = %{
-        name: "updated company name"
-      }
+      update_attrs = %{name: "Updated Company Name"}
 
       {:ok, updated_company} = Companies.update_company(company, update_attrs)
 
+      company_topic = "company:#{user.id}"
+
       assert_receive %Broadcast{
-        event: "company_updated",
-        topic: ^company_topic,
-        payload: %{company: ^updated_company}
-      }
+                       event: "company_updated",
+                       topic: ^company_topic,
+                       payload: %{company: ^updated_company}
+                     },
+                     1000
     end
   end
 

@@ -79,6 +79,7 @@ msgstr "Unternehmensprofil erfolgreich aktualisiert."
 msgid "Create Company Profile"
 msgstr "Unternehmensprofil Erstellen"
 
+#: lib/bemeda_personal_web/live/company_live/index.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Create Your Company Profile"
@@ -386,3 +387,13 @@ msgstr "Fehler beim Archivieren der Vorlage"
 #, elixir-autogen, elixir-format
 msgid "Template archived successfully"
 msgstr "Vorlage erfolgreich archiviert"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Company profile created successfully!"
+msgstr "Unternehmensprofil erfolgreich erstellt!"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "You already have a company profile."
+msgstr "Sie haben bereits ein Unternehmensprofil."

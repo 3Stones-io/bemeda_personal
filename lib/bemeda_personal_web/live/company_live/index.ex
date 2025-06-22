@@ -29,12 +29,15 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     current_user = socket.assigns.current_user
     company = Companies.get_company_by_user(current_user)
 
-    if connected?(socket) && company do
+    if connected?(socket) do
       Endpoint.subscribe("company:#{current_user.id}")
-      Endpoint.subscribe("company:#{company.id}:templates")
-      Endpoint.subscribe("job_application:company:#{company.id}")
-      Endpoint.subscribe("job_posting:company:#{company.id}")
-      Endpoint.subscribe("rating:Company:#{company.id}")
+
+      if company do
+        Endpoint.subscribe("company:#{company.id}:templates")
+        Endpoint.subscribe("job_application:company:#{company.id}")
+        Endpoint.subscribe("job_posting:company:#{company.id}")
+        Endpoint.subscribe("rating:Company:#{company.id}")
+      end
     end
 
     template =
@@ -51,14 +54,39 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
      |> assign(:template_data, %{})
      |> assign(:show_template_modal, false)
      |> assign(:show_variables_modal, false)
-     |> assign_job_count(company)
-     |> assign_job_postings(company)
-     |> assign_recent_applicants(company)}
+     |> assign(:show_create_company_section, is_nil(company))
+     |> assign_company_data(company)}
+  end
+
+  defp assign_company_data(socket, nil) do
+    socket
+    |> assign(:job_count, 0)
+    |> stream(:job_postings, [])
+    |> stream(:recent_applicants, [])
+  end
+
+  defp assign_company_data(socket, company) do
+    socket
+    |> assign_job_count(company)
+    |> assign_job_postings(company)
+    |> assign_recent_applicants(company)
   end
 
   @impl Phoenix.LiveView
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(%{assigns: %{company: nil}} = socket, :new, _params) do
+    socket
+    |> assign(:company, %Company{})
+    |> assign(:page_title, dgettext("companies", "Create Company Profile"))
+  end
+
+  defp apply_action(%{assigns: %{company: _company}} = socket, :new, _params) do
+    socket
+    |> put_flash(:info, dgettext("companies", "You already have a company profile."))
+    |> push_patch(to: ~p"/company")
   end
 
   defp apply_action(socket, :edit, %{"company_id" => company_id}) do
@@ -73,13 +101,11 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     assign(socket, :page_title, dgettext("companies", "Edit Company Profile"))
   end
 
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:company, %Company{})
-    |> assign(:page_title, dgettext("companies", "Create Company Profile"))
+  defp apply_action(%{assigns: %{company: nil}} = socket, :index, _params) do
+    assign(socket, :page_title, dgettext("companies", "Create Your Company Profile"))
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(%{assigns: %{company: _company}} = socket, :index, _params) do
     assign(socket, :page_title, dgettext("companies", "Company Dashboard"))
   end
 
@@ -151,6 +177,15 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   @impl Phoenix.LiveView
+  def handle_info(%Broadcast{event: "company_created", payload: payload}, socket) do
+    {:noreply,
+     socket
+     |> assign(:company, payload.company)
+     |> assign(:show_create_company_section, false)
+     |> assign_company_data(payload.company)
+     |> put_flash(:info, dgettext("companies", "Company profile created successfully!"))}
+  end
+
   def handle_info(%Broadcast{event: "company_updated", payload: payload}, socket) do
     {:noreply,
      socket

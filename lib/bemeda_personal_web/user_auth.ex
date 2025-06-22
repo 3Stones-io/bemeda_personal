@@ -148,6 +148,12 @@ defmodule BemedaPersonalWeb.UserAuth do
     * `:require_admin_user` - Checks if the current user is the admin of the company.
       Redirects to companies page if not.
 
+    * `:require_employer_user_type` - Checks if the current user is an employer.
+      Redirects job seekers to jobs page and unauthenticated users to login.
+
+    * `:require_job_seeker_user_type` - Checks if the current user is a job seeker.
+      Redirects employers to their company dashboard and unauthenticated users to login.
+
     * `:require_no_existing_company` - Checks if the current user already has a company.
       Redirects to companies page if they do, preventing creation of multiple companies.
 
@@ -254,6 +260,67 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
+  def on_mount(:require_job_seeker_user_type, _params, _session, socket) do
+    case socket.assigns.current_user do
+      %{user_type: :job_seeker} ->
+        {:cont, socket}
+
+      %{user_type: :employer} ->
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(
+            :error,
+            dgettext(
+              "auth",
+              "This page is for job seekers only. Access your company dashboard instead."
+            )
+          )
+          |> Phoenix.LiveView.redirect(to: ~p"/company")
+
+        {:halt, socket}
+
+      _other ->
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(
+            :error,
+            dgettext("auth", "You must be logged in as a job seeker to access this page.")
+          )
+          |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+        {:halt, socket}
+    end
+  end
+
+  def on_mount(:require_employer_user_type, _params, _session, socket) do
+    case socket.assigns.current_user do
+      %{user_type: :employer} ->
+        {:cont, socket}
+
+      %{user_type: :job_seeker} ->
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(
+            :error,
+            dgettext("auth", "You must be an employer to access this page.")
+          )
+          |> Phoenix.LiveView.redirect(to: ~p"/jobs")
+
+        {:halt, socket}
+
+      _other ->
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(
+            :error,
+            dgettext("auth", "You must be logged in as an employer to access this page.")
+          )
+          |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+        {:halt, socket}
+    end
+  end
+
   @spec assign_current_user(conn(), any()) :: map()
   def assign_current_user(conn, _opts) do
     user_token = get_session(conn, "user_token")
@@ -303,6 +370,40 @@ defmodule BemedaPersonalWeb.UserAuth do
       |> halt()
     else
       conn
+    end
+  end
+
+  @doc """
+  Requires user to be a job seeker to access the route.
+
+  Redirects employers and unauthenticated users to the home page with an error message.
+  """
+  @spec require_job_seeker_user_type(conn(), params()) :: conn()
+  def require_job_seeker_user_type(conn, _opts) do
+    case conn.assigns[:current_user] do
+      %{user_type: :job_seeker} ->
+        conn
+
+      %{user_type: :employer} ->
+        conn
+        |> put_flash(
+          :error,
+          dgettext(
+            "auth",
+            "This page is for job seekers only. Access your company dashboard instead."
+          )
+        )
+        |> redirect(to: ~p"/company")
+        |> halt()
+
+      _other ->
+        conn
+        |> put_flash(
+          :error,
+          dgettext("auth", "You must be logged in as a job seeker to access this page.")
+        )
+        |> redirect(to: ~p"/users/log_in")
+        |> halt()
     end
   end
 

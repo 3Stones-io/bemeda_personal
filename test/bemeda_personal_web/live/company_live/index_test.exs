@@ -95,16 +95,73 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
              |> has_element?()
     end
 
-    test "users can navigate to create a company if they don't have one", %{conn: conn} do
+    test "shows create company section when user has no company", %{conn: conn} do
       user = employer_user_fixture()
 
-      assert {:error, {:redirect, %{to: path, flash: flash}}} =
+      {:ok, _view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      assert html =~ "Create Your Company Profile"
+      # The page title will be "Create Your Company Profile" not "Company Dashboard"
+      refute html =~ "<h1>Company Dashboard</h1>"
+    end
+
+    test "can navigate to create company form", %{conn: conn} do
+      user = employer_user_fixture()
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      # Find and click the create company link
+      assert view
+             |> element("a[href='/company/new']")
+             |> has_element?()
+    end
+
+    test "redirects to main dashboard if user already has company when accessing /company/new", %{
+      conn: conn
+    } do
+      user = employer_user_fixture()
+      _company = company_fixture(user)
+
+      assert {:error, {:live_redirect, %{to: "/company", flash: flash}}} =
                conn
                |> log_in_user(user)
-               |> live(~p"/company")
+               |> live(~p"/company/new")
 
-      assert path == "/company/new"
-      assert flash["error"] == "You need to create a company first."
+      assert flash["info"] =~ "You already have a company profile"
+    end
+
+    test "user without company can access /company/new modal", %{conn: conn} do
+      user = employer_user_fixture()
+
+      {:ok, view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company/new")
+
+      assert html =~ "Create Company Profile"
+      assert has_element?(view, "#company-modal")
+    end
+
+    test "user without company has cancel button that navigates to home", %{conn: conn} do
+      user = employer_user_fixture()
+
+      {:ok, view, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company/new")
+
+      # Verify the modal is rendered with the form
+      assert html =~ "Create Company Profile"
+      assert has_element?(view, "#company-modal")
+
+      # Check that the cancel button navigates to home page for new company creation
+      assert has_element?(view, "a[href='/']", "Cancel")
     end
   end
 

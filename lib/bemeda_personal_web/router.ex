@@ -20,6 +20,7 @@ defmodule BemedaPersonalWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # PUBLIC ROUTES (no authentication required)
   scope "/", BemedaPersonalWeb do
     pipe_through [:browser, :assign_current_user]
 
@@ -37,30 +38,7 @@ defmodule BemedaPersonalWeb.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", BemedaPersonalWeb do
-  #   pipe_through :api
-  # end
-
-  # Enable LiveDashboard and Swoosh mailbox preview in development
-  if Application.compile_env(:bemeda_personal, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
-    import Phoenix.LiveDashboard.Router
-
-    scope "/dev" do
-      pipe_through :browser
-
-      live_dashboard "/dashboard", metrics: BemedaPersonalWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
-    end
-  end
-
-  resources "/health", BemedaPersonalWeb.HealthController, only: [:index]
-
+  # UNAUTHENTICATED ROUTES (redirect if already logged in)
   scope "/", BemedaPersonalWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
@@ -79,18 +57,21 @@ defmodule BemedaPersonalWeb.Router do
     post "/users/log_in", UserSessionController, :create
   end
 
+  # JOB SEEKER ONLY ROUTES
   scope "/", BemedaPersonalWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [
+      :browser,
+      :require_authenticated_user,
+      :require_job_seeker_user_type
+    ]
 
-    live_session :require_authenticated_user,
+    live_session :job_seeker_routes,
       on_mount: [
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.UserAuth, :require_job_seeker_user_type},
         {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-
-      # Resume routes
+      # Resume management (job seekers only)
       live "/resume", Resume.ShowLive, :show
       live "/resume/edit", Resume.ShowLive, :edit_resume
       live "/resume/education/new", Resume.ShowLive, :new_education
@@ -98,62 +79,73 @@ defmodule BemedaPersonalWeb.Router do
       live "/resume/work-experience/new", Resume.ShowLive, :new_work_experience
       live "/resume/work-experience/:id/edit", Resume.ShowLive, :edit_work_experience
 
-      # Job application routes
+      # Job applications (job seekers only)
       live "/job_applications", JobApplicationLive.Index, :index
       live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
       live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
       live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
       live "/jobs/:job_id/job_applications/:id/history", JobApplicationLive.History, :show
-
-      live "/notifications", NotificationLive.Index, :index
-      live "/notifications/:id", NotificationLive.Show, :show
     end
   end
 
+  # EMPLOYER ONLY ROUTES
   scope "/company", BemedaPersonalWeb do
     pipe_through [
       :browser,
       :require_authenticated_user,
-      :require_employer_user_type,
-      :require_user_company
+      :require_employer_user_type
     ]
 
-    live_session :user_company,
+    # Company creation/management routes (no company required)
+    live_session :company_creation,
       on_mount: [
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
-        {BemedaPersonalWeb.UserAuth, :require_user_company},
+        {BemedaPersonalWeb.UserAuth, :require_employer_user_type},
         {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
       live "/", CompanyLive.Index, :index
+      live "/new", CompanyLive.Index, :new
       live "/edit", CompanyLive.Index, :edit
+    end
+
+    # Company-specific routes (require existing company)
+    live_session :company_operations,
+      on_mount: [
+        {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+        {BemedaPersonalWeb.UserAuth, :require_employer_user_type},
+        {BemedaPersonalWeb.UserAuth, :require_user_company},
+        {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+      ] do
+      # Job management
       live "/jobs", CompanyJobLive.Index, :index
       live "/jobs/new", CompanyJobLive.Index, :new
       live "/jobs/:id", CompanyJobLive.Show, :show
       live "/jobs/:id/edit", CompanyJobLive.Index, :edit
+
+      # Applicant management
       live "/applicants", CompanyApplicantLive.Index, :index
       live "/applicants/:job_id", CompanyApplicantLive.Index, :index
       live "/applicant/:id", CompanyApplicantLive.Show, :show
     end
   end
 
-  scope "/company", BemedaPersonalWeb do
-    pipe_through [
-      :browser,
-      :require_authenticated_user,
-      :require_employer_user_type,
-      :require_no_existing_company
-    ]
+  # SHARED AUTHENTICATED ROUTES (both user types)
+  scope "/", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user]
 
-    live_session :new_company,
+    live_session :shared_authenticated_routes,
       on_mount: [
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
-        {BemedaPersonalWeb.UserAuth, :require_no_existing_company},
         {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
-      live "/new", CompanyLive.Index, :new
+      live "/users/settings", UserSettingsLive, :edit
+      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/notifications", NotificationLive.Index, :index
+      live "/notifications/:id", NotificationLive.Show, :show
     end
   end
 
+  # UTILITY ROUTES (no authentication required)
   scope "/", BemedaPersonalWeb do
     pipe_through [:browser]
 
@@ -171,5 +163,25 @@ defmodule BemedaPersonalWeb.Router do
 
     # Public resume route
     live "/resumes/:id", Resume.IndexLive, :show
+  end
+
+  # Health check route
+  resources "/health", BemedaPersonalWeb.HealthController, only: [:index]
+
+  # Enable LiveDashboard and Swoosh mailbox preview in development
+  if Application.compile_env(:bemeda_personal, :dev_routes) do
+    # If you want to use the LiveDashboard in production, you should put
+    # it behind authentication and allow only admins to access it.
+    # If your application does not have an admins-only section yet,
+    # you can use Plug.BasicAuth to set up some basic authentication
+    # as long as you are also using SSL (which you should anyway).
+    import Phoenix.LiveDashboard.Router
+
+    scope "/dev" do
+      pipe_through :browser
+
+      live_dashboard "/dashboard", metrics: BemedaPersonalWeb.Telemetry
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
   end
 end

@@ -97,6 +97,13 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
           >
             {dgettext("general", "Cancel")}
           </.link>
+          <.link
+            :if={@action == :new}
+            navigate={~p"/"}
+            class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            {dgettext("general", "Cancel")}
+          </.link>
           <.button
             class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
             disabled={!@enable_submit?}
@@ -165,26 +172,26 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
      |> assign(:show_logo?, false)}
   end
 
-  defp save_company(socket, :edit, company_params) do
-    case Companies.update_company(socket.assigns.company, company_params) do
-      {:ok, _company} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, dgettext("companies", "Company profile updated successfully."))
-         |> push_navigate(to: socket.assigns.return_to)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :form, to_form(changeset))}
-    end
-  end
-
   defp save_company(socket, :new, company_params) do
     case Companies.create_company(socket.assigns.current_user, company_params) do
       {:ok, _company} ->
         {:noreply,
          socket
          |> put_flash(:info, dgettext("companies", "Company profile created successfully."))
-         |> push_navigate(to: socket.assigns.return_to)}
+         |> push_patch(to: socket.assigns.return_to)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, :form, to_form(changeset))}
+    end
+  end
+
+  defp save_company(socket, :edit, company_params) do
+    case Companies.update_company(socket.assigns.company, company_params) do
+      {:ok, _company} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, dgettext("companies", "Company profile updated successfully."))
+         |> push_patch(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}

@@ -587,4 +587,174 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       assert redirected_to(result_conn) == ~p"/company"
     end
   end
+
+  describe "require_job_seeker_user_type/2" do
+    test "allows access if user is a job seeker", %{conn: conn} do
+      job_seeker_user = user_fixture(%{user_type: :job_seeker})
+      conn = assign(conn, :current_user, job_seeker_user)
+      result_conn = UserAuth.require_job_seeker_user_type(conn, [])
+
+      refute result_conn.halted
+    end
+
+    test "redirects employer to company dashboard", %{conn: conn} do
+      employer_user = user_fixture(%{user_type: :employer})
+
+      conn =
+        conn
+        |> assign(:current_user, employer_user)
+        |> fetch_flash()
+
+      result_conn = UserAuth.require_job_seeker_user_type(conn, [])
+
+      assert result_conn.halted
+      assert redirected_to(result_conn) == ~p"/company"
+
+      assert Phoenix.Flash.get(result_conn.assigns.flash, :error) ==
+               "This page is for job seekers only. Access your company dashboard instead."
+    end
+
+    test "redirects unauthenticated user to login", %{conn: conn} do
+      conn =
+        conn
+        |> assign(:current_user, nil)
+        |> fetch_flash()
+
+      result_conn = UserAuth.require_job_seeker_user_type(conn, [])
+
+      assert result_conn.halted
+      assert redirected_to(result_conn) == ~p"/users/log_in"
+
+      assert Phoenix.Flash.get(result_conn.assigns.flash, :error) ==
+               "You must be logged in as a job seeker to access this page."
+    end
+  end
+
+  describe "on_mount :require_job_seeker_user_type" do
+    test "continues if user is a job seeker", %{conn: conn} do
+      job_seeker_user = user_fixture(%{user_type: :job_seeker})
+      user_token = Accounts.generate_user_session_token(job_seeker_user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: job_seeker_user}
+      }
+
+      {:cont, updated_socket} =
+        UserAuth.on_mount(:require_job_seeker_user_type, %{}, session, socket)
+
+      assert updated_socket.assigns.current_user.id == job_seeker_user.id
+    end
+
+    test "halts and redirects employer to company dashboard", %{conn: conn} do
+      employer_user = user_fixture(%{user_type: :employer})
+      user_token = Accounts.generate_user_session_token(employer_user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: employer_user}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:require_job_seeker_user_type, %{}, session, socket)
+
+      assert {:redirect, %{to: path}} = updated_socket.redirected
+      assert path == ~p"/company"
+
+      assert Phoenix.Flash.get(updated_socket.assigns.flash, :error) ==
+               "This page is for job seekers only. Access your company dashboard instead."
+    end
+
+    test "halts and redirects unauthenticated user to login", %{conn: conn} do
+      session = get_session(conn)
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: nil}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:require_job_seeker_user_type, %{}, session, socket)
+
+      assert {:redirect, %{to: path}} = updated_socket.redirected
+      assert path == ~p"/users/log_in"
+
+      assert Phoenix.Flash.get(updated_socket.assigns.flash, :error) ==
+               "You must be logged in as a job seeker to access this page."
+    end
+  end
+
+  describe "on_mount :require_employer_user_type" do
+    test "continues if user is an employer", %{conn: conn} do
+      employer_user = user_fixture(%{user_type: :employer})
+      user_token = Accounts.generate_user_session_token(employer_user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: employer_user}
+      }
+
+      {:cont, updated_socket} =
+        UserAuth.on_mount(:require_employer_user_type, %{}, session, socket)
+
+      assert updated_socket.assigns.current_user.id == employer_user.id
+    end
+
+    test "halts and redirects job seeker to jobs page", %{conn: conn} do
+      job_seeker_user = user_fixture(%{user_type: :job_seeker})
+      user_token = Accounts.generate_user_session_token(job_seeker_user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: job_seeker_user}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:require_employer_user_type, %{}, session, socket)
+
+      assert {:redirect, %{to: path}} = updated_socket.redirected
+      assert path == ~p"/jobs"
+
+      assert Phoenix.Flash.get(updated_socket.assigns.flash, :error) ==
+               "You must be an employer to access this page."
+    end
+
+    test "halts and redirects unauthenticated user to login", %{conn: conn} do
+      session = get_session(conn)
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: nil}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:require_employer_user_type, %{}, session, socket)
+
+      assert {:redirect, %{to: path}} = updated_socket.redirected
+      assert path == ~p"/users/log_in"
+
+      assert Phoenix.Flash.get(updated_socket.assigns.flash, :error) ==
+               "You must be logged in as an employer to access this page."
+    end
+  end
 end
