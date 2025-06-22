@@ -358,4 +358,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         )
     })
   end
+
+  defp contract_available?(job_offer) do
+    job_offer && job_offer.status == :extended && job_offer.message &&
+      job_offer.message.media_asset
+  end
 end

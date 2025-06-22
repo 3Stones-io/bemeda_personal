@@ -417,6 +417,32 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           %{"to_state" => "offer_extended"}
         )
 
+      # Create a contract message with PDF
+      upload_id = Ecto.UUID.generate()
+
+      {:ok, contract_message} =
+        Chat.create_message_with_media(
+          company.admin_user,
+          job_application_with_offer,
+          %{
+            "content" => "Contract generated",
+            "media_data" => %{
+              "file_name" => "contract.pdf",
+              "status" => :uploaded,
+              "type" => "application/pdf",
+              "upload_id" => upload_id
+            }
+          }
+        )
+
+      # Create job offer with extended status and link to contract message
+      {:ok, _job_offer} =
+        JobOffers.create_job_offer(contract_message, %{
+          job_application_id: job_application_with_offer.id,
+          status: :extended,
+          variables: JobOffers.auto_populate_variables(job_application_with_offer)
+        })
+
       {:ok, view, html} =
         live(
           conn,
@@ -1113,6 +1139,32 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
           %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
         )
 
+      # Create a contract message with PDF to enable Accept Offer button
+      upload_id = Ecto.UUID.generate()
+
+      {:ok, contract_message} =
+        Chat.create_message_with_media(
+          employer,
+          offer_extended_application,
+          %{
+            "content" => "Contract generated",
+            "media_data" => %{
+              "file_name" => "contract.pdf",
+              "status" => :uploaded,
+              "type" => "application/pdf",
+              "upload_id" => upload_id
+            }
+          }
+        )
+
+      # Create job offer with extended status and link to contract message
+      {:ok, _job_offer} =
+        JobOffers.create_job_offer(contract_message, %{
+          job_application_id: offer_extended_application.id,
+          status: :extended,
+          variables: JobOffers.auto_populate_variables(offer_extended_application)
+        })
+
       conn = log_in_user(conn, candidate)
 
       {:ok, _view, html} =
@@ -1190,6 +1242,119 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       refute employer_html =~ "Job Offer Extended!"
       refute employer_html =~ "Accept Offer"
+    end
+
+    test "candidate does not see Accept Offer button when offer is extended but contract not ready",
+         %{
+           conn: conn,
+           candidate: candidate,
+           employer: employer,
+           job_application: job_application
+         } do
+      # Extend offer but don't create contract yet
+      {:ok, offer_extended_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          employer,
+          %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
+        )
+
+      # Create job offer in pending status (contract not ready)
+      {:ok, _job_offer} =
+        JobOffers.create_job_offer(%{
+          job_application_id: offer_extended_application.id,
+          status: :pending,
+          variables: JobOffers.auto_populate_variables(offer_extended_application)
+        })
+
+      conn = log_in_user(conn, candidate)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
+        )
+
+      # Should show offer extended message but NOT the Accept Offer button
+      assert html =~ "Job Offer Extended!"
+      assert html =~ "Contract is being generated"
+      refute html =~ "Accept Offer"
+    end
+
+    test "candidate sees Accept Offer button only when contract is ready", %{
+      conn: conn,
+      candidate: candidate,
+      employer: employer,
+      job_application: job_application
+    } do
+      # Extend offer
+      {:ok, offer_extended_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          employer,
+          %{"to_state" => "offer_extended", "notes" => "We'd like to extend an offer"}
+        )
+
+      # First create job offer in pending status
+      {:ok, job_offer} =
+        JobOffers.create_job_offer(%{
+          job_application_id: offer_extended_application.id,
+          status: :pending,
+          variables: JobOffers.auto_populate_variables(offer_extended_application)
+        })
+
+      conn = log_in_user(conn, candidate)
+
+      {:ok, view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{offer_extended_application.job_posting_id}/job_applications/#{offer_extended_application.id}"
+        )
+
+      # Initially should show loading state, no Accept button
+      assert html =~ "Job Offer Extended!"
+      assert html =~ "Contract is being generated"
+      refute html =~ "Accept Offer"
+
+      # Now create contract message and update job offer to extended status
+      upload_id = Ecto.UUID.generate()
+
+      {:ok, contract_message} =
+        Chat.create_message_with_media(
+          employer,
+          offer_extended_application,
+          %{
+            "content" => "Contract generated",
+            "media_data" => %{
+              "file_name" => "contract.pdf",
+              "status" => :uploaded,
+              "type" => "application/pdf",
+              "upload_id" => upload_id
+            }
+          }
+        )
+
+      # Update job offer with extended status and link to contract message
+      {:ok, updated_job_offer} =
+        JobOffers.update_job_offer(job_offer, contract_message, %{
+          status: :extended
+        })
+
+      # Broadcast job offer update to simulate real-time update
+      Endpoint.broadcast(
+        "job_application:user:#{candidate.id}",
+        "job_offer_updated",
+        %{job_offer: updated_job_offer}
+      )
+
+      :timer.sleep(10)
+
+      # Now should show Accept Offer button
+      updated_html = render(view)
+      assert updated_html =~ "Job Offer Extended!"
+      assert updated_html =~ "View Contract"
+      assert updated_html =~ "Accept Offer"
+      refute updated_html =~ "Contract is being generated"
     end
 
     test "other status transitions still use standard modal", %{
