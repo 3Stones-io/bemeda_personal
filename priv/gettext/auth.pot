@@ -401,3 +401,18 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "You must confirm your email address before logging in."
 msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/authorization.ex
+#, elixir-autogen, elixir-format
+msgid "You can only access job applications for your company."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/authorization.ex
+#, elixir-autogen, elixir-format
+msgid "You can only access your own job applications."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/authorization.ex
+#, elixir-autogen, elixir-format
+msgid "You must be logged in to access this page."
+msgstr ""

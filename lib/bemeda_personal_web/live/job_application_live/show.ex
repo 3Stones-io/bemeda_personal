@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.ChatComponents
   alias BemedaPersonalWeb.Endpoint
+  alias BemedaPersonalWeb.JobApplicationLive.Authorization
   alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.Socket.Broadcast
 
@@ -260,32 +261,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
     job_application = JobApplications.get_job_application!(job_application_id)
-    messages = Chat.list_messages(job_application)
-    changeset = Chat.change_message(%Chat.Message{})
 
-    job_offer = JobOffers.get_job_offer_by_application(job_application_id)
+    case Authorization.authorize_job_application_access(socket, job_application) do
+      :ok ->
+        setup_job_application_view(socket, job_application, job_application_id)
 
-    job_posting = job_application.job_posting
-
-    if connected?(socket) do
-      Endpoint.subscribe("messages:job_application:#{job_application_id}")
-      Endpoint.subscribe("job_application_messages:#{job_application_id}:media_assets")
-      Endpoint.subscribe("job_application:#{job_application_id}:media_assets")
-      Endpoint.subscribe("job_application:company:#{job_application.job_posting.company_id}")
-      Endpoint.subscribe("job_application:user:#{job_application.user_id}")
+      {:error, {redirect_path, error_message}} ->
+        socket
+        |> put_flash(:error, error_message)
+        |> redirect(to: redirect_path)
     end
-
-    is_employer =
-      socket.assigns.current_user.id == job_posting.company.admin_user_id
-
-    socket
-    |> stream(:messages, messages)
-    |> assign(:job_application, job_application)
-    |> assign(:job_offer, job_offer)
-    |> assign(:job_posting, job_posting)
-    |> assign(:is_employer?, is_employer)
-    |> assign_available_statuses(job_application)
-    |> assign_chat_form(changeset)
   end
 
   defp assign_chat_form(socket, changeset) do
@@ -362,5 +347,31 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   defp contract_available?(job_offer) do
     job_offer && job_offer.status == :extended && job_offer.message &&
       job_offer.message.media_asset
+  end
+
+  defp setup_job_application_view(socket, job_application, job_application_id) do
+    messages = Chat.list_messages(job_application)
+    changeset = Chat.change_message(%Chat.Message{})
+    job_offer = JobOffers.get_job_offer_by_application(job_application_id)
+    job_posting = job_application.job_posting
+
+    if connected?(socket) do
+      Endpoint.subscribe("messages:job_application:#{job_application_id}")
+      Endpoint.subscribe("job_application_messages:#{job_application_id}:media_assets")
+      Endpoint.subscribe("job_application:#{job_application_id}:media_assets")
+      Endpoint.subscribe("job_application:company:#{job_application.job_posting.company_id}")
+      Endpoint.subscribe("job_application:user:#{job_application.user_id}")
+    end
+
+    is_employer = socket.assigns.current_user.id == job_posting.company.admin_user_id
+
+    socket
+    |> assign(:is_employer?, is_employer)
+    |> assign(:job_application, job_application)
+    |> assign(:job_offer, job_offer)
+    |> assign(:job_posting, job_posting)
+    |> assign_available_statuses(job_application)
+    |> assign_chat_form(changeset)
+    |> stream(:messages, messages)
   end
 end

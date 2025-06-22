@@ -34,7 +34,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   describe "/jobs/:job_id/job_applications/:id" do
     setup %{conn: conn} do
       user = user_fixture()
-      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+
+      company =
+        company_fixture(user_fixture(%{email: "company@example.com", user_type: :employer}))
 
       job =
         job_posting_fixture(company, @create_attrs)
@@ -461,7 +463,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   describe "document template processing" do
     setup %{conn: conn} do
       user = user_fixture()
-      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+
+      company =
+        company_fixture(user_fixture(%{email: "company@example.com", user_type: :employer}))
+
       job = job_posting_fixture(company)
       job_application = job_application_fixture(user, job)
       upload_id = Ecto.UUID.generate()
@@ -779,7 +784,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   describe "offer extension" do
     setup %{conn: conn} do
       candidate = user_fixture()
-      employer = user_fixture(%{email: "employer@example.com"})
+      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
       job_application = job_application_fixture(candidate, job)
@@ -1395,7 +1400,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   describe "job offer updates" do
     setup %{conn: conn} do
       candidate = user_fixture()
-      employer = user_fixture(%{email: "employer@example.com"})
+      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
 
@@ -1513,7 +1518,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
   defp setup_basic_test_data(conn) do
     user = user_fixture()
-    company = company_fixture(user_fixture(%{email: "company@example.com"}))
+    company = company_fixture(employer_user_fixture(%{email: "company@example.com"}))
     job = job_posting_fixture(company, @create_attrs)
     job_application = job_application_fixture(user, job)
 
@@ -1526,6 +1531,143 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_application: job_application,
       user: user
     }
+  end
+
+  describe "authorization" do
+    test "employer can access job application they own" do
+      # Create employer and their company
+      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      company = company_fixture(employer)
+      job = job_posting_fixture(company, @create_attrs)
+
+      # Create job seeker and their application
+      job_seeker = user_fixture(%{email: "jobseeker@example.com", user_type: :job_seeker})
+      job_application = job_application_fixture(job_seeker, job)
+
+      conn = log_in_user(build_conn(), employer)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ job_application.cover_letter
+      assert html =~ "Chat"
+    end
+
+    test "job seeker can access their own job application" do
+      # Create job seeker
+      job_seeker = user_fixture(%{email: "jobseeker@example.com", user_type: :job_seeker})
+
+      # Create employer and their company
+      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      company = company_fixture(employer)
+      job = job_posting_fixture(company, @create_attrs)
+
+      # Create job application
+      job_application = job_application_fixture(job_seeker, job)
+
+      conn = log_in_user(build_conn(), job_seeker)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ job_application.cover_letter
+      assert html =~ "Chat"
+    end
+
+    test "employer cannot access job application from different company" do
+      # Create first employer and their company
+      employer1 = user_fixture(%{email: "employer1@example.com", user_type: :employer})
+      _company1 = company_fixture(employer1)
+
+      # Create second employer and their company
+      employer2 = user_fixture(%{email: "employer2@example.com", user_type: :employer})
+      company2 = company_fixture(employer2)
+      job = job_posting_fixture(company2, @create_attrs)
+
+      # Create job seeker and application for company2's job
+      job_seeker = user_fixture(%{email: "jobseeker@example.com", user_type: :job_seeker})
+      job_application = job_application_fixture(job_seeker, job)
+
+      conn = log_in_user(build_conn(), employer1)
+
+      {:error, {:redirect, %{to: redirect_path, flash: flash}}} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert redirect_path == ~p"/company/applicants"
+      assert %{"error" => _error_message} = flash
+    end
+
+    test "job seeker cannot access other job seeker's application" do
+      # Create first job seeker
+      job_seeker1 = user_fixture(%{email: "jobseeker1@example.com", user_type: :job_seeker})
+
+      # Create second job seeker
+      job_seeker2 = user_fixture(%{email: "jobseeker2@example.com", user_type: :job_seeker})
+
+      # Create employer and their company
+      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      company = company_fixture(employer)
+      job = job_posting_fixture(company, @create_attrs)
+
+      # Create job application for job_seeker2
+      job_application = job_application_fixture(job_seeker2, job)
+
+      conn = log_in_user(build_conn(), job_seeker1)
+
+      {:error, {:redirect, %{to: redirect_path, flash: flash}}} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert redirect_path == ~p"/job_applications"
+      assert %{"error" => _error_message} = flash
+    end
+
+    test "employer can send messages in job application chat" do
+      # Create employer and their company
+      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      company = company_fixture(employer)
+      job = job_posting_fixture(company, @create_attrs)
+
+      # Create job seeker and their application
+      job_seeker = user_fixture(%{email: "jobseeker@example.com", user_type: :job_seeker})
+      job_application = job_application_fixture(job_seeker, job)
+
+      conn = log_in_user(build_conn(), employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      message_content = "Thank you for your application. We'd like to schedule an interview."
+
+      view
+      |> form("#chat-form", %{message: %{content: message_content}})
+      |> render_submit()
+
+      messages = Chat.list_messages(job_application)
+
+      new_message =
+        Enum.find(messages, fn
+          %Chat.Message{content: ^message_content} -> true
+          _other_message -> false
+        end)
+
+      assert new_message
+      assert new_message.sender_id == employer.id
+    end
   end
 
   describe "error handling and edge cases" do

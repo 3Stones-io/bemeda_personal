@@ -83,8 +83,6 @@ defmodule BemedaPersonalWeb.Router do
       live "/job_applications", JobApplicationLive.Index, :index
       live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
       live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
-      live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
-      live "/jobs/:job_id/job_applications/:id/history", JobApplicationLive.History, :show
     end
   end
 
@@ -142,6 +140,8 @@ defmodule BemedaPersonalWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/notifications", NotificationLive.Index, :index
       live "/notifications/:id", NotificationLive.Show, :show
+      live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
+      live "/jobs/:job_id/job_applications/:id/history", JobApplicationLive.History, :show
     end
   end
 
