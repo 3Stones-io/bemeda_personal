@@ -227,3 +227,8 @@ msgstr ""
 #, elixir-autogen
 msgid "Use the download button below to access the file"
 msgstr ""
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Attention"
+msgstr ""

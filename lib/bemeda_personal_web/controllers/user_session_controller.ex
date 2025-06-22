@@ -38,9 +38,7 @@ defmodule BemedaPersonalWeb.UserSessionController do
         |> redirect(to: ~p"/users/log_in")
 
       %Accounts.User{confirmed_at: nil} ->
-        conn
-        |> put_flash(:error, dgettext("auth", "You must confirm your email address"))
-        |> redirect(to: ~p"/users/log_in")
+        handle_unconfirmed_user(conn)
 
       user ->
         user_locale = Atom.to_string(user.locale)
@@ -53,6 +51,27 @@ defmodule BemedaPersonalWeb.UserSessionController do
         |> put_flash(:info, translated_message)
         |> UserAuth.log_in_user(user, user_params)
     end
+  end
+
+  defp handle_unconfirmed_user(%{params: %{"_action" => "registered"}} = conn) do
+    conn
+    |> put_flash(
+      :warning,
+      dgettext(
+        "auth",
+        "Please check your email and click the confirmation link to complete your registration."
+      )
+    )
+    |> redirect(to: ~p"/users/log_in")
+  end
+
+  defp handle_unconfirmed_user(conn) do
+    conn
+    |> put_flash(
+      :error,
+      dgettext("auth", "You must confirm your email address before logging in.")
+    )
+    |> redirect(to: ~p"/users/log_in")
   end
 
   @spec delete(conn(), params()) :: conn()

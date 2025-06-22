@@ -262,11 +262,6 @@ msgstr ""
 msgid "You must be logged in to rate."
 msgstr ""
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "You must confirm your email address"
-msgstr ""
-
 #: lib/bemeda_personal_web/user_auth.ex
 #, elixir-autogen, elixir-format
 msgid "You must log in to access this page."
@@ -395,4 +390,14 @@ msgstr ""
 #: lib/bemeda_personal_web/user_auth.ex
 #, elixir-autogen, elixir-format
 msgid "You must be logged in as an employer to access this page."
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Please check your email and click the confirmation link to complete your registration."
+msgstr ""
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "You must confirm your email address before logging in."
 msgstr ""

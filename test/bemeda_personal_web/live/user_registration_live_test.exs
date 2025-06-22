@@ -188,7 +188,30 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       # Now do a logged in request and assert on the menu
       logged_in_conn = get(conn, ~p"/users/log_in")
       response = html_response(logged_in_conn, 200)
-      assert response =~ "You must confirm your email address"
+      assert response =~ "Please check your email and click the confirmation link"
+    end
+
+    test "includes _action=registered in form action on successful registration", %{
+      conn: conn
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      valid_attributes = Map.drop(valid_user_attributes(), [:user_type])
+
+      step1_attributes = Map.take(valid_attributes, [:email, :first_name, :last_name, :password])
+
+      lv
+      |> form("#registration_form", user: step1_attributes)
+      |> render_submit()
+
+      step2_attributes = Map.drop(valid_attributes, [:first_name, :last_name])
+      form = form(lv, "#registration_form", user: step2_attributes)
+      render_submit(form)
+
+      conn = follow_trigger_action(form, conn)
+
+      assert redirected_to(conn) == ~p"/users/log_in"
+      assert conn.params["_action"] == "registered"
     end
 
     test "renders errors for invalid step 2 data", %{conn: conn} do

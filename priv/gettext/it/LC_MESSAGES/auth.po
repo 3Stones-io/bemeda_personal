@@ -262,11 +262,6 @@ msgstr "Invieremo un link di reimpostazione password alla tua casella di posta"
 msgid "You must be logged in to rate."
 msgstr "Devi essere connesso per valutare."
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "You must confirm your email address"
-msgstr "Devi confermare il tuo indirizzo email"
-
 #: lib/bemeda_personal_web/user_auth.ex
 #, elixir-autogen, elixir-format
 msgid "You must log in to access this page."
@@ -396,3 +391,13 @@ msgstr "Devi essere loggato come cercatore di lavoro per accedere a questa pagin
 #, elixir-autogen, elixir-format
 msgid "You must be logged in as an employer to access this page."
 msgstr "Devi essere loggato come datore di lavoro per accedere a questa pagina."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Please check your email and click the confirmation link to complete your registration."
+msgstr "Controlla la tua email e clicca sul link di conferma per completare la registrazione."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "You must confirm your email address before logging in."
+msgstr "Devi confermare il tuo indirizzo email prima di accedere."

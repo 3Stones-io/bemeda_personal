@@ -227,3 +227,8 @@ msgstr "Une erreur s'est produite, veuillez réessayer"
 #, elixir-autogen
 msgid "Use the download button below to access the file"
 msgstr "Utilisez le bouton de téléchargement ci-dessous pour accéder au fichier"
+
+#: lib/bemeda_personal_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Attention"
+msgstr "Attention"

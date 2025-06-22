@@ -67,7 +67,7 @@ defmodule BemedaPersonalWeb.UserLoginLiveTest do
       conn = submit_form(form, conn)
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
-               "You must confirm your email address"
+               "You must confirm your email address before logging in."
 
       assert redirected_to(conn) == "/users/log_in"
     end

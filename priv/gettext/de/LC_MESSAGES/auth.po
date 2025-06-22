@@ -262,11 +262,6 @@ msgstr "Wir senden einen Passwort-Zurücksetzungslink an Ihren Posteingang"
 msgid "You must be logged in to rate."
 msgstr "Sie müssen angemeldet sein, um zu bewerten."
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "You must confirm your email address"
-msgstr "Sie müssen Ihre E-Mail-Adresse bestätigen"
-
 #: lib/bemeda_personal_web/user_auth.ex
 #, elixir-autogen, elixir-format
 msgid "You must log in to access this page."
@@ -396,3 +391,13 @@ msgstr "Sie müssen als Arbeitssuchender angemeldet sein, um auf diese Seite zuz
 #, elixir-autogen, elixir-format
 msgid "You must be logged in as an employer to access this page."
 msgstr "Sie müssen als Arbeitgeber angemeldet sein, um auf diese Seite zuzugreifen."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Please check your email and click the confirmation link to complete your registration."
+msgstr "Bitte überprüfen Sie Ihre E-Mails und klicken Sie auf den Bestätigungslink, um Ihre Registrierung abzuschließen."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "You must confirm your email address before logging in."
+msgstr "Sie müssen Ihre E-Mail-Adresse bestätigen, bevor Sie sich anmelden können."

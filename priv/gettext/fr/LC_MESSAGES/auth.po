@@ -262,11 +262,6 @@ msgstr "Nous enverrons un lien de réinitialisation du mot de passe dans votre b
 msgid "You must be logged in to rate."
 msgstr "Vous devez être connecté pour évaluer."
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "You must confirm your email address"
-msgstr "Vous devez confirmer votre adresse email"
-
 #: lib/bemeda_personal_web/user_auth.ex
 #, elixir-autogen, elixir-format
 msgid "You must log in to access this page."
@@ -396,3 +391,13 @@ msgstr "Vous devez être connecté en tant que demandeur d'emploi pour accéder 
 #, elixir-autogen, elixir-format
 msgid "You must be logged in as an employer to access this page."
 msgstr "Vous devez être connecté en tant qu'employeur pour accéder à cette page."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Please check your email and click the confirmation link to complete your registration."
+msgstr "Veuillez vérifier votre email et cliquer sur le lien de confirmation pour compléter votre inscription."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "You must confirm your email address before logging in."
+msgstr "Vous devez confirmer votre adresse email avant de vous connecter."

@@ -85,6 +85,47 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
       assert get_session(conn, :locale) == "de"
     end
 
+    test "unconfirmed user with _action=registered shows warning message", %{
+      conn: conn
+    } do
+      user = user_fixture()
+
+      conn =
+        post(conn, ~p"/users/log_in", %{
+          "_action" => "registered",
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
+
+      assert redirected_to(conn) == ~p"/users/log_in"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :warning) ==
+               "Please check your email and click the confirmation link to complete your registration."
+    end
+
+    test "unconfirmed user without _action=registered shows error message", %{
+      conn: conn
+    } do
+      user = user_fixture()
+
+      conn =
+        post(conn, ~p"/users/log_in", %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
+
+      assert redirected_to(conn) == ~p"/users/log_in"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+               "You must confirm your email address before logging in."
+
+      refute Phoenix.Flash.get(conn.assigns.flash, :warning)
+    end
+
     test "login following registration shows a confirmation message", %{conn: conn} do
       user = user_fixture()
 
@@ -99,8 +140,8 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
 
       assert redirected_to(conn) == ~p"/users/log_in"
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
-               "You must confirm your email address"
+      assert Phoenix.Flash.get(conn.assigns.flash, :warning) =~
+               "Please check your email and click the confirmation link"
     end
 
     test "login following password update", %{conn: conn, user: user} do
