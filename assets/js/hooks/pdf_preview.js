@@ -101,7 +101,9 @@ export default PdfPreview = {
       previewContainer.appendChild(canvas)
 
       canvas.addEventListener('click', () => {
-        this.pushEvent('download_pdf', { uploadId: this.el.dataset.uploadId })
+        this.pushEvent('download_pdf', {
+          'upload-id': this.el.dataset.uploadId,
+        })
       })
     } catch (error) {
       console.error('PDF preview generation failed:', error)
