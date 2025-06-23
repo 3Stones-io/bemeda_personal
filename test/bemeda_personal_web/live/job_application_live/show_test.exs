@@ -4,8 +4,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobApplicationsFixtures
+  import BemedaPersonal.JobOffersFixtures
   import BemedaPersonal.JobPostingsFixtures
+  import BemedaPersonal.MediaFixtures
   import BemedaPersonal.ResumesFixtures
+  import ExUnit.CaptureLog
   import Mox
   import Phoenix.LiveViewTest
 
@@ -452,11 +455,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       assert html =~ "Job Offer Extended!"
-      assert html =~ "Accept Offer"
+      assert html =~ "Accept offer &amp; sign contract"
 
-      assert view
-             |> element("div.bg-green-50 button", "Accept Offer")
-             |> render_click() =~ "Congratulations! You have accepted the job offer."
+      # Click the signing button to open the modal
+      view
+      |> element("div.bg-green-50 button", "Accept offer & sign contract")
+      |> render_click()
+
+      # Verify the signing modal is displayed
+      assert render(view) =~ "Sign Your Contract"
     end
   end
 
@@ -602,8 +609,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       upload_id: upload_id,
       view: view
     } do
+      # Mock storage to return an error during download
       expect(MockStorage, :download_file, fn ^upload_id ->
-        {:error, "Invalid document format"}
+        {:error, "Download failed"}
       end)
 
       view
@@ -776,7 +784,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "Withdraw Application"
 
       refute html =~ "Start Review"
-      refute html =~ "Accept Offer"
+      refute html =~ "Accept offer &amp; sign contract"
       refute html =~ "Decline Offer"
     end
   end
@@ -1182,7 +1190,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "has extended you a job offer for"
       assert html =~ offer_extended_application.job_posting.company.name
       assert html =~ offer_extended_application.job_posting.title
-      assert html =~ "Accept Offer"
+      assert html =~ "Accept offer &amp; sign contract"
     end
 
     test "candidate can decline offer by withdrawing application", %{
@@ -1228,7 +1236,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       refute html =~ "Job Offer Extended!"
-      refute html =~ "Accept Offer"
+      refute html =~ "Accept offer &amp; sign contract"
 
       {:ok, offer_extended_application} =
         JobApplications.update_job_application_status(
@@ -1246,7 +1254,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       refute employer_html =~ "Job Offer Extended!"
-      refute employer_html =~ "Accept Offer"
+      refute employer_html =~ "Accept offer & sign contract"
     end
 
     test "candidate does not see Accept Offer button when offer is extended but contract not ready",
@@ -1283,7 +1291,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       # Should show offer extended message but NOT the Accept Offer button
       assert html =~ "Job Offer Extended!"
       assert html =~ "Contract is being generated"
-      refute html =~ "Accept Offer"
+      refute html =~ "Accept offer &amp; sign contract"
     end
 
     test "candidate sees Accept Offer button only when contract is ready", %{
@@ -1319,7 +1327,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       # Initially should show loading state, no Accept button
       assert html =~ "Job Offer Extended!"
       assert html =~ "Contract is being generated"
-      refute html =~ "Accept Offer"
+      refute html =~ "Accept offer &amp; sign contract"
 
       # Now create contract message and update job offer to extended status
       upload_id = Ecto.UUID.generate()
@@ -1358,7 +1366,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       updated_html = render(view)
       assert updated_html =~ "Job Offer Extended!"
       assert updated_html =~ "View Contract"
-      assert updated_html =~ "Accept Offer"
+      assert updated_html =~ "Accept offer &amp; sign contract"
       refute updated_html =~ "Contract is being generated"
     end
 
@@ -1871,6 +1879,250 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "pdf-preview-container"
       assert html =~ "invalid.pdf"
       assert html =~ invalid_upload_id
+    end
+  end
+
+  describe "digital signing flow" do
+    setup %{conn: conn} do
+      data = setup_basic_test_data(conn)
+      job_application = data.job_application
+      # Ensure job application has offer_extended state
+      {:ok, updated_application} =
+        JobApplications.update_job_application_status(
+          job_application,
+          job_application.user,
+          %{"to_state" => "offer_extended", "notes" => "Job offer extended"}
+        )
+
+      # Create a job offer with contract
+      job_offer_attrs = %{
+        job_application_id: updated_application.id,
+        status: :extended,
+        variables: %{}
+      }
+
+      job_offer = job_offer_fixture(job_offer_attrs)
+
+      # Create contract message
+      job_application_preloaded =
+        Repo.preload(job_application, job_posting: [company: :admin_user])
+
+      admin_user = job_application_preloaded.job_posting.company.admin_user
+      {:ok, message} = Chat.create_message(admin_user, updated_application, %{})
+
+      # Create media asset for contract
+      media_asset =
+        media_asset_fixture(message, %{
+          file_name: "job_offer_contract.pdf",
+          status: :uploaded,
+          type: "application/pdf",
+          upload_id: Ecto.UUID.generate()
+        })
+
+      # Update job offer with message
+      {:ok, updated_job_offer} = JobOffers.update_job_offer(job_offer, message, %{})
+
+      Map.merge(data, %{
+        job_application: updated_application,
+        job_offer: updated_job_offer,
+        message: message,
+        media_asset: media_asset
+      })
+    end
+
+    test "displays Accept offer & sign contract button for offer_extended state", %{
+      conn: conn,
+      job_application: job_application
+    } do
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      assert html =~ "Accept offer &amp; sign contract"
+      assert html =~ "phx-click=\"accept_offer\""
+    end
+
+    test "opens signing modal when clicking accept_offer", %{
+      conn: conn,
+      job_application: job_application,
+      media_asset: media_asset
+    } do
+      _upload_id = media_asset.upload_id
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click the accept offer button
+      view
+      |> element("button", "Accept offer & sign contract")
+      |> render_click()
+
+      # Should display signing modal
+      assert has_element?(view, "[role='dialog']")
+      assert has_element?(view, "h1", "Sign Your Contract")
+      assert has_element?(view, "#signwell-embed-container")
+    end
+
+    test "processes mock signing completion successfully", %{
+      conn: conn,
+      job_application: job_application,
+      media_asset: media_asset
+    } do
+      _upload_id = media_asset.upload_id
+
+      # Mock file upload for signed document
+      expect(MockStorage, :upload_file, fn _signed_upload_id, _content, "application/pdf" ->
+        :ok
+      end)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click the accept offer button to open modal
+      view
+      |> element("button", "Accept offer & sign contract")
+      |> render_click()
+
+      # Simulate signing completion event from JavaScript
+      result = render_hook(view, "signing_completed", %{"document-id" => "mock_doc_123"})
+
+      # Should show success message and close modal
+      assert result =~ "Contract signed successfully! Welcome aboard!"
+      refute has_element?(view, "[role='dialog']")
+    end
+
+    test "handles signing decline event", %{
+      conn: conn,
+      job_application: job_application,
+      media_asset: media_asset
+    } do
+      _upload_id = media_asset.upload_id
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click the accept offer button to open modal
+      view
+      |> element("button", "Accept offer & sign contract")
+      |> render_click()
+
+      # Simulate signing decline event from JavaScript
+      result =
+        render_hook(view, "signing_declined", %{
+          "document-id" => "mock_doc_123",
+          "decline-reason" => "User declined"
+        })
+
+      # Should show decline message and close modal
+      assert result =~ "Contract signing was declined"
+      refute has_element?(view, "[role='dialog']")
+    end
+
+    test "handles signing error event", %{
+      conn: conn,
+      job_application: job_application,
+      media_asset: media_asset
+    } do
+      _upload_id = media_asset.upload_id
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click the accept offer button to open modal
+      view
+      |> element("button", "Accept offer & sign contract")
+      |> render_click()
+
+      # Simulate signing error event from JavaScript (expected to log error)
+      log_output =
+        capture_log(fn ->
+          render_hook(view, "signing_error", %{"error" => "Mock signing error"})
+        end)
+
+      # Should show error message in the UI
+      updated_html = render(view)
+      assert updated_html =~ "An error occurred during signing"
+      # Verify the error was logged
+      assert log_output =~ "SignWell error: Mock signing error"
+    end
+
+    test "creates signed document chat message after successful signing", %{
+      conn: conn,
+      job_application: job_application,
+      media_asset: media_asset
+    } do
+      _upload_id = media_asset.upload_id
+
+      # Mock file upload for signed document
+      expect(MockStorage, :upload_file, fn _signed_upload_id, _content, "application/pdf" ->
+        :ok
+      end)
+
+      # Get initial message count
+      initial_messages = Chat.list_messages(job_application)
+      initial_count = length(initial_messages)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click the accept offer button to open modal
+      view
+      |> element("button", "Accept offer & sign contract")
+      |> render_click()
+
+      # Simulate signing completion event from JavaScript
+      render_hook(view, "signing_completed", %{"document-id" => "mock_doc_123"})
+
+      # Allow some time for async operations
+      :timer.sleep(100)
+
+      # Verify signed document message was created
+      final_messages = Chat.list_messages(job_application)
+      final_count = length(final_messages)
+
+      # Should have two additional messages: status update + signed document
+      assert final_count == initial_count + 2
+
+      # Find the signed document message (should have media and be from job seeker)
+      signed_document_message =
+        Enum.find(final_messages, fn
+          %Chat.Message{sender_id: sender_id, media_asset: %{} = _media_asset} ->
+            sender_id == job_application.user_id
+
+          _message ->
+            false
+        end)
+
+      assert signed_document_message
+      assert signed_document_message.sender_id == job_application.user_id
+      assert signed_document_message.media_asset
+
+      # Check content - should be "Signed employment contract"
+      assert signed_document_message.content == "Signed employment contract"
+
+      assert signed_document_message.media_asset.file_name == "signed_contract.pdf"
+      assert signed_document_message.media_asset.type == "application/pdf"
+      assert signed_document_message.media_asset.status == :uploaded
+
+      # Verify in the UI
+      assert render(view) =~ "signed_contract.pdf"
     end
   end
 end

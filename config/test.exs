@@ -49,3 +49,10 @@ config :bemeda_personal, Oban, testing: :manual
 
 # Gettext
 config :bemeda_personal, BemedaPersonalWeb.Gettext, default_locale: "en"
+
+# Always use mock provider in tests
+config :bemeda_personal, :digital_signatures,
+  provider: :mock,
+  providers: %{
+    mock: %{}
+  }

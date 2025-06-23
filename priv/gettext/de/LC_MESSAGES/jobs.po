@@ -17,7 +17,6 @@ msgid "%{applicant} applied for the %{position} position at %{company}."
 msgstr "%{applicant} hat sich für die Position %{position} bei %{company} beworben."
 
 #: lib/bemeda_personal_web/i18n.ex
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Accept Offer"
 msgstr "Angebot Annehmen"
@@ -1363,16 +1362,6 @@ msgstr "%{company} hat Ihnen ein Stellenangebot für %{position} unterbreitet."
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: lib/bemeda_personal_web/live/job_application_live/show.ex
-#, elixir-autogen, elixir-format
-msgid "Congratulations! You have accepted the job offer."
-msgstr "Herzlichen Glückwunsch! Sie haben das Stellenangebot angenommen."
-
-#: lib/bemeda_personal_web/live/job_application_live/show.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to accept the offer. Please try again."
-msgstr "Das Angebot konnte nicht angenommen werden. Bitte versuchen Sie es erneut."
-
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Job Offer Extended!"
@@ -1419,9 +1408,9 @@ msgid "Ms."
 msgstr "Frau"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "An offer has already been extended for this application."
-msgstr "Ein Angebot wurde für diese Position unterbreitet"
+msgstr "Für diese Bewerbung wurde bereits ein Angebot unterbreitet."
 
 #: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
 #, elixir-autogen, elixir-format
@@ -1598,3 +1587,88 @@ msgstr "%{count} Stellen gefunden"
 #, elixir-autogen, elixir-format
 msgid "1 job found"
 msgstr "1 Stelle gefunden"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "An error occurred during signing. Please try again."
+msgstr "Beim Signieren ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Contract signed successfully! Welcome aboard! 🎉"
+msgstr "Vertrag erfolgreich unterzeichnet! Willkommen an Bord! 🎉"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Contract signing was declined."
+msgstr "Die Vertragsunterzeichnung wurde abgelehnt."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Contract successfully signed! Welcome aboard! 🎉"
+msgstr "Vertrag erfolgreich unterzeichnet! Willkommen an Bord! 🎉"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to initiate signing process. Please try again."
+msgstr "Der Signiervorgang konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to process signed contract. Please contact support."
+msgstr "Der unterzeichnete Vertrag konnte nicht verarbeitet werden. Bitte kontaktieren Sie den Support."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "No contract document available for signing."
+msgstr "Kein Vertragsdokument zum Unterzeichnen verfügbar."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "No job offer found for this application."
+msgstr "Kein Stellenangebot für diese Bewerbung gefunden."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Please review and sign your employment contract below."
+msgstr "Bitte prüfen und unterzeichnen Sie Ihren Arbeitsvertrag unten."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Preparing signing interface..."
+msgstr "Signatur-Oberfläche wird vorbereitet..."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Sign Your Contract"
+msgstr "Ihren Vertrag unterzeichnen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing failed. Please try again."
+msgstr "Signierung fehlgeschlagen. Bitte versuchen Sie es erneut."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing session expired. Please try again."
+msgstr "Signiersitzung abgelaufen. Bitte versuchen Sie es erneut."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing session timed out. Please try again."
+msgstr "Signiersitzung abgelaufen. Bitte versuchen Sie es erneut."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing was declined."
+msgstr "Die Signierung wurde abgelehnt."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Your signature is legally binding and secure."
+msgstr "Ihre Unterschrift ist rechtlich bindend und sicher."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Accept offer & sign contract"
+msgstr "Angebot annehmen & Vertrag unterzeichnen"

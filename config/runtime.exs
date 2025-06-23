@@ -275,4 +275,23 @@ if config_env() == :prod do
     access_key_id: tigris_access_key_id,
     bucket: tigris_bucket,
     secret_access_key: tigris_secret_access_key
+
+  # Digital signatures configuration
+  signing_provider = System.get_env("SIGNING_PROVIDER", "signwell") |> String.to_atom()
+
+  signwell_api_key =
+    System.get_env("SIGNWELL_API_KEY") ||
+      raise """
+      environment variable SIGNWELL_API_KEY is missing.
+      """
+
+  config :bemeda_personal, :digital_signatures,
+    provider: signing_provider,
+    providers: %{
+      mock: %{},
+      signwell: %{
+        api_key: signwell_api_key,
+        test_mode: System.get_env("SIGNWELL_TEST_MODE", "false") == "true"
+      }
+    }
 end

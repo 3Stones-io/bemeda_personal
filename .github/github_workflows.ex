@@ -164,6 +164,8 @@ defmodule GithubWorkflows do
           MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}
+          SIGNWELL_API_KEY=${{ secrets.SIGNWELL_API_KEY }}
+          SIGNWELL_TEST_MODE=true
           TIGRIS_ACCESS_KEY_ID=${{ secrets.TIGRIS_ACCESS_KEY_ID }}
           TIGRIS_BUCKET=${{ secrets.TIGRIS_BUCKET }}
           TIGRIS_SECRET_ACCESS_KEY=${{ secrets.TIGRIS_SECRET_ACCESS_KEY }}

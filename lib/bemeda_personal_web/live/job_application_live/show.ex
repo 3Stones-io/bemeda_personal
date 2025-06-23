@@ -2,6 +2,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.DigitalSignatures
+  alias BemedaPersonal.Documents.Storage
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Media
@@ -21,7 +23,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      |> stream_configure(:messages, dom_id: &"message-#{&1.id}")
      |> stream(:messages, [])
      |> assign(:show_status_transition_modal, false)
-     |> assign(:show_offer_details_modal, false)}
+     |> assign(:show_offer_details_modal, false)
+     |> assign(:show_signing_modal, false)
+     |> assign(:signing_session, nil)}
   end
 
   @impl Phoenix.LiveView
@@ -122,27 +126,44 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   def handle_event("accept_offer", _params, socket) do
     job_application = socket.assigns.job_application
 
-    case JobApplications.update_job_application_status(
+    case DigitalSignatures.create_signing_session(
            job_application,
            socket.assigns.current_user,
-           %{"to_state" => "offer_accepted", "notes" => "Offer accepted"}
+           self()
          ) do
-      {:ok, updated_job_application} ->
-        enqueue_status_update_notification(updated_job_application)
-
+      {:ok, %{session_id: session_id, signing_url: signing_url}} ->
         {:noreply,
-         put_flash(
-           socket,
-           :info,
-           dgettext("jobs", "Congratulations! You have accepted the job offer.")
-         )}
+         socket
+         |> assign(:show_signing_modal, true)
+         |> assign(:signing_session, %{
+           session_id: session_id,
+           signing_url: signing_url
+         })}
 
-      {:error, _changeset} ->
+      {:error, :no_job_offer} ->
         {:noreply,
          put_flash(
            socket,
            :error,
-           dgettext("jobs", "Failed to accept the offer. Please try again.")
+           dgettext("jobs", "No job offer found for this application.")
+         )}
+
+      {:error, :no_contract_document} ->
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "No contract document available for signing.")
+         )}
+
+      {:error, reason} ->
+        Logger.error("Failed to create signing session: #{inspect(reason)}")
+
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "Failed to initiate signing process. Please try again.")
          )}
     end
   end
@@ -185,6 +206,61 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      socket
      |> assign(:show_offer_details_modal, false)
      |> assign(:show_status_transition_modal, false)}
+  end
+
+  def handle_event("hide_signing_modal", _params, socket) do
+    if socket.assigns[:signing_session] do
+      DigitalSignatures.cancel_signing_session(socket.assigns.signing_session.session_id)
+    end
+
+    {:noreply,
+     socket
+     |> assign(:show_signing_modal, false)
+     |> assign(:signing_session, nil)}
+  end
+
+  def handle_event("signing_completed", %{"document-id" => document_id}, socket) do
+    case process_signing_completion(socket.assigns.job_application, document_id) do
+      {:ok, _result} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, dgettext("jobs", "Contract signed successfully! Welcome aboard! 🎉"))
+         |> assign(:signing_session, nil)
+         |> assign(:show_signing_modal, false)}
+
+      {:error, reason} ->
+        Logger.error("Failed to process signing completion: #{reason}")
+
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "Failed to process signed contract. Please contact support.")
+         )}
+    end
+  end
+
+  def handle_event("signing_declined", %{"document-id" => _document_id}, socket) do
+    {:noreply,
+     socket
+     |> put_flash(:info, dgettext("jobs", "Contract signing was declined."))
+     |> assign(:signing_session, nil)
+     |> assign(:show_signing_modal, false)}
+  end
+
+  def handle_event("signing_closed", %{"document-id" => _document_id}, socket) do
+    {:noreply, assign(socket, :show_signing_modal, false)}
+  end
+
+  def handle_event("signing_error", %{"error" => error}, socket) do
+    Logger.error("SignWell error: #{error}")
+
+    {:noreply,
+     put_flash(
+       socket,
+       :error,
+       dgettext("jobs", "An error occurred during signing. Please try again.")
+     )}
   end
 
   def handle_event("download_pdf", %{"upload-id" => upload_id}, socket) do
@@ -257,6 +333,72 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      socket
      |> assign(:job_offer, job_offer)
      |> assign(:show_offer_details_modal, false)}
+  end
+
+  # Handle messages from signing session GenServer
+  def handle_info({{:signing_completed, _signed_contract_id}, session_id}, socket) do
+    if socket.assigns[:signing_session] &&
+         socket.assigns.signing_session.session_id == session_id do
+      {:noreply,
+       socket
+       |> assign(:show_signing_modal, false)
+       |> assign(:signing_session, nil)
+       |> put_flash(:info, dgettext("jobs", "Contract successfully signed! Welcome aboard! 🎉"))}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info({:signing_declined, session_id}, socket) do
+    if socket.assigns[:signing_session] &&
+         socket.assigns.signing_session.session_id == session_id do
+      {:noreply,
+       socket
+       |> assign(:show_signing_modal, false)
+       |> assign(:signing_session, nil)
+       |> put_flash(:error, dgettext("jobs", "Signing was declined."))}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info({:signing_failed, session_id}, socket) do
+    if socket.assigns[:signing_session] &&
+         socket.assigns.signing_session.session_id == session_id do
+      {:noreply,
+       socket
+       |> assign(:show_signing_modal, false)
+       |> assign(:signing_session, nil)
+       |> put_flash(:error, dgettext("jobs", "Signing failed. Please try again."))}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info({:signing_expired, session_id}, socket) do
+    if socket.assigns[:signing_session] &&
+         socket.assigns.signing_session.session_id == session_id do
+      {:noreply,
+       socket
+       |> assign(:show_signing_modal, false)
+       |> assign(:signing_session, nil)
+       |> put_flash(:error, dgettext("jobs", "Signing session expired. Please try again."))}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info({:signing_timeout, session_id}, socket) do
+    if socket.assigns[:signing_session] &&
+         socket.assigns.signing_session.session_id == session_id do
+      {:noreply,
+       socket
+       |> assign(:show_signing_modal, false)
+       |> assign(:signing_session, nil)
+       |> put_flash(:error, dgettext("jobs", "Signing session timed out. Please try again."))}
+    else
+      {:noreply, socket}
+    end
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
@@ -373,5 +515,61 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     |> assign_available_statuses(job_application)
     |> assign_chat_form(changeset)
     |> stream(:messages, messages)
+  end
+
+  defp process_signing_completion(job_application, document_id) do
+    # For Mock provider, we need to simulate the complete signing workflow
+    # including document storage and chat message creation
+    signing_provider =
+      Application.get_env(:bemeda_personal, :digital_signatures)[:provider] || :mock
+
+    with {:ok, upload_id} <- download_and_store_signed_document(document_id, signing_provider),
+         {:ok, _updated_job_application} <-
+           DigitalSignatures.complete_signing(job_application, upload_id) do
+      {:ok, :completed}
+    end
+  end
+
+  defp download_and_store_signed_document(document_id, signing_provider) do
+    if signing_provider == :mock and String.starts_with?(document_id, "mock_doc_") do
+      handle_mock_signed_document(document_id)
+    else
+      handle_real_signed_document(document_id)
+    end
+  end
+
+  defp handle_mock_signed_document(document_id) do
+    Logger.debug("Mock signing completed for #{document_id}, creating mock signed document")
+    upload_id = Ecto.UUID.generate()
+
+    with {:ok, mock_content} <- get_mock_signed_document_content(),
+         :ok <- Storage.upload_file(upload_id, mock_content, "application/pdf") do
+      {:ok, upload_id}
+    end
+  end
+
+  defp handle_real_signed_document(document_id) do
+    upload_id = Ecto.UUID.generate()
+
+    with {:ok, signed_pdf} <- DigitalSignatures.download_signed_document(document_id),
+         :ok <- Storage.upload_file(upload_id, signed_pdf, "application/pdf") do
+      {:ok, upload_id}
+    end
+  end
+
+  defp get_mock_signed_document_content do
+    # Use the same mock document content that the Mock provider uses
+    fixture_path = "test/support/fixtures/files/Job_Offer_Serial_Template.docx"
+
+    case File.read(fixture_path) do
+      {:ok, content} ->
+        Logger.debug("Using test fixture file as mock signed document")
+        {:ok, content}
+
+      {:error, reason} ->
+        Logger.error("Failed to read test fixture file: #{reason}")
+        # Fallback to simple mock content
+        {:ok, "Mock signed document content"}
+    end
   end
 end

@@ -45,7 +45,9 @@ defmodule BemedaPersonal.Documents.ProcessorTest do
         "Recruiter_Position",
         "Recruiter_Phone",
         "Recruiter_Email",
-        "Candidate_Full_Name"
+        "Candidate_Full_Name",
+        "Place_Date",
+        "Signature"
       ]
 
       assert Enum.sort(variables) == Enum.sort(expected_variables)

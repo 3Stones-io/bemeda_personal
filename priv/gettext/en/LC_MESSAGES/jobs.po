@@ -17,7 +17,6 @@ msgid "%{applicant} applied for the %{position} position at %{company}."
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Accept Offer"
 msgstr ""
@@ -1363,16 +1362,6 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/job_application_live/show.ex
-#, elixir-autogen, elixir-format
-msgid "Congratulations! You have accepted the job offer."
-msgstr ""
-
-#: lib/bemeda_personal_web/live/job_application_live/show.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to accept the offer. Please try again."
-msgstr ""
-
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Job Offer Extended!"
@@ -1597,4 +1586,89 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "1 job found"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "An error occurred during signing. Please try again."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Contract signed successfully! Welcome aboard! 🎉"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Contract signing was declined."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Contract successfully signed! Welcome aboard! 🎉"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to initiate signing process. Please try again."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to process signed contract. Please contact support."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "No contract document available for signing."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "No job offer found for this application."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Please review and sign your employment contract below."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Preparing signing interface..."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Sign Your Contract"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing failed. Please try again."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing session expired. Please try again."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing session timed out. Please try again."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Signing was declined."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Your signature is legally binding and secure."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Accept offer & sign contract"
 msgstr ""

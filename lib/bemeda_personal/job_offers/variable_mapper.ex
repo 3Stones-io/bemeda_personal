@@ -24,7 +24,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
       |> Map.merge(map_job_posting_variables(job_application.job_posting))
       |> Map.merge(map_job_seeker_variables(job_application.user))
       |> Map.merge(map_manual_fields())
-      |> Map.merge(map_system_variables())
+      |> Map.merge(map_system_variables(job_application.user))
     end)
   end
 
@@ -85,14 +85,64 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
     }
   end
 
-  defp map_system_variables do
+  defp map_system_variables(user) do
     current_date = Date.utc_today()
     serial_number = "JO-#{current_date.year}-#{:rand.uniform(999_999)}"
+    formatted_date = format_date_for_contract(current_date, user.city)
 
     %{
       "Date" => Date.to_string(current_date),
+      "Place_Date" => formatted_date,
+      "Signature" => "{{signature}}",
       "Serial_Number" => serial_number
     }
+  end
+
+  defp format_date_for_contract(date, city) do
+    # Format date as "Place, Date" for contract signature section
+    # Example: "Zurich, 23rd June 2025"
+    day = date.day
+    month_name = get_month_name(date.month)
+    year = date.year
+
+    # Add ordinal suffix to day
+    day_with_suffix = add_ordinal_suffix(day)
+
+    formatted_date = "#{day_with_suffix} #{month_name} #{year}"
+
+    "#{city}, #{formatted_date}"
+  end
+
+  defp get_month_name(month) do
+    months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
+
+    Enum.at(months, month - 1)
+  end
+
+  defp add_ordinal_suffix(day) do
+    case day do
+      1 -> "1st"
+      2 -> "2nd"
+      3 -> "3rd"
+      21 -> "21st"
+      22 -> "22nd"
+      23 -> "23rd"
+      31 -> "31st"
+      _other_day -> "#{day}th"
+    end
   end
 
   defp determine_contract_locale(job_application) do

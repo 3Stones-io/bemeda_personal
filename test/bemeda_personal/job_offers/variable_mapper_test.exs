@@ -116,6 +116,18 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
       assert variables1["Date"] == variables2["Date"]
       assert variables1["Date"] == Date.to_string(Date.utc_today())
     end
+
+    test "formats Place_Date with city" do
+      user = user_fixture(%{city: "Geneva"})
+      company = company_fixture(user_fixture())
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      variables = VariableMapper.auto_populate_variables(job_application)
+
+      assert variables["Place_Date"] =~ "Geneva, "
+      assert variables["Place_Date"] =~ "#{Date.utc_today().day}"
+    end
   end
 
   describe "contract language priority" do

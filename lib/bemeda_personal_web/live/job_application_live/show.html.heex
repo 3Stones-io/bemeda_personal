@@ -142,8 +142,8 @@
           phx-click="accept_offer"
           class="inline-flex items-center px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold text-lg rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
         >
-          <.icon name="hero-check" class="w-6 h-6 mr-3" />
-          {dgettext("jobs", "Accept Offer")}
+          <.icon name="hero-pen" class="w-6 h-6 mr-3" />
+          {dgettext("jobs", "Accept offer & sign contract")}
         </button>
       </div>
     </div>
@@ -235,5 +235,54 @@
         </.button>
       </:actions>
     </.simple_form>
+  </.modal>
+
+  <.modal
+    :if={@show_signing_modal && @signing_session}
+    id="signing-modal"
+    show
+    on_cancel={JS.push("hide_signing_modal")}
+  >
+    <.header class="text-center">
+      <.icon name="hero-pen" class="w-8 h-8 mx-auto mb-2 text-blue-600" />
+      {dgettext("jobs", "Sign Your Contract")}
+    </.header>
+
+    <div class="text-center mb-6">
+      <p class="text-gray-600 mb-4">
+        {dgettext("jobs", "Please review and sign your employment contract below.")}
+      </p>
+    </div>
+
+    <div class="mb-6">
+      <div
+        :if={@signing_session && @signing_session.signing_url}
+        id="signwell-embed-container"
+        phx-hook="SignwellEmbed"
+        data-signing-url={@signing_session.signing_url}
+        class="w-full h-[70vh] border rounded-lg"
+      >
+      </div>
+
+      <div :if={!@signing_session || !@signing_session.signing_url} class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4">
+        </div>
+        <p class="text-gray-600">{dgettext("jobs", "Preparing signing interface...")}</p>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 text-center mb-4">
+      {dgettext("jobs", "Your signature is legally binding and secure.")}
+    </div>
+
+    <div class="flex justify-center">
+      <button
+        type="button"
+        phx-click="hide_signing_modal"
+        class="inline-flex justify-center rounded-md bg-gray-300 px-6 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-400"
+      >
+        Cancel
+      </button>
+    </div>
   </.modal>
 </section>

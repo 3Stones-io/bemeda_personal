@@ -32,6 +32,7 @@ import FlashAutoDisappear from './hooks/flash_auto_disappear'
 import PdfPreview from './hooks/pdf_preview'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
+import SignwellEmbed from './hooks/signwell_embed'
 import TagsInput from './hooks/tags_input'
 import TextTruncate from './hooks/text_truncate'
 
@@ -46,6 +47,7 @@ const Hooks = {
   PdfPreview,
   RatingsTooltip,
   RatingsTooltipContent,
+  SignwellEmbed,
   TagsInput,
   TextTruncate,
 }

@@ -15,6 +15,10 @@ defmodule BemedaPersonal.Application do
       # Start the Finch HTTP client for sending emails
       {Finch, name: BemedaPersonal.Finch},
       {Registry, keys: :unique, name: BemedaPersonal.Registry},
+      # Digital signatures infrastructure
+      {Registry, keys: :unique, name: BemedaPersonal.DigitalSignatures.SessionRegistry},
+      BemedaPersonal.DigitalSignatures.Providers.Mock,
+      BemedaPersonal.DigitalSignatures.SessionSupervisor,
       {Oban, Application.fetch_env!(:bemeda_personal, Oban)},
       # Start a worker by calling: BemedaPersonal.Worker.start_link(arg)
       # {BemedaPersonal.Worker, arg},

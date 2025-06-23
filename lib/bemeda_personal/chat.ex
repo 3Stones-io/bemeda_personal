@@ -124,9 +124,12 @@ defmodule BemedaPersonal.Chat do
   @spec create_message_with_media(user(), job_application(), attrs()) ::
           {:ok, message()} | {:error, changeset()}
   def create_message_with_media(%User{} = sender, %JobApplication{} = job_application, attrs) do
+    # Extract content from attrs for the message, media_data will be handled separately
+    content_attrs = Map.take(attrs, ["content"])
+
     changeset =
       %Message{}
-      |> Message.changeset(%{})
+      |> Message.changeset(content_attrs)
       |> Ecto.Changeset.put_assoc(:sender, sender)
       |> Ecto.Changeset.put_assoc(:job_application, job_application)
 

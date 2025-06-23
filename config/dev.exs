@@ -88,3 +88,15 @@ config :bemeda_personal, :tigris,
   access_key_id: System.get_env("TIGRIS_ACCESS_KEY_ID"),
   bucket: System.get_env("TIGRIS_BUCKET"),
   secret_access_key: System.get_env("TIGRIS_SECRET_ACCESS_KEY")
+
+# Digital signatures configuration for development
+config :bemeda_personal, :digital_signatures,
+  # Use SignWell provider in test mode for development
+  provider: :signwell,
+  providers: %{
+    mock: %{},
+    signwell: %{
+      api_key: System.get_env("SIGNWELL_API_KEY"),
+      test_mode: true
+    }
+  }
