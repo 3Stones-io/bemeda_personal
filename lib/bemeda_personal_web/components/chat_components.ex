@@ -284,6 +284,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
       phx-hook="PdfPreview"
       data-pdf-url={SharedHelpers.get_presigned_url(@message.media_asset.upload_id)}
       data-upload-id={@message.media_asset.upload_id}
+      data-max-pages="4"
       data-loading-text={dgettext("general", "Loading PDF preview...")}
       data-error-preview-unavailable={dgettext("general", "Preview unavailable")}
       data-error-details-unavailable={dgettext("general", "Unable to load PDF preview")}
@@ -302,7 +303,7 @@ defmodule BemedaPersonalWeb.ChatComponents do
       }
     >
       <div class="pdf-preview-container">
-        <div class="animate-pulse bg-gray-200 h-48 rounded-t-lg flex items-center justify-center">
+        <div class="animate-pulse bg-gray-200 h-[120px] rounded-t-lg flex items-center justify-center">
           <p class="text-gray-500 text-sm">{dgettext("general", "Loading PDF preview...")}</p>
         </div>
       </div>
