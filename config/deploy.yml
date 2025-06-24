@@ -19,7 +19,9 @@ servers:
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
 proxy:
   ssl: true
-  host: bemeda-personal.ch
+  hosts:
+    - bemeda-personal.ch
+    - www.bemeda-personal.ch
   # Proxy connects to your container on port 80 by default.
   app_port: 4256
   healthcheck:
