@@ -106,10 +106,10 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
 
       {:ok, _lv, html} = live(conn, ~p"/jobs")
 
-      assert html =~ "bg-blue-500 text-white text-xs rounded-full"
+      assert html =~ "bg-primary-600 text-white text-xs rounded-full"
 
       assert html =~
-               "<div class=\"absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full\">"
+               "<div class=\"absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-primary-600 text-white text-xs rounded-full\">"
 
       assert html =~ "1\n"
     end
@@ -139,10 +139,10 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
       Process.sleep(100)
 
       updated_html = render(lv)
-      assert updated_html =~ "bg-blue-500 text-white text-xs rounded-full"
+      assert updated_html =~ "bg-primary-600 text-white text-xs rounded-full"
 
       assert updated_html =~
-               "<div class=\"absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full\">"
+               "<div class=\"absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-primary-600 text-white text-xs rounded-full\">"
     end
   end
 

@@ -62,7 +62,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     test "shows step indicator", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register/job_seeker")
 
-      assert html =~ "bg-brand text-white"
+      assert html =~ "bg-primary-600 text-white"
       assert html =~ "bg-gray-200 text-gray-600"
     end
   end

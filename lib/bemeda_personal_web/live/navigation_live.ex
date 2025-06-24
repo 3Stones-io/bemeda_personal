@@ -61,7 +61,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
         <div class="flex justify-between h-16">
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
-              <.link navigate={~p"/"} class="text-xl font-bold text-indigo-600">
+              <.link navigate={~p"/"} class="text-xl font-bold text-primary-600">
                 Bemeda
               </.link>
             </div>
@@ -69,7 +69,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={!@current_user || @current_user.user_type == :job_seeker}
                 navigate={~p"/jobs"}
-                class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                class="border-transparent text-gray-500 hover:border-primary-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 {dgettext("navigation", "Jobs")}
               </.link>
@@ -77,7 +77,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={@current_user && @current_user.user_type == :job_seeker}
                 navigate={~p"/job_applications"}
-                class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                class="border-transparent text-gray-500 hover:border-primary-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 {dgettext("navigation", "My Applications")}
               </.link>
@@ -85,7 +85,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={!@current_user}
                 navigate={~p"/company/new"}
-                class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                class="border-transparent text-gray-500 hover:border-primary-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 {dgettext("navigation", "For Employers")}
               </.link>
@@ -93,7 +93,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={@current_user && @current_user.user_type == :employer && @user_company}
                 navigate={~p"/company"}
-                class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                class="border-transparent text-gray-500 hover:border-primary-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 {dgettext("navigation", "Company Dashboard")}
               </.link>
@@ -101,7 +101,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={@current_user && @current_user.user_type == :employer && !@user_company}
                 navigate={~p"/company/new"}
-                class="border-transparent text-gray-500 hover:border-indigo-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                class="border-transparent text-gray-500 hover:border-primary-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 {dgettext("navigation", "Create Company")}
               </.link>
@@ -138,7 +138,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
                     <span class="sr-only">{dgettext("navigation", "View notifications")}</span>
                     <div
                       :if={@notifications_count > 0}
-                      class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full"
+                      class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-primary-600 text-white text-xs rounded-full"
                     >
                       {@notifications_count}
                     </div>
@@ -150,7 +150,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 href={~p"/users/log_out"}
                 method="delete"
-                class="bg-indigo-600 text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium"
+                class="bg-primary-600 text-white hover:bg-primary-700 px-3 py-2 rounded-md text-sm font-medium"
               >
                 {dgettext("navigation", "Log out")}
               </.link>
@@ -164,7 +164,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
               <.link
                 navigate={~p"/users/register"}
-                class="bg-indigo-600 text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium"
+                class="bg-primary-600 text-white hover:bg-primary-700 px-3 py-2 rounded-md text-sm font-medium"
               >
                 {dgettext("navigation", "Sign up")}
               </.link>
@@ -181,7 +181,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
                   <span class="sr-only">{dgettext("navigation", "View notifications")}</span>
                   <div
                     :if={@notifications_count > 0}
-                    class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full"
+                    class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-primary-600 text-white text-xs rounded-full"
                   >
                     {@notifications_count}
                   </div>
@@ -191,7 +191,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             <% end %>
             <button
               type="button"
-              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
               aria-controls="mobile-menu"
               aria-expanded="false"
               phx-click={JS.toggle(to: "#mobile-menu")}
@@ -276,7 +276,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
             <.link
               href={~p"/users/log_out"}
               method="delete"
-              class="bg-indigo-600 text-white block px-3 py-2 rounded-md text-base font-medium"
+              class="bg-primary-600 text-white block px-3 py-2 rounded-md text-base font-medium"
             >
               {dgettext("navigation", "Log out")}
             </.link>
@@ -290,7 +290,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
             <.link
               navigate={~p"/users/register"}
-              class="bg-indigo-600 text-white block px-3 py-2 rounded-md text-base font-medium mt-1"
+              class="bg-primary-600 text-white block px-3 py-2 rounded-md text-base font-medium mt-1"
             >
               {dgettext("navigation", "Sign up")}
             </.link>

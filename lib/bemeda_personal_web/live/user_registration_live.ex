@@ -19,30 +19,17 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       {dgettext("auth", "Register for an account")}
       <:subtitle>
         {dgettext("auth", "Already registered?")}
-        <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
+        <.link
+          navigate={~p"/users/log_in"}
+          class="font-semibold text-primary-600 hover:text-primary-700 hover:underline"
+        >
           {dgettext("auth", "Log in")}
         </.link>
         {dgettext("auth", "to your account now.")}
       </:subtitle>
     </.header>
 
-    <div class="flex items-center justify-center mb-8 mt-6">
-      <div class="flex items-center">
-        <div class={[
-          "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium",
-          if(@current_step == 1, do: "bg-brand text-white", else: "bg-gray-200 text-gray-600")
-        ]}>
-          1
-        </div>
-        <div class="w-16 h-0.5 bg-gray-200 mx-2"></div>
-        <div class={[
-          "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium",
-          if(@current_step == 2, do: "bg-brand text-white", else: "bg-gray-200 text-gray-600")
-        ]}>
-          2
-        </div>
-      </div>
-    </div>
+    <.step_indicator steps={2} current_step={@current_step} />
 
     <.simple_form
       for={@form}
@@ -95,23 +82,26 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       {dgettext("auth", "Join as a client or freelancer")}
       <:subtitle>
         {dgettext("auth", "Already have an account?")}
-        <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
+        <.link
+          navigate={~p"/users/log_in"}
+          class="font-semibold text-primary-600 hover:text-primary-700 hover:underline"
+        >
           {dgettext("auth", "Log in")}
         </.link>
       </:subtitle>
     </.header>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <.link
         patch={~p"/users/register/employer"}
-        class="block p-6 border-2 border-gray-200 rounded-lg hover:border-brand hover:bg-brand transition-colors"
+        class="group block p-6 border-2 border-gray-200 rounded-lg hover:border-primary-600 hover:bg-primary-600 transition-colors"
       >
         <div class="text-center">
           <div class="text-2xl mb-2">👔</div>
-          <h3 class="font-semibold text-lg mb-2">
+          <h3 class="font-semibold text-lg mb-2 group-hover:text-white">
             {dgettext("auth", "I'm a client, hiring for a project")}
           </h3>
-          <p class="text-gray-600 text-sm">
+          <p class="text-gray-600 text-sm group-hover:text-gray-100">
             {dgettext("auth", "Post jobs and hire talented freelancers")}
           </p>
         </div>
@@ -119,14 +109,14 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
 
       <.link
         patch={~p"/users/register/job_seeker"}
-        class="block p-6 border-2 border-gray-200 rounded-lg hover:border-brand hover:bg-brand transition-colors"
+        class="group block p-6 border-2 border-gray-200 rounded-lg hover:border-primary-600 hover:bg-primary-600 transition-colors"
       >
         <div class="text-center">
           <div class="text-2xl mb-2">💼</div>
-          <h3 class="font-semibold text-lg mb-2">
+          <h3 class="font-semibold text-lg mb-2 group-hover:text-white">
             {dgettext("auth", "I'm a freelancer, looking for work")}
           </h3>
-          <p class="text-gray-600 text-sm">
+          <p class="text-gray-600 text-sm group-hover:text-gray-100">
             {dgettext("auth", "Find great projects and build your career")}
           </p>
         </div>
@@ -208,6 +198,29 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       phx-debounce="blur"
       required
     />
+    """
+  end
+
+  defp step_indicator(assigns) do
+    ~H"""
+    <div class="flex items-center justify-center mb-8 mt-6">
+      <div class="flex items-center">
+        <%= for step <- 1..@steps do %>
+          <div class={[
+            "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium",
+            if(@current_step >= step,
+              do: "bg-primary-600 text-white",
+              else: "bg-gray-200 text-gray-600"
+            )
+          ]}>
+            {step}
+          </div>
+          <%= if step < @steps do %>
+            <div class="w-16 h-0.5 bg-gray-200 mx-2"></div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
     """
   end
 

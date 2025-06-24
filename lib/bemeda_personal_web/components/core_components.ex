@@ -230,7 +230,11 @@ defmodule BemedaPersonalWeb.CoreComponents do
   """
   attr :type, :string, default: nil
   attr :class, :string, default: nil
-  attr :variant, :string, default: "primary", values: ["primary", "secondary", "danger"]
+
+  attr :variant, :string,
+    default: "primary",
+    values: ["primary", "secondary", "danger", "primary-light", "primary-outline"]
+
   attr :rest, :global, include: ~w(disabled form name value)
 
   slot :inner_block, required: true
@@ -253,7 +257,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   end
 
   defp button_variant_classes("primary") do
-    "bg-emerald-600 hover:bg-emerald-700 text-white"
+    "bg-primary-600 hover:bg-primary-700 text-white"
   end
 
   defp button_variant_classes("secondary") do
@@ -262,6 +266,14 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   defp button_variant_classes("danger") do
     "bg-red-600 hover:bg-red-700 text-white"
+  end
+
+  defp button_variant_classes("primary-light") do
+    "bg-primary-400 hover:bg-primary-500 text-white"
+  end
+
+  defp button_variant_classes("primary-outline") do
+    "border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white bg-transparent"
   end
 
   @doc """
@@ -702,7 +714,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   def list(assigns) do
     ~H"""
-    <div class="mt-14">
+    <div class="mt-8">
       <dl class="-my-4 divide-y divide-zinc-100">
         <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
           <dt class="w-1/4 flex-none text-zinc-500">{item.title}</dt>
@@ -725,7 +737,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
 
   def back(assigns) do
     ~H"""
-    <div class="mt-16">
+    <div class="mt-8">
       <.link
         navigate={@navigate}
         class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"

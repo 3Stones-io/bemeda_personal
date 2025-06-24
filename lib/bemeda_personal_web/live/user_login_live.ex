@@ -9,7 +9,10 @@ defmodule BemedaPersonalWeb.UserLoginLive do
         {dgettext("auth", "Log in to account")}
         <:subtitle>
           {dgettext("auth", "Don't have an account?")}
-          <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
+          <.link
+            navigate={~p"/users/register"}
+            class="font-semibold text-primary-600 hover:text-primary-700 hover:underline"
+          >
             {dgettext("auth", "Sign up")}
           </.link>
           {dgettext("auth", "for an account now.")}
