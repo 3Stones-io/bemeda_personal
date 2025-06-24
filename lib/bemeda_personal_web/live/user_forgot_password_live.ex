@@ -13,7 +13,13 @@ defmodule BemedaPersonalWeb.UserForgotPasswordLive do
       </.header>
 
       <.simple_form for={@form} id="reset_password_form" phx-submit="send_email">
-        <.input field={@form[:email]} type="email" placeholder={dgettext("auth", "Email")} required />
+        <.input
+          field={@form[:email]}
+          type="email"
+          label={dgettext("auth", "Email")}
+          placeholder={dgettext("auth", "Email")}
+          required
+        />
         <:actions>
           <.button phx-disable-with={dgettext("auth", "Sending...")} class="w-full">
             {dgettext("auth", "Send password reset instructions")}

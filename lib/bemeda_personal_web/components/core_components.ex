@@ -230,6 +230,7 @@ defmodule BemedaPersonalWeb.CoreComponents do
   """
   attr :type, :string, default: nil
   attr :class, :string, default: nil
+  attr :variant, :string, default: "primary", values: ["primary", "secondary", "danger"]
   attr :rest, :global, include: ~w(disabled form name value)
 
   slot :inner_block, required: true
@@ -239,8 +240,9 @@ defmodule BemedaPersonalWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "phx-submit-loading:opacity-75 rounded-lg py-2 px-3",
+        "text-sm font-semibold leading-6 active:text-white/80",
+        button_variant_classes(@variant),
         @class
       ]}
       {@rest}
@@ -248,6 +250,18 @@ defmodule BemedaPersonalWeb.CoreComponents do
       {render_slot(@inner_block)}
     </button>
     """
+  end
+
+  defp button_variant_classes("primary") do
+    "bg-emerald-600 hover:bg-emerald-700 text-white"
+  end
+
+  defp button_variant_classes("secondary") do
+    "bg-gray-500 hover:bg-gray-600 text-white"
+  end
+
+  defp button_variant_classes("danger") do
+    "bg-red-600 hover:bg-red-700 text-white"
   end
 
   @doc """

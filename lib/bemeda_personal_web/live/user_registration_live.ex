@@ -60,12 +60,13 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       {render_step(assigns)}
 
       <:actions>
-        <div class="flex gap-4">
+        <div class="flex gap-2 w-full">
           <.button
             :if={@current_step == 2}
             type="button"
             phx-click="previous_step"
-            class="flex-1 bg-gray-500 hover:bg-gray-600"
+            variant="secondary"
+            class="flex-1"
           >
             {dgettext("auth", "Back")}
           </.button>
@@ -75,6 +76,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
                 do: dgettext("auth", "Processing..."),
                 else: dgettext("auth", "Creating account...")
             }
+            variant="primary"
             class="flex-1"
           >
             {if @current_step == 1,
@@ -259,12 +261,13 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
       |> Map.put(:action, :insert)
 
     if step1_changeset.valid? do
-      step2_changeset = Accounts.change_user_registration_step2(%User{}, merged_params)
+      params_with_defaults = Map.put_new(merged_params, "country", "Switzerland")
+      step2_changeset = Accounts.change_user_registration_step2(%User{}, params_with_defaults)
 
       {:noreply,
        socket
        |> assign(:current_step, 2)
-       |> assign(:form_data, merged_params)
+       |> assign(:form_data, params_with_defaults)
        |> assign_form(step2_changeset)}
     else
       {:noreply, assign_form(socket, step1_changeset)}
