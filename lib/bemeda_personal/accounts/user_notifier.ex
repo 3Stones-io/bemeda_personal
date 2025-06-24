@@ -25,7 +25,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @type url :: String.t()
 
   @default_status_message dgettext("emails", "Application Status Updated")
-  @from {"BemedaPersonal", "contact@bemeda-personal.ch"}
+  @from {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
 
   @status_messages %{
     "offer_accepted" => dgettext("emails", "Offer Accepted"),

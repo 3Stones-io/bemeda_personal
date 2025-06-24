@@ -37,7 +37,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_confirmation_instructions(user, "CONFIRMATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Welcome - Confirm Your Account",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="CONFIRMATION_URL"/,
@@ -51,7 +51,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_reset_password_instructions(user, "PASSWORD_RESET_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Password Reset Request",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="PASSWORD_RESET_URL"/,
@@ -65,7 +65,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_update_email_instructions(user, "EMAIL_UPDATE_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Email Address Update Request",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="EMAIL_UPDATE_URL"/,
@@ -87,7 +87,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_new_message(user, message, "MESSAGE_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | New Message from Sender Name",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="MESSAGE_URL"/,
@@ -104,7 +104,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Job Application Received - Software Engineer",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="APPLICATION_URL"/,
@@ -122,7 +122,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_user_job_application_status(job_application, "APPLICATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Job Application Status Update - Job Offer Extended",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="APPLICATION_URL"/,
@@ -140,7 +140,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | New Job Application Received - Software Engineer",
         to: [{"Admin User", "admin@example.com"}],
         html_body: ~r/<a href="APPLICATION_URL"/,
@@ -158,7 +158,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_employer_job_application_status(job_application, "APPLICATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Job Application Status Update - Job Offer Extended",
         to: [{"Admin User", "admin@example.com"}],
         html_body: ~r/<a href="APPLICATION_URL"/,
@@ -182,7 +182,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_confirmation_instructions(german_user, "CONFIRMATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Willkommen - Bestätigen Sie Ihr Konto",
         to: [{"Hans Mueller", "hans@example.com"}],
         text_body: ~r/Hallo Hans Mueller,/,
@@ -202,7 +202,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_confirmation_instructions(french_user, "CONFIRMATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Bienvenue - Confirmez Votre Compte",
         to: [{"Pierre Dupont", "pierre@example.com"}],
         text_body: ~r/Bonjour Pierre Dupont,/,
@@ -222,7 +222,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_confirmation_instructions(italian_user, "CONFIRMATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Benvenuto - Conferma il tuo account",
         to: [{"Marco Rossi", "marco@example.com"}],
         text_body: ~r/Ciao Marco Rossi,/,
@@ -242,7 +242,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_reset_password_instructions(german_user, "RESET_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Passwort-Zurücksetzung angefordert",
         to: [{"Anna Schmidt", "anna@example.com"}],
         text_body: ~r/Hallo Anna Schmidt,/,
@@ -284,7 +284,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_new_message(french_user, message, "MESSAGE_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: "BemedaPersonal | Nouveau Message de Jean Durand",
         to: [{"Marie Martin", "marie@example.com"}],
         text_body: ~r/Bonjour Marie Martin,/,
@@ -317,7 +317,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: ~r/BemedaPersonal \| Candidatura ricevuta - Sviluppatore Software/,
         to: [{"Giulia Bianchi", "giulia@example.com"}],
         text_body: ~r/Ciao Giulia Bianchi,/,
@@ -353,7 +353,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: ~r/BemedaPersonal \| Neue Bewerbung erhalten - Software Engineer/,
         to: [{"Klaus Weber", "klaus@example.com"}],
         text_body: ~r/Hallo Klaus Weber,/,
@@ -389,7 +389,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       UserNotifier.deliver_employer_job_application_status(job_application, "STATUS_URL")
 
       assert_email_sent(
-        from: {"BemedaPersonal", "contact@bemeda-personal.ch"},
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
         subject: ~r/BemedaPersonal \| Job Application Status Update/,
         to: [{"Sarah Johnson", "sarah@example.com"}],
         text_body: ~r/Hi Sarah Johnson,/,
