@@ -1,0 +1,218 @@
+/* Custom styles for BemedaPersonal presentations */
+
+.reveal {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 28px; /* Reduced from default */
+}
+
+.reveal h1 {
+    font-size: 2.2em; /* Reduced from default 2.5em */
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.reveal h2 {
+    font-size: 1.8em; /* Reduced from default 2.11em */
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.reveal h3 {
+    font-size: 1.4em; /* Reduced from default 1.55em */
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.reveal p, .reveal li {
+    font-size: 0.85em; /* Smaller text */
+    line-height: 1.4;
+}
+
+.reveal .slides section {
+    text-align: left;
+}
+
+.reveal .slides section.center {
+    text-align: center;
+}
+
+/* Mermaid diagram styling */
+.mermaid {
+    background: white !important;
+    width: 100%;
+    margin: 0 auto;
+    font-size: 18px !important; /* Increased further for better readability */
+    overflow: visible;
+    text-align: center;
+}
+
+.mermaid svg {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 500px !important; /* Increased minimum height */
+    background: white !important;
+    max-width: none !important;
+}
+
+/* Make node text larger and more readable */
+.mermaid .nodeLabel, 
+.mermaid .node text,
+.mermaid text {
+    font-size: 16px !important; /* Much larger text */
+    font-weight: 600 !important;
+    fill: #1e293b !important;
+}
+
+.mermaid .edgeLabel {
+    font-size: 14px !important; /* Larger edge labels */
+    font-weight: 500 !important;
+}
+
+/* Make boxes larger */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node polygon {
+    stroke-width: 2px !important;
+    min-width: 120px !important;
+    min-height: 40px !important;
+}
+
+/* Scrollable diagram container */
+.diagram-container {
+    width: 100%;
+    height: 75vh; /* Increased height */
+    overflow: auto;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.diagram-container .mermaid {
+    max-height: none;
+    min-height: 600px; /* Ensure minimum height for content */
+}
+
+/* Feature status colors */
+.status-implemented {
+    color: #4F46E5;
+    font-weight: 600;
+}
+
+.status-critical {
+    color: #EF4444;
+    font-weight: 600;
+}
+
+.status-enhancement {
+    color: #F97316;
+    font-weight: 600;
+}
+
+.status-future {
+    color: #22C55E;
+    font-weight: 600;
+}
+
+.status-technical {
+    color: #8B5CF6;
+    font-weight: 600;
+}
+
+/* Code blocks */
+.reveal pre {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+}
+
+.reveal code {
+    background: #f1f5f9;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+}
+
+/* Lists */
+.reveal ul {
+    margin-left: 1em;
+}
+
+.reveal li {
+    margin-bottom: 0.5em;
+}
+
+/* Tables */
+.reveal table {
+    margin: 1em auto;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.reveal table th,
+.reveal table td {
+    padding: 0.5em;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.reveal table th {
+    background: #f8fafc;
+    font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .reveal {
+        font-size: 24px; /* Even smaller on mobile */
+    }
+    
+    .reveal .slides {
+        font-size: 0.8em;
+    }
+    
+    .legend {
+        font-size: 0.5em;
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .mermaid {
+        font-size: 10px;
+    }
+}
+
+/* Animation for diagram transitions */
+.reveal .slides section .fragment {
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.reveal .slides section .fragment.current-fragment {
+    opacity: 1;
+}
+
+/* Highlight boxes */
+.highlight-box {
+    background: #f0f9ff;
+    border-left: 4px solid #0ea5e9;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+}
+
+.warning-box {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+}
+
+.success-box {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+}

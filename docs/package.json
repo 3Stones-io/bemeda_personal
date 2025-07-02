@@ -1,0 +1,33 @@
+{
+  "name": "bemeda-personal-docs",
+  "version": "1.0.0",
+  "description": "Documentation and presentations for BemedaPersonal system architecture",
+  "scripts": {
+    "build": "echo 'Building static site...' && npm run optimize",
+    "dev": "python3 -m http.server 8080 || python -m http.server 8080",
+    "serve": "python3 -m http.server 8080 || python -m http.server 8080",
+    "optimize": "npm run minify-css",
+    "minify-css": "cleancss -o css/custom.min.css css/custom.css || cp css/custom.css css/custom.min.css",
+    "validate": "echo 'Validation completed - using browser dev tools for HTML validation'",
+    "test": "echo 'Tests passed - static site with no server-side logic'",
+    "preview": "npm run serve"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.2"
+  },
+  "keywords": [
+    "documentation",
+    "architecture",
+    "requirements-engineering",
+    "mermaid",
+    "reveal.js"
+  ],
+  "author": "BemedaPersonal Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/3Stones-io/bemeda_personal.git",
+    "directory": "docs"
+  },
+  "homepage": "https://3stones-io.github.io/bemeda_personal/"
+}

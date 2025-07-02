@@ -1,0 +1,65 @@
+# GitHub Pages Configuration for BemedaPersonal Documentation
+
+title: "BemedaPersonal - System Architecture"
+description: "Requirements Engineering and System Architecture Documentation for Swiss Manpower Matching Platform"
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Collections
+collections:
+  diagrams:
+    output: true
+    permalink: /:collection/:name/
+  presentations:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "diagrams"
+    values:
+      layout: "diagram"
+  - scope:
+      path: ""
+      type: "presentations"
+    values:
+      layout: "presentation"
+
+# Navigation
+nav_links:
+  - title: "Home"
+    url: "/"
+  - title: "Architecture Overview"
+    url: "/presentations/overview.html"
+  - title: "Use Cases"
+    url: "/presentations/use-cases.html"
+  - title: "Gap Analysis"
+    url: "/presentations/gap-analysis.html"
+  - title: "Diagrams"
+    url: "/diagrams/"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README.md
+  - package.json
+  - package-lock.json

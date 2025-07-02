@@ -35,6 +35,10 @@ bemeda_personal-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Documentation node_modules
+docs/node_modules/
+docs/package-lock.json
+
 # Secrets
 .env.prod
 
