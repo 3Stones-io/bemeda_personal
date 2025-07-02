@@ -28,7 +28,7 @@ defmodule BemedaPersonal.JobPostings.FilterUtils do
   end
 
   defp convert_field_value({key, value})
-       when key in [:department, :language, :region, :shift_type, :workload] and is_list(value) do
+       when key in [:department, :language, :region, :shift_type] and is_list(value) do
     {key, Enum.map(value, &string_to_atom/1)}
   end
 
@@ -36,7 +36,6 @@ defmodule BemedaPersonal.JobPostings.FilterUtils do
        when key in [
               :currency,
               :employment_type,
-              :experience_level,
               :position,
               :profession,
               :years_of_experience

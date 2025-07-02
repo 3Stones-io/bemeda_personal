@@ -17,7 +17,6 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     field :currency, Ecto.Enum, values: Enums.currencies()
     field :department, {:array, Ecto.Enum}, values: Enums.departments()
     field :employment_type, Ecto.Enum, values: Enums.employment_types()
-    field :experience_level, Ecto.Enum, values: Enums.experience_levels()
     field :language, {:array, Ecto.Enum}, values: Enums.languages()
     field :location, :string
     field :position, Ecto.Enum, values: Enums.positions()
@@ -28,7 +27,6 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     field :salary_min, :integer
     field :search, :string
     field :shift_type, {:array, Ecto.Enum}, values: Enums.shift_types()
-    field :workload, {:array, Ecto.Enum}, values: Enums.workloads()
     field :years_of_experience, Ecto.Enum, values: Enums.years_of_experience()
   end
 
@@ -37,7 +35,6 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     :currency,
     :department,
     :employment_type,
-    :experience_level,
     :language,
     :location,
     :position,
@@ -48,7 +45,6 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     :salary_min,
     :search,
     :shift_type,
-    :workload,
     :years_of_experience
   ]
 

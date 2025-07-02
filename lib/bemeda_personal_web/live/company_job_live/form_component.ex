@@ -73,26 +73,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             />
 
             <.input
-              field={f[:workload]}
+              field={f[:part_time_details]}
               type="multi-select"
-              label={dgettext("jobs", "Workload")}
-              prompt={dgettext("jobs", "Select workload")}
-              options={get_translated_options(:workload)}
-              nested_input?={true}
-              show_nested_input="Part-time"
+              label={dgettext("jobs", "Part-time Details")}
+              prompt={dgettext("jobs", "Select part-time details")}
+              options={get_translated_options(:part_time_details)}
               phx-debounce="blur"
-            >
-              <:nested_input>
-                <.input
-                  field={f[:part_time_details]}
-                  type="multi-select"
-                  label={dgettext("jobs", "Workload Type")}
-                  prompt={dgettext("jobs", "Select workload type")}
-                  options={get_translated_options(:part_time_details)}
-                  phx-debounce="blur"
-                />
-              </:nested_input>
-            </.input>
+            />
           </div>
 
           <.input
@@ -103,24 +90,14 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
             phx-debounce="blur"
           />
 
-          <div class="grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-2">
-            <.input
-              field={f[:experience_level]}
-              type="select"
-              label={dgettext("jobs", "Experience Level")}
-              prompt={dgettext("jobs", "Select experience level")}
-              options={get_translated_options(:experience_level)}
-            />
-
-            <.input
-              field={f[:years_of_experience]}
-              type="select"
-              label={dgettext("jobs", "Years of Experience")}
-              prompt={dgettext("jobs", "Select experience range")}
-              options={get_translated_options(:years_of_experience)}
-              phx-debounce="blur"
-            />
-          </div>
+          <.input
+            field={f[:years_of_experience]}
+            type="select"
+            label={dgettext("jobs", "Years of Experience")}
+            prompt={dgettext("jobs", "Select experience range")}
+            options={get_translated_options(:years_of_experience)}
+            phx-debounce="blur"
+          />
 
           <.input
             field={f[:position]}
@@ -352,7 +329,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   end
 
   defp translate_enum_value(:employment_type, value), do: I18n.translate_employment_type(value)
-  defp translate_enum_value(:experience_level, value), do: I18n.translate_experience_level(value)
   defp translate_enum_value(:department, value), do: I18n.translate_department(value)
   defp translate_enum_value(:gender, value), do: I18n.translate_gender(value)
   defp translate_enum_value(:language, value), do: I18n.translate_language(value)
@@ -364,7 +340,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.FormComponent do
   defp translate_enum_value(:profession, value), do: I18n.translate_profession(value)
   defp translate_enum_value(:region, value), do: I18n.translate_region(value)
   defp translate_enum_value(:shift_type, value), do: I18n.translate_shift_type(value)
-  defp translate_enum_value(:workload, value), do: I18n.translate_workload(value)
 
   defp translate_enum_value(:years_of_experience, value),
     do: I18n.translate_years_of_experience(value)

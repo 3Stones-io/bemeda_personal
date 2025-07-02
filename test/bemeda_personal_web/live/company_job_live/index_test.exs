@@ -132,7 +132,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         "job_posting" => %{
           "description" => "We are looking for a talented software engineer to join our team.",
           "employment_type" => "Permanent Position",
-          "experience_level" => "Mid-level",
           "location" => "Remote",
           "remote_allowed" => true,
           "title" => "Software Engineer",
@@ -142,8 +141,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
           "years_of_experience" => "2-5 years",
           "position" => "Employee",
           "gender" => ["Male", "Female"],
-          "language" => ["English"],
-          "workload" => ["Full-time"]
+          "language" => ["English"]
         }
       })
       |> render_submit()
@@ -176,7 +174,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         "job_posting" => %{
           "description" => "We are looking for a talented software engineer to join our team.",
           "employment_type" => "Permanent Position",
-          "experience_level" => "Mid-level",
           "location" => "Remote",
           "remote_allowed" => true,
           "title" => "Software Engineer"
@@ -494,7 +491,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
             description: @create_attrs_job.description,
             location: @create_attrs_job.location,
             employment_type: "Permanent Position",
-            experience_level: "Senior",
+            position: "Specialist Role",
             remote_allowed: true
           }
         })

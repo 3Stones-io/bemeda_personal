@@ -32,7 +32,6 @@ defmodule BemedaPersonal.JobPostingsTest do
       job_posting_fixture(company, %{
         description: "Description for job posting #{i}",
         employment_type: "Permanent Position",
-        experience_level: "Mid-level",
         location: "Location #{i}",
         remote_allowed: rem(i, 2) == 0,
         salary_max: i * 15_000,
@@ -93,18 +92,6 @@ defmodule BemedaPersonal.JobPostingsTest do
       job_posting_fixture(company, %{employment_type: "Floater"})
 
       assert [result] = JobPostings.list_job_postings(%{employment_type: "Permanent Position"})
-      assert result.id == job_posting1.id
-      assert Ecto.assoc_loaded?(result.company)
-    end
-
-    test "can filter job_postings by experience_level" do
-      user = user_fixture()
-      company = company_fixture(user)
-
-      job_posting1 = job_posting_fixture(company, %{experience_level: "Senior"})
-      job_posting_fixture(company, %{experience_level: "Junior"})
-
-      assert [result] = JobPostings.list_job_postings(%{experience_level: "Senior"})
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
     end
@@ -239,8 +226,8 @@ defmodule BemedaPersonal.JobPostingsTest do
           currency: "USD",
           description: "Description for older job",
           employment_type: "Permanent Position",
-          experience_level: "Mid-level",
           location: "Location",
+          position: "Employee",
           remote_allowed: false,
           salary_max: 70_000,
           salary_min: 50_000,
@@ -256,8 +243,8 @@ defmodule BemedaPersonal.JobPostingsTest do
           currency: "USD",
           description: "Description for middle job",
           employment_type: "Permanent Position",
-          experience_level: "Mid-level",
           location: "Location",
+          position: "Employee",
           remote_allowed: false,
           salary_max: 80_000,
           salary_min: 60_000,
@@ -273,8 +260,8 @@ defmodule BemedaPersonal.JobPostingsTest do
           currency: "USD",
           description: "Description for newer job",
           employment_type: "Permanent Position",
-          experience_level: "Mid-level",
           location: "Location",
+          position: "Employee",
           remote_allowed: false,
           salary_max: 90_000,
           salary_min: 70_000,
@@ -298,8 +285,8 @@ defmodule BemedaPersonal.JobPostingsTest do
           currency: "USD",
           description: "Description for another older job",
           employment_type: "Permanent Position",
-          experience_level: "Mid-level",
           location: "Location",
+          position: "Employee",
           remote_allowed: true,
           salary_max: 75_000,
           salary_min: 55_000,

@@ -26,7 +26,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           description:
             "We are seeking an experienced registered nurse to join our intensive care unit. The ideal candidate will have strong clinical skills and experience with critical care patients.",
           location: "Zurich Hospital",
-          profession: "Registered Nurse (AKP / DN II / HF / FH)",
+          profession: "Registered Nurse (AKP/DNII/HF/FH)",
           department: ["Intensive Care"],
           employment_type: "Permanent Position"
         })
@@ -48,7 +48,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           description:
             "Provide compassionate care to patients in their homes. Experience with elderly care and chronic disease management preferred.",
           location: "Basel Region",
-          profession: "Registered Nurse (AKP / DN II / HF / FH)",
+          profession: "Registered Nurse (AKP/DNII/HF/FH)",
           department: ["Home Care (Spitex)"],
           employment_type: "Temporary Assignment"
         })
@@ -150,7 +150,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
     test "works correctly with other filters combined", %{jobs: [job1, job2, _job3, _job4]} do
       filters = %{
         search: "nurse",
-        profession: "Registered Nurse (AKP / DN II / HF / FH)"
+        profession: "Registered Nurse (AKP/DNII/HF/FH)"
       }
 
       filter_config = JobPostingFilters.filter_config()

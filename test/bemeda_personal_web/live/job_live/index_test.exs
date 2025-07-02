@@ -16,7 +16,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
           title: "Senior Software Engineer",
           location: "San Francisco",
           employment_type: "Permanent Position",
-          experience_level: "Senior",
+          position: "Specialist Role",
           remote_allowed: true
         })
 
@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
           title: "UX Designer",
           location: "New York",
           employment_type: "Floater",
-          experience_level: "Mid-level",
+          position: "Employee",
           remote_allowed: false
         })
 
@@ -34,7 +34,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
           title: "Frontend Developer",
           location: "Remote",
           employment_type: "Staff Pool",
-          experience_level: "Mid-level",
+          position: "Employee",
           remote_allowed: true
         })
 
@@ -63,7 +63,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
       job2: job2,
       job3: job3
     } do
-      {:ok, view, _html} = live(conn, ~p"/jobs?experience_level=Mid-level&remote_allowed=true")
+      {:ok, view, _html} = live(conn, ~p"/jobs?position=Employee&remote_allowed=true")
 
       html = render(view)
       refute html =~ job1.title
@@ -90,7 +90,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
     end
 
     test "multiple filters can be combined", %{conn: conn, job1: job1, job2: job2, job3: job3} do
-      {:ok, view, _html} = live(conn, ~p"/jobs?remote_allowed=true&experience_level=Senior")
+      {:ok, view, _html} = live(conn, ~p"/jobs?position=Specialist%20Role&remote_allowed=true")
 
       html = render(view)
       assert html =~ job1.title
@@ -104,7 +104,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
       job2: job2,
       job3: job3
     } do
-      {:ok, view, _html} = live(conn, ~p"/jobs?experience_level=Senior")
+      {:ok, view, _html} = live(conn, ~p"/jobs?position=Specialist%20Role")
 
       html = render(view)
       assert html =~ job1.title

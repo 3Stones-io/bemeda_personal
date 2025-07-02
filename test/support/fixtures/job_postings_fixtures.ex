@@ -28,7 +28,6 @@ defmodule BemedaPersonal.JobPostingsFixtures do
         "department" => ["Administration"],
         "description" => "some description that is long enough to meet validation requirements",
         "employment_type" => "Permanent Position",
-        "experience_level" => "Mid-level",
         "gender" => ["Male"],
         "language" => ["English"],
         "location" => "some location",
@@ -41,7 +40,6 @@ defmodule BemedaPersonal.JobPostingsFixtures do
         "salary_min" => 42_000,
         "shift_type" => ["Day Shift"],
         "title" => "some title",
-        "workload" => ["Full-time"],
         "years_of_experience" => "2-5 years"
       }
 

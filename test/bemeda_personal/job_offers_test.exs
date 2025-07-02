@@ -6,6 +6,7 @@ defmodule BemedaPersonal.JobOffersTest do
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobOffersFixtures
   import BemedaPersonal.JobPostingsFixtures
+  import Ecto.Changeset, only: [get_change: 2]
 
   alias BemedaPersonal.Chat
   alias BemedaPersonal.JobOffers
@@ -62,6 +63,28 @@ defmodule BemedaPersonal.JobOffersTest do
       assert job_offer.variables == %{"First_Name" => "John", "Last_Name" => "Doe"}
     end
 
+    test "with contract timestamps creates a job_offer" do
+      user = user_fixture()
+      company = company_fixture(user_fixture())
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      now = DateTime.utc_now(:second)
+
+      valid_attrs = %{
+        job_application_id: job_application.id,
+        status: :pending,
+        variables: %{"First_Name" => "John", "Last_Name" => "Doe"},
+        contract_generated_at: now,
+        contract_signed_at: nil
+      }
+
+      assert {:ok, %JobOffer{} = job_offer} = JobOffers.create_job_offer(valid_attrs)
+      assert job_offer.status == :pending
+      assert job_offer.contract_generated_at == now
+      refute job_offer.contract_signed_at
+    end
+
     test "with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = JobOffers.create_job_offer(@invalid_attrs)
     end
@@ -116,6 +139,30 @@ defmodule BemedaPersonal.JobOffersTest do
 
       assert job_offer == JobOffers.get_job_offer!(job_offer.id)
     end
+
+    test "can update contract timestamp fields" do
+      user = user_fixture()
+      company = company_fixture(user_fixture())
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+      job_offer = job_offer_fixture(%{job_application_id: job_application.id})
+
+      {:ok, message} =
+        Chat.create_message(user, job_application, %{content: "Update message", media_data: %{}})
+
+      now = DateTime.utc_now(:second)
+
+      update_attrs = %{
+        contract_generated_at: now,
+        contract_signed_at: DateTime.add(now, 3600, :second)
+      }
+
+      assert {:ok, %JobOffer{} = updated_offer} =
+               JobOffers.update_job_offer(job_offer, message, update_attrs)
+
+      assert updated_offer.contract_generated_at == now
+      assert updated_offer.contract_signed_at == DateTime.add(now, 3600, :second)
+    end
   end
 
   describe "auto_populate_variables/1" do
@@ -139,6 +186,46 @@ defmodule BemedaPersonal.JobOffersTest do
       assert variables["Employer_Country"] == "Switzerland"
       assert variables["Date"] == Date.to_string(Date.utc_today())
       assert String.starts_with?(variables["Serial_Number"], "JO-#{Date.utc_today().year}-")
+    end
+  end
+
+  describe "changeset/2" do
+    test "casts contract timestamp fields" do
+      user = user_fixture()
+      company = company_fixture(user_fixture())
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      now = DateTime.utc_now(:second)
+
+      changeset =
+        JobOffer.changeset(%JobOffer{}, %{
+          job_application_id: job_application.id,
+          status: :pending,
+          contract_generated_at: now,
+          contract_signed_at: DateTime.add(now, 7200, :second)
+        })
+
+      assert changeset.valid?
+      assert get_change(changeset, :contract_generated_at) == now
+      assert get_change(changeset, :contract_signed_at) == DateTime.add(now, 7200, :second)
+    end
+
+    test "allows nil contract timestamps" do
+      user = user_fixture()
+      company = company_fixture(user_fixture())
+      job_posting = job_posting_fixture(company)
+      job_application = job_application_fixture(user, job_posting)
+
+      changeset =
+        JobOffer.changeset(%JobOffer{}, %{
+          job_application_id: job_application.id,
+          status: :pending,
+          contract_generated_at: nil,
+          contract_signed_at: nil
+        })
+
+      assert changeset.valid?
     end
   end
 end

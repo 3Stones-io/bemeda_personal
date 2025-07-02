@@ -22,7 +22,6 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
     field :department, {:array, Ecto.Enum}, values: Enums.departments()
     field :description, :string
     field :employment_type, Ecto.Enum, values: Enums.employment_types()
-    field :experience_level, Ecto.Enum, values: Enums.experience_levels()
     field :gender, {:array, Ecto.Enum}, values: Enums.genders()
     field :language, {:array, Ecto.Enum}, values: Enums.languages()
     field :location, :string
@@ -36,7 +35,6 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
     field :salary_min, :integer
     field :shift_type, {:array, Ecto.Enum}, values: Enums.shift_types()
     field :title, :string
-    field :workload, {:array, Ecto.Enum}, values: Enums.workloads()
     field :years_of_experience, Ecto.Enum, values: Enums.years_of_experience()
 
     timestamps(type: :utc_datetime)
@@ -50,7 +48,6 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
       :department,
       :description,
       :employment_type,
-      :experience_level,
       :gender,
       :language,
       :location,
@@ -63,7 +60,6 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
       :salary_min,
       :shift_type,
       :title,
-      :workload,
       :years_of_experience
     ])
     |> validate_required([:title, :description])

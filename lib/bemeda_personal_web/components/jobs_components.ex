@@ -133,13 +133,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
         </dd>
       </div>
 
-      <div>
-        <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Experience Level")}</dt>
-        <dd class="mt-1 text-sm text-gray-900">
-          {@job.experience_level || dgettext("general", "Not specified")}
-        </dd>
-      </div>
-
       <div :if={@job.remote_allowed}>
         <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Remote Work")}</dt>
         <dd class="mt-1 text-sm text-gray-900">
@@ -436,17 +429,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
                   <div>
                     <.input
-                      field={f[:experience_level]}
-                      label={dgettext("jobs", "Experience Level")}
-                      type="select"
-                      prompt={dgettext("jobs", "Select experience level")}
-                      options={get_translated_filter_options(:experience_levels)}
-                      class="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <.input
                       field={f[:years_of_experience]}
                       label={dgettext("jobs", "Years of Experience")}
                       type="select"
@@ -535,16 +517,6 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
               <div class="p-4 hidden" id="schedule_compensation_filters">
                 <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <div>
-                    <.input
-                      field={f[:workload]}
-                      label={dgettext("jobs", "Workload")}
-                      type="multi-select"
-                      options={get_translated_filter_options(:workloads)}
-                      class="w-full"
-                    />
-                  </div>
-
                   <div>
                     <.input
                       field={f[:shift_type]}
@@ -1057,24 +1029,20 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
   defp get_enum_values(:departments), do: Enums.departments()
   defp get_enum_values(:employment_types), do: Enums.employment_types()
-  defp get_enum_values(:experience_levels), do: Enums.experience_levels()
   defp get_enum_values(:languages), do: Enums.languages()
   defp get_enum_values(:positions), do: Enums.positions()
   defp get_enum_values(:profession), do: Enums.professions()
   defp get_enum_values(:regions), do: Enums.regions()
   defp get_enum_values(:shift_types), do: Enums.shift_types()
-  defp get_enum_values(:workloads), do: Enums.workloads()
   defp get_enum_values(:years_of_experience_options), do: Enums.years_of_experience()
 
   defp translate_filter_enum_value_fun(:departments), do: &I18n.translate_department/1
   defp translate_filter_enum_value_fun(:languages), do: &I18n.translate_language/1
   defp translate_filter_enum_value_fun(:employment_types), do: &I18n.translate_employment_type/1
-  defp translate_filter_enum_value_fun(:experience_levels), do: &I18n.translate_experience_level/1
   defp translate_filter_enum_value_fun(:positions), do: &I18n.translate_position/1
   defp translate_filter_enum_value_fun(:profession), do: &I18n.translate_profession/1
   defp translate_filter_enum_value_fun(:regions), do: &I18n.translate_region/1
   defp translate_filter_enum_value_fun(:shift_types), do: &I18n.translate_shift_type/1
-  defp translate_filter_enum_value_fun(:workloads), do: &I18n.translate_workload/1
 
   defp translate_filter_enum_value_fun(:years_of_experience_options),
     do: &I18n.translate_years_of_experience/1

@@ -47,12 +47,23 @@ defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
             phx-click="cancel"
             phx-target={@myself}
             class="!bg-gray-500 hover:!bg-gray-600 !text-white"
+            disabled={@submitting}
           >
             {dgettext("jobs", "Cancel")}
           </.button>
-          <.button type="submit" class="!bg-green-600 hover:!bg-green-700 !text-white">
-            <.icon name="hero-paper-airplane" class="w-4 h-4 mr-2" />
-            {dgettext("jobs", "Send Contract")}
+          <.button
+            type="submit"
+            class="!bg-green-600 hover:!bg-green-700 !text-white"
+            disabled={@submitting}
+          >
+            <div :if={@submitting} class="flex items-center">
+              <.icon name="hero-arrow-path" class="w-4 h-4 mr-2 animate-spin" />
+              {dgettext("jobs", "Sending...")}
+            </div>
+            <div :if={!@submitting} class="flex items-center">
+              <.icon name="hero-paper-airplane" class="w-4 h-4 mr-2" />
+              {dgettext("jobs", "Send Contract")}
+            </div>
           </.button>
         </:actions>
       </.simple_form>
@@ -171,19 +182,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
       <h4 class="font-medium text-gray-700 mb-2">
         {dgettext("jobs", "Based on Job Posting")}
       </h4>
-      <div class="grid grid-cols-2 gap-4">
-        <div :if={@job_posting_options.workload_options != []}>
-          <.input
-            id="job_offer_workload"
-            label={dgettext("jobs", "Workload")}
-            name="job_offer[variables][Workload]"
-            options={@job_posting_options.workload_options}
-            prompt={dgettext("jobs", "Select workload")}
-            type="select"
-            value={get_variable(@form, "Workload")}
-          />
-        </div>
-      </div>
+      <div class="grid grid-cols-2 gap-4"></div>
       <div :if={@job_posting_options.salary_range} class="mt-2">
         <p class="text-sm text-gray-600">
           <span class="font-medium">{dgettext("jobs", "Posted salary range:")}</span>
@@ -212,7 +211,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
      |> assign(assigns)
      |> assign(:form, to_form(changeset))
      |> assign(:job_offer, job_offer_struct)
-     |> assign(:job_posting_options, job_posting_options)}
+     |> assign(:job_posting_options, job_posting_options)
+     |> assign(:submitting, false)}
   end
 
   @impl Phoenix.LiveComponent
@@ -237,17 +237,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
   end
 
   def handle_event("submit", %{"job_offer" => offer_params}, socket) do
-    job_application = socket.assigns.job_application
-
-    final_variables =
-      merge_variables(socket.assigns.form.data.variables, offer_params["variables"])
-
-    case create_offer_transaction(job_application, final_variables, socket.assigns.current_user) do
-      {:ok, %{update_status: updated_job_application, create_offer: job_offer}} ->
-        handle_successful_offer(socket, updated_job_application, job_offer)
-
-      {:error, _operation, _value, _changes} ->
-        handle_failed_offer(socket)
+    if socket.assigns.submitting do
+      {:noreply, socket}
+    else
+      process_offer_submission(socket, offer_params)
     end
   end
 
@@ -256,12 +249,47 @@ defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
     {:noreply, socket}
   end
 
+  defp process_offer_submission(socket, offer_params) do
+    socket = assign(socket, :submitting, true)
+    job_application = socket.assigns.job_application
+
+    with :ok <- get_job_offer(job_application, socket),
+         final_variables <-
+           merge_variables(socket.assigns.form.data.variables, offer_params["variables"]),
+         {:ok, %{update_status: updated_job_application, create_offer: job_offer}} <-
+           create_offer_transaction(job_application, final_variables, socket.assigns.current_user) do
+      handle_successful_offer(socket, updated_job_application, job_offer)
+    else
+      {:error, socket} ->
+        socket
+
+      {:error, _operation, _value, _changes} ->
+        handle_failed_offer(socket)
+    end
+  end
+
+  defp get_job_offer(job_application, socket) do
+    case JobOffers.get_job_offer_by_application(job_application.id) do
+      %JobOffers.JobOffer{} ->
+        {:error,
+         socket
+         |> assign(:submitting, false)
+         |> put_flash(
+           :error,
+           dgettext("jobs", "An offer has already been sent for this application.")
+         )}
+
+      nil ->
+        :ok
+    end
+  end
+
   defp get_variable(form, key) do
     get_in(form.data.variables, [key])
   end
 
   defp has_job_posting_options?(job_posting_options) do
-    job_posting_options.workload_options != [] or job_posting_options.salary_range
+    job_posting_options.salary_range
   end
 
   defp salary_placeholder(nil, currency), do: default_salary_placeholder(currency)
@@ -326,7 +354,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
   end
 
   defp handle_failed_offer(socket) do
-    {:noreply, put_flash(socket, :error, dgettext("jobs", "Failed to extend offer."))}
+    {:noreply,
+     socket
+     |> assign(:submitting, false)
+     |> put_flash(:error, dgettext("jobs", "Failed to extend offer."))}
   end
 
   defp enqueue_status_update_notification(updated_job_application) do
@@ -342,7 +373,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
 
   defp get_ui_options(job_posting) do
     %{
-      workload_options: format_enum_options(job_posting.workload, &I18n.translate_workload/1),
       department_options:
         format_enum_options(job_posting.department, &I18n.translate_department/1),
       salary_range:

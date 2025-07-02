@@ -31,7 +31,6 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
       job3 =
         job_posting_fixture(company, %{
           employment_type: "Floater",
-          experience_level: "Mid-level",
           title: "UI/UX Designer"
         })
 

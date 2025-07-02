@@ -31,8 +31,6 @@ defmodule BemedaPersonal.JobPostings.Enums do
 
   @employment_types [:Floater, :"Permanent Position", :"Staff Pool", :"Temporary Assignment"]
 
-  @experience_levels [:Executive, :Junior, :Lead, :"Mid-level", :Senior]
-
   @genders [:Female, :Male]
 
   @languages [:English, :French, :German, :Italian]
@@ -43,30 +41,30 @@ defmodule BemedaPersonal.JobPostings.Enums do
 
   @professions [
     :Anesthesiologist,
-    :"Certified Anesthesia Nursing Specialist (NDS HF)",
-    :"Certified Emergency Nursing Specialist (NDS HF)",
-    :"Certified Intensive Care Nursing Specialist (NDS HF)",
-    :"Certified Paramedic (HF)",
-    :"Certified Surgical Technician",
-    :"Health and Social Care Assistant (AGS)",
-    :"Health Care Assistant (FaGe)",
-    :Internist,
-    :"Licensed Occupational Therapist",
-    :"Licensed Physiotherapist",
-    :"Licensed Speech Therapist",
-    :"Long-Term Care Specialist",
-    :"Medical Practice Assistant (MPA)",
     :"Medical Secretary",
+    :"Health and Social Care Assistant (AGS)",
+    :"Occupational Therapist",
+    :"Certified Anesthesia Nursing Specialist (NDS HF)",
+    :"Certified Intensive Care Nursing Specialist (NDS HF)",
+    :"Certified Emergency Nursing Specialist (NDS HF)",
+    :"Certified Radiologic Technologist (HF)",
+    :"Certified Surgical Technologist (HF)",
+    :"Certified Surgical Assistant",
+    :"Certified Midwife",
+    :"Speech Therapist",
+    :"Registered Nurse (AKP/DNII/HF/FH)",
+    :"Registered Nurse with IMC Qualification",
+    :Physiotherapist,
+    :"Certified Paramedic (HF)",
+    :"Medical Specialist",
+    :"Healthcare Assistant (FaGe)",
+    :"Long-term Care Specialist",
+    :Internist,
+    :"Positioning Nurse",
+    :"Medical Practice Assistant (MPA)",
     :"Nursing Assistant",
-    :"Patient Positioning Nurse",
-    :"Patient Sitter",
-    :"Registered Midwife",
-    :"Registered Nurse (AKP / DN II / HF / FH)",
-    :"Registered Nurse with Intermediate Care Qualification",
-    :"Registered Radiologic Technologist (HF)",
-    :"Registered Surgical Technologist (HF)",
-    :"Specialist Physician",
-    :"Swiss Red Cross Nursing Assistant"
+    :"Swiss Red Cross Nursing Assistant",
+    :"Patient Sitter"
   ]
 
   @regions [
@@ -100,8 +98,6 @@ defmodule BemedaPersonal.JobPostings.Enums do
 
   @shift_types [:"Day Shift", :"Early Shift", :"Late Shift", :"Night Shift", :"Split Shift"]
 
-  @workloads [:"Full-time", :"Part-time"]
-
   @years_of_experience [:"2-5 years", :"Less than 2 years", :"More than 5 years"]
 
   @spec currencies() :: enum_values()
@@ -112,9 +108,6 @@ defmodule BemedaPersonal.JobPostings.Enums do
 
   @spec employment_types() :: enum_values()
   def employment_types, do: @employment_types
-
-  @spec experience_levels() :: enum_values()
-  def experience_levels, do: @experience_levels
 
   @spec genders() :: enum_values()
   def genders, do: @genders
@@ -136,9 +129,6 @@ defmodule BemedaPersonal.JobPostings.Enums do
 
   @spec shift_types() :: enum_values()
   def shift_types, do: @shift_types
-
-  @spec workloads() :: enum_values()
-  def workloads, do: @workloads
 
   @spec years_of_experience() :: enum_values()
   def years_of_experience, do: @years_of_experience

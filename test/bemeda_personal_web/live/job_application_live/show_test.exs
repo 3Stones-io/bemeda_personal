@@ -26,7 +26,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   @create_attrs %{
     description: "Build amazing applications",
     employment_type: "Permanent Position",
-    experience_level: "Mid-level",
     location: "Remote",
     remote_allowed: true,
     salary_max: 42_000,
@@ -1040,7 +1039,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
     } do
       {:ok, updated_job_posting} =
         BemedaPersonal.JobPostings.update_job_posting(job_application.job_posting, %{
-          workload: [:"Full-time", :"Part-time"],
           department: [:Administration, :"Home Care (Spitex)"]
         })
 
@@ -1048,9 +1046,6 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       {_view, html} = setup_offer_modal_view(conn, employer, updated_job_application)
 
-      assert html =~ "Select workload"
-      assert html =~ "Full-time"
-      assert html =~ "Part-time"
       assert html =~ "Based on Job Posting"
       assert html =~ "Posted salary range:"
     end

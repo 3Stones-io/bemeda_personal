@@ -31,8 +31,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
         job_posting_fixture(company, %{
           employment_type: :"Permanent Position",
           location: "Remote",
-          title: "Engineer",
-          workload: [:"Full-time"]
+          title: "Engineer"
         })
 
       job_application = job_application_fixture(user, job_posting)
@@ -61,7 +60,6 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
       assert variables["Contract_Type"] == "Permanent Position"
       assert variables["Job_Title"] == "Engineer"
       assert variables["Work_Location"] == "Remote"
-      assert variables["Workload"] == "Full-time"
 
       # System variables
       assert variables["Contract_Type"] == "Permanent Position"
@@ -85,8 +83,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
         job_posting_fixture(company, %{
           employment_type: nil,
           location: nil,
-          title: "Designer",
-          workload: nil
+          title: "Designer"
         })
 
       job_application = job_application_fixture(user, job_posting)
@@ -99,7 +96,6 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
       assert variables["Salutation"] == ""
       assert variables["Title"] == ""
       assert variables["Work_Location"] == ""
-      assert variables["Workload"] == "Full-time"
     end
 
     test "generates consistent date for all applications" do

@@ -20,7 +20,6 @@ defmodule BemedaPersonal.JobPostings.JobPostingFilters do
       company_id: &QueryBuilder.exact_match_filter(:company_id, &1),
       currency: &QueryBuilder.exact_match_filter(:currency, &1),
       employment_type: &QueryBuilder.exact_match_filter(:employment_type, &1),
-      experience_level: &QueryBuilder.exact_match_filter(:experience_level, &1),
       location: &QueryBuilder.ilike_filter(:location, &1),
       position: &QueryBuilder.exact_match_filter(:position, &1),
       profession: &QueryBuilder.exact_match_filter(:profession, &1),
@@ -40,8 +39,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFilters do
       salary_max: &salary_max_filter/1,
       salary_min: &salary_min_filter/1,
       salary_range: &salary_range_filter/1,
-      shift_type: &array_overlap_filter(:shift_type, &1),
-      workload: &array_overlap_filter(:workload, &1)
+      shift_type: &array_overlap_filter(:shift_type, &1)
     }
   end
 

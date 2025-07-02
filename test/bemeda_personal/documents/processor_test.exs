@@ -35,7 +35,6 @@ defmodule BemedaPersonal.Documents.ProcessorTest do
         "Job_Title",
         "Client_Company",
         "Work_Location",
-        "Workload",
         "Contract_Type",
         "Start_Date",
         "Working_Hours",

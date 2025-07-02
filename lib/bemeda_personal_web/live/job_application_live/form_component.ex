@@ -24,7 +24,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
         />
 
         <div
-          :if={@show_video_description}
+          :if={!@show_video_upload_instruction?}
           id="video-preview-player"
           class="shadow shadow-gray-500 overflow-hidden rounded-lg mb-6 hidden"
         >
@@ -32,15 +32,30 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
         </div>
 
         <SharedComponents.asset_preview
-          show_asset_description={@show_video_description}
+          show_asset_description={!@show_video_upload_instruction?}
           media_asset={@job_application.media_asset}
           type={dgettext("jobs", "Video")}
           asset_preview_id="video-preview-player"
         />
 
+        <div :if={@show_video_upload_instruction?} class="mb-4">
+          <div class="flex items-start gap-2 text-sm text-gray-600">
+            <.icon name="hero-information-circle" class="h-5 w-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p class="font-medium">{dgettext("jobs", "Video Introduction (Optional)")}</p>
+              <p>
+                {dgettext(
+                  "jobs",
+                  "Record a brief video to introduce yourself and explain why you're interested in this position. This helps you stand out from other applicants."
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <SharedComponents.file_input_component
           accept="video/*"
-          class={@show_video_description && "hidden"}
+          class={!@show_video_upload_instruction? && "hidden"}
           events_target={@id}
           id="job_application-video"
           max_file_size={52_000_000}
@@ -79,7 +94,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
      |> assign(assigns)
      |> assign(:enable_submit?, true)
      |> assign(:media_data, %{})
-     |> assign(:show_video_description, has_media_asset?(job_application))
+     |> assign(:show_video_upload_instruction?, !has_media_asset?(job_application))
      |> assign_form(changeset)}
   end
 
@@ -120,7 +135,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
     {:noreply,
      socket
      |> assign(:job_application, asset.job_application)
-     |> assign(:show_video_description, false)}
+     |> assign(:show_video_upload_instruction?, true)}
   end
 
   defp save_job_application(socket, :edit, job_application_params) do

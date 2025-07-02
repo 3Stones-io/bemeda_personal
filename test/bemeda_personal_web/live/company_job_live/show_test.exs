@@ -17,7 +17,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
           currency: "USD",
           description: "Build amazing software products",
           employment_type: "Permanent Position",
-          experience_level: "Senior",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,
@@ -40,7 +39,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
       assert html =~ job.description
       assert html =~ job.location
       assert html =~ to_string(job.employment_type)
-      assert html =~ to_string(job.experience_level)
     end
 
     test "displays company information", %{conn: conn, job: job} do

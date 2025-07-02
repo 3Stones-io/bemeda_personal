@@ -38,14 +38,12 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
   end
 
   defp map_job_posting_variables(job_posting) do
-    workload = format_workload(job_posting.workload)
     contract_type = format_employment_type(job_posting.employment_type)
 
     %{
       "Contract_Type" => contract_type,
       "Job_Title" => job_posting.title,
-      "Work_Location" => job_posting.location || "",
-      "Workload" => workload
+      "Work_Location" => job_posting.location || ""
     }
   end
 
@@ -182,29 +180,5 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
     employment_type
     |> Atom.to_string()
     |> I18n.translate_employment_type()
-  end
-
-  defp format_workload(workload_list) when is_list(workload_list) do
-    case workload_list do
-      [] ->
-        I18n.translate_workload("Full-time")
-
-      workloads ->
-        Enum.map_join(workloads, ", ", fn workload ->
-          workload
-          |> Atom.to_string()
-          |> I18n.translate_workload()
-        end)
-    end
-  end
-
-  defp format_workload(nil) do
-    I18n.translate_workload("Full-time")
-  end
-
-  defp format_workload(workload) when is_atom(workload) do
-    workload
-    |> Atom.to_string()
-    |> I18n.translate_workload()
   end
 end

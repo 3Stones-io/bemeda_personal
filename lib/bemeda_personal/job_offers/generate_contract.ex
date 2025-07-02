@@ -23,11 +23,16 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"job_offer_id" => job_offer_id}}) do
     with {:ok, job_offer} <- load_job_offer(job_offer_id),
+         :ok <- check_contract_not_exists(job_offer),
          {:ok, pdf_id} <- generate_contract_pdf(job_offer),
          {:ok, updated_offer} <- finalize_job_offer(job_offer, pdf_id) do
       broadcast_job_offer_updates(updated_offer)
       :ok
     else
+      {:error, :contract_already_exists} ->
+        Logger.info("Contract already exists for job offer #{job_offer_id}")
+        :ok
+
       {:error, reason} ->
         Logger.error(
           "Contract generation failed for job offer #{job_offer_id}: #{inspect(reason)}"
@@ -41,10 +46,15 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
     job_offer =
       job_offer_id
       |> JobOffers.get_job_offer!()
-      |> Repo.preload(job_application: [:user, job_posting: [company: :admin_user]])
+      |> Repo.preload([:message, job_application: [:user, job_posting: [company: :admin_user]]])
 
     {:ok, job_offer}
   end
+
+  defp check_contract_not_exists(%{message_id: message_id}) when is_binary(message_id),
+    do: {:error, :contract_already_exists}
+
+  defp check_contract_not_exists(_job_offer), do: :ok
 
   defp generate_contract_pdf(job_offer) do
     company_id = job_offer.job_application.job_posting.company_id
@@ -60,7 +70,10 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
   defp finalize_job_offer(job_offer, pdf_id) do
     with {:ok, pdf_message} <- create_pdf_message(pdf_id, job_offer),
          {:ok, updated_offer} <-
-           JobOffers.update_job_offer(job_offer, pdf_message, %{status: :extended}) do
+           JobOffers.update_job_offer(job_offer, pdf_message, %{
+             status: :extended,
+             contract_generated_at: DateTime.utc_now()
+           }) do
       updated_offer = Repo.preload(updated_offer, message: :media_asset)
       {:ok, updated_offer}
     end

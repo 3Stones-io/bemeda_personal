@@ -165,10 +165,10 @@ defmodule BemedaPersonal.QueryBuilderTest do
     end
 
     test "ilike_filter/2 handles atoms" do
-      filter_fn = QueryBuilder.ilike_filter(:experience_level, :Senior)
+      filter_fn = QueryBuilder.ilike_filter(:position, :"Specialist Role")
       dynamic = dynamic(true)
 
-      result = filter_fn.(:Senior, dynamic, :job_posting)
+      result = filter_fn.(:"Specialist Role", dynamic, :job_posting)
 
       assert %Ecto.Query.DynamicExpr{} = result
     end

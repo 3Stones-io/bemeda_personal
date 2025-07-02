@@ -15,6 +15,8 @@ defmodule BemedaPersonal.JobOffers.JobOffer do
   @foreign_key_type :binary_id
 
   schema "job_offers" do
+    field :contract_generated_at, :utc_datetime
+    field :contract_signed_at, :utc_datetime
     belongs_to :job_application, BemedaPersonal.JobApplications.JobApplication
     belongs_to :message, BemedaPersonal.Chat.Message
     field :status, Ecto.Enum, values: @statuses, default: :pending
@@ -27,6 +29,8 @@ defmodule BemedaPersonal.JobOffers.JobOffer do
   def changeset(job_offer, attrs) do
     job_offer
     |> cast(attrs, [
+      :contract_generated_at,
+      :contract_signed_at,
       :job_application_id,
       :status,
       :variables

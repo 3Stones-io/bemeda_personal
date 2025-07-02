@@ -120,12 +120,6 @@ msgstr ""
 msgid "End date must be after or equal to start date"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Experience Level"
-msgstr ""
-
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Extend Offer"
@@ -444,41 +438,12 @@ msgstr ""
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Select experience level"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Select experience range"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select position"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
-#, elixir-autogen, elixir-format
-msgid "Select workload"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Select workload type"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/jobs_components.ex
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
-#, elixir-autogen, elixir-format
-msgid "Workload"
-msgstr ""
-
-#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Workload Type"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/jobs_components.ex
@@ -922,11 +887,6 @@ msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Executive"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Female"
 msgstr ""
 
@@ -943,11 +903,6 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Fribourg"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Full-time"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
@@ -997,22 +952,12 @@ msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Junior"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Jura"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Late Shift"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Lead"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
@@ -1048,11 +993,6 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Medical Practices"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Mid Level"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
@@ -1097,11 +1037,6 @@ msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Part-time"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Permanent Position"
 msgstr ""
 
@@ -1128,11 +1063,6 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Schwyz"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Senior Level"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
@@ -1232,42 +1162,12 @@ msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Certified Surgical Technician"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Health Care Assistant (FaGe)"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Health and Social Care Assistant (AGS)"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Internist"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Licensed Occupational Therapist"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Licensed Physiotherapist"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Licensed Speech Therapist"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Long-Term Care Specialist"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
@@ -1287,11 +1187,6 @@ msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Patient Positioning Nurse"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Patient Sitter"
 msgstr ""
 
@@ -1301,40 +1196,10 @@ msgstr ""
 msgid "Profession"
 msgstr ""
 
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Registered Midwife"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Registered Nurse (AKP / DN II / HF / FH)"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Registered Nurse with Intermediate Care Qualification"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Registered Radiologic Technologist (HF)"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Registered Surgical Technologist (HF)"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_job_live/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select profession"
-msgstr ""
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Specialist Physician"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
@@ -1671,4 +1536,99 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Accept offer & sign contract"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Midwife"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Radiologic Technologist (HF)"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Surgical Assistant"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Certified Surgical Technologist (HF)"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Healthcare Assistant (FaGe)"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Long-term Care Specialist"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Medical Specialist"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Occupational Therapist"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Physiotherapist"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Positioning Nurse"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Nurse (AKP/DNII/HF/FH)"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Registered Nurse with IMC Qualification"
+msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Speech Therapist"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Record a brief video to introduce yourself and explain why you're interested in this position. This helps you stand out from other applicants."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Video Introduction (Optional)"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "An offer has already been sent for this application."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Part-time Details"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select part-time details"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/job_application_live/offer_details_component.ex
+#, elixir-autogen, elixir-format
+msgid "Sending..."
 msgstr ""
