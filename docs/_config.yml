@@ -1,9 +1,9 @@
 # GitHub Pages Configuration for BemedaPersonal Documentation
 
-title: "BemedaPersonal - System Architecture"
-description: "Requirements Engineering and System Architecture Documentation for Swiss Manpower Matching Platform"
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site
+title: 'BemedaPersonal - System Architecture'
+description: 'Requirements Engineering and System Architecture Documentation for Swiss Manpower Matching Platform'
+baseurl: '' # the subpath of your site, e.g. /blog
+url: '' # the base hostname & protocol for your site
 
 # Build settings
 markdown: kramdown
@@ -28,28 +28,28 @@ collections:
 # Defaults
 defaults:
   - scope:
-      path: ""
-      type: "diagrams"
+      path: ''
+      type: 'diagrams'
     values:
-      layout: "diagram"
+      layout: 'diagram'
   - scope:
-      path: ""
-      type: "presentations"
+      path: ''
+      type: 'presentations'
     values:
-      layout: "presentation"
+      layout: 'presentation'
 
 # Navigation
 nav_links:
-  - title: "Home"
-    url: "/"
-  - title: "Architecture Overview"
-    url: "/presentations/overview.html"
-  - title: "Use Cases"
-    url: "/presentations/use-cases.html"
-  - title: "Gap Analysis"
-    url: "/presentations/gap-analysis.html"
-  - title: "Diagrams"
-    url: "/diagrams/"
+  - title: 'Home'
+    url: '/'
+  - title: 'Architecture Overview'
+    url: '/presentations/overview.html'
+  - title: 'Use Cases'
+    url: '/presentations/use-cases.html'
+  - title: 'Gap Analysis'
+    url: '/presentations/gap-analysis.html'
+  - title: 'Diagrams'
+    url: '/diagrams/'
 
 # Exclude from processing
 exclude:

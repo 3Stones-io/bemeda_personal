@@ -5,18 +5,23 @@ This documentation site provides comprehensive system architecture and requireme
 ## 📋 Contents
 
 ### 🎯 [System Overview](index.html)
+
 Interactive presentation covering the current system architecture, technology stack, and core functionality.
 
 ### 📊 [Use Case Analysis](diagrams/use-cases.html)
+
 Detailed use case diagrams showing current functionality and proposed enhancements for the Swiss market.
 
 ### 🔄 [Application Lifecycle](presentations/application-lifecycle.html)
+
 State machine diagrams illustrating the job application process from submission to contract signing.
 
 ### ✍️ [Digital Signatures](diagrams/digital-signatures.html)
+
 Sequence diagrams and architecture overview of the digital signature workflow using SignWell integration.
 
 ### 🔍 [Gap Analysis](presentations/gap-analysis.html)
+
 Analysis of missing features critical for Swiss manpower business operations.
 
 ## 🎨 Color Coding Legend
@@ -25,7 +30,7 @@ Throughout all diagrams, we use consistent color coding to indicate feature stat
 
 - 🟦 **Blue (Solid)**: Currently implemented features
 - 🟥 **Red (Dashed)**: Critical missing features required for Swiss market
-- 🟧 **Orange (Dotted)**: Important enhancements for competitive advantage  
+- 🟧 **Orange (Dotted)**: Important enhancements for competitive advantage
 - 🟩 **Green (Dash-dot)**: Nice-to-have features for future roadmap
 - 🟪 **Purple (Double)**: Technical infrastructure improvements
 
@@ -34,7 +39,7 @@ Throughout all diagrams, we use consistent color coding to indicate feature stat
 BemedaPersonal is built with:
 
 - **Phoenix LiveView** - Real-time web interface
-- **Elixir/OTP** - Concurrent, fault-tolerant backend  
+- **Elixir/OTP** - Concurrent, fault-tolerant backend
 - **PostgreSQL** - Primary database
 - **Oban** - Background job processing
 - **FSMX** - State machine for application lifecycle
@@ -45,6 +50,7 @@ BemedaPersonal is built with:
 ## 🚀 Key Features
 
 ### Current Implementation
+
 - User authentication with role-based routing
 - Job posting and application management
 - Resume building and management
@@ -55,6 +61,7 @@ BemedaPersonal is built with:
 - Rating system
 
 ### Swiss Market Enhancements Needed
+
 - Payroll integration and processing
 - Work permit management and validation
 - Compliance reporting (SUVA, AHV, etc.)
@@ -66,19 +73,24 @@ BemedaPersonal is built with:
 ## 📱 Viewing the Presentations
 
 ### Online Access
+
 Once deployed to GitHub Pages, access the presentations at:
+
 - **Main Presentation**: `https://your-username.github.io/bemeda_personal/`
 - **Individual Diagrams**: Navigate through the site or use direct links
 
 ### Local Development
+
 ```bash
 cd docs
 npm install
 npm run serve
 ```
+
 Then open `http://localhost:8080` in your browser.
 
 ### Navigation
+
 - **Arrow Keys**: Navigate slides
 - **Space**: Next slide
 - **Escape**: Slide overview
@@ -88,12 +100,15 @@ Then open `http://localhost:8080` in your browser.
 ## 🔧 Technical Details
 
 ### Mermaid Integration
+
 All diagrams are created using Mermaid.js with custom styling and interactive features:
+
 - Click on diagram elements for additional information
 - Consistent color coding across all diagrams
 - Responsive design for different screen sizes
 
 ### Reveal.js Features
+
 - Smooth transitions between slides
 - Code syntax highlighting
 - Markdown support for content
@@ -112,7 +127,7 @@ To update the documentation:
 
 1. Edit files in the `/docs` directory
 2. Diagrams are in `/docs/diagrams/` as Markdown files with Mermaid code
-3. Presentations are in `/docs/presentations/` 
+3. Presentations are in `/docs/presentations/`
 4. Push changes to trigger automatic deployment via GitHub Actions
 
 ## 📞 Support
