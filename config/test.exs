@@ -11,7 +11,7 @@ config :bcrypt_elixir, :log_rounds, 1
 config :bemeda_personal, BemedaPersonal.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: System.get_env("DATABASE_HOST", "localhost"),
   database: "bemeda_personal_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
@@ -19,7 +19,7 @@ config :bemeda_personal, BemedaPersonal.Repo,
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :bemeda_personal, BemedaPersonalWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4002],
+  http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT_TEST") || "4002")],
   secret_key_base: "s3QYVV7NO/JPzUSRbnVgvK6KN0fx2VJv6iprPTgMX9rKfLKTknDHrAjqX/iE0wMm",
   server: false
 
