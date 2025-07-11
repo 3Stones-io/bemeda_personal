@@ -87,12 +87,7 @@
            [
              priority: :low,
              if_nested_deeper_than: 2,
-             if_called_more_often_than: 0,
-             files: %{
-               excluded: [
-                 "lib/bemeda_personal_web/components/core_components.ex"
-               ]
-             }
+             if_called_more_often_than: 0
            ]},
 
           # You can also customize the exit_status of each check.
@@ -197,7 +192,6 @@
            files: %{
              excluded: [
                "lib/bemeda_personal_web.ex",
-               "lib/bemeda_personal_web/components/core_components.ex",
                "lib/bemeda_personal_web/controllers/error_html.ex",
                "lib/bemeda_personal_web/controllers/error_json.ex"
              ]

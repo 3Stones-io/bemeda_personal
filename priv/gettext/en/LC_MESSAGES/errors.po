@@ -111,7 +111,7 @@ msgstr ""
 msgid "must be equal to %{number}"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/shared_components.ex
+#: lib/bemeda_personal_web/components/shared/shared_components.ex
 #, elixir-autogen, elixir-format
 msgid "Unsupported file type."
 msgstr ""

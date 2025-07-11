@@ -1,30 +1,27 @@
 <div
   :if={@not_found}
-  class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+  class={"min-h-screen flex items-center justify-center bg-gray-50 #{section_spacing_large()} #{container_padding()}"}
 >
-  <div class="max-w-md w-full space-y-8 text-center">
+  <div class={"max-w-md w-full text-center #{content_spacing()}"}>
     <div>
-      <h1 class="text-9xl font-extrabold text-gray-400">404</h1>
-      <h2 class="mt-6 text-3xl font-bold text-gray-900">
+      <.heading level="h1" class="text-9xl font-extrabold text-gray-400">404</.heading>
+      <.heading class="mt-6">
         {dgettext("resumes", "Resume Not Found")}
-      </h2>
-      <p class="mt-2 text-sm text-gray-600">
+      </.heading>
+      <.small_text class="mt-2">
         {dgettext(
           "resumes",
           "The resume you're looking for doesn't exist or is not available for public viewing."
         )}
-      </p>
+      </.small_text>
     </div>
-    <div class="mt-8">
-      <.link
-        href={~p"/"}
-        class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-      >
-        <.icon name="hero-home" class="h-5 w-5 mr-2 text-white" /> {dgettext(
+    <div class={page_header_spacing()}>
+      <.button href={~p"/"}>
+        <.icon name="hero-home" class="h-5 w-5 mr-2" /> {dgettext(
           "navigation",
           "Return to Home"
         )}
-      </.link>
+      </.button>
     </div>
   </div>
 </div>

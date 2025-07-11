@@ -1,4 +1,6 @@
-defmodule BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent do
+defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
+  @moduledoc false
+
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.JobApplications

@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.JobApplicationsListComponent do
+defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListComponent do
   @moduledoc false
 
   use BemedaPersonalWeb, :live_component
@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplicationFilter
-  alias BemedaPersonalWeb.JobsComponents
+  alias BemedaPersonalWeb.Components.Job.JobsComponents
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -151,7 +151,8 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
   def mount(socket) do
     {:ok,
      socket
-     |> stream(:job_applications, [], dom_id: &"job_applications-#{&1.id}")
+     |> stream_configure(:job_applications, dom_id: &"job_applications-#{&1.id}")
+     |> stream(:job_applications, [])
      |> assign(:end_of_timeline?, false)
      |> assign(:filters_form, %JobApplicationFilter{})}
   end
@@ -237,7 +238,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
     last_job_application = List.last(job_applications)
 
     socket
-    |> Phoenix.LiveView.stream(:job_applications, job_applications, reset: true, limit: 10)
+    |> stream(:job_applications, job_applications, reset: true, limit: 10)
     |> assign(:first_job_application, first_job_application)
     |> assign(:last_job_application, last_job_application)
   end
@@ -270,7 +271,7 @@ defmodule BemedaPersonalWeb.JobApplicationsListComponent do
     last_job_application = List.last(job_applications)
 
     socket
-    |> Phoenix.LiveView.stream(:job_applications, job_applications, opts)
+    |> stream(:job_applications, job_applications, opts)
     |> assign(:first_job_application, first_job_application)
     |> assign(:last_job_application, last_job_application)
   end

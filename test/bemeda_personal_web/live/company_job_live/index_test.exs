@@ -103,7 +103,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert result =~ "can&#39;t be blank"
     end
 
-    test "form shows checked checkbox after change", %{conn: conn, user: user} do
+    test "form shows remote work checkbox after change", %{conn: conn, user: user} do
       {:ok, view, html} =
         conn
         |> log_in_user(user)
@@ -113,7 +113,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       result =
         view
-        |> form("#company-job-form", %{job_posting: %{region: ["Zurich"]}})
+        |> form("#company-job-form", %{job_posting: %{remote_allowed: true}})
         |> render_change()
 
       assert result =~ ~r/input[^>]*type="checkbox"[^>]*checked/
@@ -499,7 +499,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> follow_redirect(conn, ~p"/company/jobs")
 
       assert render(updated_view) =~ @create_attrs_job.title
-      assert render(updated_view) =~ "Job posted successfully"
+      assert render(updated_view) =~ "Job posting created successfully"
     end
 
     test "updates job_posting in listing", %{

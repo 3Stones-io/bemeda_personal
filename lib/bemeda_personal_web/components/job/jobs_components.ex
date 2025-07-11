@@ -1,14 +1,13 @@
-defmodule BemedaPersonalWeb.JobsComponents do
+defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
   @moduledoc false
 
   use BemedaPersonalWeb, :html
 
   alias BemedaPersonal.JobPostings.Enums
+  alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias BemedaPersonalWeb.I18n
-  alias BemedaPersonalWeb.RatingComponent
-  alias BemedaPersonalWeb.SharedComponents
 
-  @type assigns :: map()
+  @type assigns :: Phoenix.LiveView.Socket.assigns()
   @type output :: Phoenix.LiveView.Rendered.t()
 
   attr :id, :string, required: true
@@ -31,7 +30,11 @@ defmodule BemedaPersonalWeb.JobsComponents do
     <div class="px-8 py-6 relative group">
       <div class="cursor-pointer" phx-click={JS.navigate(@job_view_path)}>
         <p class="text-lg font-medium mb-1">
-          <.link navigate={@job_view_path} class="text-indigo-600 hover:text-indigo-800 mb-2" id={@id}>
+          <.link
+            navigate={@job_view_path}
+            class="text-primary-600 hover:text-primary-800 mb-2"
+            id={@id}
+          >
             {@job.title}
           </.link>
         </p>
@@ -39,7 +42,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
         <p :if={@show_company_name} class="text-sm mb-2">
           <.link
             navigate={~p"/companies/#{@job.company_id}"}
-            class="text-indigo-600 hover:text-indigo-800"
+            class="text-primary-600 hover:text-primary-800"
           >
             {@job.company.name}
           </.link>
@@ -75,7 +78,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <div :if={@show_actions} class="flex absolute top-4 right-4 space-x-4">
         <.link
           navigate={~p"/company/applicants/#{@job.id}"}
-          class="w-8 h-8 bg-green-100 rounded-full text-green-600 hover:bg-green-200 flex items-center justify-center"
+          class="w-8 h-8 bg-success-100 rounded-full text-success-600 hover:bg-success-200 flex items-center justify-center"
           title={dgettext("jobs", "View applicants")}
         >
           <.icon name="hero-users" class="w-4 h-4" />
@@ -83,7 +86,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
 
         <.link
           patch={~p"/company/jobs/#{@job.id}/edit"}
-          class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center"
+          class="w-8 h-8 bg-primary-100 rounded-full text-primary-600 hover:bg-primary-200 flex items-center justify-center"
           title={dgettext("jobs", "Edit job")}
         >
           <.icon name="hero-pencil" class="w-4 h-4" />
@@ -101,7 +104,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
               "Are you sure you want to delete this job posting? This action cannot be undone."
             )
           }
-          class="w-8 h-8 bg-red-100 rounded-full text-red-600 hover:bg-red-200 flex items-center justify-center"
+          class="w-8 h-8 bg-danger-100 rounded-full text-danger-600 hover:bg-danger-200 flex items-center justify-center"
           title={dgettext("jobs", "Delete job")}
         >
           <.icon name="hero-trash" class="w-4 h-4" />
@@ -566,14 +569,14 @@ defmodule BemedaPersonalWeb.JobsComponents do
                 type="button"
                 phx-click="clear_filters"
                 phx-target={@target}
-                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+                class="inline-flex items-center px-sm py-2 border border-secondary-300 shadow-sm text-sm font-medium rounded-md text-secondary-700 bg-white hover:bg-surface-secondary focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary-500"
               >
                 {dgettext("jobs", "Clear All")}
               </button>
 
               <button
                 type="submit"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                class="inline-flex items-center px-sm py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
                 {dgettext("jobs", "Apply Filters")}
               </button>
@@ -659,7 +662,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
       <div class="absolute bottom-2 right-6 flex space-x-2 z-10">
         <.link
           navigate={~p"/jobs/#{@applicant.job_posting_id}/job_applications/#{@applicant.id}"}
-          class="w-8 h-8 bg-indigo-100 rounded-full text-indigo-600 hover:bg-indigo-200 flex items-center justify-center shadow-sm"
+          class="w-8 h-8 bg-primary-100 rounded-full text-primary-600 hover:bg-primary-200 flex items-center justify-center shadow-sm"
           title={dgettext("jobs", "Chat with applicant")}
         >
           <.icon name="hero-chat-bubble-left-right" class="w-4 h-4" />
@@ -770,8 +773,8 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   type="submit"
                   class={[
                     "inline-flex items-center justify-center px-2 py-1 border border-transparent min-w-[100px] h-[42px]",
-                    "text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600",
-                    "hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    "text-xs font-medium rounded-md shadow-sm text-white bg-primary-600",
+                    "hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                   ]}
                 >
                   {dgettext("jobs", "Update Tags")}
@@ -808,7 +811,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
               <div :if={@resume.is_public}>
                 <.link
                   navigate={~p"/resumes/#{@resume.id}"}
-                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  class="inline-flex items-center px-sm py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
                   <.icon name="hero-document-text" class="w-4 h-4 mr-2" /> {dgettext(
                     "jobs",
@@ -943,7 +946,7 @@ defmodule BemedaPersonalWeb.JobsComponents do
                   |> JS.push("clear_filters", target: @target)
                   |> JS.dispatch("clear_filters", to: "#tags-input")
                 }
-                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500"
+                class="inline-flex items-center px-sm py-2 border border-secondary-300 shadow-sm text-sm font-medium rounded-md text-secondary-700 bg-white hover:bg-surface-secondary focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary-500"
               >
                 {dgettext("jobs", "Clear All")}
               </button>

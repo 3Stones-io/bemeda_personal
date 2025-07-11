@@ -1,7 +1,7 @@
 defmodule BemedaPersonalWeb.Resume.IndexLive do
   use BemedaPersonalWeb, :live_view
 
-  import BemedaPersonalWeb.Components.ResumeComponents
+  import BemedaPersonalWeb.Components.Shared.ResumeComponents
 
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Resume.SharedHelpers

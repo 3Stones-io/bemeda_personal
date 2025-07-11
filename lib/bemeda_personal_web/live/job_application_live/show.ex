@@ -8,7 +8,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Media
   alias BemedaPersonal.TigrisHelper
-  alias BemedaPersonalWeb.ChatComponents
+  alias BemedaPersonalWeb.Components.JobApplication.ChatComponents
+  alias BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.JobApplicationLive.Authorization
   alias BemedaPersonalWeb.SharedHelpers

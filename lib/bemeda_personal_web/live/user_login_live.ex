@@ -39,7 +39,7 @@ defmodule BemedaPersonalWeb.UserLoginLive do
           </.link>
         </:actions>
         <:actions>
-          <.button phx-disable-with={dgettext("auth", "Logging in...")} class="w-full">
+          <.button type="submit" phx-disable-with={dgettext("auth", "Logging in...")} class="w-full">
             {dgettext("auth", "Log in")} <span aria-hidden="true">→</span>
           </.button>
         </:actions>

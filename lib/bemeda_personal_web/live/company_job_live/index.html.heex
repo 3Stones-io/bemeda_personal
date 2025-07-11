@@ -1,25 +1,19 @@
-<section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+<section class={"w-full lg:max-w-[1000px] lg:mx-auto #{container_padding()} #{section_spacing()}"}>
   <div>
-    <h1 class="text-3xl font-bold text-gray-900">
+    <.heading class="text-3xl font-bold text-gray-900">
       {dgettext("jobs", "Jobs for %{company}", company: @company.name)}
-    </h1>
-    <p class="mt-2 text-sm text-gray-500">
+    </.heading>
+    <.subtitle class="mt-2 text-gray-500">
       {dgettext("jobs", "Manage your job postings")}
-    </p>
+    </.subtitle>
   </div>
-  <div class="flex space-x-3 justify-end mb-8">
-    <.link
-      navigate={~p"/company"}
-      class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-    >
+  <div class={"flex justify-end #{button_group_spacing()} #{page_header_spacing()}"}>
+    <.button variant="secondary" navigate={~p"/company"}>
       {dgettext("navigation", "Back to Dashboard")}
-    </.link>
-    <.link
-      patch={~p"/company/jobs/new"}
-      class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-    >
+    </.button>
+    <.button variant="primary" patch={~p"/company/jobs/new"}>
       {dgettext("jobs", "Post New Job")}
-    </.link>
+    </.button>
   </div>
 
   <.live_component
@@ -40,7 +34,7 @@
   on_cancel={JS.patch(~p"/company/jobs")}
 >
   <.live_component
-    module={BemedaPersonalWeb.CompanyJobLive.FormComponent}
+    module={BemedaPersonalWeb.Components.Job.FormComponent}
     action={@live_action}
     company={@company}
     id="company-job-form"

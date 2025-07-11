@@ -1,9 +1,10 @@
-defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
+defmodule BemedaPersonalWeb.Components.Company.FormComponent do
+  @moduledoc false
+
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
@@ -32,7 +33,7 @@ defmodule BemedaPersonalWeb.CompanyLive.FormComponent do
             field={f[:description]}
             type="textarea"
             label={dgettext("companies", "Company Description")}
-            rows={4}
+            rows="4"
           />
         </div>
 

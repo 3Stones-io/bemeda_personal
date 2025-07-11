@@ -1,8 +1,8 @@
 defmodule BemedaPersonalWeb.JobLive.Index do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonalWeb.Components.Job.JobListComponent
   alias BemedaPersonalWeb.Endpoint
-  alias BemedaPersonalWeb.JobListComponent
   alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView

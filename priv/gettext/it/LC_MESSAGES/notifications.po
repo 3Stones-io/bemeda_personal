@@ -11,7 +11,7 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/bemeda_personal_web/components/core_components.ex
+#: lib/bemeda_personal_web/components/core/flash.ex
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
 msgstr "Tentativo di riconnessione"
@@ -31,7 +31,7 @@ msgstr "Clicca per contrassegnare come non letto"
 msgid "Could not update notification status"
 msgstr "Impossibile aggiornare lo stato della notifica"
 
-#: lib/bemeda_personal_web/components/core_components.ex
+#: lib/bemeda_personal_web/components/core/flash.ex
 #, elixir-autogen, elixir-format
 msgid "Error!"
 msgstr "Errore!"
@@ -41,7 +41,7 @@ msgstr "Errore!"
 msgid "From"
 msgstr "Da"
 
-#: lib/bemeda_personal_web/components/core_components.ex
+#: lib/bemeda_personal_web/components/core/flash.ex
 #, elixir-autogen, elixir-format
 msgid "Hang in there while we get back on track"
 msgstr "Aspetta mentre ripristiniamo la connessione"
@@ -67,12 +67,12 @@ msgstr "Nessuna notifica disponibile al momento."
 msgid "Notifications"
 msgstr "Notifiche"
 
-#: lib/bemeda_personal_web/components/core_components.ex
+#: lib/bemeda_personal_web/components/core/flash.ex
 #, elixir-autogen, elixir-format
 msgid "Something went wrong!"
 msgstr "Qualcosa è andato storto!"
 
-#: lib/bemeda_personal_web/components/core_components.ex
+#: lib/bemeda_personal_web/components/core/flash.ex
 #, elixir-autogen, elixir-format
 msgid "Success!"
 msgstr "Successo!"
@@ -87,7 +87,12 @@ msgstr "Sistema"
 msgid "To"
 msgstr "A"
 
-#: lib/bemeda_personal_web/components/core_components.ex
+#: lib/bemeda_personal_web/components/core/flash.ex
 #, elixir-autogen, elixir-format
 msgid "We can't find the internet"
 msgstr "Non riusciamo a trovare la connessione internet"
+
+#: lib/bemeda_personal_web/live/notification_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Back to notifications"
+msgstr "Torna alle notifiche"

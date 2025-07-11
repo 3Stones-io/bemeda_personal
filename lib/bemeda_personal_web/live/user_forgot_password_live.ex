@@ -21,7 +21,7 @@ defmodule BemedaPersonalWeb.UserForgotPasswordLive do
           required
         />
         <:actions>
-          <.button phx-disable-with={dgettext("auth", "Sending...")} class="w-full">
+          <.button type="submit" phx-disable-with={dgettext("auth", "Sending...")} class="w-full">
             {dgettext("auth", "Send password reset instructions")}
           </.button>
         </:actions>

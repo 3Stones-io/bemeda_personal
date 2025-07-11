@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.ChatComponents do
+defmodule BemedaPersonalWeb.Components.JobApplication.ChatComponents do
   @moduledoc false
 
   use BemedaPersonalWeb, :html
@@ -9,11 +9,10 @@ defmodule BemedaPersonalWeb.ChatComponents do
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Resumes.Resume
-  alias BemedaPersonalWeb.DocumentTemplateComponent
-  alias BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonalWeb.Components.Document.DocumentTemplateComponent
   alias BemedaPersonalWeb.SharedHelpers
 
-  @type assigns :: map()
+  @type assigns :: Phoenix.LiveView.Socket.assigns()
   @type output :: Phoenix.LiveView.Rendered.t()
 
   attr :chat_form, :any, required: true
@@ -51,9 +50,9 @@ defmodule BemedaPersonalWeb.ChatComponents do
           <input id="hidden-file-input" type="file" class="hidden" accept="*" />
         </label>
 
-        <button type="submit" class="bg-black text-white px-2 py-1 rounded-lg">
+        <.button type="submit" variant="primary" size="sm">
           <.icon name="hero-paper-airplane" class="h-5 w-5" />
-        </button>
+        </.button>
       </div>
     </.form>
     """

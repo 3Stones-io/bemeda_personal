@@ -1,47 +1,39 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class={"max-w-7xl mx-auto #{container_padding()} #{section_spacing()}"}>
   <JobsComponents.job_detail_header job={@job_posting} back_link={~p"/jobs"} />
 
-  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+  <div class={"grid grid-cols-1 lg:grid-cols-3 #{grid_gap()}"}>
     <div class="lg:col-span-2">
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+      <.card variant="elevated">
+        <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold text-gray-900">
             {dgettext("jobs", "Job Description")}
           </h2>
           <div class="flex justify-between gap-x-2">
-            <.link
-              navigate={~p"/company/jobs/#{@job_posting.id}/edit"}
-              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
-            >
+            <.button navigate={~p"/company/jobs/#{@job_posting.id}/edit"}>
               {dgettext("jobs", "Edit Job")}
-            </.link>
+            </.button>
 
-            <.link
-              navigate={~p"/company/applicants/#{@job_posting.id}"}
-              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
-            >
+            <.button navigate={~p"/company/applicants/#{@job_posting.id}"}>
               {dgettext("jobs", "View Applicants")}
-            </.link>
+            </.button>
           </div>
         </div>
 
         <SharedComponents.video_player media_asset={@job_posting.media_asset} />
 
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
+        <div class={"border-t border-gray-200 #{card_padding()} prose max-w-none md-to-html"}>
           {SharedHelpers.to_html(@job_posting.description)}
         </div>
-      </div>
+      </.card>
     </div>
 
     <div>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6">
-          <h2 class="text-lg font-medium text-gray-900">{dgettext("jobs", "Job Details")}</h2>
-        </div>
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 mb-4">
+      <.card variant="elevated">
+        <.section_heading>{dgettext("jobs", "Job Details")}</.section_heading>
+        <div class={"border-t border-gray-200 #{card_padding()} mt-4"}>
           <JobsComponents.job_details job={@job_posting} />
         </div>
-      </div>
+      </.card>
 
       <JobsComponents.company_details_card company={@job_posting.company} />
     </div>

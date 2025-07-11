@@ -1,36 +1,32 @@
-<div class="container mx-auto px-4 py-6">
-  <div class="mb-6 flex items-center">
-    <.link
-      navigate={~p"/notifications"}
-      class="text-gray-500 hover:text-gray-700 mr-4"
-      id="back-to-notifications"
-    >
-      <.icon name="hero-arrow-left" class="h-5 w-5" />
-    </.link>
-    <h1 class="text-2xl font-bold flex-1 truncate">{@notification.subject}</h1>
-  </div>
+<div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
+  <.back navigate={~p"/notifications"}>
+    {dgettext("notifications", "Back to notifications")}
+  </.back>
 
-  <div class="bg-white rounded-lg shadow">
-    <div class="border-b border-gray-200 p-4">
+  <h1 class="text-2xl font-bold mb-6 truncate">{@notification.subject}</h1>
+
+  <.card_with_sections variant="default">
+    <:header>
       <div class="flex justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-900">
+          <.small_text class="font-medium text-gray-900">
             {dgettext("notifications", "From")}: {(@notification.sender &&
                                                      @notification.sender.email) ||
               dgettext("notifications", "System")}
-          </p>
-          <p class="text-sm text-gray-500">
+          </.small_text>
+          <.small_text>
             {dgettext("notifications", "To")}: {@notification.recipient.email}
-          </p>
+          </.small_text>
         </div>
-        <p class="text-sm text-gray-500">
+        <.caption>
           {format_date(@notification.inserted_at)}
-        </p>
+        </.caption>
       </div>
-    </div>
-
-    <div class="p-4 overflow-auto">
-      {raw(@notification.html_body)}
-    </div>
-  </div>
+    </:header>
+    <:body>
+      <div class="overflow-auto">
+        {raw(@notification.html_body)}
+      </div>
+    </:body>
+  </.card_with_sections>
 </div>

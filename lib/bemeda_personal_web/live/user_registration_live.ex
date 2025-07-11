@@ -58,6 +58,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLive do
             {dgettext("auth", "Back")}
           </.button>
           <.button
+            type="submit"
             phx-disable-with={
               if @current_step == 1,
                 do: dgettext("auth", "Processing..."),

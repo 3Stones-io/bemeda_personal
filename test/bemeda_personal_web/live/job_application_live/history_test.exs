@@ -147,15 +147,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.HistoryTest do
           ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}/history"
         )
 
-      back_link_selector = "a[aria-label='Back to application']"
-
       assert view
-             |> element(back_link_selector)
+             |> element("a", "Back to application")
              |> has_element?()
 
       {:ok, _view, html} =
         view
-        |> element(back_link_selector)
+        |> element("a", "Back to application")
         |> render_click()
         |> follow_redirect(
           conn,

@@ -2,9 +2,9 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
-  alias BemedaPersonalWeb.RatingComponent
 
   on_mount {RatingHooks, :default}
 
@@ -108,7 +108,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
               </div>
 
               <:actions>
-                <.button phx-disable-with={gettext("Updating...")}>
+                <.button type="submit" phx-disable-with={gettext("Updating...")}>
                   {gettext("Update Personal Info")}
                 </.button>
               </:actions>
@@ -139,7 +139,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
               required
             />
             <:actions>
-              <.button phx-disable-with={dgettext("auth", "Changing...")}>
+              <.button type="submit" phx-disable-with={dgettext("auth", "Changing...")}>
                 {dgettext("auth", "Change Email")}
               </.button>
             </:actions>
@@ -183,7 +183,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive do
               required
             />
             <:actions>
-              <.button phx-disable-with={dgettext("auth", "Changing...")}>
+              <.button type="submit" phx-disable-with={dgettext("auth", "Changing...")}>
                 {dgettext("auth", "Change Password")}
               </.button>
             </:actions>

@@ -1,8 +1,7 @@
 defmodule BemedaPersonalWeb.JobLive.Show do
   use BemedaPersonalWeb, :live_view
 
-  alias BemedaPersonalWeb.JobsComponents
-  alias BemedaPersonalWeb.SharedComponents
+  alias BemedaPersonalWeb.Components.Job.JobsComponents
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView

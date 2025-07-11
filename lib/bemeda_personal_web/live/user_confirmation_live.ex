@@ -12,7 +12,7 @@ defmodule BemedaPersonalWeb.UserConfirmationLive do
       <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
         <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
         <:actions>
-          <.button phx-disable-with={dgettext("auth", "Confirming...")} class="w-full">
+          <.button type="submit" phx-disable-with={dgettext("auth", "Confirming...")} class="w-full">
             {dgettext("auth", "Confirm my account")}
           </.button>
         </:actions>

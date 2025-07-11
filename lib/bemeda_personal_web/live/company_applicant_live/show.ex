@@ -3,8 +3,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
 
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Resumes
+  alias BemedaPersonalWeb.Components.Job.JobsComponents
   alias BemedaPersonalWeb.Endpoint
-  alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias Phoenix.Socket.Broadcast
 

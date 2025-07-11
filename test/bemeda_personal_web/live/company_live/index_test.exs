@@ -284,7 +284,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ "Job Offer Template"
       assert html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
       refute html =~ "Replace Template"
-      refute html =~ "bg-gray-50 rounded-lg p-4"
+      refute html =~ "bg-gray-50 rounded-lg"
     end
 
     test "handles template_status_updated broadcast", %{conn: conn, user: user, company: company} do
@@ -343,7 +343,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ "hero-archive-box"
       assert html =~ "Replace Template"
       assert html =~ "Upload a new DOCX template to replace the current one"
-      assert html =~ "bg-gray-50 rounded-lg p-4"
+      assert html =~ "bg-gray-50 rounded-lg"
     end
 
     test "successfully uploads a new template when none exists", %{
@@ -367,7 +367,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert upload_response =~ "new_template.docx"
       assert upload_response =~ "Processing"
       assert upload_response =~ "Replace Template"
-      assert upload_response =~ "bg-gray-50 rounded-lg p-4"
+      assert upload_response =~ "bg-gray-50 rounded-lg p-sm"
 
       query =
         from(t in CompanyTemplate,
@@ -545,7 +545,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       refute html =~ "Failed to archive template"
       refute html =~ "template_to_archive.docx"
       refute html =~ "Replace Template"
-      refute html =~ "bg-gray-50 rounded-lg p-4"
+      refute html =~ "bg-gray-50 rounded-lg"
     end
 
     test "shows appropriate interface transitions during template lifecycle", %{
@@ -558,7 +558,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> live(~p"/company")
 
       refute html =~ "Replace Template"
-      refute html =~ "bg-gray-50 rounded-lg p-4"
+      refute html =~ "bg-gray-50 rounded-lg"
       assert html =~ "Upload a DOCX template with [[Variable_Name]] placeholders"
 
       render_hook(view, "upload_file", %{
@@ -571,7 +571,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert upload_html =~ "first_template.docx"
       assert upload_html =~ "Processing"
       assert upload_html =~ "Replace Template"
-      assert upload_html =~ "bg-gray-50 rounded-lg p-4"
+      assert upload_html =~ "bg-gray-50 rounded-lg p-sm"
 
       render_hook(view, "upload_file", %{
         "filename" => "second_template.docx",

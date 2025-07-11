@@ -1,9 +1,10 @@
-defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
+defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
+  @moduledoc false
+
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
@@ -19,7 +20,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
           field={@form[:cover_letter]}
           type="textarea"
           label={dgettext("jobs", "Cover Letter")}
-          rows={8}
+          rows="8"
           phx-debounce="blur"
         />
 
@@ -75,6 +76,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.FormComponent do
               class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
               disabled={!@enable_submit?}
               phx-disable-with={dgettext("jobs", "Saving...")}
+              type="submit"
             >
               {dgettext("jobs", "Submit Application")}
             </.button>

@@ -87,8 +87,9 @@ defmodule BemedaPersonalWeb do
 
       # HTML escaping functionality
       import Phoenix.HTML
-      # Core UI components
-      import BemedaPersonalWeb.CoreComponents
+
+      # Design system components
+      use BemedaPersonalWeb.Components
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

@@ -1210,7 +1210,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       assert view
-             |> element("button a", "Withdraw Application")
+             |> element("button", "Withdraw Application")
              |> render_click() =~ "Withdrawn"
 
       assert render(view) =~ "Withdrawn"
