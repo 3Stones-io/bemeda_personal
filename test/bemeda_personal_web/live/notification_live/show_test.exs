@@ -62,7 +62,7 @@ defmodule BemedaPersonalWeb.NotificationLive.ShowTest do
 
       {:ok, _view, html} =
         view
-        |> element("#back-to-notifications")
+        |> element("a", "Back to notifications")
         |> render_click()
         |> follow_redirect(conn, ~p"/notifications")
 

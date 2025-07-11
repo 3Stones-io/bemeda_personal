@@ -1,13 +1,15 @@
 <section id="company-dashboard" class="px-4 w-full py-2 lg:max-w-[1000px] lg:mx-auto">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">{dgettext("companies", "Company Dashboard")}</h1>
+    <.heading level="h1" class="text-3xl font-bold">
+      {dgettext("companies", "Company Dashboard")}
+    </.heading>
   </div>
 
-  <div :if={@company && @live_action != :new} class="bg-white shadow sm:rounded-lg mb-8">
+  <.card :if={@company && @live_action != :new} variant="default" padding="none" class="mb-8">
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
       <div>
-        <h2 class="text-xl font-semibold text-gray-900">{@company.name}</h2>
-        <p class="mt-1 text-sm text-gray-500">{@company.industry}</p>
+        <.heading level="h2" class="text-xl font-semibold">{@company.name}</.heading>
+        <.text variant="body-sm" class="mt-1 text-gray-500">{@company.industry}</.text>
         <.live_component
           can_rate?={false}
           current_user={@current_user}
@@ -15,70 +17,52 @@
           entity_name={@company.name}
           entity_type="Company"
           id={"rating-component-#{@company.id}"}
-          module={RatingComponent}
+          module={BemedaPersonalWeb.Components.Shared.RatingComponent}
         />
       </div>
       <div>
         <.link
           patch={~p"/company/edit"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          class="inline-flex items-center px-sm py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           {dgettext("companies", "Edit Company Profile")}
         </.link>
       </div>
     </div>
     <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-      <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-        <div>
-          <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Location")}</dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {@company.location || dgettext("general", "Not specified")}
-          </dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            {dgettext("companies", "Company Size")}
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {@company.size || dgettext("general", "Not specified")}
-          </dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            {dgettext("companies", "Open Positions")}
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">{@job_count}</dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">{dgettext("companies", "Website")}</dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            <%= if @company.website_url do %>
-              <a
-                href={@company.website_url}
-                target="_blank"
-                class="text-indigo-600 hover:text-indigo-900"
-              >
-                {@company.website_url}
-              </a>
-            <% else %>
-              {dgettext("general", "Not specified")}
-            <% end %>
-          </dd>
-        </div>
-      </dl>
+      <.list>
+        <:item title={dgettext("companies", "Location")}>
+          {@company.location || dgettext("general", "Not specified")}
+        </:item>
+        <:item title={dgettext("companies", "Company Size")}>
+          {@company.size || dgettext("general", "Not specified")}
+        </:item>
+        <:item title={dgettext("companies", "Open Positions")}>
+          {@job_count}
+        </:item>
+        <:item title={dgettext("companies", "Website")}>
+          <%= if @company.website_url do %>
+            <.text_link href={@company.website_url} target="_blank">
+              {@company.website_url}
+            </.text_link>
+          <% else %>
+            {dgettext("general", "Not specified")}
+          <% end %>
+        </:item>
+      </.list>
     </div>
-  </div>
+  </.card>
 
-  <div :if={@company && @live_action != :new} class="bg-white shadow sm:rounded-lg mb-8">
+  <.card :if={@company && @live_action != :new} variant="default" padding="none" class="mb-8">
     <div class="px-4 py-5 sm:px-6">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-xl font-semibold text-gray-900">
+          <.heading level="h2" class="text-xl font-semibold">
             {dgettext("companies", "Job Offer Template")}
-          </h2>
-          <p class="mt-2 text-sm text-gray-500">
+          </.heading>
+          <.text variant="body-sm" class="mt-2 text-gray-500">
             {dgettext("companies", "Upload a DOCX template with [[Variable_Name]] placeholders")}
-          </p>
+          </.text>
         </div>
         <div :if={@template} class="flex items-center space-x-2">
           <div class="flex items-center space-x-2">
@@ -104,42 +88,46 @@
               {I18n.translate_template_status(Atom.to_string(@template.status))}
             </div>
           </div>
-          <button
+          <.button
             :if={@template.status == :active}
             type="button"
             phx-click="show_variables"
-            class="text-sm text-indigo-600 hover:text-indigo-900"
+            variant="primary-outline"
+            size="sm"
+            class="text-sm"
           >
             {dgettext("companies", "Preview Variables")}
-          </button>
+          </.button>
         </div>
       </div>
 
       <div class="mt-6">
-        <div :if={@template} class="bg-gray-50 rounded-lg p-4 mb-6">
+        <div :if={@template} class={"bg-gray-50 rounded-lg #{card_padding_small()} mb-6"}>
           <div class="flex items-center space-x-3">
             <div class="flex-shrink-0">
               <.icon name="hero-document-text" class="h-8 w-8 text-indigo-600" />
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900 truncate">{@template.name}</p>
-              <p class="text-sm text-gray-500">
+              <.text variant="body-sm" class="font-medium text-gray-900 truncate">
+                {@template.name}
+              </.text>
+              <.text variant="body-sm" class="text-gray-500">
                 {dgettext("companies", "Uploaded")} {Calendar.strftime(
                   @template.inserted_at,
                   "%d %B %Y"
                 )}
-              </p>
+              </.text>
               <div :if={@template.error_message} class="mt-1">
-                <p class="text-sm text-red-600">{@template.error_message}</p>
+                <.text variant="body-sm" class="text-red-600">{@template.error_message}</.text>
               </div>
               <div :if={@template.status == :processing} class="mt-1">
-                <p class="text-sm text-yellow-600">
+                <.text variant="body-sm" class="text-yellow-600">
                   <.icon name="hero-arrow-path" class="animate-spin h-4 w-4 inline mr-1" />
                   {dgettext("companies", "Processing template...")}
-                </p>
+                </.text>
               </div>
               <div :if={@template.status == :active and @template.variables != []} class="mt-1">
-                <p class="text-sm text-gray-500">
+                <.text variant="body-sm" class="text-gray-500">
                   {dngettext(
                     "companies",
                     "%{count} variable",
@@ -147,7 +135,7 @@
                     length(@template.variables),
                     count: length(@template.variables)
                   )}
-                </p>
+                </.text>
               </div>
             </div>
             <div class="flex-shrink-0 flex items-center space-x-2">
@@ -158,29 +146,31 @@
                 }
                 filename={@template.name}
               />
-              <button
+              <.button
                 type="button"
                 phx-click={JS.push("archive_template")}
-                class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                variant="primary"
+                size="sm"
+                class="p-1.5 rounded-full"
                 title={dgettext("companies", "Archive template")}
               >
                 <.icon name="hero-archive-box" class="h-4 w-4" />
-              </button>
+              </.button>
             </div>
           </div>
         </div>
 
         <div class="mt-4">
           <div :if={@template} class="mb-4">
-            <h3 class="text-lg font-medium text-gray-900 mb-2">
+            <.subsection_heading class="mb-2">
               {dgettext("companies", "Replace Template")}
-            </h3>
-            <p class="text-sm text-gray-600 mb-4">
+            </.subsection_heading>
+            <.text variant="body-sm" class="text-gray-600 mb-4">
               {dgettext(
                 "companies",
                 "Upload a new DOCX template to replace the current one. The old template will be automatically removed."
               )}
-            </p>
+            </.text>
           </div>
 
           <SharedComponents.file_input_component
@@ -199,24 +189,28 @@
         </div>
       </div>
     </div>
-  </div>
+  </.card>
 
-  <div
+  <.card
     :if={@company && @live_action != :new}
-    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
+    variant="default"
+    padding="none"
+    class="overflow-hidden mb-8"
   >
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">{dgettext("companies", "Recent Jobs")}</h2>
+      <.heading level="h2" class="text-xl font-semibold">
+        {dgettext("companies", "Recent Jobs")}
+      </.heading>
       <div>
         <.link
           navigate={~p"/company/jobs"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          class="inline-flex items-center px-sm py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           {dgettext("companies", "View All Jobs")}
         </.link>
         <.link
           navigate={~p"/company/jobs/new"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          class="inline-flex items-center px-sm py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           {dgettext("companies", "Post New Job")}
         </.link>
@@ -226,10 +220,12 @@
     <div class="border-t border-gray-200">
       <div id="job-postings-container" phx-update="stream">
         <div id="no-jobs-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
-          <p class="text-gray-500">{dgettext("companies", "You haven't posted any jobs yet.")}</p>
-          <p class="mt-2 text-sm text-gray-500">
+          <.text class="text-gray-500">
+            {dgettext("companies", "You haven't posted any jobs yet.")}
+          </.text>
+          <.text variant="body-sm" class="mt-2 text-gray-500">
             {dgettext("companies", "Get started by clicking the \"Post New Job\" button above.")}
-          </p>
+          </.text>
         </div>
 
         <div
@@ -238,7 +234,7 @@
           class="odd:bg-gray-100 hover:bg-gray-200"
           role="list"
         >
-          <JobsComponents.job_posting_card
+          <BemedaPersonalWeb.Components.Job.JobsComponents.job_posting_card
             id={"card-#{job_id}"}
             job_view={:company_job}
             job={job}
@@ -247,20 +243,22 @@
         </div>
       </div>
     </div>
-  </div>
+  </.card>
 
-  <div
+  <.card
     :if={@company && @live_action != :new}
-    class="bg-white shadow overflow-hidden sm:rounded-lg mb-8"
+    variant="default"
+    padding="none"
+    class="overflow-hidden mb-8"
   >
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">
+      <.heading level="h2" class="text-xl font-semibold">
         {dgettext("companies", "Recent Applicants")}
-      </h2>
+      </.heading>
       <div>
         <.link
           navigate={~p"/company/applicants"}
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          class="inline-flex items-center px-sm py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           {dgettext("companies", "View All Applicants")}
         </.link>
@@ -270,15 +268,15 @@
     <div class="border-t border-gray-200">
       <div id="recent-applicants-container" phx-update="stream">
         <div id="no-applicants-message" class="px-4 py-5 sm:px-6 text-center only:block hidden">
-          <p class="text-gray-500">
+          <.text class="text-gray-500">
             {dgettext("companies", "You don't have any applicants yet.")}
-          </p>
-          <p class="mt-2 text-sm text-gray-500">
+          </.text>
+          <.text variant="body-sm" class="mt-2 text-gray-500">
             {dgettext(
               "companies",
               "Applicants will appear here when they apply to your job postings."
             )}
-          </p>
+          </.text>
         </div>
 
         <div
@@ -286,7 +284,7 @@
           id={dom_id}
           class="odd:bg-gray-100 hover:bg-gray-200"
         >
-          <JobsComponents.applicant_card
+          <BemedaPersonalWeb.Components.Job.JobsComponents.applicant_card
             applicant={application}
             current_user={@current_user}
             id={"applicant-card-#{application.id}"}
@@ -296,32 +294,32 @@
         </div>
       </div>
     </div>
-  </div>
+  </.card>
 
-  <div :if={!@company} class="bg-white shadow overflow-hidden sm:rounded-lg">
+  <.card :if={!@company} variant="default" padding="none" class="overflow-hidden">
     <div class="px-4 py-5 sm:px-6">
-      <h2 class="text-xl font-semibold text-gray-900">
+      <.heading level="h2" class="text-xl font-semibold">
         {dgettext("companies", "Create Your Company Profile")}
-      </h2>
-      <p class="mt-1 text-sm text-gray-500">
+      </.heading>
+      <.text variant="body-sm" class="mt-1 text-gray-500">
         {dgettext("companies", "You need to create a company profile before you can post jobs.")}
-      </p>
+      </.text>
     </div>
     <div class="border-t border-gray-200 px-4 py-5 sm:px-6 text-center">
-      <p class="text-gray-500 mb-4">
+      <.text class="text-gray-500 mb-4">
         {dgettext(
           "companies",
           "Set up your company profile to start posting jobs and connecting with potential candidates."
         )}
-      </p>
+      </.text>
       <.link
         patch={~p"/company/new"}
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        class="inline-flex items-center px-sm py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
       >
         {dgettext("companies", "Create Company Profile")}
       </.link>
     </div>
-  </div>
+  </.card>
 </section>
 
 <.modal
@@ -331,7 +329,7 @@
   on_cancel={if @company.id, do: JS.patch(~p"/company"), else: JS.navigate(~p"/")}
 >
   <.live_component
-    module={BemedaPersonalWeb.CompanyLive.FormComponent}
+    module={BemedaPersonalWeb.Components.Company.FormComponent}
     action={@live_action}
     company={@company}
     current_user={@current_user}
@@ -342,12 +340,12 @@
 
 <.modal :if={@show_variables_modal} id="variables-modal" show on_cancel={JS.push("close_modal")}>
   <div class="mb-4">
-    <h3 class="text-lg font-medium text-gray-900">
+    <.heading level="h3" class="text-lg font-medium">
       {dgettext("companies", "Template Variables")}
-    </h3>
-    <p class="mt-1 text-sm text-gray-500">
+    </.heading>
+    <.text variant="body-sm" class="mt-1 text-gray-500">
       {dgettext("companies", "Variables found in your template")}
-    </p>
+    </.text>
   </div>
 
   <div class="mt-4">
@@ -370,12 +368,12 @@
       <h3 class="mt-2 text-sm font-medium text-gray-900">
         {dgettext("companies", "No variables found")}
       </h3>
-      <p class="mt-1 text-sm text-gray-500">
+      <.text variant="body-sm" class="mt-1 text-gray-500">
         {dgettext(
           "companies",
           "Your template doesn't contain any variables in the [[Variable_Name]] format."
         )}
-      </p>
+      </.text>
     </div>
   </div>
 

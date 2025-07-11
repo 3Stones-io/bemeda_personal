@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.SharedComponents do
+defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
   @moduledoc false
 
   use BemedaPersonalWeb, :html
@@ -7,7 +7,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonalWeb.SharedHelpers
 
-  @type assigns :: map()
+  @type assigns :: Phoenix.LiveView.Socket.assigns()
   @type output :: Phoenix.LiveView.Rendered.t()
 
   attr :class, :string, default: "w-full h-full"
@@ -48,17 +48,17 @@ defmodule BemedaPersonalWeb.SharedComponents do
     >
       <div
         id={"#{@id}-file-upload-inputs-container"}
-        class="text-center flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-8 bg-gray-50 cursor-pointer"
+        class="text-center flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-secondary-300 p-lg bg-surface-secondary cursor-pointer"
       >
-        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-          <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-indigo-600" />
+        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-100">
+          <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-primary-600" />
         </div>
-        <h3 class="mb-2 text-lg font-medium text-gray-900">
+        <h3 class="mb-2 text-lg font-medium text-secondary-900">
           {dgettext("general", "Drag and drop to upload your %{type}", type: @type)}
         </h3>
-        <p class="mb-4 text-sm text-gray-500">{dgettext("general", "or")}</p>
+        <p class="mb-4 text-sm text-secondary-500">{dgettext("general", "or")}</p>
         <div>
-          <div class="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <div class="cursor-pointer rounded-md bg-primary-600 px-sm py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">
             {dgettext("general", "Browse Files")}
             <input
               id={"#{@id}-hidden-file-input"}
@@ -69,11 +69,11 @@ defmodule BemedaPersonalWeb.SharedComponents do
             />
           </div>
         </div>
-        <p class="mt-2 text-xs text-gray-500">
+        <p class="mt-2 text-xs text-secondary-500">
           {dgettext("general", "Max file size: %{size}", size: FileSizeUtils.pretty(@max_file_size))}
         </p>
       </div>
-      <p id={"#{@id}-file-upload-error"} class="mt-2 text-sm text-red-600 text-center mt-4 hidden">
+      <p id={"#{@id}-file-upload-error"} class="mt-2 text-sm text-danger-600 text-center mt-4 hidden">
         <.icon name="hero-exclamation-circle" class="h-4 w-4" /> {dgettext(
           "errors",
           "Unsupported file type."
@@ -93,15 +93,15 @@ defmodule BemedaPersonalWeb.SharedComponents do
     <div
       id={"#{@id}"}
       class={[
-        "mt-4 bg-white rounded-lg border border-gray-200 p-4 file-upload-progress",
+        "mt-4 bg-white rounded-lg border border-secondary-200 p-sm file-upload-progress",
         @class
       ]}
       {@rest}
     >
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center space-x-2">
-          <.icon name="hero-paper-clip" class="h-5 w-5 text-gray-400" />
-          <span class="text-sm font-medium text-gray-700" id={"#{@id}-upload-filename"}></span>
+          <.icon name="hero-paper-clip" class="h-5 w-5 text-secondary-400" />
+          <span class="text-sm font-medium text-secondary-700" id={"#{@id}-upload-filename"}></span>
         </div>
       </div>
       <div class="relative w-full">
@@ -111,10 +111,10 @@ defmodule BemedaPersonalWeb.SharedComponents do
           aria-label={dgettext("general", "Upload progress")}
           aria-valuemin="0"
           aria-valuemax="100"
-          class="w-full bg-gray-200 rounded-full h-2.5"
+          class="w-full bg-secondary-200 rounded-full h-2.5"
         >
           <div
-            class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
+            class="bg-primary-600 h-2.5 rounded-full transition-all duration-300"
             style="width: 0%"
             id={"#{@id}-upload-progress-bar"}
           >
@@ -122,8 +122,8 @@ defmodule BemedaPersonalWeb.SharedComponents do
         </div>
       </div>
       <div class="flex justify-between mt-2">
-        <span id={"#{@id}-upload-size"} class="text-xs text-gray-500"></span>
-        <span id={"#{@id}-upload-percentage"} class="text-xs text-gray-500"></span>
+        <span id={"#{@id}-upload-size"} class="text-xs text-secondary-500"></span>
+        <span id={"#{@id}-upload-percentage"} class="text-xs text-secondary-500"></span>
       </div>
     </div>
     """
@@ -150,7 +150,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
       title={dgettext("general", "Show %{type}", type: @type)}
     >
       <div
-        class="relative w-full bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:bg-gray-50"
+        class="relative w-full bg-white rounded-lg border border-secondary-200 p-sm cursor-pointer hover:bg-surface-secondary"
         role="button"
         phx-click={
           JS.toggle(
@@ -162,15 +162,15 @@ defmodule BemedaPersonalWeb.SharedComponents do
       >
         <div class="flex items-center space-x-4">
           <div class="flex-shrink-0">
-            <.icon name="hero-paper-clip" class="h-8 w-8 text-indigo-600" />
+            <.icon name="hero-paper-clip" class="h-8 w-8 text-primary-600" />
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-900 truncate">
+            <p class="text-sm font-medium text-secondary-900 truncate">
               {@media_asset.file_name}
             </p>
           </div>
           <div class="flex-shrink-0">
-            <button type="button" class="text-red-600 hover:text-red-800">
+            <button type="button" class="text-danger-600 hover:text-danger-800">
               <.icon name="hero-trash" class="h-5 w-5" />
             </button>
           </div>
@@ -194,7 +194,7 @@ defmodule BemedaPersonalWeb.SharedComponents do
 
   attr :class, :string,
     default:
-      "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      "inline-flex items-center px-xs py-2 border border-secondary-300 shadow-sm text-sm leading-4 font-medium rounded-md text-secondary-700 bg-white hover:bg-surface-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
 
   attr :icon_class, :string, default: "h-4 w-4 mr-2"
   attr :rest, :global

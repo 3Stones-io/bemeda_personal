@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.DocumentTemplateComponent do
+defmodule BemedaPersonalWeb.Components.Document.DocumentTemplateComponent do
   @moduledoc false
 
   use BemedaPersonalWeb, :live_component

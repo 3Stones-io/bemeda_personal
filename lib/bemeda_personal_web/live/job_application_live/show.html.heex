@@ -1,5 +1,5 @@
 <section class="w-full py-2 max-w-full min-h-screen">
-  <div class="text-white flex justify-between items-center p-4 mb-4 bg-indigo-500">
+  <div class={"text-white flex justify-between items-center bg-indigo-500 #{card_padding_small()} mb-4"}>
     <div class="flex items-center gap-2">
       <h1 class="text-xl font-semibold">
         <ChatComponents.chat_contact_name
@@ -8,21 +8,22 @@
         />
       </h1>
 
-      <button
+      <.button
         :for={status <- @available_statuses}
-        class={[
-          "px-3 py-1.5 text-sm font-medium rounded-xl transition-colors duration-150 ease-in-out",
-          SharedHelpers.status_badge_color(status)
-        ]}
-      >
-        <.link phx-click={
+        phx-click={
           JS.push("show-status-transition-modal",
             value: %{to_state: status}
           )
-        }>
-          {I18n.translate_status_action(status)}
-        </.link>
-      </button>
+        }
+        size="sm"
+        variant="primary-light"
+        class={[
+          "rounded-xl transition-colors duration-150 ease-in-out",
+          SharedHelpers.status_badge_color(status)
+        ]}
+      >
+        {I18n.translate_status_action(status)}
+      </.button>
     </div>
 
     <div class="relative">
@@ -49,14 +50,16 @@
       </div>
 
       <div class="sm:hidden relative">
-        <button
+        <.button
           phx-click={
             JS.toggle(to: "#job-actions-menu", in: "fade-in-scale", out: "fade-out-scale")
           }
-          class="text-white hover:text-white/50 px-3 py-1.5 text-sm flex items-center gap-1"
+          variant="primary-outline"
+          size="sm"
+          class="text-white hover:text-white/50 border-white border-opacity-50"
         >
           <.icon name="hero-ellipsis-vertical" class="w-5 h-5" />
-        </button>
+        </.button>
 
         <div
           id="job-actions-menu"
@@ -91,7 +94,7 @@
 
   <div
     :if={!@is_employer? && @job_application.state == "offer_extended"}
-    class="bg-green-50 border border-green-200 rounded-lg p-6 mx-4 my-4"
+    class={"bg-green-50 border border-green-200 rounded-lg mx-4 my-4 #{card_padding_large()}"}
   >
     <div class="text-center">
       <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
@@ -100,12 +103,12 @@
       <h3 class="text-lg font-medium text-green-900 mb-2">
         {dgettext("jobs", "Job Offer Extended!")}
       </h3>
-      <p class="text-sm text-green-700 mb-4">
+      <.text variant="body-sm" class="text-green-700 mb-4">
         {dgettext("jobs", "%{company} has extended you a job offer for %{position}.",
           company: @job_application.job_posting.company.name,
           position: @job_application.job_posting.title
         )}
-      </p>
+      </.text>
 
       <div :if={@job_offer} class="mb-6">
         <div
@@ -127,7 +130,7 @@
           <.link
             href={SharedHelpers.get_presigned_url(@job_offer.message.media_asset.upload_id)}
             target="_blank"
-            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
+            class="inline-flex items-center px-sm py-2 bg-info-600 hover:bg-info-700 text-white rounded-lg font-medium transition-colors duration-200"
           >
             <.icon name="hero-document-text" class="w-5 h-5 mr-2" /> {dgettext(
               "jobs",
@@ -138,13 +141,15 @@
       </div>
 
       <div :if={contract_available?(@job_offer)} class="flex justify-center">
-        <button
+        <.button
           phx-click="accept_offer"
-          class="inline-flex items-center px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold text-lg rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+          variant="primary"
+          size="lg"
+          class="bg-success-600 hover:bg-success-700 font-semibold text-lg shadow-lg hover:shadow-xl"
         >
           <.icon name="hero-pen" class="w-6 h-6 mr-3" />
           {dgettext("jobs", "Accept offer & sign contract")}
-        </button>
+        </.button>
       </div>
     </div>
   </div>
@@ -201,7 +206,7 @@
     on_cancel={JS.push("hide-status-transition-modal")}
   >
     <.live_component
-      module={BemedaPersonalWeb.JobApplicationLive.OfferDetailsComponent}
+      module={OfferDetailsComponent}
       id="offer-details-component"
       job_application={@job_application}
       current_user={@current_user}
@@ -249,9 +254,9 @@
     </.header>
 
     <div class="text-center mb-6">
-      <p class="text-gray-600 mb-4">
+      <.text class="text-gray-600 mb-4">
         {dgettext("jobs", "Please review and sign your employment contract below.")}
-      </p>
+      </.text>
     </div>
 
     <div class="mb-6">
@@ -267,22 +272,25 @@
       <div :if={!@signing_session || !@signing_session.signing_url} class="text-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4">
         </div>
-        <p class="text-gray-600">{dgettext("jobs", "Preparing signing interface...")}</p>
+        <.text class="text-gray-600">{dgettext("jobs", "Preparing signing interface...")}</.text>
       </div>
     </div>
 
-    <div class="text-xs text-gray-500 text-center mb-4">
-      {dgettext("jobs", "Your signature is legally binding and secure.")}
+    <div class="text-center mb-4">
+      <.text variant="caption" class="text-gray-500">
+        {dgettext("jobs", "Your signature is legally binding and secure.")}
+      </.text>
     </div>
 
     <div class="flex justify-center">
-      <button
+      <.button
         type="button"
         phx-click="hide_signing_modal"
-        class="inline-flex justify-center rounded-md bg-gray-300 px-6 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-400"
+        variant="secondary"
+        class="px-6 py-2 text-sm font-semibold shadow-sm"
       >
         Cancel
-      </button>
+      </.button>
     </div>
   </.modal>
 </section>

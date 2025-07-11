@@ -32,7 +32,7 @@ defmodule BemedaPersonalWeb.UserResetPasswordLive do
           required
         />
         <:actions>
-          <.button phx-disable-with={dgettext("auth", "Resetting...")} class="w-full">
+          <.button type="submit" phx-disable-with={dgettext("auth", "Resetting...")} class="w-full">
             {dgettext("auth", "Reset Password")}
           </.button>
         </:actions>

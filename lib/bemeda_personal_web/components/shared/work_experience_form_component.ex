@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.Resume.WorkExperienceFormComponent do
+defmodule BemedaPersonalWeb.Components.Shared.WorkExperienceFormComponent do
   @moduledoc false
 
   use BemedaPersonalWeb, :live_component

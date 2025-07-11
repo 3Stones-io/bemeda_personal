@@ -41,7 +41,7 @@ msgstr ""
 msgid "must be between 1 and 5"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/rating_form_component.ex
+#: lib/bemeda_personal_web/components/shared/rating_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Share your experience..."
 msgstr ""

@@ -1,6 +1,6 @@
 <section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
   <div class="company-hero grid gap-y-2 border-b border-gray-200 pb-8">
-    <div class="flex items-center gap-4">
+    <div class={"flex items-center #{grid_gap_small()}"}>
       <div class="w-20 h-14 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
         <img
           :if={@company.media_asset}
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div>
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">{@company.name}</h1>
+        <.heading class="mb-4">{@company.name}</.heading>
         <.live_component
           class="mb-2"
           current_user={@current_user}
@@ -42,54 +42,51 @@
       <span>{@company.location}</span>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-lg p-8 shadow-sm mt-4 company-stats">
-      <div class="flex gap-4 justify-between">
-        <p class="flex flex-col gap-1">
-          <span class="text-sm text-gray-500 mb-1">{dgettext("jobs", "Open Jobs")}</span>
-          <span class="text-xl font-bold text-gray-900">{@job_count}</span>
-        </p>
-        <p class="flex flex-col gap-1">
-          <span class="text-sm text-gray-500 mb-1">{dgettext("companies", "Industry")}</span>
-          <span class="text-xl font-bold text-gray-900">
+    <.card variant="default" class="mt-4 company-stats">
+      <div class={"flex justify-between #{grid_gap_small()}"}>
+        <div class={"flex flex-col #{list_spacing()}"}>
+          <.caption class="mb-1">{dgettext("jobs", "Open Jobs")}</.caption>
+          <.text variant="body-lg" class="font-bold">{@job_count}</.text>
+        </div>
+        <div class={"flex flex-col #{list_spacing()}"}>
+          <.caption class="mb-1">{dgettext("companies", "Industry")}</.caption>
+          <.text variant="body-lg" class="font-bold">
             {String.slice(@company.industry || dgettext("companies", "Tech"), 0, 10)}
-          </span>
-        </p>
+          </.text>
+        </div>
       </div>
-    </div>
+    </.card>
 
     <div class="flex items-center gap-4 mt-4">
-      <.link
-        navigate={~p"/companies/#{@company.id}/jobs"}
-        class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
+      <.button variant="primary" navigate={~p"/companies/#{@company.id}/jobs"}>
         {dgettext("jobs", "View All Jobs")}
-      </.link>
-      <.link
+      </.button>
+      <.button
         :if={@company.website_url}
+        variant="secondary"
         href={@company.website_url}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center px-5 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         {dgettext("companies", "Visit Website")}
-      </.link>
+      </.button>
     </div>
   </div>
 
   <div class="about-company py-4">
     <div class="description py-4">
-      <h2 class="text-2xl font-semibold text-gray-900 mb-3">
+      <.section_heading class="mb-3">
         {dgettext("companies", "About %{company}", company: @company.name)}
-      </h2>
+      </.section_heading>
       <div :if={@company.description} class="md-to-html">
         {SharedHelpers.to_html(@company.description)}
       </div>
-      <p :if={!@company.description} class="text-gray-500">
+      <.text :if={!@company.description} class="text-gray-500">
         {dgettext("companies", "No company description available.")}
-      </p>
+      </.text>
     </div>
 
-    <div class="company-info outline outline-gray-200 p-4 rounded-lg">
+    <.card variant="flat" class="company-info">
       <h2 class="text-sm font-semibold text-gray-400 mb-2">
         {dgettext("companies", "About %{company}", company: @company.name)}
       </h2>
@@ -106,22 +103,22 @@
       </div>
       <div :if={@company.industry} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("companies", "Industry")}</h4>
-        <p class="text-sm text-gray-600">{@company.industry}</p>
+        <.small_text>{@company.industry}</.small_text>
       </div>
       <div :if={@company.size} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">
           {dgettext("companies", "Company Size")}
         </h4>
-        <p class="text-sm text-gray-600">{@company.size}</p>
+        <.small_text>{@company.size}</.small_text>
       </div>
       <div :if={@company.location} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("companies", "Location")}</h4>
-        <p class="text-sm text-gray-600">{@company.location}</p>
+        <.small_text>{@company.location}</.small_text>
       </div>
 
       <div :if={@job_count} class="mb-2">
         <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("jobs", "Open Positions")}</h4>
-        <p class="text-sm text-gray-600">{@job_count}</p>
+        <.small_text>{@job_count}</.small_text>
       </div>
 
       <div class="mb-2">
@@ -137,12 +134,12 @@
           rater_type={if @current_user, do: "User"}
         />
       </div>
-    </div>
+    </.card>
   </div>
 
   <div class="jobs">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-2xl font-bold text-gray-900">{dgettext("jobs", "Recent Jobs")}</h2>
+      <.section_heading>{dgettext("jobs", "Recent Jobs")}</.section_heading>
       <.link
         :if={@job_count > 0}
         navigate={~p"/companies/#{@company.id}/jobs"}
@@ -154,12 +151,12 @@
     </div>
 
     <div id="recent-jobs" phx-update="stream">
-      <p
+      <.text
         id="empty-jobs"
         class="hidden bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500 only:block"
       >
         {dgettext("jobs", "No open positions at this time")}
-      </p>
+      </.text>
 
       <div
         :for={{job_id, job} <- @streams.job_postings}

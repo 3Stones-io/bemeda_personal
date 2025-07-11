@@ -55,7 +55,7 @@ defmodule BemedaPersonalWeb.PageControllerTest do
     conn = get(conn, ~p"/")
     response = html_response(conn, 200)
 
-    assert response =~ ~s{<nav class="bg-gray-50 border-b border-gray-200">}
+    assert response =~ ~s{<nav class="bg-surface-secondary border-b border-secondary-200">}
     assert response =~ ~s{Bemeda}
   end
 end

@@ -1,13 +1,13 @@
 defmodule BemedaPersonalWeb.Resume.ShowLive do
   use BemedaPersonalWeb, :live_view
 
-  import BemedaPersonalWeb.Components.ResumeComponents
+  import BemedaPersonalWeb.Components.Shared.ResumeComponents
 
   alias BemedaPersonal.Resumes
-  alias BemedaPersonalWeb.Resume.EducationFormComponent
-  alias BemedaPersonalWeb.Resume.ResumeFormComponent
+  alias BemedaPersonalWeb.Components.Shared.EducationFormComponent
+  alias BemedaPersonalWeb.Components.Shared.ResumeFormComponent
+  alias BemedaPersonalWeb.Components.Shared.WorkExperienceFormComponent
   alias BemedaPersonalWeb.Resume.SharedHelpers
-  alias BemedaPersonalWeb.Resume.WorkExperienceFormComponent
   alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView

@@ -1,5 +1,7 @@
-<div class="container mx-auto px-4 py-6">
-  <h1 class="text-2xl font-bold mb-6">{dgettext("notifications", "Notifications")}</h1>
+<div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
+  <h1 class={"text-2xl font-bold #{page_header_spacing()}"}>
+    {dgettext("notifications", "Notifications")}
+  </h1>
 
   <div
     id="notifications"
@@ -8,10 +10,10 @@
     phx-viewport-bottom={!@end_of_timeline? && JS.push("next_page")}
     phx-page-loading
   >
-    <div class="px-4 py-5 sm:px-6 text-center hidden only:block" id="empty-job-postings">
-      <p class="text-gray-500">
+    <div class={"#{card_padding()} text-center hidden only:block"} id="empty-job-postings">
+      <.text class="text-gray-500">
         {dgettext("notifications", "No notifications available at the moment.")}
-      </p>
+      </.text>
     </div>
 
     <div
@@ -19,7 +21,7 @@
       class={[
         notification.is_read && "bg-gray-50 border-b border-gray-200",
         !notification.is_read && "bg-white border-b border-gray-200 shadow-sm",
-        "px-4 py-5 sm:px-6"
+        "#{card_padding()}"
       ]}
       id={notification_id}
       role="list"
@@ -35,32 +37,40 @@
               class="block focus:outline-none w-full"
             >
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                <p class={[
-                  "text-sm font-medium truncate",
-                  !notification.is_read && "text-gray-900 font-bold",
-                  notification.is_read && "text-gray-600"
-                ]}>
+                <.text
+                  variant="body-sm"
+                  class={[
+                    "font-medium truncate",
+                    !notification.is_read && "text-gray-900 font-bold",
+                    notification.is_read && "text-gray-600"
+                  ]}
+                >
                   {String.replace(notification.subject, "BemedaPersonal | ", "")}
-                </p>
-                <p class="text-sm text-gray-500">
+                </.text>
+                <.text variant="body-sm" class="text-gray-500">
                   {DateUtils.format_emails_date(notification.inserted_at)}
-                </p>
+                </.text>
               </div>
-              <p class={[
-                "mt-1 text-sm truncate",
-                !notification.is_read && "text-gray-800",
-                notification.is_read && "text-gray-500"
-              ]}>
+              <.text
+                variant="body-sm"
+                class={[
+                  "mt-1 truncate",
+                  !notification.is_read && "text-gray-800",
+                  notification.is_read && "text-gray-500"
+                ]}
+              >
                 {format_notification_body(notification.body)}
-              </p>
+              </.text>
             </.link>
           </div>
         </div>
         <div class="flex-shrink-0">
-          <button
+          <.button
             phx-click={JS.push("toggle_read_status", value: %{id: notification.id})}
+            variant="primary-light"
+            size="sm"
             class={[
-              "p-1 rounded-full focus:outline-none",
+              "p-1 rounded-full",
               !notification.is_read && "text-green-500 hover:text-green-700",
               notification.is_read && "text-gray-400 hover:text-gray-600"
             ]}
@@ -79,7 +89,7 @@
               name={if notification.is_read, do: "hero-envelope", else: "hero-envelope-open"}
               class="h-5 w-5"
             />
-          </button>
+          </.button>
         </div>
       </div>
     </div>

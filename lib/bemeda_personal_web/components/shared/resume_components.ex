@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.Components.ResumeComponents do
+defmodule BemedaPersonalWeb.Components.Shared.ResumeComponents do
   @moduledoc false
 
   use BemedaPersonalWeb, :html

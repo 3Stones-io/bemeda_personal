@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.Resume.ResumeFormComponent do
+defmodule BemedaPersonalWeb.Components.Shared.ResumeFormComponent do
   @moduledoc false
 
   use BemedaPersonalWeb, :live_component

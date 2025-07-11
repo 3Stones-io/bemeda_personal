@@ -3,10 +3,10 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
 
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobPostings
+  alias BemedaPersonalWeb.Components.Job.JobsComponents
+  alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias BemedaPersonalWeb.Endpoint
-  alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
-  alias BemedaPersonalWeb.RatingComponent
   alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.Socket.Broadcast
 

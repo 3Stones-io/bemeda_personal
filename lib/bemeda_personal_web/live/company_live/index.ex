@@ -10,10 +10,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Workers.ProcessTemplate
   alias BemedaPersonalWeb.Endpoint
-  alias BemedaPersonalWeb.JobsComponents
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
-  alias BemedaPersonalWeb.RatingComponent
-  alias BemedaPersonalWeb.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.LiveView.JS
   alias Phoenix.Socket.Broadcast

@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.Components.LanguageSwitcher do
+defmodule BemedaPersonalWeb.Components.Shared.LanguageSwitcher do
   @moduledoc """
   Language switcher component for i18n support.
   """

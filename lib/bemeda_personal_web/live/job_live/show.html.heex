@@ -3,21 +3,21 @@
 
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2">
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <.card variant="default" padding="none" class="overflow-hidden">
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
           <h2 class="text-xl font-semibold text-gray-900">
             {dgettext("jobs", "Job Description")}
           </h2>
-          <.link
+          <.button
             :if={
               !@application &&
                 !(@current_user && @job_posting.company.admin_user_id == @current_user.id)
             }
+            variant="primary"
             navigate={~p"/jobs/#{@job_posting.id}/job_applications/new"}
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {dgettext("jobs", "Apply to this job")}
-          </.link>
+          </.button>
 
           <.link
             :if={@application}
@@ -33,18 +33,18 @@
         <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
           {SharedHelpers.to_html(@job_posting.description)}
         </div>
-      </div>
+      </.card>
     </div>
 
     <div>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <.card variant="default" padding="none" class="overflow-hidden">
         <div class="px-4 py-5 sm:px-6">
           <h2 class="text-lg font-medium text-gray-900">{dgettext("jobs", "Job Details")}</h2>
         </div>
         <div class="border-t border-gray-200 px-4 py-5 sm:px-6 mb-4">
           <JobsComponents.job_details job={@job_posting} />
         </div>
-      </div>
+      </.card>
 
       <JobsComponents.company_details_card company={@job_posting.company} />
     </div>

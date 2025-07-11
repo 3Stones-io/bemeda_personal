@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.RatingFormComponent do
+defmodule BemedaPersonalWeb.Components.Shared.RatingFormComponent do
   @moduledoc false
 
   use BemedaPersonalWeb, :live_component

@@ -29,6 +29,7 @@ import CurrentCheckbox from './hooks/current_checkbox'
 import DocumentTemplate from './hooks/document_template'
 import FileUpload from './hooks/file_upload'
 import FlashAutoDisappear from './hooks/flash_auto_disappear'
+import MultiSelect from './hooks/multi_select'
 import PdfPreview from './hooks/pdf_preview'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
@@ -44,6 +45,7 @@ const Hooks = {
   DocumentTemplate,
   FileUpload,
   FlashAutoDisappear,
+  MultiSelect,
   PdfPreview,
   RatingsTooltip,
   RatingsTooltipContent,

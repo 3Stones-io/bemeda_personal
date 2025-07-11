@@ -1,10 +1,10 @@
 <section class="min-h-[100vh] w-[100%]">
   <div class="px-4 py-2 lg:py-8 lg:max-w-[1000px] lg:mx-auto">
-    <h1 class="text-3xl font-bold text-gray-900">{dgettext("jobs", "Job Postings")}</h1>
+    <.heading>{dgettext("jobs", "Job Postings")}</.heading>
 
-    <p class="mt-2 text-sm text-gray-500 mb-8">
+    <.subtitle class="mt-2 mb-8">
       {dgettext("jobs", "Find your next career opportunity")}
-    </p>
+    </.subtitle>
 
     <.live_component
       module={JobListComponent}
