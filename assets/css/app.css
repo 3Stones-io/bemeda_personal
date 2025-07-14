@@ -2,6 +2,34 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Acumin Variable Concept font class 
+   To use this font:
+   1. Go to https://fonts.adobe.com/fonts/acumin-variable
+   2. Click "</> Add to Web Project" 
+   3. Create a new web project or add to existing
+   4. Copy the embed code (e.g., <link rel="stylesheet" href="https://use.typekit.net/YOUR_ID.css">)
+   5. Add the embed code to root.html.heex
+   
+   Note: The font-family name might be "acumin-variable-concept" or similar - check your Adobe Fonts project
+*/
+.font-acumin-variable {
+  /* Using Noto Sans as fallback until Adobe Fonts project is set up */
+  /* To use actual Acumin Variable: Set up Adobe Fonts web project */
+  font-family:
+    'Noto Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.0313842px;
+  /* Slightly condensed look to match Acumin */
+  letter-spacing: -0.02em;
+}
+
 .company-info {
   @apply hidden;
 }

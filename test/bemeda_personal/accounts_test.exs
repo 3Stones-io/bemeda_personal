@@ -105,6 +105,8 @@ defmodule BemedaPersonal.AccountsTest do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
 
       assert changeset.required == [
+               :medical_role,
+               :department,
                :city,
                :country,
                :street,

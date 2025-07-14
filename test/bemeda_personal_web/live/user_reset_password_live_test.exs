@@ -88,31 +88,27 @@ defmodule BemedaPersonalWeb.UserResetPasswordLiveTest do
   end
 
   describe "Reset password navigation" do
-    test "redirects to login page when the Log in button is clicked", %{conn: conn, token: token} do
+    test "navigates to login page when the Log in link is clicked", %{conn: conn, token: token} do
       {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
 
-      {:ok, conn} =
-        lv
-        |> element(~s|main a:fl-contains("Log in")|)
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/log_in")
+      lv
+      |> element(~s|.text-center a|, "Log in")
+      |> render_click()
 
-      assert conn.resp_body =~ "Log in"
+      assert_redirect(lv, ~p"/users/log_in")
     end
 
-    test "redirects to registration page when the Register button is clicked", %{
+    test "navigates to registration page when the Register link is clicked", %{
       conn: conn,
       token: token
     } do
       {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
 
-      {:ok, conn} =
-        lv
-        |> element(~s|main a:fl-contains("Register")|)
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/register")
+      lv
+      |> element(~s|.text-center a|, "Register")
+      |> render_click()
 
-      assert conn.resp_body =~ "Register"
+      assert_redirect(lv, ~p"/users/register")
     end
   end
 end

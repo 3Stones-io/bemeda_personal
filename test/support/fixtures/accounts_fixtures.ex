@@ -25,10 +25,12 @@ defmodule BemedaPersonal.AccountsFixtures do
       %{
         city: "Test City",
         country: "Test Country",
+        department: :"Hospital / Clinic",
         email: unique_user_email(),
         first_name: "Test",
         gender: :male,
         last_name: "User",
+        medical_role: :"Registered Nurse (AKP/DNII/HF/FH)",
         password: valid_user_password(),
         street: "123 Test Street",
         user_type: :job_seeker,

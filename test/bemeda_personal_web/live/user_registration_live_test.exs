@@ -10,8 +10,38 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     test "renders registration page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register")
 
-      assert html =~ "Join as a client or freelancer"
+      assert html =~ "Join as a job seeker or employer"
       assert html =~ "Log in"
+    end
+
+    test "can navigate between job seeker and employer registration with patch", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      # Click on employer registration
+      lv
+      |> element("a", "Sign up as employer")
+      |> render_click()
+
+      # Assert patch navigation happened
+      assert_patch(lv, "/users/register/employer")
+
+      employer_html = render(lv)
+      assert employer_html =~ "Get connect with qualified"
+      assert employer_html =~ "healthcare professionals"
+
+      # Test the other direction in a new session
+      {:ok, lv2, _html} = live(conn, ~p"/users/register")
+
+      # Click on job seeker registration
+      lv2
+      |> element("a", "Sign up as medical personnel")
+      |> render_click()
+
+      # Assert patch navigation happened
+      assert_patch(lv2, "/users/register/job_seeker")
+
+      job_seeker_html = render(lv2)
+      assert job_seeker_html =~ "Create your account"
     end
 
     test "redirects if already logged in", %{conn: conn} do
@@ -27,14 +57,14 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     test "renders step 1 form fields", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register/job_seeker")
 
-      assert html =~ "Step 1: Basic Information"
+      assert html =~ "Create your account"
       assert html =~ "First Name"
       assert html =~ "Last Name"
       assert html =~ "Email"
       assert html =~ "Password"
-      assert html =~ "Continue"
-      refute html =~ "Gender"
-      refute html =~ "Street"
+      assert html =~ "Next"
+      refute html =~ "Medical Role"
+      refute html =~ "Department"
       refute html =~ "Back"
     end
 
@@ -53,7 +83,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
           }
         )
 
-      assert result =~ "Register for an account"
+      assert result =~ "Create your account"
       assert result =~ "must have the @ sign and no spaces"
       assert result =~ "should be at least 12 character"
       assert result =~ "can&#39;t be blank"
@@ -62,8 +92,8 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
     test "shows step indicator", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register/job_seeker")
 
-      assert html =~ "bg-primary-600 text-white"
-      assert html =~ "bg-gray-200 text-gray-600"
+      assert html =~ "bg-primary-500"
+      assert html =~ "bg-gray-200"
     end
   end
 
@@ -83,15 +113,15 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
         )
         |> render_submit()
 
-      assert html =~ "Step 2: Personal Information"
+      assert html =~ "Medical Role"
       assert html =~ "Gender"
       assert html =~ "Street"
-      assert html =~ "ZIP Code"
+      assert html =~ "Zip Code"
       assert html =~ "City"
       assert html =~ "Country"
-      assert html =~ "Back"
+      assert html =~ "Go back"
       assert html =~ "Create an account"
-      refute html =~ "Continue"
+      refute html =~ "Next"
     end
 
     test "does not advance to step 2 with invalid step 1 data", %{conn: conn} do
@@ -109,10 +139,10 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
         )
         |> render_submit()
 
-      assert html =~ "Step 1: Basic Information"
+      assert html =~ "Create your account"
       assert html =~ "can&#39;t be blank"
       assert html =~ "must have the @ sign and no spaces"
-      refute html =~ "Step 2: Personal Information"
+      refute html =~ "Medical Role"
     end
 
     test "goes back to step 1 when back button is clicked", %{conn: conn} do
@@ -131,12 +161,12 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       html =
         lv
-        |> element("button", "Back")
+        |> element("button", "Go back")
         |> render_click()
 
-      assert html =~ "Step 1: Basic Information"
-      assert html =~ "Continue"
-      refute html =~ "Step 2: Personal Information"
+      assert html =~ "Create your account"
+      assert html =~ "Next"
+      refute html =~ "Medical Role"
       refute html =~ "Back"
     end
 
@@ -156,7 +186,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       html =
         lv
-        |> element("button", "Back")
+        |> element("button", "Go back")
         |> render_click()
 
       assert html =~ "value=\"John\""
@@ -240,7 +270,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
         )
         |> render_submit()
 
-      assert result =~ "Step 2: Personal Information"
+      assert result =~ "Medical Role"
       assert result =~ "can&#39;t be blank"
     end
 
@@ -249,33 +279,20 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       user = user_fixture(%{email: "test@email.com"})
 
-      step1_result =
+      result =
         lv
         |> form("#registration_form",
           user: %{
             "first_name" => "John",
             "last_name" => "Doe",
             "email" => user.email,
-            "password" => "valid_password_123"
+            "password" => "valid_password_123",
+            "city" => "Test City"
           }
         )
         |> render_submit()
 
-      assert step1_result =~ "Step 2: Personal Information"
-
-      step2_result =
-        lv
-        |> form("#registration_form",
-          user: %{
-            "city" => "Test City",
-            "country" => "Test Country",
-            "street" => "123 Main St",
-            "zip_code" => "12345"
-          }
-        )
-        |> render_submit()
-
-      assert step2_result =~ "has already been taken"
+      assert result =~ "has already been taken"
     end
 
     test "saves the locale preference", %{conn: conn} do
@@ -298,7 +315,15 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       |> render_submit()
 
       step2_attributes =
-        Map.take(valid_attributes, [:gender, :street, :zip_code, :city, :country])
+        Map.take(valid_attributes, [
+          :gender,
+          :street,
+          :zip_code,
+          :city,
+          :country,
+          :medical_role,
+          :department
+        ])
 
       lv
       |> form("#registration_form", user: step2_attributes)
@@ -315,7 +340,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       {:ok, _login_live, login_html} =
         lv
-        |> element(~s|main a:fl-contains("Log in")|)
+        |> element(~s|a:fl-contains("Sign in")|)
         |> render_click()
         |> follow_redirect(conn, ~p"/users/log_in")
 
@@ -483,8 +508,8 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       # Contains error messages
       assert result =~ "can&#39;t be blank"
       # Must NOT advance to Step 2
-      assert result =~ "Step 1: Basic Information"
-      refute result =~ "Step 2: Personal Information"
+      assert result =~ "Create your account"
+      refute result =~ "Medical Role"
     end
 
     test "progressive validation shows errors only for touched invalid fields", %{conn: conn} do
@@ -542,7 +567,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       # Verify Step 2 doesn't show validation errors initially
       refute step1_result =~ "can&#39;t be blank"
-      assert step1_result =~ "Step 2: Personal Information"
+      assert step1_result =~ "Medical Role"
     end
 
     test "step 2 progressive validation works correctly", %{conn: conn} do
@@ -587,16 +612,70 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       back_result =
         lv
-        |> element("button", "Back")
+        |> element("button", "Go back")
         |> render_click()
 
       # Step 1 should not show validation errors after back navigation
-      assert back_result =~ "Step 1: Basic Information"
+      assert back_result =~ "Create your account"
       refute back_result =~ "can&#39;t be blank"
       # But data should be preserved
       assert back_result =~ "value=\"John\""
       assert back_result =~ "value=\"Doe\""
       assert back_result =~ "value=\"john@example.com\""
+    end
+
+    test "country dropdown functionality", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register/job_seeker")
+
+      # Initially dropdown is closed and Switzerland is selected
+      form_html =
+        lv
+        |> element("#registration_form")
+        |> render()
+
+      assert form_html =~ "+41"
+      assert form_html =~ "🇨🇭"
+      refute form_html =~ "Germany"
+
+      # Toggle dropdown open
+      lv
+      |> element("[phx-click=\"toggle_country_dropdown\"]")
+      |> render_click()
+
+      dropdown_html =
+        lv
+        |> element("#registration_form")
+        |> render()
+
+      assert dropdown_html =~ "Germany"
+      assert dropdown_html =~ "+49"
+      assert dropdown_html =~ "🇩🇪"
+
+      # Select Germany
+      lv
+      |> element(~s{[phx-click="select_country"][phx-value-code="+49"]})
+      |> render_click()
+
+      updated_html =
+        lv
+        |> element("#registration_form")
+        |> render()
+
+      assert updated_html =~ "+49"
+      assert updated_html =~ "🇩🇪"
+      # Dropdown should be closed
+      refute updated_html =~ "Germany"
+    end
+
+    test "employer registration form", %{conn: conn} do
+      {:ok, _lv, html} = live(conn, ~p"/users/register/employer")
+
+      assert html =~ "Get connect with qualified"
+      assert html =~ "healthcare professionals"
+      assert html =~ "Work Email Address"
+      refute html =~ "Medical Role"
+      refute html =~ "Department"
+      refute html =~ "Date of Birth"
     end
   end
 end

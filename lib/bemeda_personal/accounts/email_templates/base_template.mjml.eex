@@ -2,31 +2,18 @@
   <mj-head>
     <mj-style>
       .card {
-        border-radius: 16px;
+        border-radius: 8px;
         background: #fff;
-        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.04);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
-      .header-bar {
-        background: #3d4fa1;
-        border-radius: 16px 16px 0 0;
-        padding: 24px 0 16px 0;
+      .logo-section {
+        padding: 32px 0 24px 0;
       }
-      .footer-bar {
-        background: #3d4fa1;
-        border-radius: 0 0 16px 16px;
-        color: #fff;
-        font-size: 14px;
-        padding: 24px 0 16px 0;
-      }
-      .footer-link {
-        color: #fff !important;
-        text-decoration: underline;
-        font-weight: 500;
-      }
-      .footer-info {
-        color: #fff !important;
+      .footer-text {
+        color: #6b7280;
         font-size: 12px;
-        margin-top: 8px;
+        line-height: 16px;
+        text-align: center;
       }
 
             .hidden {
@@ -56,29 +43,31 @@
       }
     </mj-style>
   </mj-head>
-  <mj-body background-color="#f4f6fa">
-    <mj-section padding="0" full-width="full-width">
+  <mj-body background-color="#f5f5f5">
+    <mj-section padding="40px 20px">
       <mj-column width="100%">
         <mj-wrapper css-class="card" padding="0">
-          <mj-section padding="0" css-class="header-bar">
-            <mj-column width="100%" vertical-align="middle">
-              <mj-text align="center" color="#ffffff" font-size="22px" font-family="Montserrat, Arial, sans-serif" font-weight="700" padding="16px 0" css-class="show_on_mobile">
-                Bemeda Personal
-              </mj-text>
-              <mj-text align="center" color="#ffffff" font-size="28px" font-family="Montserrat, Arial, sans-serif" font-weight="700" padding="16px 0" css-class="show_on_desktop">
-                Bemeda Personal
-              </mj-text>
+          <!-- Logo Section -->
+          <mj-section background-color="#fff" css-class="logo-section">
+            <mj-column width="100%">
+              <mj-image src="http://localhost:3845/assets/20989716a5f61a32709d19842051eb1f938ba1be.svg" alt="Bemeda Personal" width="200px" align="center" />
             </mj-column>
           </mj-section>
-          <mj-section background-color="#fff" padding="0 32px 32px 32px">
+          
+          <!-- Content Section -->
+          <mj-section background-color="#fff" padding="0 24px 32px 24px">
             <mj-column width="100%">
               <%= @inner_content %>
             </mj-column>
           </mj-section>
-          <mj-section padding="0" css-class="footer-bar">
+          
+          <!-- Footer Section -->
+          <mj-section background-color="#fff" padding="0 24px 24px 24px">
             <mj-column width="100%">
-              <mj-text align="center" color="#fff" font-size="12px" font-family="Montserrat, Arial, sans-serif" padding="8px 0 0 0">
-                <a href="https://bemeda-personal.com" class="footer-link">bemeda-personal.com</a> | <a href="mailto:hello@bemeda-personal.com" class="footer-link">hello@bemeda-personal.com</a>
+              <mj-divider border-color="#e5e7eb" border-width="1px" padding="0 0 16px 0" />
+              <mj-text css-class="footer-text" font-family="Inter, Arial, sans-serif">
+                ©2025 Bemeda Personal<br/>
+                Aemtlerstrasse 96a, 8003, Zurich, Switzerland
               </mj-text>
             </mj-column>
           </mj-section>

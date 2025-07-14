@@ -6,6 +6,8 @@ defmodule BemedaPersonal.Accounts.User do
 
   import Ecto.Changeset
 
+  alias BemedaPersonal.JobPostings.Enums
+
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type opts :: keyword()
@@ -19,13 +21,17 @@ defmodule BemedaPersonal.Accounts.User do
     field :confirmed_at, :utc_datetime
     field :country, :string
     field :current_password, :string, virtual: true, redact: true
+    field :date_of_birth, :date
+    field :department, Ecto.Enum, values: Enums.departments()
     field :email, :string
     field :first_name, :string
     field :gender, Ecto.Enum, values: [:male, :female]
     field :hashed_password, :string, redact: true
     field :last_name, :string
     field :locale, Ecto.Enum, values: [:de, :en, :fr, :it], default: :de
+    field :medical_role, Ecto.Enum, values: Enums.professions()
     field :password, :string, virtual: true, redact: true
+    field :phone, :string
     field :street, :string
     field :user_type, Ecto.Enum, values: [:job_seeker, :employer], default: :job_seeker
     field :zip_code, :string
@@ -64,13 +70,15 @@ defmodule BemedaPersonal.Accounts.User do
     |> cast(attrs, [
       :city,
       :country,
+      :department,
       :email,
       :first_name,
       :gender,
       :last_name,
-      :street,
       :locale,
+      :medical_role,
       :password,
+      :street,
       :user_type,
       :zip_code
     ])
@@ -78,6 +86,7 @@ defmodule BemedaPersonal.Accounts.User do
     |> validate_password(opts)
     |> validate_name()
     |> validate_personal_info()
+    |> validate_job_seeker_fields()
   end
 
   @doc """
@@ -104,7 +113,7 @@ defmodule BemedaPersonal.Accounts.User do
   @spec registration_step1_changeset(t() | changeset(), attrs(), opts()) :: changeset()
   def registration_step1_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :first_name, :last_name, :password])
+    |> cast(attrs, [:email, :first_name, :last_name, :password, :date_of_birth, :phone])
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_name()
@@ -115,6 +124,7 @@ defmodule BemedaPersonal.Accounts.User do
 
   This changeset validates only the fields relevant to Step 2:
   - gender, street, zip_code, city, country
+  - For job seekers: medical_role, department
 
   For final form submission validation, it also casts Step 1 fields
   to ensure complete validation when displaying errors.
@@ -125,18 +135,22 @@ defmodule BemedaPersonal.Accounts.User do
     |> cast(attrs, [
       :city,
       :country,
+      :department,
       :email,
       :first_name,
       :gender,
       :last_name,
+      :medical_role,
       :password,
       :street,
+      :user_type,
       :zip_code
     ])
     |> validate_email(opts)
     |> validate_name()
     |> validate_password(opts)
     |> validate_personal_info()
+    |> validate_job_seeker_fields()
   end
 
   defp validate_email(changeset, opts) do
@@ -174,6 +188,16 @@ defmodule BemedaPersonal.Accounts.User do
     |> validate_length(:country, min: 1, max: 100)
     |> validate_length(:street, min: 1, max: 255)
     |> validate_length(:zip_code, min: 1, max: 20)
+  end
+
+  defp validate_job_seeker_fields(changeset) do
+    user_type = get_field(changeset, :user_type)
+
+    if user_type == :job_seeker do
+      validate_required(changeset, [:medical_role, :department])
+    else
+      changeset
+    end
   end
 
   defp maybe_hash_password(changeset, opts) do

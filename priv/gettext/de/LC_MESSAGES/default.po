@@ -11,63 +11,45 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "City"
 msgstr "Stadt"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Country"
 msgstr "Land"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Email"
-msgstr "E-Mail"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "First Name"
 msgstr "Vorname"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Male"
 msgstr "Männlich"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Female"
 msgstr "Weiblich"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Select gender (optional)"
 msgstr "Geschlecht auswählen (optional)"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Last Name"
 msgstr "Nachname"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Password"
-msgstr "Passwort"
 
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
@@ -84,23 +66,11 @@ msgstr "Persönliche Informationen aktualisieren"
 msgid "Updating..."
 msgstr "Aktualisiere..."
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "ZIP Code"
 msgstr "Postleitzahl"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Step 1: Basic Information"
-msgstr "Schritt 1: Grundinformationen"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Step 2: Personal Information"
-msgstr "Schritt 2: Persönliche Informationen"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live.ex
 #, elixir-autogen, elixir-format
 msgid "Street"

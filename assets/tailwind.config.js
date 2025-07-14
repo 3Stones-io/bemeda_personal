@@ -14,18 +14,42 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          'Inter',
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
+      },
       colors: {
         primary: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
+          50: '#f2edf7',
+          100: '#d6c8e5',
+          200: '#c2aed8',
+          300: '#a788c7',
+          400: '#9571bc',
+          500: '#7b4eab', // Main brand color
+          600: '#6d4296',
+          700: '#5e3681',
+          800: '#4f2a6c',
+          900: '#401e57',
+        },
+
+        // Gray shades from Figma design
+        gray: {
+          ...colors.gray,
+          200: '#e0e6ed', // Border color from Figma
+          300: '#717171', // Secondary text from Figma
+          400: '#555555', // Used in Figma design
+          700: '#1f1f1f', // Primary text from Figma
+          900: '#121212', // Darker text from Figma
         },
 
         // Semantic color aliases

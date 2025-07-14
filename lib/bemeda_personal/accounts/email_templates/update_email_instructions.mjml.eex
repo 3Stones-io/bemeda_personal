@@ -1,14 +1,17 @@
 <mj-body>
-  <mj-section padding="32px 0 0 0">
+  <mj-section padding="0">
     <mj-column width="100%">
-      <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 16px 0">
+      <mj-text align="center" font-size="24px" font-family="Inter, Arial, sans-serif" font-weight="600" color="#111827" padding="0 0 24px 0">
+        <%= dgettext("emails", "Confirm your email change") %>
+      </mj-text>
+      <mj-text align="left" font-size="16px" font-family="Inter, Arial, sans-serif" color="#374151" padding="0 0 16px 0">
         <%= dgettext("emails", "Hello %{user_name},", user_name: @user_name) %>
       </mj-text>
-      <mj-text align="center" font-size="16px" font-family="Montserrat, Arial, sans-serif" color="#222" padding="0 0 24px 0">
-        <%= dgettext("emails", "We received a request to update the email address for your BemedaPersonal account. To confirm this change, please click the button below:") %>
+      <mj-text align="left" font-size="16px" font-family="Inter, Arial, sans-serif" color="#374151" padding="0 0 32px 0" line-height="24px">
+        <%= dgettext("emails", "We received a request to update the email address for your Bemeda Personal account. To confirm this change, please click the button below:") %>
       </mj-text>
-      <%= render_dynamic_component CtaButtonComponent, %{cta_text: dgettext("emails", "Confirm Email Change"), cta_url: @url} %>
-      <mj-text align="center" font-size="15px" font-family="Montserrat, Arial, sans-serif" color="#555" padding="24px 0 12px 0">
+      <%= render_dynamic_component CtaButtonComponent, %{cta_text: dgettext("emails", "Confirm email change"), cta_url: @url} %>
+      <mj-text align="center" font-size="14px" font-family="Inter, Arial, sans-serif" color="#6b7280" padding="32px 0 0 0" line-height="20px">
         <%= dgettext("emails", "If you didn't request to change your email address, please ignore this email or contact our support team immediately if you have concerns.") %>
       </mj-text>
     </mj-column>

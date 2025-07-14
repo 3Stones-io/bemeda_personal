@@ -148,22 +148,25 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
 
   describe "Language switcher" do
     test "renders language switcher in both desktop and mobile", %{conn: conn} do
-      {:ok, lv, html} = live(conn, ~p"/jobs")
+      {:ok, _lv, html} = live(conn, ~p"/jobs")
 
       assert html =~ "language-switcher-desktop"
-      assert html =~ "language-switcher-mobile"
+      assert html =~ "mobile-menu"
 
-      assert has_element?(
-               lv,
-               "#language-switcher-desktop button[class*='bg-gray-50'][class*='text-gray-900']",
-               "🇺🇸"
-             )
+      # Desktop language switcher
+      assert html =~ "<span class=\"mr-2 text-lg\">🇺🇸</span>"
+      assert html =~ "<span class=\"hidden sm:inline\">English</span>"
 
-      assert has_element?(
-               lv,
-               "#language-switcher-mobile button[class*='bg-gray-50'][class*='text-gray-900']",
-               "🇺🇸"
-             )
+      # Mobile menu includes language selection
+      assert html =~ "Language"
+      assert html =~ "🇺🇸"
+      assert html =~ "English"
+      assert html =~ "🇩🇪"
+      assert html =~ "Deutsch"
+      assert html =~ "🇫🇷"
+      assert html =~ "Français"
+      assert html =~ "🇮🇹"
+      assert html =~ "Italiano"
     end
 
     test "shows default locale as selected", %{conn: conn} do
@@ -222,6 +225,32 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
                "button[class*='bg-gray-50'][class*='text-gray-900']",
                "🇺🇸"
              )
+    end
+
+    test "mobile menu contains language selection", %{conn: conn} do
+      {:ok, lv, html} = live(conn, ~p"/jobs")
+
+      # Mobile menu is present in HTML
+      assert html =~ "mobile-menu"
+      assert html =~ "mobile-menu-backdrop"
+
+      # Mobile menu contains language selection
+      mobile_menu = element(lv, "#mobile-menu")
+      mobile_menu_html = render(mobile_menu)
+
+      # Verify it has language selection section
+      assert mobile_menu_html =~ "Language"
+      assert mobile_menu_html =~ "flex items-center px-3 py-2 rounded-md text-base font-medium"
+
+      # Verify all languages are present
+      assert mobile_menu_html =~ "🇺🇸"
+      assert mobile_menu_html =~ "English"
+      assert mobile_menu_html =~ "🇩🇪"
+      assert mobile_menu_html =~ "Deutsch"
+      assert mobile_menu_html =~ "🇫🇷"
+      assert mobile_menu_html =~ "Français"
+      assert mobile_menu_html =~ "🇮🇹"
+      assert mobile_menu_html =~ "Italiano"
     end
   end
 end

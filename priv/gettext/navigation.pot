@@ -98,3 +98,8 @@ msgstr ""
 #, elixir-autogen
 msgid "Breadcrumb"
 msgstr ""
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Language"
+msgstr ""

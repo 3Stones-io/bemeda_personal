@@ -18,6 +18,7 @@ defmodule BemedaPersonalWeb.Components do
       # Core design system components
       import BemedaPersonalWeb.Components.Core.Button
       import BemedaPersonalWeb.Components.Core.Card
+      import BemedaPersonalWeb.Components.Core.EmailConfirmation
       import BemedaPersonalWeb.Components.Core.Error
       import BemedaPersonalWeb.Components.Core.Flash
       import BemedaPersonalWeb.Components.Core.Form
@@ -26,6 +27,7 @@ defmodule BemedaPersonalWeb.Components do
       import BemedaPersonalWeb.Components.Core.List
       import BemedaPersonalWeb.Components.Core.Modal
       import BemedaPersonalWeb.Components.Core.Navigation
+      import BemedaPersonalWeb.Components.Core.RegistrationInput
       import BemedaPersonalWeb.Components.Core.Typography
 
       # JavaScript utilities

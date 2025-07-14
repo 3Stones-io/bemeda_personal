@@ -98,3 +98,8 @@ msgstr "Créer une entreprise"
 #, elixir-autogen
 msgid "Breadcrumb"
 msgstr "Fil d'Ariane"
+
+#: lib/bemeda_personal_web/live/navigation_live.ex
+#, elixir-autogen, elixir-format
+msgid "Language"
+msgstr "Langue"

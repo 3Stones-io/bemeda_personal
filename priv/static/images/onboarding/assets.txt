@@ -1,0 +1,13 @@
+# Figma Asset URLs
+
+## Email Illustration (Complete SVG)
+http://localhost:3845/assets/b1391982fc79d36e2269939273dbb1f6c6a6acf0.svg
+
+## Logo - Light Version (Purple on Grey)
+http://localhost:3845/assets/20989716a5f61a32709d19842051eb1f938ba1be.svg
+
+## Logo - Dark Version (White on Purple) 
+http://localhost:3845/assets/8e83df7d7d5b2c5cf45ef6980d3520c34413f9f2.svg
+
+Note: These are the main illustration SVG from the email confirmation screen. 
+The email illustration is a composite of many SVG parts but we'll use the main illustration SVG.

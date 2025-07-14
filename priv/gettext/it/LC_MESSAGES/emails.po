@@ -56,16 +56,6 @@ msgstr "BemedaPersonal | Richiesta di reset password"
 msgid "BemedaPersonal | Welcome - Confirm Your Account"
 msgstr "BemedaPersonal | Benvenuto - Conferma il tuo account"
 
-#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
-#, elixir-autogen, elixir-format
-msgid "Confirm Email Change"
-msgstr "Conferma cambio email"
-
-#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
-#, elixir-autogen, elixir-format
-msgid "Confirm My Account"
-msgstr "Conferma il mio account"
-
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
 msgid "Good news! We've extended an offer to you."
@@ -89,7 +79,6 @@ msgstr "Ciao %{user_name},"
 msgid "Hi %{user_name},"
 msgstr "Ciao %{user_name},"
 
-#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
 msgid "If you didn't create an account with us, please ignore this email."
@@ -122,11 +111,6 @@ msgstr "Gestisci candidatura"
 msgid "Offer Accepted"
 msgstr "Offerta accettata"
 
-#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
-#, elixir-autogen, elixir-format
-msgid "Reset My Password"
-msgstr "Reimposta la mia password"
-
 #: lib/bemeda_personal/accounts/email_templates/employer_job_application_received_email.ex
 #, elixir-autogen, elixir-format
 msgid "Review Application"
@@ -136,11 +120,6 @@ msgstr "Rivedi candidatura"
 #, elixir-autogen, elixir-format
 msgid "Thank you for joining BemedaPersonal. We're excited to have you on board!"
 msgstr "Grazie per esserti unito a BemedaPersonal. Siamo entusiasti di averti a bordo!"
-
-#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
-#, elixir-autogen, elixir-format
-msgid "Thank you for joining BemedaPersonal. We're excited to have you on board! To start using all our features, please confirm your account by clicking the button below:"
-msgstr "Grazie per esserti unito a BemedaPersonal. Siamo entusiasti di averti a bordo! Per iniziare a utilizzare tutte le nostre funzionalità, conferma il tuo account cliccando il pulsante qui sotto:"
 
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
@@ -248,20 +227,10 @@ msgstr "Visualizza la mia candidatura"
 msgid "We received a request to reset the password for your BemedaPersonal account."
 msgstr "Abbiamo ricevuto una richiesta di reset della password per il tuo account BemedaPersonal."
 
-#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
-#, elixir-autogen, elixir-format
-msgid "We received a request to reset the password for your BemedaPersonal account. To create a new password, please click the button below:"
-msgstr "Abbiamo ricevuto una richiesta di reset della password per il tuo account BemedaPersonal. Per creare una nuova password, clicca il pulsante qui sotto:"
-
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
 msgid "We received a request to update the email address for your BemedaPersonal account."
 msgstr "Abbiamo ricevuto una richiesta di aggiornamento dell'indirizzo email per il tuo account BemedaPersonal."
-
-#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
-#, elixir-autogen, elixir-format
-msgid "We received a request to update the email address for your BemedaPersonal account. To confirm this change, please click the button below:"
-msgstr "Abbiamo ricevuto una richiesta di aggiornamento dell'indirizzo email per il tuo account BemedaPersonal. Per confermare questa modifica, clicca il pulsante qui sotto:"
 
 #: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
 #, elixir-autogen, elixir-format
@@ -305,3 +274,53 @@ msgstr "Hai ritirato la tua candidatura."
 #, elixir-autogen, elixir-format
 msgid "Your application status has been updated."
 msgstr "Lo stato della tua candidatura è stato aggiornato."
+
+#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Confirm email change"
+msgstr "Conferma cambio email"
+
+#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm your email change"
+msgstr "Conferma il cambio email"
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "If you have not created this account with us, Please ignore this email."
+msgstr "Se non hai creato un account con noi, ignora questa email."
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#, elixir-autogen, elixir-format
+msgid "Please verify your email"
+msgstr "Verifica la tua email"
+
+#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Reset my password"
+msgstr "Reimposta la mia password"
+
+#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Reset your password"
+msgstr "Reimposta la tua password"
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#, elixir-autogen, elixir-format
+msgid "Thank you for joining Bemeda Personal. We're excited to have you on board. Simply click the link below to verify your email address."
+msgstr "Grazie per esserti unito a Bemeda Personal. Siamo entusiasti di averti a bordo. Clicca semplicemente sul link qui sotto per verificare il tuo indirizzo email."
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#, elixir-autogen, elixir-format
+msgid "Verify my email"
+msgstr "Verifica la mia email"
+
+#: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "We received a request to reset the password for your Bemeda Personal account. To create a new password, please click the button below:"
+msgstr "Abbiamo ricevuto una richiesta di reset della password per il tuo account BemedaPersonal. Per creare una nuova password, clicca il pulsante qui sotto:"
+
+#: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "We received a request to update the email address for your Bemeda Personal account. To confirm this change, please click the button below:"
+msgstr "Abbiamo ricevuto una richiesta di aggiornamento dell'indirizzo email per il tuo account BemedaPersonal. Per confermare questa modifica, clicca il pulsante qui sotto:"
