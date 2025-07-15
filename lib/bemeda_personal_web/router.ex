@@ -136,8 +136,10 @@ defmodule BemedaPersonalWeb.Router do
         {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
         {BemedaPersonalWeb.LiveHelpers, :assign_locale}
       ] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/users/settings", UserSettingsLive.Index, :index
+      live "/users/settings/info", UserSettingsLive.Info, :view
+      live "/users/settings/password", UserSettingsLive.Password, :edit
+      live "/users/settings/confirm_email/:token", UserSettingsLive.Info, :confirm_email
       live "/notifications", NotificationLive.Index, :index
       live "/notifications/:id", NotificationLive.Show, :show
       live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show

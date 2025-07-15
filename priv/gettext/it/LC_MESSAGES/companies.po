@@ -58,6 +58,7 @@ msgstr "Nome azienda"
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Company Size"
 msgstr "Dimensioni azienda"
@@ -117,6 +118,7 @@ msgstr "Settore"
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Location"
 msgstr "Località"
@@ -152,6 +154,7 @@ msgid "Save Changes"
 msgstr "Salva modifiche"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Saving..."
 msgstr "Salvataggio..."
@@ -192,6 +195,7 @@ msgid "Website"
 msgstr "Sito web"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Website URL"
 msgstr "URL sito web"
@@ -397,3 +401,114 @@ msgstr "Profilo aziendale creato con successo!"
 #, elixir-autogen, elixir-format
 msgid "You already have a company profile."
 msgstr "Hai già un profilo aziendale."
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "About"
+msgstr "Chi siamo"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Basic Information"
+msgstr "Informazioni di base"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Care Home"
+msgstr "Casa di cura"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Clinic"
+msgstr "Clinica"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Company Information"
+msgstr "Informazioni aziendali"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Company profile"
+msgstr "Dimensioni azienda"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Contact & Details"
+msgstr "Contatti e dettagli"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Home Care Service"
+msgstr "Servizio di assistenza domiciliare"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Hospital"
+msgstr "Ospedale"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Hospital Affiliation"
+msgstr "Affiliazione ospedaliera"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Medical Center"
+msgstr "Centro medico"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Organization Name"
+msgstr "Nome dell'organizzazione"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Other"
+msgstr "Altro"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Phone Number"
+msgstr "Numero di telefono"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select type"
+msgstr "Seleziona tipo"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Type of Organization"
+msgstr "Tipo di organizzazione"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Type of organization"
+msgstr "Tipo di organizzazione"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., Schaffhausen Hospital"
+msgstr "es. Ospedale di Sciaffusa"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "About Us"
+msgstr "Chi siamo"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Company updated successfully."
+msgstr "Profilo aziendale aggiornato con successo."
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Hospital affiliation"
+msgstr "Affiliazione ospedaliera"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Logo upload feature coming soon."
+msgstr "La funzione di caricamento logo arriverà presto."

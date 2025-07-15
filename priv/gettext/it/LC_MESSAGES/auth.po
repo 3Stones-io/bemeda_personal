@@ -11,27 +11,19 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "A link to confirm your email change has been sent to the new address."
 msgstr "Un link per confermare la modifica della tua email è stato inviato al nuovo indirizzo."
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Account Settings"
-msgstr "Impostazioni Account"
-
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Change Email"
-msgstr "Cambia Email"
-
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/index.ex
+#: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
 msgid "Change Password"
 msgstr "Cambia Password"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
 msgid "Changing..."
 msgstr "Modifica in corso..."
@@ -47,7 +39,7 @@ msgid "Confirm my account"
 msgstr "Conferma il mio account"
 
 #: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
 msgid "Confirm new password"
 msgstr "Conferma nuova password"
@@ -57,7 +49,8 @@ msgstr "Conferma nuova password"
 msgid "Confirming..."
 msgstr "Conferma in corso..."
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
 msgid "Current password"
 msgstr "Password attuale"
@@ -67,17 +60,17 @@ msgstr "Password attuale"
 msgid "Don't have an account?"
 msgstr "Non hai un account?"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Email"
 msgstr "Email"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Email change link is invalid or it has expired."
 msgstr "Il link di modifica email non è valido o è scaduto."
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
 msgstr "Email modificata con successo."
@@ -88,7 +81,7 @@ msgstr "Email modificata con successo."
 msgid "Forgot your password?"
 msgstr "Hai dimenticato la password?"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "How companies have rated your applications"
 msgstr "Come le aziende hanno valutato le tue candidature"
@@ -126,13 +119,8 @@ msgstr "Disconnesso con successo."
 msgid "Logging in..."
 msgstr "Accesso in corso..."
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
-#, elixir-autogen, elixir-format
-msgid "Manage your account email address and password settings"
-msgstr "Gestisci l'indirizzo email del tuo account e le impostazioni della password"
-
 #: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
 msgid "New password"
 msgstr "Nuova password"
@@ -236,7 +224,7 @@ msgstr "Devi accedere per accedere a questa pagina."
 msgid "You need to be logged in to rate"
 msgstr "Devi essere connesso per valutare"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Your Rating"
 msgstr "La Tua Valutazione"
@@ -261,7 +249,7 @@ msgstr "non è valido"
 msgid "must have the @ sign and no spaces"
 msgstr "deve avere il simbolo @ e nessuno spazio"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Personal info updated successfully."
 msgstr "Informazioni personali aggiornate con successo."
@@ -574,3 +562,61 @@ msgstr "Indirizzo"
 #, elixir-autogen, elixir-format
 msgid "Zip Code"
 msgstr "CAP"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Account Information"
+msgstr "Informazioni account"
+
+#: lib/bemeda_personal_web/live/user_settings_live/index.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#: lib/bemeda_personal_web/live/user_settings_live/password.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Account settings"
+msgstr "Impostazioni Account"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "First Name"
+msgstr "Nome*"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Last Name"
+msgstr "Cognome*"
+
+#: lib/bemeda_personal_web/live/user_settings_live/index.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "My Info"
+msgstr "Le mie informazioni"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "Nome"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr "Salvataggio..."
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Work Email Address"
+msgstr "Indirizzo email lavorativo*"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "Cambia email"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Avatar upload feature coming soon."
+msgstr "La funzione di caricamento avatar arriverà presto."
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "can't be blank"
+msgstr "non può essere vuoto"

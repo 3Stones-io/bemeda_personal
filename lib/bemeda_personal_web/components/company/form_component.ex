@@ -3,6 +3,8 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
 
   use BemedaPersonalWeb, :live_component
 
+  import BemedaPersonalWeb.Components.Shared.FormSection
+
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedHelpers
@@ -18,42 +20,70 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
-        class="space-y-6"
       >
-        <div>
-          <.input field={f[:name]} type="text" label={dgettext("companies", "Company Name")} required />
-        </div>
+        <.section title={dgettext("companies", "Basic Information")} class="mb-8">
+          <div class="space-y-6">
+            <.input
+              field={f[:name]}
+              type="text"
+              label={dgettext("companies", "Company Name")}
+              required
+            />
+            <.input field={f[:industry]} type="text" label={dgettext("companies", "Industry")} />
+            <.input
+              field={f[:description]}
+              type="textarea"
+              label={dgettext("companies", "Company Description")}
+              rows="4"
+            />
+          </div>
+        </.section>
 
-        <div>
-          <.input field={f[:industry]} type="text" label={dgettext("companies", "Industry")} />
-        </div>
+        <.divider />
 
-        <div>
-          <.input
-            field={f[:description]}
-            type="textarea"
-            label={dgettext("companies", "Company Description")}
-            rows="4"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <div>
+        <.section title={dgettext("companies", "Contact & Details")} class="mb-8">
+          <div class="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
             <.input field={f[:location]} type="text" label={dgettext("companies", "Location")} />
-          </div>
-
-          <div>
             <.input field={f[:size]} type="text" label={dgettext("companies", "Company Size")} />
+            <.input
+              field={f[:website_url]}
+              type="url"
+              label={dgettext("companies", "Website URL")}
+              class="sm:col-span-2"
+            />
+            <.input
+              field={f[:phone_number]}
+              type="tel"
+              label={dgettext("companies", "Phone Number")}
+              placeholder="+41 23 4736 4735"
+            />
+            <.input
+              field={f[:organization_type]}
+              type="select"
+              label={dgettext("companies", "Type of Organization")}
+              options={[
+                {"", dgettext("companies", "Select type")},
+                {dgettext("companies", "Hospital"), "hospital"},
+                {dgettext("companies", "Clinic"), "clinic"},
+                {dgettext("companies", "Medical Center"), "medical_center"},
+                {dgettext("companies", "Care Home"), "care_home"},
+                {dgettext("companies", "Home Care Service"), "home_care"},
+                {dgettext("companies", "Other"), "other"}
+              ]}
+            />
+            <.input
+              field={f[:hospital_affiliation]}
+              type="text"
+              label={dgettext("companies", "Hospital Affiliation")}
+              placeholder={dgettext("companies", "e.g., Schaffhausen Hospital")}
+              class="sm:col-span-2"
+            />
           </div>
-        </div>
+        </.section>
 
-        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-          <.input field={f[:website_url]} type="url" label={dgettext("companies", "Website URL")} />
-        </div>
+        <.divider />
 
-        <div>
-          <p class="block text-base text-zinc-800 mb-2">{dgettext("companies", "Company Logo")}</p>
-
+        <.section title={dgettext("companies", "Company Logo")} class="mb-8">
           <SharedComponents.asset_preview
             show_asset_description={@show_logo?}
             media_asset={@company.media_asset}
@@ -88,27 +118,19 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
             class="hidden"
             phx-update="ignore"
           />
-        </div>
+        </.section>
 
-        <div class="flex justify-end space-x-3">
-          <.link
-            :if={@action == :edit}
-            navigate={~p"/company"}
-            class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {dgettext("general", "Cancel")}
-          </.link>
-          <.link
-            :if={@action == :new}
-            navigate={~p"/"}
-            class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {dgettext("general", "Cancel")}
-          </.link>
+        <div class="flex justify-end gap-3 pt-6">
           <.button
-            class={!@enable_submit? && "opacity-50 cursor-not-allowed"}
-            disabled={!@enable_submit?}
+            type="button"
+            variant="secondary"
+            phx-click={JS.navigate(if @action == :edit, do: ~p"/company", else: ~p"/")}
+          >
+            {dgettext("general", "Cancel")}
+          </.button>
+          <.button
             type="submit"
+            disabled={!@enable_submit?}
             phx-disable-with={
               if @action == :new,
                 do: dgettext("companies", "Creating..."),

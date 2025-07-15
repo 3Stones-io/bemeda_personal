@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon">
+<path d="M10.1667 4.33333C10.1667 6.17428 8.67428 7.66667 6.83333 7.66667C4.99238 7.66667 3.5 6.17428 3.5 4.33333C3.5 2.49238 4.99238 1 6.83333 1C8.67428 1 10.1667 2.49238 10.1667 4.33333Z" stroke="var(--stroke-0, #1F1F1F)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.83333 10.1667C3.61167 10.1667 1 12.7783 1 16H12.6667C12.6667 12.7783 10.055 10.1667 6.83333 10.1667Z" stroke="var(--stroke-0, #1F1F1F)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

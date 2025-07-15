@@ -17,6 +17,7 @@ msgid "Browse Files"
 msgstr "Parcourir les fichiers"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr "Annuler"
@@ -43,6 +44,7 @@ msgstr "Glissez-déposez pour télécharger votre %{type}"
 
 #: lib/bemeda_personal_web/components/shared/resume_components.ex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr "Modifier"
@@ -238,3 +240,13 @@ msgstr "Ajouter nouveau"
 #, elixir-autogen, elixir-format
 msgid "Choose options"
 msgstr "Choisir des options"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Nil"
+msgstr "Néant"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Save"
+msgstr "Enregistrer"

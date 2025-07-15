@@ -86,7 +86,7 @@ defmodule BemedaPersonal.CompaniesTest do
         description: "some description",
         location: "some location",
         industry: "some industry",
-        website_url: "some website_url",
+        website_url: "https://example.com",
         logo_url: "some logo_url"
       }
 

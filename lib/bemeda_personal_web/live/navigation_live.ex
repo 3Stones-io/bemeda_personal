@@ -21,6 +21,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
   defp assign_user(socket, nil) do
     socket
+    |> assign(:current_path, socket.assigns[:current_path] || "/")
     |> assign(:current_user, nil)
     |> assign(:notifications_count, 0)
     |> assign(:user_company, nil)
@@ -41,6 +42,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
       |> assign(:current_user, user)
       |> assign(:notifications_count, unread_count)
       |> assign(:user_company, user_company)
+      |> assign(:current_path, socket.assigns[:current_path] || "/")
     else
       assign_user(socket, nil)
     end
@@ -56,28 +58,36 @@ defmodule BemedaPersonalWeb.NavigationLive do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
+    <.drawer
+      :if={@current_user}
+      id="mobile-nav-drawer"
+      current_user={@current_user}
+      current_path={@current_path}
+      user_company={@user_company}
+    />
+
     <nav class="bg-white border-b border-[#e0e6ed] h-[72px]">
-      <div class="h-full flex items-center px-4 md:px-[45px]">
+      <div class="h-full flex items-center px-4 sm:px-6 md:px-8 lg:px-[45px] max-w-[1400px] mx-auto">
         <div class="flex justify-between items-center w-full">
           <div class="flex items-center">
             <div class="flex items-center gap-[9.299px]">
               <img
                 src={~p"/images/onboarding/logo-bemeda.svg"}
                 alt="Bemeda Personal Logo"
-                class="h-[45.112px] w-[41.267px]"
+                class="h-[35px] sm:h-[40px] md:h-[45.112px] w-[32px] sm:w-[36.6px] md:w-[41.267px]"
               />
               <.link
                 navigate={~p"/"}
-                class="text-[#7b4eab] text-[20.9228px] font-medium leading-[31.3842px] tracking-[0.0313842px]"
+                class="text-[#7b4eab] text-[16px] sm:text-[18px] md:text-[20.9228px] font-medium leading-[24px] sm:leading-[27px] md:leading-[31.3842px] tracking-[0.0313842px]"
               >
                 Bemeda Personal
               </.link>
             </div>
-            <div class="hidden md:ml-8 md:flex md:items-center md:gap-6">
+            <div class="hidden lg:ml-8 lg:flex lg:items-center lg:gap-4 xl:gap-6">
               <.link
                 :if={!@current_user || @current_user.user_type == :job_seeker}
                 navigate={~p"/jobs"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Jobs")}
               </.link>
@@ -85,7 +95,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={@current_user && @current_user.user_type == :job_seeker}
                 navigate={~p"/job_applications"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "My Applications")}
               </.link>
@@ -93,7 +103,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={!@current_user}
                 navigate={~p"/company/new"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "For Employers")}
               </.link>
@@ -101,7 +111,7 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={@current_user && @current_user.user_type == :employer && @user_company}
                 navigate={~p"/company"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Company Dashboard")}
               </.link>
@@ -109,26 +119,26 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={@current_user && @current_user.user_type == :employer && !@user_company}
                 navigate={~p"/company/new"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Create Company")}
               </.link>
             </div>
           </div>
-          <div class="hidden md:flex md:items-center md:gap-4">
+          <div class="hidden lg:flex lg:items-center lg:gap-3 xl:gap-4">
             <LanguageSwitcher.language_switcher id="language-switcher-desktop" locale={@locale} />
 
             <%= if !@current_user do %>
               <.link
                 navigate={~p"/users/log_in"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Log in")}
               </.link>
 
               <.link
                 navigate={~p"/users/register"}
-                class="bg-[#7b4eab] text-white hover:bg-[#6d4296] px-4 py-2 rounded-lg font-medium text-base"
+                class="bg-[#7b4eab] text-white hover:bg-[#6d4296] px-3 lg:px-4 py-2 rounded-lg font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Sign up")}
               </.link>
@@ -138,19 +148,19 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 :if={@current_user.user_type == :job_seeker}
                 navigate={~p"/resume"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Resume")}
               </.link>
 
               <.link
                 navigate={~p"/users/settings"}
-                class="text-gray-700 hover:text-[#7b4eab] font-medium text-base"
+                class="text-gray-700 hover:text-[#7b4eab] font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Settings")}
               </.link>
 
-              <span class="text-gray-700 text-base">
+              <span class="text-gray-700 text-sm lg:text-base">
                 {@current_user.email}
               </span>
 
@@ -175,14 +185,14 @@ defmodule BemedaPersonalWeb.NavigationLive do
               <.link
                 href={~p"/users/log_out"}
                 method="delete"
-                class="bg-[#7b4eab] text-white hover:bg-[#6d4296] px-4 py-2 rounded-lg font-medium text-base"
+                class="bg-[#7b4eab] text-white hover:bg-[#6d4296] px-3 lg:px-4 py-2 rounded-lg font-medium text-sm lg:text-base"
               >
                 {dgettext("navigation", "Log out")}
               </.link>
             <% end %>
           </div>
 
-          <div class="flex items-center md:hidden gap-3">
+          <div class="flex items-center lg:hidden gap-3">
             <%= if @current_user do %>
               <.link navigate={~p"/notifications"} class="relative">
                 <button
@@ -203,9 +213,9 @@ defmodule BemedaPersonalWeb.NavigationLive do
             <button
               type="button"
               class="p-2"
-              aria-controls="mobile-menu"
+              aria-controls="mobile-nav-drawer"
               aria-expanded="false"
-              phx-click={JS.toggle(to: "#mobile-menu") |> JS.toggle(to: "#mobile-menu-backdrop")}
+              phx-click={show_drawer("mobile-nav-drawer")}
             >
               <span class="sr-only">{dgettext("navigation", "Open main menu")}</span>
               <.icon name="hero-bars-3" class="h-6 w-6" />
@@ -216,13 +226,13 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
       <%!-- Mobile menu backdrop --%>
       <div
-        class="md:hidden hidden fixed inset-0 bg-black bg-opacity-25 z-30"
+        class="lg:hidden hidden fixed inset-0 bg-black bg-opacity-25 z-30"
         id="mobile-menu-backdrop"
         phx-click={JS.hide(to: "#mobile-menu") |> JS.hide(to: "#mobile-menu-backdrop")}
       />
 
       <div
-        class="md:hidden hidden fixed inset-x-0 top-[72px] bg-white border-t border-[#e0e6ed] shadow-lg z-40"
+        class="lg:hidden hidden fixed inset-x-0 top-[72px] bg-white border-t border-[#e0e6ed] shadow-lg z-40"
         id="mobile-menu"
       >
         <div class="px-4 py-3 space-y-1 max-h-[calc(100vh-72px)] overflow-y-auto">

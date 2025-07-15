@@ -14,7 +14,7 @@ defmodule BemedaPersonalWeb.UserSessionController do
 
   def create(conn, %{"_action" => "password_updated"} = params) do
     conn
-    |> put_session(:user_return_to, ~p"/users/settings")
+    |> put_session(:user_return_to, ~p"/users/settings/password")
     |> create(params, &password_updated_message/0)
   end
 

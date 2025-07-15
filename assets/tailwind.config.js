@@ -29,41 +29,88 @@ module.exports = {
         ],
       },
       colors: {
+        // Primary Violet colors from Figma
         primary: {
-          50: '#f2edf7',
-          100: '#d6c8e5',
-          200: '#c2aed8',
-          300: '#a788c7',
-          400: '#9571bc',
-          500: '#7b4eab', // Main brand color
-          600: '#6d4296',
-          700: '#5e3681',
-          800: '#4f2a6c',
-          900: '#401e57',
+          50: '#f7f1fd',
+          100: '#efe3fb',
+          200: '#e0c7f6',
+          300: '#d0acf1',
+          400: '#c090ed',
+          500: '#b074e8', // Main brand color from Figma
+          600: '#9d4ae0',
+          700: '#8428d6',
+          800: '#6b1fae',
+          900: '#521785',
+          950: '#380e5d',
+        },
+
+        // Violet alias for backwards compatibility
+        violet: {
+          50: '#f7f1fd',
+          100: '#efe3fb',
+          200: '#e0c7f6',
+          300: '#d0acf1',
+          400: '#c090ed',
+          500: '#b074e8',
+          600: '#9d4ae0',
+          700: '#8428d6',
+          800: '#6b1fae',
+          900: '#521785',
+          950: '#380e5d',
         },
 
         // Gray shades from Figma design
         gray: {
-          ...colors.gray,
-          200: '#e0e6ed', // Border color from Figma
-          300: '#717171', // Secondary text from Figma
-          400: '#555555', // Used in Figma design
-          700: '#1f1f1f', // Primary text from Figma
-          900: '#121212', // Darker text from Figma
+          50: '#f9f9f9',
+          100: '#f2f2f2',
+          200: '#e6e6e6',
+          300: '#d9d9d9',
+          400: '#cccccc',
+          500: '#bfbfbf',
+          600: '#999999',
+          700: '#737373',
+          800: '#4d4d4d',
+          900: '#262626',
+          950: '#1a1a1a',
         },
 
-        // Semantic color aliases
+        // Semantic color aliases from Figma
         secondary: colors.gray,
-        danger: colors.red,
-        success: colors.green,
-        warning: colors.amber,
+        danger: {
+          ...colors.red,
+          500: '#ff3b30',
+          600: '#c60e00',
+        },
+        success: {
+          ...colors.green,
+          500: '#34c759',
+          600: '#248a3d',
+        },
+        warning: {
+          ...colors.orange,
+          500: '#ff9500',
+          600: '#ff6d00',
+        },
         info: colors.blue,
 
         // Surface colors for backgrounds
         surface: {
-          DEFAULT: colors.white,
-          secondary: colors.gray[50],
-          tertiary: colors.gray[100],
+          DEFAULT: '#ffffff',
+          secondary: '#f9f9f9',
+          tertiary: '#f2f2f2',
+          dark: '#1c1c1e',
+        },
+
+        // Additional colors from Figma
+        neutral: {
+          500: '#2b2b2b',
+        },
+        strokes: '#e0e6ed',
+        chrome: {
+          mobile: {
+            3: '#f1f3f4',
+            5: '#5f6368',
+          },
         },
       },
 

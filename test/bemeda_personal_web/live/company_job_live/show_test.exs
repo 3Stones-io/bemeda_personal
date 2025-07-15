@@ -45,7 +45,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
       {:ok, _view, html} = live(conn, ~p"/company/jobs/#{job.id}")
 
       assert html =~ "some name"
-      assert html =~ "some website_url"
+      assert html =~ "https://example.com"
       assert html =~ "some industry"
       assert html =~ "Remote work allowed"
     end

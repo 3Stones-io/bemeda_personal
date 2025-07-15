@@ -27,6 +27,7 @@ defmodule BemedaPersonalWeb.Components do
       import BemedaPersonalWeb.Components.Core.List
       import BemedaPersonalWeb.Components.Core.Modal
       import BemedaPersonalWeb.Components.Core.Navigation
+      import BemedaPersonalWeb.Components.Core.NavigationDrawer
       import BemedaPersonalWeb.Components.Core.RegistrationInput
       import BemedaPersonalWeb.Components.Core.Typography
 

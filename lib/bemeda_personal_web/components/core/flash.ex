@@ -41,15 +41,15 @@ defmodule BemedaPersonalWeb.Components.Core.Flash do
       phx-hook="FlashAutoDisappear"
       role="alert"
       class={[
-        "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-success-50 text-success-800 ring-success-500 fill-success-900",
-        @kind == :error && "bg-danger-50 text-danger-900 shadow-md ring-danger-500 fill-danger-900",
-        @kind == :warning && "bg-warning-50 text-warning-800 ring-warning-500 fill-warning-900"
+        "fixed top-4 left-1/2 transform -translate-x-1/2 w-80 sm:w-96 z-50 rounded-lg p-4 shadow-lg border",
+        @kind == :info && "bg-green-50 text-green-800 border-green-200",
+        @kind == :error && "bg-red-50 text-red-800 border-red-200",
+        @kind == :warning && "bg-orange-50 text-orange-800 border-orange-200"
       ]}
       {@rest}
     >
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
-        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="h-4 w-4" />
+        <.icon :if={@kind == :info} name="hero-check-circle-mini" class="h-4 w-4" />
         <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-4 w-4" />
         <.icon :if={@kind == :warning} name="hero-exclamation-triangle-mini" class="h-4 w-4" />
         {@title}

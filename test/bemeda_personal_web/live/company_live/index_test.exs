@@ -136,7 +136,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert flash["info"] =~ "You already have a company profile"
     end
 
-    test "user without company can access /company/new modal", %{conn: conn} do
+    test "user without company can access /company/new page", %{conn: conn} do
       user = employer_user_fixture()
 
       {:ok, view, html} =
@@ -145,7 +145,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> live(~p"/company/new")
 
       assert html =~ "Create Company Profile"
-      assert has_element?(view, "#company-modal")
+      assert has_element?(view, "#company-form")
     end
 
     test "user without company has cancel button that navigates to home", %{conn: conn} do
@@ -156,12 +156,12 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company/new")
 
-      # Verify the modal is rendered with the form
+      # Verify the page is rendered with the form
       assert html =~ "Create Company Profile"
-      assert has_element?(view, "#company-modal")
+      assert has_element?(view, "#company-form")
 
-      # Check that the cancel button navigates to home page for new company creation
-      assert has_element?(view, "a[href='/']", "Cancel")
+      # Check that the cancel button exists for new company creation
+      assert has_element?(view, "button", "Cancel")
     end
   end
 

@@ -159,7 +159,14 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
 
   @impl Phoenix.LiveComponent
   def update(%{job_application: job_application}, socket) do
-    {:ok, stream_insert(socket, :job_applications, job_application)}
+    # Only insert the job application if it matches the current filters
+    filters = socket.assigns[:filters] || %{}
+
+    if should_include_job_application?(job_application, filters) do
+      {:ok, stream_insert(socket, :job_applications, job_application)}
+    else
+      {:ok, socket}
+    end
   end
 
   def update(%{filter_params: params} = assigns, socket) do
@@ -274,5 +281,27 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
     |> stream(:job_applications, job_applications, opts)
     |> assign(:first_job_application, first_job_application)
     |> assign(:last_job_application, last_job_application)
+  end
+
+  defp should_include_job_application?(job_application, filters) do
+    # Check if the job application matches the current filters
+    cond do
+      # If filtering by job_posting_id, only include applications for that job
+      filters[:job_posting_id] &&
+          to_string(job_application.job_posting_id) != to_string(filters[:job_posting_id]) ->
+        false
+
+      # If filtering by user_id, only include applications from that user
+      filters[:user_id] && to_string(job_application.user_id) != to_string(filters[:user_id]) ->
+        false
+
+      # If filtering by state, only include applications with that state
+      filters[:state] && to_string(job_application.state) != to_string(filters[:state]) ->
+        false
+
+      # Otherwise, include the application
+      true ->
+        true
+    end
   end
 end

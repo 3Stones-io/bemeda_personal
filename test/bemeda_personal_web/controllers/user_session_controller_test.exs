@@ -154,7 +154,7 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
           }
         })
 
-      assert redirected_to(conn) == ~p"/users/settings"
+      assert redirected_to(conn) == ~p"/users/settings/password"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Password updated successfully"
     end
 

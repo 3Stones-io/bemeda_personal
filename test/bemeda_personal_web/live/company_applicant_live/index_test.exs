@@ -353,7 +353,15 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       job_application: application
     } do
       job_2 = job_posting_fixture(company, %{title: "Second Job"})
-      job_application_2 = job_application_fixture(user, job_2)
+
+      different_user =
+        user_fixture(%{
+          user_type: :job_seeker,
+          first_name: "Different",
+          last_name: "Person"
+        })
+
+      job_application_2 = job_application_fixture(different_user, job_2)
 
       {:ok, _view, html} =
         conn

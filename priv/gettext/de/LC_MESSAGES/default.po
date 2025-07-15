@@ -11,67 +11,77 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "City"
-msgstr "Stadt"
+msgid "Account Settings"
+msgstr "Kontoeinstellungen"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Country"
-msgstr "Land"
+msgid "Browse Jobs"
+msgstr "Jobs durchsuchen"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "First Name"
-msgstr "Vorname"
+msgid "Close"
+msgstr "Schließen"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Gender"
-msgstr "Geschlecht"
+msgid "Find Jobs"
+msgstr "Jobs finden"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Male"
-msgstr "Männlich"
+msgid "Job seeker"
+msgstr "Arbeitssuchender"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Female"
-msgstr "Weiblich"
+msgid "Jobs"
+msgstr "Jobs"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Select gender (optional)"
-msgstr "Geschlecht auswählen (optional)"
+msgid "Medical organization"
+msgstr "Medizinische Organisation"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Last Name"
-msgstr "Nachname"
+msgid "My Applications"
+msgstr "Meine Bewerbungen"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Personal Information"
-msgstr "Persönliche Informationen"
+msgid "My Resume"
+msgstr "Mein Lebenslauf"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Update Personal Info"
-msgstr "Persönliche Informationen aktualisieren"
+msgid "Notifications"
+msgstr "Benachrichtigungen"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Updating..."
-msgstr "Aktualisiere..."
+msgid "Post a job"
+msgstr "Job veröffentlichen"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "ZIP Code"
-msgstr "Postleitzahl"
+msgid "Sign out"
+msgstr "Abmelden"
 
-#: lib/bemeda_personal_web/live/user_settings_live.ex
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
 #, elixir-autogen, elixir-format
-msgid "Street"
-msgstr "Straße"
+msgid "User avatar"
+msgstr "Benutzer-Avatar"
+
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
+#, elixir-autogen, elixir-format
+msgid "Company Dashboard"
+msgstr "Unternehmens-Dashboard"
+
+#: lib/bemeda_personal_web/components/core/navigation_drawer.ex
+#, elixir-autogen, elixir-format
+msgid "View all jobs"
+msgstr "Alle Jobs anzeigen"

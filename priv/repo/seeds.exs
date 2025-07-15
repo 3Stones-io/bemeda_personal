@@ -104,7 +104,10 @@ company1 =
     size: "51-200",
     website_url: "https://techinnovate.example.com",
     location: "San Francisco, CA",
-    logo_url: "https://via.placeholder.com/150?text=TechInnovate"
+    logo_url: "https://via.placeholder.com/150?text=TechInnovate",
+    phone_number: "+1 5550100",
+    organization_type: "other",
+    hospital_affiliation: nil
   })
 
 company2 =
@@ -115,7 +118,10 @@ company2 =
     size: "201-500",
     website_url: "https://healthplus.example.com",
     location: "Boston, MA",
-    logo_url: "https://via.placeholder.com/150?text=HealthPlus"
+    logo_url: "https://via.placeholder.com/150?text=HealthPlus",
+    phone_number: "+1 5550200",
+    organization_type: "hospital",
+    hospital_affiliation: "Boston General Hospital"
   })
 
 tech_jobs = [

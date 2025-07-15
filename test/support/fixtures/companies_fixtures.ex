@@ -19,8 +19,9 @@ defmodule BemedaPersonal.CompaniesFixtures do
         industry: "some industry",
         location: "some location",
         name: "some name",
+        phone_number: "+41234738475",
         size: "some size",
-        website_url: "some website_url"
+        website_url: "https://example.com"
       })
 
     {:ok, company} = Companies.create_company(user, company_attrs)
