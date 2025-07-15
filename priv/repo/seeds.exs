@@ -50,10 +50,13 @@ user1 =
   get_or_create_user.("john.doe@example.com", %{
     city: "San Francisco",
     country: "United States",
+    date_of_birth: ~D[1985-03-15],
     email: "john.doe@example.com",
     first_name: "John",
+    gender: :male,
     last_name: "Doe",
     password: "password123456",
+    phone: "+1-555-0123",
     street: "123 Tech Street, Apt 4B",
     user_type: :employer,
     zip_code: "94105"
@@ -63,10 +66,13 @@ user2 =
   get_or_create_user.("jane.smith@example.com", %{
     city: "Boston",
     country: "United States",
+    date_of_birth: ~D[1988-07-22],
     email: "jane.smith@example.com",
     first_name: "Jane",
+    gender: :female,
     last_name: "Smith",
     password: "password123456",
+    phone: "+1-555-0456",
     street: "456 Health Avenue",
     user_type: :employer,
     zip_code: "02101"
@@ -76,10 +82,15 @@ job_seeker =
   get_or_create_user.("alex.johnson@example.com", %{
     city: "Seattle",
     country: "United States",
+    date_of_birth: ~D[1992-11-08],
+    department: :"Acute Care",
     email: "alex.johnson@example.com",
     first_name: "Alex",
+    gender: :male,
     last_name: "Johnson",
+    medical_role: :"Registered Nurse (AKP/DNII/HF/FH)",
     password: "password123456",
+    phone: "+1-555-0789",
     street: "789 Job Seeker Lane",
     user_type: :job_seeker,
     zip_code: "98101"
