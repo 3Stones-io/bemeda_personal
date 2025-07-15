@@ -207,6 +207,17 @@
             </div>
             
             <nav>
+                <!-- Documentation Section -->
+                <div class="menu-section">
+                    <div class="menu-title">Documentation</div>
+                    <div class="menu-item" data-target="glossar">
+                        📖 Glossar / Glossary
+                    </div>
+                    <div class="menu-item" data-target="project-blueprint">
+                        📋 Project Blueprint
+                    </div>
+                </div>
+                
                 <!-- Overview Section -->
                 <div class="menu-section">
                     <div class="menu-title">System Overview</div>
@@ -299,6 +310,124 @@
             </div>
             
             <!-- Content Sections -->
+            
+            <!-- Glossar Section -->
+            <div class="content-section" id="glossar">
+                <h2>Glossar / Glossary</h2>
+                <p>Comprehensive glossary of business and technical terms with German/English definitions.</p>
+                
+                <div class="diagram-card">
+                    <h3>📖 Access Full Glossary</h3>
+                    <div class="description">
+                        The complete glossary with all business and technical terms is available as a separate document.
+                        It includes German/English translations and detailed explanations of all concepts used in the BemedaPersonal system.
+                    </div>
+                    <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; margin: 1rem 0;">
+                        <p><strong>📄 File:</strong> <a href="glossar.md" target="_blank" style="color: #1e40af; text-decoration: underline;">glossar.md</a></p>
+                        <p><strong>📋 Contains:</strong> Business terms, Technical terms, System states, User roles, and Key business processes</p>
+                        <p><strong>🌐 Languages:</strong> German (Deutsch) and English with explanations</p>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="diagram-card">
+                        <h3>📊 Business Terms</h3>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>Personalvermittlung</strong> - Manpower Matching</li>
+                            <li><strong>Zeitarbeit</strong> - Temporary Employment</li>
+                            <li><strong>Stellenausschreibung</strong> - Job Posting</li>
+                            <li><strong>Bewerbung</strong> - Job Application</li>
+                            <li><strong>Arbeitsbewilligung</strong> - Work Permit</li>
+                            <li><strong>Lohnabrechnung</strong> - Payroll</li>
+                            <li><strong>Compliance</strong> - Compliance</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="diagram-card">
+                        <h3>🛠️ Technical Terms</h3>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>Phoenix LiveView</strong> - Real-time web framework</li>
+                            <li><strong>Elixir/OTP</strong> - Functional programming language</li>
+                            <li><strong>GenServer</strong> - Server process behavior</li>
+                            <li><strong>Ecto</strong> - Database wrapper</li>
+                            <li><strong>FSMX</strong> - Finite State Machine library</li>
+                            <li><strong>Context Module</strong> - Business logic encapsulation</li>
+                            <li><strong>Zustandsmaschine</strong> - State Machine</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Blueprint Section -->
+            <div class="content-section" id="project-blueprint">
+                <h2>Project Blueprint</h2>
+                <p>Complete documentation structure and navigation guide for the BemedaPersonal system.</p>
+                
+                <div class="diagram-card">
+                    <h3>📋 Access Full Project Blueprint</h3>
+                    <div class="description">
+                        The complete project blueprint provides a comprehensive documentation structure with 15 main sections covering all aspects of the BemedaPersonal system.
+                    </div>
+                    <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; margin: 1rem 0;">
+                        <p><strong>📄 File:</strong> <a href="project-blueprint.md" target="_blank" style="color: #1e40af; text-decoration: underline;">project-blueprint.md</a></p>
+                        <p><strong>📋 Contains:</strong> 15 main sections, Navigation structure, Color coding, Target audiences</p>
+                        <p><strong>🎯 Purpose:</strong> Complete roadmap for organizing all project documentation</p>
+                    </div>
+                </div>
+                
+                <div class="diagram-card">
+                    <h3>Documentation Structure Overview</h3>
+                    <div class="description">High-level view of the complete documentation structure.</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[📖 Glossar] --> B[📋 Requirements Analysis]
+                            B --> C[🏗️ Architecture]
+                            C --> D[🔄 Business Processes]
+                            D --> E[📊 Use Cases]
+                            E --> F[🔍 Gap Analysis]
+                            F --> G[💻 Technical Documentation]
+                            G --> H[🎨 UI/UX]
+                            H --> I[🔌 Integrations]
+                            I --> J[📋 Project Management]
+                            J --> K[🚀 Deployment]
+                            K --> L[🧪 Quality Assurance]
+                            L --> M[📚 Training]
+                            M --> N[🔧 Appendix]
+                            
+                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
+                            classDef planned fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
+                            
+                            class A,C,D,E,F,G implemented
+                            class B,H,I,J,K,L,M,N planned
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="diagram-card">
+                        <h3>📊 Current Status</h3>
+                        <ul style="line-height: 1.8;">
+                            <li>✅ <strong>Glossar</strong> - Complete with DE/EN terms</li>
+                            <li>✅ <strong>System Overview</strong> - Interactive presentation</li>
+                            <li>✅ <strong>Use Cases</strong> - Detailed diagrams</li>
+                            <li>✅ <strong>Architecture</strong> - Complete documentation</li>
+                            <li>✅ <strong>Gap Analysis</strong> - Missing features identified</li>
+                            <li>✅ <strong>Business Processes</strong> - Core processes documented</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="diagram-card">
+                        <h3>🎯 Next Steps</h3>
+                        <ul style="line-height: 1.8;">
+                            <li>📋 <strong>Requirements Analysis</strong> - Detailed requirements</li>
+                            <li>🎨 <strong>UI/UX Documentation</strong> - Design system</li>
+                            <li>🔌 <strong>Integration Guides</strong> - API documentation</li>
+                            <li>📋 <strong>Project Management</strong> - Roadmap and milestones</li>
+                            <li>🧪 <strong>Quality Assurance</strong> - Testing strategies</li>
+                            <li>📚 <strong>Training Materials</strong> - User guides</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             
             <!-- Overview - Current Architecture -->
             <div class="content-section active" id="overview-current">

@@ -4,6 +4,12 @@ This documentation site provides comprehensive system architecture and requireme
 
 ## 📋 Contents
 
+### 📖 [Glossar / Glossary](glossar.md)
+Comprehensive glossary of business and technical terms with German/English definitions and explanations.
+
+### 📋 [Project Blueprint](project-blueprint.md)
+Complete documentation structure and navigation guide for the BemedaPersonal system.
+
 ### 🎯 [System Overview](index.html)
 Interactive presentation covering the current system architecture, technology stack, and core functionality.
 

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bemeda Personal - System Architecture & Requirements</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        /* Custom theme colors for feature status */
+        .feature-implemented { color: #4F46E5; font-weight: bold; }
+        .feature-critical { color: #EF4444; font-weight: bold; }
+        .feature-enhancement { color: #F97316; font-weight: bold; }
+        .feature-future { color: #22C55E; font-weight: bold; }
+        .feature-technical { color: #8B5CF6; font-weight: bold; }
+        
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 2px 0;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        
+        .mermaid {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Title Slide -->
+            <section>
+                <h1>Bemeda Personal</h1>
+                <h3>Swiss Manpower Matching Platform</h3>
+                <p>System Architecture & Requirements Analysis</p>
+                <small>Requirements Engineering Perspective</small>
+            </section>
+
+            <!-- Agenda -->
+            <section>
+                <h2>Agenda</h2>
+                <ul>
+                    <li>Current System Overview</li>
+                    <li>Use Case Analysis</li>
+                    <li>Application Lifecycle</li>
+                    <li>Digital Signature Workflow</li>
+                    <li>Gap Analysis & Enhancements</li>
+                    <li>Swiss Market Requirements</li>
+                    <li>Implementation Roadmap</li>
+                </ul>
+            </section>
+
+            <!-- Current System Overview -->
+            <section>
+                <section>
+                    <h2>Current System Overview</h2>
+                    <div class="diagram-container">
+                        <div class="mermaid">
+                            graph TB
+                                A[Job Seeker] --> B[Register & Create Profile]
+                                A --> C[Search & Apply for Jobs]
+                                A --> D[Manage Applications]
+                                
+                                E[Employer] --> F[Company Setup]
+                                E --> G[Post Job Openings]
+                                E --> H[Review Applications]
+                                E --> I[Generate Contracts]
+                                
+                                B --> J[Phoenix LiveView App]
+                                C --> J
+                                D --> J
+                                F --> J
+                                G --> J
+                                H --> J
+                                I --> J
+                                
+                                J --> K[PostgreSQL Database]
+                                J --> L[Tigris Storage]
+                                J --> M[SignWell Integration]
+                                J --> N[Email System]
+                                
+                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
+                                class A,B,C,D,E,F,G,H,I,J,K,L,M,N implemented
+                        </div>
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Technology Stack</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                        <div>
+                            <h4 style="color: #4F46E5; margin-bottom: 1rem;">🟦 Currently Implemented</h4>
+                            <ul style="font-size: 0.9em; line-height: 1.6;">
+                                <li><strong>Phoenix LiveView</strong> - Real-time web interface</li>
+                                <li><strong>Elixir/OTP</strong> - Concurrent, fault-tolerant backend</li>
+                                <li><strong>PostgreSQL</strong> - Primary database</li>
+                                <li><strong>Oban</strong> - Background job processing</li>
+                                <li><strong>FSMX</strong> - State machine for applications</li>
+                                <li><strong>SignWell</strong> - Digital signatures</li>
+                                <li><strong>Tigris</strong> - Document storage</li>
+                                <li><strong>Multi-language</strong> - DE, EN, FR, IT support</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: #EF4444; margin-bottom: 1rem;">🟥 Required Additions</h4>
+                            <ul style="font-size: 0.9em; line-height: 1.6;">
+                                <li><strong>Payroll System</strong> - Swiss salary processing</li>
+                                <li><strong>Work Permit APIs</strong> - Government integration</li>
+                                <li><strong>Banking APIs</strong> - Payment processing</li>
+                                <li><strong>Compliance Tools</strong> - SUVA, AHV reporting</li>
+                                <li><strong>Redis Cache</strong> - Performance optimization</li>
+                                <li><strong>Mobile Framework</strong> - Native app development</li>
+                                <li><strong>AI/ML Platform</strong> - Smart job matching</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Use Case Analysis -->
+            <section>
+                <section>
+                    <h2>Use Case Analysis</h2>
+                    <div class="diagram-container">
+                        <div class="mermaid">
+                            graph TB
+                                subgraph "Job Seeker Use Cases"
+                                    JS[Job Seeker] --> UC1[Register & Create Profile]
+                                    JS --> UC2[Search Jobs]
+                                    JS --> UC3[Apply for Positions]
+                                    JS --> UC4[Track Applications]
+                                    JS --> UC5[Sign Contracts] 
+                                    JS --> UC6[Rate Employers]
+                                end
+                                
+                                subgraph "Employer Use Cases"
+                                    EM[Employer] --> UC7[Company Setup]
+                                    EM --> UC8[Post Jobs]
+                                    EM --> UC9[Review Applications]
+                                    EM --> UC10[Manage Hiring Process]
+                                    EM --> UC11[Generate Contracts]
+                                    EM --> UC12[Rate Candidates]
+                                end
+                                
+                                subgraph "System Use Cases"
+                                    SYS[System] --> UC13[Send Notifications]
+                                    SYS --> UC14[Process Documents]
+                                    SYS --> UC15[Multi-language Support]
+                                end
+                                
+                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
+                                classDef actor fill:#E2E8F0,stroke:#333,stroke-width:2px,color:#000
+                                
+                                class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12,UC13,UC14,UC15 implemented
+                                class JS,EM,SYS actor
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Application Lifecycle -->
+            <section>
+                <h2>Application Lifecycle - Current State</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        stateDiagram-v2
+                            [*] --> Draft
+                            Draft --> Submitted : Submit Application
+                            Submitted --> UnderReview : Employer Reviews
+                            UnderReview --> InterviewScheduled : Schedule Interview
+                            UnderReview --> Rejected : Reject Application
+                            InterviewScheduled --> OfferExtended : Successful Interview
+                            InterviewScheduled --> Rejected : Unsuccessful Interview
+                            OfferExtended --> Accepted : Candidate Accepts
+                            OfferExtended --> Rejected : Candidate Rejects
+                            Accepted --> Contracted : Contract Signed
+                            Contracted --> [*]
+                            
+                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
+                            class Draft,Submitted,UnderReview,InterviewScheduled,OfferExtended,Accepted,Contracted,Rejected implemented
+                    </div>
+                </div>
+            </section>
+
+            <!-- Digital Signature Workflow -->
+            <section>
+                <h2>Digital Signature Workflow</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        sequenceDiagram
+                            participant C as Candidate
+                            participant S as System
+                            participant G as GenServer
+                            participant SP as SignWell Provider
+                            participant E as Employer
+                            
+                            Note over C,E: Job Offer Accepted
+                            
+                            C->>S: Request Contract Signing
+                            S->>S: Generate Contract from Template
+                            S->>G: Start Signing Session
+                            G->>SP: Create Signing Session
+                            SP-->>G: Return Signing URL
+                            G-->>S: Session Created
+                            S-->>C: Redirect to Signing URL
+                            
+                            C->>SP: Sign Document
+                            SP->>SP: Process Signature
+                            SP->>G: Webhook: Document Signed
+                            G->>S: Update Application Status
+                            S->>E: Notify Contract Signed
+                            S->>C: Confirm Contract Completion
+                            
+                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
+                            classDef external fill:#94A3B8,stroke:#333,stroke-width:2px,color:#fff
+                            
+                            class C,S,G,E implemented
+                            class SP external
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gap Analysis -->
+            <section>
+                <h2>Critical Missing Features</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        graph TD
+                            A[Employee Onboarding] -->|Missing| B[Payroll System]
+                            A -->|Missing| C[Timesheet Management]
+                            A -->|Missing| D[Work Permit Tracking]
+                            
+                            B --> E[Salary Processing]
+                            B --> F[Tax Calculations]
+                            B --> G[Social Security]
+                            
+                            C --> H[Hour Tracking]
+                            C --> I[Overtime Calculation]
+                            C --> J[Client Billing]
+                            
+                            D --> K[Permit Validation]
+                            D --> L[Renewal Reminders]
+                            D --> M[Compliance Reporting]
+                            
+                            classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
+                            classDef missing fill:#FCA5A5,stroke:#333,stroke-width:1px,color:#000
+                            
+                            class A,B,C,D,E,F,G,H,I,J,K,L,M critical
+                    </div>
+                </div>
+            </section>
+
+            <!-- Swiss Market Requirements -->
+            <section>
+                <h2>Swiss Market Requirements</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        graph TB
+                            subgraph "Legal Compliance"
+                                LC1[GDPR/Swiss DPA]
+                                LC2[Employment Law]
+                                LC3[Work Permits]
+                                LC4[Social Security]
+                            end
+                            
+                            subgraph "Business Requirements"
+                                BR1[Temporary Staffing]
+                                BR2[Cross-border Work]
+                                BR3[Multi-language]
+                                BR4[Industry Specific]
+                            end
+                            
+                            subgraph "Technical Requirements"
+                                TR1[Swiss Data Centers]
+                                TR2[Banking Integration]
+                                TR3[Government APIs]
+                                TR4[Insurance Systems]
+                            end
+                            
+                            classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
+                            classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
+                            classDef future fill:#22C55E,stroke:#333,stroke-width:2px,color:#fff
+                            
+                            class LC1,LC2,LC3,LC4,TR2,TR3 critical
+                            class BR1,BR2,BR4,TR1,TR4 enhancement
+                            class BR3 future
+                    </div>
+                </div>
+            </section>
+
+            <!-- Implementation Roadmap -->
+            <section>
+                <h2>Implementation Roadmap</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        gantt
+                            title Bemeda Personal Development Roadmap
+                            dateFormat  YYYY-MM-DD
+                            section Phase 1 - Critical Swiss Requirements
+                            Payroll System           :crit, payroll, 2025-01-01, 2025-03-31
+                            Work Permit Management   :crit, permits, 2025-02-01, 2025-04-30
+                            Compliance Reporting     :crit, compliance, 2025-03-01, 2025-05-31
+                            
+                            section Phase 2 - User Experience
+                            Mobile Application       :mobile, 2025-04-01, 2025-06-30
+                            Skills Assessment        :skills, 2025-05-01, 2025-07-31
+                            Enhanced UI/UX           :ui, 2025-06-01, 2025-08-31
+                            
+                            section Phase 3 - Advanced Features
+                            AI Job Matching          :ai, 2025-07-01, 2025-09-30
+                            Video Interviewing       :video, 2025-08-01, 2025-10-31
+                            Advanced Analytics       :analytics, 2025-09-01, 2025-11-30
+                            
+                            section Phase 4 - Scale & Performance
+                            Microservices Migration  :micro, 2025-10-01, 2025-12-31
+                            Performance Optimization :perf, 2025-11-01, 2026-01-31
+                            Enterprise Features      :enterprise, 2025-12-01, 2026-02-28
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Feature Legend -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #4F46E5;"></div>
+            <span>Implemented</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #EF4444;"></div>
+            <span>Critical Missing</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #F97316;"></div>
+            <span>Enhancement</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #22C55E;"></div>
+            <span>Future Feature</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #8B5CF6;"></div>
+            <span>Technical</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#4F46E5',
+                primaryTextColor: '#FFFFFF',
+                secondaryColor: '#EF4444',
+                tertiaryColor: '#F97316',
+                quaternaryColor: '#22C55E',
+                background: '#8B5CF6',
+                mainBkg: '#F8FAFC',
+                secondBkg: '#E2E8F0'
+            }
+        });
+
+        // Initialize Reveal.js
+        Reveal.initialize({
+            hash: true,
+            controls: true,
+            progress: true,
+            center: true,
+            transition: 'slide',
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ],
+            dependencies: [
+                {
+                    src: 'js/mermaid-integration.js',
+                    callback: function() {
+                        mermaid.init();
+                    }
+                }
+            ]
+        });
+    </script>
+</body>
+</html>
