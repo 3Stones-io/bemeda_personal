@@ -270,7 +270,65 @@
         }
         
         .content.active {
-            display: block;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .content-main {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .content-sidebar {
+            width: 350px;
+            flex-shrink: 0;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+        
+        .content-sidebar h3 {
+            color: #4a5568;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .content-sidebar .utterances {
+            max-width: 100%;
+        }
+        
+        .comments-toggle {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .comments-toggle:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .comments-toggle.active {
+            background: #38a169;
         }
         
         .content h1 {
@@ -498,6 +556,21 @@
             .content {
                 padding: 2rem;
             }
+            
+            .content.active {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .content-sidebar {
+                width: 100%;
+                position: static;
+                order: 2;
+            }
+            
+            .content-main {
+                order: 1;
+            }
         }
     </style>
 </head>
@@ -631,12 +704,23 @@
                 <div class="spinner"></div>
                 Loading documentation...
             </div>
-            <a href="#" class="back-button" onclick="navigateToHome()" id="back-button" style="display: none;">
-                Back to Overview
-            </a>
-            <div id="markdown-content"></div>
+            <div class="content-main">
+                <a href="#" class="back-button" onclick="navigateToHome()" id="back-button" style="display: none;">
+                    Back to Overview
+                </a>
+                <div id="markdown-content"></div>
+            </div>
+            <div class="content-sidebar" id="comments-sidebar" style="display: none;">
+                <h3>💬 Comments & Discussion</h3>
+                <div id="comments-container"></div>
+            </div>
         </div>
     </div>
+
+    <!-- Comments toggle button -->
+    <button class="comments-toggle" id="comments-toggle" onclick="toggleComments()" title="Toggle Comments">
+        💬
+    </button>
 
     <div class="footer">
         <div class="container">
@@ -646,10 +730,11 @@
     </div>
 
     <script>
-        // Initialize Mermaid
+        // Initialize Mermaid with better error handling
         mermaid.initialize({
-            startOnLoad: true,
+            startOnLoad: false, // We'll handle initialization manually
             theme: 'default',
+            securityLevel: 'loose',
             themeVariables: {
                 primaryColor: '#667eea',
                 primaryTextColor: '#2d3748',
@@ -657,17 +742,32 @@
                 lineColor: '#718096',
                 secondaryColor: '#f7fafc',
                 tertiaryColor: '#edf2f7'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true,
+                wrap: true
             }
         });
 
-        // Configure marked
+        // Configure marked with custom renderer for Mermaid
+        const renderer = new marked.Renderer();
+        renderer.code = function(code, lang) {
+            if (lang === 'mermaid') {
+                return `<div class="mermaid">${code}</div>`;
+            }
+            // Default code block handling with syntax highlighting
+            if (lang && hljs.getLanguage(lang)) {
+                return `<pre><code class="language-${lang}">${hljs.highlight(code, { language: lang }).value}</code></pre>`;
+            }
+            return `<pre><code>${hljs.highlightAuto(code).value}</code></pre>`;
+        };
+        
         marked.setOptions({
-            highlight: function(code, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    return hljs.highlight(code, { language: lang }).value;
-                }
-                return hljs.highlightAuto(code).value;
-            },
+            renderer: renderer,
             breaks: true,
             gfm: true
         });
@@ -675,6 +775,97 @@
         let currentPage = 'home';
         let currentPath = '';
         let currentTitle = '';
+
+        // Function to render Mermaid diagrams
+        function renderMermaidDiagrams() {
+            const mermaidElements = document.querySelectorAll('.mermaid');
+            
+            if (mermaidElements.length === 0) {
+                console.log('No Mermaid diagrams found');
+                return;
+            }
+            
+            console.log(`Found ${mermaidElements.length} Mermaid diagrams to render`);
+            
+            mermaidElements.forEach((element, index) => {
+                if (!element.getAttribute('data-processed')) {
+                    const graphDefinition = element.textContent.trim();
+                    const graphId = 'mermaid-graph-' + Date.now() + '-' + index;
+                    
+                    console.log(`Rendering diagram ${index + 1}:`, graphDefinition.substring(0, 50) + '...');
+                    
+                    try {
+                        mermaid.render(graphId, graphDefinition).then(result => {
+                            console.log(`Successfully rendered diagram ${index + 1}`);
+                            element.innerHTML = result.svg;
+                            element.setAttribute('data-processed', 'true');
+                        }).catch(error => {
+                            console.error(`Mermaid rendering error for diagram ${index + 1}:`, error);
+                            element.innerHTML = `
+                                <div style="padding: 1rem; background: #fed7d7; border: 1px solid #feb2b2; border-radius: 8px; color: #742a2a;">
+                                    <strong>Diagram Rendering Error</strong><br>
+                                    <small>Syntax: ${error.message || 'Invalid diagram syntax'}</small>
+                                </div>
+                            `;
+                            element.setAttribute('data-processed', 'error');
+                        });
+                    } catch (error) {
+                        console.error(`Mermaid initialization error for diagram ${index + 1}:`, error);
+                        element.innerHTML = `
+                            <div style="padding: 1rem; background: #fed7d7; border: 1px solid #feb2b2; border-radius: 8px; color: #742a2a;">
+                                <strong>Diagram Error</strong><br>
+                                <small>Could not initialize diagram renderer</small>
+                            </div>
+                        `;
+                        element.setAttribute('data-processed', 'error');
+                    }
+                }
+            });
+        }
+
+        // Function to toggle comments sidebar
+        function toggleComments() {
+            const sidebar = document.getElementById('comments-sidebar');
+            const toggle = document.getElementById('comments-toggle');
+            
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'block';
+                toggle.classList.add('active');
+                toggle.title = 'Hide Comments';
+            } else {
+                sidebar.style.display = 'none';
+                toggle.classList.remove('active');
+                toggle.title = 'Show Comments';
+            }
+        }
+
+        // Function to initialize utterances comments
+        function initializeComments(path, title) {
+            const commentsContainer = document.getElementById('comments-container');
+            const commentsSidebar = document.getElementById('comments-sidebar');
+            const commentsToggle = document.getElementById('comments-toggle');
+            
+            // Clear existing comments
+            commentsContainer.innerHTML = '';
+            
+            // Show toggle button and sidebar
+            commentsToggle.style.display = 'block';
+            commentsSidebar.style.display = 'block';
+            commentsToggle.classList.add('active');
+            
+            // Create utterances script
+            const script = document.createElement('script');
+            script.src = 'https://utteranc.es/client.js';
+            script.setAttribute('repo', '3Stones-io/bemeda_personal');
+            // Create highly specific issue term for granular commenting
+            const specificTerm = `docs/${path.replace('/', '-')}/${title.toLowerCase().replace(/\s+/g, '-')}`;
+            script.setAttribute('issue-term', specificTerm);
+            script.setAttribute('theme', 'github-light');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            
+            commentsContainer.appendChild(script);
+        }
 
         function updateBreadcrumb(path = '', title = '') {
             const breadcrumb = document.getElementById('breadcrumb');
@@ -698,6 +889,8 @@
         function navigateToHome() {
             document.getElementById('home-content').style.display = 'block';
             document.getElementById('content-page').style.display = 'none';
+            document.getElementById('comments-sidebar').style.display = 'none';
+            document.getElementById('comments-toggle').style.display = 'none';
             currentPage = 'home';
             currentPath = '';
             currentTitle = '';
@@ -722,7 +915,23 @@
                     </div>
                 </div>
             `;
-            showContent(content, '', title);
+            // Show content but hide comments sidebar for draft messages
+            document.getElementById('home-content').style.display = 'none';
+            document.getElementById('content-page').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('back-button').style.display = 'inline-flex';
+            document.getElementById('markdown-content').innerHTML = content;
+            document.getElementById('comments-sidebar').style.display = 'none';
+            document.getElementById('comments-toggle').style.display = 'none';
+            
+            currentPage = 'content';
+            currentPath = '';
+            currentTitle = title;
+            updateBreadcrumb('', title);
+            document.title = `${title} - BemedaPersonal Documentation`;
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
         }
 
         async function loadMarkdown(path, title) {
@@ -739,10 +948,21 @@
                 
                 showContent(html, path, title);
                 
-                // Re-initialize Mermaid for new content
+                // Re-initialize Mermaid for new content with multiple attempts
                 setTimeout(() => {
-                    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                    console.log('First attempt to render Mermaid diagrams');
+                    renderMermaidDiagrams();
                 }, 100);
+                
+                setTimeout(() => {
+                    console.log('Second attempt to render Mermaid diagrams');
+                    renderMermaidDiagrams();
+                }, 500);
+                
+                setTimeout(() => {
+                    console.log('Final attempt to render Mermaid diagrams');
+                    renderMermaidDiagrams();
+                }, 1000);
                 
             } catch (error) {
                 const errorHtml = `
@@ -769,6 +989,11 @@
             currentTitle = title;
             updateBreadcrumb(path, title);
             document.title = `${title} - BemedaPersonal Documentation`;
+            
+            // Initialize comments for this page
+            if (path) {
+                initializeComments(path, title);
+            }
             
             // Scroll to top
             window.scrollTo(0, 0);

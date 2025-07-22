@@ -99,10 +99,10 @@ This glossary defines the key business and technology terms for the BemedaPerson
 |-------------------|----------------|--------------------|--------------------|
 | **Arbeitssuchender** | **Job Seeker** | Person, die über die Plattform eine Anstellung sucht | Person seeking employment through the platform |
 | **Arbeitgeber** | **Employer** | Unternehmen, das Stellen ausschreibt und Kandidaten einstellt | Company that posts jobs and hires candidates |
-| **Personalvermittler** | **Recruiter** | Vermittler zwischen Arbeitgebern und Arbeitssuchenden | Intermediary between employers and job seekers |
+| **Personalvermittler** | **Recruiter (Bemeda)** | Vermittler zwischen Arbeitgebern und Arbeitssuchenden, angestellt bei Bemeda Personal | Intermediary between employers and job seekers, employed by Bemeda Personal |
 | **Administrator** | **Administrator** | Systemadministrator mit vollständigen Berechtigungen | System administrator with full permissions |
 | **Kunde** | **Client** | Kundenunternehmen, das Personaldienstleistungen bezieht | Client company that receives staffing services |
-| **Temporärmitarbeiter** | **Temp Worker** | Zeitarbeitnehmer, der über die Plattform vermittelt wird | Temporary worker placed through the platform |
+| **PoolWorker** | **PoolWorker** | Temporärangestellter bei Bemeda Personal, verfügbar für zeitlich begrenzte Einsätze bei Kundenunternehmen | Temporary employee at Bemeda Personal, available for time-limited assignments at client companies |
 
 ---
 
