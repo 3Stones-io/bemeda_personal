@@ -760,45 +760,61 @@
 
     <script>
         // Initialize Mermaid with better error handling
-        mermaid.initialize({
-            startOnLoad: false, // We'll handle initialization manually
-            theme: 'default',
-            securityLevel: 'loose',
-            themeVariables: {
-                primaryColor: '#667eea',
-                primaryTextColor: '#2d3748',
-                primaryBorderColor: '#667eea',
-                lineColor: '#718096',
-                secondaryColor: '#f7fafc',
-                tertiaryColor: '#edf2f7'
-            },
-            flowchart: {
-                useMaxWidth: true,
-                htmlLabels: true
-            },
-            sequence: {
-                useMaxWidth: true,
-                wrap: true
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing Mermaid...');
+            try {
+                mermaid.initialize({
+                    startOnLoad: false, // We'll handle initialization manually
+                    theme: 'default',
+                    securityLevel: 'loose',
+                    themeVariables: {
+                        primaryColor: '#667eea',
+                        primaryTextColor: '#2d3748',
+                        primaryBorderColor: '#667eea',
+                        lineColor: '#718096',
+                        secondaryColor: '#f7fafc',
+                        tertiaryColor: '#edf2f7'
+                    },
+                    flowchart: {
+                        useMaxWidth: true,
+                        htmlLabels: true
+                    },
+                    sequence: {
+                        useMaxWidth: true,
+                        wrap: true
+                    }
+                });
+                console.log('Mermaid initialized successfully');
+            } catch (error) {
+                console.error('Mermaid initialization failed:', error);
             }
         });
 
         // Configure marked with custom renderer for Mermaid
-        const renderer = new marked.Renderer();
-        renderer.code = function(code, lang) {
-            if (lang === 'mermaid') {
-                return `<div class="mermaid">${code}</div>`;
-            }
-            // Default code block handling with syntax highlighting
-            if (lang && hljs.getLanguage(lang)) {
-                return `<pre><code class="language-${lang}">${hljs.highlight(code, { language: lang }).value}</code></pre>`;
-            }
-            return `<pre><code>${hljs.highlightAuto(code).value}</code></pre>`;
-        };
-        
-        marked.setOptions({
-            renderer: renderer,
-            breaks: true,
-            gfm: true
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Configuring marked renderer...');
+            
+            const renderer = new marked.Renderer();
+            renderer.code = function(code, lang) {
+                console.log(`Processing code block with language: ${lang}`);
+                if (lang === 'mermaid') {
+                    console.log('Creating mermaid div for:', code.substring(0, 50) + '...');
+                    return `<div class="mermaid">${code}</div>`;
+                }
+                // Default code block handling with syntax highlighting
+                if (lang && hljs.getLanguage(lang)) {
+                    return `<pre><code class="language-${lang}">${hljs.highlight(code, { language: lang }).value}</code></pre>`;
+                }
+                return `<pre><code>${hljs.highlightAuto(code).value}</code></pre>`;
+            };
+            
+            marked.setOptions({
+                renderer: renderer,
+                breaks: true,
+                gfm: true
+            });
+            
+            console.log('Marked renderer configured');
         });
 
         let currentPage = 'home';
@@ -806,50 +822,64 @@
         let currentTitle = '';
 
         // Function to render Mermaid diagrams
-        function renderMermaidDiagrams() {
+        async function renderMermaidDiagrams() {
+            console.log('renderMermaidDiagrams called');
+            
+            // Wait a bit for content to be fully loaded
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             const mermaidElements = document.querySelectorAll('.mermaid');
             
             if (mermaidElements.length === 0) {
-                console.log('No Mermaid diagrams found');
+                console.log('No Mermaid diagrams found in DOM');
+                // Debug: check if there are any code blocks with mermaid
+                const codeBlocks = document.querySelectorAll('code.language-mermaid, pre code');
+                console.log(`Found ${codeBlocks.length} code blocks total`);
                 return;
             }
             
             console.log(`Found ${mermaidElements.length} Mermaid diagrams to render`);
             
-            mermaidElements.forEach((element, index) => {
-                if (!element.getAttribute('data-processed')) {
-                    const graphDefinition = element.textContent.trim();
-                    const graphId = 'mermaid-graph-' + Date.now() + '-' + index;
-                    
-                    console.log(`Rendering diagram ${index + 1}:`, graphDefinition.substring(0, 50) + '...');
-                    
-                    try {
-                        mermaid.render(graphId, graphDefinition).then(result => {
-                            console.log(`Successfully rendered diagram ${index + 1}`);
-                            element.innerHTML = result.svg;
-                            element.setAttribute('data-processed', 'true');
-                        }).catch(error => {
-                            console.error(`Mermaid rendering error for diagram ${index + 1}:`, error);
-                            element.innerHTML = `
-                                <div style="padding: 1rem; background: #fed7d7; border: 1px solid #feb2b2; border-radius: 8px; color: #742a2a;">
-                                    <strong>Diagram Rendering Error</strong><br>
-                                    <small>Syntax: ${error.message || 'Invalid diagram syntax'}</small>
-                                </div>
-                            `;
-                            element.setAttribute('data-processed', 'error');
-                        });
-                    } catch (error) {
-                        console.error(`Mermaid initialization error for diagram ${index + 1}:`, error);
-                        element.innerHTML = `
-                            <div style="padding: 1rem; background: #fed7d7; border: 1px solid #feb2b2; border-radius: 8px; color: #742a2a;">
-                                <strong>Diagram Error</strong><br>
-                                <small>Could not initialize diagram renderer</small>
-                            </div>
-                        `;
-                        element.setAttribute('data-processed', 'error');
-                    }
+            // Process each diagram
+            for (let index = 0; index < mermaidElements.length; index++) {
+                const element = mermaidElements[index];
+                
+                if (element.getAttribute('data-processed')) {
+                    console.log(`Diagram ${index + 1} already processed`);
+                    continue;
                 }
-            });
+                
+                const graphDefinition = element.textContent.trim();
+                const graphId = `mermaid-graph-${Date.now()}-${index}`;
+                
+                console.log(`Rendering diagram ${index + 1}:`, graphDefinition.substring(0, 100) + '...');
+                
+                try {
+                    // Check if mermaid is available
+                    if (typeof mermaid === 'undefined') {
+                        throw new Error('Mermaid library not loaded');
+                    }
+                    
+                    const result = await mermaid.render(graphId, graphDefinition);
+                    console.log(`Successfully rendered diagram ${index + 1}`);
+                    element.innerHTML = result.svg;
+                    element.setAttribute('data-processed', 'true');
+                    
+                } catch (error) {
+                    console.error(`Mermaid rendering error for diagram ${index + 1}:`, error);
+                    element.innerHTML = `
+                        <div style="padding: 1rem; background: #fed7d7; border: 1px solid #feb2b2; border-radius: 8px; color: #742a2a;">
+                            <strong>Diagram Rendering Error</strong><br>
+                            <small>Error: ${error.message || 'Invalid diagram syntax'}</small><br>
+                            <details style="margin-top: 0.5rem;">
+                                <summary style="cursor: pointer;">Show diagram code</summary>
+                                <pre style="background: #f1f1f1; padding: 0.5rem; margin-top: 0.5rem; font-size: 0.8em; white-space: pre-wrap;">${graphDefinition}</pre>
+                            </details>
+                        </div>
+                    `;
+                    element.setAttribute('data-processed', 'error');
+                }
+            }
         }
 
         // Function to toggle comments sidebar
@@ -977,21 +1007,22 @@
                 
                 showContent(html, path, title);
                 
-                // Re-initialize Mermaid for new content with multiple attempts
-                setTimeout(() => {
-                    console.log('First attempt to render Mermaid diagrams');
-                    renderMermaidDiagrams();
-                }, 100);
+                // Re-initialize Mermaid for new content with improved timing
+                console.log('Content loaded, starting Mermaid rendering...');
                 
+                // Immediate attempt
+                renderMermaidDiagrams();
+                
+                // Backup attempts with progressive delays
                 setTimeout(() => {
                     console.log('Second attempt to render Mermaid diagrams');
                     renderMermaidDiagrams();
-                }, 500);
+                }, 300);
                 
                 setTimeout(() => {
                     console.log('Final attempt to render Mermaid diagrams');
                     renderMermaidDiagrams();
-                }, 1000);
+                }, 1500);
                 
             } catch (error) {
                 const errorHtml = `
@@ -1041,6 +1072,12 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
+            // Debug: Check if libraries are loaded
+            console.log('DOM loaded, checking library availability:');
+            console.log('- Mermaid available:', typeof mermaid !== 'undefined');
+            console.log('- Marked available:', typeof marked !== 'undefined');
+            console.log('- Highlight.js available:', typeof hljs !== 'undefined');
+            
             // Set initial state
             history.replaceState({ page: 'home' }, '', '#');
             navigateToHome();
