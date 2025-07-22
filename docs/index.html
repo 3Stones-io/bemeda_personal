@@ -6,7 +6,7 @@
     <title>BemedaPersonal - Strategic Documentation Framework</title>
     
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     
@@ -794,27 +794,46 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Configuring marked renderer...');
             
-            const renderer = new marked.Renderer();
-            renderer.code = function(code, lang) {
-                console.log(`Processing code block with language: ${lang}`);
-                if (lang === 'mermaid') {
-                    console.log('Creating mermaid div for:', code.substring(0, 50) + '...');
-                    return `<div class="mermaid">${code}</div>`;
-                }
-                // Default code block handling with syntax highlighting
-                if (lang && hljs.getLanguage(lang)) {
-                    return `<pre><code class="language-${lang}">${hljs.highlight(code, { language: lang }).value}</code></pre>`;
-                }
-                return `<pre><code>${hljs.highlightAuto(code).value}</code></pre>`;
-            };
-            
-            marked.setOptions({
-                renderer: renderer,
-                breaks: true,
-                gfm: true
-            });
-            
-            console.log('Marked renderer configured');
+            try {
+                // Create custom renderer
+                const renderer = {
+                    code(code, lang) {
+                        console.log(`Processing code block with language: ${lang}`);
+                        if (lang === 'mermaid') {
+                            console.log('Creating mermaid div for:', code.substring(0, 50) + '...');
+                            return `<div class="mermaid">${code}</div>`;
+                        }
+                        // Default code block handling with syntax highlighting
+                        if (lang && hljs.getLanguage(lang)) {
+                            try {
+                                const highlighted = hljs.highlight(code, { language: lang }).value;
+                                return `<pre><code class="language-${lang}">${highlighted}</code></pre>`;
+                            } catch (e) {
+                                console.warn('Highlight.js error:', e);
+                                return `<pre><code class="language-${lang}">${code}</code></pre>`;
+                            }
+                        }
+                        try {
+                            const highlighted = hljs.highlightAuto(code).value;
+                            return `<pre><code>${highlighted}</code></pre>`;
+                        } catch (e) {
+                            console.warn('Highlight.js auto error:', e);
+                            return `<pre><code>${code}</code></pre>`;
+                        }
+                    }
+                };
+                
+                // Configure marked
+                marked.use({ 
+                    renderer: renderer,
+                    breaks: true,
+                    gfm: true 
+                });
+                
+                console.log('Marked renderer configured successfully');
+            } catch (error) {
+                console.error('Error configuring marked renderer:', error);
+            }
         });
 
         let currentPage = 'home';
@@ -1003,7 +1022,32 @@
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 const markdown = await response.text();
-                const html = marked.parse(markdown);
+                
+                // Validate markdown content
+                if (!markdown || typeof markdown !== 'string') {
+                    throw new Error('Invalid markdown content received');
+                }
+                
+                console.log(`Processing markdown for ${path}, length: ${markdown.length} characters`);
+                
+                let html;
+                try {
+                    // Try modern marked.parse first
+                    if (typeof marked.parse === 'function') {
+                        html = marked.parse(markdown);
+                    } else if (typeof marked === 'function') {
+                        // Fallback for older versions
+                        html = marked(markdown);
+                    } else {
+                        throw new Error('Marked.js not properly loaded');
+                    }
+                    console.log('Markdown parsed successfully');
+                } catch (parseError) {
+                    console.error('Marked.js parse error:', parseError);
+                    // Fallback: show raw markdown with basic formatting
+                    html = `<pre style="white-space: pre-wrap; background: #f8f9fa; padding: 2rem; border-radius: 8px;">${markdown}</pre>`;
+                    console.log('Using fallback raw markdown display');
+                }
                 
                 showContent(html, path, title);
                 
