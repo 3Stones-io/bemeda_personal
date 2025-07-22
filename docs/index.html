@@ -773,7 +773,7 @@
     <div class="footer">
         <div class="container">
             <p><strong>BemedaPersonal Documentation Framework</strong></p>
-            <p>Last Updated: July 2025 | Version 1.6 | Build: 2025-01-22-17:45 📍</p>
+            <p>Last Updated: July 2025 | Version 1.7 | Build: 2025-01-22-18:00 💬</p>
             <p style="font-size: 0.8em; opacity: 0.7;">
                 <a href="https://github.com/3Stones-io/bemeda_personal/settings" target="_blank" rel="noopener">Repository Settings</a> • 
                 <a href="https://github.com/apps/utterances" target="_blank" rel="noopener">Install Utterances</a> •
@@ -1006,7 +1006,11 @@
             const script = document.createElement('script');
             script.src = 'https://utteranc.es/client.js';
             script.setAttribute('repo', '3Stones-io/bemeda_personal');
-            script.setAttribute('issue-term', 'pathname');
+            
+            // Create unique issue term per page using path and title
+            const pageIdentifier = `docs/${path.replace('/', '-')}--${title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')}`;
+            script.setAttribute('issue-term', pageIdentifier);
+            
             script.setAttribute('theme', 'github-light');
             script.setAttribute('crossorigin', 'anonymous');
             script.async = true;
@@ -1016,6 +1020,8 @@
                 'issue-term': script.getAttribute('issue-term'),
                 theme: script.getAttribute('theme')
             });
+            
+            console.log(`Page-specific identifier: ${pageIdentifier}`);
             
             // Add error handling and timeout
             script.onerror = function() {
