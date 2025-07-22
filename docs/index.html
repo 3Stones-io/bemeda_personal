@@ -3,1146 +3,386 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bemeda Personal - System Architecture & Requirements</title>
-    
+    <title>BemedaPersonal - Strategic Documentation Framework</title>
     
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background: #f8fafc;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #f7fafc;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
         
         .container {
-            display: flex;
-            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
         
-        .sidebar {
-            width: 280px;
-            background: #1e293b;
-            color: white;
-            overflow-y: auto;
-            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
-        }
-        
-        .main-content {
-            flex: 1;
+        .framework-intro {
+            background: white;
+            margin: 2rem auto;
             padding: 2rem;
-            overflow-y: auto;
-            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .logo {
-            padding: 1.5rem;
-            background: #0f172a;
-            text-align: center;
+        .framework-intro h2 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 1.875rem;
         }
         
-        .logo h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: white;
-        }
-        
-        .menu-section {
-            padding: 1rem 0;
-        }
-        
-        .menu-title {
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .menu-item {
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-left: 3px solid transparent;
-        }
-        
-        .menu-item:hover {
-            background: #334155;
-        }
-        
-        .menu-item.active {
-            background: #1e40af;
-            border-left-color: #3b82f6;
-        }
-        
-        .submenu {
-            background: #334155;
-            display: none;
-        }
-        
-        .submenu.open {
-            display: block;
-        }
-        
-        .submenu-item {
-            padding: 0.5rem 2.5rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #cbd5e1;
-            transition: all 0.2s;
-        }
-        
-        .submenu-item:hover {
-            background: #475569;
-            color: white;
-        }
-        
-        .submenu-item.active {
-            background: #1d4ed8;
-            color: white;
-        }
-        
-        .content-section {
-            display: none;
-        }
-        
-        .content-section.active {
-            display: block;
-        }
-        
-        .diagram-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
-        
-        .diagram-card h3 {
-            margin: 0 0 1rem 0;
-            color: #1e293b;
-            font-size: 1.25rem;
-        }
-        
-        .diagram-card .description {
-            color: #64748b;
-            font-size: 0.9rem;
+        .framework-intro p {
+            color: #718096;
+            font-size: 1.125rem;
             margin-bottom: 1.5rem;
-            line-height: 1.5;
         }
         
-        .mermaid {
-            text-align: center;
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .phase-card {
             background: white;
-            min-height: 200px;
-            width: 100%;
-            margin: 1rem 0;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+        
+        .phase-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .phase-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .phase-card .phase-icon {
+            font-size: 1.75rem;
+        }
+        
+        .phase-card p {
+            color: #718096;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .phase-links {
+            list-style: none;
+        }
+        
+        .phase-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .phase-links a {
+            color: #667eea;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .phase-links a:hover {
+            color: #5a67d8;
+            background: #edf2f7;
+            padding-left: 0.75rem;
+        }
+        
+        .phase-links a::before {
+            content: "→";
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+        }
+        
+        .status-complete { background: #c6f6d5; color: #22543d; }
+        .status-draft { background: #fed7c3; color: #7b341e; }
+        .status-progress { background: #bee3f8; color: #2a4365; }
+        
+        .quick-nav {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .quick-nav h3 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .nav-item {
             padding: 1rem;
             border: 1px solid #e2e8f0;
-            border-radius: 6px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
         
-        .mermaid svg {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
+        .nav-item:hover {
+            border-color: #667eea;
+            background: #f7fafc;
         }
         
-        .status-legend {
+        .nav-item h4 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-item p {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+        
+        .footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer p {
+            opacity: 0.8;
+        }
+        
+        .legend {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .legend h4 {
+            margin-bottom: 0.75rem;
+            color: #4a5568;
+        }
+        
+        .legend-items {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
             flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.875rem;
         }
         
         .legend-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: white;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            font-size: 0.875rem;
-        }
-        
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
-        }
-        
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-            }
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- Sidebar Navigation -->
-        <div class="sidebar">
-            <div class="logo">
-                <h1>Bemeda Personal</h1>
-                <p style="margin: 0; font-size: 0.8rem; color: #94a3b8;">System Architecture</p>
-            </div>
-            
-            <nav>
-                <!-- Documentation Section -->
-                <div class="menu-section">
-                    <div class="menu-title">Documentation</div>
-                    <div class="menu-item" data-target="glossar">
-                        📖 Glossar / Glossary
-                    </div>
-                    <div class="menu-item" data-target="project-blueprint">
-                        📋 Project Blueprint
-                    </div>
-                </div>
-                
-                <!-- Overview Section -->
-                <div class="menu-section">
-                    <div class="menu-title">System Overview</div>
-                    <div class="menu-item" data-target="overview-current">
-                        📊 Current Architecture
-                    </div>
-                    <div class="menu-item" data-target="overview-technology">
-                        🛠️ Technology Stack
-                    </div>
-                </div>
-                
-                <!-- Job Seeker Perspective -->
-                <div class="menu-section">
-                    <div class="menu-title">Job Seeker Perspective</div>
-                    <div class="menu-item" data-submenu="jobseeker">
-                        👤 Job Seeker Features
-                        <span style="float: right;">▼</span>
-                    </div>
-                    <div class="submenu" id="submenu-jobseeker">
-                        <div class="submenu-item" data-target="jobseeker-overview">Overview</div>
-                        <div class="submenu-item" data-target="jobseeker-current">Current Features</div>
-                        <div class="submenu-item" data-target="jobseeker-missing">Critical Missing</div>
-                        <div class="submenu-item" data-target="jobseeker-enhancements">Enhancements</div>
-                    </div>
-                </div>
-                
-                <!-- Employer Perspective -->
-                <div class="menu-section">
-                    <div class="menu-title">Employer Perspective</div>
-                    <div class="menu-item" data-submenu="employer">
-                        🏢 Employer Features
-                        <span style="float: right;">▼</span>
-                    </div>
-                    <div class="submenu" id="submenu-employer">
-                        <div class="submenu-item" data-target="employer-overview">Overview</div>
-                        <div class="submenu-item" data-target="employer-current">Current Features</div>
-                        <div class="submenu-item" data-target="employer-missing">Critical Missing</div>
-                        <div class="submenu-item" data-target="employer-enhancements">Enhancements</div>
-                    </div>
-                </div>
-                
-                <!-- Admin/System Perspective -->
-                <div class="menu-section">
-                    <div class="menu-title">System & Admin</div>
-                    <div class="menu-item" data-submenu="admin">
-                        ⚙️ System Features
-                        <span style="float: right;">▼</span>
-                    </div>
-                    <div class="submenu" id="submenu-admin">
-                        <div class="submenu-item" data-target="admin-overview">Overview</div>
-                        <div class="submenu-item" data-target="admin-current">Current Features</div>
-                        <div class="submenu-item" data-target="admin-missing">Critical Missing</div>
-                        <div class="submenu-item" data-target="admin-enhancements">Enhancements</div>
-                    </div>
-                </div>
-                
-                <!-- Swiss Requirements -->
-                <div class="menu-section">
-                    <div class="menu-title">Swiss Market</div>
-                    <div class="menu-item" data-target="swiss-requirements">
-                        🇨🇭 Swiss Requirements
-                    </div>
-                    <div class="menu-item" data-target="roadmap">
-                        📅 Implementation Roadmap
-                    </div>
-                </div>
-            </nav>
+    <div class="header">
+        <div class="container">
+            <h1>BemedaPersonal</h1>
+            <p>Strategic Documentation Framework for Swiss Personnel Placement & Lending Platform</p>
         </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Status Legend -->
-            <div class="status-legend">
+    </div>
+
+    <div class="container">
+        <div class="framework-intro">
+            <h2>📋 Documentation Structure</h2>
+            <p>This documentation follows a strategic framework approach, organizing information from high-level vision through implementation details. Each phase builds upon the previous, ensuring comprehensive coverage from strategic foundation to technical implementation.</p>
+        </div>
+
+        <div class="phases-grid">
+            <div class="phase-card">
+                <h3><span class="phase-icon">🎯</span> Strategic Foundation</h3>
+                <p>The foundational vision and strategic direction for BemedaPersonal</p>
+                <ul class="phase-links">
+                    <li><a href="strategic-foundation/vision.html">Vision <span class="status-badge status-complete">Complete</span></a></li>
+                    <li><a href="strategic-foundation/mission.html">Mission <span class="status-badge status-complete">Complete</span></a></li>
+                    <li><a href="strategic-foundation/strategy.html">Strategy <span class="status-badge status-complete">Complete</span></a></li>
+                    <li><a href="strategic-foundation/goals-objectives.html">Goals & Objectives <span class="status-badge status-complete">Complete</span></a></li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <h3><span class="phase-icon">📋</span> Requirements & Analysis</h3>
+                <p>Understanding stakeholders, users, and system requirements</p>
+                <ul class="phase-links">
+                    <li><a href="requirements-analysis/glossary.html">Glossary <span class="status-badge status-complete">Complete</span></a></li>
+                    <li><a href="requirements-analysis/stakeholder-analysis.html">Stakeholder Analysis <span class="status-badge status-complete">Complete</span></a></li>
+                    <li><a href="requirements-analysis/use-cases.html">Use Cases <span class="status-badge status-complete">Complete</span></a></li>
+                    <li><a href="requirements-analysis/functional-requirements.html">Functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
+                    <li><a href="requirements-analysis/non-functional-requirements.html">Non-functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <h3><span class="phase-icon">🏗️</span> Architecture & Design</h3>
+                <p>Technical blueprints and system design specifications</p>
+                <ul class="phase-links">
+                    <li><a href="architecture-design/system-architecture.html">System Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="architecture-design/technical-architecture.html">Technical Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="architecture-design/data-architecture.html">Data Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="architecture-design/security-architecture.html">Security Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="architecture-design/api-design.html">API Design <span class="status-badge status-draft">Draft</span></a></li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <h3><span class="phase-icon">📊</span> Planning & Organization</h3>
+                <p>Project management, timeline, and resource allocation</p>
+                <ul class="phase-links">
+                    <li><a href="planning-organization/project-plan.html">Project Plan <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="planning-organization/risk-assessment.html">Risk Assessment <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="planning-organization/resource-planning.html">Resource Planning <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="planning-organization/quality-assurance.html">Quality Assurance Plan <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="planning-organization/deployment-strategy.html">Deployment Strategy <span class="status-badge status-draft">Draft</span></a></li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <h3><span class="phase-icon">💻</span> Implementation Framework</h3>
+                <p>Development standards, guidelines, and best practices</p>
+                <ul class="phase-links">
+                    <li><a href="implementation-framework/development-standards.html">Development Standards <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="implementation-framework/coding-guidelines.html">Coding Guidelines <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="implementation-framework/testing-strategy.html">Testing Strategy <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="implementation-framework/documentation-standards.html">Documentation Standards <span class="status-badge status-draft">Draft</span></a></li>
+                    <li><a href="implementation-framework/version-control.html">Version Control Strategy <span class="status-badge status-draft">Draft</span></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h4>📍 Document Status Legend</h4>
+            <div class="legend-items">
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #4F46E5;"></div>
-                    <span>Implemented</span>
+                    <span class="status-badge status-complete">Complete</span>
+                    <span>Fully documented and reviewed</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #EF4444;"></div>
-                    <span>Critical Missing</span>
+                    <span class="status-badge status-progress">In Progress</span>
+                    <span>Currently being developed</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #F97316;"></div>
-                    <span>Enhancement</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #22C55E;"></div>
-                    <span>Future Feature</span>
+                    <span class="status-badge status-draft">Draft</span>
+                    <span>Initial version, needs development</span>
                 </div>
             </div>
-            
-            <!-- Content Sections -->
-            
-            <!-- Glossar Section -->
-            <div class="content-section" id="glossar">
-                <h2>Glossar / Glossary</h2>
-                <p>Comprehensive glossary of business and technical terms with German/English definitions.</p>
-                
-                <div class="diagram-card">
-                    <h3>📖 Access Full Glossary</h3>
-                    <div class="description">
-                        The complete glossary with all business and technical terms is available as a separate document.
-                        It includes German/English translations and detailed explanations of all concepts used in the BemedaPersonal system.
-                    </div>
-                    <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; margin: 1rem 0;">
-                        <p><strong>📄 File:</strong> <a href="glossar.md" target="_blank" style="color: #1e40af; text-decoration: underline;">glossar.md</a></p>
-                        <p><strong>📋 Contains:</strong> Business terms, Technical terms, System states, User roles, and Key business processes</p>
-                        <p><strong>🌐 Languages:</strong> German (Deutsch) and English with explanations</p>
-                    </div>
+        </div>
+
+        <div class="quick-nav">
+            <h3>🚀 Quick Navigation</h3>
+            <div class="nav-grid">
+                <div class="nav-item">
+                    <h4>Business Context</h4>
+                    <p>Swiss personnel placement (Vermittlung) and lending (Verleih) regulations, dual business model, AVG compliance</p>
                 </div>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>📊 Business Terms</h3>
-                        <ul style="line-height: 1.8;">
-                            <li><strong>Personalvermittlung</strong> - Manpower Matching</li>
-                            <li><strong>Zeitarbeit</strong> - Temporary Employment</li>
-                            <li><strong>Stellenausschreibung</strong> - Job Posting</li>
-                            <li><strong>Bewerbung</strong> - Job Application</li>
-                            <li><strong>Arbeitsbewilligung</strong> - Work Permit</li>
-                            <li><strong>Lohnabrechnung</strong> - Payroll</li>
-                            <li><strong>Compliance</strong> - Compliance</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>🛠️ Technical Terms</h3>
-                        <ul style="line-height: 1.8;">
-                            <li><strong>Phoenix LiveView</strong> - Real-time web framework</li>
-                            <li><strong>Elixir/OTP</strong> - Functional programming language</li>
-                            <li><strong>GenServer</strong> - Server process behavior</li>
-                            <li><strong>Ecto</strong> - Database wrapper</li>
-                            <li><strong>FSMX</strong> - Finite State Machine library</li>
-                            <li><strong>Context Module</strong> - Business logic encapsulation</li>
-                            <li><strong>Zustandsmaschine</strong> - State Machine</li>
-                        </ul>
-                    </div>
+                <div class="nav-item">
+                    <h4>Technical Context</h4>
+                    <p>Phoenix LiveView application built with Elixir/OTP, real-time web application with actor model architecture</p>
+                </div>
+                <div class="nav-item">
+                    <h4>Key Features</h4>
+                    <p>Role-based user flows, digital contract management, integrated billing, multi-language support</p>
+                </div>
+                <div class="nav-item">
+                    <h4>Implementation</h4>
+                    <p>Comprehensive testing and monitoring framework, Swiss regulatory compliance, modern architecture</p>
                 </div>
             </div>
-            
-            <!-- Project Blueprint Section -->
-            <div class="content-section" id="project-blueprint">
-                <h2>Project Blueprint</h2>
-                <p>Complete documentation structure and navigation guide for the BemedaPersonal system.</p>
-                
-                <div class="diagram-card">
-                    <h3>📋 Access Full Project Blueprint</h3>
-                    <div class="description">
-                        The complete project blueprint provides a comprehensive documentation structure with 15 main sections covering all aspects of the BemedaPersonal system.
-                    </div>
-                    <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; margin: 1rem 0;">
-                        <p><strong>📄 File:</strong> <a href="project-blueprint.md" target="_blank" style="color: #1e40af; text-decoration: underline;">project-blueprint.md</a></p>
-                        <p><strong>📋 Contains:</strong> 15 main sections, Navigation structure, Color coding, Target audiences</p>
-                        <p><strong>🎯 Purpose:</strong> Complete roadmap for organizing all project documentation</p>
-                    </div>
-                </div>
-                
-                <div class="diagram-card">
-                    <h3>Documentation Structure Overview</h3>
-                    <div class="description">High-level view of the complete documentation structure.</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[📖 Glossar] --> B[📋 Requirements Analysis]
-                            B --> C[🏗️ Architecture]
-                            C --> D[🔄 Business Processes]
-                            D --> E[📊 Use Cases]
-                            E --> F[🔍 Gap Analysis]
-                            F --> G[💻 Technical Documentation]
-                            G --> H[🎨 UI/UX]
-                            H --> I[🔌 Integrations]
-                            I --> J[📋 Project Management]
-                            J --> K[🚀 Deployment]
-                            K --> L[🧪 Quality Assurance]
-                            L --> M[📚 Training]
-                            M --> N[🔧 Appendix]
-                            
-                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                            classDef planned fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                            
-                            class A,C,D,E,F,G implemented
-                            class B,H,I,J,K,L,M,N planned
-                    </div>
-                </div>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>📊 Current Status</h3>
-                        <ul style="line-height: 1.8;">
-                            <li>✅ <strong>Glossar</strong> - Complete with DE/EN terms</li>
-                            <li>✅ <strong>System Overview</strong> - Interactive presentation</li>
-                            <li>✅ <strong>Use Cases</strong> - Detailed diagrams</li>
-                            <li>✅ <strong>Architecture</strong> - Complete documentation</li>
-                            <li>✅ <strong>Gap Analysis</strong> - Missing features identified</li>
-                            <li>✅ <strong>Business Processes</strong> - Core processes documented</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>🎯 Next Steps</h3>
-                        <ul style="line-height: 1.8;">
-                            <li>📋 <strong>Requirements Analysis</strong> - Detailed requirements</li>
-                            <li>🎨 <strong>UI/UX Documentation</strong> - Design system</li>
-                            <li>🔌 <strong>Integration Guides</strong> - API documentation</li>
-                            <li>📋 <strong>Project Management</strong> - Roadmap and milestones</li>
-                            <li>🧪 <strong>Quality Assurance</strong> - Testing strategies</li>
-                            <li>📚 <strong>Training Materials</strong> - User guides</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Overview - Current Architecture -->
-            <div class="content-section active" id="overview-current">
-                <h2>Current System Architecture</h2>
-                <p>High-level overview of the current Bemeda Personal system architecture showing main components and data flow.</p>
-                
-                <div class="diagram-card">
-                    <h3>Main System Components</h3>
-                    <div class="description">Core components of the Phoenix LiveView application with external integrations.</div>
-                    <div class="mermaid">
-                        graph TB
-                            Users[Users] --> Web[Phoenix LiveView]
-                            Web --> DB[(PostgreSQL)]
-                            Web --> Storage[Tigris Storage]
-                            Web --> SignWell[SignWell API]
-                            Web --> Email[Email System]
-                            
-                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                            class Users,Web,DB,Storage,SignWell,Email implemented
-                    </div>
-                </div>
-                
-                <div class="diagram-card">
-                    <h3>Data Flow</h3>
-                    <div class="description">How data flows through the system from user interaction to persistence.</div>
-                    <div class="mermaid">
-                        graph LR
-                            UI[User Interface] --> LV[LiveView Process]
-                            LV --> CTX[Context Layer]
-                            CTX --> DB[(Database)]
-                            CTX --> BG[Background Jobs]
-                            
-                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                            class UI,LV,CTX,DB,BG implemented
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Technology Stack -->
-            <div class="content-section" id="overview-technology">
-                <h2>Technology Stack</h2>
-                <p>Current technology stack and required additions for Swiss market compliance.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>🟦 Currently Implemented</h3>
-                        <ul style="line-height: 1.8;">
-                            <li><strong>Phoenix LiveView</strong> - Real-time web interface</li>
-                            <li><strong>Elixir/OTP</strong> - Concurrent backend</li>
-                            <li><strong>PostgreSQL</strong> - Primary database</li>
-                            <li><strong>Oban</strong> - Background job processing</li>
-                            <li><strong>FSMX</strong> - State machine</li>
-                            <li><strong>SignWell</strong> - Digital signatures</li>
-                            <li><strong>Tigris</strong> - Document storage</li>
-                            <li><strong>Multi-language</strong> - DE, EN, FR, IT</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>🟥 Required Additions</h3>
-                        <ul style="line-height: 1.8;">
-                            <li><strong>Payroll System</strong> - Swiss salary processing</li>
-                            <li><strong>Work Permit APIs</strong> - Government integration</li>
-                            <li><strong>Banking APIs</strong> - Payment processing</li>
-                            <li><strong>Compliance Tools</strong> - SUVA, AHV reporting</li>
-                            <li><strong>Redis Cache</strong> - Performance optimization</li>
-                            <li><strong>Mobile Framework</strong> - Native apps</li>
-                            <li><strong>AI/ML Platform</strong> - Smart matching</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Job Seeker Sections -->
-            <div class="content-section" id="jobseeker-overview">
-                <h2>Job Seeker Perspective - Overview</h2>
-                <p>Complete job seeker journey from registration to employment contract signing.</p>
-                
-                <div class="diagram-card">
-                    <h3>Job Seeker Journey</h3>
-                    <div class="description">End-to-end process for job seekers using the platform.</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Register] --> B[Create Resume]
-                            B --> C[Search Jobs]
-                            C --> D[Apply]
-                            D --> E[Interview]
-                            E --> F[Get Offer]
-                            F --> G[Sign Contract]
-                            
-                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                            class A,B,C,D,E,F,G implemented
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="jobseeker-current">
-                <h2>Job Seeker - Current Features</h2>
-                <p>Features currently available to job seekers in the system.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Profile Management</h3>
-                        <div class="mermaid">
-                            graph TB
-                                JS[Job Seeker] --> REG[Registration]
-                                JS --> RESUME[Resume Builder]
-                                JS --> PROFILE[Profile Management]
-                                
-                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                                class JS,REG,RESUME,PROFILE implemented
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Job Application</h3>
-                        <div class="mermaid">
-                            graph TB
-                                SEARCH[Job Search] --> APPLY[Apply]
-                                APPLY --> TRACK[Track Status]
-                                TRACK --> CHAT[Communicate]
-                                
-                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                                class SEARCH,APPLY,TRACK,CHAT implemented
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="jobseeker-missing">
-                <h2>Job Seeker - Critical Missing Features</h2>
-                <p>Essential features missing for Swiss manpower market operations.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Timesheet & Payroll</h3>
-                        <div class="mermaid">
-                            graph TB
-                                TS[Timesheet Entry] --> HR[Hour Tracking]
-                                HR --> OT[Overtime Calc]
-                                OT --> PAY[Payroll View]
-                                
-                                classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                                class TS,HR,OT,PAY critical
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Work Permits</h3>
-                        <div class="mermaid">
-                            graph TB
-                                WP[Work Permit] --> VAL[Validation]
-                                VAL --> REN[Renewal Alert]
-                                REN --> COMP[Compliance]
-                                
-                                classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                                class WP,VAL,REN,COMP critical
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="jobseeker-enhancements">
-                <h2>Job Seeker - Enhancement Features</h2>
-                <p>Features that would improve user experience and competitiveness.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Skills & Assessment</h3>
-                        <div class="mermaid">
-                            graph TB
-                                SKILL[Skills Profile] --> TEST[Assessment]
-                                TEST --> CERT[Certification]
-                                CERT --> MATCH[Smart Matching]
-                                
-                                classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                                class SKILL,TEST,CERT,MATCH enhancement
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Mobile Experience</h3>
-                        <div class="mermaid">
-                            graph TB
-                                MOB[Mobile App] --> NOTIF[Push Notifications]
-                                NOTIF --> QUICK[Quick Apply]
-                                QUICK --> OFFLINE[Offline Mode]
-                                
-                                classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                                class MOB,NOTIF,QUICK,OFFLINE enhancement
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Employer Sections -->
-            <div class="content-section" id="employer-overview">
-                <h2>Employer Perspective - Overview</h2>
-                <p>Complete employer journey from company setup to candidate management.</p>
-                
-                <div class="diagram-card">
-                    <h3>Employer Journey</h3>
-                    <div class="description">End-to-end process for employers using the platform.</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Setup Company] --> B[Post Jobs]
-                            B --> C[Review Applications]
-                            C --> D[Interview Candidates]
-                            D --> E[Make Offers]
-                            E --> F[Generate Contracts]
-                            F --> G[Manage Employees]
-                            
-                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                            classDef missing fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                            
-                            class A,B,C,D,E,F implemented
-                            class G missing
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="employer-current">
-                <h2>Employer - Current Features</h2>
-                <p>Features currently available to employers in the system.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Company Management</h3>
-                        <div class="mermaid">
-                            graph TB
-                                EMP[Employer] --> SETUP[Company Setup]
-                                EMP --> PROFILE[Company Profile]
-                                EMP --> BRANDING[Branding]
-                                
-                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                                class EMP,SETUP,PROFILE,BRANDING implemented
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Hiring Process</h3>
-                        <div class="mermaid">
-                            graph TB
-                                POST[Post Jobs] --> REVIEW[Review Apps]
-                                REVIEW --> INTERVIEW[Schedule Interview]
-                                INTERVIEW --> OFFER[Make Offer]
-                                
-                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                                class POST,REVIEW,INTERVIEW,OFFER implemented
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="employer-missing">
-                <h2>Employer - Critical Missing Features</h2>
-                <p>Essential features missing for Swiss manpower business operations.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Payroll Management</h3>
-                        <div class="mermaid">
-                            graph TB
-                                PAYROLL[Payroll System] --> CALC[Salary Calculation]
-                                CALC --> TAX[Tax Processing]
-                                TAX --> BANK[Bank Transfer]
-                                
-                                classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                                class PAYROLL,CALC,TAX,BANK critical
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Compliance & Billing</h3>
-                        <div class="mermaid">
-                            graph TB
-                                COMP[Compliance Reports] --> INVOICE[Invoice Generation]
-                                INVOICE --> CLIENT[Client Billing]
-                                CLIENT --> AUDIT[Audit Trail]
-                                
-                                classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                                class COMP,INVOICE,CLIENT,AUDIT critical
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="employer-enhancements">
-                <h2>Employer - Enhancement Features</h2>
-                <p>Features that would improve employer experience and efficiency.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Analytics & Insights</h3>
-                        <div class="mermaid">
-                            graph TB
-                                ANALYTICS[Hiring Analytics] --> KPI[KPI Dashboard]
-                                KPI --> PREDICT[Predictive Insights]
-                                PREDICT --> REPORTS[Custom Reports]
-                                
-                                classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                                class ANALYTICS,KPI,PREDICT,REPORTS enhancement
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Advanced Tools</h3>
-                        <div class="mermaid">
-                            graph TB
-                                VIDEO[Video Interviews] --> AI[AI Screening]
-                                AI --> BULK[Bulk Operations]
-                                BULK --> API[API Integration]
-                                
-                                classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                                class VIDEO,AI,BULK,API enhancement
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Admin/System Sections -->
-            <div class="content-section" id="admin-overview">
-                <h2>System & Admin - Overview</h2>
-                <p>System administration and infrastructure overview.</p>
-                
-                <div class="diagram-card">
-                    <h3>System Architecture</h3>
-                    <div class="description">High-level system components and infrastructure.</div>
-                    <div class="mermaid">
-                        graph TB
-                            subgraph "Application Layer"
-                                WEB[Web Interface]
-                                API[API Layer]
-                                JOBS[Background Jobs]
-                            end
-                            
-                            subgraph "Data Layer"
-                                DB[(Database)]
-                                CACHE[(Cache)]
-                                STORAGE[File Storage]
-                            end
-                            
-                            WEB --> DB
-                            API --> DB
-                            JOBS --> DB
-                            WEB --> CACHE
-                            WEB --> STORAGE
-                            
-                            classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                            classDef missing fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                            
-                            class WEB,API,JOBS,DB,STORAGE implemented
-                            class CACHE missing
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="admin-current">
-                <h2>Admin - Current Features</h2>
-                <p>Administrative and system features currently implemented.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>User Management</h3>
-                        <div class="mermaid">
-                            graph TB
-                                AUTH[Authentication] --> ROLES[Role Management]
-                                ROLES --> PERMS[Permissions]
-                                PERMS --> AUDIT[Audit Logs]
-                                
-                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                                class AUTH,ROLES,PERMS,AUDIT implemented
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>System Operations</h3>
-                        <div class="mermaid">
-                            graph TB
-                                MONITOR[Basic Monitoring] --> EMAIL[Email System]
-                                EMAIL --> FILES[File Processing]
-                                FILES --> I18N[Multi-language]
-                                
-                                classDef implemented fill:#4F46E5,stroke:#333,stroke-width:2px,color:#fff
-                                class MONITOR,EMAIL,FILES,I18N implemented
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="admin-missing">
-                <h2>Admin - Critical Missing Features</h2>
-                <p>Essential administrative features needed for Swiss operations.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Infrastructure</h3>
-                        <div class="mermaid">
-                            graph TB
-                                CACHE[Redis Cache] --> BACKUP[Automated Backup]
-                                BACKUP --> SCALE[Auto Scaling]
-                                SCALE --> MONITOR[Advanced Monitoring]
-                                
-                                classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                                class CACHE,BACKUP,SCALE,MONITOR critical
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Security & Compliance</h3>
-                        <div class="mermaid">
-                            graph TB
-                                GDPR[GDPR Compliance] --> ENCRYPT[Data Encryption]
-                                ENCRYPT --> AUDIT[Security Audit]
-                                AUDIT --> BACKUP[Data Retention]
-                                
-                                classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                                class GDPR,ENCRYPT,AUDIT,BACKUP critical
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="admin-enhancements">
-                <h2>Admin - Enhancement Features</h2>
-                <p>Advanced administrative features for improved operations.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Advanced Analytics</h3>
-                        <div class="mermaid">
-                            graph TB
-                                BI[Business Intelligence] --> DASH[Real-time Dashboard]
-                                DASH --> ALERTS[Smart Alerts]
-                                ALERTS --> PREDICT[Predictive Analytics]
-                                
-                                classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                                class BI,DASH,ALERTS,PREDICT enhancement
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Automation</h3>
-                        <div class="mermaid">
-                            graph TB
-                                AUTO[Process Automation] --> ML[Machine Learning]
-                                ML --> DEPLOY[Auto Deployment]
-                                DEPLOY --> HEAL[Self Healing]
-                                
-                                classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                                class AUTO,ML,DEPLOY,HEAL enhancement
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Swiss Requirements -->
-            <div class="content-section" id="swiss-requirements">
-                <h2>Swiss Market Requirements</h2>
-                <p>Specific requirements for operating in the Swiss manpower market.</p>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Legal Compliance</h3>
-                        <div class="mermaid">
-                            graph TB
-                                GDPR[GDPR/Swiss DPA] --> LABOR[Employment Law]
-                                LABOR --> PERMITS[Work Permits]
-                                PERMITS --> INSURANCE[Social Insurance]
-                                
-                                classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                                class GDPR,LABOR,PERMITS,INSURANCE critical
-                        </div>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Business Requirements</h3>
-                        <div class="mermaid">
-                            graph TB
-                                TEMP[Temporary Staffing] --> CROSS[Cross-border Work]
-                                CROSS --> INDUSTRY[Industry Specific]
-                                INDUSTRY --> SEASONAL[Seasonal Work]
-                                
-                                classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                                class TEMP,CROSS,INDUSTRY,SEASONAL enhancement
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="diagram-card">
-                    <h3>Technical Integration Requirements</h3>
-                    <div class="description">Required integrations with Swiss systems and APIs.</div>
-                    <div class="mermaid">
-                        graph LR
-                            SYS[Bemeda Personal] --> BANK[Swiss Banks]
-                            SYS --> GOV[Government APIs]
-                            SYS --> SUVA[SUVA Insurance]
-                            SYS --> AHV[AHV/AVS]
-                            SYS --> TAX[Cantonal Tax]
-                            
-                            classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                            class BANK,GOV,SUVA,AHV,TAX critical
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Implementation Roadmap -->
-            <div class="content-section" id="roadmap">
-                <h2>Implementation Roadmap</h2>
-                <p>Phased approach to implementing missing features and enhancements.</p>
-                
-                <div class="diagram-card">
-                    <h3>Development Phases</h3>
-                    <div class="description">Four-phase roadmap prioritizing Swiss compliance requirements.</div>
-                    <div class="mermaid">
-                        graph TD
-                            subgraph "Phase 1 - Q1 2025"
-                                P1A[Payroll System]
-                                P1B[Work Permits]
-                                P1C[Basic Compliance]
-                            end
-                            
-                            subgraph "Phase 2 - Q2 2025"
-                                P2A[Mobile App]
-                                P2B[Skills Assessment]
-                                P2C[Enhanced UI/UX]
-                            end
-                            
-                            subgraph "Phase 3 - Q3 2025"
-                                P3A[AI Job Matching]
-                                P3B[Video Interviews]
-                                P3C[Advanced Analytics]
-                            end
-                            
-                            subgraph "Phase 4 - Q4 2025"
-                                P4A[Microservices]
-                                P4B[Performance Opt]
-                                P4C[Enterprise Features]
-                            end
-                            
-                            P1A --> P2A
-                            P1B --> P2B
-                            P1C --> P2C
-                            P2A --> P3A
-                            P2B --> P3B
-                            P2C --> P3C
-                            P3A --> P4A
-                            P3B --> P4B
-                            P3C --> P4C
-                            
-                            classDef critical fill:#EF4444,stroke:#333,stroke-width:2px,color:#fff
-                            classDef enhancement fill:#F97316,stroke:#333,stroke-width:2px,color:#fff
-                            classDef future fill:#22C55E,stroke:#333,stroke-width:2px,color:#fff
-                            classDef technical fill:#8B5CF6,stroke:#333,stroke-width:2px,color:#fff
-                            
-                            class P1A,P1B,P1C critical
-                            class P2A,P2B,P2C enhancement
-                            class P3A,P3B,P3C future
-                            class P4A,P4B,P4C technical
-                    </div>
-                </div>
-                
-                <div class="grid-2">
-                    <div class="diagram-card">
-                        <h3>Priority Matrix</h3>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr style="background: #f1f5f9;">
-                                    <th style="padding: 0.5rem; border: 1px solid #e2e8f0;">Feature</th>
-                                    <th style="padding: 0.5rem; border: 1px solid #e2e8f0;">Priority</th>
-                                    <th style="padding: 0.5rem; border: 1px solid #e2e8f0;">Phase</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">Payroll System</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0; color: #EF4444;">Critical</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">1</td></tr>
-                                <tr><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">Work Permits</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0; color: #EF4444;">Critical</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">1</td></tr>
-                                <tr><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">Mobile App</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0; color: #F97316;">High</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">2</td></tr>
-                                <tr><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">AI Matching</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0; color: #22C55E;">Medium</td><td style="padding: 0.5rem; border: 1px solid #e2e8f0;">3</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="diagram-card">
-                        <h3>Success Metrics</h3>
-                        <ul style="line-height: 1.8;">
-                            <li><strong>Phase 1:</strong> Swiss compliance achieved</li>
-                            <li><strong>Phase 2:</strong> 50% mobile adoption</li>
-                            <li><strong>Phase 3:</strong> 30% improvement in matching accuracy</li>
-                            <li><strong>Phase 4:</strong> 99.9% uptime, sub-second response</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p><strong>BemedaPersonal Documentation Framework</strong></p>
+            <p>Last Updated: July 2025 | Version 1.0</p>
         </div>
     </div>
 
     <script>
         // Initialize Mermaid
         mermaid.initialize({
-            startOnLoad: false,
-            theme: 'base',
-            securityLevel: 'loose',
+            startOnLoad: true,
+            theme: 'default',
             themeVariables: {
-                primaryColor: '#4F46E5',
-                primaryTextColor: '#FFFFFF',
-                primaryBorderColor: '#3730A3',
-                secondaryColor: '#EF4444',
-                secondaryTextColor: '#FFFFFF', 
-                secondaryBorderColor: '#DC2626',
-                tertiaryColor: '#F97316',
-                tertiaryTextColor: '#FFFFFF',
-                tertiaryBorderColor: '#EA580C',
-                background: '#22C55E',
-                backgroundTextColor: '#FFFFFF',
-                mainBkg: '#FFFFFF',
-                secondBkg: '#F8FAFC',
-                lineColor: '#64748B',
-                textColor: '#1E293B'
-            },
-            flowchart: {
-                htmlLabels: true,
-                curve: 'basis',
-                useMaxWidth: false,
-                padding: 20
+                primaryColor: '#667eea',
+                primaryTextColor: '#2d3748',
+                primaryBorderColor: '#667eea',
+                lineColor: '#718096',
+                secondaryColor: '#f7fafc',
+                tertiaryColor: '#edf2f7'
             }
         });
 
-        // Function to render Mermaid diagrams
-        function renderMermaidDiagrams() {
-            console.log('Rendering Mermaid diagrams...');
-            const visibleDiagrams = document.querySelectorAll('.content-section.active .mermaid');
-            console.log('Found', visibleDiagrams.length, 'visible diagrams');
-            
-            visibleDiagrams.forEach((element, index) => {
-                if (!element.getAttribute('data-processed')) {
-                    const id = `mermaid-${Date.now()}-${index}`;
-                    console.log('Rendering diagram:', id);
-                    try {
-                        mermaid.render(id, element.textContent).then(({ svg }) => {
-                            element.innerHTML = svg;
-                            element.setAttribute('data-processed', 'true');
-                            console.log('Diagram rendered successfully:', id);
-                        }).catch(error => {
-                            console.error('Mermaid rendering error:', error);
-                            element.innerHTML = '<p style="color: red;">Error rendering diagram: ' + error.message + '</p>';
-                        });
-                    } catch (error) {
-                        console.error('Mermaid render error:', error);
-                        element.innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
-                    }
-                }
-            });
-        }
-
-        // Navigation functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing...');
-            
-            // Initial render of visible diagrams
-            setTimeout(() => {
-                renderMermaidDiagrams();
-            }, 100);
-            // Handle menu item clicks
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const target = this.getAttribute('data-target');
-                    const submenu = this.getAttribute('data-submenu');
-                    
-                    if (target) {
-                        // Show content section
-                        document.querySelectorAll('.content-section').forEach(section => {
-                            section.classList.remove('active');
-                        });
-                        document.getElementById(target).classList.add('active');
-                        
-                        // Update active menu item
-                        document.querySelectorAll('.menu-item').forEach(mi => mi.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Re-render diagrams for the new section
-                        setTimeout(() => {
-                            renderMermaidDiagrams();
-                        }, 50);
-                    } else if (submenu) {
-                        // Toggle submenu
-                        const submenuElement = document.getElementById('submenu-' + submenu);
-                        submenuElement.classList.toggle('open');
-                    }
-                });
-            });
-            
-            // Handle submenu item clicks
-            document.querySelectorAll('.submenu-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const target = this.getAttribute('data-target');
-                    
-                    // Show content section
-                    document.querySelectorAll('.content-section').forEach(section => {
-                        section.classList.remove('active');
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
                     });
-                    document.getElementById(target).classList.add('active');
-                    
-                    // Update active submenu item
-                    document.querySelectorAll('.submenu-item').forEach(si => si.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Clear main menu active state
-                    document.querySelectorAll('.menu-item').forEach(mi => mi.classList.remove('active'));
-                    
-                    // Re-render diagrams for the new section
-                    setTimeout(() => {
-                        renderMermaidDiagrams();
-                    }, 50);
-                });
+                }
             });
         });
     </script>
