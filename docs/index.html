@@ -299,6 +299,13 @@
             height: fit-content;
             position: sticky;
             top: 120px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .content-sidebar.visible {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
         
         .content-sidebar h3 {
@@ -911,17 +918,36 @@
             
             const sidebar = document.getElementById('comments-sidebar');
             const toggle = document.getElementById('comments-toggle');
+            const contentPage = document.getElementById('content-page');
+            
+            if (!sidebar) {
+                console.error('Comments sidebar not found!');
+                return;
+            }
             
             console.log('Sidebar current display:', sidebar.style.display);
             console.log('Toggle current classes:', toggle.className);
+            console.log('Content page display:', contentPage.style.display);
             
-            if (sidebar.style.display === 'none' || !sidebar.style.display) {
+            // Force sidebar visibility
+            const isHidden = sidebar.style.display === 'none' || sidebar.style.display === '';
+            
+            if (isHidden) {
                 sidebar.style.display = 'block';
+                sidebar.style.visibility = 'visible';
+                sidebar.style.opacity = '1';
+                sidebar.classList.add('visible');
                 toggle.classList.add('active');
                 toggle.title = 'Hide Comments';
                 console.log('Comments sidebar shown');
+                
+                // Ensure content layout accommodates sidebar
+                if (window.innerWidth > 768) {
+                    contentPage.style.display = 'flex';
+                }
             } else {
                 sidebar.style.display = 'none';
+                sidebar.classList.remove('visible');
                 toggle.classList.remove('active');
                 toggle.title = 'Show Comments';
                 console.log('Comments sidebar hidden');
@@ -942,6 +968,11 @@
             // Show toggle button and sidebar
             commentsToggle.classList.add('visible', 'active');
             commentsSidebar.style.display = 'block';
+            commentsSidebar.style.visibility = 'visible';
+            commentsSidebar.style.opacity = '1';
+            commentsSidebar.classList.add('visible');
+            
+            console.log('Comments sidebar initialized and visible');
             
             // Add loading message
             commentsContainer.innerHTML = `
