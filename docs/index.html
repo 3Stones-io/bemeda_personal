@@ -109,6 +109,9 @@
         }
         
         .back-button {
+            position: fixed;
+            top: 100px;
+            left: 2rem;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -117,19 +120,26 @@
             color: white;
             text-decoration: none;
             border-radius: 8px;
-            margin: 1.5rem 0;
             transition: all 0.2s ease;
             font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: none;
         }
         
         .back-button:hover {
             background: #5a67d8;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
         }
         
         .back-button::before {
             content: "←";
             font-weight: bold;
+        }
+        
+        .back-button.visible {
+            display: inline-flex;
         }
         
         /* Home page styles */
@@ -319,6 +329,10 @@
             transition: all 0.3s ease;
             z-index: 1000;
             display: none;
+        }
+        
+        .comments-toggle.visible {
+            display: block;
         }
         
         .comments-toggle:hover {
@@ -571,6 +585,21 @@
             .content-main {
                 order: 1;
             }
+            
+            .back-button {
+                top: 80px;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .comments-toggle {
+                right: 1rem;
+                bottom: 1rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
         }
     </style>
 </head>
@@ -705,9 +734,6 @@
                 Loading documentation...
             </div>
             <div class="content-main">
-                <a href="#" class="back-button" onclick="navigateToHome()" id="back-button" style="display: none;">
-                    Back to Overview
-                </a>
                 <div id="markdown-content"></div>
             </div>
             <div class="content-sidebar" id="comments-sidebar" style="display: none;">
@@ -717,7 +743,10 @@
         </div>
     </div>
 
-    <!-- Comments toggle button -->
+    <!-- Floating buttons -->
+    <a href="#" class="back-button" onclick="navigateToHome()" id="back-button" title="Back to Overview">
+        Back to Overview
+    </a>
     <button class="comments-toggle" id="comments-toggle" onclick="toggleComments()" title="Toggle Comments">
         💬
     </button>
@@ -849,9 +878,8 @@
             commentsContainer.innerHTML = '';
             
             // Show toggle button and sidebar
-            commentsToggle.style.display = 'block';
+            commentsToggle.classList.add('visible', 'active');
             commentsSidebar.style.display = 'block';
-            commentsToggle.classList.add('active');
             
             // Create utterances script
             const script = document.createElement('script');
@@ -890,7 +918,8 @@
             document.getElementById('home-content').style.display = 'block';
             document.getElementById('content-page').style.display = 'none';
             document.getElementById('comments-sidebar').style.display = 'none';
-            document.getElementById('comments-toggle').style.display = 'none';
+            document.getElementById('comments-toggle').classList.remove('visible', 'active');
+            document.getElementById('back-button').classList.remove('visible');
             currentPage = 'home';
             currentPath = '';
             currentTitle = '';
@@ -919,10 +948,10 @@
             document.getElementById('home-content').style.display = 'none';
             document.getElementById('content-page').style.display = 'block';
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('back-button').style.display = 'inline-flex';
+            document.getElementById('back-button').classList.add('visible');
             document.getElementById('markdown-content').innerHTML = content;
             document.getElementById('comments-sidebar').style.display = 'none';
-            document.getElementById('comments-toggle').style.display = 'none';
+            document.getElementById('comments-toggle').classList.remove('visible', 'active');
             
             currentPage = 'content';
             currentPath = '';
@@ -981,7 +1010,7 @@
             document.getElementById('home-content').style.display = 'none';
             document.getElementById('content-page').style.display = 'block';
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('back-button').style.display = 'inline-flex';
+            document.getElementById('back-button').classList.add('visible');
             document.getElementById('markdown-content').innerHTML = html;
             
             currentPage = 'content';
