@@ -287,8 +287,8 @@
             gap: 2rem;
         }
         
-        .content.active.has-sidebar {
-            display: flex; /* Only use flex when sidebar is visible */
+        .content.has-sidebar {
+            display: flex !important; /* Force flex layout when sidebar is visible */
         }
         
         .content-main {
@@ -304,11 +304,11 @@
             padding: 1.5rem;
             border: 1px solid #e2e8f0;
             height: fit-content;
-            position: sticky;
-            top: 120px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: none; /* Hidden by default */
+            position: relative; /* Changed from sticky to relative */
+            top: 0; /* Reset top */
         }
         
         .content-sidebar.visible {
@@ -924,7 +924,7 @@
 
         // Function to toggle comments sidebar
         function toggleComments() {
-            console.log('Toggle comments clicked');
+            console.log('=== TOGGLE COMMENTS CLICKED ===');
             
             const sidebar = document.getElementById('comments-sidebar');
             const toggle = document.getElementById('comments-toggle');
@@ -935,9 +935,9 @@
                 return;
             }
             
-            console.log('Sidebar current display:', sidebar.style.display);
-            console.log('Toggle current classes:', toggle.className);
-            console.log('Content page display:', contentPage.style.display);
+            console.log('BEFORE - Sidebar classes:', sidebar.className);
+            console.log('BEFORE - Content page classes:', contentPage.className);
+            console.log('BEFORE - Toggle classes:', toggle.className);
             
             // Check if sidebar is currently hidden
             const isHidden = !sidebar.classList.contains('visible');
@@ -950,6 +950,9 @@
                 // Enable flex layout for sidebar
                 contentPage.classList.add('has-sidebar');
                 
+                console.log('AFTER - Sidebar classes:', sidebar.className);
+                console.log('AFTER - Content page classes:', contentPage.className);
+                console.log('AFTER - Toggle classes:', toggle.className);
                 console.log('Comments sidebar shown');
             } else {
                 sidebar.classList.remove('visible');
@@ -959,6 +962,9 @@
                 // Remove flex layout
                 contentPage.classList.remove('has-sidebar');
                 
+                console.log('AFTER - Sidebar classes:', sidebar.className);
+                console.log('AFTER - Content page classes:', contentPage.className);
+                console.log('AFTER - Toggle classes:', toggle.className);
                 console.log('Comments sidebar hidden');
             }
         }
@@ -1234,18 +1240,11 @@
             console.log('Content page classes:', contentPage ? contentPage.className : 'NOT FOUND');
             
             if (sidebar) {
-                console.log('=== FORCING SIDEBAR VISIBLE ===');
-                sidebar.style.display = 'block';
-                sidebar.style.visibility = 'visible';
-                sidebar.style.opacity = '1';
-                sidebar.style.position = 'fixed';
-                sidebar.style.right = '20px';
-                sidebar.style.top = '200px';
-                sidebar.style.zIndex = '9999';
-                sidebar.style.background = 'red';
-                sidebar.style.width = '300px';
-                sidebar.style.height = '200px';
-                console.log('Sidebar should now be visible with red background');
+                console.log('=== TESTING SIDEBAR TOGGLE ===');
+                sidebar.classList.add('visible');
+                const contentPage = document.getElementById('content-page');
+                contentPage.classList.add('has-sidebar');
+                console.log('Sidebar should now be visible beside content');
             }
         }
 
