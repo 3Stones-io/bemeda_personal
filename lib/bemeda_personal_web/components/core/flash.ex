@@ -42,9 +42,9 @@ defmodule BemedaPersonalWeb.Components.Core.Flash do
       role="alert"
       class={[
         "fixed top-4 left-1/2 transform -translate-x-1/2 w-80 sm:w-96 z-50 rounded-lg p-4 shadow-lg border",
-        @kind == :info && "bg-green-50 text-green-800 border-green-200",
-        @kind == :error && "bg-red-50 text-red-800 border-red-200",
-        @kind == :warning && "bg-orange-50 text-orange-800 border-orange-200"
+        @kind == :info && "bg-success-50 text-success-800 border-success-200",
+        @kind == :error && "bg-error-50 text-error-800 border-error-200",
+        @kind == :warning && "bg-warning-50 text-warning-800 border-warning-200"
       ]}
       {@rest}
     >

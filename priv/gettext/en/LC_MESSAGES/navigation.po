@@ -77,11 +77,6 @@ msgstr ""
 msgid "View notifications"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
-#, elixir-autogen, elixir-format
-msgid "Back to Dashboard"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/navigation_live.ex
 #, elixir-autogen, elixir-format
 msgid "Company Dashboard"

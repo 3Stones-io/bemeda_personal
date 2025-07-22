@@ -77,11 +77,6 @@ msgstr "S'inscrire"
 msgid "View notifications"
 msgstr "Voir les notifications"
 
-#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
-#, elixir-autogen, elixir-format
-msgid "Back to Dashboard"
-msgstr "Retour au tableau de bord"
-
 #: lib/bemeda_personal_web/live/navigation_live.ex
 #, elixir-autogen, elixir-format
 msgid "Company Dashboard"

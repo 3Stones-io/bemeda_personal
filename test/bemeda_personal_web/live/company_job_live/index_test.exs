@@ -53,7 +53,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company/jobs")
 
-      assert html =~ "Company Jobs"
+      assert html =~ "Jobs"
       assert html =~ "Test Job 1"
       assert html =~ "Test Job 2"
     end
@@ -64,11 +64,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company/jobs")
 
-      view
-      |> element("a", "Post New Job")
-      |> render_click()
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> element("[data-test-id='header-post-job-button']")
+               |> render_click()
 
-      assert_patch(view, ~p"/company/jobs/new")
+      assert path == "/company/jobs/new"
     end
   end
 
@@ -79,7 +80,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company/jobs/new")
 
-      assert html =~ "Post Job"
+      assert html =~ "Create Job Post"
       assert html =~ "Job Title"
       assert html =~ "Job Description"
     end
@@ -103,49 +104,60 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert result =~ "can&#39;t be blank"
     end
 
-    test "form shows remote work checkbox after change", %{conn: conn, user: user} do
+    test "form shows remote work select after change", %{conn: conn, user: user} do
       {:ok, view, html} =
         conn
         |> log_in_user(user)
         |> live(~p"/company/jobs/new")
 
-      refute html =~ ~r/input[^>]*type="checkbox"[^>]*checked/
+      # Check default is "false" (On-site)
+      assert html =~ ~s(<option selected="selected" value="false">On-site</option>)
 
       result =
         view
         |> form("#company-job-form", %{job_posting: %{remote_allowed: true}})
         |> render_change()
 
-      assert result =~ ~r/input[^>]*type="checkbox"[^>]*checked/
+      # Check that "true" (Remote) is now selected
+      assert result =~ ~s(<option selected="selected" value="true">Remote</option>)
     end
 
     test "creates a job posting", %{company: company, conn: conn, user: user} do
-      {:ok, view, _html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/company/jobs/new")
+      conn = log_in_user(conn, user)
+
+      {:ok, view, _html} = live(conn, ~p"/company/jobs/new")
 
       job_count_before = length(JobPostings.list_job_postings(%{company_id: company.id}))
 
-      view
-      |> form("#company-job-form", %{
+      form_data = %{
         "job_posting" => %{
           "description" => "We are looking for a talented software engineer to join our team.",
           "employment_type" => "Permanent Position",
           "location" => "Remote",
           "remote_allowed" => true,
           "title" => "Software Engineer",
-          "department" => ["Other"],
-          "shift_type" => ["Day Shift"],
+          "profession" => "Anesthesiologist",
           "region" => ["Zurich"],
-          "years_of_experience" => "2-5 years",
-          "position" => "Employee",
           "gender" => ["Male", "Female"],
-          "language" => ["English"]
+          "position" => "Employee"
         }
-      })
-      |> render_submit()
+      }
 
+      # Submit the form
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> form("#company-job-form", form_data)
+               |> render_submit()
+
+      assert path == "/company/jobs"
+
+      # Navigate to the jobs page to verify the result
+      {:ok, index_view, _html} = live(conn, ~p"/company/jobs")
+
+      # Assert the job was created and appears in the list
+      assert render(index_view) =~ "Software Engineer"
+
+      # Verify the job was created in the database
       job_count_after = length(JobPostings.list_job_postings(%{company_id: company.id}))
       assert job_count_after == job_count_before + 1
     end
@@ -169,17 +181,26 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       |> element("#job_posting-video-file-upload")
       |> render_hook("upload_completed")
 
-      view
-      |> form("#company-job-form", %{
-        "job_posting" => %{
-          "description" => "We are looking for a talented software engineer to join our team.",
-          "employment_type" => "Permanent Position",
-          "location" => "Remote",
-          "remote_allowed" => true,
-          "title" => "Software Engineer"
-        }
-      })
-      |> render_submit()
+      # Submit form
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> form("#company-job-form", %{
+                 "job_posting" => %{
+                   "description" =>
+                     "We are looking for a talented software engineer to join our team.",
+                   "employment_type" => "Permanent Position",
+                   "location" => "Remote",
+                   "remote_allowed" => "true",
+                   "title" => "Software Engineer",
+                   "profession" => "Anesthesiologist",
+                   "region" => ["Zurich"],
+                   "gender" => ["Male", "Female"],
+                   "position" => "Employee"
+                 }
+               })
+               |> render_submit()
+
+      assert path == "/company/jobs"
 
       job_postings = JobPostings.list_job_postings(%{company_id: company.id})
       job_count_after = length(job_postings)
@@ -255,14 +276,19 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company/jobs/#{job_posting.id}/edit")
 
-      view
-      |> form("#company-job-form", %{
-        "job_posting" => %{
-          "title" => "Updated Job Title"
-        }
-      })
-      |> render_submit()
+      # Submit form
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> form("#company-job-form", %{
+                 "job_posting" => %{
+                   "title" => "Updated Job Title"
+                 }
+               })
+               |> render_submit()
 
+      assert path == "/company/jobs"
+
+      # Verify the job was updated
       updated_job = JobPostings.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
     end
@@ -296,14 +322,19 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       |> element("#job_posting-video-file-upload")
       |> render_hook("upload_completed")
 
-      view
-      |> form("#company-job-form", %{
-        "job_posting" => %{
-          "title" => "Updated Job Title"
-        }
-      })
-      |> render_submit()
+      # Submit form
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> form("#company-job-form", %{
+                 "job_posting" => %{
+                   "title" => "Updated Job Title"
+                 }
+               })
+               |> render_submit()
 
+      assert path == "/company/jobs"
+
+      # Verify updates
       updated_job = JobPostings.get_job_posting!(job_posting.id)
       assert updated_job.title == "Updated Job Title"
 
@@ -326,7 +357,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
                |> live(~p"/company/jobs/#{other_job.id}/edit")
 
       assert path == "/company/jobs"
-      assert flash == %{}
+      assert flash["error"] == "You are not authorized to edit this job posting"
     end
   end
 
@@ -464,7 +495,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       {:ok, _view, html} = live(conn, ~p"/company/jobs")
 
-      assert html =~ "Jobs for some name"
+      assert html =~ "Jobs"
       assert html =~ job_posting.title
       assert html =~ job_posting.location
       assert html =~ job_posting.description
@@ -475,31 +506,41 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/company/jobs")
 
-      view
-      |> element("a", "Post New Job")
-      |> render_click()
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> element("[data-test-id='header-post-job-button']")
+               |> render_click()
 
-      assert_patch(view, ~p"/company/jobs/new")
+      assert path == "/company/jobs/new"
 
-      assert has_element?(view, "#company-job-form")
+      # Navigate to the new job page
+      {:ok, new_view, _html} = live(conn, ~p"/company/jobs/new")
 
-      {:ok, updated_view, _html} =
-        view
-        |> form("#company-job-form", %{
-          job_posting: %{
-            title: @create_attrs_job.title,
-            description: @create_attrs_job.description,
-            location: @create_attrs_job.location,
-            employment_type: "Permanent Position",
-            position: "Specialist Role",
-            remote_allowed: true
-          }
-        })
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/company/jobs")
+      assert has_element?(new_view, "#company-job-form")
 
-      assert render(updated_view) =~ @create_attrs_job.title
-      assert render(updated_view) =~ "Job posting created successfully"
+      # Submit the form
+      assert {:error, {:live_redirect, %{to: path}}} =
+               new_view
+               |> form("#company-job-form", %{
+                 job_posting: %{
+                   title: @create_attrs_job.title,
+                   description: @create_attrs_job.description,
+                   location: @create_attrs_job.location,
+                   employment_type: "Permanent Position",
+                   position: "Specialist Role",
+                   remote_allowed: "true",
+                   profession: "Anesthesiologist",
+                   region: ["Zurich"],
+                   gender: ["Male", "Female"]
+                 }
+               })
+               |> render_submit()
+
+      assert path == "/company/jobs"
+
+      # Navigate to verify the job was created
+      {:ok, _index_view, html} = live(conn, ~p"/company/jobs")
+      assert html =~ @create_attrs_job.title
     end
 
     test "updates job_posting in listing", %{
@@ -511,24 +552,31 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/company/jobs")
 
-      view
-      |> element("a[title='Edit job']")
-      |> render_click()
+      assert {:error, {:live_redirect, %{to: path}}} =
+               view
+               |> element("a[title='Edit job']")
+               |> render_click()
 
-      assert_patch(view, ~p"/company/jobs/#{job_posting}/edit")
+      assert path == "/company/jobs/#{job_posting.id}/edit"
 
-      {:ok, updated_view, _html} =
-        view
-        |> form("#company-job-form", %{
-          job_posting: %{
-            title: "Updated Title"
-          }
-        })
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/company/jobs")
+      # Navigate to the edit page
+      {:ok, edit_view, _html} = live(conn, ~p"/company/jobs/#{job_posting}/edit")
 
-      assert render(updated_view) =~ "Updated Title"
-      assert render(updated_view) =~ "Job updated successfully"
+      # Submit the form
+      assert {:error, {:live_redirect, %{to: path}}} =
+               edit_view
+               |> form("#company-job-form", %{
+                 job_posting: %{
+                   title: "Updated Title"
+                 }
+               })
+               |> render_submit()
+
+      assert path == "/company/jobs"
+
+      # Navigate to verify the update
+      {:ok, _index_view, html} = live(conn, ~p"/company/jobs")
+      assert html =~ "Updated Title"
     end
 
     test "deletes job_posting in listing", %{

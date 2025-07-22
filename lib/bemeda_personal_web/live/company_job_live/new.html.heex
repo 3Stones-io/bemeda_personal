@@ -1,0 +1,12 @@
+<section class={"w-full lg:max-w-[800px] lg:mx-auto #{container_padding()} #{section_spacing()}"}>
+  <.live_component
+    module={FormComponent}
+    action={:new}
+    company={@company}
+    id="company-job-form"
+    job_posting={@job_posting}
+    live_action={:new}
+    return_to={~p"/company/jobs"}
+    mode={@mode}
+  />
+</section>

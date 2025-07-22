@@ -512,3 +512,13 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Logo upload feature coming soon."
 msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Complete company profile"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Let people know more about your organization."
+msgstr ""

@@ -512,3 +512,13 @@ msgstr "Krankenhauszugehörigkeit"
 #, elixir-autogen, elixir-format
 msgid "Logo upload feature coming soon."
 msgstr "Logo-Upload-Funktion kommt bald."
+
+#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Complete company profile"
+msgstr "Firmenprofil vervollständigen"
+
+#: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Let people know more about your organization."
+msgstr "Lassen Sie andere mehr über Ihre Organisation erfahren."

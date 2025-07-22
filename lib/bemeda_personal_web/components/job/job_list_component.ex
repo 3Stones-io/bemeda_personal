@@ -17,19 +17,27 @@ defmodule BemedaPersonalWeb.Components.Job.JobListComponent do
         target={@myself}
       />
 
-      <div
-        :if={@total_count > 0}
-        class="border-t border-gray-200 group-has-[#empty-job-postings.hidden]:border-0 bg-gray-50 px-4 py-3 text-sm text-gray-600"
-      >
-        <p class="text-gray-700 font-medium">
+      <div :if={@total_count > 0} class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-medium text-gray-700">
+            {dgettext("jobs", "Filter")}
+          </h2>
+          <button
+            phx-click={JS.toggle(to: "#job_filters")}
+            class="px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            {dgettext("jobs", "Filter")}
+          </button>
+        </div>
+        <p class="text-sm text-gray-500">
           {if @total_count == 1,
-            do: dgettext("jobs", "1 job found"),
-            else: dgettext("jobs", "%{count} jobs found", count: @total_count)}
+            do: dgettext("jobs", "1 Stelle gefunden"),
+            else: dgettext("jobs", "%{count} Stellen gefunden", count: @total_count)}
         </p>
       </div>
 
       <div
-        class="border-t border-gray-200 group-has-[#empty-job-postings.hidden]:border-0"
+        class="mt-4"
         id={@id}
         phx-update="stream"
         phx-viewport-top={!@end_of_timeline? && JS.push("prev-page", target: "##{@id}")}
@@ -42,12 +50,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobListComponent do
             {@empty_state_message}
           </p>
         </div>
-        <div
-          :for={{job_id, job} <- @streams.job_postings}
-          class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200"
-          id={job_id}
-          role="list"
-        >
+        <div :for={{job_id, job} <- @streams.job_postings} id={job_id} role="list">
           <JobsComponents.job_posting_card
             id={"card-#{job_id}"}
             job={job}

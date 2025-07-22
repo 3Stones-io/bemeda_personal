@@ -1,45 +1,142 @@
 <section class={"w-full lg:max-w-[1000px] lg:mx-auto #{container_padding()} #{section_spacing()}"}>
-  <div>
-    <.heading class="text-3xl font-bold text-gray-900">
-      {dgettext("jobs", "Jobs for %{company}", company: @company.name)}
-    </.heading>
-    <.subtitle class="mt-2 text-gray-500">
-      {dgettext("jobs", "Manage your job postings")}
-    </.subtitle>
-  </div>
-  <div class={"flex justify-end #{button_group_spacing()} #{page_header_spacing()}"}>
-    <.button variant="secondary" navigate={~p"/company"}>
-      {dgettext("navigation", "Back to Dashboard")}
-    </.button>
-    <.button variant="primary" patch={~p"/company/jobs/new"}>
-      {dgettext("jobs", "Post New Job")}
-    </.button>
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <.heading class="text-2xl font-medium text-gray-700">
+        {dgettext("jobs", "Jobs")}
+      </.heading>
+      <.button
+        variant="primary"
+        navigate={~p"/company/jobs/new"}
+        class="bg-primary-500 hover:bg-primary-600 text-white px-5 py-3 rounded-lg flex items-center gap-2"
+        data-test-id="header-post-job-button"
+      >
+        <.icon name="hero-plus-small" class="w-6 h-6" />
+        {dgettext("jobs", "Post job")}
+      </.button>
+    </div>
   </div>
 
-  <.live_component
-    module={JobListComponent}
-    empty_state_message={dgettext("jobs", "Please check back later for new opportunities.")}
-    filter_params={@filter_params}
-    id="job-post-list"
-    job_view={:company_job}
-    show_actions={true}
-    show_company_name={true}
-  />
+  <%= if @job_count == 0 do %>
+    <!-- Company profile completion banner -->
+    <div class="mb-6 bg-white border border-primary-200 rounded-lg p-4">
+      <div class="flex items-center justify-between mb-4">
+        <.link
+          navigate={~p"/company/edit"}
+          class="text-primary-500 text-base font-medium underline"
+        >
+          {dgettext("companies", "Complete company profile")}
+        </.link>
+      </div>
+      <div class="mb-4">
+        <.text class="text-gray-700">
+          {dgettext("companies", "Let people know more about your organization.")}
+        </.text>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="bg-primary-200/50 rounded-full h-1 flex-1 relative">
+          <div class="bg-primary-500 h-1 rounded-full w-1/2"></div>
+        </div>
+        <.text class="text-primary-500 font-medium">50%</.text>
+      </div>
+    </div>
+    
+<!-- Navigation tabs -->
+    <div class="flex gap-3 mb-6">
+      <div class="flex-1 bg-white border border-strokes rounded-lg p-3 flex items-center justify-between">
+        <.text class="text-gray-700">{dgettext("jobs", "All Contracts")}</.text>
+        <.icon name="hero-chevron-right" class="w-4 h-4 text-gray-300" />
+      </div>
+      <div class="flex-1 bg-white border border-strokes rounded-lg p-3 flex items-center justify-between">
+        <.text class="text-gray-700">{dgettext("jobs", "My Hires")}</.text>
+        <.icon name="hero-chevron-right" class="w-4 h-4 text-gray-300" />
+      </div>
+    </div>
+    
+<!-- Empty state -->
+    <div class="bg-white rounded-lg px-0 py-8">
+      <div class="flex flex-col items-center justify-center">
+        <div class="relative mb-6">
+          <img
+            src={~p"/images/jobs/empty-state-illustration.svg"}
+            alt=""
+            class="w-[340px] h-[207px]"
+          />
+          <img
+            src={~p"/images/jobs/empty-state-doc1.svg"}
+            alt=""
+            class="absolute top-[8px] left-[38px] w-[161px] h-[180px] rotate-[26.726deg]"
+          />
+          <img
+            src={~p"/images/jobs/empty-state-doc2.svg"}
+            alt=""
+            class="absolute top-[11px] left-[147px] w-[150px] h-[172px] rotate-[-19.266deg]"
+          />
+        </div>
+        <.text class="text-gray-700 text-center mb-6 max-w-md">
+          {dgettext("jobs", "Post a job and find the right medical professional for your team")}
+        </.text>
+        <.button
+          variant="secondary"
+          navigate={~p"/company/jobs/new"}
+          class="border border-primary-500 text-primary-500 hover:bg-primary-50 px-5 py-3 rounded-lg flex items-center gap-2"
+        >
+          <.icon name="hero-plus-small" class="w-6 h-6" />
+          {dgettext("jobs", "Post job")}
+        </.button>
+      </div>
+    </div>
+  <% else %>
+    <!-- Company profile completion banner -->
+    <div class="mb-6 bg-white border border-primary-200 rounded-lg p-4">
+      <div class="flex items-center justify-between mb-4">
+        <.link
+          navigate={~p"/company/edit"}
+          class="text-primary-500 text-base font-medium underline"
+        >
+          {dgettext("companies", "Complete company profile")}
+        </.link>
+      </div>
+      <div class="mb-4">
+        <.text class="text-gray-700">
+          {dgettext("companies", "Let people know more about your organization.")}
+        </.text>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="bg-primary-200/50 rounded-full h-1 flex-1 relative">
+          <div class="bg-primary-500 h-1 rounded-full w-1/2"></div>
+        </div>
+        <.text class="text-primary-500 font-medium">50%</.text>
+      </div>
+    </div>
+    
+<!-- Navigation tabs -->
+    <div class="flex gap-3 mb-6">
+      <div class="flex-1 bg-white border border-strokes rounded-lg p-3 flex items-center justify-between">
+        <.text class="text-gray-700">{dgettext("jobs", "All Contracts")}</.text>
+        <.icon name="hero-chevron-right" class="w-4 h-4 text-gray-300" />
+      </div>
+      <div class="flex-1 bg-white border border-strokes rounded-lg p-3 flex items-center justify-between">
+        <.text class="text-gray-700">{dgettext("jobs", "My Hires")}</.text>
+        <.icon name="hero-chevron-right" class="w-4 h-4 text-gray-300" />
+      </div>
+    </div>
+    
+<!-- Job list component -->
+    <.live_component
+      module={JobListComponent}
+      id="job-post-list"
+      filter_params={@filter_params}
+      show_company={false}
+      job_view={:company_job}
+      show_actions={true}
+      show_company_name={false}
+      target_path={&~p"/company/jobs?#{&1}"}
+      empty_state_message={
+        dgettext(
+          "jobs",
+          "Post a job and find the right medical professional for your team"
+        )
+      }
+    />
+  <% end %>
 </section>
-
-<.modal
-  :if={@live_action in [:new, :edit]}
-  id="job-modal"
-  show
-  on_cancel={JS.patch(~p"/company/jobs")}
->
-  <.live_component
-    module={BemedaPersonalWeb.Components.Job.FormComponent}
-    action={@live_action}
-    company={@company}
-    id="company-job-form"
-    job_posting={@job_posting}
-    live_action={@live_action}
-    return_to={~p"/company/jobs"}
-  />
-</.modal>

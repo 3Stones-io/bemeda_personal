@@ -2,6 +2,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.JobPostings
+  alias BemedaPersonal.JobPostings.FilterUtils
+  alias BemedaPersonal.JobPostings.JobFilter
   alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonalWeb.Components.Job.JobListComponent
   alias BemedaPersonalWeb.Endpoint
@@ -13,7 +15,10 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
       Endpoint.subscribe("job_posting:company:#{socket.assigns.company.id}")
     end
 
-    {:ok, assign(socket, :job_posting, %JobPosting{})}
+    {:ok,
+     socket
+     |> assign(:job_posting, %JobPosting{})
+     |> assign(:job_count, 0)}
   end
 
   @impl Phoenix.LiveView
@@ -24,24 +29,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
      |> assign_filter_params(params)}
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    job_posting = JobPostings.get_job_posting!(id)
-
-    if job_posting.company_id != socket.assigns.company.id do
-      push_patch(socket, to: ~p"/company/jobs")
-    else
-      socket
-      |> assign(:job_posting, job_posting)
-      |> assign(:page_title, dgettext("jobs", "Edit Job"))
-    end
-  end
-
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:job_posting, %JobPosting{})
-    |> assign(:page_title, dgettext("jobs", "Post New Job"))
-  end
-
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:job_posting, nil)
@@ -50,7 +37,17 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
   defp assign_filter_params(socket, params) do
     updated_params = Map.put(params, "company_id", socket.assigns.company.id)
-    assign(socket, :filter_params, updated_params)
+
+    # Use JobFilter changeset and FilterUtils for safe parameter conversion
+    filter = %JobFilter{}
+    changeset = JobFilter.changeset(filter, updated_params)
+    atom_params = FilterUtils.changeset_to_params(changeset)
+
+    job_count = JobPostings.count_job_postings(atom_params)
+
+    socket
+    |> assign(:filter_params, updated_params)
+    |> assign(:job_count, job_count)
   end
 
   @impl Phoenix.LiveView

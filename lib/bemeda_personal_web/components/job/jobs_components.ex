@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
   alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias BemedaPersonalWeb.I18n
+  alias BemedaPersonalWeb.SharedHelpers
 
   @type assigns :: Phoenix.LiveView.Socket.assigns()
   @type output :: Phoenix.LiveView.Rendered.t()
@@ -27,88 +28,112 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
       end)
 
     ~H"""
-    <div class="px-8 py-6 relative group">
+    <div class="bg-white border border-strokes rounded-lg p-6 mb-4 hover:shadow-md transition-shadow duration-200 relative">
       <div class="cursor-pointer" phx-click={JS.navigate(@job_view_path)}>
-        <p class="text-lg font-medium mb-1">
-          <.link
-            navigate={@job_view_path}
-            class="text-primary-600 hover:text-primary-800 mb-2"
-            id={@id}
-          >
-            {@job.title}
-          </.link>
-        </p>
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex-1">
+            <h3 class="text-lg font-medium text-gray-700 mb-2">
+              <.link
+                navigate={@job_view_path}
+                class="hover:text-primary-500 transition-colors"
+                id={@id}
+              >
+                {@job.title}
+              </.link>
+            </h3>
 
-        <p :if={@show_company_name} class="text-sm mb-2">
-          <.link
-            navigate={~p"/companies/#{@job.company_id}"}
-            class="text-primary-600 hover:text-primary-800"
-          >
-            {@job.company.name}
-          </.link>
-        </p>
+            <p :if={@show_company_name} class="text-sm mb-2">
+              <.link
+                navigate={~p"/companies/#{@job.company_id}"}
+                class="text-primary-500 hover:text-primary-600"
+              >
+                {@job.company.name}
+              </.link>
+            </p>
 
-        <p class="flex items-center text-sm text-gray-500 gap-x-4">
-          <span :if={@job.location} class="flex items-center gap-x-2">
-            <.icon name="hero-map-pin" class="w-4 h-4" />
-            {@job.location}
-          </span>
-          <span :if={@job.remote_allowed} class="flex items-center gap-x-2">
-            <.icon name="hero-map-pin" class="w-4 h-4" /> {dgettext("jobs", "Remote")}
-          </span>
-          <span :if={@job.employment_type} class="flex items-center gap-x-2">
-            <.icon name="hero-briefcase" class="w-4 h-4" />
-            {@job.employment_type}
-          </span>
-          <span
-            :if={@job.salary_min && @job.salary_max && @job.currency}
-            class="flex items-center gap-x-2"
-          >
-            <.icon name="hero-currency-dollar" class="w-4 h-4" />
-            {@job.currency} {Number.Delimit.number_to_delimited(@job.salary_min)} - {Number.Delimit.number_to_delimited(
-              @job.salary_max
-            )}
-          </span>
-        </p>
-        <div :if={@job.description} class="mt-4 text-sm text-gray-500 line-clamp-2 md-to-html-basic">
+            <div class="flex flex-wrap items-center text-sm text-gray-500 gap-x-4 gap-y-2">
+              <span :if={@job.location} class="flex items-center gap-x-1">
+                <.icon name="hero-map-pin" class="w-4 h-4 text-icon-secondary" />
+                {@job.location}
+              </span>
+              <span :if={@job.remote_allowed} class="flex items-center gap-x-1">
+                <.icon name="hero-map-pin" class="w-4 h-4 text-icon-secondary" />
+                {dgettext("jobs", "Remote")}
+              </span>
+              <span :if={@job.employment_type} class="flex items-center gap-x-1">
+                <.icon name="hero-briefcase" class="w-4 h-4 text-icon-secondary" />
+                {I18n.translate_employment_type(to_string(@job.employment_type))}
+              </span>
+              <span
+                :if={@job.salary_min && @job.salary_max && @job.currency}
+                class="flex items-center gap-x-1"
+              >
+                <.icon name="hero-currency-dollar" class="w-4 h-4 text-icon-secondary" />
+                {@job.currency} {Number.Delimit.number_to_delimited(@job.salary_min)} - {Number.Delimit.number_to_delimited(
+                  @job.salary_max
+                )}
+              </span>
+            </div>
+          </div>
+
+          <div :if={@show_actions} class="flex items-center gap-2 ml-4">
+            <div class="bg-primary-100 text-primary-600 px-3 py-1 rounded-full text-sm font-medium">
+              {dgettext("jobs", "Active")}
+            </div>
+          </div>
+        </div>
+
+        <div :if={@job.description} class="text-sm text-gray-500 line-clamp-2 mb-4">
           {SharedHelpers.to_html(@job.description)}
         </div>
       </div>
 
-      <div :if={@show_actions} class="flex absolute top-4 right-4 space-x-4">
-        <.link
-          navigate={~p"/company/applicants/#{@job.id}"}
-          class="w-8 h-8 bg-success-100 rounded-full text-success-600 hover:bg-success-200 flex items-center justify-center"
-          title={dgettext("jobs", "View applicants")}
-        >
-          <.icon name="hero-users" class="w-4 h-4" />
-        </.link>
+      <div :if={@show_actions} class="flex items-center justify-between border-t border-strokes pt-4">
+        <div class="flex items-center gap-4 text-sm text-gray-500">
+          <span class="flex items-center gap-1">
+            <.icon name="hero-users" class="w-4 h-4 text-icon-secondary" />
+            {dgettext("jobs", "0 applicants")}
+          </span>
+          <span>
+            {dgettext("jobs", "Posted")} {Calendar.strftime(@job.inserted_at, "%d.%m.%Y")}
+          </span>
+        </div>
 
-        <.link
-          patch={~p"/company/jobs/#{@job.id}/edit"}
-          class="w-8 h-8 bg-primary-100 rounded-full text-primary-600 hover:bg-primary-200 flex items-center justify-center"
-          title={dgettext("jobs", "Edit job")}
-        >
-          <.icon name="hero-pencil" class="w-4 h-4" />
-        </.link>
+        <div class="flex items-center gap-2">
+          <.link
+            navigate={~p"/company/applicants/#{@job.id}"}
+            class="text-sm text-gray-600 hover:text-gray-800 px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+            title={dgettext("jobs", "View applicants")}
+          >
+            {dgettext("jobs", "View applicants")}
+          </.link>
 
-        <.link
-          href="#"
-          phx-click={
-            JS.push("delete-job-posting", value: %{id: @job.id})
-            |> JS.hide(to: "#job_postings-#{@job.id}")
-          }
-          data-confirm={
-            dgettext(
-              "jobs",
-              "Are you sure you want to delete this job posting? This action cannot be undone."
-            )
-          }
-          class="w-8 h-8 bg-danger-100 rounded-full text-danger-600 hover:bg-danger-200 flex items-center justify-center"
-          title={dgettext("jobs", "Delete job")}
-        >
-          <.icon name="hero-trash" class="w-4 h-4" />
-        </.link>
+          <.link
+            navigate={~p"/company/jobs/#{@job.id}/edit"}
+            class="text-sm text-primary-500 hover:text-primary-600 px-3 py-1.5 rounded-md hover:bg-primary-50 transition-colors"
+            title={dgettext("jobs", "Edit job")}
+          >
+            {dgettext("jobs", "Edit job")}
+          </.link>
+
+          <.link
+            href="#"
+            phx-click={
+              JS.push("delete-job-posting", value: %{id: @job.id})
+              |> JS.hide(to: "#job_postings-#{@job.id}")
+            }
+            data-confirm={
+              dgettext(
+                "jobs",
+                "Are you sure you want to delete this job posting? This action cannot be undone."
+              )
+            }
+            class="text-sm text-danger-600 hover:text-danger-700 px-3 py-1.5 rounded-md hover:bg-danger-50 transition-colors"
+            title={dgettext("jobs", "Delete job")}
+          >
+            {dgettext("jobs", "Delete job")}
+          </.link>
+        </div>
       </div>
     </div>
     """
