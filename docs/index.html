@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BemedaPersonal - Strategic Documentation Framework</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js?v=1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js?v=1"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css?v=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js?v=1"></script>
     
     <style>
         * {
@@ -754,7 +754,7 @@
     <div class="footer">
         <div class="container">
             <p><strong>BemedaPersonal Documentation Framework</strong></p>
-            <p>Last Updated: July 2025 | Version 1.0</p>
+            <p>Last Updated: July 2025 | Version 1.1 | Build: 2025-01-22-15:30</p>
         </div>
     </div>
 
@@ -1044,9 +1044,20 @@
                     console.log('Markdown parsed successfully');
                 } catch (parseError) {
                     console.error('Marked.js parse error:', parseError);
-                    // Fallback: show raw markdown with basic formatting
-                    html = `<pre style="white-space: pre-wrap; background: #f8f9fa; padding: 2rem; border-radius: 8px;">${markdown}</pre>`;
-                    console.log('Using fallback raw markdown display');
+                    console.log('Attempting fallback markdown parser...');
+                    try {
+                        html = simpleMarkdownParser(markdown);
+                        console.log('Fallback markdown parser succeeded');
+                    } catch (fallbackError) {
+                        console.error('Fallback parser also failed:', fallbackError);
+                        // Last resort: show formatted raw markdown
+                        html = `<div style="background: #f8f9fa; padding: 2rem; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                            <h3>⚠️ Markdown Processing Error</h3>
+                            <p>The markdown parser encountered an error. Displaying raw content:</p>
+                            <pre style="white-space: pre-wrap; background: white; padding: 1rem; margin-top: 1rem;">${markdown}</pre>
+                        </div>`;
+                        console.log('Using last resort raw display');
+                    }
                 }
                 
                 showContent(html, path, title);
@@ -1114,6 +1125,28 @@
             }
         });
 
+        // Simple markdown fallback function
+        function simpleMarkdownParser(markdown) {
+            return markdown
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+                .replace(/\*(.*)\*/gim, '<em>$1</em>')
+                .replace(/!\[([^\]]*)\]\(([^\)]*)\)/gim, '<img alt="$1" src="$2" />')
+                .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
+                .replace(/\n\n/gim, '</p><p>')
+                .replace(/```mermaid\n([\s\S]*?)\n```/gim, '<div class="mermaid">$1</div>')
+                .replace(/```(\w+)?\n([\s\S]*?)\n```/gim, '<pre><code class="language-$1">$2</code></pre>')
+                .replace(/`([^`]*)`/gim, '<code>$1</code>')
+                .replace(/^\- (.*$)/gim, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>')
+                .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/gims, '<ol>$1</ol>')
+                .replace(/^(?!<[hl]|<p|<ul|<ol|<div)/gim, '<p>')
+                .replace(/$(?![hl]>|\/p>|\/ul>|\/ol>|\/div>)/gim, '</p>');
+        }
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             // Debug: Check if libraries are loaded
@@ -1121,6 +1154,10 @@
             console.log('- Mermaid available:', typeof mermaid !== 'undefined');
             console.log('- Marked available:', typeof marked !== 'undefined');
             console.log('- Highlight.js available:', typeof hljs !== 'undefined');
+            
+            if (typeof marked !== 'undefined') {
+                console.log('- Marked version:', marked.version || 'unknown');
+            }
             
             // Set initial state
             history.replaceState({ page: 'home' }, '', '#');
