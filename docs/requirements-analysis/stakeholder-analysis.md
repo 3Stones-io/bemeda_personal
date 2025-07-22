@@ -44,7 +44,7 @@ Investment and partnership entities
 - Time-consuming traditional recruitment processes
 - High costs of internal HR departments for smaller companies
 - Lack of transparency in traditional staffing agency pricing
-- Administrative burden of managing temporary worker contracts
+- Administrative burden of managing PoolWorker contracts
 
 #### Influence & Power
 - **High Influence**: Direct revenue source and platform adoption drivers

@@ -116,7 +116,7 @@ sequenceDiagram
     B->>PW: Onboarding Complete
     
     C->>B: Subscribe to Platform
-    C->>B: Request Temporary Worker (Einsatz)
+    C->>B: Request PoolWorker (Einsatz)
     B->>PW: Notify of Available Assignment
     PW->>B: Accept Assignment
     B->>PW: Generate Assignment Addendum
@@ -173,12 +173,12 @@ sequenceDiagram
 
 #### Company Journey (Verleih)
 1. **Platform Subscription & Setup**
-   - Subscribe to platform for temporary worker access
+   - Subscribe to platform for PoolWorker access
    - Complete company verification process
    - Set up preferred billing and payment methods
 
 2. **Assignment Request**
-   - Create temporary worker requests (Einsatz)
+   - Create PoolWorker assignment requests (Einsatz)
    - Specify skills, duration, and requirements
    - Set assignment details and working conditions
    - Confirm budget and hourly rates

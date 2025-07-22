@@ -54,7 +54,7 @@ System administration and platform configuration
 
 #### Acceptance Criteria
 - [ ] **FR-002.1**: Multi-factor authentication for all users
-- [ ] **FR-002.2**: Role-based permissions (Company Admin, Recruiter, JobSeeker, PoolWorker, System Admin)
+- [ ] **FR-002.2**: Role-based permissions (Company Admin, Recruiter (Bemeda), JobSeeker, PoolWorker, System Admin)
 - [ ] **FR-002.3**: Session management with automatic timeout
 - [ ] **FR-002.4**: Password strength requirements and rotation policy
 - [ ] **FR-002.5**: Single sign-on (SSO) support for enterprise clients
@@ -90,7 +90,7 @@ System administration and platform configuration
 
 ### FR-005: Assignment Request Management
 **Priority**: Must Have  
-**Description**: Companies can request temporary workers through Verleih model
+**Description**: Companies can request PoolWorkers through Verleih model
 
 #### Acceptance Criteria
 - [ ] **FR-005.1**: Create assignment requests with duration, skills, schedule requirements
