@@ -280,8 +280,12 @@
         }
         
         .content.active {
-            display: flex;
+            display: block; /* Default to block layout */
             gap: 2rem;
+        }
+        
+        .content.active.has-sidebar {
+            display: flex; /* Only use flex when sidebar is visible */
         }
         
         .content-main {
@@ -301,9 +305,11 @@
             top: 120px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
         }
         
         .content-sidebar.visible {
+            display: block !important;
             border-color: #667eea;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
@@ -743,7 +749,7 @@
             <div class="content-main">
                 <div id="markdown-content"></div>
             </div>
-            <div class="content-sidebar" id="comments-sidebar" style="display: none;">
+            <div class="content-sidebar" id="comments-sidebar">
                 <h3>💬 Comments & Discussion</h3>
                 <div id="comments-container"></div>
             </div>
@@ -929,27 +935,26 @@
             console.log('Toggle current classes:', toggle.className);
             console.log('Content page display:', contentPage.style.display);
             
-            // Force sidebar visibility
-            const isHidden = sidebar.style.display === 'none' || sidebar.style.display === '';
+            // Check if sidebar is currently hidden
+            const isHidden = !sidebar.classList.contains('visible');
             
             if (isHidden) {
-                sidebar.style.display = 'block';
-                sidebar.style.visibility = 'visible';
-                sidebar.style.opacity = '1';
                 sidebar.classList.add('visible');
                 toggle.classList.add('active');
                 toggle.title = 'Hide Comments';
-                console.log('Comments sidebar shown');
                 
-                // Ensure content layout accommodates sidebar
-                if (window.innerWidth > 768) {
-                    contentPage.style.display = 'flex';
-                }
+                // Enable flex layout for sidebar
+                contentPage.classList.add('has-sidebar');
+                
+                console.log('Comments sidebar shown');
             } else {
-                sidebar.style.display = 'none';
                 sidebar.classList.remove('visible');
                 toggle.classList.remove('active');
                 toggle.title = 'Show Comments';
+                
+                // Remove flex layout
+                contentPage.classList.remove('has-sidebar');
+                
                 console.log('Comments sidebar hidden');
             }
         }
@@ -965,14 +970,14 @@
             // Clear existing comments
             commentsContainer.innerHTML = '';
             
-            // Show toggle button and sidebar
-            commentsToggle.classList.add('visible', 'active');
-            commentsSidebar.style.display = 'block';
-            commentsSidebar.style.visibility = 'visible';
-            commentsSidebar.style.opacity = '1';
-            commentsSidebar.classList.add('visible');
+            // Show toggle button but HIDE sidebar initially (user clicks to show)
+            commentsToggle.classList.add('visible');
+            commentsToggle.classList.remove('active');
+            commentsSidebar.style.display = 'none';
+            commentsSidebar.classList.remove('visible');
+            commentsToggle.title = 'Show Comments';
             
-            console.log('Comments sidebar initialized and visible');
+            console.log('Comments toggle ready, sidebar hidden initially');
             
             // Add loading message
             commentsContainer.innerHTML = `
