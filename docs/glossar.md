@@ -2,30 +2,50 @@
 
 ## Überblick / Overview
 
-Dieses Glossar definiert die wichtigsten Geschäfts- und Technologiebegriffe für das BemedaPersonal-System. Es dient als zentrale Referenz für alle Projektbeteiligten und gewährleistet ein einheitliches Verständnis der verwendeten Terminologie.
+Dieses Glossar definiert die wichtigsten Geschäfts- und Technologiebegriffe für das BemedaPersonal-System mit Fokus auf die zwei Hauptgeschäftsmodelle: Personalvermittlung (Vermittlung) und Personalverleih (Verleih). Es dient als zentrale Referenz für alle Projektbeteiligten und gewährleistet ein einheitliches Verständnis der verwendeten Terminologie.
 
-This glossary defines the key business and technology terms for the BemedaPersonal system. It serves as a central reference for all project stakeholders and ensures consistent understanding of the terminology used.
+This glossary defines the key business and technology terms for the BemedaPersonal system, focusing on the two main business models: Personnel Placement (Vermittlung) and Personnel Lending (Verleih). It serves as a central reference for all project stakeholders and ensures consistent understanding of the terminology used.
 
 ---
+
+## Hauptgeschäftsmodelle / Core Business Models
+
+| Begriff (Deutsch) | Term (English) | Erklärung (Deutsch) | Explanation (English) |
+|-------------------|----------------|--------------------|--------------------|  
+| **Vermittlung** | **Personnel Placement** | Zusammenführung von JobSeeker und Unternehmen für direkte Anstellung. Bemeda fungiert als Vermittler, nicht als Arbeitgeber. Erfolgsbasierte Vergütung nach 3-monatiger Probezeit. | Matching JobSeekers with companies for direct employment. Bemeda acts as intermediary, not employer. Success-based compensation after 3-month probation period. |
+| **Verleih** | **Personnel Lending** | Bemeda ist Arbeitgeber der PoolWorker und verleiht sie temporär an Kundenunternehmen. Beinhaltet Lohnabrechnung, Sozialversicherung und alle arbeitgeberspezifischen Pflichten. | Bemeda employs PoolWorkers and lends them temporarily to client companies. Includes payroll, social insurance, and all employer-specific obligations. |
+
+## Akteure / Actors
+
+| Begriff (Deutsch) | Term (English) | Erklärung (Deutsch) | Explanation (English) |
+|-------------------|----------------|--------------------|--------------------|  
+| **JobSeeker** | **JobSeeker** | Person, die eine Festanstellung über Vermittlung sucht. Erstellt Profil, bewirbt sich auf Stellen, kommuniziert direkt mit Unternehmen. | Person seeking permanent employment through placement. Creates profile, applies for positions, communicates directly with companies. |
+| **PoolWorker** | **PoolWorker** | Temporärangestellter bei Bemeda, verfügbar für zeitlich begrenzte Einsätze bei Kundenunternehmen. Hat Rahmenvertrag mit Bemeda plus einsatzspezifische Zusätze. | Temporary employee at Bemeda, available for time-limited assignments at client companies. Has master contract with Bemeda plus assignment-specific addendums. |
+| **Unternehmen** | **Company** | Kundenunternehmen, das entweder JobSeeker direkt einstellt (Vermittlung) oder PoolWorker temporär leiht (Verleih). Zahlt entsprechende Gebühren an Bemeda. | Client company that either directly employs JobSeekers (placement) or temporarily borrows PoolWorkers (lending). Pays corresponding fees to Bemeda. |
+| **Bemeda Personal** | **Bemeda Personal** | Personaldienstleistungsunternehmen, das beide Geschäftsmodelle betreibt: Vermittlung und Verleih. Plattformbetreiber mit entsprechenden rechtlichen Verpflichtungen. | Personnel services company operating both business models: placement and lending. Platform operator with corresponding legal obligations. |
 
 ## Geschäftsbegriffe / Business Terms
 
 | Begriff (Deutsch) | Term (English) | Erklärung (Deutsch) | Explanation (English) |
 |-------------------|----------------|--------------------|--------------------|
-| **Personalvermittlung** | **Manpower Matching** | Prozess der Zusammenführung von Arbeitgebern und Arbeitnehmern basierend auf Qualifikationen und Anforderungen | Process of matching employers with job seekers based on qualifications and requirements |
-| **Zeitarbeit** | **Temporary Employment** | Beschäftigungsform, bei der Arbeitnehmer bei einer Personalvermittlung angestellt sind und an Kundenunternehmen ausgeliehen werden | Employment arrangement where workers are employed by a staffing agency and assigned to client companies |
-| **Stellenausschreibung** | **Job Posting** | Öffentliche Bekanntmachung einer offenen Stelle mit Anforderungen und Konditionen | Public announcement of an open position with requirements and conditions |
-| **Bewerbung** | **Job Application** | Formaler Antrag eines Kandidaten auf eine ausgeschriebene Stelle | Formal request from a candidate for an advertised position |
-| **Lebenslauf** | **Resume/CV** | Strukturierte Darstellung der beruflichen Laufbahn, Ausbildung und Qualifikationen | Structured presentation of professional career, education, and qualifications |
-| **Arbeitsbewilligung** | **Work Permit** | Behördliche Genehmigung für ausländische Arbeitnehmer zur Arbeitsaufnahme in der Schweiz | Official authorization for foreign workers to work in Switzerland |
-| **Lohnabrechnung** | **Payroll** | Berechnung und Abwicklung der Lohn- und Gehaltszahlungen inkl. Sozialversicherung | Calculation and processing of wages and salaries including social insurance |
-| **Compliance** | **Compliance** | Einhaltung gesetzlicher und regulatorischer Anforderungen (SUVA, AHV, etc.) | Adherence to legal and regulatory requirements (SUVA, AHV, etc.) |
-| **Kundenunternehmen** | **Client Company** | Unternehmen, das Personaldienstleistungen von einer Vermittlungsagentur bezieht | Company that receives staffing services from a placement agency |
-| **Temporärangestellter** | **Temporary Worker** | Arbeitnehmer, der über eine Personalvermittlung zeitlich befristet beschäftigt wird | Employee who works temporarily through a staffing agency |
-| **Stundenrapport** | **Timesheet** | Dokumentation der geleisteten Arbeitszeit für Abrechnungszwecke | Documentation of worked hours for billing purposes |
-| **Digitale Signatur** | **Digital Signature** | Elektronische Unterschrift zur rechtsgültigen Vertragsunterzeichnung | Electronic signature for legally valid contract signing |
-| **Matching-Algorithmus** | **Matching Algorithm** | Automatisierte Logik zur Zuordnung von Kandidaten zu passenden Stellen | Automated logic for matching candidates to suitable positions |
-| **Bewertungssystem** | **Rating System** | System zur Bewertung von Kandidaten, Jobs und Unternehmen | System for rating candidates, jobs, and companies |
+| **Einsatz** | **Assignment** | Spezifischer temporärer Arbeitsplatz eines PoolWorkers bei einem Kundenunternehmen. Erfordert separaten Vertragsanhang zum Rahmenvertrag. | Specific temporary workplace of a PoolWorker at a client company. Requires separate contract addendum to the master contract. |
+| **Rahmenvertrag** | **Master Contract** | Grundvertrag zwischen Bemeda und PoolWorker für Verleih-Geschäft. Regelt allgemeine Konditionen, wird durch einsatzspezifische Zusätze ergänzt. | Basic contract between Bemeda and PoolWorker for lending business. Governs general conditions, supplemented by assignment-specific addendums. |
+| **Erfolgsgebühr** | **Success Fee** | Einmalige Zahlung des Unternehmens an Bemeda nach erfolgreicher Vermittlung eines JobSeekers (typisch nach 3-monatiger Probezeit). | One-time payment from company to Bemeda after successful placement of a JobSeeker (typically after 3-month probation period). |
+| **Verleihgebühr** | **Lending Fee** | Stundenbasierte oder Aufschlagsgebühr für PoolWorker-Einsätze. Bemeda zahlt PoolWorker-Lohn und berechnet Kundenunternehmen entsprechenden Aufschlag. | Hourly or markup fee for PoolWorker assignments. Bemeda pays PoolWorker salary and charges client company corresponding markup. |
+| **Stellenausschreibung** | **Job Posting** | Ausschreibung für Festanstellung (Vermittlung) mit direkter Anstellung beim Kundenunternehmen | Job posting for permanent position (placement) with direct employment at client company |
+| **Einsatzanfrage** | **Assignment Request** | Anfrage des Kundenunternehmens für temporäre PoolWorker (Verleih) mit spezifischen Qualifikationen und Zeitrahmen | Request from client company for temporary PoolWorkers (lending) with specific qualifications and timeframe |
+| **Bewerbung** | **Job Application** | Bewerbung eines JobSeekers auf eine Festanstellung über Vermittlung | Application from JobSeeker for permanent position through placement |
+| **Lebenslauf** | **Resume/CV** | Strukturierte Darstellung der beruflichen Laufbahn für JobSeeker (Vermittlung) | Structured presentation of professional career for JobSeeker (placement) |
+| **Verfügbarkeitsprofil** | **Availability Profile** | Profil eines PoolWorkers mit Qualifikationen, Verfügbarkeitszeiten und Einsatzpräferenzen für Verleih | Profile of PoolWorker with qualifications, availability times, and assignment preferences for lending |
+| **Arbeitsbewilligung** | **Work Permit** | Behördliche Genehmigung für ausländische Arbeitnehmer. Bei Verleih: Bemeda als Arbeitgeber verantwortlich | Official authorization for foreign workers. In lending: Bemeda as employer responsible |
+| **Lohnabrechnung** | **Payroll** | Nur bei Verleih: Bemeda führt Lohnabrechnung für PoolWorker durch, inkl. aller Sozialversicherungen | Only in lending: Bemeda processes payroll for PoolWorkers, including all social insurance |
+| **AVG-Compliance** | **AVG Compliance** | Einhaltung des Bundesgesetzes über Arbeitsvermittlung und Personalverleih - unterschiedliche Anforderungen für beide Geschäftsmodelle | Adherence to Federal Act on Employment Agencies and Personnel Lending - different requirements for both business models |
+| **Direktkontakt** | **Direct Contact** | Bei Vermittlung: Direkter Kontakt zwischen JobSeeker und Kundenunternehmen ohne Bemeda-Vermittlung im Arbeitsalltag | In placement: Direct contact between JobSeeker and client company without Bemeda mediation in daily work |
+| **Probezeit** | **Probation Period** | 3-monatige Testphase bei Vermittlung, nach der die Erfolgsgebühr fällig wird | 3-month trial period in placement, after which success fee becomes due |
+| **Stundenrapport** | **Timesheet** | Nur bei Verleih: PoolWorker dokumentiert Arbeitszeit für Bemeda-Lohnabrechnung | Only in lending: PoolWorker documents working time for Bemeda payroll |
+| **Digitale Signatur** | **Digital Signature** | Elektronische Unterschrift für Verträge - bei Vermittlung selten, bei Verleih für jeden Rahmenvertrag und Einsatz-Anhang | Electronic signature for contracts - rare in placement, for every master contract and assignment addendum in lending |
+| **Matching-Algorithmus** | **Matching Algorithm** | Separate Algorithmen: JobSeeker-Stellenausschreibung (Vermittlung) und PoolWorker-Einsatzanfrage (Verleih) | Separate algorithms: JobSeeker-job posting (placement) and PoolWorker-assignment request (lending) |
+| **Bewertungssystem** | **Rating System** | Bidirektionale Bewertungen zwischen allen Akteuren nach abgeschlossenen Vermittlungen oder Einsätzen | Bidirectional ratings between all actors after completed placements or assignments |
 
 ---
 
