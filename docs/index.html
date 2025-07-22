@@ -754,7 +754,11 @@
     <div class="footer">
         <div class="container">
             <p><strong>BemedaPersonal Documentation Framework</strong></p>
-            <p>Last Updated: July 2025 | Version 1.1 | Build: 2025-01-22-15:30</p>
+            <p>Last Updated: July 2025 | Version 1.2 | Build: 2025-01-22-16:00</p>
+            <p style="font-size: 0.8em; opacity: 0.7;">
+                <a href="https://github.com/3Stones-io/bemeda_personal/settings" target="_blank" rel="noopener">Repository Settings</a> • 
+                <a href="https://github.com/apps/utterances" target="_blank" rel="noopener">Install Utterances</a>
+            </p>
         </div>
     </div>
 
@@ -903,22 +907,31 @@
 
         // Function to toggle comments sidebar
         function toggleComments() {
+            console.log('Toggle comments clicked');
+            
             const sidebar = document.getElementById('comments-sidebar');
             const toggle = document.getElementById('comments-toggle');
             
-            if (sidebar.style.display === 'none') {
+            console.log('Sidebar current display:', sidebar.style.display);
+            console.log('Toggle current classes:', toggle.className);
+            
+            if (sidebar.style.display === 'none' || !sidebar.style.display) {
                 sidebar.style.display = 'block';
                 toggle.classList.add('active');
                 toggle.title = 'Hide Comments';
+                console.log('Comments sidebar shown');
             } else {
                 sidebar.style.display = 'none';
                 toggle.classList.remove('active');
                 toggle.title = 'Show Comments';
+                console.log('Comments sidebar hidden');
             }
         }
 
         // Function to initialize utterances comments
         function initializeComments(path, title) {
+            console.log(`Initializing comments for: ${path} - ${title}`);
+            
             const commentsContainer = document.getElementById('comments-container');
             const commentsSidebar = document.getElementById('comments-sidebar');
             const commentsToggle = document.getElementById('comments-toggle');
@@ -930,18 +943,56 @@
             commentsToggle.classList.add('visible', 'active');
             commentsSidebar.style.display = 'block';
             
+            // Add loading message
+            commentsContainer.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <div style="margin-bottom: 1rem;">Loading comments...</div>
+                    <div style="font-size: 0.8em;">
+                        Powered by <a href="https://utteranc.es" target="_blank">Utterances</a>
+                    </div>
+                </div>
+            `;
+            
             // Create utterances script
             const script = document.createElement('script');
             script.src = 'https://utteranc.es/client.js';
             script.setAttribute('repo', '3Stones-io/bemeda_personal');
-            // Create highly specific issue term for granular commenting
-            const specificTerm = `docs/${path.replace('/', '-')}/${title.toLowerCase().replace(/\s+/g, '-')}`;
-            script.setAttribute('issue-term', specificTerm);
+            script.setAttribute('issue-term', 'pathname');  // Simplified for better compatibility
             script.setAttribute('theme', 'github-light');
             script.setAttribute('crossorigin', 'anonymous');
             script.async = true;
             
-            commentsContainer.appendChild(script);
+            console.log('Utterances script attributes:', {
+                repo: script.getAttribute('repo'),
+                'issue-term': script.getAttribute('issue-term'),
+                theme: script.getAttribute('theme')
+            });
+            
+            // Add error handling
+            script.onerror = function() {
+                console.error('Failed to load Utterances script');
+                commentsContainer.innerHTML = `
+                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;">
+                        <h4>Comments Setup Required</h4>
+                        <p>To enable comments, please:</p>
+                        <ol style="text-align: left; margin: 1rem 0;">
+                            <li>Enable <strong>Issues</strong> in your GitHub repository</li>
+                            <li>Install the <a href="https://github.com/apps/utterances" target="_blank"><strong>Utterances app</strong></a></li>
+                            <li>Grant access to <strong>3Stones-io/bemeda_personal</strong></li>
+                        </ol>
+                    </div>
+                `;
+            };
+            
+            script.onload = function() {
+                console.log('Utterances script loaded successfully');
+            };
+            
+            // Append script to container
+            setTimeout(() => {
+                commentsContainer.appendChild(script);
+                console.log('Utterances script added to DOM');
+            }, 500);
         }
 
         function updateBreadcrumb(path = '', title = '') {
