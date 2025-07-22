@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>BemedaPersonal - Strategic Documentation Framework</title>
     
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js?v=1"></script>
@@ -767,10 +770,11 @@
     <div class="footer">
         <div class="container">
             <p><strong>BemedaPersonal Documentation Framework</strong></p>
-            <p>Last Updated: July 2025 | Version 1.2 | Build: 2025-01-22-16:00</p>
+            <p>Last Updated: July 2025 | Version 1.3 | Build: 2025-01-22-16:45</p>
             <p style="font-size: 0.8em; opacity: 0.7;">
                 <a href="https://github.com/3Stones-io/bemeda_personal/settings" target="_blank" rel="noopener">Repository Settings</a> • 
-                <a href="https://github.com/apps/utterances" target="_blank" rel="noopener">Install Utterances</a>
+                <a href="https://github.com/apps/utterances" target="_blank" rel="noopener">Install Utterances</a> •
+                <button onclick="testSidebar()" style="background: none; border: 1px solid #666; color: #666; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">Test Sidebar</button>
             </p>
         </div>
     </div>
@@ -1211,6 +1215,39 @@
                 }
             }
         });
+
+        // Test function to debug sidebar
+        function testSidebar() {
+            console.log('=== SIDEBAR DEBUG TEST ===');
+            const sidebar = document.getElementById('comments-sidebar');
+            const toggle = document.getElementById('comments-toggle');
+            const contentPage = document.getElementById('content-page');
+            
+            console.log('Sidebar element:', sidebar);
+            console.log('Sidebar classes:', sidebar ? sidebar.className : 'NOT FOUND');
+            console.log('Sidebar style.display:', sidebar ? sidebar.style.display : 'NOT FOUND');
+            console.log('Sidebar computed display:', sidebar ? getComputedStyle(sidebar).display : 'NOT FOUND');
+            
+            console.log('Toggle element:', toggle);
+            console.log('Toggle classes:', toggle ? toggle.className : 'NOT FOUND');
+            
+            console.log('Content page classes:', contentPage ? contentPage.className : 'NOT FOUND');
+            
+            if (sidebar) {
+                console.log('=== FORCING SIDEBAR VISIBLE ===');
+                sidebar.style.display = 'block';
+                sidebar.style.visibility = 'visible';
+                sidebar.style.opacity = '1';
+                sidebar.style.position = 'fixed';
+                sidebar.style.right = '20px';
+                sidebar.style.top = '200px';
+                sidebar.style.zIndex = '9999';
+                sidebar.style.background = 'red';
+                sidebar.style.width = '300px';
+                sidebar.style.height = '200px';
+                console.log('Sidebar should now be visible with red background');
+            }
+        }
 
         // Simple markdown fallback function
         function simpleMarkdownParser(markdown) {
