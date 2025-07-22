@@ -284,11 +284,12 @@
         
         .content.active {
             display: block; /* Default to block layout */
-            gap: 2rem;
+            gap: 1.5rem; /* Reduced gap */
         }
         
         .content.has-sidebar {
             display: flex !important; /* Force flex layout when sidebar is visible */
+            gap: 1.5rem; /* Consistent gap */
         }
         
         .content-main {
@@ -297,18 +298,20 @@
         }
         
         .content-sidebar {
-            width: 350px;
+            width: 320px; /* Reduced width for better spacing */
             flex-shrink: 0;
             background: #f8fafc;
             border-radius: 8px;
-            padding: 1.5rem;
+            padding: 1rem; /* Reduced padding */
             border: 1px solid #e2e8f0;
             height: fit-content;
+            max-height: 80vh; /* Limit height */
+            overflow-y: auto; /* Allow scrolling if needed */
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: none; /* Hidden by default */
-            position: relative; /* Changed from sticky to relative */
-            top: 0; /* Reset top */
+            position: sticky; /* Make it float with scroll */
+            top: 100px; /* Float below header */
         }
         
         .content-sidebar.visible {
@@ -319,9 +322,9 @@
         
         .content-sidebar h3 {
             color: #4a5568;
-            font-size: 1.125rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
+            font-size: 1rem; /* Slightly smaller */
+            margin-bottom: 0.75rem; /* Less margin */
+            padding-bottom: 0.4rem;
             border-bottom: 2px solid #e2e8f0;
         }
         
@@ -991,10 +994,10 @@
             
             // Add loading message
             commentsContainer.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: #666;">
-                    <div style="margin-bottom: 1rem;">Loading comments...</div>
-                    <div style="font-size: 0.8em;">
-                        Powered by <a href="https://utteranc.es" target="_blank">Utterances</a>
+                <div style="text-align: center; padding: 1.5rem; color: #666;">
+                    <div style="margin-bottom: 1rem;">💬 Loading comments...</div>
+                    <div style="font-size: 0.8em; opacity: 0.7;">
+                        Powered by <a href="https://utteranc.es" target="_blank" style="color: #667eea;">Utterances</a>
                     </div>
                 </div>
             `;
@@ -1014,25 +1017,37 @@
                 theme: script.getAttribute('theme')
             });
             
-            // Add error handling
+            // Add error handling and timeout
             script.onerror = function() {
                 console.error('Failed to load Utterances script');
-                commentsContainer.innerHTML = `
-                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;">
-                        <h4>Comments Setup Required</h4>
-                        <p>To enable comments, please:</p>
-                        <ol style="text-align: left; margin: 1rem 0;">
-                            <li>Enable <strong>Issues</strong> in your GitHub repository</li>
-                            <li>Install the <a href="https://github.com/apps/utterances" target="_blank"><strong>Utterances app</strong></a></li>
-                            <li>Grant access to <strong>3Stones-io/bemeda_personal</strong></li>
-                        </ol>
-                    </div>
-                `;
+                showSetupInstructions();
             };
             
             script.onload = function() {
                 console.log('Utterances script loaded successfully');
+                // Set a timeout to check if comments loaded
+                setTimeout(() => {
+                    const utterancesFrame = commentsContainer.querySelector('.utterances');
+                    if (!utterancesFrame) {
+                        console.warn('Utterances not initialized after 10 seconds');
+                        showSetupInstructions();
+                    }
+                }, 10000);
             };
+            
+            function showSetupInstructions() {
+                commentsContainer.innerHTML = `
+                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; padding: 1rem; color: #856404; font-size: 0.9em;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #856404;">⚠️ Comments Setup Needed</h4>
+                        <p style="margin: 0.5rem 0; font-size: 0.85em;">To enable comments:</p>
+                        <ol style="text-align: left; margin: 0.5rem 0; padding-left: 1.2em; font-size: 0.85em;">
+                            <li>Enable <strong>Issues</strong> in your <a href="https://github.com/3Stones-io/bemeda_personal/settings" target="_blank" style="color: #856404;">GitHub repo</a></li>
+                            <li>Install the <a href="https://github.com/apps/utterances" target="_blank" style="color: #856404;"><strong>Utterances app</strong></a></li>
+                            <li>Grant access to <strong>3Stones-io/bemeda_personal</strong></li>
+                        </ol>
+                    </div>
+                `;
+            }
             
             // Append script to container
             setTimeout(() => {
