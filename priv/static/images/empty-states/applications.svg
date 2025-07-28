@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Document Stack -->
+  <rect x="40" y="60" width="120" height="140" rx="8" fill="#E9D5FF" />
+  <rect x="50" y="50" width="120" height="140" rx="8" fill="#D8B4FE" />
+  <rect x="60" y="40" width="120" height="140" rx="8" fill="#C084FC" />
+  
+  <!-- Document Lines -->
+  <rect x="80" y="60" width="80" height="4" rx="2" fill="#7B4EAB" />
+  <rect x="80" y="72" width="60" height="4" rx="2" fill="#7B4EAB" />
+  <rect x="80" y="84" width="70" height="4" rx="2" fill="#7B4EAB" />
+  
+  <!-- Profile circles -->
+  <circle cx="90" cy="110" r="20" fill="#9571BC" />
+  <circle cx="130" cy="110" r="20" fill="#A788C7" />
+  <circle cx="110" cy="140" r="20" fill="#C2AED8" />
+  <circle cx="150" cy="140" r="20" fill="#D6C8E5" />
+</svg>

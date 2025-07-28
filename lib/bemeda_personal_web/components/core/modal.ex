@@ -41,8 +41,8 @@ defmodule BemedaPersonalWeb.Components.Core.Modal do
     ~H"""
     <div
       id={@id}
-      phx-mounted={@show && show_modal(@id)}
-      phx-remove={hide_modal(@id)}
+      phx-mounted={@show && show_modal(%JS{}, @id)}
+      phx-remove={hide_modal(%JS{}, @id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >

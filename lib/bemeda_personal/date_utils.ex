@@ -3,6 +3,8 @@ defmodule BemedaPersonal.DateUtils do
   Utility functions for date operations and parsing.
   """
 
+  use Gettext, backend: BemedaPersonalWeb.Gettext
+
   @type date :: Date.t()
   @type date_string :: String.t()
   @type datetime :: DateTime.t()
@@ -66,6 +68,42 @@ defmodule BemedaPersonal.DateUtils do
   end
 
   @doc """
+  Returns a relative time string like "3 seconds ago", "2 days ago", etc.
+  """
+  @spec relative_time(datetime()) :: String.t()
+  def relative_time(datetime) do
+    now = DateTime.utc_now()
+    diff_seconds = DateTime.diff(now, datetime, :second)
+
+    cond do
+      diff_seconds < 60 ->
+        dngettext("default", "1 second ago", "%{count} seconds ago", diff_seconds,
+          count: diff_seconds
+        )
+
+      diff_seconds < 3600 ->
+        minutes = div(diff_seconds, 60)
+        dngettext("default", "1 minute ago", "%{count} minutes ago", minutes, count: minutes)
+
+      diff_seconds < 86_400 ->
+        hours = div(diff_seconds, 3600)
+        dngettext("default", "1 hour ago", "%{count} hours ago", hours, count: hours)
+
+      diff_seconds < 604_800 ->
+        days = div(diff_seconds, 86_400)
+        dngettext("default", "1 day ago", "%{count} days ago", days, count: days)
+
+      diff_seconds < 2_592_000 ->
+        weeks = div(diff_seconds, 604_800)
+        dngettext("default", "1 week ago", "%{count} weeks ago", weeks, count: weeks)
+
+      true ->
+        months = div(diff_seconds, 2_592_000)
+        dngettext("default", "1 month ago", "%{count} months ago", months, count: months)
+    end
+  end
+
+  @doc """
   Returns a relative or absolute date string.
   """
   @spec format_emails_date(datetime()) :: String.t()
@@ -82,10 +120,10 @@ defmodule BemedaPersonal.DateUtils do
         Calendar.strftime(datetime, "%I:%M %p")
 
       days_diff == 1 ->
-        "Yesterday"
+        dgettext("default", "Yesterday")
 
       days_diff <= 7 ->
-        "#{days_diff} days ago"
+        dngettext("default", "1 day ago", "%{count} days ago", days_diff, count: days_diff)
 
       true ->
         Calendar.strftime(date_only, "%d/%m/%Y")

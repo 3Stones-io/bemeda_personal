@@ -1,29 +1,41 @@
-<section class="min-h-[100vh] w-[100%]">
-  <div class="px-4 py-2 lg:py-8 lg:max-w-[1000px] lg:mx-auto">
-    <h1 class="text-2xl font-bold mb-4">{dgettext("jobs", "My Job Applications")}</h1>
+<div>
+  <h1 class="text-2xl font-bold mb-6">{dgettext("jobs", "My Applications")}</h1>
 
-    <div :if={@live_action == :index}>
-      <.live_component
-        module={JobApplicationsListComponent}
-        current_user={@current_user}
-        filter_params={@filter_params}
-        id="job-applications-list"
-        list_type={:applicant}
-      />
-    </div>
-
-    <div :if={@live_action in [:new, :edit]}>
-      <.live_component
-        module={FormComponent}
-        action={@live_action}
-        id="job-application-form"
-        job_posting={@job_posting}
-        job_application={@job_application}
-        return_to={~p"/job_applications"}
-        resume={@resume}
-        title={@page_title}
-        current_user={@current_user}
-      />
-    </div>
+  <div :if={@applied_count == 0}>
+    <.empty_state
+      title={dgettext("jobs", "You haven't applied for any job yet")}
+      description={dgettext("jobs", "You'll find a list of Jobs you've applied to here")}
+      illustration="applications"
+      action_label={dgettext("jobs", "Find work")}
+      action_click={JS.navigate(~p"/jobs")}
+    />
   </div>
-</section>
+
+  <.live_component
+    :if={@applied_count > 0}
+    module={JobApplicationsListComponent}
+    id="job-applications-list"
+    current_user={@current_user}
+    filter_params={@filter_params}
+    list_type={:applicant}
+  />
+
+  <.modal
+    :if={@live_action == :new}
+    id="job-application-modal"
+    show
+    on_cancel={JS.patch(~p"/job_applications")}
+  >
+    <.live_component
+      module={FormComponent}
+      id={@job_application.id || :new}
+      title={@page_title}
+      action={@live_action}
+      job_application={@job_application}
+      job_posting={@job_posting}
+      patch={~p"/job_applications"}
+      resume={@resume}
+      current_user={@current_user}
+    />
+  </.modal>
+</div>

@@ -82,7 +82,9 @@ defmodule BemedaPersonalWeb.Router do
       # Job applications (job seekers only)
       live "/job_applications", JobApplicationLive.Index, :index
       live "/jobs/:job_id/job_applications/new", JobApplicationLive.Index, :new
-      live "/jobs/:job_id/job_applications/:id/edit", JobApplicationLive.Index, :edit
+
+      # Job application modal route
+      live "/jobs/:id/apply", JobLive.Show, :apply
     end
   end
 

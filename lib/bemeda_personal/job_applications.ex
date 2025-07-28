@@ -15,6 +15,7 @@ defmodule BemedaPersonal.JobApplications do
   defdelegate update_job_application(job_application, attrs), to: JobApplications
   defdelegate change_job_application(job_application, attrs \\ %{}), to: JobApplications
   defdelegate user_has_applied_to_company_job?(user_id, company_id), to: JobApplications
+  defdelegate count_user_applications(user_id), to: JobApplications
 
   # Status Management
   defdelegate update_job_application_status(job_application, user, attrs),

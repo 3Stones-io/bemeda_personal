@@ -1162,6 +1162,93 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
   end
 
+  describe "count_user_applications/1" do
+    test "returns 0 when user has no applications" do
+      user = user_fixture()
+
+      assert JobApplications.count_user_applications(user.id) == 0
+    end
+
+    test "returns correct count when user has one application" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+      _job_application = job_application_fixture(user, job_posting)
+
+      assert JobApplications.count_user_applications(user.id) == 1
+    end
+
+    test "returns correct count when user has multiple applications" do
+      user = user_fixture()
+      company = company_fixture(user)
+
+      # Create 3 job postings and applications
+      job_posting1 = job_posting_fixture(company)
+      job_posting2 = job_posting_fixture(company)
+      job_posting3 = job_posting_fixture(company)
+
+      _job_application1 = job_application_fixture(user, job_posting1)
+      _job_application2 = job_application_fixture(user, job_posting2)
+      _job_application3 = job_application_fixture(user, job_posting3)
+
+      assert JobApplications.count_user_applications(user.id) == 3
+    end
+
+    test "only counts applications for the specified user" do
+      user1 = user_fixture(%{email: "user1@example.com"})
+      user2 = user_fixture(%{email: "user2@example.com"})
+      company = company_fixture(user1)
+      job_posting = job_posting_fixture(company)
+
+      # Create applications for both users
+      _job_application1 = job_application_fixture(user1, job_posting)
+      _job_application2 = job_application_fixture(user2, job_posting)
+
+      assert JobApplications.count_user_applications(user1.id) == 1
+      assert JobApplications.count_user_applications(user2.id) == 1
+    end
+
+    test "counts applications regardless of their status" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting1 = job_posting_fixture(company)
+      job_posting2 = job_posting_fixture(company)
+
+      job_application1 = job_application_fixture(user, job_posting1)
+      job_application2 = job_application_fixture(user, job_posting2)
+
+      # Update one application to withdrawn status
+      {:ok, _withdrawn_app} =
+        JobApplications.update_job_application_status(job_application1, user, %{
+          "to_state" => "withdrawn"
+        })
+
+      # Update another to offer_extended
+      {:ok, _offer_app} =
+        JobApplications.update_job_application_status(job_application2, user, %{
+          "to_state" => "offer_extended"
+        })
+
+      # Should still count both applications
+      assert JobApplications.count_user_applications(user.id) == 2
+    end
+
+    test "accepts user_id as string or binary" do
+      user = user_fixture()
+      company = company_fixture(user)
+      job_posting = job_posting_fixture(company)
+      _job_application = job_application_fixture(user, job_posting)
+
+      # Test with binary UUID
+      assert JobApplications.count_user_applications(user.id) == 1
+
+      # Test with string (though typically it's always binary in Ecto)
+      assert user.id
+             |> to_string()
+             |> JobApplications.count_user_applications() == 1
+    end
+  end
+
   describe "get_latest_withdraw_state_transition/1" do
     setup do
       user = user_fixture()

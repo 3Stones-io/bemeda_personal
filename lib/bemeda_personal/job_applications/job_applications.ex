@@ -26,6 +26,22 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
   @job_application_topic "job_application"
 
   @doc """
+  Counts all job applications for a user.
+
+  ## Examples
+
+      iex> count_user_applications(user_id)
+      5
+
+  """
+  @spec count_user_applications(String.t() | integer()) :: non_neg_integer()
+  def count_user_applications(user_id) do
+    JobApplication
+    |> where([ja], ja.user_id == ^user_id)
+    |> Repo.aggregate(:count, :id)
+  end
+
+  @doc """
   Returns the list of job applications with optional filtering.
 
   ## Examples
@@ -50,7 +66,12 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
     |> order_by([job_application: ja], desc: ja.inserted_at)
     |> limit(^limit)
     |> Repo.all()
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
+    |> Repo.preload([
+      :media_asset,
+      :tags,
+      :user,
+      job_posting: [company: [:admin_user, :media_asset]]
+    ])
   end
 
   @doc """
@@ -71,7 +92,12 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
   def get_job_application!(id) do
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([:media_asset, :tags, :user, job_posting: [company: :admin_user]])
+    |> Repo.preload([
+      :media_asset,
+      :tags,
+      :user,
+      job_posting: [company: [:admin_user, :media_asset]]
+    ])
   end
 
   @doc """

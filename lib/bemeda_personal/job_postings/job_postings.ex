@@ -54,7 +54,7 @@ defmodule BemedaPersonal.JobPostings.JobPostings do
     |> order_by([j], desc: j.inserted_at)
     |> limit(^limit)
     |> Repo.all()
-    |> Repo.preload([:company, :media_asset])
+    |> Repo.preload([:media_asset, company: :media_asset])
   end
 
   @doc """
@@ -75,7 +75,7 @@ defmodule BemedaPersonal.JobPostings.JobPostings do
   def get_job_posting!(id) do
     JobPosting
     |> Repo.get!(id)
-    |> Repo.preload([:company, :media_asset])
+    |> Repo.preload([:media_asset, company: :media_asset])
   end
 
   @doc """
@@ -167,7 +167,7 @@ defmodule BemedaPersonal.JobPostings.JobPostings do
         updated_job_posting =
           updated_job_posting
           |> Repo.reload()
-          |> Repo.preload([:company, :media_asset])
+          |> Repo.preload([:media_asset, company: :media_asset])
 
         broadcast_event(
           "#{@job_posting_topic}:company:#{job_posting.company.id}",

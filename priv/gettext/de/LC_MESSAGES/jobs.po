@@ -57,13 +57,13 @@ msgstr "Bewerbung erfolgreich eingereicht"
 msgid "Application updated successfully"
 msgstr "Bewerbung erfolgreich aktualisiert"
 
+#: lib/bemeda_personal_web/components/job_application/job_applications_list_component.ex
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Applied"
 msgstr "Beworben"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
-#: lib/bemeda_personal_web/components/job_application/job_applications_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "Applied on"
 msgstr "Beworben am"
@@ -73,6 +73,7 @@ msgstr "Beworben am"
 msgid "Apply Filters"
 msgstr "Filter Anwenden"
 
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Apply to this job"
@@ -92,22 +93,6 @@ msgstr "Jobs Durchsuchen"
 #, elixir-autogen, elixir-format
 msgid "Clear All"
 msgstr "Alle Löschen"
-
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Cover Letter"
-msgstr "Anschreiben"
-
-#: lib/bemeda_personal_web/components/job_application/job_applications_list_component.ex
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Edit Your Application"
-msgstr "Ihre Bewerbung Bearbeiten"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
@@ -141,7 +126,6 @@ msgid "Job Description"
 msgstr "Stellenbeschreibung"
 
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
-#: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Job Details"
 msgstr "Stellendetails"
@@ -199,7 +183,6 @@ msgid "Minimum Salary"
 msgstr "Mindestgehalt"
 
 #: lib/bemeda_personal_web/live/job_application_live/index.ex
-#: lib/bemeda_personal_web/live/job_application_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "My Job Applications"
 msgstr "Meine Bewerbungen"
@@ -265,16 +248,6 @@ msgstr "Aktuelle Jobs"
 msgid "Remote Only"
 msgstr "Nur Remote"
 
-#: lib/bemeda_personal_web/live/job_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Review Application"
-msgstr "Bewerbung Prüfen"
-
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Saving..."
-msgstr "Speichern..."
-
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Select a status"
@@ -295,11 +268,6 @@ msgstr "Startdatum muss vor oder gleich dem Enddatum sein"
 msgid "Start your job search by browsing available positions."
 msgstr "Beginnen Sie Ihre Jobsuche, indem Sie verfügbare Positionen durchsuchen."
 
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Submit Application"
-msgstr "Bewerbung Einreichen"
-
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Update Status"
@@ -310,20 +278,10 @@ msgstr "Status Aktualisieren"
 msgid "Updated by"
 msgstr "Aktualisiert von"
 
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Video"
-msgstr "Video"
-
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "View All Jobs"
 msgstr "Alle Jobs Anzeigen"
-
-#: lib/bemeda_personal_web/components/job_application/job_applications_list_component.ex
-#, elixir-autogen, elixir-format
-msgid "View Job"
-msgstr "Job Anzeigen"
 
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -450,11 +408,6 @@ msgstr "Bewerbungsstatus"
 msgid "Applied for"
 msgstr "Beworben für"
 
-#: lib/bemeda_personal_web/live/job_application_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Apply to %{job_title}"
-msgstr "Bewerben für %{job_title}"
-
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Are you sure you want to delete this job posting? This action cannot be undone."
@@ -481,6 +434,7 @@ msgid "Company Jobs"
 msgstr "Unternehmens-Jobs"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Cover letter"
 msgstr "Anschreiben"
@@ -496,11 +450,6 @@ msgstr "Job löschen"
 #, elixir-autogen, elixir-format
 msgid "Edit Job"
 msgstr "Job bearbeiten"
-
-#: lib/bemeda_personal_web/live/job_application_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Edit application for %{job_title}"
-msgstr "Bewerbung für %{job_title} bearbeiten"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
@@ -559,6 +508,7 @@ msgid "Post New Job"
 msgstr "Neuen Job veröffentlichen"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Posted"
 msgstr "Veröffentlicht"
@@ -569,6 +519,7 @@ msgid "Rating"
 msgstr "Bewertung"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Remote"
 msgstr "Remote"
@@ -1523,16 +1474,6 @@ msgstr "Dipl. Pflegefachperson AKP/DNII/HF/FH mit IMC-Weiterbildung"
 msgid "Speech Therapist"
 msgstr "Dipl. Logopäde/Logopädin"
 
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Record a brief video to introduce yourself and explain why you're interested in this position. This helps you stand out from other applicants."
-msgstr "Nehmen Sie ein kurzes Video auf, um sich vorzustellen und zu erklären, warum Sie sich für diese Stelle interessieren. Dies hilft Ihnen, sich von anderen Bewerbern abzuheben."
-
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Video Introduction (Optional)"
-msgstr "Video-Vorstellung (Optional)"
-
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "An offer has already been sent for this application."
@@ -1568,11 +1509,6 @@ msgstr "Keine Bewerber gefunden."
 msgid "1 Stelle gefunden"
 msgstr "1 Stelle gefunden"
 
-#: lib/bemeda_personal_web/components/job/jobs_components.ex
-#, elixir-autogen, elixir-format
-msgid "Active"
-msgstr "Aktiv"
-
 #: lib/bemeda_personal_web/live/company_job_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "All Contracts"
@@ -1597,3 +1533,153 @@ msgstr "Stelle Veröffentlichen"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "You are not authorized to edit this job posting"
 msgstr "Sie sind nicht berechtigt, diese Stellenausschreibung zu löschen"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Character limit"
+msgstr "Zeichenlimit"
+
+#: lib/bemeda_personal_web/live/job_application_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Find work"
+msgstr "Arbeit finden"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Make your application stand out by uploading an application video"
+msgstr "Heben Sie Ihre Bewerbung durch ein Bewerbungsvideo hervor"
+
+#: lib/bemeda_personal_web/live/job_application_live/index.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "My Applications"
+msgstr "Meine Bewerbungen"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Required"
+msgstr "Erforderlich"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Start writing"
+msgstr "Schreiben beginnen"
+
+#: lib/bemeda_personal_web/live/job_application_live/index.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "You haven't applied for any job yet"
+msgstr "Sie haben sich noch für keine Jobs beworben."
+
+#: lib/bemeda_personal_web/live/job_application_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "You'll find a list of Jobs you've applied to here"
+msgstr "Hier finden Sie eine Liste der Jobs, auf die Sie sich beworben haben"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Activity on this Job"
+msgstr "Aktivität zu dieser Stelle"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Already Applied"
+msgstr "Bereits beworben"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Application Video"
+msgstr "Bewerbungsvideo (optional)"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Before applying, please review the job details and make sure your profile is up to date. If you believe you're a good fit, go ahead and apply."
+msgstr "Bevor Sie sich bewerben, überprüfen Sie bitte die Stellendetails und stellen Sie sicher, dass Ihr Profil aktuell ist. Wenn Sie glauben, dass Sie gut passen, bewerben Sie sich."
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Briefly explain why you're a good fit"
+msgstr "Erklären Sie kurz, warum Sie gut passen"
+
+#: lib/bemeda_personal_web/components/job_application/job_applications_list_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Contract"
+msgstr "Alle Verträge"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Copy Link"
+msgstr "Link kopieren"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Copyright Bemeda Personal ©2025 all rights reserved"
+msgstr "Copyright Bemeda Personal ©2025 alle Rechte vorbehalten"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Go back"
+msgstr "Zurück"
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Interviewing"
+msgstr "Im Vorstellungsgespräch"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Please note that Bemeda personal uses your career profile as your resume when you apply for a job."
+msgstr "Bitte beachten Sie, dass Bemeda Personal Ihr Karriereprofil als Lebenslauf verwendet, wenn Sie sich auf eine Stelle bewerben."
+
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Received applications"
+msgstr "Bewerbung Prüfen"
+
+#: lib/bemeda_personal_web/components/job_application/job_applications_list_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Remote allowed"
+msgstr "Remote-Arbeit erlaubt"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "See more"
+msgstr "Mehr anzeigen"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Submitting..."
+msgstr "Wird gesendet..."
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Upload video"
+msgstr "Video hochladen"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "You might not be a perfect match for this job"
+msgstr "Sie passen möglicherweise nicht perfekt zu dieser Stelle"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "optional"
+msgstr "optional"
+
+#: lib/bemeda_personal_web/live/job_application_live/index.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "New Application"
+msgstr "Meine Bewerbungen"
+
+#: lib/bemeda_personal_web/components/job_application/application_warning.ex
+#, elixir-autogen, elixir-format
+msgid "You already applied to this job"
+msgstr "Sie haben sich bereits auf diese Stelle beworben"
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Remove video"
+msgstr "Video entfernen"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Unknown"
+msgstr "Unbekannt"

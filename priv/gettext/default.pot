@@ -85,3 +85,60 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "View all jobs"
 msgstr ""
+
+#: lib/bemeda_personal/date_utils.ex
+#, elixir-autogen, elixir-format
+msgid "1 day ago"
+msgid_plural "%{count} days ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/bemeda_personal/date_utils.ex
+#, elixir-autogen, elixir-format
+msgid "1 hour ago"
+msgid_plural "%{count} hours ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/bemeda_personal/date_utils.ex
+#, elixir-autogen, elixir-format
+msgid "1 minute ago"
+msgid_plural "%{count} minutes ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/bemeda_personal/date_utils.ex
+#, elixir-autogen, elixir-format
+msgid "1 month ago"
+msgid_plural "%{count} months ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/bemeda_personal/date_utils.ex
+#, elixir-autogen, elixir-format
+msgid "1 second ago"
+msgid_plural "%{count} seconds ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/bemeda_personal/date_utils.ex
+#, elixir-autogen, elixir-format
+msgid "1 week ago"
+msgid_plural "%{count} weeks ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/bemeda_personal/date_utils.ex
+#, elixir-autogen, elixir-format
+msgid "Yesterday"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/job_application/application_warning.ex
+#, elixir-autogen, elixir-format
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: lib/bemeda_personal_web/components/job_application/application_warning.ex
+#, elixir-autogen, elixir-format
+msgid "Please review the information below"
+msgstr ""

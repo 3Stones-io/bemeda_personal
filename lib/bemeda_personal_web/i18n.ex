@@ -18,7 +18,7 @@ defmodule BemedaPersonalWeb.I18n do
       "withdrawn" => dgettext("jobs", "Withdrawn")
     }
 
-    Map.fetch!(state_translations, state)
+    Map.get(state_translations, state, dgettext("jobs", "Unknown"))
   end
 
   @spec translate_status_action(enum_value()) :: translated_string()

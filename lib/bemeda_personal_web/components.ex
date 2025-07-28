@@ -19,6 +19,7 @@ defmodule BemedaPersonalWeb.Components do
       import BemedaPersonalWeb.Components.Core.Button
       import BemedaPersonalWeb.Components.Core.Card
       import BemedaPersonalWeb.Components.Core.EmailConfirmation
+      import BemedaPersonalWeb.Components.Core.EmptyState
       import BemedaPersonalWeb.Components.Core.Error
       import BemedaPersonalWeb.Components.Core.Flash
       import BemedaPersonalWeb.Components.Core.Form
@@ -43,6 +44,10 @@ defmodule BemedaPersonalWeb.Components do
       alias BemedaPersonalWeb.Components.Job
       alias BemedaPersonalWeb.Components.JobApplication
       alias BemedaPersonalWeb.Components.Shared
+
+      # Import JobApplication components
+      import BemedaPersonalWeb.Components.JobApplication.ApplicationStatusBadge
+      import BemedaPersonalWeb.Components.JobApplication.ApplicationWarning
 
       # Legacy alias for backward compatibility
       alias BemedaPersonalWeb.Components.Shared.SharedComponents

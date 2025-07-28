@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
 
   use BemedaPersonalWeb, :html
 
+  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias BemedaPersonalWeb.I18n
@@ -10,6 +11,47 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
 
   @type assigns :: Phoenix.LiveView.Socket.assigns()
   @type output :: Phoenix.LiveView.Rendered.t()
+
+  defp assign_company_display_attributes(assigns) do
+    assign_new(assigns, :company_logo, fn
+      %{job: %{company: %{media_asset: %{url: url}}}} when is_binary(url) -> url
+      _assigns -> nil
+    end)
+  end
+
+  @doc false
+  @spec get_company_initials(map() | nil) :: String.t()
+  def get_company_initials(%{name: name}) when is_binary(name) do
+    name
+    |> String.split(" ")
+    |> Enum.take(2)
+    |> Enum.map_join("", &String.first/1)
+    |> String.upcase()
+  end
+
+  def get_company_initials(_company), do: "C"
+
+  @doc false
+  @spec get_avatar_gradient(map() | nil) :: String.t()
+  def get_avatar_gradient(%{name: name}) when is_binary(name) and byte_size(name) > 0 do
+    gradients = [
+      # lime-300 to indigo-700
+      "linear-gradient(135deg, #bef264 0%, #6366f1 100%)",
+      # amber-400 to red-600
+      "linear-gradient(135deg, #fbbf24 0%, #dc2626 100%)",
+      # blue-400 to violet-700
+      "linear-gradient(135deg, #60a5fa 0%, #7c3aed 100%)",
+      # emerald-400 to cyan-600
+      "linear-gradient(135deg, #34d399 0%, #0891b2 100%)",
+      # pink-400 to purple-700
+      "linear-gradient(135deg, #f472b6 0%, #9333ea 100%)"
+    ]
+
+    index = :erlang.phash2(name, length(gradients))
+    Enum.at(gradients, index)
+  end
+
+  def get_avatar_gradient(_company), do: "linear-gradient(135deg, #9ca3af 0%, #4b5563 100%)"
 
   attr :id, :string, required: true
   attr :job_view, :atom, required: true
@@ -22,73 +64,81 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
   @spec job_posting_card(assigns()) :: output()
   def job_posting_card(assigns) do
     assigns =
-      assign_new(assigns, :job_view_path, fn
+      assigns
+      |> assign_new(:job_view_path, fn
         %{job: job, job_view: :company_job} -> ~p"/company/jobs/#{job}"
         %{job: job, job_view: :job} -> ~p"/jobs/#{job}"
       end)
+      |> assign_company_display_attributes()
 
     ~H"""
-    <div class="bg-white border border-strokes rounded-lg p-6 mb-4 hover:shadow-md transition-shadow duration-200 relative">
-      <div class="cursor-pointer" phx-click={JS.navigate(@job_view_path)}>
-        <div class="flex justify-between items-start mb-4">
-          <div class="flex-1">
-            <h3 class="text-lg font-medium text-gray-700 mb-2">
-              <.link
-                navigate={@job_view_path}
-                class="hover:text-primary-500 transition-colors"
-                id={@id}
-              >
-                {@job.title}
-              </.link>
-            </h3>
-
-            <p :if={@show_company_name} class="text-sm mb-2">
-              <.link
-                navigate={~p"/companies/#{@job.company_id}"}
-                class="text-primary-500 hover:text-primary-600"
-              >
-                {@job.company.name}
-              </.link>
-            </p>
-
-            <div class="flex flex-wrap items-center text-sm text-gray-500 gap-x-4 gap-y-2">
-              <span :if={@job.location} class="flex items-center gap-x-1">
-                <.icon name="hero-map-pin" class="w-4 h-4 text-icon-secondary" />
-                {@job.location}
-              </span>
-              <span :if={@job.remote_allowed} class="flex items-center gap-x-1">
-                <.icon name="hero-map-pin" class="w-4 h-4 text-icon-secondary" />
-                {dgettext("jobs", "Remote")}
-              </span>
-              <span :if={@job.employment_type} class="flex items-center gap-x-1">
-                <.icon name="hero-briefcase" class="w-4 h-4 text-icon-secondary" />
-                {I18n.translate_employment_type(to_string(@job.employment_type))}
-              </span>
-              <span
-                :if={@job.salary_min && @job.salary_max && @job.currency}
-                class="flex items-center gap-x-1"
-              >
-                <.icon name="hero-currency-dollar" class="w-4 h-4 text-icon-secondary" />
-                {@job.currency} {Number.Delimit.number_to_delimited(@job.salary_min)} - {Number.Delimit.number_to_delimited(
-                  @job.salary_max
-                )}
-              </span>
-            </div>
-          </div>
-
-          <div :if={@show_actions} class="flex items-center gap-2 ml-4">
-            <div class="bg-primary-100 text-primary-600 px-3 py-1 rounded-full text-sm font-medium">
-              {dgettext("jobs", "Active")}
-            </div>
-          </div>
+    <div class="bg-white shadow-sm rounded-lg p-6 mb-4 hover:shadow-md transition-shadow duration-200">
+      <div class="flex gap-4">
+        <div :if={@company_logo} class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+          <img src={@company_logo} alt={@job.company.name} class="w-full h-full object-cover" />
+        </div>
+        <div
+          :if={!@company_logo}
+          class="w-12 h-12 rounded-full flex items-center justify-center text-white font-medium text-base flex-shrink-0"
+          style={"background: #{get_avatar_gradient(@job.company)}"}
+        >
+          {get_company_initials(@job.company)}
         </div>
 
-        <div :if={@job.description} class="text-sm text-gray-500 line-clamp-2 mb-4">
-          {SharedHelpers.to_html(@job.description)}
+        <div class="flex-1">
+          <h3 class="text-base font-semibold text-gray-900 leading-tight mb-1">
+            <.link navigate={@job_view_path} class="hover:text-primary-600 transition-colors" id={@id}>
+              {@job.title}
+            </.link>
+          </h3>
+
+          <div class="flex items-center gap-1.5 text-xs text-gray-600 mb-3">
+            <span class="font-normal">{@job.company.name}</span>
+            <span class="text-gray-400">·</span>
+            <span class="text-gray-400">
+              {dgettext("jobs", "Posted")} {DateUtils.relative_time(@job.inserted_at)}
+            </span>
+          </div>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span
+              :if={@job.location}
+              class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+            >
+              {@job.location}
+            </span>
+            <span
+              :if={@job.remote_allowed}
+              class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+            >
+              {dgettext("jobs", "Remote")}
+            </span>
+            <span
+              :if={@job.employment_type}
+              class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+            >
+              {I18n.translate_employment_type(to_string(@job.employment_type))}
+            </span>
+            <span
+              :if={@job.salary_min && @job.salary_max && @job.currency}
+              class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+            >
+              {@job.currency} {Number.Delimit.number_to_delimited(@job.salary_min)}-{Number.Delimit.number_to_delimited(
+                @job.salary_max
+              )}
+            </span>
+          </div>
+
+          <div :if={@job.description} class="text-sm text-gray-600 line-clamp-2">
+            {SharedHelpers.to_html(@job.description)}
+          </div>
         </div>
       </div>
 
-      <div :if={@show_actions} class="flex items-center justify-between border-t border-strokes pt-4">
+      <div
+        :if={@show_actions}
+        class="flex items-center justify-between border-t border-strokes pt-4 mt-4"
+      >
         <div class="flex items-center gap-4 text-sm text-gray-500">
           <span class="flex items-center gap-1">
             <.icon name="hero-users" class="w-4 h-4 text-icon-secondary" />

@@ -3,7 +3,6 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
 
   use BemedaPersonalWeb, :live_component
 
-  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplicationFilter
   alias BemedaPersonalWeb.Components.Job.JobsComponents
@@ -83,64 +82,85 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
           :for={{id, application} <- @streams.job_applications}
           role="listitem"
           id={id}
-          class="rounded-lg overflow-hidden border border-gray-200"
-          phx-click={
-            JS.navigate(~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}")
-          }
+          class="bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-lg transition-shadow duration-200"
         >
-          <div class="p-6 hover:bg-gray-50 cursor-pointer relative">
-            <div class="flex flex-col md:flex-row justify-between">
-              <div class="flex-1 pr-4">
-                <div>
-                  <h3>
-                    <span class="text-lg font-semibold text-gray-900">
-                      {application.job_posting.title}
-                    </span>
-                    <span class={[
-                      "text-xs font-medium w-[fit-content] px-2 py-1 rounded-full cursor-pointer",
-                      SharedHelpers.status_badge_color(application.state)
-                    ]}>
-                      {I18n.translate_status(application.state)}
-                    </span>
-                  </h3>
-                  <p class="text-sm text-gray-600 mt-1">{application.job_posting.company.name}</p>
+          <.link
+            navigate={~p"/jobs/#{application.job_posting_id}"}
+            class="block text-inherit no-underline"
+          >
+            <div class="flex gap-3">
+              <div class="flex-shrink-0">
+                <div
+                  :if={application.job_posting.company.media_asset}
+                  class="w-11 h-11 rounded-full overflow-hidden bg-gray-100 border border-gray-200"
+                >
+                  <img
+                    src={application.job_posting.company.media_asset.url}
+                    alt={application.job_posting.company.name}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <div
+                  :if={!application.job_posting.company.media_asset}
+                  class="w-11 h-11 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 font-medium text-xs border border-gray-200"
+                >
+                  {String.slice(application.job_posting.company.name, 0, 2) |> String.upcase()}
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="mb-2">
+                  <.status_badge status={application.state} />
                 </div>
 
-                <div class="mt-4 flex items-center text-sm text-gray-500">
-                  <.icon name="hero-calendar" class="w-4 h-4 mr-1" />
-                  {dgettext("jobs", "Applied on")} {DateUtils.format_date(
-                    DateTime.to_date(application.inserted_at)
+                <h3 class="text-base font-semibold text-gray-900 mb-1 truncate">
+                  {application.job_posting.title}
+                </h3>
+                <p class="text-sm text-primary-600 hover:text-primary-700 cursor-pointer mb-1">
+                  {application.job_posting.company.name}
+                </p>
+
+                <div class="text-xs text-gray-400 mb-3">
+                  {dgettext("jobs", "Applied")} {BemedaPersonal.DateUtils.relative_time(
+                    application.inserted_at
                   )}
                 </div>
-              </div>
 
-              <div class="flex items-center space-x-2 mt-4 md:mt-0 action">
-                <.link
-                  navigate={
-                    ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}"
-                  }
-                  class="px-4 py-2 bg-indigo-100 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <.icon name="hero-chat-bubble-left-right" class="w-4 h-4" />
-                </.link>
+                <div class="flex items-center gap-2 text-xs text-gray-500 mb-2 flex-wrap">
+                  <div class="flex items-center gap-1">
+                    <.icon name="hero-map-pin" class="w-3 h-3 text-gray-400" />
+                    <span>
+                      {application.job_posting.location || "Schaffhausen, Switzerland"}
+                    </span>
+                  </div>
+                  <span :if={application.job_posting.remote_allowed} class="text-gray-300">•</span>
+                  <span :if={application.job_posting.remote_allowed}>
+                    {dgettext("jobs", "Remote allowed")}
+                  </span>
+                </div>
 
-                <.link
-                  navigate={
-                    ~p"/jobs/#{application.job_posting_id}/job_applications/#{application.id}/edit"
-                  }
-                  class="px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  {dgettext("jobs", "Edit")}
-                </.link>
-                <.link
-                  navigate={~p"/jobs/#{application.job_posting_id}"}
-                  class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  {dgettext("jobs", "View Job")}
-                </.link>
+                <div class="flex items-center gap-2 text-xs text-gray-500 mb-3 flex-wrap">
+                  <span>
+                    {application.job_posting.employment_type || dgettext("jobs", "Contract")}
+                  </span>
+                  <span class="text-gray-300">•</span>
+                  <span>
+                    {application.job_posting.currency || "CHF"} {format_number(
+                      application.job_posting.salary_min || 3000
+                    )} - {format_number(application.job_posting.salary_max || 4000)}
+                  </span>
+                </div>
+
+                <div class="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
+                  {String.slice(
+                    application.job_posting.description ||
+                      "We are seeking a compassionate and skilled professional to join our healthcare team...",
+                    0,
+                    150
+                  )}...
+                </div>
               </div>
             </div>
-          </div>
+          </.link>
         </div>
       </div>
     </div>
@@ -304,4 +324,10 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
         true
     end
   end
+
+  defp format_number(number) when is_number(number) do
+    Number.Delimit.number_to_delimited(number, precision: 0)
+  end
+
+  defp format_number(_other), do: ""
 end

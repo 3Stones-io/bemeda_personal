@@ -1,52 +1,222 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <JobsComponents.job_detail_header job={@job_posting} back_link={~p"/jobs"} />
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <.link
+    navigate={~p"/jobs"}
+    class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 mb-4"
+  >
+    <.icon name="hero-arrow-left" class="mr-2 h-4 w-4" />
+    {dgettext("jobs", "Go back")}
+  </.link>
 
-  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-    <div class="lg:col-span-2">
-      <.card variant="default" padding="none" class="overflow-hidden">
-        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-          <h2 class="text-xl font-semibold text-gray-900">
-            {dgettext("jobs", "Job Description")}
-          </h2>
-          <.button
-            :if={
-              !@application &&
-                !(@current_user && @job_posting.company.admin_user_id == @current_user.id)
-            }
-            variant="primary"
-            navigate={~p"/jobs/#{@job_posting.id}/job_applications/new"}
-          >
-            {dgettext("jobs", "Apply to this job")}
-          </.button>
+  <ApplicationWarning.warning :if={@application} type="already_applied" />
 
+  <.card variant="default" padding="none" class="overflow-hidden">
+    <!-- Header with job title and company info -->
+    <div class="p-6 pb-0">
+      <h1 class="text-2xl font-bold text-gray-900 mb-3">{@job_posting.title}</h1>
+
+      <div class="flex items-center gap-4 mb-4">
+        <div :if={@job_posting.company.media_asset} class="w-12 h-12 rounded-full overflow-hidden">
+          <img
+            src={@job_posting.company.media_asset.url}
+            alt={@job_posting.company.name}
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div
+          :if={!@job_posting.company.media_asset}
+          class="w-12 h-12 rounded-full flex items-center justify-center text-white font-medium text-base"
+          style={"background: #{JobsComponents.get_avatar_gradient(@job_posting.company)}"}
+        >
+          {JobsComponents.get_company_initials(@job_posting.company)}
+        </div>
+        <div>
           <.link
-            :if={@application}
-            navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@application.id}"}
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            navigate={~p"/companies/#{@job_posting.company.id}"}
+            class="text-base font-medium text-gray-900 hover:text-primary-600"
           >
-            {dgettext("jobs", "Review Application")}
+            {@job_posting.company.name}
           </.link>
+          <p class="text-sm text-gray-500">
+            {dgettext("jobs", "Posted")} {Calendar.strftime(
+              @job_posting.inserted_at,
+              "%B %-d, %Y"
+            )}
+          </p>
         </div>
-
-        <SharedComponents.video_player media_asset={@job_posting.media_asset} />
-
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 prose max-w-none md-to-html">
-          {SharedHelpers.to_html(@job_posting.description)}
+      </div>
+      
+<!-- Tags -->
+      <div class="flex flex-wrap gap-2 mb-6">
+        <span
+          :if={@job_posting.remote_allowed}
+          class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+        >
+          <.icon name="hero-map-pin" class="w-3 h-3 mr-1" />
+          {dgettext("jobs", "Remote")}
+        </span>
+        <span
+          :if={@job_posting.location}
+          class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+        >
+          {@job_posting.location}
+        </span>
+        <span
+          :if={@job_posting.employment_type}
+          class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+        >
+          {I18n.translate_employment_type(to_string(@job_posting.employment_type))}
+        </span>
+        <span
+          :if={@job_posting.years_of_experience}
+          class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+        >
+          {I18n.translate_years_of_experience(to_string(@job_posting.years_of_experience))}
+        </span>
+        <span
+          :if={@job_posting.salary_min && @job_posting.salary_max && @job_posting.currency}
+          class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700"
+        >
+          {@job_posting.currency} {Number.Delimit.number_to_delimited(@job_posting.salary_min)} - {Number.Delimit.number_to_delimited(
+            @job_posting.salary_max
+          )}
+        </span>
+      </div>
+    </div>
+    
+<!-- Video player if available -->
+    <SharedComponents.video_player media_asset={@job_posting.media_asset} />
+    
+<!-- Job Description -->
+    <div class="p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+        {dgettext("jobs", "Job Description")}
+      </h2>
+      <div class="prose max-w-none text-gray-700 md-to-html">
+        {SharedHelpers.to_html(@job_posting.description)}
+      </div>
+    </div>
+    
+<!-- Activity stats -->
+    <div class="border-t border-gray-200 p-6">
+      <h3 class="text-base font-medium text-gray-900 mb-3">
+        {dgettext("jobs", "Activity on this Job")}
+      </h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex items-center gap-2">
+          <.icon name="hero-envelope" class="w-5 h-5 text-gray-400" />
+          <span class="text-sm text-gray-600">
+            {dgettext("jobs", "Received applications")}
+          </span>
+          <span class="text-sm font-medium text-gray-900">0</span>
         </div>
-      </.card>
+        <div class="flex items-center gap-2">
+          <.icon name="hero-user-group" class="w-5 h-5 text-gray-400" />
+          <span class="text-sm text-gray-600">
+            {dgettext("jobs", "Interviewing")}
+          </span>
+          <span class="text-sm font-medium text-gray-900">0</span>
+        </div>
+      </div>
+    </div>
+    
+<!-- Copy Link -->
+    <div class="border-t border-gray-200 p-6">
+      <button
+        type="button"
+        onclick={"navigator.clipboard.writeText('#{url(~p"/jobs/#{@job_posting.id}")}')"}
+        class="text-sm text-primary-600 hover:text-primary-700 font-medium"
+      >
+        {dgettext("jobs", "Copy Link")}
+      </button>
+    </div>
+    
+<!-- Apply Button -->
+    <div
+      :if={
+        !@application &&
+          !(@current_user && @job_posting.company.admin_user_id == @current_user.id)
+      }
+      class="p-6 pt-0"
+    >
+      <button
+        type="button"
+        phx-click={JS.patch(~p"/jobs/#{@job_posting.id}/apply")}
+        class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+      >
+        {dgettext("jobs", "Apply to this job")}
+      </button>
     </div>
 
-    <div>
-      <.card variant="default" padding="none" class="overflow-hidden">
-        <div class="px-4 py-5 sm:px-6">
-          <h2 class="text-lg font-medium text-gray-900">{dgettext("jobs", "Job Details")}</h2>
-        </div>
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6 mb-4">
-          <JobsComponents.job_details job={@job_posting} />
-        </div>
-      </.card>
+    <.link
+      :if={@application}
+      navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@application.id}"}
+      class="block p-6 pt-0"
+    >
+      <div class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gray-400 cursor-not-allowed">
+        {dgettext("jobs", "Already Applied")}
+      </div>
+    </.link>
+  </.card>
+</div>
 
-      <JobsComponents.company_details_card company={@job_posting.company} />
-    </div>
+<!-- Right Side Panel for Application Form -->
+<div
+  :if={@show_modal}
+  id="job-application-panel"
+  class="hidden"
+  phx-mounted={
+    JS.show(
+      to: "#job-application-panel",
+      transition:
+        {"transition-all transform ease-out duration-300", "translate-x-full", "translate-x-0"},
+      display: "block"
+    )
+    |> JS.add_class(
+      "fixed inset-y-0 right-0 w-full sm:max-w-2xl bg-white shadow-2xl z-50 transform"
+    )
+  }
+  phx-remove={
+    JS.hide(
+      to: "#job-application-panel",
+      transition:
+        {"transition-all transform ease-in duration-200", "translate-x-0", "translate-x-full"}
+    )
+  }
+>
+  <div class="h-full overflow-y-auto">
+    <.live_component
+      module={FormComponent}
+      id={@job_application.id || :new}
+      title={@page_title}
+      action={:new}
+      job_application={@job_application}
+      job_posting={@job_posting}
+      resume={@resume}
+      current_user={@current_user}
+      patch={~p"/jobs/#{@job_posting.id}"}
+    />
   </div>
+</div>
+
+<!-- Backdrop -->
+<div
+  :if={@show_modal}
+  id="modal-backdrop"
+  class="hidden"
+  phx-mounted={
+    JS.show(
+      to: "#modal-backdrop",
+      transition: {"transition-opacity ease-out duration-300", "opacity-0", "opacity-100"},
+      display: "block"
+    )
+    |> JS.add_class("fixed inset-0 bg-black bg-opacity-50 z-40")
+  }
+  phx-remove={
+    JS.hide(
+      to: "#modal-backdrop",
+      transition: {"transition-opacity ease-in duration-200", "opacity-100", "opacity-0"}
+    )
+  }
+  phx-click={FormComponent.close_modal_js()}
+>
 </div>

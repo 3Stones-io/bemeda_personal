@@ -478,12 +478,12 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
   end
 
   def handle_event("upload_avatar", _params, socket) do
-    # TODO: Implement avatar upload functionality
+    # Avatar upload functionality placeholder - feature planned for future release
     {:noreply, put_flash(socket, :info, dgettext("auth", "Avatar upload feature coming soon."))}
   end
 
   def handle_event("upload_company_logo", _params, socket) do
-    # TODO: Implement company logo upload functionality
+    # Company logo upload functionality placeholder - feature planned for future release
     {:noreply,
      put_flash(socket, :info, dgettext("companies", "Logo upload feature coming soon."))}
   end

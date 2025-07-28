@@ -1,13 +1,15 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.Index do
+  @moduledoc false
+
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.JobApplications
-  alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Components.JobApplication.FormComponent
   alias BemedaPersonalWeb.Components.JobApplication.JobApplicationsListComponent
   alias BemedaPersonalWeb.Endpoint
+  alias Phoenix.LiveView.JS
   alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
@@ -21,7 +23,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     {:ok,
      socket
      |> assign(:page_title, dgettext("jobs", "My Job Applications"))
-     |> assign(:resume, Resumes.get_user_resume(current_user))}
+     |> assign(:resume, Resumes.get_user_resume(current_user))
+     |> assign(:applied_count, 0)
+     |> assign(:filter_params, %{"user_id" => current_user.id})}
   end
 
   @impl Phoenix.LiveView
@@ -46,7 +50,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
       job_application: payload.job_application
     )
 
-    {:noreply, socket}
+    {:noreply, update_counts(socket)}
   end
 
   def handle_info(_event, socket), do: {:noreply, socket}
@@ -55,34 +59,21 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     job_posting = JobPostings.get_job_posting!(job_id)
 
     socket
-    |> assign(:job_application, %JobApplication{})
+    |> assign(:page_title, dgettext("jobs", "New Application"))
+    |> assign(:job_application, %JobApplications.JobApplication{})
     |> assign(:job_posting, job_posting)
-    |> assign(
-      :page_title,
-      dgettext("jobs", "Apply to %{job_title}", job_title: job_posting.title)
-    )
-  end
-
-  defp apply_action(socket, :edit, %{"job_id" => job_id, "id" => id}) do
-    job_posting = JobPostings.get_job_posting!(job_id)
-    job_application = JobApplications.get_job_application!(id)
-
-    socket
-    |> assign(:job_application, job_application)
-    |> assign(:job_posting, job_posting)
-    |> assign(
-      :page_title,
-      dgettext("jobs", "Edit application for %{job_title}", job_title: job_posting.title)
-    )
+    |> update_counts()
   end
 
   defp apply_action(socket, :index, _params) do
-    # For applicants, we don't want to apply any filters from the URL
-    # since there's no filter form UI
-    filter_params = %{"user_id" => socket.assigns.current_user.id}
-
     socket
-    |> assign(:filter_params, filter_params)
     |> assign(:page_title, dgettext("jobs", "My Job Applications"))
+    |> update_counts()
+  end
+
+  defp update_counts(socket) do
+    user_id = socket.assigns.current_user.id
+    applied_count = JobApplications.count_user_applications(user_id)
+    assign(socket, :applied_count, applied_count)
   end
 end
