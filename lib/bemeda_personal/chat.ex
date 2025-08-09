@@ -3,6 +3,8 @@ defmodule BemedaPersonal.Chat do
   The Chat context.
   """
 
+  use BemedaPersonalWeb, :verified_routes
+
   import Ecto.Query, warn: false
 
   alias BemedaPersonal.Accounts.User
@@ -11,6 +13,7 @@ defmodule BemedaPersonal.Chat do
   alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
+  alias BemedaPersonalWeb.SharedHelpers
   alias Ecto.Multi
 
   @type attrs :: map()
@@ -102,6 +105,11 @@ defmodule BemedaPersonal.Chat do
         message_topic = "#{@message_topic}:job_application:#{job_application.id}"
         Endpoint.broadcast(message_topic, "message_created", %{message: message})
 
+        # Enqueue email notification for new messages
+        if message.type == :user do
+          enqueue_message_notification(message, job_application)
+        end
+
         {:ok, message}
 
       error ->
@@ -154,6 +162,11 @@ defmodule BemedaPersonal.Chat do
 
         message_topic = "#{@message_topic}:job_application:#{job_application.id}"
         Endpoint.broadcast(message_topic, "message_created", %{message: message})
+
+        # Enqueue email notification for new messages
+        if message.type == :user do
+          enqueue_message_notification(message, job_application)
+        end
 
         {:ok, message}
 
@@ -227,5 +240,26 @@ defmodule BemedaPersonal.Chat do
   @spec change_message(message(), attrs()) :: changeset()
   def change_message(%Message{} = message, attrs \\ %{}) do
     Message.changeset(message, attrs)
+  end
+
+  # Private function to enqueue email notification for messages
+  defp enqueue_message_notification(message, job_application) do
+    # Load necessary associations
+    job_application =
+      Repo.preload(job_application, job_posting: [:company])
+
+    recipient_id =
+      if message.sender_id == job_application.job_posting.company.admin_user_id do
+        job_application.user_id
+      else
+        job_application.job_posting.company.admin_user_id
+      end
+
+    SharedHelpers.enqueue_email_notification_job(%{
+      message_id: message.id,
+      recipient_id: recipient_id,
+      type: "new_message",
+      url: ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+    })
   end
 end

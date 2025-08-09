@@ -73,12 +73,6 @@ msgstr ""
 msgid "Apply Filters"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#: lib/bemeda_personal_web/live/job_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Apply to this job"
-msgstr ""
-
 #: lib/bemeda_personal_web/live/job_application_live/history.html.heex
 #, elixir-autogen, elixir-format
 msgid "Back to application"
@@ -1682,4 +1676,10 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Unknown"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Apply Now"
 msgstr ""

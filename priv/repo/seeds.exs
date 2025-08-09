@@ -180,7 +180,7 @@ tech_jobs = [
     location: "San Francisco, CA",
     employment_type: :"Permanent Position",
     position: :Employee,
-    salary_min: 95000,
+    salary_min: 95_000,
     salary_max: 125_000,
     currency: "USD",
     remote_allowed: true
@@ -207,7 +207,7 @@ health_jobs = [
     location: "Boston, MA",
     employment_type: :"Permanent Position",
     position: :Employee,
-    salary_min: 90000,
+    salary_min: 90_000,
     salary_max: 120_000,
     currency: "USD",
     remote_allowed: true
@@ -273,7 +273,7 @@ more_tech_jobs =
       employment_type:
         Enum.random([:Floater, :"Permanent Position", :"Staff Pool", :"Temporary Assignment"]),
       position: position,
-      salary_min: Enum.random([80000, 90000, 100_000, 110_000]),
+      salary_min: Enum.random([80_000, 90_000, 100_000, 110_000]),
       salary_max: Enum.random([120_000, 130_000, 150_000, 170_000]),
       currency: "USD",
       remote_allowed: Enum.random([true, false])
@@ -311,7 +311,7 @@ more_health_jobs =
       employment_type:
         Enum.random([:Floater, :"Permanent Position", :"Staff Pool", :"Temporary Assignment"]),
       position: position,
-      salary_min: Enum.random([85000, 95000, 105_000, 115_000]),
+      salary_min: Enum.random([85_000, 95_000, 105_000, 115_000]),
       salary_max: Enum.random([125_000, 135_000, 155_000, 175_000]),
       currency: "USD",
       remote_allowed: Enum.random([true, false])

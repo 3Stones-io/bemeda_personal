@@ -109,6 +109,8 @@ defmodule BemedaPersonal.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.0.0"},
       {:floki, ">= 0.30.0", only: :test},
+      {:phoenix_test, "~> 0.4", only: :test, runtime: false},
+      {:phoenix_test_playwright, "~> 0.7", only: :test, runtime: false},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
@@ -170,7 +172,11 @@ defmodule BemedaPersonal.MixProject do
         "dialyzer",
         "test --cover --warnings-as-errors"
       ],
-      prettier: ["cmd npx prettier -w ."]
+      prettier: ["cmd npx prettier -w ."],
+      "test.features": [
+        "assets.deploy",
+        "cmd export FEATURE_TESTS=true && export PW_TIMEOUT=2000 && ./scripts/feature_test_with_retry.sh"
+      ]
     ]
   end
 end

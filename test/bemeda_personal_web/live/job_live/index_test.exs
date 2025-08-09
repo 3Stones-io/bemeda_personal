@@ -15,7 +15,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "Senior Software Engineer",
           location: "San Francisco",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           position: "Specialist Role",
           remote_allowed: true
         })
@@ -24,7 +24,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "UX Designer",
           location: "New York",
-          employment_type: "Floater",
+          employment_type: :Floater,
           position: "Employee",
           remote_allowed: false
         })
@@ -33,7 +33,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "Frontend Developer",
           location: "Remote",
-          employment_type: "Staff Pool",
+          employment_type: :"Staff Pool",
           position: "Employee",
           remote_allowed: true
         })

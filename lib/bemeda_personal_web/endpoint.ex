@@ -14,8 +14,8 @@ defmodule BemedaPersonalWeb.Endpoint do
   ]
 
   socket "/live", Phoenix.LiveView.Socket,
-    websocket: [connect_info: [session: @session_options]],
-    longpoll: [connect_info: [session: @session_options]]
+    websocket: [connect_info: [:user_agent, session: @session_options]],
+    longpoll: [connect_info: [:user_agent, session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -46,6 +46,11 @@ defmodule BemedaPersonalWeb.Endpoint do
 
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
+
+  # SQL Sandbox for feature tests
+  if Application.compile_env(:bemeda_personal, :sql_sandbox) do
+    plug Phoenix.Ecto.SQL.Sandbox
+  end
 
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],

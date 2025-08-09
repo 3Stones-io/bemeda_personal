@@ -5,6 +5,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Authorization do
 
   use BemedaPersonalWeb, :live_view
 
+  @type socket :: Phoenix.LiveView.Socket.t()
+
   @doc """
   Authorizes access to a job application based on user type and ownership.
 
@@ -12,7 +14,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Authorization do
   - `:ok` if access is authorized
   - `{:error, {redirect_path, error_message}}` if access is denied
   """
-  @spec authorize_job_application_access(Phoenix.LiveView.Socket.t(), map()) ::
+  @spec authorize_job_application_access(socket(), map()) ::
           :ok | {:error, {String.t(), String.t()}}
   def authorize_job_application_access(socket, job_application) do
     current_user = socket.assigns.current_user

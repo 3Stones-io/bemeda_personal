@@ -42,11 +42,14 @@ defmodule BemedaPersonalWeb.UserAuth do
     token = Accounts.generate_user_session_token(user)
     user_return_to = get_session(conn, :user_return_to)
 
+    # For employers without a company, redirect to company setup
+    redirect_path = user_return_to || signed_in_path_for_user(user)
+
     conn
     |> renew_session()
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> redirect(to: redirect_path)
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
@@ -482,4 +485,22 @@ defmodule BemedaPersonalWeb.UserAuth do
   defp maybe_store_return_to(conn), do: conn
 
   defp signed_in_path(_conn), do: ~p"/"
+
+  defp signed_in_path_for_user(user) do
+    # Handle both string and atom user_type
+    is_employer = user.user_type == :employer or user.user_type == "employer"
+
+    if is_employer do
+      # Check if employer has a company
+      case Companies.get_company_by_user(user) do
+        # No company, redirect to company setup
+        nil -> ~p"/company"
+        # Has company, redirect to home
+        _company -> ~p"/"
+      end
+    else
+      # Job seeker or other user types
+      ~p"/"
+    end
+  end
 end

@@ -370,21 +370,21 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         job_posting_fixture(company, %{
           title: "Remote Software Engineer",
           remote_allowed: true,
-          employment_type: "Permanent Position"
+          employment_type: :"Permanent Position"
         })
 
       onsite_job =
         job_posting_fixture(company, %{
           title: "Onsite Developer",
           remote_allowed: false,
-          employment_type: "Staff Pool"
+          employment_type: :"Staff Pool"
         })
 
       another_job =
         job_posting_fixture(company, %{
           title: "Marketing Specialist",
           remote_allowed: false,
-          employment_type: "Permanent Position"
+          employment_type: :"Permanent Position"
         })
 
       conn = log_in_user(conn, user)

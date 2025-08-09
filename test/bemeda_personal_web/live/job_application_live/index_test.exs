@@ -206,7 +206,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       assert html =~ "New Application"
       assert html =~ "Cover letter"
-      assert html =~ "Apply to this job"
+      assert html =~ "Apply Now"
     end
 
     test "validates required fields when submitting the form", %{

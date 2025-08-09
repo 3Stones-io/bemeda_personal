@@ -15,11 +15,12 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias Phoenix.Socket.Broadcast
 
+  @type socket :: Phoenix.LiveView.Socket.t()
+
   @doc """
   Sets up shared rating functionality in LiveViews.
   """
-  @spec on_mount(atom(), map(), map(), Phoenix.LiveView.Socket.t()) ::
-          {:cont, Phoenix.LiveView.Socket.t()}
+  @spec on_mount(atom(), map(), map(), socket()) :: {:cont, socket()}
   def on_mount(:default, _params, _session, socket) do
     socket = attach_hook(socket, :rating_info_handler, :handle_info, &handle_rating_info/2)
 
@@ -34,8 +35,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   - Rating update broadcasts
   - Rating submissions
   """
-  @spec handle_rating_info(any(), Phoenix.LiveView.Socket.t()) ::
-          {:cont | :halt, Phoenix.LiveView.Socket.t()}
+  @spec handle_rating_info(any(), socket()) :: {:cont | :halt, socket()}
   def handle_rating_info(message, socket)
 
   def handle_rating_info({:rating_error, error}, socket) do

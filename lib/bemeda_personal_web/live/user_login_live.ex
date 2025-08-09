@@ -18,9 +18,11 @@ defmodule BemedaPersonalWeb.UserLoginLive do
             <div class="space-y-0">
               <%!-- Email Input --%>
               <div class="relative mb-0">
+                <label for="user_email" class="sr-only">{dgettext("auth", "Email Address")}</label>
                 <input
                   type="email"
                   name="user[email]"
+                  id="user_email"
                   value={@form[:email].value}
                   placeholder={dgettext("auth", "Email Address")}
                   class="w-full h-10 px-0 py-3 text-base text-gray-700 placeholder-[#9d9d9d] bg-transparent border-0 border-b border-[#e0e6ed] focus:outline-none focus:border-[#7b4eab] focus:ring-0"
@@ -31,9 +33,11 @@ defmodule BemedaPersonalWeb.UserLoginLive do
 
               <%!-- Password Input --%>
               <div class="relative mb-2">
+                <label for="user_password" class="sr-only">{dgettext("auth", "Password")}</label>
                 <input
                   type="password"
                   name="user[password]"
+                  id="user_password"
                   value={@form[:password].value}
                   placeholder={dgettext("auth", "Password")}
                   class="w-full h-10 px-0 py-3 pr-10 text-base text-gray-700 placeholder-[#9d9d9d] bg-transparent border-0 border-b border-[#e0e6ed] focus:outline-none focus:border-[#7b4eab] focus:ring-0"

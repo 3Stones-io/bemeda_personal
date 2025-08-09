@@ -16,7 +16,7 @@ defmodule BemedaPersonal.AccountsFixtures do
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
 
   @spec valid_user_password() :: String.t()
-  def valid_user_password, do: "hello world!"
+  def valid_user_password, do: "securepassword123"
 
   @spec valid_user_attributes(attrs()) :: map()
   def valid_user_attributes(attrs \\ []) do

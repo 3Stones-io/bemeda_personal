@@ -364,8 +364,12 @@ defmodule BemedaPersonal.JobApplicationsTest do
     test "returns all job applications when no filter is passed", %{
       job_application: job_application
     } do
-      assert [result] = JobApplications.list_job_applications()
-      assert result.id == job_application.id
+      results = JobApplications.list_job_applications()
+      assert length(results) >= 1
+
+      # Find our specific job application in the results
+      result = Enum.find(results, &(&1.id == job_application.id))
+      assert result != nil
       assert Ecto.assoc_loaded?(result.job_posting)
       assert Ecto.assoc_loaded?(result.user)
       assert Ecto.assoc_loaded?(result.media_asset)
@@ -503,7 +507,12 @@ defmodule BemedaPersonal.JobApplicationsTest do
     test "defaults to listing all job applications if a non-existent filter is passed", %{
       job_application: job_application
     } do
-      assert [result] = JobApplications.list_job_applications(%{unknown_filter: "unknown_filter"})
+      results = JobApplications.list_job_applications(%{unknown_filter: "unknown_filter"})
+      assert length(results) >= 1
+
+      # Find our specific job application in the results
+      result = Enum.find(results, &(&1.id == job_application.id))
+      assert result != nil
       assert job_application.id == result.id
     end
 

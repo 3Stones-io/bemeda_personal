@@ -17,6 +17,8 @@ defmodule BemedaPersonal.Companies.Company do
 
   schema "companies" do
     belongs_to :admin_user, User
+    field :address, :string
+    field :city, :string
     field :description, :string
     field :hospital_affiliation, :string
     field :industry, :string
@@ -25,6 +27,7 @@ defmodule BemedaPersonal.Companies.Company do
     field :name, :string
     field :organization_type, :string
     field :phone_number, :string
+    field :postal_code, :string
     field :size, :string
     field :website_url, :string
 
@@ -35,6 +38,8 @@ defmodule BemedaPersonal.Companies.Company do
   def changeset(company, attrs) do
     company
     |> cast(attrs, [
+      :address,
+      :city,
       :description,
       :hospital_affiliation,
       :industry,
@@ -42,6 +47,7 @@ defmodule BemedaPersonal.Companies.Company do
       :name,
       :organization_type,
       :phone_number,
+      :postal_code,
       :size,
       :website_url
     ])

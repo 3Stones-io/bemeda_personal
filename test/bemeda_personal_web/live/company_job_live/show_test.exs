@@ -16,7 +16,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,

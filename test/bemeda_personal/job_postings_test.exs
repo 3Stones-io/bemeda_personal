@@ -31,7 +31,7 @@ defmodule BemedaPersonal.JobPostingsTest do
     Enum.map(1..count, fn i ->
       job_posting_fixture(company, %{
         description: "Description for job posting #{i}",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         location: "Location #{i}",
         remote_allowed: rem(i, 2) == 0,
         salary_max: i * 15_000,
@@ -88,8 +88,8 @@ defmodule BemedaPersonal.JobPostingsTest do
       user = user_fixture()
       company = company_fixture(user)
 
-      job_posting1 = job_posting_fixture(company, %{employment_type: "Permanent Position"})
-      job_posting_fixture(company, %{employment_type: "Floater"})
+      job_posting1 = job_posting_fixture(company, %{employment_type: :"Permanent Position"})
+      job_posting_fixture(company, %{employment_type: :Floater})
 
       assert [result] = JobPostings.list_job_postings(%{employment_type: "Permanent Position"})
       assert result.id == job_posting1.id
@@ -158,7 +158,7 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       job_posting1 =
         job_posting_fixture(company, %{
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           remote_allowed: true,
           salary_max: 120_000,
           salary_min: 80_000,
@@ -166,7 +166,7 @@ defmodule BemedaPersonal.JobPostingsTest do
         })
 
       job_posting_fixture(company, %{
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         remote_allowed: false,
         salary_max: 70_000,
         salary_min: 50_000,
@@ -174,7 +174,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       })
 
       job_posting_fixture(company, %{
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         remote_allowed: true,
         salary_max: 130_000,
         salary_min: 90_000,
@@ -197,7 +197,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       company = company_fixture(user)
 
       job_posting_fixture(company, %{
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         remote_allowed: true,
         salary_max: 120_000,
         salary_min: 80_000,
@@ -225,7 +225,7 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for older job",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "Location",
           position: "Employee",
           remote_allowed: false,
@@ -242,7 +242,7 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for middle job",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "Location",
           position: "Employee",
           remote_allowed: false,
@@ -259,7 +259,7 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for newer job",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "Location",
           position: "Employee",
           remote_allowed: false,
@@ -284,7 +284,7 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for another older job",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "Location",
           position: "Employee",
           remote_allowed: true,
@@ -370,7 +370,7 @@ defmodule BemedaPersonal.JobPostingsTest do
     test "can count job_postings by employment_type", %{job_posting: _job_posting} do
       user = user_fixture()
       company = company_fixture(user)
-      job_posting_fixture(company, %{employment_type: "Temporary Assignment"})
+      job_posting_fixture(company, %{employment_type: :"Temporary Assignment"})
 
       assert JobPostings.count_job_postings(%{employment_type: "Permanent Position"}) == 1
       assert JobPostings.count_job_postings(%{employment_type: "Temporary Assignment"}) == 1
@@ -410,7 +410,7 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       job_posting_fixture(company, %{
         title: "Remote Healthcare Developer",
-        employment_type: "Temporary Assignment",
+        employment_type: :"Temporary Assignment",
         remote_allowed: true,
         salary_min: 80_000,
         salary_max: 120_000
@@ -418,7 +418,7 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       job_posting_fixture(company, %{
         title: "On-site Developer",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         remote_allowed: false,
         salary_min: 60_000,
         salary_max: 90_000
@@ -480,7 +480,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -502,7 +502,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -525,7 +525,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -552,7 +552,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         "currency" => "USD",
         "description" => "some description that is long enough",
-        "employment_type" => "Permanent Position",
+        "employment_type" => :"Permanent Position",
         "experience_level" => "Mid-level",
         "location" => "some location",
         "remote_allowed" => true,
@@ -585,7 +585,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       invalid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -602,7 +602,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       invalid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -619,7 +619,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       invalid_attrs = %{
         currency: "USD",
         description: "too short",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -641,7 +641,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: "Permanent Position",
+        employment_type: :"Permanent Position",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,

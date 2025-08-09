@@ -8,6 +8,7 @@
 ### to merge POT files into PO files.
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -71,12 +72,6 @@ msgstr ""
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Apply Filters"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#: lib/bemeda_personal_web/live/job_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Apply to this job"
 msgstr ""
 
 #: lib/bemeda_personal_web/live/job_application_live/history.html.heex
@@ -1683,3 +1678,9 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Unknown"
 msgstr ""
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#: lib/bemeda_personal_web/live/job_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Apply Now"
+msgstr "Apply Now"

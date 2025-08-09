@@ -183,6 +183,17 @@ defmodule BemedaPersonal.DateUtilsTest do
       assert {:error, :invalid_format} = DateUtils.parse_date_string("25/bb/2023")
       assert {:error, :invalid_format} = DateUtils.parse_date_string("25/12/cccc")
     end
+
+    test "handles malformed ISO date fallback" do
+      # This should trigger the fallback ISO parsing path
+      assert {:error, :invalid_date} = DateUtils.parse_date_string("2023-02-30")
+    end
+
+    test "returns error for incorrect separator count" do
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("25/12/2023/extra")
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("25/12")
+      assert {:error, :invalid_format} = DateUtils.parse_date_string("25 / 12")
+    end
   end
 
   describe "parse_date_string_safe/1" do
@@ -269,6 +280,41 @@ defmodule BemedaPersonal.DateUtilsTest do
       assert {:error, :invalid_date} = DateUtils.date_string_to_datetime_range("32/12/2023")
       assert {:error, :invalid_date} = DateUtils.date_string_to_datetime_range("25/13/2023")
       assert {:error, :invalid_format} = DateUtils.date_string_to_datetime_range("aa/12/2023")
+    end
+  end
+
+  describe "relative_time/1" do
+    test "returns hours ago for times between 1 hour and 1 day" do
+      now = DateTime.utc_now()
+      # 2 hours
+      two_hours_ago = DateTime.add(now, -7200, :second)
+      assert DateUtils.relative_time(two_hours_ago) == "2 hours ago"
+
+      # 1 hour exactly
+      one_hour_ago = DateTime.add(now, -3600, :second)
+      assert DateUtils.relative_time(one_hour_ago) == "1 hour ago"
+    end
+
+    test "returns days ago for times between 1 day and 1 week" do
+      now = DateTime.utc_now()
+      # 2 days
+      two_days_ago = DateTime.add(now, -172_800, :second)
+      assert DateUtils.relative_time(two_days_ago) == "2 days ago"
+
+      # 1 day exactly
+      one_day_ago = DateTime.add(now, -86_400, :second)
+      assert DateUtils.relative_time(one_day_ago) == "1 day ago"
+    end
+
+    test "returns months ago for times older than 4 weeks" do
+      now = DateTime.utc_now()
+      # ~2 months
+      two_months_ago = DateTime.add(now, -5_184_000, :second)
+      assert DateUtils.relative_time(two_months_ago) == "2 months ago"
+
+      # 1 month exactly
+      one_month_ago = DateTime.add(now, -2_592_000, :second)
+      assert DateUtils.relative_time(one_month_ago) == "1 month ago"
     end
   end
 end

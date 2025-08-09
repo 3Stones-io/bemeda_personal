@@ -620,3 +620,23 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "can't be blank"
 msgstr ""
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Canton"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Department"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Medical role"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Phone"
+msgstr ""

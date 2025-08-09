@@ -269,7 +269,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
                 phx-disable-with={dgettext("jobs", "Submitting...")}
                 type="submit"
               >
-                {dgettext("jobs", "Apply to this job")}
+                {dgettext("jobs", "Apply Now")}
               </.button>
             </div>
           </:actions>

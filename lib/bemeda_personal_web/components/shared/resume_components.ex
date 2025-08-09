@@ -27,7 +27,7 @@ defmodule BemedaPersonalWeb.Components.Shared.ResumeComponents do
             navigate={@add_path}
             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
           >
-            <.icon name="hero-plus" class="h-5 w-5 mr-2" /> {dgettext("general", "Add")}
+            <.icon name="hero-plus" class="h-5 w-5 mr-2" /> {dgettext("general", "Add")} {@title}
           </.link>
         </div>
 
@@ -61,7 +61,7 @@ defmodule BemedaPersonalWeb.Components.Shared.ResumeComponents do
   @spec resume_item(map()) :: Phoenix.LiveView.Rendered.t()
   def resume_item(assigns) do
     ~H"""
-    <div class="flex justify-between">
+    <div class="flex justify-between" data-experience-item data-education-item>
       <div>
         <h3 class="font-semibold text-gray-800">{@title}</h3>
         <p class="text-gray-600">{@subtitle}</p>

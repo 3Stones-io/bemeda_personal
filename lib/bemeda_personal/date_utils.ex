@@ -75,30 +75,33 @@ defmodule BemedaPersonal.DateUtils do
     now = DateTime.utc_now()
     diff_seconds = DateTime.diff(now, datetime, :second)
 
+    # Handle future dates by returning absolute value for pluralization
+    abs_diff_seconds = abs(diff_seconds)
+
     cond do
-      diff_seconds < 60 ->
-        dngettext("default", "1 second ago", "%{count} seconds ago", diff_seconds,
-          count: diff_seconds
+      abs_diff_seconds < 60 ->
+        dngettext("default", "1 second ago", "%{count} seconds ago", abs_diff_seconds,
+          count: abs_diff_seconds
         )
 
-      diff_seconds < 3600 ->
-        minutes = div(diff_seconds, 60)
+      abs_diff_seconds < 3600 ->
+        minutes = div(abs_diff_seconds, 60)
         dngettext("default", "1 minute ago", "%{count} minutes ago", minutes, count: minutes)
 
-      diff_seconds < 86_400 ->
-        hours = div(diff_seconds, 3600)
+      abs_diff_seconds < 86_400 ->
+        hours = div(abs_diff_seconds, 3600)
         dngettext("default", "1 hour ago", "%{count} hours ago", hours, count: hours)
 
-      diff_seconds < 604_800 ->
-        days = div(diff_seconds, 86_400)
+      abs_diff_seconds < 604_800 ->
+        days = div(abs_diff_seconds, 86_400)
         dngettext("default", "1 day ago", "%{count} days ago", days, count: days)
 
-      diff_seconds < 2_592_000 ->
-        weeks = div(diff_seconds, 604_800)
+      abs_diff_seconds < 2_592_000 ->
+        weeks = div(abs_diff_seconds, 604_800)
         dngettext("default", "1 week ago", "%{count} weeks ago", weeks, count: weeks)
 
       true ->
-        months = div(diff_seconds, 2_592_000)
+        months = div(abs_diff_seconds, 2_592_000)
         dngettext("default", "1 month ago", "%{count} months ago", months, count: months)
     end
   end
@@ -122,8 +125,12 @@ defmodule BemedaPersonal.DateUtils do
       days_diff == 1 ->
         dgettext("default", "Yesterday")
 
-      days_diff <= 7 ->
+      days_diff > 1 and days_diff <= 7 ->
         dngettext("default", "1 day ago", "%{count} days ago", days_diff, count: days_diff)
+
+      days_diff < 0 ->
+        # Future date - show absolute date
+        Calendar.strftime(date_only, "%d/%m/%Y")
 
       true ->
         Calendar.strftime(date_only, "%d/%m/%Y")

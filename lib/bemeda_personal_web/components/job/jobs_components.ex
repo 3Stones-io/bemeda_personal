@@ -72,7 +72,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
       |> assign_company_display_attributes()
 
     ~H"""
-    <div class="bg-white shadow-sm rounded-lg p-6 mb-4 hover:shadow-md transition-shadow duration-200">
+    <div class="job-listing bg-white shadow-sm rounded-lg p-6 mb-4 hover:shadow-md transition-shadow duration-200">
       <div class="flex gap-4">
         <div :if={@company_logo} class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
           <img src={@company_logo} alt={@job.company.name} class="w-full h-full object-cover" />
@@ -676,7 +676,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
   def applicant_card(assigns) do
     ~H"""
     <div
-      class="px-8 py-6 relative group cursor-pointer"
+      class="applicant-item px-8 py-6 relative group cursor-pointer"
       phx-click={JS.navigate(~p"/company/applicant/#{@applicant.id}")}
     >
       <div class="flex justify-between items-start">

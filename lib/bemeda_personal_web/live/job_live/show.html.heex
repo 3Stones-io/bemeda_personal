@@ -140,10 +140,11 @@
     >
       <button
         type="button"
+        data-testid="apply-button"
         phx-click={JS.patch(~p"/jobs/#{@job_posting.id}/apply")}
         class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
       >
-        {dgettext("jobs", "Apply to this job")}
+        {dgettext("jobs", "Apply Now")}
       </button>
     </div>
 

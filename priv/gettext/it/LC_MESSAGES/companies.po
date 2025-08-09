@@ -449,11 +449,6 @@ msgstr "Ospedale"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Hospital Affiliation"
-msgstr "Affiliazione ospedaliera"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Medical Center"
 msgstr "Centro medico"
 
@@ -467,7 +462,6 @@ msgstr "Nome dell'organizzazione"
 msgid "Other"
 msgstr "Altro"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Phone Number"
@@ -478,20 +472,10 @@ msgstr "Numero di telefono"
 msgid "Select type"
 msgstr "Seleziona tipo"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Type of Organization"
-msgstr "Tipo di organizzazione"
-
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Type of organization"
 msgstr "Tipo di organizzazione"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "e.g., Schaffhausen Hospital"
-msgstr "es. Ospedale di Sciaffusa"
 
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format, fuzzy
@@ -522,3 +506,48 @@ msgstr "Completa il profilo aziendale"
 #, elixir-autogen, elixir-format
 msgid "Let people know more about your organization."
 msgstr "Fai conoscere meglio la tua organizzazione."
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Address"
+msgstr "Indirizzo"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Address Information"
+msgstr "Informazioni sull'indirizzo"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "City"
+msgstr "Città"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Hospital name"
+msgstr "Ospedale"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Organization type"
+msgstr "Nome dell'organizzazione"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Phone"
+msgstr "Numero di telefono"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Postal code"
+msgstr "Codice postale"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Private Practice"
+msgstr "Studio privato"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "e.g., University Hospital Zürich"
+msgstr "ad es., Ospedale Universitario di Zurigo"

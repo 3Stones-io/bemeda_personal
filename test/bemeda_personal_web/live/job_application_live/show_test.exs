@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
   @create_attrs %{
     description: "Build amazing applications",
-    employment_type: "Permanent Position",
+    employment_type: :"Permanent Position",
     location: "Remote",
     remote_allowed: true,
     salary_max: 42_000,

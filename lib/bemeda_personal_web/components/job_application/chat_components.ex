@@ -38,6 +38,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.ChatComponents do
       <.input
         type="chat-input"
         id="message-input"
+        label="Message"
         placeholder={dgettext("general", "Type a message or drag and drop a file...")}
         field={f[:content]}
         phx-debounce="1000"

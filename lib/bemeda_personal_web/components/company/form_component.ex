@@ -54,30 +54,46 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
             <.input
               field={f[:phone_number]}
               type="tel"
-              label={dgettext("companies", "Phone Number")}
+              label={dgettext("companies", "Phone")}
               placeholder="+41 23 4736 4735"
             />
             <.input
               field={f[:organization_type]}
               type="select"
-              label={dgettext("companies", "Type of Organization")}
+              label={dgettext("companies", "Organization type")}
               options={[
                 {"", dgettext("companies", "Select type")},
-                {dgettext("companies", "Hospital"), "hospital"},
-                {dgettext("companies", "Clinic"), "clinic"},
-                {dgettext("companies", "Medical Center"), "medical_center"},
-                {dgettext("companies", "Care Home"), "care_home"},
-                {dgettext("companies", "Home Care Service"), "home_care"},
-                {dgettext("companies", "Other"), "other"}
+                {dgettext("companies", "Hospital"), "Hospital"},
+                {dgettext("companies", "Private Practice"), "Private Practice"},
+                {dgettext("companies", "Clinic"), "Clinic"},
+                {dgettext("companies", "Medical Center"), "Medical Center"},
+                {dgettext("companies", "Care Home"), "Care Home"},
+                {dgettext("companies", "Home Care Service"), "Home Care Service"},
+                {dgettext("companies", "Other"), "Other"}
               ]}
             />
             <.input
               field={f[:hospital_affiliation]}
               type="text"
-              label={dgettext("companies", "Hospital Affiliation")}
-              placeholder={dgettext("companies", "e.g., Schaffhausen Hospital")}
+              label={dgettext("companies", "Hospital name")}
+              placeholder={dgettext("companies", "e.g., University Hospital Zürich")}
               class="sm:col-span-2"
             />
+          </div>
+        </.section>
+
+        <.divider />
+
+        <.section title={dgettext("companies", "Address Information")} class="mb-8">
+          <div class="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
+            <.input
+              field={f[:address]}
+              type="text"
+              label={dgettext("companies", "Address")}
+              class="sm:col-span-2"
+            />
+            <.input field={f[:city]} type="text" label={dgettext("companies", "City")} />
+            <.input field={f[:postal_code]} type="text" label={dgettext("companies", "Postal code")} />
           </div>
         </.section>
 

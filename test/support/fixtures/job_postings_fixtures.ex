@@ -24,23 +24,23 @@ defmodule BemedaPersonal.JobPostingsFixtures do
 
     job_posting_attrs =
       %{
-        "currency" => "USD",
-        "department" => ["Administration"],
+        "currency" => :USD,
+        "department" => [:Administration],
         "description" => "some description that is long enough to meet validation requirements",
-        "employment_type" => "Permanent Position",
-        "gender" => ["Male"],
-        "language" => ["English"],
+        "employment_type" => :"Permanent Position",
+        "gender" => [:Male],
+        "language" => [:English],
         "location" => "some location",
-        "part_time_details" => ["Min"],
-        "position" => "Employee",
-        "profession" => "Anesthesiologist",
-        "region" => ["Zurich"],
+        "part_time_details" => [:Min],
+        "position" => :Employee,
+        "profession" => :Anesthesiologist,
+        "region" => [:Zurich],
         "remote_allowed" => true,
         "salary_max" => 42_000,
         "salary_min" => 42_000,
-        "shift_type" => ["Day Shift"],
+        "shift_type" => [:"Day Shift"],
         "title" => "some title",
-        "years_of_experience" => "2-5 years"
+        "years_of_experience" => :"2-5 years"
       }
 
     {:ok, job_posting} =

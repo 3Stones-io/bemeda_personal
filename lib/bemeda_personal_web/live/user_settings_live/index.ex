@@ -16,7 +16,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Index do
         {dgettext("auth", "Account settings")}
       </.heading>
 
-      <div class="bg-white rounded-lg shadow-sm">
+      <div class="settings-form bg-white rounded-lg shadow-sm">
         <.nav_item
           navigate={~p"/users/settings/info"}
           icon="/images/icons/icon-user.svg"

@@ -18,7 +18,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,
@@ -124,7 +124,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
       conn = log_in_user(conn, user)
       {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
 
-      refute html =~ "Apply to this job"
+      refute html =~ "Apply Now"
     end
   end
 
@@ -138,7 +138,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,
@@ -191,7 +191,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
       # Should show form without warning
       refute html =~ "You already applied to this job"
       assert html =~ "Cover letter"
-      assert html =~ "Apply to this job"
+      assert html =~ "Apply Now"
     end
 
     test "shows already applied button on job detail page when user has applied", %{
@@ -204,9 +204,9 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
 
       {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
 
-      # Should show "Already Applied" button instead of "Apply to this job"
+      # Should show "Already Applied" button instead of "Apply Now"
       assert html =~ "Already Applied"
-      refute html =~ "Apply to this job"
+      refute html =~ "Apply Now"
       # Disabled button styling
       assert html =~ "bg-gray-300"
     end
@@ -271,7 +271,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: "Permanent Position",
+          employment_type: :"Permanent Position",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,

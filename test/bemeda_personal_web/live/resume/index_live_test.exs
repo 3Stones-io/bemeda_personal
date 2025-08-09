@@ -87,4 +87,127 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
       assert html =~ "doesn&#39;t exist or is not available"
     end
   end
+
+  describe "PubSub broadcast handling" do
+    test "handles resume_updated broadcast when resume is public", %{conn: conn} do
+      user = user_fixture(confirmed: true)
+      resume = resume_fixture(user, %{is_public: true})
+
+      {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
+
+      # Simulate a resume update broadcast
+      updated_resume = %{resume | headline: "Updated Headline"}
+      payload = %{resume: updated_resume}
+
+      send(view.pid, %Phoenix.Socket.Broadcast{
+        event: "resume_updated",
+        payload: payload
+      })
+
+      # Verify the resume was updated in the view
+      assert render(view) =~ "Updated Headline"
+    end
+
+    test "handles resume_updated broadcast when resume becomes private", %{conn: conn} do
+      user = user_fixture(confirmed: true)
+      resume = resume_fixture(user, %{is_public: true})
+
+      {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
+
+      # Simulate a resume update that makes it private
+      private_resume = %{resume | is_public: false}
+      payload = %{resume: private_resume}
+
+      send(view.pid, %Phoenix.Socket.Broadcast{
+        event: "resume_updated",
+        payload: payload
+      })
+
+      # Verify the view now shows 404
+      assert render(view) =~ "404"
+      assert render(view) =~ "Resume Not Found"
+    end
+
+    test "handles education_updated broadcast", %{conn: conn} do
+      user = user_fixture(confirmed: true)
+      resume = resume_fixture(user, %{is_public: true})
+
+      {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
+
+      # Simulate an education update broadcast
+      education = education_fixture(resume, %{institution: "Test University"})
+      payload = %{education: education}
+
+      send(view.pid, %Phoenix.Socket.Broadcast{
+        event: "education_updated",
+        payload: payload
+      })
+
+      # Verify the education appears in the view
+      assert render(view) =~ "Test University"
+    end
+
+    test "handles education_deleted broadcast", %{conn: conn} do
+      user = user_fixture(confirmed: true)
+      resume = resume_fixture(user, %{is_public: true})
+      education = education_fixture(resume, %{institution: "Deleted University"})
+
+      {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
+
+      # Verify education is initially present
+      assert render(view) =~ "Deleted University"
+
+      # Simulate an education deletion broadcast
+      payload = %{education: education}
+
+      send(view.pid, %Phoenix.Socket.Broadcast{
+        event: "education_deleted",
+        payload: payload
+      })
+
+      # Verify the education is removed from the view
+      refute render(view) =~ "Deleted University"
+    end
+
+    test "handles work_experience_updated broadcast", %{conn: conn} do
+      user = user_fixture(confirmed: true)
+      resume = resume_fixture(user, %{is_public: true})
+
+      {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
+
+      # Simulate a work experience update broadcast
+      work_experience = work_experience_fixture(resume, %{company_name: "Test Company"})
+      payload = %{work_experience: work_experience}
+
+      send(view.pid, %Phoenix.Socket.Broadcast{
+        event: "work_experience_updated",
+        payload: payload
+      })
+
+      # Verify the work experience appears in the view
+      assert render(view) =~ "Test Company"
+    end
+
+    test "handles work_experience_deleted broadcast", %{conn: conn} do
+      user = user_fixture(confirmed: true)
+      resume = resume_fixture(user, %{is_public: true})
+      work_experience = work_experience_fixture(resume, %{company_name: "Deleted Company"})
+
+      {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
+
+      # Verify work experience is initially present
+      assert render(view) =~ "Deleted Company"
+
+      # Simulate a work experience deletion broadcast
+      payload = %{work_experience: work_experience}
+
+      send(view.pid, %Phoenix.Socket.Broadcast{
+        event: "work_experience_deleted",
+        payload: payload
+      })
+
+      # Verify the work experience is removed from the view
+      refute render(view) =~ "Deleted Company"
+    end
+  end
 end

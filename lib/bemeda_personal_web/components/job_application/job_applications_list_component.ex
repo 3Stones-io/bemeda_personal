@@ -82,7 +82,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
           :for={{id, application} <- @streams.job_applications}
           role="listitem"
           id={id}
-          class="bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-lg transition-shadow duration-200"
+          class="job-application-item bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-lg transition-shadow duration-200"
         >
           <.link
             navigate={~p"/jobs/#{application.job_posting_id}"}

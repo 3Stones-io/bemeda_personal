@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Companies
+  alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
@@ -150,6 +151,72 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
                 label={dgettext("auth", "Last Name")}
                 placeholder="Baumann"
                 required
+              />
+            </div>
+
+            <.settings_input
+              field={@personal_info_form[:phone]}
+              type="tel"
+              label={dgettext("auth", "Phone")}
+              placeholder="+41 79 123 4567"
+            />
+
+            <.settings_input
+              field={@personal_info_form[:city]}
+              type="text"
+              label={dgettext("auth", "Canton")}
+              placeholder="Zürich"
+            />
+
+            <%= if @current_user.user_type == :job_seeker do %>
+              <div class="mb-4">
+                <label for="medical_role" class="block text-[14px] font-normal text-gray-700 mb-1">
+                  {dgettext("auth", "Medical role")}
+                </label>
+                <select
+                  name="user[medical_role]"
+                  id="medical_role"
+                  value={@personal_info_form[:medical_role].value}
+                  class="w-full h-10 px-0 py-2 text-[16px] bg-transparent border-0 border-b focus:outline-none focus:ring-0 rounded-none text-gray-700 border-gray-200 focus:border-primary-500 appearance-none"
+                >
+                  <option value="">Select medical role</option>
+                  <%= for {label, value} <- get_medical_role_options() do %>
+                    <option value={value} selected={@personal_info_form[:medical_role].value == value}>
+                      {label}
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label for="department" class="block text-[14px] font-normal text-gray-700 mb-1">
+                  {dgettext("auth", "Department")}
+                </label>
+                <select
+                  name="user[department]"
+                  id="department"
+                  value={@personal_info_form[:department].value}
+                  class="w-full h-10 px-0 py-2 text-[16px] bg-transparent border-0 border-b focus:outline-none focus:ring-0 rounded-none text-gray-700 border-gray-200 focus:border-primary-500 appearance-none"
+                >
+                  <option value="">Select department</option>
+                  <%= for {label, value} <- get_department_options() do %>
+                    <option value={value} selected={@personal_info_form[:department].value == value}>
+                      {label}
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+            <% end %>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Profile Photo
+              </label>
+              <input
+                type="file"
+                name="profile[photo]"
+                accept="image/*"
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
 
@@ -623,5 +690,17 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
 
   def handle_info(_message, socket) do
     {:noreply, socket}
+  end
+
+  defp get_medical_role_options do
+    Enum.map(Enums.professions(), fn profession ->
+      {to_string(profession), to_string(profession)}
+    end)
+  end
+
+  defp get_department_options do
+    Enum.map(Enums.departments(), fn department ->
+      {to_string(department), to_string(department)}
+    end)
   end
 end

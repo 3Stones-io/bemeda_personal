@@ -620,3 +620,23 @@ msgstr "La funzione di caricamento avatar arriverà presto."
 #, elixir-autogen, elixir-format
 msgid "can't be blank"
 msgstr "non può essere vuoto"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format
+msgid "Canton"
+msgstr "Cantone"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Department"
+msgstr "Reparto*"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Medical role"
+msgstr "Ruolo medico*"
+
+#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Phone"
+msgstr "Numero di telefono"

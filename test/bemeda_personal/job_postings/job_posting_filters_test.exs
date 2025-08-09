@@ -28,7 +28,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           location: "Zurich Hospital",
           profession: "Registered Nurse (AKP/DNII/HF/FH)",
           department: ["Intensive Care"],
-          employment_type: "Permanent Position"
+          employment_type: :"Permanent Position"
         })
 
       job2 =
@@ -39,7 +39,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           location: "Geneva Medical Center",
           profession: "Medical Practice Assistant (MPA)",
           department: ["Emergency Department"],
-          employment_type: "Permanent Position"
+          employment_type: :"Permanent Position"
         })
 
       job3 =
@@ -50,7 +50,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           location: "Basel Region",
           profession: "Registered Nurse (AKP/DNII/HF/FH)",
           department: ["Home Care (Spitex)"],
-          employment_type: "Temporary Assignment"
+          employment_type: :"Temporary Assignment"
         })
 
       job4 =
@@ -60,7 +60,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
             "Develop innovative healthcare software solutions. Must have experience with medical data systems and patient privacy regulations.",
           location: "Remote - Switzerland",
           profession: "Medical Secretary",
-          employment_type: "Permanent Position"
+          employment_type: :"Permanent Position"
         })
 
       %{jobs: [job1, job2, job3, job4], company: company}

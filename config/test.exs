@@ -14,14 +14,25 @@ config :bemeda_personal, BemedaPersonal.Repo,
   hostname: System.get_env("DATABASE_HOST", "localhost"),
   database: "bemeda_personal_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: System.schedulers_online() * 2
+  # Dynamic pool sizing based on CPU cores
+  pool_size: min(System.schedulers_online() * 2, 20),
+  # Increased queue target for async tests
+  queue_target: 5000,
+  # Longer queue interval
+  queue_interval: 10_000,
+  # Increased timeout for complex tests
+  timeout: 60_000
 
-# We don't run a server during test. If one is required,
-# you can enable the server option below.
+# Only start server for feature tests
+server_enabled? = System.get_env("FEATURE_TESTS") == "true"
+
 config :bemeda_personal, BemedaPersonalWeb.Endpoint,
-  http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT_TEST") || "4002")],
+  http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT_TEST") || "4205")],
   secret_key_base: "s3QYVV7NO/JPzUSRbnVgvK6KN0fx2VJv6iprPTgMX9rKfLKTknDHrAjqX/iE0wMm",
-  server: false
+  server: server_enabled?
+
+# Enable SQL Sandbox for concurrent testing
+config :bemeda_personal, :sql_sandbox, true
 
 # In test we don't send emails
 config :bemeda_personal, BemedaPersonal.Mailer, adapter: Swoosh.Adapters.Test
@@ -46,6 +57,21 @@ config :bemeda_personal, :tigris,
 
 # Oban
 config :bemeda_personal, Oban, testing: :manual
+
+# PhoenixTest.Playwright configuration
+config :phoenix_test,
+  driver: PhoenixTest.Playwright,
+  endpoint: BemedaPersonalWeb.Endpoint,
+  otp_app: :bemeda_personal,
+  playwright: [
+    browser: :chromium,
+    browser_launch_timeout: 30_000,
+    headless: System.get_env("PW_HEADLESS", "true") == "true",
+    js_logger: false,
+    screenshot: System.get_env("PW_SCREENSHOT", "false") == "true",
+    timeout: System.get_env("PW_TIMEOUT", "2000") |> String.to_integer(),
+    trace: System.get_env("PW_TRACE", "false") == "true"
+  ]
 
 # Gettext
 config :bemeda_personal, BemedaPersonalWeb.Gettext, default_locale: "en"
