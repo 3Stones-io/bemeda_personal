@@ -1,0 +1,17 @@
+# Grok Analysis Package - Local Only
+grok-analysis/
+
+# Node modules and build artifacts
+node_modules/
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
