@@ -907,8 +907,17 @@
                     'strategic-foundation/goals-objectives.md': 'strategic-foundation/goals-objectives_de.md'
                 };
                 
+                // Handle requirements analysis documents
+                const requirementsDocs = {
+                    'requirements-analysis/user-stories.md': 'requirements-analysis/user-stories_de.md'
+                };
+                
                 if (strategicDocs[path]) {
                     return strategicDocs[path];
+                }
+                
+                if (requirementsDocs[path]) {
+                    return requirementsDocs[path];
                 }
                 
                 // For other files, we'll keep the original path for now
@@ -970,6 +979,7 @@
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/glossary.md', 'Glossary')">Glossary <span class="status-badge status-complete">Complete</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/stakeholder-analysis.md', 'Stakeholder Analysis')">Stakeholder Analysis <span class="status-badge status-complete">Complete</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/use-cases.md', 'Use Cases')">Use Cases <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/user-stories.md', 'User Stories')">User Stories <span class="status-badge status-complete">Complete</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/functional-requirements.md', 'Functional Requirements')">Functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/non-functional-requirements.md', 'Non-functional Requirements')">Non-functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
                     </ul>
@@ -1095,6 +1105,7 @@
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/glossary.md', 'Glossar')">Glossar <span class="status-badge status-complete">Vollständig</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/stakeholder-analysis.md', 'Stakeholder-Analyse')">Stakeholder-Analyse <span class="status-badge status-complete">Vollständig</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/use-cases.md', 'Anwendungsfälle')">Anwendungsfälle <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/user-stories.md', 'User Stories')">User Stories <span class="status-badge status-complete">Vollständig</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/functional-requirements.md', 'Funktionale Anforderungen')">Funktionale Anforderungen <span class="status-badge status-complete">Vollständig</span></a></li>
                         <li><a href="#" onclick="loadMarkdown('requirements-analysis/non-functional-requirements.md', 'Nicht-funktionale Anforderungen')">Nicht-funktionale Anforderungen <span class="status-badge status-complete">Vollständig</span></a></li>
                     </ul>
