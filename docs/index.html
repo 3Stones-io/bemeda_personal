@@ -46,6 +46,18 @@
             align-items: center;
         }
         
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
         .header h1 {
             font-size: 1.75rem;
             font-weight: 700;
@@ -77,6 +89,49 @@
         
         .breadcrumb-separator {
             opacity: 0.6;
+        }
+        
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.25rem;
+            backdrop-filter: blur(4px);
+        }
+        
+        .language-switcher button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .language-switcher button:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .language-switcher button.active {
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+            font-weight: 600;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .lang-flag {
+            font-size: 1.1rem;
         }
         
         .container {
@@ -619,6 +674,26 @@
                 height: 48px;
                 font-size: 1.25rem;
             }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .header-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .header-right {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .language-switcher {
+                margin-top: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -626,124 +701,29 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <h1 onclick="navigateToHome()">BemedaPersonal</h1>
-            <div class="breadcrumb" id="breadcrumb"></div>
+            <div class="header-left">
+                <h1 onclick="navigateToHome()">BemedaPersonal</h1>
+                <div class="breadcrumb" id="breadcrumb"></div>
+            </div>
+            <div class="header-right">
+                <div class="language-switcher">
+                    <button id="lang-en" class="active" onclick="switchLanguage('en')" title="English">
+                        <span class="lang-flag">🇬🇧</span>
+                        <span>EN</span>
+                    </button>
+                    <button id="lang-de" onclick="switchLanguage('de')" title="Deutsch">
+                        <span class="lang-flag">🇩🇪</span>
+                        <span>DE</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="container">
         <!-- Home page content -->
         <div id="home-content">
-            <div class="home-header">
-                <h1>BemedaPersonal</h1>
-                <p>Strategic Documentation Framework for Swiss Personnel Placement & Lending Platform</p>
-            </div>
-
-            <div class="framework-intro">
-                <h2>📋 Documentation Structure</h2>
-                <p>This documentation follows a strategic framework approach, organizing information from high-level vision through implementation details. Each phase builds upon the previous, ensuring comprehensive coverage from strategic foundation to technical implementation.</p>
-            </div>
-
-            <div class="phases-grid">
-                <div class="phase-card">
-                    <h3><span class="phase-icon">🎯</span> Strategic Foundation</h3>
-                    <p>The foundational vision and strategic direction for BemedaPersonal</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/vision.md', 'Vision')">Vision <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/mission.md', 'Mission')">Mission <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/strategy.md', 'Strategy')">Strategy <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/goals-objectives.md', 'Goals & Objectives')">Goals & Objectives <span class="status-badge status-complete">Complete</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">📋</span> Requirements & Analysis</h3>
-                    <p>Understanding stakeholders, users, and system requirements</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/glossary.md', 'Glossary')">Glossary <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/stakeholder-analysis.md', 'Stakeholder Analysis')">Stakeholder Analysis <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/use-cases.md', 'Use Cases')">Use Cases <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/functional-requirements.md', 'Functional Requirements')">Functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/non-functional-requirements.md', 'Non-functional Requirements')">Non-functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">🏗️</span> Architecture & Design</h3>
-                    <p>Technical blueprints and system design specifications</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('architecture-design/index.md', 'Architecture Overview')">Architecture Overview <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('System Architecture')">System Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Technical Architecture')">Technical Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Data Architecture')">Data Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Security Architecture')">Security Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">📊</span> Planning & Organization</h3>
-                    <p>Project management, timeline, and resource allocation</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('planning-organization/index.md', 'Planning Overview')">Planning Overview <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Project Plan')">Project Plan <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Risk Assessment')">Risk Assessment <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Resource Planning')">Resource Planning <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Quality Assurance Plan')">Quality Assurance Plan <span class="status-badge status-draft">Draft</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">💻</span> Implementation Framework</h3>
-                    <p>Development standards, guidelines, and best practices</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('implementation-framework/index.md', 'Implementation Overview')">Implementation Overview <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Development Standards')">Development Standards <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Coding Guidelines')">Coding Guidelines <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Testing Strategy')">Testing Strategy <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Documentation Standards')">Documentation Standards <span class="status-badge status-draft">Draft</span></a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="legend">
-                <h4>📍 Document Status Legend</h4>
-                <div class="legend-items">
-                    <div class="legend-item">
-                        <span class="status-badge status-complete">Complete</span>
-                        <span>Fully documented and reviewed</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="status-badge status-progress">In Progress</span>
-                        <span>Currently being developed</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="status-badge status-draft">Draft</span>
-                        <span>Initial version, needs development</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="quick-nav">
-                <h3>🚀 Quick Navigation</h3>
-                <div class="nav-grid">
-                    <div class="nav-item">
-                        <h4>Business Context</h4>
-                        <p>Swiss personnel placement (Vermittlung) and lending (Verleih) regulations, dual business model, AVG compliance</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Technical Context</h4>
-                        <p>Phoenix LiveView application built with Elixir/OTP, real-time web application with actor model architecture</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Key Features</h4>
-                        <p>Role-based user flows, digital contract management, integrated billing, multi-language support</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Implementation</h4>
-                        <p>Comprehensive testing and monitoring framework, Swiss regulatory compliance, modern architecture</p>
-                    </div>
-                </div>
-            </div>
+            <!-- Content will be loaded dynamically based on language -->
         </div>
 
         <!-- Content page -->
@@ -863,6 +843,328 @@
         let currentPage = 'home';
         let currentPath = '';
         let currentTitle = '';
+        let currentLanguage = 'en';
+
+        // Language configuration
+        const languages = {
+            en: {
+                code: 'en',
+                name: 'English',
+                flag: '🇬🇧',
+                docSuffix: ''
+            },
+            de: {
+                code: 'de', 
+                name: 'Deutsch',
+                flag: '🇩🇪',
+                docSuffix: '_DE'
+            }
+        };
+
+        // Function to switch language
+        function switchLanguage(langCode) {
+            console.log(`Switching language to: ${langCode}`);
+            
+            // Update active button
+            document.querySelectorAll('.language-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`lang-${langCode}`).classList.add('active');
+            
+            currentLanguage = langCode;
+            
+            // If we're on the home page, reload content
+            if (currentPage === 'home') {
+                loadHomeContent(langCode);
+            } else if (currentPage === 'content' && currentPath) {
+                // Try to load the document in the new language
+                const newPath = getLocalizedPath(currentPath, langCode);
+                loadMarkdown(newPath, currentTitle);
+            }
+            
+            // Store language preference
+            localStorage.setItem('preferredLanguage', langCode);
+        }
+
+        // Function to get localized document path
+        function getLocalizedPath(path, langCode) {
+            if (langCode === 'en') {
+                return path;
+            }
+            
+            // For German, check if a localized version exists
+            if (langCode === 'de') {
+                // Special case for CLAUDE.md
+                if (path.includes('CLAUDE.md')) {
+                    return 'CLAUDE_DE.md';
+                }
+                // For other files, we'll keep the original path for now
+                return path;
+            }
+            
+            return path;
+        }
+
+        // Function to load home content based on language
+        function loadHomeContent(langCode) {
+            const homeContent = document.getElementById('home-content');
+            
+            if (langCode === 'de') {
+                homeContent.innerHTML = getGermanHomeContent();
+            } else {
+                homeContent.innerHTML = getEnglishHomeContent();
+            }
+        }
+
+        // Function to get English home content
+        function getEnglishHomeContent() {
+            return `
+            <div class="home-header">
+                <h1>BemedaPersonal</h1>
+                <p>Strategic Documentation Framework for Swiss Personnel Placement & Lending Platform</p>
+            </div>
+
+            <div class="framework-intro">
+                <h2>📋 Documentation Structure</h2>
+                <p>This documentation follows a strategic framework approach, organizing information from high-level vision through implementation details. Each phase builds upon the previous, ensuring comprehensive coverage from strategic foundation to technical implementation.</p>
+                
+                <div style="background: #e3f2fd; border: 1px solid #90caf9; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
+                    <h4 style="color: #1976d2; margin-bottom: 0.5rem;">🚀 New Features & Expanded Documentation</h4>
+                    <p style="color: #1565c0; margin: 0; font-size: 0.9rem;">
+                        <a href="#" onclick="loadMarkdown('CLAUDE_DE.md', 'German Documentation Framework')" style="color: #1565c0; text-decoration: underline;">
+                            View the comprehensive German documentation
+                        </a> with expanded user stories, Pool Worker system, and advanced matching features.
+                    </p>
+                </div>
+            </div>
+
+            <div class="phases-grid">
+                <div class="phase-card">
+                    <h3><span class="phase-icon">🎯</span> Strategic Foundation</h3>
+                    <p>The foundational vision and strategic direction for BemedaPersonal</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/vision.md', 'Vision')">Vision <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/mission.md', 'Mission')">Mission <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/strategy.md', 'Strategy')">Strategy <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/goals-objectives.md', 'Goals & Objectives')">Goals & Objectives <span class="status-badge status-complete">Complete</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">📋</span> Requirements & Analysis</h3>
+                    <p>Understanding stakeholders, users, and system requirements</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/glossary.md', 'Glossary')">Glossary <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/stakeholder-analysis.md', 'Stakeholder Analysis')">Stakeholder Analysis <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/use-cases.md', 'Use Cases')">Use Cases <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/functional-requirements.md', 'Functional Requirements')">Functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/non-functional-requirements.md', 'Non-functional Requirements')">Non-functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">🏗️</span> Architecture & Design</h3>
+                    <p>Technical blueprints and system design specifications</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('architecture-design/index.md', 'Architecture Overview')">Architecture Overview <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('System Architecture')">System Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Technical Architecture')">Technical Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Data Architecture')">Data Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Security Architecture')">Security Architecture <span class="status-badge status-draft">Draft</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">📊</span> Planning & Organization</h3>
+                    <p>Project management, timeline, and resource allocation</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('planning-organization/index.md', 'Planning Overview')">Planning Overview <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Project Plan')">Project Plan <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Risk Assessment')">Risk Assessment <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Resource Planning')">Resource Planning <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Quality Assurance Plan')">Quality Assurance Plan <span class="status-badge status-draft">Draft</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">💻</span> Implementation Framework</h3>
+                    <p>Development standards, guidelines, and best practices</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('implementation-framework/index.md', 'Implementation Overview')">Implementation Overview <span class="status-badge status-complete">Complete</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Development Standards')">Development Standards <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Coding Guidelines')">Coding Guidelines <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Testing Strategy')">Testing Strategy <span class="status-badge status-draft">Draft</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Documentation Standards')">Documentation Standards <span class="status-badge status-draft">Draft</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="legend">
+                <h4>📍 Document Status Legend</h4>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <span class="status-badge status-complete">Complete</span>
+                        <span>Fully documented and reviewed</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status-badge status-progress">In Progress</span>
+                        <span>Currently being developed</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status-badge status-draft">Draft</span>
+                        <span>Initial version, needs development</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-nav">
+                <h3>🚀 Quick Navigation</h3>
+                <div class="nav-grid">
+                    <div class="nav-item">
+                        <h4>Business Context</h4>
+                        <p>Swiss personnel placement (Vermittlung) and lending (Verleih) regulations, dual business model, AVG compliance</p>
+                    </div>
+                    <div class="nav-item">
+                        <h4>Technical Context</h4>
+                        <p>Phoenix LiveView application built with Elixir/OTP, real-time web application with actor model architecture</p>
+                    </div>
+                    <div class="nav-item">
+                        <h4>Key Features</h4>
+                        <p>Role-based user flows, digital contract management, integrated billing, multi-language support</p>
+                    </div>
+                    <div class="nav-item">
+                        <h4>Implementation</h4>
+                        <p>Comprehensive testing and monitoring framework, Swiss regulatory compliance, modern architecture</p>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // Function to get German home content
+        function getGermanHomeContent() {
+            return `
+            <div class="home-header">
+                <h1>BemedaPersonal</h1>
+                <p>Strategischer Dokumentations-Framework für die Schweizer Personal-Vermittlungs- & Verleih-Plattform</p>
+            </div>
+
+            <div class="framework-intro">
+                <h2>📋 Dokumentationsstruktur</h2>
+                <p>Diese Dokumentation folgt einem strategischen Framework-Ansatz und organisiert Informationen von der strategischen Vision bis zu Implementierungsdetails. Jede Phase baut auf der vorherigen auf und gewährleistet eine umfassende Abdeckung von der strategischen Grundlage bis zur technischen Umsetzung.</p>
+                
+                <div style="background: #e8f5e8; border: 1px solid #81c784; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
+                    <h4 style="color: #388e3c; margin-bottom: 0.5rem;">🚀 Erweiterte Funktionen & Pool Worker System</h4>
+                    <p style="color: #2e7d32; margin: 0; font-size: 0.9rem;">
+                        <a href="#" onclick="loadMarkdown('CLAUDE_DE.md', 'Deutsche Dokumentations-Framework')" style="color: #2e7d32; text-decoration: underline;">
+                            Vollständige deutsche Dokumentation ansehen
+                        </a> mit erweiterten User Stories, Pool Worker Management, automatischem Matching und personalisierten Headhunting-Services.
+                    </p>
+                </div>
+            </div>
+
+            <div class="phases-grid">
+                <div class="phase-card">
+                    <h3><span class="phase-icon">🎯</span> Strategische Grundlagen</h3>
+                    <p>Die grundlegende Vision und strategische Ausrichtung für BemedaPersonal</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/vision.md', 'Vision')">Vision <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/mission.md', 'Mission')">Mission <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/strategy.md', 'Strategie')">Strategie <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/goals-objectives.md', 'Ziele & Vorgaben')">Ziele & Vorgaben <span class="status-badge status-complete">Vollständig</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">📋</span> Anforderungen & Analyse</h3>
+                    <p>Verständnis von Stakeholdern, Benutzern und Systemanforderungen</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/glossary.md', 'Glossar')">Glossar <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/stakeholder-analysis.md', 'Stakeholder-Analyse')">Stakeholder-Analyse <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/use-cases.md', 'Anwendungsfälle')">Anwendungsfälle <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/functional-requirements.md', 'Funktionale Anforderungen')">Funktionale Anforderungen <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/non-functional-requirements.md', 'Nicht-funktionale Anforderungen')">Nicht-funktionale Anforderungen <span class="status-badge status-complete">Vollständig</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">🏗️</span> Architektur & Design</h3>
+                    <p>Technische Baupläne und Systemdesign-Spezifikationen</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('architecture-design/index.md', 'Architektur-Übersicht')">Architektur-Übersicht <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('System-Architektur')">System-Architektur <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Technische Architektur')">Technische Architektur <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Datenarchitektur')">Datenarchitektur <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Sicherheitsarchitektur')">Sicherheitsarchitektur <span class="status-badge status-draft">Entwurf</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">📊</span> Planung & Organisation</h3>
+                    <p>Projektmanagement, Zeitplan und Ressourcenzuweisung</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('planning-organization/index.md', 'Planungsübersicht')">Planungsübersicht <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Projektplan')">Projektplan <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Risikobewertung')">Risikobewertung <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Ressourcenplanung')">Ressourcenplanung <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Qualitätssicherungsplan')">Qualitätssicherungsplan <span class="status-badge status-draft">Entwurf</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="phase-card">
+                    <h3><span class="phase-icon">💻</span> Implementierungs-Framework</h3>
+                    <p>Entwicklungsstandards, Richtlinien und Best Practices</p>
+                    <ul class="phase-links">
+                        <li><a href="#" onclick="loadMarkdown('implementation-framework/index.md', 'Implementierungsübersicht')">Implementierungsübersicht <span class="status-badge status-complete">Vollständig</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Entwicklungsstandards')">Entwicklungsstandards <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Coding-Richtlinien')">Coding-Richtlinien <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Test-Strategie')">Test-Strategie <span class="status-badge status-draft">Entwurf</span></a></li>
+                        <li><a href="#" onclick="showDraftMessage('Dokumentationsstandards')">Dokumentationsstandards <span class="status-badge status-draft">Entwurf</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="legend">
+                <h4>📍 Dokumentenstatus-Legende</h4>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <span class="status-badge status-complete">Vollständig</span>
+                        <span>Vollständig dokumentiert und überprüft</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status-badge status-progress">In Bearbeitung</span>
+                        <span>Wird derzeit entwickelt</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status-badge status-draft">Entwurf</span>
+                        <span>Erste Version, benötigt Entwicklung</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-nav">
+                <h3>🚀 Schnell-Navigation</h3>
+                <div class="nav-grid">
+                    <div class="nav-item">
+                        <h4>Geschäftskontext</h4>
+                        <p>Schweizer Personalvermittlungs- und -verleihvorschriften, duales Geschäftsmodell, AVG-Compliance</p>
+                    </div>
+                    <div class="nav-item">
+                        <h4>Technischer Kontext</h4>
+                        <p>Phoenix LiveView-Anwendung mit Elixir/OTP, Echtzeit-Webanwendung mit Actor-Model-Architektur</p>
+                    </div>
+                    <div class="nav-item">
+                        <h4>Hauptfunktionen</h4>
+                        <p>Rollenbasierte Benutzerflows, digitales Vertragsmanagement, integrierte Abrechnung, mehrsprachige Unterstützung</p>
+                    </div>
+                    <div class="nav-item">
+                        <h4>Implementierung</h4>
+                        <p>Umfassendes Test- und Überwachungs-Framework, Schweizer Regulierungskonformität, moderne Architektur</p>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
 
         // Function to render Mermaid diagrams
         async function renderMermaidDiagrams() {
@@ -1092,7 +1394,16 @@
             currentPath = '';
             currentTitle = '';
             updateBreadcrumb();
-            document.title = 'BemedaPersonal - Strategic Documentation Framework';
+            
+            // Load home content in current language
+            loadHomeContent(currentLanguage);
+            
+            // Update document title based on language
+            if (currentLanguage === 'de') {
+                document.title = 'BemedaPersonal - Strategischer Dokumentations-Framework';
+            } else {
+                document.title = 'BemedaPersonal - Strategic Documentation Framework';
+            }
         }
 
         function showDraftMessage(title) {
@@ -1303,6 +1614,16 @@
             if (typeof marked !== 'undefined') {
                 console.log('- Marked version:', marked.version || 'unknown');
             }
+            
+            // Load user's preferred language
+            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+            currentLanguage = preferredLanguage;
+            
+            // Update language button states
+            document.querySelectorAll('.language-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`lang-${preferredLanguage}`).classList.add('active');
             
             // Set initial state
             history.replaceState({ page: 'home' }, '', '#');
