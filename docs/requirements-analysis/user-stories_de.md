@@ -2,7 +2,7 @@
 
 ## Überblick
 
-User Stories erfassen die menschliche Erfahrung und das Wertversprechen von BemedaPersonal aus allen Stakeholder-Perspektiven. Diese Stories zeigen innovative Features auf, die uns von traditionellen Recruitment-Plattformen unterscheiden und unser Pool Worker System, KI-basiertes Matching und umfassenden Schweizer Compliance-Ansatz hervorheben.
+Medizinisch fokussierte User Stories erfassen die Gesundheitsfachkraft-Erfahrung und das spezialisierte Wertversprechen von BemedaPersonal. Diese Stories zeigen innovative Features auf, die spezifisch für Schweizer Gesundheitspersonal-Vermittlung sind und unser Medical Pool Worker System, FMH-Zertifikatsverifikation, GAV-Compliance und umfassende Medizinsektor-Expertise hervorheben.
 
 ---
 
@@ -27,59 +27,71 @@ Hochwertige Services für Enterprise-Kunden
 
 ## 🔵 Kern-Plattform Stories
 
-### Story 1: Karrierewechsel einer Fachkraft
-**Als** Gesundheitsfachkraft, die in die IT wechseln möchte  
-**Möchte ich** personalisierte Karrierewechsel-Beratung und Skill-Gap-Analyse erhalten  
-**Damit** ich erfolgreich in eine neue Branche wechseln kann mit Vertrauen
+### Story 1: Medizinische Fachkraft Karriereförderung
+**Als** registrierte Krankenpflegerin, die sich auf Intensivpflege spezialisieren möchte  
+**Möchte ich** personalisierte Karrierewege-Beratung mit FMH-Zertifikatsverifikation erhalten  
+**Damit** ich erfolgreich zur Intensivpflege oder OP-Pflege mit angemessener Zertifikatsunterstützung wechseln kann
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinische Spezialisierung:</strong> Fokus auf Gesundheitskarriere-Förderung innerhalb medizinischer Spezialisierungen anstatt Branchenwechsel.
+</div>
 
 ```mermaid
 journey
-    title Karrierewechsel vom Gesundheitswesen zur IT
+    title Medizinische Spezialisierungsförderung
     section Profil-Erstellung
-      Plattform-Registrierung: 5: JobSeeker
-      Skills-Assessment abschließen: 4: JobSeeker
-      Gesundheitszertifikate hochladen: 5: JobSeeker
-    section Karriere-Analyse
-      Skill-Gap-Bericht erhalten: 3: JobSeeker, KI
-      Training-Empfehlungen bekommen: 4: JobSeeker, KI
-      Mit IT-Mentoren vernetzen: 5: JobSeeker, Plattform
-    section Job-Matching
-      Übergangspositionen anzeigen: 4: JobSeeker
-      Sich auf Hybrid-Positionen bewerben: 5: JobSeeker
-      Interview-Coaching: 5: JobSeeker, Plattform
+      Plattform-Registrierung: 5: Medizinische Fachkraft
+      Medizinisches Assessment abschließen: 4: Medizinische Fachkraft
+      Pflegezertifikate hochladen: 5: Medizinische Fachkraft
+    section Spezialisierungs-Analyse
+      Zertifikats-Gap-Bericht erhalten: 3: Medizinische Fachkraft, KI
+      Spezialisierungs-Training-Empfehlungen: 4: Medizinische Fachkraft, KI
+      Mit Intensivpflege-Mentoren vernetzen: 5: Medizinische Fachkraft, Plattform
+    section Medizinisches Job-Matching
+      Intensivpflege-Positionen anzeigen: 4: Medizinische Fachkraft
+      Sich auf Spezialpositionen bewerben: 5: Medizinische Fachkraft
+      Medizinisches Interview-Coaching: 5: Medizinische Fachkraft, Plattform
     section Erfolg
-      IT-Position erhalten: 5: JobSeeker, Unternehmen
-      3-Monats-Check-in: 4: JobSeeker, Plattform
+      Intensivpflege-Position erhalten: 5: Medizinische Fachkraft, Gesundheitseinrichtung
+      3-Monats-medizinische Überprüfung: 4: Medizinische Fachkraft, Plattform
 ```
 
-### Story 2: Erste Einstellung eines Kleinunternehmens
-**Als** Startup-Gründer bei meiner ersten Einstellung  
-**Möchte ich** Schweizer Arbeitsrechtsanforderungen verstehen und konforme Verträge erhalten  
-**Damit** ich vertrauensvoll einstellen kann ohne rechtliche Risiken
+### Story 2: Erste medizinische Einstellung einer Privatpraxis
+**Als** Privatpraxis-Inhaber bei meiner ersten medizinischen Assistenz-Einstellung  
+**Möchte ich** Schweizer medizinische Arbeitsrechtsanforderungen verstehen und GAV-konforme Verträge erhalten  
+**Damit** ich vertrauensvoll medizinisches Personal einstellen kann ohne regulatorische Risiken
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinische Compliance:</strong> Spezialisierte Beratung für Gesundheitseinrichtungs-Einstellungen mit GAV-Compliance und medizinischen Lizenzanforderungen.
+</div>
 
 ```mermaid
 flowchart TD
-    A[Startup registriert sich] --> B[Rollendefinition festlegen]
-    B --> C[Plattform schlägt Beschäftigungsart vor]
-    C --> D[Automatische Compliance-Prüfung]
-    D --> E[Rechtsdokumente generieren]
-    E --> F[Qualifizierte Kandidaten finden]
-    F --> G[Geführter Interview-Prozess]
-    G --> H[Vertragsgenerierung]
-    H --> I[Onboarding-Unterstützung]
+    A[Praxis registriert sich] --> B[Medizinische Rollendefinition]
+    B --> C[Plattform schlägt GAV-Beschäftigungsart vor]
+    C --> D[Automatische medizinische Compliance-Prüfung]
+    D --> E[Medizinische Arbeitsrechtsdokumente generieren]
+    E --> F[Qualifizierte medizinische Kandidaten finden]
+    F --> G[Medizinischer Interview-Prozess]
+    G --> H[GAV-konforme Vertragsgenerierung]
+    H --> I[Medizinisches Onboarding]
     
-    style A fill:#e1f5fe
-    style I fill:#c8e6c9
+    style A fill:#e8f8f5
+    style I fill:#d4edda
 ```
 
 ---
 
 ## 🟢 Differenzierungs-Stories
 
-### Story 3: Smartes Unternehmens-Matching
-**Als** Arbeitssuchender mit spezifischen kulturellen Präferenzen  
-**Möchte ich** Unternehmen finden, die zu meinem Arbeitsstil und meinen Werten passen  
-**Damit** ich nicht nur einen Job finde, sondern den richtigen kulturellen Fit
+### Story 3: Smartes Gesundheitseinrichtungs-Matching
+**Als** medizinische Fachkraft mit spezifischen Praxis-Präferenzen  
+**Möchte ich** Gesundheitseinrichtungen finden, die zu meinem medizinischen Praxisstil und meinen Werten passen  
+**Damit** ich nicht nur eine Position finde, sondern den richtigen medizinischen Umgebungs-Fit
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinisches Kultur-Matching:</strong> Gesundheitsspezifisches kulturelles Matching einschließlich Patientenbetreuungsphilosophie, medizinische Technologie-Präferenzen und Spezialisierungsfokus.
+</div>
 
 ```mermaid
 mindmap
@@ -130,10 +142,14 @@ graph LR
 
 ## 🟡 Pool Worker Innovation Stories
 
-### Story 5: Flexible Gesundheitsfachkraft
-**Als** registrierte Krankenpflegerin mit flexiblen Zeitwünschen  
-**Möchte ich** meine Verfügbarkeits-Präferenzen setzen und zu passenden Schichten gematcht werden  
-**Damit** ich Work-Life-Balance aufrechterhalten kann und trotzdem beruflich aktiv bleibe
+### Story 5: Flexible Medizinische Pool Worker
+**Als** registrierte Krankenpflegerin bei BemedaPersonal mit flexiblen medizinischen Zeitwünschen  
+**Möchte ich** meine Verfügbarkeits-Präferenzen setzen und zu passenden medizinischen Schichten mit GAV-Compliance gematcht werden  
+**Damit** ich Work-Life-Balance aufrechterhalten kann und trotzdem beruflich aktiv in mehreren Gesundheitseinrichtungen bleibe
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Pool Worker Innovation:</strong> GAV-konforme flexible medizinische Beschäftigung mit Einsätzen in Krankenhäusern, Kliniken und spezialisierten Pflegeeinrichtungen.
+</div>
 
 ```mermaid
 gantt
@@ -152,39 +168,47 @@ gantt
     Fr Wochenende    :crit, personal2, 2024-01-12, 2024-01-14
 ```
 
-### Story 6: IT-Contractor Portfolio-Aufbau
-**Als** IT-Contractor auf der Suche nach vielfältiger Erfahrung  
-**Möchte ich** an Projekten in verschiedenen Branchen und Technologien arbeiten  
-**Damit** ich ein starkes Portfolio aufbauen und meine Fähigkeiten erweitern kann
+### Story 6: Medizinische Fachkraft Spezialisierungs-Aufbau
+**Als** medizinische Fachkraft auf der Suche nach vielfältiger klinischer Erfahrung  
+**Möchte ich** Einsätze in verschiedenen medizinischen Spezialisierungen und Gesundheitsumgebungen arbeiten  
+**Damit** ich umfassende medizinische Erfahrung aufbauen und meine klinische Expertise erweitern kann
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinische Erfahrungs-Diversifikation:</strong> Klinische Einsätze in verschiedenen medizinischen Spezialisierungen zur umfassenden Gesundheitsexpertise-Entwicklung.
+</div>
 
 ```mermaid
 graph TD
-    A[Pool Worker Profil] --> B[Skills-Matrix]
-    B --> C[Projekt-Matching]
-    C --> D[FinTech Projekt - 3 Monate]
-    C --> E[HealthTech Projekt - 2 Monate]  
-    C --> F[E-commerce Projekt - 1 Monat]
+    A[Medizinische Pool Worker Profil] --> B[Medizinische Skills-Matrix]
+    B --> C[Klinisches Einsatz-Matching]
+    C --> D[Intensivstation-Einsatz - 3 Monate]
+    C --> E[Notaufnahme-Einsatz - 2 Monate]  
+    C --> F[Spezialisierte Chirurgie - 1 Monat]
     
-    D --> G[Blockchain Skills +1]
-    E --> H[HIPAA Compliance +1]
-    F --> I[Payment Systems +1]
+    D --> G[Intensivpflege-Zertifikation +1]
+    E --> H[Notfallmedizin-Skills +1]
+    F --> I[Chirurgische Assistenz +1]
     
-    G --> J[Verbessertes Profil]
+    G --> J[Verbessertes Medizinisches Profil]
     H --> J
     I --> J
     
-    J --> K[Premium-Tarif-Erhöhung]
-    J --> L[Führungsmöglichkeiten]
+    J --> K[Premium-Medizin-Tarif-Erhöhung]
+    J --> L[Senior-Klinische-Möglichkeiten]
 ```
 
 ---
 
 ## 🟠 KI-basierte Intelligenz Stories
 
-### Story 7: Prädiktive Workforce-Planung
-**Als** HR-Direktor eines wachsenden Unternehmens  
-**Möchte ich** Vorhersagen über zukünftige Einstellungsbedürfnisse basierend auf Geschäftstrends erhalten  
-**Damit** ich Rekrutierungskampagnen proaktiv planen kann
+### Story 7: Prädiktive Medizinische Personal-Planung
+**Als** Krankenhaus-HR-Direktor mit saisonalen Patientenaufkommen-Variationen  
+**Möchte ich** Vorhersagen über zukünftige medizinische Personalbedürfnisse basierend auf Patientenaufnahme-Trends erhalten  
+**Damit** ich medizinische Rekrutierungskampagnen proaktiv für Spitzenzeiten planen kann
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinische Workforce-Intelligence:</strong> Gesundheitsspezifische prädiktive Analytik unter Berücksichtigung von Patientenaufnahme-Mustern, saisonalen medizinischen Bedürfnissen und klinischen Spezialisierungsanforderungen.
+</div>
 
 ```mermaid
 sequenceDiagram

@@ -2,41 +2,56 @@
 
 ## Kernzweck
 
-**BemedaPersonal existiert, um Personaldienstleistungen in der Schweiz zu vereinfachen und zu verbessern, indem wir eine umfassende digitale Plattform bereitstellen, die Talente mit Chancen verbindet und dabei vollständige regulatorische Compliance und außergewöhnliche Benutzererfahrung gewährleistet.**
+**BemedaPersonal spezialisiert sich auf Schweizer Gesundheitspersonal-Lösungen und bietet eine umfassende digitale Plattform, die medizinische Fachkräfte mit Gesundheitschancen durch sowohl Dauervermittlung (Vermittlung) als auch temporäre Personaldienstleistungen (Verleih) verbindet, während vollständige AVG-Compliance und außergewöhnliche Benutzererfahrung gewährleistet werden.**
 
 ---
 
 ## Mission Statement
 
-> "Wir befähigen Schweizer Unternehmen, das richtige Talent effizient und rechtskonform zu finden, während wir Fachkräften durch unsere Dual-Model-Plattform Zugang zu bedeutungsvollen Karrierechancen bieten - sowohl für Dauerstellen (Vermittlung) als auch für temporäre Einsätze (Verleih)."
+> "Wir befähigen Schweizer Gesundheitseinrichtungen, qualifizierte medizinische Fachkräfte effizient und rechtskonform zu finden, während wir Gesundheitsfachkräften durch unsere spezialisierte Dual-Model-Plattform Zugang zu bedeutungsvollen Karrierechancen bieten - sowohl für Dauerstellen (Vermittlung) als auch für temporäre Einsätze (Verleih)."
 
 ---
 
 ## Wen wir bedienen
 
-### 🏢 Schweizer Unternehmen
-**Primärer Wert**: Vereinfachter Zugang zu qualitätsvollen Talenten mit reduziertem administrativen Aufwand
+### 🏥 Schweizer Gesundheitseinrichtungen
+**Primärer Wert**: Spezialisierte medizinische Personalbeschaffung mit FMH-Referenzverifikation und GAV-Compliance
 
-- Medizinische Einrichtungen, die spezialisierte Gesundheitsfachkräfte suchen
-- IT-Unternehmen, die sowohl Festangestellte als auch projektbasierte Auftragnehmer benötigen  
-- KMUs, die flexible Personallösungen ohne Compliance-Komplexität brauchen
-- Große Unternehmen, die skalierbare Workforce-Lösungen benötigen
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinsektor-Fokus:</strong> Krankenhäuser, Kliniken, Privatpraxen, Seniorenpflegeeinrichtungen und spezialisierte medizinische Zentren, die verifizierte Gesundheitsfachkräfte mit angemessener Lizenzierung und Referenzverifikation benötigen.
+</div>
 
-### 👨‍💼 Arbeitssuchende (Vermittlung)
-**Primärer Wert**: Erweiterte Möglichkeiten mit transparenten, effizienten Vermittlungsprozessen
+- Krankenhäuser, die zertifizierte medizinische Spezialisten mit FMH-Referenzen suchen
+- Kliniken, die Pflegepersonal mit Spezialisierungszertifikaten benötigen
+- Privatpraxen, die temporäre Abdeckung während Ferien/Urlaub brauchen
+- Seniorenpflegeeinrichtungen, die qualifizierte Pflegefachkräfte benötigen
+- Spezialisierte medizinische Zentren, die Nischen-Expertise benötigen
 
-- Gesundheitsfachkräfte, die Dauerstellen suchen
-- IT-Spezialisten, die Karriereentwicklung anstreben
-- Qualifizierte Arbeitskräfte im Branchenwechsel
-- Internationale Talente, die Unterstützung bei Arbeitsbewilligungen benötigen
+### 👨‍⚕️ Medizinische Fachkräfte (Vermittlung)
+**Primärer Wert**: Karriereentwicklung im Schweizer Gesundheitswesen mit Referenz-Anerkennungsunterstützung
 
-### 👩‍💻 Pool Worker (Verleih)  
-**Primärer Wert**: Flexible Beschäftigung mit zuverlässigem Einkommen und Karriereentwicklung
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinischer Karrierefokus:</strong> Spezialisierte Vermittlungsdienste für Ärzte, Pflegekräfte, Therapeuten und medizinische Techniker mit FMH/SRK-Referenzverifikation und Schweizer Medizinsystem-Integration.
+</div>
 
-- Gesundheitsfachkräfte mit Präferenz für flexible Arbeitszeiten
-- IT-Auftragnehmer, die vielfältige Projekterfahrungen suchen
-- Qualifizierte Arbeitskräfte, die Work-Life-Balance wollen
-- Fachkräfte, die Erfahrungen in verschiedenen Arbeitsumgebungen sammeln
+- Lizenzierte Ärzte, die FMH-anerkannte Positionen suchen
+- Registrierte Pflegekräfte mit Spezialisierungszertifikaten (Intensiv, OP, Notfall)
+- Medizinische Therapeuten (Physio, Beschäftigungs-, Sprachtherapie)
+- Medizinische Techniker und Gesundheitsunterstützungspersonal
+- Internationale medizinische Fachkräfte, die Schweizer Referenz-Anerkennung benötigen
+
+### 👩‍⚕️ Medizinische Pool Worker (Verleih)
+**Primärer Wert**: Flexible medizinische Einsätze mit GAV-konformer Beschäftigung und beruflicher Entwicklung
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medizinische Flexibilität:</strong> Gesundheitsfachkräfte bei Bemeda angestellt für temporäre medizinische Einsätze in Schweizer Gesundheitseinrichtungen, mit GAV-Compliance und kontinuierlicher beruflicher Entwicklung.
+</div>
+
+- Pflegekräfte, die flexible Schichtpläne in mehreren Krankenhäusern suchen
+- Ärzte, die für temporäre Praxisabdeckung verfügbar sind
+- Spezialisierte medizinische Techniker für projektbasierte Einsätze
+- Gesundheitsfachkräfte, die vielfältige klinische Erfahrungen wollen
+- Medizinisches Personal, das Work-Life-Balance mit garantierter Beschäftigung bevorzugt
 
 ### 🏛️ Schweizer Beschäftigungs-Ökosystem
 **Primärer Wert**: Effizienterer Arbeitsmarkt mit vollständiger regulatorischer Compliance
