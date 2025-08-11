@@ -898,6 +898,19 @@
                 if (path.includes('CLAUDE.md')) {
                     return 'CLAUDE_DE.md';
                 }
+                
+                // Handle strategic foundation documents
+                const strategicDocs = {
+                    'strategic-foundation/vision.md': 'strategic-foundation/vision_de.md',
+                    'strategic-foundation/mission.md': 'strategic-foundation/mission_de.md',
+                    'strategic-foundation/strategy.md': 'strategic-foundation/strategy_de.md',
+                    'strategic-foundation/goals-objectives.md': 'strategic-foundation/goals-objectives_de.md'
+                };
+                
+                if (strategicDocs[path]) {
+                    return strategicDocs[path];
+                }
+                
                 // For other files, we'll keep the original path for now
                 return path;
             }
@@ -1164,6 +1177,76 @@
                 </div>
             </div>
             `;
+        }
+
+        // Function to process markdown content
+        function processMarkdownContent(markdown, path, title, isFallback = false) {
+            // Validate markdown content
+            if (!markdown || typeof markdown !== 'string') {
+                throw new Error('Invalid markdown content received');
+            }
+            
+            console.log(`Processing markdown for ${path}, length: ${markdown.length} characters`);
+            
+            let html;
+            try {
+                // Try modern marked.parse first
+                if (typeof marked.parse === 'function') {
+                    html = marked.parse(markdown);
+                } else if (typeof marked === 'function') {
+                    // Fallback for older versions
+                    html = marked(markdown);
+                } else {
+                    throw new Error('Marked.js not properly loaded');
+                }
+                console.log('Markdown parsed successfully');
+            } catch (parseError) {
+                console.error('Marked.js parse error:', parseError);
+                console.log('Attempting fallback markdown parser...');
+                try {
+                    html = simpleMarkdownParser(markdown);
+                    console.log('Fallback markdown parser succeeded');
+                } catch (fallbackError) {
+                    console.error('Fallback parser also failed:', fallbackError);
+                    // Last resort: show formatted raw markdown
+                    html = `<div style="background: #f8f9fa; padding: 2rem; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                        <h3>⚠️ Markdown Processing Error</h3>
+                        <p>The markdown parser encountered an error. Displaying raw content:</p>
+                        <pre style="white-space: pre-wrap; background: white; padding: 1rem; margin-top: 1rem;">${markdown}</pre>
+                    </div>`;
+                    console.log('Using last resort raw display');
+                }
+            }
+            
+            // Add fallback notice if using English version for German request
+            if (isFallback) {
+                const fallbackNotice = `
+                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; margin-bottom: 2rem; color: #856404;">
+                        <strong>ℹ️ Hinweis:</strong> Deutsche Version dieses Dokuments ist noch nicht verfügbar. Englische Version wird angezeigt.
+                        <br><small><strong>Note:</strong> German version of this document is not yet available. Showing English version.</small>
+                    </div>
+                `;
+                html = fallbackNotice + html;
+            }
+            
+            showContent(html, path, title);
+            
+            // Re-initialize Mermaid for new content with improved timing
+            console.log('Content loaded, starting Mermaid rendering...');
+            
+            // Immediate attempt
+            renderMermaidDiagrams();
+            
+            // Backup attempts with progressive delays
+            setTimeout(() => {
+                console.log('Second attempt to render Mermaid diagrams');
+                renderMermaidDiagrams();
+            }, 300);
+            
+            setTimeout(() => {
+                console.log('Final attempt to render Mermaid diagrams');
+                renderMermaidDiagrams();
+            }, 1500);
         }
 
         // Function to render Mermaid diagrams
@@ -1446,69 +1529,28 @@
             document.getElementById('loading').style.display = 'flex';
             document.getElementById('markdown-content').innerHTML = '';
             
+            // Get the localized path for the current language
+            const localizedPath = getLocalizedPath(path, currentLanguage);
+            
             try {
-                const response = await fetch(path);
+                const response = await fetch(localizedPath);
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    // If German version not found, fallback to English
+                    if (currentLanguage === 'de' && response.status === 404) {
+                        console.log(`German version not found for ${localizedPath}, falling back to English version`);
+                        const englishResponse = await fetch(path);
+                        if (!englishResponse.ok) {
+                            throw new Error(`HTTP ${englishResponse.status}: ${englishResponse.statusText}`);
+                        }
+                        const markdown = await englishResponse.text();
+                        processMarkdownContent(markdown, path, title, true); // true indicates fallback
+                        return;
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
                 }
                 const markdown = await response.text();
-                
-                // Validate markdown content
-                if (!markdown || typeof markdown !== 'string') {
-                    throw new Error('Invalid markdown content received');
-                }
-                
-                console.log(`Processing markdown for ${path}, length: ${markdown.length} characters`);
-                
-                let html;
-                try {
-                    // Try modern marked.parse first
-                    if (typeof marked.parse === 'function') {
-                        html = marked.parse(markdown);
-                    } else if (typeof marked === 'function') {
-                        // Fallback for older versions
-                        html = marked(markdown);
-                    } else {
-                        throw new Error('Marked.js not properly loaded');
-                    }
-                    console.log('Markdown parsed successfully');
-                } catch (parseError) {
-                    console.error('Marked.js parse error:', parseError);
-                    console.log('Attempting fallback markdown parser...');
-                    try {
-                        html = simpleMarkdownParser(markdown);
-                        console.log('Fallback markdown parser succeeded');
-                    } catch (fallbackError) {
-                        console.error('Fallback parser also failed:', fallbackError);
-                        // Last resort: show formatted raw markdown
-                        html = `<div style="background: #f8f9fa; padding: 2rem; border-radius: 8px; border-left: 4px solid #e74c3c;">
-                            <h3>⚠️ Markdown Processing Error</h3>
-                            <p>The markdown parser encountered an error. Displaying raw content:</p>
-                            <pre style="white-space: pre-wrap; background: white; padding: 1rem; margin-top: 1rem;">${markdown}</pre>
-                        </div>`;
-                        console.log('Using last resort raw display');
-                    }
-                }
-                
-                showContent(html, path, title);
-                
-                // Re-initialize Mermaid for new content with improved timing
-                console.log('Content loaded, starting Mermaid rendering...');
-                
-                // Immediate attempt
-                renderMermaidDiagrams();
-                
-                // Backup attempts with progressive delays
-                setTimeout(() => {
-                    console.log('Second attempt to render Mermaid diagrams');
-                    renderMermaidDiagrams();
-                }, 300);
-                
-                setTimeout(() => {
-                    console.log('Final attempt to render Mermaid diagrams');
-                    renderMermaidDiagrams();
-                }, 1500);
-                
+                processMarkdownContent(markdown, localizedPath, title, false);
             } catch (error) {
                 const errorHtml = `
                     <div class="error-message">
