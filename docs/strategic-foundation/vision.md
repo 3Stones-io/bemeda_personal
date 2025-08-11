@@ -2,7 +2,11 @@
 
 ## Long-term Aspiration
 
-**To become Switzerland's leading digital platform for personnel services, seamlessly connecting talent with opportunity while ensuring full regulatory compliance and exceptional user experience.**
+**To become Switzerland's leading digital platform for medical personnel services, seamlessly connecting healthcare talent with opportunity while ensuring full AVG compliance and exceptional user experience.**
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Sector Focus (Grok Enhancement):</strong> Primary focus on Swiss healthcare staffing with specialized Vermittlung and Verleih solutions for medical professionals, ensuring GAV compliance and FMH credential verification.
+</div>
 
 ---
 

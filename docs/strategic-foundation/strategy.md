@@ -2,7 +2,7 @@
 
 ## Strategic Approach
 
-**How BemedaPersonal will achieve its vision through a comprehensive dual-model platform strategy that leverages technology leadership, regulatory compliance, and stakeholder-focused value creation.**
+**How BemedaPersonal will dominate Swiss healthcare staffing through a specialized dual-model platform strategy that leverages medical sector expertise, FMH credential verification, GAV compliance, and healthcare-focused value creation.**
 
 ---
 
@@ -13,18 +13,26 @@
 #### Vermittlung (Permanent Placement)
 **Strategy**: Position as premium digital placement service for permanent roles
 
-- **Market Focus**: Professional roles in healthcare, IT, finance, and skilled trades
-- **Value Proposition**: Higher success rates with lower administrative burden
-- **Revenue Model**: Success fees after 3-month probation period (15-25% of annual salary)
-- **Competitive Advantage**: Digital-first process with built-in compliance
+- **Market Focus**: Medical professionals including physicians, nurses, therapists, and medical technicians
+- **Value Proposition**: FMH credential verification with higher success rates and GAV compliance
+- **Revenue Model**: Medical placement success fees after probation (18-30% based on specialization)
+- **Competitive Advantage**: Medical-focused digital process with healthcare compliance expertise
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Specialization Enhancement:</strong> Exclusive focus on Swiss healthcare sector with deep understanding of medical credential requirements, GAV compliance for healthcare workers, and specialized matching for medical roles.
+</div>
 
 #### Verleih (Temporary Staffing)
 **Strategy**: Become preferred temporary staffing solution with full employer services
 
-- **Market Focus**: Project-based work, seasonal needs, and specialized assignments
-- **Value Proposition**: Complete employer services with flexible engagement
-- **Revenue Model**: Hourly markup on worker compensation (20-35% depending on role)
-- **Competitive Advantage**: Seamless contract management and payroll integration
+- **Market Focus**: Medical assignments, temporary healthcare coverage, and specialized medical projects
+- **Value Proposition**: GAV-compliant medical employment services with flexible healthcare engagement
+- **Revenue Model**: Medical assignment markup (25-40% based on medical specialization and urgency)
+- **Competitive Advantage**: Healthcare-specific contract management with medical insurance and compliance
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Verleih Focus:</strong> Specialized temporary medical staffing with emphasis on urgent healthcare needs, vacation coverage for medical practices, and project-based medical assignments with full GAV compliance.
+</div>
 
 ### 🚀 Platform Strategy
 
@@ -35,7 +43,7 @@
 - **API-First Approach**: Enable integrations with existing HR and business systems
 
 #### User Experience Excellence
-- **Role-Based Interfaces**: Optimized experiences for Companies, JobSeekers, and PoolWorkers
+- **Medical-Focused Interfaces**: Optimized experiences for Healthcare Institutions, Medical Professionals, and Medical PoolWorkers
 - **Multi-Language Support**: Native German, French, Italian, and English interfaces
 - **Streamlined Workflows**: Minimize clicks and complexity in all user journeys
 - **Real-Time Communication**: Integrated messaging and notification systems
@@ -62,15 +70,19 @@
 **Goal**: Establish platform credibility and initial user base
 
 #### Target Market
-- **Geographic**: German-speaking Switzerland (Zurich, Basel, Bern)
-- **Vertical**: Healthcare and IT sectors
-- **Company Size**: 20-200 employees (mid-market focus)
+- **Geographic**: German-speaking Switzerland (Zurich, Basel, Bern major medical centers)
+- **Vertical**: Healthcare sector exclusively (hospitals, clinics, private practices)
+- **Institution Size**: 20-500 beds/employees (mid-market healthcare focus)
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Market Entry:</strong> Initial focus on major Swiss medical centers with established FMH credential verification partnerships and GAV-compliant employment frameworks.
+</div>
 
 #### Key Activities
-- Launch MVP with core Vermittlung and Verleih functionality
-- Onboard 50 companies and 500 professionals
-- Achieve 20 successful placements to validate model
-- Establish regulatory compliance track record
+- Launch MVP with medical-focused Vermittlung and Verleih functionality
+- Onboard 50 healthcare institutions and 500 medical professionals
+- Achieve 20 successful medical placements to validate model
+- Establish FMH verification and GAV compliance track record
 
 ### Phase 2: Market Expansion (Months 7-18)
 **Goal**: Scale to market leadership position
@@ -80,16 +92,21 @@
 - **Italian-speaking**: Lugano, Bellinzona
 - **German-speaking**: St. Gallen, Lucerne, Winterthur
 
-#### Vertical Expansion
-- Finance and banking sector
-- Engineering and manufacturing
-- Hospitality and retail
+#### Medical Specialization Expansion
+- Senior care and rehabilitation facilities
+- Mental health and psychiatric services
+- Specialized medical centers (oncology, cardiology, neurology)
+- Emergency and urgent care facilities
 
-#### Scale Targets
-- 300 active companies on platform
-- 3,000 registered professionals
-- 500 successful placements
-- CHF 2M in revenue run rate
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Specialization Strategy:</strong> Gradual expansion across medical subspecialties while maintaining deep healthcare sector focus rather than diversifying across industries.
+</div>
+
+#### Medical Scale Targets
+- 300 active healthcare institutions on platform
+- 3,000 registered medical professionals
+- 500 successful medical placements
+- CHF 3M in revenue run rate (higher medical sector margins)
 
 ### Phase 3: Market Dominance (Months 19-36)
 **Goal**: Become recognized market leader
@@ -127,10 +144,15 @@
 - Real-time capabilities enabling responsive user experience
 - Mobile-optimized for contemporary professional workflows
 
-#### 4. Swiss Market Specialization
-- Deep understanding of Swiss employment landscape
-- Multi-language support with cultural sensitivity
-- Cantonal customization for regional variations
+#### 4. Swiss Medical Market Specialization
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Market Expertise:</strong> Exclusive focus on Swiss healthcare landscape with deep understanding of medical education pathways, FMH specialization requirements, and healthcare employment patterns.
+</div>
+
+- Deep understanding of Swiss medical education and career pathways
+- Multi-language support with medical terminology accuracy
+- Cantonal medical licensing and practice requirement customization
+- Healthcare industry cultural sensitivity and professional standards
 
 ### Competitive Response Strategy
 - **Traditional Agencies**: Compete on efficiency, transparency, and cost
@@ -143,15 +165,23 @@
 
 ### Strategic Alliances
 
-#### Technology Partners
-- **HR System Integrations**: ADP, SAP SuccessFactors, Workday
-- **Background Check Services**: Swiss-based verification providers
-- **Payment Processing**: Swiss banking partners for payroll and billing
+#### Medical Technology Partners
+- **Healthcare System Integrations**: Epic, Cerner, Swiss hospital management systems
+- **Medical Credential Verification**: FMH, SRK, and cantonal medical board partnerships
+- **Specialized Payment Processing**: GAV-compliant payroll for healthcare workers
 
-#### Business Partners
-- **Industry Associations**: Swiss employer organizations and professional bodies
-- **Educational Institutions**: Universities and vocational schools for talent pipeline
-- **Professional Services**: Legal, accounting, and consulting firms
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Integration Focus:</strong> Partnerships specifically designed for healthcare sector integration, including medical record systems, credentialing bodies, and healthcare-specific payroll requirements.
+</div>
+
+#### Medical Business Partners
+- **Medical Associations**: Swiss Medical Association (FMH), Swiss Nurses Association (SBK)
+- **Medical Educational Institutions**: Universities with medical programs, nursing schools
+- **Healthcare Professional Services**: Medical law firms, healthcare accounting, medical consulting
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Partnership Strategy:</strong> Strategic alliances exclusively within healthcare ecosystem to build credibility and ensure deep medical sector expertise.
+</div>
 
 #### Channel Partners
 - **Regional Recruiters**: White-label solutions for existing agencies

@@ -2,7 +2,7 @@
 
 ## Overview
 
-User stories capture the human experience and value proposition of BemedaPersonal from all stakeholder perspectives. These stories showcase innovative features that differentiate us from traditional recruitment platforms and highlight our Pool Worker system, AI-powered matching, and comprehensive Swiss compliance approach.
+Medical-focused user stories capture the healthcare professional experience and specialized value proposition of BemedaPersonal. These stories showcase innovative features specific to Swiss healthcare staffing, highlighting our Medical Pool Worker system, FMH credential verification, GAV compliance, and comprehensive medical sector expertise.
 
 ---
 
@@ -27,59 +27,71 @@ High-value services for enterprise clients
 
 ## 🔵 Core Platform Stories
 
-### Story 1: JobSeeker Career Transition
-**As a** healthcare professional changing careers to IT  
-**I want to** receive personalized career transition guidance and skill gap analysis  
-**So that** I can successfully pivot to a new industry with confidence
+### Story 1: Medical Professional Career Advancement
+**As a** registered nurse seeking specialization advancement  
+**I want to** receive personalized career path guidance with FMH credential verification  
+**So that** I can advance to ICU or OR nursing with proper certification support
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Specialization:</strong> Focus on healthcare career advancement within medical specializations rather than industry transitions.
+</div>
 
 ```mermaid
 journey
-    title Healthcare to IT Career Transition
+    title Medical Specialization Advancement
     section Profile Creation
-      Register on platform: 5: JobSeeker
-      Complete skills assessment: 4: JobSeeker
-      Upload healthcare credentials: 5: JobSeeker
-    section Career Analysis
-      Receive skill gap report: 3: JobSeeker, AI
-      Get training recommendations: 4: JobSeeker, AI
-      Connect with IT mentors: 5: JobSeeker, Platform
-    section Job Matching
-      View transitional roles: 4: JobSeeker
-      Apply to hybrid positions: 5: JobSeeker
-      Interview coaching: 5: JobSeeker, Platform
+      Register on platform: 5: Medical Professional
+      Complete medical assessment: 4: Medical Professional
+      Upload nursing credentials: 5: Medical Professional
+    section Specialization Analysis
+      Receive certification gap report: 3: Medical Professional, AI
+      Get specialized training recommendations: 4: Medical Professional, AI
+      Connect with ICU mentors: 5: Medical Professional, Platform
+    section Medical Job Matching
+      View ICU positions: 4: Medical Professional
+      Apply to specialized roles: 5: Medical Professional
+      Medical interview coaching: 5: Medical Professional, Platform
     section Success
-      Land IT position: 5: JobSeeker, Company
-      3-month check-in: 4: JobSeeker, Platform
+      Land ICU position: 5: Medical Professional, Healthcare Institution
+      3-month medical review: 4: Medical Professional, Platform
 ```
 
-### Story 2: Small Company First Hire
-**As a** startup founder hiring my first employee  
-**I want to** understand Swiss employment law requirements and get compliant contracts  
-**So that** I can hire confidently without legal risks
+### Story 2: Private Practice First Medical Hire
+**As a** private practice owner hiring my first medical assistant  
+**I want to** understand Swiss medical employment requirements and get GAV-compliant contracts  
+**So that** I can hire medical staff confidently without regulatory risks
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Compliance:</strong> Specialized guidance for healthcare institution hiring with GAV compliance and medical licensing requirements.
+</div>
 
 ```mermaid
 flowchart TD
-    A[Startup registers] --> B[Define role requirements]
-    B --> C[Platform suggests employment type]
-    C --> D[Automated compliance check]
-    D --> E[Generate legal documents]
-    E --> F[Find qualified candidates]
-    F --> G[Guided interview process]
-    G --> H[Contract generation]
-    H --> I[Onboarding support]
+    A[Practice registers] --> B[Define medical role requirements]
+    B --> C[Platform suggests GAV employment type]
+    C --> D[Automated medical compliance check]
+    D --> E[Generate medical employment documents]
+    E --> F[Find qualified medical candidates]
+    F --> G[Medical interview process]
+    G --> H[GAV-compliant contract generation]
+    H --> I[Medical onboarding support]
     
-    style A fill:#e1f5fe
-    style I fill:#c8e6c9
+    style A fill:#e8f8f5
+    style I fill:#d4edda
 ```
 
 ---
 
 ## 🟢 Differentiation Stories
 
-### Story 3: Smart Company Matching
-**As a** job seeker with specific cultural preferences  
-**I want to** find companies that match my work style and values  
-**So that** I find not just a job, but the right cultural fit
+### Story 3: Smart Healthcare Institution Matching
+**As a** medical professional with specific practice preferences  
+**I want to** find healthcare institutions that match my medical practice style and values  
+**So that** I find not just a position, but the right medical environment fit
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Culture Matching:</strong> Healthcare-specific cultural fit including patient care philosophy, medical technology preferences, and specialization focus.
+</div>
 
 ```mermaid
 mindmap
@@ -130,10 +142,14 @@ graph LR
 
 ## 🟡 Pool Worker Innovation Stories
 
-### Story 5: Flexible Healthcare Professional
-**As a** registered nurse wanting flexible schedules  
-**I want to** set my availability preferences and get matched to suitable shifts  
-**So that** I can maintain work-life balance while staying professionally active
+### Story 5: Flexible Medical Pool Worker
+**As a** registered nurse employed by BemedaPersonal wanting flexible medical schedules  
+**I want to** set my availability preferences and get matched to suitable medical shifts with GAV compliance  
+**So that** I can maintain work-life balance while staying professionally active across multiple healthcare institutions
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Pool Worker Innovation:</strong> GAV-compliant flexible medical employment with assignments across hospitals, clinics, and specialized care facilities.
+</div>
 
 ```mermaid
 gantt
@@ -152,39 +168,47 @@ gantt
     Fri Weekend     :crit, personal2, 2024-01-12, 2024-01-14
 ```
 
-### Story 6: IT Contractor Portfolio Building
-**As an** IT contractor seeking diverse experience  
-**I want to** work on projects across different industries and technologies  
-**So that** I can build a strong portfolio and expand my skillset
+### Story 6: Medical Professional Specialization Building
+**As a** medical professional seeking diverse clinical experience  
+**I want to** work assignments across different medical specializations and healthcare settings  
+**So that** I can build comprehensive medical experience and expand my clinical expertise
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Experience Diversification:</strong> Clinical assignments across various medical specializations to build comprehensive healthcare expertise.
+</div>
 
 ```mermaid
 graph TD
-    A[Pool Worker Profile] --> B[Skills Matrix]
-    B --> C[Project Matching]
-    C --> D[FinTech Project - 3 months]
-    C --> E[HealthTech Project - 2 months]  
-    C --> F[E-commerce Project - 1 month]
+    A[Medical Pool Worker Profile] --> B[Medical Skills Matrix]
+    B --> C[Clinical Assignment Matching]
+    C --> D[ICU Assignment - 3 months]
+    C --> E[Emergency Room Assignment - 2 months]  
+    C --> F[Specialized Surgery - 1 month]
     
-    D --> G[Blockchain Skills +1]
-    E --> H[HIPAA Compliance +1]
-    F --> I[Payment Systems +1]
+    D --> G[Critical Care Certification +1]
+    E --> H[Emergency Medicine Skills +1]
+    F --> I[Surgical Assistance +1]
     
-    G --> J[Enhanced Profile]
+    G --> J[Enhanced Medical Profile]
     H --> J
     I --> J
     
-    J --> K[Premium Rate Increase]
-    J --> L[Leadership Opportunities]
+    J --> K[Premium Medical Rate Increase]
+    J --> L[Senior Clinical Opportunities]
 ```
 
 ---
 
 ## 🟠 AI-Powered Intelligence Stories
 
-### Story 7: Predictive Workforce Planning
-**As an** HR director at a growing company  
-**I want to** receive predictions about future hiring needs based on business trends  
-**So that** I can plan recruitment campaigns proactively
+### Story 7: Predictive Medical Staffing Planning
+**As a** hospital HR director managing seasonal patient load variations  
+**I want to** receive predictions about future medical staffing needs based on patient admission trends  
+**So that** I can plan medical recruitment campaigns proactively for peak periods
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏥 Medical Workforce Intelligence:</strong> Healthcare-specific predictive analytics considering patient admission patterns, seasonal medical needs, and clinical specialization requirements.
+</div>
 
 ```mermaid
 sequenceDiagram

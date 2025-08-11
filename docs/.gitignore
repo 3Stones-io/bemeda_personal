@@ -1,5 +1,4 @@
-# Grok Analysis Package - Local Only
-grok-analysis/
+# Analysis packages - Local Only (removed as redundant)
 
 # Node modules and build artifacts
 node_modules/
