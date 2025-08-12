@@ -426,6 +426,110 @@ mindmap
 <strong>🚀 Full-Service Marketing:</strong> End-to-end digital marketing campaigns combining recruitment expertise with professional marketing agency capabilities, creating competitive moat against traditional staffing.
 </div>
 
+### Story 17: Employer Brand Storyteller Agency
+**As an** HR manager at a medical facility  
+**I want** BemedaPersonal to build a compelling and authentic employer brand through specialized content  
+**So that** we can actively attract and retain top medical talent long-term
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Employer Brand Storytelling:</strong> Comprehensive employer branding including video production, content marketing, and targeted social media campaigns for medical institutions.
+</div>
+
+**Services Include:**
+- **Specialized employer branding videos**: "A Day with Us", employee testimonials, team events showcasing medical culture
+- **Content marketing for employer brands**: Blog articles, infographics, social media content highlighting values and career opportunities
+- **Target-specific social media campaigns**: LinkedIn, Instagram, TikTok campaigns tailored to specific medical specializations
+
+### Story 18: Talent Pipeline Strategist
+**As a** CEO of a healthcare organization  
+**I want** to proactively build a pool of qualified medical talents and receive strategic market insights  
+**So that** I can ensure future growth goals rather than just reacting to open positions
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Strategic Talent Intelligence:</strong> Proactive talent pipelining with market analytics and future-skills consulting for healthcare leadership.
+</div>
+
+**Services Include:**
+- **Proactive talent pipelining**: Building relationships with potential medical candidates before positions become vacant
+- **Market and salary analyses**: Detailed reports on medical talent availability, salary benchmarks, competitive activities
+- **Future-skills consulting**: Advisory on which medical skills will be crucial in next 3-5 years
+
+```mermaid
+graph TB
+    A[Healthcare Market Analysis] --> B[Talent Pipeline Building]
+    B --> C[Future Skills Forecasting]
+    C --> D[Strategic Hiring Plan]
+    
+    A --> E[Salary Benchmarking]
+    A --> F[Competition Analysis]
+    
+    B --> G[Medical Community Building]
+    B --> H[Passive Candidate Nurturing]
+    
+    D --> I[Proactive Recruitment Strategy]
+    G --> I
+    H --> I
+```
+
+### Story 19: Candidate Experience Optimizer
+**As an** HR manager in healthcare  
+**I want** to ensure every medical candidate has an outstanding personalized experience regardless of outcome  
+**So that** we strengthen our reputation and foster positive word-of-mouth in the medical community
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Medical Candidate Experience:</strong> End-to-end candidate journey optimization specifically designed for healthcare professionals with Bemeda Academy integration.
+</div>
+
+**Services Include:**
+- **Personalized candidate journeys**: Every touchpoint optimized for medical professionals
+- **Pre-boarding support**: Welcome videos, info packages, virtual team introductions
+- **Bemeda Academy integration**: Continuous learning opportunities during recruitment process
+- **Feedback loops & analysis**: Systematic collection and analysis of medical candidate feedback
+
+### Story 20: Passive Medical Talent Targeting via LinkedIn
+**As a** clinic HR manager  
+**I want** automated LinkedIn campaigns targeting passive medical candidates with DSG-compliant consent management  
+**So that** I can reach hidden medical talent and reduce hiring time by 30%
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Swiss Compliance Innovation:</strong> LinkedIn automation with FMH register integration and full AVG audit trails for medical professional targeting.
+</div>
+
+**Acceptance Criteria:**
+- DSG-compliant consent management integrated
+- FMH register verification for credential checks
+- Complete audit trail for AVG transparency
+- 40% access to passive medical professionals vs. traditional agencies
+
+### Story 21: Medical Influencer Partnerships
+**As a** medical PoolWorker (registered nurse)  
+**I want** to connect with medical influencers through the platform for authentic career insights  
+**So that** I stay engaged and loyal to the BemedaPersonal community
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Medical Community Building:</strong> Partnerships with Swiss medical influencers and Bemeda Academy thought leaders for enhanced retention and professional development.
+</div>
+
+**Services Include:**
+- Partnerships with GAV-compliant medical influencers
+- Bemeda Academy expert-led webinars and content
+- 25% increased retention through community building
+
+### Story 22: AI-Generated Medical Facility Promo Videos
+**As a** hospital administrator  
+**I want** to upload templated, AI-created promo videos for job postings  
+**So that** I can show candidates our work environment virtually and increase applications by 50%
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 AI Video Innovation:</strong> Cost-efficient, personalized video content creation with cantonal GAV compliance and international talent attraction.
+</div>
+
+**Features:**
+- Cantonal GAV-specific video templates
+- DSG-compliant facility recordings
+- International talent attraction (B/L permit integration)
+- Bemeda Academy production training for clients
+
 ---
 
 ## 🎯 Competitive Differentiation Scenarios

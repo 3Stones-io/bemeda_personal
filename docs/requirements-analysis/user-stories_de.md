@@ -426,6 +426,110 @@ mindmap
 <strong>🚀 Full-Service Marketing:</strong> End-to-End digitale Marketing-Kampagnen, die Rekrutierungs-Expertise mit professionellen Marketing-Agentur-Fähigkeiten kombinieren und einen Wettbewerbsgraben gegen traditionelle Personalvermittlung schaffen.
 </div>
 
+### Story 17: Employer Brand Storyteller Agentur
+**Als** HR-Manager einer medizinischen Einrichtung  
+**Möchte ich**, dass BemedaPersonal eine überzeugende und authentische Arbeitgebermarke durch spezialisierte Inhalte aufbaut  
+**Damit** wir Top-Medizintalente aktiv anziehen und langfristig binden können
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Employer Brand Storytelling:</strong> Umfassendes Arbeitgeber-Branding einschließlich Videoproduktion, Content-Marketing und gezielten Social Media Kampagnen für medizinische Institutionen.
+</div>
+
+**Services Umfassen:**
+- **Spezialisierte Employer Branding Videos**: "Ein Tag bei uns", Mitarbeiter-Testimonials, Team-Events zur Darstellung der medizinischen Kultur
+- **Content-Marketing für Arbeitgebermarken**: Blog-Artikel, Infografiken, Social Media Content zur Hervorhebung von Werten und Karrierechancen
+- **Zielgruppen-spezifische Social Media Kampagnen**: LinkedIn, Instagram, TikTok Kampagnen auf spezifische medizinische Spezialisierungen zugeschnitten
+
+### Story 18: Talent Pipeline Strategist
+**Als** CEO einer Gesundheitsorganisation  
+**Möchte ich** proaktiv einen Pool qualifizierter medizinischer Talente aufbauen und strategische Markteinblicke erhalten  
+**Damit** ich zukünftige Wachstumsziele sicherstelle, anstatt nur auf offene Stellen zu reagieren
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Strategische Talent-Intelligence:</strong> Proaktives Talent-Pipelining mit Marktanalysen und Future-Skills-Beratung für Gesundheitsführung.
+</div>
+
+**Services Umfassen:**
+- **Proaktives Talent-Pipelining**: Beziehungsaufbau zu potenziellen medizinischen Kandidaten bevor Stellen vakant werden
+- **Markt- und Gehaltsanalysen**: Detaillierte Berichte über medizinische Talentverfügbarkeit, Gehaltsbenchmarks, Wettbewerbsaktivitäten
+- **Future-Skills-Consulting**: Beratung über entscheidende medizinische Fähigkeiten in den nächsten 3-5 Jahren
+
+```mermaid
+graph TB
+    A[Gesundheitsmarkt-Analyse] --> B[Talent-Pipeline-Aufbau]
+    B --> C[Future-Skills-Prognose]
+    C --> D[Strategischer Einstellungsplan]
+    
+    A --> E[Gehaltsbenchmarking]
+    A --> F[Wettbewerbsanalyse]
+    
+    B --> G[Medizinische Community-Bildung]
+    B --> H[Passive Kandidaten-Pflege]
+    
+    D --> I[Proaktive Rekrutierungsstrategie]
+    G --> I
+    H --> I
+```
+
+### Story 19: Candidate Experience Optimierer
+**Als** HR-Manager im Gesundheitswesen  
+**Möchte ich** sicherstellen, dass jeder medizinische Kandidat eine herausragende personalisierte Erfahrung macht, unabhängig vom Ergebnis  
+**Damit** wir unseren Ruf stärken und positive Mundpropaganda in der medizinischen Gemeinschaft fördern
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Medizinische Candidate Experience:</strong> End-to-End Kandidaten-Journey-Optimierung speziell für Gesundheitsfachkräfte mit Bemeda Academy Integration.
+</div>
+
+**Services Umfassen:**
+- **Personalisierte Kandidaten-Journeys**: Jeder Kontaktpunkt für medizinische Fachkräfte optimiert
+- **Pre-Boarding Support**: Welcome-Videos, Infopakete, virtuelle Team-Vorstellungen
+- **Bemeda Academy Integration**: Kontinuierliche Lernmöglichkeiten während des Rekrutierungsprozesses
+- **Feedback-Schleifen & Analyse**: Systematische Sammlung und Analyse von medizinischen Kandidaten-Feedback
+
+### Story 20: Passives Medizin-Talent Targeting via LinkedIn
+**Als** Klinik-HR-Manager  
+**Möchte ich** automatisierte LinkedIn-Kampagnen für passive medizinische Kandidaten mit DSG-konformem Consent-Management  
+**Damit** ich versteckte medizinische Talente erreiche und die Einstellungszeit um 30% reduziere
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Schweizer Compliance Innovation:</strong> LinkedIn-Automatisierung mit FMH-Register-Integration und vollständigen AVG-Audit-Trails für medizinisches Fachkraft-Targeting.
+</div>
+
+**Akzeptanzkriterien:**
+- DSG-konformes Consent-Management integriert
+- FMH-Register-Verifikation für Credential-Checks
+- Vollständiger Audit-Trail für AVG-Transparenz
+- 40% Zugang zu passiven medizinischen Fachkräften vs. traditionelle Agenturen
+
+### Story 21: Medizinische Influencer-Partnerschaften
+**Als** medizinische PoolWorker (registrierte Krankenpflegerin)  
+**Möchte ich** über die Plattform mit medizinischen Influencern für authentische Karriere-Insights vernetzt werden  
+**Damit** ich engagiert und loyal zur BemedaPersonal-Community bleibe
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Medizinische Community-Bildung:</strong> Partnerschaften mit Schweizer medizinischen Influencern und Bemeda Academy Thought Leaders für erhöhte Retention und berufliche Entwicklung.
+</div>
+
+**Services Umfassen:**
+- Partnerschaften mit GAV-konformen medizinischen Influencern
+- Bemeda Academy expertengeführte Webinare und Inhalte
+- 25% erhöhte Retention durch Community-Building
+
+### Story 22: KI-generierte Medizinische Einrichtungs-Promo-Videos
+**Als** Krankenhaus-Administrator  
+**Möchte ich** templatierte, KI-erstellte Promo-Videos für Stellenausschreibungen hochladen  
+**Damit** ich Kandidaten virtuell unsere Arbeitsumgebung zeige und Bewerbungen um 50% steigere
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 KI-Video-Innovation:</strong> Kosteneffiziente, personalisierte Video-Content-Erstellung mit kantonaler GAV-Compliance und internationaler Talent-Anziehung.
+</div>
+
+**Features:**
+- Kantonal GAV-spezifische Video-Templates
+- DSG-konforme Einrichtungsaufnahmen
+- Internationale Talent-Anziehung (B/L-Permit-Integration)
+- Bemeda Academy Produktions-Training für Klienten
+
 ---
 
 ## 🎯 Wettbewerbsdifferenzierungs-Szenarien
