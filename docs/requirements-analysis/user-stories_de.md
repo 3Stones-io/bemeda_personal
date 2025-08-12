@@ -23,6 +23,9 @@ Smartes Matching und prädiktive Fähigkeiten
 ### 🔴 Premium-Services
 Hochwertige Services für Enterprise-Kunden
 
+### 🚀 OOTB User Stories (Out of The Box)
+Wettbewerbsvorteile der nächsten Generation durch integrierte Marketing- & Rekrutierungslösungen
+
 ---
 
 ## 🔵 Kern-Plattform Stories
@@ -308,6 +311,120 @@ stateDiagram-v2
     InterviewProzess --> Vertragsgenerierung: Kandidat ausgewählt
     Vertragsgenerierung --> [*]: Konforme Einstellung abgeschlossen
 ```
+
+---
+
+## 🚀 OOTB User Stories (Out of The Box)
+
+### Story 11: Integrierte Social Media Medizin-Rekrutierung
+**Als** Krankenhaus-HR-Direktor, der Top-Medizintalente anziehen möchte  
+**Möchte ich**, dass BemedaPersonal unsere Social Media Rekrutierungskampagnen mit medizin-fokussierten Inhalten verwaltet  
+**Damit** wir unsere Arbeitgebermarke aufbauen und passive medizinische Kandidaten durch gezielte soziale Medien anziehen können
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Marketing-Agentur-Integration:</strong> Full-Service Social Media Rekrutierung, die medizinische Expertise mit professionellem Marketing kombiniert, um sich von traditionellen Personalagenturen zu differenzieren.
+</div>
+
+```mermaid
+flowchart TD
+    A[Krankenhaus definiert Bedürfnisse] --> B[BemedaPersonal erstellt medizinische Rekrutierungsstrategie]
+    B --> C[LinkedIn medizinische Fachkraft-Targeting]
+    B --> D[Instagram Gesundheitskarriere-Inhalte]
+    B --> E[Facebook medizinische Community-Posts]
+    
+    C --> F[Gezielte medizinische Stellenanzeigen]
+    D --> G[Behind-the-scenes Krankenhaus-Videos]
+    E --> H[Mitarbeiter-Testimonials]
+    
+    F --> I[Qualifizierte medizinische Leads]
+    G --> I
+    H --> I
+    
+    I --> J[Direkte Plattform-Pipeline]
+    J --> K[Warmer Kandidaten-Pool]
+```
+
+### Story 12: Professionelle Medizinische Rekrutierungsvideos
+**Als** spezialisierte medizinische Klinik, die unsere Kultur zeigen möchte  
+**Möchte ich**, dass BemedaPersonal professionelle Rekrutierungsvideos mit unserem Team und unseren Einrichtungen produziert  
+**Damit** Kandidaten unsere Arbeitsumgebung und Kultur vor der Bewerbung sehen können
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Video-Produktions-Service:</strong> Professionelle Video-Content-Erstellung als Mehrwert-Service, positioniert BemedaPersonal als Full-Service medizinischen Rekrutierungspartner.
+</div>
+
+```mermaid
+gantt
+    title Medizinische Rekrutierungsvideo-Produktion
+    dateFormat  YYYY-MM-DD
+    section Vorproduktion
+    Kundenkonsultation      :2024-01-15, 3d
+    Drehbuchentwicklung     :2024-01-18, 2d
+    Team-Koordination       :2024-01-20, 1d
+    
+    section Produktion
+    Einrichtungsfilmung     :2024-01-22, 1d
+    Personal-Interviews     :2024-01-23, 1d
+    Patientenbereich-Aufnahmen :2024-01-24, 1d
+    
+    section Nachbearbeitung
+    Video-Bearbeitung       :2024-01-25, 3d
+    Kundenüberprüfung       :2024-01-28, 2d
+    Endlieferung           :2024-01-30, 1d
+```
+
+### Story 13: Medizinische Konferenz- & Event-Management
+**Als** regionales Krankenhaus-Netzwerk, das eine medizinische Rekrutierungsveranstaltung plant  
+**Möchte ich**, dass BemedaPersonal medizinische Karrieremessen und Networking-Events organisiert und verwaltet  
+**Damit** wir potenzielle Kandidaten persönlich treffen und Beziehungen aufbauen können
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Event-Management-Service:</strong> Full-Service medizinische Rekrutierungs-Event-Planung, schafft Networking-Möglichkeiten und positioniert BemedaPersonal als Gesundheitsbranchenführer.
+</div>
+
+### Story 14: Arbeitgeber-Branding & Content-Strategie
+**Als** private medizinische Praxis, die unsere Online-Präsenz verbessern möchte  
+**Möchte ich**, dass BemedaPersonal unsere Arbeitgebermarke mit professionellen Inhalten und Messaging entwickelt  
+**Damit** wir bessere Kandidaten anziehen und mit größeren Institutionen konkurrieren können
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Brand-Development-Service:</strong> Umfassendes Arbeitgeber-Branding speziell für medizinische Praxen, hilft kleineren Kliniken, mit großen Krankenhäusern um Talente zu konkurrieren.
+</div>
+
+### Story 15: KI-gestützte Marktintelligenz-Berichte
+**Als** Krankenhaus-Führungskraft, die strategische Personalentscheidungen plant  
+**Möchte ich**, dass BemedaPersonal maßgeschneiderte Marktintelligenz-Berichte über medizinische Einstellungstrends bereitstellt  
+**Damit** ich datengestützte Entscheidungen über Vergütung, Einstellungszeitpunkt und Talent-Strategie treffen kann
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Business Intelligence Service:</strong> Premium-Datenanalytik-Service mit medizinischen Arbeitsmarkt-Einblicken, etabliert BemedaPersonal als strategischen Partner statt nur Personaldienstleister.
+</div>
+
+```mermaid
+mindmap
+  root((Marktintelligenz))
+    Medizinische Gehaltstrends
+      Spezialisierungsvergleiche
+      Regionale Variationen
+      Saisonale Muster
+    Talent-Verfügbarkeit
+      Fähigkeitsmängel
+      Geografische Hotspots
+      Wettbewerbslandschaft
+    Strategische Einblicke
+      Einstellungszeitpunkt-Optimierung
+      Vergütungs-Benchmarking
+      Retention-Strategien
+```
+
+### Story 16: Integrierte Digitale Marketing-Kampagnen
+**Als** medizinisches Zentrum, das eine neue Abteilung eröffnet  
+**Möchte ich**, dass BemedaPersonal umfassende digitale Marketing-Kampagnen erstellt, die auf spezifische medizinische Spezialisierungen abzielen  
+**Damit** wir unsere neue Abteilung schnell mit den richtigen Fachkräften besetzen können
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Full-Service Marketing:</strong> End-to-End digitale Marketing-Kampagnen, die Rekrutierungs-Expertise mit professionellen Marketing-Agentur-Fähigkeiten kombinieren und einen Wettbewerbsgraben gegen traditionelle Personalvermittlung schaffen.
+</div>
 
 ---
 

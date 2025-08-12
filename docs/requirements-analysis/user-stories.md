@@ -23,6 +23,9 @@ Smart matching and predictive capabilities
 ### 🔴 Premium Services
 High-value services for enterprise clients
 
+### 🚀 OOTB User Stories (Out of The Box)
+Next-generation competitive advantages through integrated marketing & recruitment solutions
+
 ---
 
 ## 🔵 Core Platform Stories
@@ -308,6 +311,120 @@ stateDiagram-v2
     InterviewProcess --> ContractGeneration: Candidate Selected
     ContractGeneration --> [*]: Compliant Hire Complete
 ```
+
+---
+
+## 🚀 OOTB User Stories (Out of The Box)
+
+### Story 11: Integrated Social Media Medical Recruitment
+**As a** hospital HR director looking to attract top medical talent  
+**I want** BemedaPersonal to manage our social media recruitment campaigns with medical-focused content  
+**So that** we can build our employer brand and attract passive medical candidates through targeted social media
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Marketing Agency Integration:</strong> Full-service social media recruitment combining medical expertise with professional marketing to differentiate from traditional staffing agencies.
+</div>
+
+```mermaid
+flowchart TD
+    A[Hospital defines needs] --> B[BemedaPersonal creates medical recruitment strategy]
+    B --> C[LinkedIn medical professional targeting]
+    B --> D[Instagram healthcare career content]
+    B --> E[Facebook medical community posts]
+    
+    C --> F[Targeted medical job ads]
+    D --> G[Behind-the-scenes hospital videos]
+    E --> H[Employee testimonials]
+    
+    F --> I[Qualified medical leads]
+    G --> I
+    H --> I
+    
+    I --> J[Direct platform pipeline]
+    J --> K[Warm candidate pool]
+```
+
+### Story 12: Professional Medical Recruitment Videos
+**As a** specialized medical clinic wanting to showcase our culture  
+**I want** BemedaPersonal to produce professional recruitment videos featuring our team and facilities  
+**So that** candidates can see our work environment and culture before applying
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Video Production Service:</strong> Professional video content creation as value-added service, positioning BemedaPersonal as full-service medical recruitment partner.
+</div>
+
+```mermaid
+gantt
+    title Medical Recruitment Video Production
+    dateFormat  YYYY-MM-DD
+    section Pre-Production
+    Client consultation    :2024-01-15, 3d
+    Script development     :2024-01-18, 2d
+    Team coordination      :2024-01-20, 1d
+    
+    section Production
+    Facility filming       :2024-01-22, 1d
+    Staff interviews       :2024-01-23, 1d
+    Patient area shots     :2024-01-24, 1d
+    
+    section Post-Production
+    Video editing          :2024-01-25, 3d
+    Client review          :2024-01-28, 2d
+    Final delivery         :2024-01-30, 1d
+```
+
+### Story 13: Medical Conference & Event Management
+**As a** regional hospital network planning a medical recruitment event  
+**I want** BemedaPersonal to organize and manage medical career fairs and networking events  
+**So that** we can meet potential candidates in person and build relationships
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Event Management Service:</strong> Full-service medical recruitment event planning, creating networking opportunities and positioning BemedaPersonal as healthcare industry leader.
+</div>
+
+### Story 14: Employer Branding & Content Strategy
+**As a** private medical practice wanting to improve our online presence  
+**I want** BemedaPersonal to develop our employer brand with professional content and messaging  
+**So that** we can attract better candidates and compete with larger institutions
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Brand Development Service:</strong> Comprehensive employer branding specifically for medical practices, helping smaller clinics compete with major hospitals for talent.
+</div>
+
+### Story 15: AI-Powered Market Intelligence Reports
+**As a** hospital executive planning strategic staffing decisions  
+**I want** BemedaPersonal to provide custom market intelligence reports on medical hiring trends  
+**So that** I can make data-driven decisions about compensation, hiring timing, and talent strategy
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Business Intelligence Service:</strong> Premium data analytics service providing medical labor market insights, establishing BemedaPersonal as strategic partner rather than just staffing vendor.
+</div>
+
+```mermaid
+mindmap
+  root((Market Intelligence))
+    Medical Salary Trends
+      Specialty comparisons
+      Regional variations
+      Seasonal patterns
+    Talent Availability
+      Skills shortages
+      Geographic hotspots
+      Competitive landscape
+    Strategic Insights
+      Hiring timing optimization
+      Compensation benchmarking
+      Retention strategies
+```
+
+### Story 16: Integrated Digital Marketing Campaigns
+**As a** medical center launching a new department  
+**I want** BemedaPersonal to create comprehensive digital marketing campaigns targeting specific medical specialties  
+**So that** we can quickly staff our new department with the right professionals
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🚀 Full-Service Marketing:</strong> End-to-end digital marketing campaigns combining recruitment expertise with professional marketing agency capabilities, creating competitive moat against traditional staffing.
+</div>
 
 ---
 
