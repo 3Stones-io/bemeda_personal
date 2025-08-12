@@ -530,6 +530,98 @@ graph TB
 - International talent attraction (B/L permit integration)
 - Bemeda Academy production training for clients
 
+### Story 23: AI-Powered PoolWorker Schedule Optimization
+**As a** medical PoolWorker with specific availability preferences  
+**I want** to upload my personal working plan and get automated "Einsatz" filling based on my schedule  
+**So that** I can maximize my working hours while maintaining work-life balance
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🤖 AI Schedule Intelligence:</strong> Advanced calendar integration with predictive assignment matching, optimizing PoolWorker utilization while respecting personal preferences and GAV working time regulations.
+</div>
+
+**AI Features:**
+- **Smart Calendar Integration**: Upload Google/Outlook calendars for automatic availability detection
+- **Predictive Assignment Matching**: AI suggests optimal "Einsatz" based on skills, location, and schedule gaps
+- **GAV Working Time Compliance**: Automatic enforcement of Swiss working time regulations
+- **Commute Optimization**: AI considers travel time and public transport connections
+- **Preference Learning**: System learns from acceptance/rejection patterns to improve suggestions
+
+```mermaid
+graph TB
+    A[PoolWorker uploads calendar] --> B[AI analyzes availability patterns]
+    B --> C[Match with healthcare facility needs]
+    C --> D{Schedule compatibility?}
+    
+    D -->|Perfect Match| E[Auto-propose assignment]
+    D -->|Partial Match| F[Suggest schedule adjustment]
+    D -->|No Match| G[Add to waitlist for future]
+    
+    E --> H[PoolWorker accepts/declines]
+    H --> I[AI learns preferences]
+    I --> J[Improved future matching]
+    
+    F --> K[Negotiate alternative times]
+    K --> H
+    
+    style B fill:#e8f8f5
+    style I fill:#d4edda
+```
+
+**Benefits:**
+- 70% increase in PoolWorker utilization rates
+- 85% reduction in manual scheduling time
+- 90% assignment acceptance rate through smart matching
+
+### Story 24: Integrated Housing Solutions for International Medical Professionals
+**As an** international medical professional relocating to Switzerland  
+**I want** BemedaPersonal to organize temporary and permanent housing solutions  
+**So that** I can focus on my medical career without housing stress during relocation
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏠 Relocation Services Integration:</strong> End-to-end housing support for international medical talent, removing barriers to Swiss healthcare recruitment and ensuring smooth integration.
+</div>
+
+**Housing Services Include:**
+- **Temporary Accommodation**: Partner network of medical professional housing for first 1-3 months
+- **Permanent Housing Search**: AI-powered apartment/house matching based on workplace location and budget
+- **Cantonal Integration**: Location-specific advice for each Swiss canton's housing market
+- **Legal Support**: Rental contract assistance and Swiss tenant rights education
+- **Community Integration**: Connection with local medical professional networks
+
+```mermaid
+journey
+    title International Medical Professional Housing Journey
+    section Pre-Arrival
+      Housing consultation: 5: International Professional, BemedaPersonal
+      Temporary housing secured: 4: BemedaPersonal Housing Partner
+      Arrival logistics planned: 5: BemedaPersonal
+    section Arrival (Month 1)
+      Airport pickup arranged: 5: BemedaPersonal Service
+      Temporary housing check-in: 5: International Professional
+      Banking and registration support: 4: BemedaPersonal, Local Partner
+    section Settlement (Months 2-3)
+      Permanent housing search: 4: International Professional, AI Matching
+      Workplace proximity optimization: 5: AI System
+      Rental contract negotiation: 4: BemedaPersonal Legal Partner
+    section Integration (Month 3+)
+      Permanent housing move-in: 5: International Professional
+      Local medical community introduction: 5: BemedaPersonal Network
+      Long-term settlement support: 4: Ongoing Service
+```
+
+**Partnership Network:**
+- **Temporary Housing Partners**: Serviced apartments, medical professional residences
+- **Real Estate Partnerships**: Specialized agents for medical professional housing
+- **Legal Services**: Immigration and housing law specialists
+- **Relocation Services**: Professional moving and setup assistance
+- **Community Networks**: Medical professional social and networking groups
+
+**Success Metrics:**
+- 95% successful housing placement within 30 days
+- 80% transition from temporary to permanent housing within 3 months
+- 90% satisfaction rate with housing solutions
+- 60% faster integration into Swiss medical community
+
 ---
 
 ## 🎯 Competitive Differentiation Scenarios

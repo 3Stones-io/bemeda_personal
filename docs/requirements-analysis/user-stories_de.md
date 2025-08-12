@@ -530,6 +530,98 @@ graph TB
 - Internationale Talent-Anziehung (B/L-Permit-Integration)
 - Bemeda Academy Produktions-Training für Klienten
 
+### Story 23: KI-gestützte PoolWorker Zeitplan-Optimierung
+**Als** medizinische PoolWorker mit spezifischen Verfügbarkeitspräferenzen  
+**Möchte ich** meinen persönlichen Arbeitsplan hochladen und automatisierte "Einsatz"-Füllung basierend auf meinem Zeitplan erhalten  
+**Damit** ich meine Arbeitszeiten maximieren kann und gleichzeitig Work-Life-Balance aufrechterhalte
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🤖 KI-Zeitplan-Intelligence:</strong> Erweiterte Kalender-Integration mit prädiktivem Einsatz-Matching, optimiert PoolWorker-Auslastung unter Berücksichtigung persönlicher Präferenzen und GAV-Arbeitszeitvorschriften.
+</div>
+
+**KI-Features:**
+- **Smart Kalender-Integration**: Upload von Google/Outlook-Kalendern für automatische Verfügbarkeitserkennung
+- **Prädiktives Einsatz-Matching**: KI schlägt optimale "Einsätze" basierend auf Fähigkeiten, Standort und Zeitplan-Lücken vor
+- **GAV-Arbeitszeit-Compliance**: Automatische Durchsetzung der Schweizer Arbeitszeitvorschriften
+- **Pendel-Optimierung**: KI berücksichtigt Reisezeit und öffentliche Verkehrsverbindungen
+- **Präferenz-Lernen**: System lernt aus Annahme-/Ablehnungsmustern zur Verbesserung der Vorschläge
+
+```mermaid
+graph TB
+    A[PoolWorker lädt Kalender hoch] --> B[KI analysiert Verfügbarkeitsmuster]
+    B --> C[Abgleich mit Gesundheitseinrichtungs-Bedürfnissen]
+    C --> D{Zeitplan-Kompatibilität?}
+    
+    D -->|Perfekte Übereinstimmung| E[Auto-Einsatz-Vorschlag]
+    D -->|Teilweise Übereinstimmung| F[Zeitplan-Anpassung vorschlagen]
+    D -->|Keine Übereinstimmung| G[Zur Warteliste für Zukunft hinzufügen]
+    
+    E --> H[PoolWorker akzeptiert/lehnt ab]
+    H --> I[KI lernt Präferenzen]
+    I --> J[Verbesserte zukünftige Zuordnung]
+    
+    F --> K[Alternative Zeiten verhandeln]
+    K --> H
+    
+    style B fill:#e8f8f5
+    style I fill:#d4edda
+```
+
+**Vorteile:**
+- 70% Erhöhung der PoolWorker-Auslastungsraten
+- 85% Reduktion der manuellen Planungszeit
+- 90% Einsatz-Akzeptanzrate durch smartes Matching
+
+### Story 24: Integrierte Wohnlösungen für Internationale Medizinische Fachkräfte
+**Als** internationale medizinische Fachkraft, die in die Schweiz umzieht  
+**Möchte ich**, dass BemedaPersonal temporäre und permanente Wohnlösungen organisiert  
+**Damit** ich mich auf meine medizinische Laufbahn konzentrieren kann ohne Wohnungsstress während der Umsiedelung
+
+<div style="background: linear-gradient(135deg, #e8f8f5 0%, #d4edda 100%); border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+<strong>🏠 Umzugsdienst-Integration:</strong> End-to-End Wohnungsunterstützung für internationale medizinische Talente, beseitigt Barrieren für Schweizer Gesundheitsrekrutierung und gewährleistet reibungslose Integration.
+</div>
+
+**Wohnungsservices Umfassen:**
+- **Temporäre Unterkunft**: Partner-Netzwerk von medizinischen Fachkraft-Wohnungen für erste 1-3 Monate
+- **Permanente Wohnungssuche**: KI-gestützte Wohnung/Haus-Zuordnung basierend auf Arbeitsplatz-Standort und Budget
+- **Kantonale Integration**: Standort-spezifische Beratung für jeden Schweizer Kanton-Wohnungsmarkt
+- **Rechtliche Unterstützung**: Mietvertrags-Hilfe und Schweizer Mieterrechts-Bildung
+- **Community-Integration**: Verbindung mit lokalen medizinischen Fachkraft-Netzwerken
+
+```mermaid
+journey
+    title Internationale Medizinische Fachkraft Wohnungs-Journey
+    section Vor-Ankunft
+      Wohnungsberatung: 5: Internationale Fachkraft, BemedaPersonal
+      Temporäre Wohnung gesichert: 4: BemedaPersonal Wohnungspartner
+      Ankunftslogistik geplant: 5: BemedaPersonal
+    section Ankunft (Monat 1)
+      Flughafen-Abholung arrangiert: 5: BemedaPersonal Service
+      Temporäre Wohnungs-Check-in: 5: Internationale Fachkraft
+      Banking und Registrierungs-Support: 4: BemedaPersonal, Lokaler Partner
+    section Eingewöhnung (Monate 2-3)
+      Permanente Wohnungssuche: 4: Internationale Fachkraft, KI-Matching
+      Arbeitsplatz-Nähe-Optimierung: 5: KI-System
+      Mietvertrags-Verhandlung: 4: BemedaPersonal Rechtspartner
+    section Integration (Monat 3+)
+      Permanenter Wohnungs-Einzug: 5: Internationale Fachkraft
+      Lokale medizinische Community-Einführung: 5: BemedaPersonal Netzwerk
+      Langzeit-Eingewöhnungs-Support: 4: Laufender Service
+```
+
+**Partner-Netzwerk:**
+- **Temporäre Wohnungspartner**: Serviced Apartments, medizinische Fachkraft-Residenzen
+- **Immobilien-Partnerschaften**: Spezialisierte Agenten für medizinische Fachkraft-Wohnungen
+- **Rechtsdienstleistungen**: Einwanderungs- und Wohnungsrechts-Spezialisten
+- **Umzugsdienste**: Professionelle Umzugs- und Setup-Hilfe
+- **Community-Netzwerke**: Medizinische Fachkraft-Sozial- und Networking-Gruppen
+
+**Erfolgskennzahlen:**
+- 95% erfolgreiche Wohnungsplatzierung innerhalb 30 Tagen
+- 80% Übergang von temporärer zu permanenter Wohnung innerhalb 3 Monaten
+- 90% Zufriedenheitsrate mit Wohnungslösungen
+- 60% schnellere Integration in Schweizer medizinische Gemeinschaft
+
 ---
 
 ## 🎯 Wettbewerbsdifferenzierungs-Szenarien
