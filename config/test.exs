@@ -68,7 +68,7 @@ config :phoenix_test,
     browser_launch_timeout: 30_000,
     headless: System.get_env("PW_HEADLESS", "true") == "true",
     js_logger: false,
-    screenshot: System.get_env("PW_SCREENSHOT", "false") == "true",
+    screenshot: System.get_env("PW_SCREENSHOT", "true") == "true",
     timeout: System.get_env("PW_TIMEOUT", "2000") |> String.to_integer(),
     trace: System.get_env("PW_TRACE", "false") == "true"
   ]

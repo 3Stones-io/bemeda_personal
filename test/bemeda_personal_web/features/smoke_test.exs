@@ -26,7 +26,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
   - Integration with external services (email, file storage)
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: false
+  use BemedaPersonalWeb.FeatureCase, async: true
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -45,7 +45,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
         conn
         |> set_locale_to_english()
         |> visit(~p"/")
-        |> wait_for_element("body", timeout: 10_000)
+        |> wait_for_element("body")
         |> assert_has("html")
         |> assert_has("body")
 
@@ -87,7 +87,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
       conn
       |> visit(~p"/jobs")
       |> set_locale_to_english()
-      |> wait_for_element("h1", timeout: 10_000)
+      |> wait_for_element("h1")
       |> assert_has("h1")
       # Just verify page loaded with job listings
       |> assert_has("body")
@@ -97,20 +97,20 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
     test "navigation between core pages works", %{conn: conn} do
       conn
       |> visit(~p"/")
-      |> wait_for_element("nav", timeout: 10_000)
+      |> wait_for_element("nav")
       # Test direct navigation to jobs page
       |> visit(~p"/jobs")
-      |> wait_for_element("h1", timeout: 10_000)
+      |> wait_for_element("h1")
       # Just verify page loaded successfully by checking for main content
       |> assert_has("main")
       # Test navigation to login
       |> visit(~p"/users/log_in")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       # Just verify login form elements are present
       |> assert_has("body")
       # Test navigation to registration
       |> visit(~p"/users/register")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_has("body")
     end
   end
@@ -139,7 +139,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
       session =
         conn
         |> visit(~p"/users/log_in")
-        |> wait_for_element("input[name='user[email]']", timeout: 10_000)
+        |> wait_for_element("input[name='user[email]']")
         |> unwrap(fn %{frame_id: frame_id} ->
           {:ok, _fill_email} = Frame.fill(frame_id, "input[name='user[email]']", employer.email)
 
@@ -149,7 +149,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
           {:ok, _click_result} = Frame.click(frame_id, "button[type='submit']")
           :ok
         end)
-        |> wait_for_element("body", timeout: 15_000)
+        |> wait_for_element("body")
 
       # Check that login was successful by verifying we redirected away from login page
       # (Successful login typically redirects to "/" or dashboard)
@@ -157,7 +157,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
       # Try to visit employer dashboard to verify auth
       session
       |> visit(~p"/company")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       # Just verify that we can access the company page (user is authenticated)
       |> assert_path("/company")
     end
@@ -193,7 +193,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
 
       session
       |> visit(~p"/jobs/#{job_posting.id}")
-      |> wait_for_element("[data-testid='apply-button']", timeout: 10_000)
+      |> wait_for_element("[data-testid='apply-button']")
       |> click_apply_now_and_wait_for_form()
       |> unwrap(fn %{frame_id: frame_id} ->
         {:ok, _result} =
@@ -207,10 +207,10 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
       end)
       |> click("button[type='submit']")
       # Just verify form was submitted successfully by checking redirect or page state
-      |> wait_for_element("body", timeout: 15_000)
+      |> wait_for_element("body")
       # Verify application appears in dashboard
       |> visit(~p"/job_applications")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_has("h1")
     end
 
@@ -232,7 +232,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
       # Just verify that authenticated employer can access the job posting system
       session
       |> visit(~p"/company")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_has("body")
     end
   end
@@ -263,7 +263,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
 
       session
       |> visit(~p"/company/applicants/#{job_posting.id}")
-      |> wait_for_element("h1", timeout: 15_000)
+      |> wait_for_element("h1")
       |> assert_has("h1")
       # Verify the page structure loads - main goal is to test LiveView functionality
       |> assert_has("body")
@@ -291,7 +291,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
 
       session
       |> visit(~p"/jobs/#{job_posting.id}")
-      |> wait_for_element("[data-testid='apply-button']", timeout: 10_000)
+      |> wait_for_element("[data-testid='apply-button']")
       |> click_apply_now_and_wait_for_form()
       |> unwrap(fn %{frame_id: frame_id} ->
         {:ok, _result} =
@@ -305,7 +305,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
       end)
       # Just verify the application form loaded successfully - use the form's submit button
       |> click("button[type='submit']")
-      |> wait_for_element("body", timeout: 15_000)
+      |> wait_for_element("body")
     end
   end
 end

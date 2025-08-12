@@ -24,7 +24,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
   - Visitor-to-user conversion pathway testing
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: false
+  use BemedaPersonalWeb.FeatureCase, async: true
 
   import BemedaPersonal.FeatureHelpers
 
@@ -34,12 +34,12 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
     test "visitor lands on homepage and navigates to jobs", %{conn: conn} do
       conn
       |> visit(~p"/")
-      |> wait_for_element("body", timeout: 30_000)
+      |> wait_for_element("body")
       # First check if h1 elements exist at all
       |> assert_has("h1")
       |> assert_path("/")
       |> visit(~p"/jobs")
-      |> wait_for_element("body", timeout: 30_000)
+      |> wait_for_element("body")
       # Check if h1 exists on jobs page
       |> assert_has("h1")
     end
@@ -51,7 +51,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
       |> visit(~p"/")
       |> set_locale_to_english()
       |> visit(~p"/jobs")
-      |> wait_for_element("h1", timeout: 30_000)
+      |> wait_for_element("h1")
       |> assert_has("main")
 
       # For now, just check that the page loads successfully
@@ -64,7 +64,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
 
       conn
       |> visit(~p"/jobs/#{fake_id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
 
       # Should show some kind of error or not found state
       # This tests that the route exists and handles errors appropriately
@@ -76,7 +76,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
 
       conn
       |> visit(~p"/companies/#{fake_id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
 
       # Route exists and handles missing company appropriately
     end
@@ -90,7 +90,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
 
       conn
       |> visit(~p"/jobs")
-      |> wait_for_element("h1", timeout: 10_000)
+      |> wait_for_element("h1")
       |> assert_has("h1")
       |> then(fn session ->
         # Create job in background
@@ -108,7 +108,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
       # Test that basic search UI elements exist
       conn
       |> visit(~p"/jobs")
-      |> wait_for_element("h1", timeout: 10_000)
+      |> wait_for_element("h1")
       |> assert_has("h1")
       # Check for the subtitle element instead of exact text
       |> assert_has("p.text-gray-600")
@@ -120,7 +120,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
       # Test that basic filtering interface exists
       conn
       |> visit(~p"/jobs")
-      |> wait_for_element("h1", timeout: 10_000)
+      |> wait_for_element("h1")
       |> assert_has("h1")
       # Check for subtitle element instead of exact text
       |> assert_has("p.text-gray-600")
@@ -136,7 +136,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
       conn
       |> resize_to_mobile()
       |> visit(~p"/jobs")
-      |> wait_for_element("h1", timeout: 10_000)
+      |> wait_for_element("h1")
       |> assert_has("h1")
       # Check for subtitle element instead of exact text
       |> assert_has("p.text-gray-600")

@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
   for both job seekers and employers.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: false
+  use BemedaPersonalWeb.FeatureCase, async: true
 
   alias PhoenixTest.Playwright.Frame
 
@@ -126,9 +126,9 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
       # Wait for redirect to complete and page to load
       |> assert_path("/users/log_in")
       # Form should still be present after redirect
-      |> assert_has("form", wait: 3000)
+      |> assert_has("form")
       # Should have an error flash message
-      |> assert_has("#flash-error", wait: 2000)
+      |> assert_has("#flash-error")
     end
   end
 

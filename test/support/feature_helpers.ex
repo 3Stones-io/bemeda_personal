@@ -58,11 +58,11 @@ defmodule BemedaPersonal.FeatureHelpers do
   @spec click_apply_now_and_wait_for_form(session()) :: session()
   def click_apply_now_and_wait_for_form(session) do
     session
-    |> safe_click("[data-testid='apply-button']", timeout: 30_000)
+    |> safe_click("[data-testid='apply-button']")
     # Wait for modal panel to appear and animate in
-    |> wait_for_element("#job-application-panel", timeout: 30_000)
+    |> wait_for_element("#job-application-panel")
     # Wait for the form component to fully load
-    |> wait_for_element("textarea[name='job_application[cover_letter]']", timeout: 30_000)
+    |> wait_for_element("textarea[name='job_application[cover_letter]']")
   end
 
   # File upload helper
@@ -114,8 +114,8 @@ defmodule BemedaPersonal.FeatureHelpers do
 
   defp wait_for_login_form(session) do
     session
-    |> wait_for_element("form", timeout: 60_000)
-    |> wait_for_element("input[name='user[email]']", timeout: 45_000)
+    |> wait_for_element("form")
+    |> wait_for_element("input[name='user[email]']")
   end
 
   defp fill_and_submit_login_form(session, email, password) do
@@ -131,15 +131,15 @@ defmodule BemedaPersonal.FeatureHelpers do
 
   defp ensure_form_ready(_frame_id) do
     # Brief delay to ensure form is fully interactive
-    Process.sleep(1000)
+    Process.sleep(100)
     {:ok, :ready}
   end
 
   defp fill_login_credentials(frame_id, email, password) do
     with {:ok, _fill_email} <- Frame.fill(frame_id, "input[name='user[email]']", email),
-         :ok <- Process.sleep(300),
+         :ok <- Process.sleep(50),
          {:ok, _fill_password} <- Frame.fill(frame_id, "input[name='user[password]']", password) do
-      Process.sleep(300)
+      Process.sleep(50)
       {:ok, :filled}
     end
   end
@@ -147,13 +147,12 @@ defmodule BemedaPersonal.FeatureHelpers do
   defp wait_for_submit_button(frame_id) do
     Frame.wait_for_selector(frame_id, %{
       selector: "button[type='submit']",
-      timeout: 30_000,
       state: "visible"
     })
   end
 
   defp wait_for_login_redirect(session) do
-    wait_for_element(session, "body", timeout: 30_000)
+    wait_for_element(session, "body")
   end
 
   @spec sign_in_as_job_seeker(term()) :: session()
@@ -214,22 +213,22 @@ defmodule BemedaPersonal.FeatureHelpers do
   defp fill_job_seeker_step1(session, email) do
     # Step 1: Fill basic information fields with proper waits
     session
-    |> wait_for_element("input[name='user[first_name]']", timeout: 45_000)
+    |> wait_for_element("input[name='user[first_name]']")
     |> unwrap(fn %{frame_id: frame_id} ->
       # Wait for form to be fully interactive
-      Process.sleep(1500)
+      Process.sleep(50)
 
       {:ok, _result} = Frame.fill(frame_id, "input[name='user[first_name]']", "Test")
-      Process.sleep(300)
+      Process.sleep(50)
       {:ok, _result} = Frame.fill(frame_id, "input[name='user[last_name]']", "User")
-      Process.sleep(300)
+      Process.sleep(50)
       {:ok, _result} = Frame.fill(frame_id, "input[name='user[email]']", email)
-      Process.sleep(300)
+      Process.sleep(50)
       {:ok, _result} = Frame.fill(frame_id, "input[name='user[password]']", "securepassword123")
       # Skip date_of_birth as it has validation issues - field is not required
-      Process.sleep(300)
+      Process.sleep(50)
       {:ok, _result} = Frame.fill(frame_id, "input[name='user[city]']", "Zurich")
-      Process.sleep(300)
+      Process.sleep(50)
       {:ok, _result} = Frame.fill(frame_id, "input[name='user[phone]']", "079 123 4567")
       :ok
     end)
@@ -238,24 +237,24 @@ defmodule BemedaPersonal.FeatureHelpers do
   defp submit_step1(session) do
     # Submit step 1 to move to step 2
     session
-    |> wait_for_element("button[type='submit']", timeout: 30_000)
+    |> wait_for_element("button[type='submit']")
     |> unwrap(fn %{frame_id: frame_id} ->
       # Wait before clicking to ensure form is ready
-      Process.sleep(1000)
+      Process.sleep(100)
       {:ok, _result} = Frame.click(frame_id, "button[type='submit']")
       :ok
     end)
     # Wait longer for step 2 form - LiveView might need time to update
-    |> wait_for_element("form", timeout: 45_000)
+    |> wait_for_element("form")
   end
 
   defp fill_job_seeker_step2(session) do
     # Step 2: Fill medical role information using correct enum values from Enums module
     session
-    |> wait_for_element("select[name='user[medical_role]']", timeout: 45_000)
+    |> wait_for_element("select[name='user[medical_role]']")
     |> unwrap(fn %{frame_id: frame_id} ->
       # Wait for dropdown to be fully interactive before selecting options
-      Process.sleep(2000)
+      Process.sleep(100)
 
       # Use correct enum values that match the schema with improved error handling
       {:ok, _result} =
@@ -264,7 +263,7 @@ defmodule BemedaPersonal.FeatureHelpers do
         ])
 
       # Wait between dropdown selections to allow LiveView to update
-      Process.sleep(1500)
+      Process.sleep(50)
 
       {:ok, _result} =
         Frame.select_option(frame_id, "select[name='user[department]']", [
@@ -272,7 +271,7 @@ defmodule BemedaPersonal.FeatureHelpers do
         ])
 
       # Wait for form updates
-      Process.sleep(1000)
+      Process.sleep(100)
 
       {:ok, _result} =
         Frame.select_option(frame_id, "select[name='user[gender]']", [
@@ -280,7 +279,7 @@ defmodule BemedaPersonal.FeatureHelpers do
         ])
 
       # Final wait before checking terms
-      Process.sleep(500)
+      Process.sleep(100)
 
       {:ok, _result} = Frame.check(frame_id, "input[name='user[terms_accepted]']")
       :ok
@@ -290,15 +289,15 @@ defmodule BemedaPersonal.FeatureHelpers do
   defp submit_step2(session) do
     # Submit step 2 to complete registration
     session
-    |> wait_for_element("button[type='submit']", timeout: 30_000)
+    |> wait_for_element("button[type='submit']")
     |> unwrap(fn %{frame_id: frame_id} ->
       # Wait before final submission to ensure all form validation is complete
-      Process.sleep(1500)
+      Process.sleep(50)
       {:ok, _result} = Frame.click(frame_id, "button[type='submit']")
       :ok
     end)
     # Wait longer for redirect after completion - registration might take time
-    |> wait_for_element("body", timeout: 60_000)
+    |> wait_for_element("body")
   end
 
   @spec register_employer(session(), keyword()) :: session()
@@ -319,12 +318,12 @@ defmodule BemedaPersonal.FeatureHelpers do
     # Set English locale by first visiting homepage, then switching locale
     session
     |> visit(~p"/")
-    |> wait_for_element("body", timeout: 15_000)
+    |> wait_for_element("body")
     |> visit(~p"/locale/en")
-    |> wait_for_element("body", timeout: 15_000)
+    |> wait_for_element("body")
     # Longer wait to ensure locale change takes effect and page reloads
     |> unwrap(fn %{frame_id: frame_id} ->
-      Process.sleep(3_000)
+      Process.sleep(100)
       {:ok, %{frame_id: frame_id}}
     end)
   end
@@ -334,11 +333,11 @@ defmodule BemedaPersonal.FeatureHelpers do
   def visit_and_wait_for_content(session, path, expected_content) do
     session
     |> visit(path)
-    |> wait_for_element("body", timeout: 30_000)
+    |> wait_for_element("body")
     # Give LiveView and JavaScript time to fully load and render
     |> unwrap(fn %{frame_id: frame_id} ->
       # Wait for JavaScript to load and execute
-      Process.sleep(5_000)
+      Process.sleep(200)
       {:ok, %{frame_id: frame_id}}
     end)
     |> wait_for_content_or_retry(expected_content, 0)
@@ -346,12 +345,12 @@ defmodule BemedaPersonal.FeatureHelpers do
 
   defp wait_for_content_or_retry(session, expected_content, retry_count) when retry_count < 2 do
     # Shorter timeout per attempt since we already waited
-    assert_has(session, expected_content, wait: 5_000)
+    assert_has(session, expected_content)
     session
   rescue
     _error ->
       # Content not found, wait longer for LiveView to render
-      Process.sleep(3_000)
+      Process.sleep(100)
       wait_for_content_or_retry(session, expected_content, retry_count + 1)
   end
 
@@ -397,21 +396,21 @@ defmodule BemedaPersonal.FeatureHelpers do
 
   @spec wait_for_element(session(), selector(), keyword()) :: session()
   def wait_for_element(session, selector, opts \\ []) do
-    timeout = Keyword.get(opts, :timeout, 30_000)
-    assert_has(session, selector, wait: timeout)
+    case Keyword.get(opts, :timeout) do
+      nil -> assert_has(session, selector)
+      timeout -> assert_has(session, selector, wait: timeout)
+    end
   end
 
   @spec wait_for_interactive_element(session(), selector(), keyword()) :: session()
-  def wait_for_interactive_element(session, selector, opts \\ []) do
-    timeout = Keyword.get(opts, :timeout, 60_000)
-
+  def wait_for_interactive_element(session, selector, _opts \\ []) do
     unwrap(session, fn %{frame_id: frame_id} ->
-      wait_for_visible_then_attached(frame_id, selector, timeout)
+      wait_for_visible_then_attached(frame_id, selector)
     end)
   end
 
-  defp wait_for_visible_then_attached(frame_id, selector, timeout) do
-    with {:ok, _element} <- wait_for_visible(frame_id, selector, timeout),
+  defp wait_for_visible_then_attached(frame_id, selector) do
+    with {:ok, _element} <- wait_for_visible(frame_id, selector),
          {:ok, _element} <- wait_for_attached(frame_id, selector) do
       {:ok, %{frame_id: frame_id}}
     else
@@ -419,10 +418,9 @@ defmodule BemedaPersonal.FeatureHelpers do
     end
   end
 
-  defp wait_for_visible(frame_id, selector, timeout) do
+  defp wait_for_visible(frame_id, selector) do
     Frame.wait_for_selector(frame_id, %{
       selector: selector,
-      timeout: timeout,
       state: "visible"
     })
   end
@@ -430,20 +428,16 @@ defmodule BemedaPersonal.FeatureHelpers do
   defp wait_for_attached(frame_id, selector) do
     Frame.wait_for_selector(frame_id, %{
       selector: selector,
-      timeout: 5_000,
       state: "attached"
     })
   end
 
   @spec wait_for_clickable(session(), selector(), keyword()) :: session()
-  def wait_for_clickable(session, selector, opts \\ []) do
-    timeout = Keyword.get(opts, :timeout, 60_000)
-
+  def wait_for_clickable(session, selector, _opts \\ []) do
     unwrap(session, fn %{frame_id: frame_id} ->
       # Wait for element to be visible - we'll assume it's clickable if visible
       case Frame.wait_for_selector(frame_id, %{
              selector: selector,
-             timeout: timeout,
              state: "visible"
            }) do
         {:ok, _element} ->
@@ -456,11 +450,9 @@ defmodule BemedaPersonal.FeatureHelpers do
   end
 
   @spec safe_click(session(), selector(), keyword()) :: session()
-  def safe_click(session, selector, opts \\ []) do
-    timeout = Keyword.get(opts, :timeout, 60_000)
-
+  def safe_click(session, selector, _opts \\ []) do
     session
-    |> wait_for_clickable(selector, timeout: timeout)
+    |> wait_for_clickable(selector)
     |> unwrap(fn %{frame_id: frame_id} ->
       case Frame.click(frame_id, selector) do
         {:ok, result} -> {:ok, result}
@@ -471,36 +463,35 @@ defmodule BemedaPersonal.FeatureHelpers do
 
   @spec try_multiple_selectors(session(), list(selector()), keyword()) :: session()
   def try_multiple_selectors(session, selectors, opts \\ []) when is_list(selectors) do
-    timeout = Keyword.get(opts, :timeout, 60_000)
     action = Keyword.get(opts, :action, :click)
 
-    try_selectors_recursive(session, selectors, action, timeout)
+    try_selectors_recursive(session, selectors, action)
   end
 
-  defp try_selectors_recursive(session, [], _action, _timeout) do
+  defp try_selectors_recursive(session, [], _action) do
     # No selectors worked, return session as-is
     session
   end
 
-  defp try_selectors_recursive(session, [selector | remaining], action, timeout) do
-    case apply_action_to_selector(session, selector, action, timeout) do
+  defp try_selectors_recursive(session, [selector | remaining], action) do
+    case apply_action_to_selector(session, selector, action) do
       {:ok, result} -> result
-      {:error, _reason} -> try_selectors_recursive(session, remaining, action, timeout)
+      {:error, _reason} -> try_selectors_recursive(session, remaining, action)
     end
   end
 
-  defp apply_action_to_selector(session, selector, action, timeout) do
+  defp apply_action_to_selector(session, selector, action) do
     result =
       case action do
         :click ->
-          safe_click(session, selector, timeout: timeout)
+          safe_click(session, selector)
 
         :wait ->
-          wait_for_interactive_element(session, selector, timeout: timeout)
+          wait_for_interactive_element(session, selector)
 
         :fill ->
           # fill action needs value, so we'll just wait for the element
-          wait_for_interactive_element(session, selector, timeout: timeout)
+          wait_for_interactive_element(session, selector)
       end
 
     {:ok, result}
@@ -515,7 +506,7 @@ defmodule BemedaPersonal.FeatureHelpers do
 
   @spec wait_for_liveview_update(session(), keyword()) :: session()
   def wait_for_liveview_update(session, opts \\ []) do
-    timeout = Keyword.get(opts, :timeout, 5_000)
+    timeout = Keyword.get(opts, :timeout, 100)
     # Wait for LiveView to complete any pending updates
     Process.sleep(timeout)
     session

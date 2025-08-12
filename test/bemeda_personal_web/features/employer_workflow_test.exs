@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
   applicant management, and team collaboration.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: false
+  use BemedaPersonalWeb.FeatureCase, async: true
 
   import BemedaPersonal.FeatureHelpers
 
@@ -48,7 +48,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Navigate to company editing and test hospital affiliation field exists
       session
       |> visit(~p"/company/edit")
-      |> wait_for_element("form", timeout: 10_000)
+      |> wait_for_element("form")
       |> assert_has("form")
       # Check for hospital affiliation field (if it exists in the schema)
       |> assert_has("input,select,textarea")
@@ -61,7 +61,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test company dashboard is accessible (team features would be here)
       session
       |> visit(~p"/company")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company")
       # Basic UI validation - team invitation would be in company management
       |> assert_has("main")
@@ -75,7 +75,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access job creation form
       session
       |> visit(~p"/company/jobs/new")
-      |> wait_for_element("form", timeout: 15_000)
+      |> wait_for_element("form")
       |> assert_path("/company/jobs/new")
       |> assert_has("form")
       # Verify key job posting fields exist
@@ -89,12 +89,12 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access job management dashboard
       session
       |> visit(~p"/company/jobs")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/jobs")
       # Test job listing interface exists (draft/published jobs would show here)
       |> assert_has("main")
       # Look for new job creation link
-      |> wait_for_element("a,button", timeout: 5_000)
+      |> wait_for_element("a,button")
     end
 
     test "employer edits existing job posting", %{conn: conn} do
@@ -104,7 +104,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access job editing
       session
       |> visit(~p"/company/jobs/#{job.id}/edit")
-      |> wait_for_element("form", timeout: 15_000)
+      |> wait_for_element("form")
       |> assert_path("/company/jobs/#{job.id}/edit")
       |> assert_has("form")
       # Verify job editing form loads with fields
@@ -119,12 +119,12 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can view job details and management options
       session
       |> visit(~p"/company/jobs/#{job.id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/jobs/#{job.id}")
       # Test job show page exists with management options
       |> assert_has("main")
       # Look for job management controls (edit, status change, etc.)
-      |> wait_for_element("a,button", timeout: 5_000)
+      |> wait_for_element("a,button")
     end
   end
 
@@ -154,7 +154,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access applicant management
       session
       |> visit(~p"/company/applicants")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/applicants")
       # Test applicant list interface exists
       |> assert_has("main")
@@ -183,7 +183,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test job-specific applicant filtering
       session
       |> visit(~p"/company/applicants/#{job.id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/applicants/#{job.id}")
       # Test that applicant filtering interface exists
       |> assert_has("main")
@@ -204,7 +204,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can view individual application
       session
       |> visit(~p"/company/applicant/#{application.id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/applicant/#{application.id}")
       # Test application detail page exists
       |> assert_has("main")
@@ -216,7 +216,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access application details for interview scheduling
       session
       |> visit(~p"/company/applicant/#{application.id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/applicant/#{application.id}")
       # Test application management interface exists (scheduling would be here)
       |> assert_has("main")
@@ -231,7 +231,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access job analytics (typically in job show page)
       session
       |> visit(~p"/company/jobs/#{job.id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/jobs/#{job.id}")
       # Test job details page exists (analytics would be displayed here)
       |> assert_has("main")
@@ -243,7 +243,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access company dashboard (reports would be here)
       session
       |> visit(~p"/company")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company")
       # Test company dashboard exists (reporting features would be here)
       |> assert_has("main")
@@ -257,7 +257,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access applicant communication
       session
       |> visit(~p"/company/applicant/#{application.id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/applicant/#{application.id}")
       # Test applicant detail page exists (messaging would be here)
       |> assert_has("main")
@@ -269,7 +269,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access communication history
       session
       |> visit(~p"/company/applicant/#{application.id}")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/applicant/#{application.id}")
       # Test applicant page loads (message history would be displayed here)
       |> assert_has("main")
@@ -283,7 +283,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access user settings
       session
       |> visit(~p"/users/settings")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/users/settings")
       # Test settings page exists (notification preferences would be here)
       |> assert_has("main")
@@ -295,7 +295,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       # Test that employer can access company editing
       session
       |> visit(~p"/company/edit")
-      |> wait_for_element("body", timeout: 10_000)
+      |> wait_for_element("body")
       |> assert_path("/company/edit")
       # Test company edit page exists (branding options would be here)
       |> assert_has("main")

@@ -6,7 +6,8 @@ defmodule BemedaPersonalWeb.Features.CommunicationTest do
   job seekers and employers.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: false
+  use BemedaPersonalWeb.FeatureCase, async: true
+
   import BemedaPersonal.FeatureHelpers
 
   alias PhoenixTest.Playwright.Frame

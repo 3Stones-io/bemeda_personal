@@ -175,7 +175,16 @@ defmodule BemedaPersonal.MixProject do
       prettier: ["cmd npx prettier -w ."],
       "test.features": [
         "assets.deploy",
-        "cmd export FEATURE_TESTS=true && export PW_TIMEOUT=2000 && ./scripts/feature_test_with_retry.sh"
+        fn args ->
+          # Clean up any existing test server first
+          System.cmd("bash", ["-c", "lsof -ti tcp:4205 | xargs kill -9 2>/dev/null || true"],
+            env: []
+          )
+
+          # Run the feature test script
+          cmd_args = Enum.join(args, " ")
+          Mix.shell().cmd("./scripts/feature_test.sh #{cmd_args}")
+        end
       ]
     ]
   end

@@ -46,6 +46,9 @@ docs/package-lock.json
 # Secrets
 .env.prod
 
+# Screenshots
+/screenshots/
+
 # Optimum development/test artifacts
 /node_modules/
 /priv/plts/

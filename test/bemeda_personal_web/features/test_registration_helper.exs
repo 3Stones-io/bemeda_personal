@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.Features.TestRegistrationHelperTest do
   Test the updated registration helpers
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: false
+  use BemedaPersonalWeb.FeatureCase, async: true
 
   import BemedaPersonal.FeatureHelpers
 

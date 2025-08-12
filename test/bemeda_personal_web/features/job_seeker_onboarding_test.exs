@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.Features.JobSeekerOnboardingTest do
   for job seekers on the platform.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: false
+  use BemedaPersonalWeb.FeatureCase, async: true
 
   import BemedaPersonal.FeatureHelpers
 

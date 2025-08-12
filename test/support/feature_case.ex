@@ -26,8 +26,7 @@ defmodule BemedaPersonalWeb.FeatureCase do
       use PhoenixTest.Playwright.Case, unquote(opts)
       use BemedaPersonalWeb, :verified_routes
 
-      # Set default timeout for all feature tests to handle browser operations
-      @moduletag timeout: 300_000
+      # Use ExUnit default timeout (60 seconds) for feature tests
 
       # Import conveniences for testing
       import BemedaPersonal.AccountsFixtures
