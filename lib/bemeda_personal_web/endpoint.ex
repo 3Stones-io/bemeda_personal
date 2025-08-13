@@ -27,6 +27,15 @@ defmodule BemedaPersonalWeb.Endpoint do
     gzip: false,
     only: BemedaPersonalWeb.static_paths()
 
+  # Serve PhoenixStorybook static assets
+  # The assets_path in the router configuration will be /storybook/assets
+  # but the actual files are directly in priv/static/css, priv/static/js, etc.
+  plug Plug.Static,
+    at: "/storybook/assets",
+    from: {:phoenix_storybook, "priv/static"},
+    gzip: false,
+    only: ~w(css js fonts images favicon)
+
   if Code.ensure_loaded?(Tidewave) do
     plug Tidewave
   end

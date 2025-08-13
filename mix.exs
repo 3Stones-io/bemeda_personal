@@ -76,6 +76,7 @@ defmodule BemedaPersonal.MixProject do
       {:multipart, "~> 0.4"},
       {:number, "~> 1.0"},
       {:oban, "~> 2.19"},
+      {:phoenix_storybook, "~> 0.6.0", only: [:dev, :test]},
       {:plug, "~> 1.17"},
       {:req, "~> 0.5"}
     ]
@@ -120,7 +121,8 @@ defmodule BemedaPersonal.MixProject do
        sparse: "optimized",
        app: false,
        compile: false,
-       depth: 1},
+       depth: 1,
+       override: true},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},

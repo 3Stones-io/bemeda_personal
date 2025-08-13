@@ -212,6 +212,9 @@ defmodule BemedaPersonal.FeatureHelpers do
   # Private helper functions to reduce complexity
   defp fill_job_seeker_step1(session, email) do
     # Step 1: Fill basic information fields with proper waits
+    # Wait for the form to load first
+    Process.sleep(500)
+
     session
     |> wait_for_element("input[name='user[first_name]']")
     |> unwrap(fn %{frame_id: frame_id} ->
@@ -250,6 +253,9 @@ defmodule BemedaPersonal.FeatureHelpers do
 
   defp fill_job_seeker_step2(session) do
     # Step 2: Fill medical role information using correct enum values from Enums module
+    # First wait for the page to transition to step 2
+    Process.sleep(500)
+
     session
     |> wait_for_element("select[name='user[medical_role]']")
     |> unwrap(fn %{frame_id: frame_id} ->

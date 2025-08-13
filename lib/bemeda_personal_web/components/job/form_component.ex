@@ -242,6 +242,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                 label={dgettext("jobs", "Job Title")}
                 required
                 phx-debounce="blur"
+                value={f[:title].value}
               />
             </div>
 

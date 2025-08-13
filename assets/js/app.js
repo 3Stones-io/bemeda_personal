@@ -33,7 +33,10 @@ import MultiSelect from './hooks/multi_select'
 import PdfPreview from './hooks/pdf_preview'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
+import SearchHook from './hooks/search_hook'
+import SidebarHook from './hooks/sidebar_hook'
 import SignwellEmbed from './hooks/signwell_embed'
+import StoryHook from './hooks/story_hook'
 import TagsInput from './hooks/tags_input'
 import TextTruncate from './hooks/text_truncate'
 
@@ -49,7 +52,10 @@ const Hooks = {
   PdfPreview,
   RatingsTooltip,
   RatingsTooltipContent,
+  SearchHook,
+  SidebarHook,
   SignwellEmbed,
+  StoryHook,
   TagsInput,
   TextTruncate,
 }

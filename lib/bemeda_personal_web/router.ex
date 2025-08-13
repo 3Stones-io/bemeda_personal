@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.Router do
   use BemedaPersonalWeb, :router
 
   import BemedaPersonalWeb.UserAuth
+  import PhoenixStorybook.Router
 
   alias BemedaPersonalWeb.Locale
 
@@ -236,5 +237,17 @@ defmodule BemedaPersonalWeb.Router do
       live_dashboard "/dashboard", metrics: BemedaPersonalWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  # Storybook assets (must be outside browser pipeline - no CSRF protection)
+  scope "/" do
+    storybook_assets()
+  end
+
+  # Public Storybook route (can be accessed without authentication)
+  scope "/" do
+    pipe_through :browser
+
+    live_storybook("/storybook", backend_module: BemedaPersonalWeb.Storybook)
   end
 end

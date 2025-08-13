@@ -447,7 +447,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       label={dgettext("jobs", "Location")}
                       type="text"
                       placeholder={dgettext("jobs", "Enter location")}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -461,7 +461,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                         {dgettext("jobs", "Remote Only"), "true"},
                         {dgettext("jobs", "On-site Only"), "false"}
                       ]}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
                 </div>
@@ -490,7 +490,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       type="select"
                       prompt={dgettext("jobs", "Select profession")}
                       options={get_translated_filter_options(:profession)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -501,7 +501,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       type="select"
                       prompt={dgettext("jobs", "Select employment type")}
                       options={get_translated_filter_options(:employment_types)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -512,7 +512,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       type="select"
                       prompt={dgettext("jobs", "Select experience range")}
                       options={get_translated_filter_options(:years_of_experience_options)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -523,7 +523,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       type="select"
                       prompt={dgettext("jobs", "Select position type")}
                       options={get_translated_filter_options(:positions)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
                 </div>
@@ -552,7 +552,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       label={dgettext("jobs", "Department")}
                       type="multi-select"
                       options={get_translated_filter_options(:departments)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -562,7 +562,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       label={dgettext("jobs", "Region")}
                       type="multi-select"
                       options={get_translated_filter_options(:regions)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -572,7 +572,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       label={dgettext("jobs", "Languages")}
                       type="multi-select"
                       options={get_translated_filter_options(:languages)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
                 </div>
@@ -601,7 +601,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       label={dgettext("jobs", "Shift Type")}
                       type="multi-select"
                       options={get_translated_filter_options(:shift_types)}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -612,7 +612,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       type="select"
                       prompt={dgettext("jobs", "Select currency")}
                       options={Enum.map(Enums.currencies(), &{&1, &1})}
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -622,7 +622,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       label={dgettext("jobs", "Minimum Salary")}
                       type="number"
                       placeholder="0"
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
 
@@ -632,7 +632,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                       label={dgettext("jobs", "Maximum Salary")}
                       type="number"
                       placeholder="200000"
-                      class="w-full"
+                      input_class="w-full"
                     />
                   </div>
                 </div>
@@ -958,7 +958,8 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                   label_class="block text-sm font-medium text-gray-700"
                   type="text"
                   placeholder={dgettext("jobs", "Search by applicant name")}
-                  class="w-full"
+                  input_class="w-full"
+                  value={f[:applicant_name].value}
                 />
               </div>
 
@@ -969,7 +970,8 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                   label_class="block text-sm font-medium text-gray-700"
                   type="text"
                   placeholder={dgettext("jobs", "Search by job title")}
-                  class="w-full"
+                  input_class="w-full"
+                  value={f[:job_title].value}
                 />
               </div>
 
@@ -979,6 +981,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                   label={dgettext("jobs", "Application Date From")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="date"
+                  value={f[:date_from].value}
                 />
               </div>
 
@@ -988,6 +991,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
                   label={dgettext("jobs", "Application Date To")}
                   label_class="block text-sm font-medium text-gray-700"
                   type="date"
+                  value={f[:date_to].value}
                 />
               </div>
 

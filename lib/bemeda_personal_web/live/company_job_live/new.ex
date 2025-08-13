@@ -6,7 +6,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.New do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :job_posting, %JobPosting{})}
+    job_posting = %JobPosting{remote_allowed: false}
+    {:ok, assign(socket, :job_posting, job_posting)}
   end
 
   @impl Phoenix.LiveView

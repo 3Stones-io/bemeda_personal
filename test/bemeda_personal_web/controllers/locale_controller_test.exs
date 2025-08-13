@@ -1,6 +1,8 @@
 defmodule BemedaPersonalWeb.LocaleControllerTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
+  import BemedaPersonal.AccountsFixtures
+
   describe "GET /locale/:locale" do
     test "sets valid locale and redirects to referer", %{conn: conn} do
       conn =
@@ -34,6 +36,22 @@ defmodule BemedaPersonalWeb.LocaleControllerTest do
 
       assert redirected_to(conn) == ~p"/"
       assert get_session(conn, :locale) == "en"
+    end
+
+    test "updates user locale when logged in", %{conn: conn} do
+      user = user_fixture(%{locale: "en"})
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> get(~p"/locale/de")
+
+      assert redirected_to(conn) == ~p"/"
+      assert get_session(conn, :locale) == "de"
+
+      # Verify user locale was updated in database
+      updated_user = BemedaPersonal.Accounts.get_user!(user.id)
+      assert updated_user.locale == :de
     end
   end
 end

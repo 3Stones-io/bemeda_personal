@@ -58,4 +58,17 @@ defmodule BemedaPersonalWeb.PageControllerTest do
     assert response =~ ~s{<nav class="bg-white border-b border-[#e0e6ed] h-[72px]">}
     assert response =~ ~s{Bemeda}
   end
+
+  test "handles user with nil user_type gracefully", %{conn: conn} do
+    user = user_fixture()
+    # Simulate a user record with nil user_type (edge case)
+    conn_with_user = assign(conn, :current_user, %{user | user_type: nil})
+
+    conn_response = get(conn_with_user, ~p"/")
+    response = html_response(conn_response, 200)
+
+    # Should render the home page since nil is not :employer or :job_seeker
+    assert response =~ "Find Your Next"
+    assert response =~ "Career Opportunity"
+  end
 end

@@ -103,6 +103,7 @@ module.exports = {
     './js/**/*.js',
     '../lib/bemeda_personal_web.ex',
     '../lib/bemeda_personal_web/**/*.*ex',
+    '../lib/bemeda_personal_web/**/*.exs',
   ],
   theme: {
     // Complete color system from Figma - no Tailwind defaults
@@ -182,40 +183,62 @@ module.exports = {
         ],
       },
 
-      // Standardized spacing scale with Figma values
+      // 4-point grid spacing system from Figma
       spacing: {
+        // Semantic spacing names
         xs: '0.5rem', // 8px
         sm: '1rem', // 16px
         md: '1.5rem', // 24px
         lg: '2rem', // 32px
         xl: '3rem', // 48px
         xxl: '4rem', // 64px
-        // Figma-specific spacing values
-        1: '0.25rem', // 4px - from Figma Spacing token
-        2: '0.5rem', // 8px - from Figma Numbers/Spacing/8 Px
-        4: '1rem', // 16px - from Figma Horizontal padding
-        8: '2rem', // 32px - from Figma Vertical padding
+        // 4-point grid values (4px increments)
+        1: '4px',
+        2: '8px',
+        3: '12px',
+        4: '16px',
+        5: '20px',
+        6: '24px',
+        7: '28px',
+        8: '32px',
+        9: '36px',
+        10: '40px',
+        11: '44px',
+        12: '48px',
+        13: '52px',
+        14: '56px',
+        15: '60px',
+        16: '64px',
+        17: '68px', // From Figma node 10-195
+        18: '72px', // From Figma node 10-195
+        19: '76px', // From Figma node 10-195
+        20: '80px', // From Figma node 10-195
       },
 
-      // Typography scale with Figma values
+      // Typography scale from Figma Material Design
       fontSize: {
-        h1: ['3rem', { lineHeight: '1.2', fontWeight: '800' }],
-        h2: ['2.25rem', { lineHeight: '1.3', fontWeight: '700' }],
-        h3: ['1.875rem', { lineHeight: '1.4', fontWeight: '600' }],
-        h4: ['1.5rem', { lineHeight: '1.4', fontWeight: '600' }],
-        h5: ['1.25rem', { lineHeight: '1.5', fontWeight: '500' }],
-        h6: ['1.125rem', { lineHeight: '1.5', fontWeight: '500' }],
+        // Headlines from Figma node 47-1062
+        h1: ['96px', { lineHeight: '131px', fontWeight: '300' }], // Light weight
+        h2: ['60px', { lineHeight: '82px', fontWeight: '300' }], // Light weight
+        h3: ['48px', { lineHeight: '65px', fontWeight: '400' }], // Regular weight
+        h4: ['34px', { lineHeight: '46px', fontWeight: '400' }], // Regular weight
+        h5: ['24px', { lineHeight: '33px', fontWeight: '400' }], // Regular weight
+        h6: ['20px', { lineHeight: '27px', fontWeight: '400' }], // Regular weight
+        // Subtitles from Figma
+        'subtitle-1': ['16px', { lineHeight: '28px', fontWeight: '400' }],
+        'subtitle-2': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+        // Body text from Figma
+        'body-1': ['16px', { lineHeight: '28px', fontWeight: '400' }],
+        'body-2': ['15px', { lineHeight: '20px', fontWeight: '400' }],
+        // Caption from Figma
+        caption: ['12px', { lineHeight: '16px', fontWeight: '400' }],
+        // Keep legacy aliases for backward compatibility
         'body-lg': ['1.125rem', { lineHeight: '1.75' }],
         body: ['1rem', { lineHeight: '1.75' }],
         'body-sm': ['0.875rem', { lineHeight: '1.5' }],
-        caption: ['0.75rem', { lineHeight: '1.5' }],
-        // Figma typography tokens
-        'body-1': ['1rem', { lineHeight: '1.75', fontWeight: '400' }], // Body 1 from Figma
-        'subtitle-2': ['0.875rem', { lineHeight: '1.57', fontWeight: '400' }], // Subtitle 2 from Figma
-        'figma-caption': ['0.75rem', { lineHeight: '1.33', fontWeight: '400' }], // Caption from Figma
       },
 
-      // Consistent border radius
+      // Border radius tokens from Figma design system
       borderRadius: {
         none: '0',
         sm: '0.25rem',
@@ -224,9 +247,14 @@ module.exports = {
         lg: '0.75rem',
         xl: '1rem',
         full: '9999px',
+        // Component-specific radius
+        button: '8px',
+        input: '4px',
+        card: '12px',
+        modal: '16px',
       },
 
-      // Box shadows
+      // Box shadows from Figma design system
       boxShadow: {
         xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         sm: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
@@ -234,6 +262,10 @@ module.exports = {
         md: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
         lg: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
         xl: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+        // Component-specific shadows
+        card: '0 2px 8px rgba(0, 0, 0, 0.1)',
+        modal: '0 4px 16px rgba(0, 0, 0, 0.15)',
+        dropdown: '0 2px 12px rgba(0, 0, 0, 0.12)',
       },
     },
   },

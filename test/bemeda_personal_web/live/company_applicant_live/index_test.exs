@@ -263,12 +263,18 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       assert html =~ "#{applicant.first_name} #{applicant.last_name}"
       refute html =~ "Second Applicant"
 
-      input_html =
-        view
-        |> element("input[name='job_application_filter[applicant_name]']")
-        |> render()
+      # The filters are hidden by default but the input should still have the value
+      # Check if the input field exists and has the value from URL params
+      # Even if the parent div is hidden, the input should be in the DOM
+      form_html = render(view)
 
-      assert input_html =~ "value=\"#{applicant.first_name}\""
+      # The form should exist in the HTML even if hidden
+      assert form_html =~ "job_application_filter_form"
+
+      # The input should have the value from the URL params
+      # Using regex to check for the value attribute
+      assert form_html =~
+               ~r/name="job_application_filter\[applicant_name\]"[^>]*value="#{applicant.first_name}"/
 
       today = Date.utc_today()
       tomorrow = Date.add(today, 1)

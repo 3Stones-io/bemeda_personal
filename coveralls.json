@@ -8,6 +8,8 @@
     "lib/bemeda_personal/documents/tigris_storage.ex",
     "lib/bemeda_personal_web/live/live_acceptance.ex",
     "test/support/feature_case.ex",
-    "test/support/feature_helpers.ex"
+    "test/support/feature_helpers.ex",
+    "lib/bemeda_personal_web/storybook.ex",
+    "lib/bemeda_personal_web/storybook/"
   ]
 }
