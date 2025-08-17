@@ -32,7 +32,7 @@
             padding: 0;
             margin-bottom: 20px;
             border-radius: 8px;
-            overflow: hidden;
+            overflow: visible;
         }
         
         .nav-list {
@@ -384,6 +384,25 @@
             font-size: 0.8rem;
         }
         
+        /* Dropdown Styles */
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 240px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a { display: block; padding: 12px 20px; text-decoration: none; color: #666; border-bottom: 1px solid #eee; transition: background 0.2s; }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: #f8f9fa; color: #0066cc; }
+        
         @media (max-width: 768px) {
             .participants-grid {
                 grid-template-columns: 1fr;
@@ -430,8 +449,12 @@
                         <a href="../index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item dropdown">
                     <a href="../../../table/index.html" class="nav-link" data-i18n="nav.table-view">Table</a>
+                    <div class="dropdown-content">
+                        <a href="../../../team/index.html" data-i18n="nav.team">Team Dashboard</a>
+                        <a href="../../../project-dashboard.html" data-i18n="nav.project">Project Dashboard</a>
+                    </div>
                 </li>
             </ul>
         </nav>
@@ -837,5 +860,7 @@
         </div>
     </div>
     <script src="../../../global/js/language-switcher.js"></script>
-</body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../../../global/js/mermaid-integration.js"></script>
+    </body>
+    </html>
