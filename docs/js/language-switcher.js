@@ -88,24 +88,24 @@
 const translations = {
     en: {
         'nav.index': 'Index',
-        'nav.mvp-job': 'MVP-JOB',
-        'nav.mvp-tmp': 'MVP-TMP',
+        'nav.job-vermittlung': 'JOB-Vermittlung',
+        'nav.tmp-verleih': 'TMP-Verleih',
         'nav.scenarios': 'Scenarios',
-        'nav.table-view': 'Table View',
+        'nav.team': 'Team',
+        'nav.projects': 'Projects',
         'back.main': '← Back to Main Index',
-        'back.mvp-job': '← Back to MVP-JOB',
-        'back.mvp-tmp': '← Back to MVP-TMP',
-        'back.mvp-verleih': '← Back to MVP Verleih'
+        'back.job-vermittlung': '← Back to JOB-Vermittlung',
+        'back.tmp-verleih': '← Back to TMP-Verleih'
     },
     de: {
         'nav.index': 'Startseite',
-        'nav.mvp-job': 'MVP-JOB',
-        'nav.mvp-tmp': 'MVP-TMP',
+        'nav.job-vermittlung': 'JOB-Vermittlung',
+        'nav.tmp-verleih': 'TMP-Verleih',
         'nav.scenarios': 'Szenarien',
-        'nav.table-view': 'Tabellenansicht',
+        'nav.team': 'Team',
+        'nav.projects': 'Projekte',
         'back.main': '← Zurück zur Hauptseite',
-        'back.mvp-job': '← Zurück zu MVP-JOB',
-        'back.mvp-tmp': '← Zurück zu MVP-TMP',
-        'back.mvp-verleih': '← Zurück zu MVP Verleih'
+        'back.job-vermittlung': '← Zurück zu JOB-Vermittlung',
+        'back.tmp-verleih': '← Zurück zu TMP-Verleih'
     }
 };
