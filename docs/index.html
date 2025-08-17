@@ -24,7 +24,7 @@
             padding: 20px;
         }
         
-        /* Top Navigation - Smaller for index */
+        /* Top Navigation */
         .top-nav {
             background: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -39,22 +39,20 @@
             list-style: none;
             margin: 0;
             padding: 0;
-            justify-content: center;
         }
         
         .nav-item {
-            flex: 0 0 auto;
+            flex: 1;
         }
         
         .nav-link {
             display: block;
-            padding: 12px 20px;
+            padding: 16px 20px;
             text-decoration: none;
             color: #666;
             border-right: 1px solid #eee;
             text-align: center;
             transition: all 0.2s;
-            font-size: 0.9rem;
         }
         
         .nav-link:hover {
@@ -128,146 +126,127 @@
             line-height: 1.5;
         }
         
-        /* Accordion Styles */
-        .accordion {
+        /* MVP Cards Section */
+        .mvp-cards-section {
+            margin-top: 40px;
+        }
+        
+        .mvp-cards-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+        }
+        
+        .mvp-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .mvp-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .accordion-item {
-            border-bottom: 1px solid #e0e0e0;
+        .mvp-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            text-decoration: none;
+            color: inherit;
         }
         
-        .accordion-item:last-child {
-            border-bottom: none;
+        .mvp-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-color);
         }
         
-        .accordion-header {
-            padding: 24px;
-            cursor: pointer;
-            background: #fafafa;
+        .mvp-card.vermittlung {
+            --accent-color: #0066cc;
+        }
+        
+        .mvp-card.verleih {
+            --accent-color: #ef6c00;
+        }
+        
+        .mvp-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .mvp-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+        
+        .mvp-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .mvp-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .mvp-stats {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.2s;
-        }
-        
-        .accordion-header:hover {
-            background: #f0f0f0;
-        }
-        
-        .accordion-header.active {
-            background: #e8f0fe;
-        }
-        
-        .accordion-title {
-            color: #1a1a1a;
-            font-size: 1.4rem;
-            margin: 0;
-        }
-        
-        .accordion-icon {
-            font-size: 1.2rem;
-            color: #666;
-            transition: transform 0.3s;
-        }
-        
-        .accordion-header.active .accordion-icon {
-            transform: rotate(180deg);
-        }
-        
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        
-        .accordion-content.active {
-            max-height: 2000px;
-        }
-        
-        .accordion-inner {
-            padding: 32px 24px;
-        }
-        
-        /* MVP Subsections */
-        .mvp-subsection {
-            margin-bottom: 32px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .mvp-subsection:last-child {
-            border-bottom: none;
-        }
-        
-        .subsection-title {
-            color: #0066cc;
-            font-size: 1.2rem;
             margin-bottom: 16px;
-            font-weight: 600;
-        }
-        
-        .scenario-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 12px;
-        }
-        
-        .scenario-item-mini {
+            padding: 12px;
             background: #f8f9fa;
             border-radius: 8px;
-            padding: 12px;
-            border-left: 4px solid #0066cc;
         }
         
-        .scenario-badge {
-            background: #0066cc;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
+        .mvp-stat {
+            text-align: center;
+        }
+        
+        .mvp-stat-number {
+            font-size: 1.2rem;
             font-weight: 600;
-            display: inline-block;
-            margin-bottom: 6px;
+            color: var(--accent-color);
         }
         
-        .scenario-title-mini {
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-        }
-        
-        .scenario-persona {
-            color: #666;
+        .mvp-stat-label {
             font-size: 0.8rem;
+            color: #666;
         }
         
-        .implementation-items {
+        .mvp-cta {
+            color: var(--accent-color);
+            font-weight: 500;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             gap: 8px;
         }
         
-        .impl-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 6px;
+        .mvp-cta::after {
+            content: '→';
+            transition: transform 0.2s;
         }
         
-        .impl-status {
-            font-size: 1rem;
-            min-width: 24px;
+        .mvp-card:hover .mvp-cta::after {
+            transform: translateX(4px);
         }
-        
-        .impl-ready { color: #2e7d32; }
-        .impl-progress { color: #ef6c00; }
-        .impl-pending { color: #666; }
         
         @media (max-width: 768px) {
             .header h1 {
@@ -278,7 +257,7 @@
                 grid-template-columns: 1fr;
             }
             
-            .scenario-grid {
+            .mvp-cards {
                 grid-template-columns: 1fr;
             }
         }
@@ -293,22 +272,16 @@
                     <a href="index.html" class="nav-link active">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="mvp-status.html" class="nav-link">MVP</a>
+                    <a href="mvp-job.html" class="nav-link">MVP-JOB</a>
+                </li>
+                <li class="nav-item">
+                    <a href="mvp-tmp.html" class="nav-link">MVP-TMP</a>
                 </li>
                 <li class="nav-item">
                     <a href="scenarios-table.html" class="nav-link">Scenarios</a>
                 </li>
                 <li class="nav-item">
-                    <a href="personas/jobseeker.html" class="nav-link">JobSeeker</a>
-                </li>
-                <li class="nav-item">
-                    <a href="personas/organisation.html" class="nav-link">Organisation</a>
-                </li>
-                <li class="nav-item">
-                    <a href="personas/pool-worker.html" class="nav-link">Pool Worker</a>
-                </li>
-                <li class="nav-item">
-                    <a href="personas/temporary-worker.html" class="nav-link">Temporary Worker</a>
+                    <a href="scenarios-table.html" class="nav-link">Table View</a>
                 </li>
             </ul>
         </nav>
@@ -341,269 +314,63 @@
             </div>
         </div>
         
-        <!-- MVP Accordion Section -->
-        <div class="accordion">
-            <!-- MVP Vermittlung Section -->
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <h2 class="accordion-title">📋 MVP Vermittlung (Permanent Placement)</h2>
-                    <span class="accordion-icon">▼</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-inner">
-                        <!-- Personas & Scenarios -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">👤 Personas & Scenarios</h3>
-                            <div class="scenario-grid">
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-JOB-1</div>
-                                    <div class="scenario-title-mini">New Graduate Job Search</div>
-                                    <div class="scenario-persona">JobSeeker</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-JOB-2</div>
-                                    <div class="scenario-title-mini">Experienced Professional Career Change</div>
-                                    <div class="scenario-persona">JobSeeker</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-JOB-3</div>
-                                    <div class="scenario-title-mini">International Healthcare Professional</div>
-                                    <div class="scenario-persona">JobSeeker</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-ORG-1</div>
-                                    <div class="scenario-title-mini">Cold Call to Candidate Placement</div>
-                                    <div class="scenario-persona">Organisation</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-TMP-3</div>
-                                    <div class="scenario-title-mini">Career Transition Support</div>
-                                    <div class="scenario-persona">Temporary Worker</div>
-                                </div>
-                            </div>
+        <!-- MVP Cards Section -->
+        <div class="mvp-cards-section">
+            <h2 class="mvp-cards-title">Platform MVP Components</h2>
+            <div class="mvp-cards">
+                <!-- MVP Vermittlung Card -->
+                <a href="mvp-job.html" class="mvp-card vermittlung">
+                    <span class="mvp-icon">📋</span>
+                    <h3 class="mvp-title">MVP Vermittlung</h3>
+                    <p class="mvp-subtitle">Permanent Job Placement</p>
+                    <p class="mvp-description">
+                        Comprehensive recruitment and career matching platform focused on permanent healthcare positions. 
+                        Features AI-powered matching, credential verification, and long-term placement success.
+                    </p>
+                    <div class="mvp-stats">
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">5</div>
+                            <div class="mvp-stat-label">Scenarios</div>
                         </div>
-                        
-                        <!-- Technical Implementation -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">⚙️ Technical Implementation</h3>
-                            <div class="implementation-items">
-                                <div class="impl-item">
-                                    <span class="impl-status impl-ready">✅</span>
-                                    User Registration & Profile Management
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-ready">✅</span>
-                                    Job Posting & Search System
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-ready">✅</span>
-                                    Application Management Workflow
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-progress">🔄</span>
-                                    AI-Powered Matching Algorithm
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Document Verification System
-                                </div>
-                            </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">3</div>
+                            <div class="mvp-stat-label">Personas</div>
                         </div>
-                        
-                        <!-- UI Implementation -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">🎨 UI Implementation</h3>
-                            <div class="implementation-items">
-                                <div class="impl-item">
-                                    <span class="impl-status impl-ready">✅</span>
-                                    JobSeeker Profile Creation Flow
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-progress">🔄</span>
-                                    Organisation Dashboard
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Advanced Search Filters
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Candidate Comparison Tools
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Related Issues -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">🔗 Related Issues</h3>
-                            <div class="implementation-items">
-                                <div class="impl-item">
-                                    <span class="impl-status impl-progress">🔄</span>
-                                    FMH Credential Verification Integration
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Multi-language Support (DE/FR/IT)
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    GDPR Compliance Framework
-                                </div>
-                            </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">85%</div>
+                            <div class="mvp-stat-label">Complete</div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- MVP Verleih Section -->
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <h2 class="accordion-title">⏰ MVP Verleih (Temporary Staffing)</h2>
-                    <span class="accordion-icon">▼</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-inner">
-                        <!-- Personas & Scenarios -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">👤 Personas & Scenarios</h3>
-                            <div class="scenario-grid">
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-ORG-2</div>
-                                    <div class="scenario-title-mini">Urgent Temporary Staffing Need</div>
-                                    <div class="scenario-persona">Organisation</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-ORG-3</div>
-                                    <div class="scenario-title-mini">Try & Hire Program</div>
-                                    <div class="scenario-persona">Organisation</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-POL-1</div>
-                                    <div class="scenario-title-mini">Hospital Pool Membership</div>
-                                    <div class="scenario-persona">Pool Worker</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-POL-2</div>
-                                    <div class="scenario-title-mini">Multi-Facility Pool Worker</div>
-                                    <div class="scenario-persona">Pool Worker</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-POL-3</div>
-                                    <div class="scenario-title-mini">Specialty Pool Expert</div>
-                                    <div class="scenario-persona">Pool Worker</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-TMP-1</div>
-                                    <div class="scenario-title-mini">Weekend Shift Scheduling</div>
-                                    <div class="scenario-persona">Temporary Worker</div>
-                                </div>
-                                <div class="scenario-item-mini">
-                                    <div class="scenario-badge">S-TMP-2</div>
-                                    <div class="scenario-title-mini">Vacation Coverage Specialist</div>
-                                    <div class="scenario-persona">Temporary Worker</div>
-                                </div>
-                            </div>
+                    <div class="mvp-cta">Explore Permanent Placement MVP</div>
+                </a>
+                
+                <!-- MVP Verleih Card -->
+                <a href="mvp-tmp.html" class="mvp-card verleih">
+                    <span class="mvp-icon">⏰</span>
+                    <h3 class="mvp-title">MVP Verleih</h3>
+                    <p class="mvp-subtitle">Temporary Staffing & Pool Management</p>
+                    <p class="mvp-description">
+                        Dynamic temporary staffing solution with pool worker management, emergency deployment, 
+                        and flexible scheduling. Optimized for rapid response and multi-facility coordination.
+                    </p>
+                    <div class="mvp-stats">
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">7</div>
+                            <div class="mvp-stat-label">Scenarios</div>
                         </div>
-                        
-                        <!-- Technical Implementation -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">⚙️ Technical Implementation</h3>
-                            <div class="implementation-items">
-                                <div class="impl-item">
-                                    <span class="impl-status impl-ready">✅</span>
-                                    Pool Worker Registration System
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-progress">🔄</span>
-                                    Shift Scheduling & Calendar Integration
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-progress">🔄</span>
-                                    Real-time Availability Tracking
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Automated Compliance Verification
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Pool Management Dashboard
-                                </div>
-                            </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">3</div>
+                            <div class="mvp-stat-label">Personas</div>
                         </div>
-                        
-                        <!-- UI Implementation -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">🎨 UI Implementation</h3>
-                            <div class="implementation-items">
-                                <div class="impl-item">
-                                    <span class="impl-status impl-progress">🔄</span>
-                                    Mobile-First Shift Booking Interface
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Pool Worker Availability Calendar
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Emergency Staffing Request Flow
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Multi-facility Dashboard
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Related Issues -->
-                        <div class="mvp-subsection">
-                            <h3 class="subsection-title">🔗 Related Issues</h3>
-                            <div class="implementation-items">
-                                <div class="impl-item">
-                                    <span class="impl-status impl-progress">🔄</span>
-                                    Dynamic Pricing Algorithm
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Shift Conflict Resolution
-                                </div>
-                                <div class="impl-item">
-                                    <span class="impl-status impl-pending">⏳</span>
-                                    Cross-facility Credential Sharing
-                                </div>
-                            </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">65%</div>
+                            <div class="mvp-stat-label">Complete</div>
                         </div>
                     </div>
-                </div>
+                    <div class="mvp-cta">Explore Temporary Staffing MVP</div>
+                </a>
             </div>
         </div>
     </div>
-    
-    <script>
-        function toggleAccordion(header) {
-            const content = header.nextElementSibling;
-            const isActive = header.classList.contains('active');
-            
-            // Close all accordions
-            document.querySelectorAll('.accordion-header').forEach(h => {
-                h.classList.remove('active');
-                h.nextElementSibling.classList.remove('active');
-            });
-            
-            // Open clicked accordion if it was closed
-            if (!isActive) {
-                header.classList.add('active');
-                content.classList.add('active');
-            }
-        }
-        
-        // Open first accordion by default
-        document.addEventListener('DOMContentLoaded', function() {
-            const firstAccordion = document.querySelector('.accordion-header');
-            if (firstAccordion) {
-                toggleAccordion(firstAccordion);
-            }
-        });
-    </script>
 </body>
 </html>
