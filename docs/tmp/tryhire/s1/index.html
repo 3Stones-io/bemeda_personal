@@ -79,13 +79,98 @@
 			</div>
 		</div>
 
-		<div class="section-card">
-			<div class="section-title">Overview</div>
-			<p>This is a placeholder for Scenario 1 content. We will document steps, participants, and system behavior in detail here.</p>
-			<div class="meta">
-				<div><strong>Status:</strong> <span class="badge status">Planning</span></div>
-				<div><strong>Participants:</strong> Hospital, Nurse, Evaluator</div>
-				<div><strong>Priority:</strong> High</div>
+		<!-- Scenario Header -->
+		<div class="scenario-header section-card">
+			<a href="../index.html" class="back-link">← Back to TMP</a>
+			<div class="scenario-title" style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+				<span class="scenario-badge">Scenario 1</span>
+				<h1 class="scenario-name" style="font-size:2.2rem;font-weight:600;color:#1a1a1a;">3-Month Trial Period</h1>
+			</div>
+			<div class="scenario-meta" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:8px;">
+				<div class="meta-item"><span class="meta-label" style="font-weight:500;color:#666;">Status:</span> <span class="badge status">Planning</span></div>
+				<div class="meta-item"><span class="meta-label" style="font-weight:500;color:#666;">Priority:</span> High</div>
+				<div class="meta-item"><span class="meta-label" style="font-weight:500;color:#666;">MVP:</span> Try&Hire</div>
+			</div>
+			<p style="color:#666;font-size:1.05rem;">Hospital evaluates experienced nurse through a 3-month temporary assignment with option to convert to permanent. Platform manages trial expectations, performance tracking, and conversion.</p>
+		</div>
+
+		<!-- Participants Sections -->
+		<div class="participants-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:24px;margin-bottom:32px;">
+			<!-- Hospital Participant -->
+			<div class="participant-section section-card">
+				<div class="participant-header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f0f0;">
+					<span class="participant-icon">🏥</span>
+					<h2 class="participant-title">1: Hospital</h2>
+				</div>
+				<div class="subsection">
+					<h3 class="section-title">📋 Process Flow</h3>
+					<div class="process-steps">
+						<div class="process-step" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;margin-bottom:12px;">
+							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
+							<div class="step-text">Define trial goals and candidate expectations</div>
+						</div>
+						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;margin-bottom:12px;">
+							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
+							<div class="step-text">Evaluate trial performance weekly</div>
+						</div>
+						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;">
+							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">3</div>
+							<div class="step-text">Decide on conversion to permanent</div>
+						</div>
+					</div>
+				</div>
+				<div class="subsection">
+					<h3 class="section-title">🔄 Process Diagram</h3>
+					<div class="mermaid">
+						graph TD
+							A[Define Trial Goals] --> B[Weekly Evaluation]
+							B --> C[Conversion Decision]
+							style A fill:#e8f0fe
+							style C fill:#e8f5e8
+					</div>
+				</div>
+			</div>
+
+			<!-- Nurse Participant -->
+			<div class="participant-section section-card">
+				<div class="participant-header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f0f0;">
+					<span class="participant-icon">👩‍⚕️</span>
+					<h2 class="participant-title">2: Nurse</h2>
+				</div>
+				<div class="subsection">
+					<h3 class="section-title">📋 Process Flow</h3>
+					<div class="process-steps">
+						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;margin-bottom:12px;">
+							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
+							<div class="step-text">Start trial assignment and track goals</div>
+						</div>
+						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;">
+							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
+							<div class="step-text">Receive feedback and improve</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Evaluator Participant -->
+			<div class="participant-section section-card">
+				<div class="participant-header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f0f0;">
+					<span class="participant-icon">📊</span>
+					<h2 class="participant-title">3: Evaluator</h2>
+				</div>
+				<div class="subsection">
+					<h3 class="section-title">📋 Process Flow</h3>
+					<div class="process-steps">
+						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;margin-bottom:12px;">
+							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
+							<div class="step-text">Set evaluation criteria & schedule reviews</div>
+						</div>
+						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;">
+							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
+							<div class="step-text">Recommend conversion outcome</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
