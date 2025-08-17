@@ -9,6 +9,7 @@
 /* Ensure nav does not sit under the switcher */
 .top-nav {
     margin-top: 60px;
+    overflow: visible !important;
 }
 
 .language-switcher {
