@@ -175,6 +175,18 @@
             color: inherit;
         }
         
+        .scenario-card.template {
+            background: #f0f0f0;
+            opacity: 0.7;
+            border-left-color: #999;
+            cursor: help;
+        }
+        
+        .scenario-card.template:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
         .scenario-header {
             display: flex;
             justify-content: space-between;
@@ -301,13 +313,13 @@
                     </div>
                 </a>
                 
-                <!-- SZ_TT_02 - Planning -->
-                <a href="scenario-sz-tt-02.html" class="scenario-card">
+                <!-- SZ_TT_02 - Template Only -->
+                <div class="scenario-card template">
                     <div class="scenario-header">
                         <div class="scenario-left">
                             <div class="scenario-badge">SZ_TT_02</div>
                             <h3 class="scenario-title">Vacation Coverage Planning</h3>
-                            <span class="status-badge status-planning">Planning</span>
+                            <span class="status-badge" style="background: #f0f0f0; color: #666;">Template Only</span>
                         </div>
                     </div>
                     <div class="scenario-description">
@@ -321,15 +333,15 @@
                         </div>
                         <div>Priority: Medium</div>
                     </div>
-                </a>
+                </div>
                 
-                <!-- SZ_TT_03 - Development -->
-                <a href="scenario-sz-tt-03.html" class="scenario-card">
+                <!-- SZ_TT_03 - Template Only -->
+                <div class="scenario-card template">
                     <div class="scenario-header">
                         <div class="scenario-left">
                             <div class="scenario-badge">SZ_TT_03</div>
                             <h3 class="scenario-title">Specialist Temporary Assignment</h3>
-                            <span class="status-badge status-development">In Development</span>
+                            <span class="status-badge" style="background: #f0f0f0; color: #666;">Template Only</span>
                         </div>
                     </div>
                     <div class="scenario-description">
@@ -343,7 +355,7 @@
                         </div>
                         <div>Priority: Medium</div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>

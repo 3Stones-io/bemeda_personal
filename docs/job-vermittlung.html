@@ -185,10 +185,24 @@
             background: #f8f9fa;
             opacity: 0.6;
             border-left-color: #ccc;
+            cursor: not-allowed;
         }
         
         .scenario-card.inactive:hover {
             opacity: 0.8;
+            transform: none;
+        }
+        
+        .scenario-card.template {
+            background: #f0f0f0;
+            opacity: 0.7;
+            border-left-color: #999;
+            cursor: help;
+        }
+        
+        .scenario-card.template:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
         
         .scenario-header {
@@ -366,14 +380,14 @@
                     </div>
                 </a>
                 
-                <!-- SZ_JO_02 - Inactive -->
-                <a href="scenario-sz-jo-02.html" class="scenario-card inactive">
+                <!-- SZ_JO_02 - Template Only -->
+                <div class="scenario-card template">
                     <div class="scenario-header">
                         <div class="scenario-left">
                             <div class="scenario-badge">SZ_JO_02</div>
                             <h3 class="scenario-title">New Graduate Job Search</h3>
                             <div class="scenario-status">
-                                <span class="status-badge status-planning">Planning</span>
+                                <span class="status-badge" style="background: #f0f0f0; color: #666;">Template Only</span>
                                 <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
                             </div>
                         </div>
@@ -386,18 +400,18 @@
                             <span class="participant-chip">🔍 JobSeeker</span>
                             <span class="participant-chip">🤖 AI System</span>
                         </div>
-                        <div class="scenario-progress">Progress: 25%</div>
+                        <div class="scenario-progress">Progress: 0% (Template)</div>
                     </div>
-                </a>
+                </div>
                 
-                <!-- SZ_JO_03 - Inactive -->
-                <a href="scenario-sz-jo-03.html" class="scenario-card inactive">
+                <!-- SZ_JO_03 - Template Only -->
+                <div class="scenario-card template">
                     <div class="scenario-header">
                         <div class="scenario-left">
                             <div class="scenario-badge">SZ_JO_03</div>
                             <h3 class="scenario-title">Experienced Professional Career Change</h3>
                             <div class="scenario-status">
-                                <span class="status-badge status-development">In Development</span>
+                                <span class="status-badge" style="background: #f0f0f0; color: #666;">Template Only</span>
                                 <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
                             </div>
                         </div>
@@ -410,18 +424,18 @@
                             <span class="participant-chip">🔍 JobSeeker</span>
                             <span class="participant-chip">🏥 Organisation</span>
                         </div>
-                        <div class="scenario-progress">Progress: 40%</div>
+                        <div class="scenario-progress">Progress: 0% (Template)</div>
                     </div>
-                </a>
+                </div>
                 
-                <!-- SZ_JO_04 - Inactive -->
-                <a href="scenario-sz-jo-04.html" class="scenario-card inactive">
+                <!-- SZ_JO_04 - Template Only -->
+                <div class="scenario-card template">
                     <div class="scenario-header">
                         <div class="scenario-left">
                             <div class="scenario-badge">SZ_JO_04</div>
                             <h3 class="scenario-title">International Healthcare Professional</h3>
                             <div class="scenario-status">
-                                <span class="status-badge status-planning">Planning</span>
+                                <span class="status-badge" style="background: #f0f0f0; color: #666;">Template Only</span>
                                 <span style="color: #666; font-size: 0.9rem;">Priority: Low</span>
                             </div>
                         </div>
@@ -435,9 +449,9 @@
                             <span class="participant-chip">🏥 Organisation</span>
                             <span class="participant-chip">📋 Compliance</span>
                         </div>
-                        <div class="scenario-progress">Progress: 10%</div>
+                        <div class="scenario-progress">Progress: 0% (Template)</div>
                     </div>
-                </a>
+                </div>
                 
                 <!-- S-TMP-3 - Inactive -->
                 <a href="#" class="scenario-card inactive">
