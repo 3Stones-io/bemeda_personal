@@ -168,6 +168,123 @@
             margin-bottom: 12px;
             color: #333;
         }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Scenario Accordion */
+        .scenario-accordion {
+            margin-top: 40px;
+        }
+        
+        .scenario-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .scenario-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        
+        .scenario-header:hover {
+            background: #f0f0f0;
+        }
+        
+        .scenario-header.active {
+            background: #e8f0fe;
+        }
+        
+        .scenario-number {
+            background: #0066cc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 0.9rem;
+        }
+        
+        .scenario-header-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .scenario-icon {
+            font-size: 1.2rem;
+            color: #666;
+            transition: transform 0.3s;
+        }
+        
+        .scenario-header.active .scenario-icon {
+            transform: rotate(180deg);
+        }
+        
+        .scenario-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .scenario-content.active {
+            max-height: 2000px;
+        }
+        
+        .scenario-inner {
+            padding: 24px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>
@@ -176,6 +293,24 @@
 </head>
 <body>
     <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#scenarios" class="nav-link active">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-status.html" class="nav-link">MVP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../scenarios-table.html" class="nav-link">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
         <div class="header">
             <a href="../index.html" class="back-link">← Back to Overview</a>
             <h1>🔍 JobSeeker</h1>
@@ -203,254 +338,285 @@
             </div>
         </div>
         
-        <div class="scenarios">
-            <div class="scenario-card">
-                <h3 class="scenario-title">Scenario 1: New Graduate Job Search</h3>
-                <div class="process-flow">
-                    <div class="process-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-title">Profile Creation</div>
-                            <div class="step-description">Recent nursing graduate creates comprehensive profile with education, internships, and certifications</div>
-                        </div>
+        <div class="scenario-accordion" id="scenarios">
+            <div class="scenario-item">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">JOB-1</span>
+                        <h3>New Graduate Job Search</h3>
                     </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-title">Smart Job Matching</div>
-                            <div class="step-description">AI-powered system suggests entry-level positions matching qualifications and preferences</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-title">One-Click Applications</div>
-                            <div class="step-description">Applies to multiple positions with single click, profile automatically shared with employers</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <div class="step-title">Interview Scheduling</div>
-                            <div class="step-description">Receives interview invitations, schedules directly through platform calendar integration</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">5</div>
-                        <div class="step-content">
-                            <div class="step-title">Offer Comparison</div>
-                            <div class="step-description">Receives multiple offers, uses platform tools to compare salary, benefits, and conditions</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">6</div>
-                        <div class="step-content">
-                            <div class="step-title">Acceptance & Onboarding</div>
-                            <div class="step-description">Accepts offer through platform, receives digital contract, completes onboarding documentation</div>
-                        </div>
-                    </div>
+                    <span class="scenario-icon">▼</span>
                 </div>
-                
-                <div class="mermaid-container">
-                    <div class="mermaid-title">New Graduate Job Search Process</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Create Comprehensive Profile] --> B[AI-Powered Job Matching]
-                            B --> C[Review Entry-Level Positions]
-                            C --> D[One-Click Applications]
-                            D --> E[Interview Invitations]
-                            E --> F[Calendar Integration Scheduling]
-                            F --> G[Receive Multiple Offers]
-                            G --> H[Compare Using Platform Tools]
-                            H --> I[Accept Offer & Digital Contract]
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">1.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Profile Creation</div>
+                                    <div class="step-description">Recent nursing graduate creates comprehensive profile with education, internships, and certifications</div>
+                                </div>
+                            </div>
                             
-                            style A fill:#e8f0fe
-                            style D fill:#fff3e0
-                            style I fill:#e8f5e8
-                    </div>
-                </div>
-                
-                <div class="journey-highlights">
-                    <div class="highlights-title">Journey Highlights</div>
-                    <div class="highlight-item">
-                        <span class="highlight-icon">📱</span>Mobile-first experience
-                    </div>
-                    <div class="highlight-item">
-                        <span class="highlight-icon">🎯</span>Targeted job matches
-                    </div>
-                    <div class="highlight-item">
-                        <span class="highlight-icon">📊</span>Salary transparency
-                    </div>
-                    <div class="highlight-item">
-                        <span class="highlight-icon">⚡</span>Fast response times
-                    </div>
-                </div>
-                
-                <div class="mermaid-container">
-                    <div class="mermaid-title">Experienced Professional Career Change</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Create Confidential Profile] --> B[Set Privacy Settings]
-                            B --> C[Use Advanced Filters]
-                            C --> D[Receive Recruiter Messages]
-                            D --> E[Video Interviews via Platform]
-                            E --> F[Use Salary Data for Negotiation]
-                            F --> G[Platform Manages References]
-                            G --> H[Seamless Job Transition]
+                            <div class="process-step">
+                                <div class="step-number">1.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Smart Job Matching</div>
+                                    <div class="step-description">AI-powered system suggests entry-level positions matching qualifications and preferences</div>
+                                </div>
+                            </div>
                             
-                            style A fill:#e8f0fe
-                            style E fill:#fff3e0
-                            style H fill:#e8f5e8
+                            <div class="process-step">
+                                <div class="step-number">1.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">One-Click Applications</div>
+                                    <div class="step-description">Applies to multiple positions with single click, profile automatically shared with employers</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Interview Scheduling</div>
+                                    <div class="step-description">Receives interview invitations, schedules directly through platform calendar integration</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Offer Comparison</div>
+                                    <div class="step-description">Receives multiple offers, uses platform tools to compare salary, benefits, and conditions</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Acceptance & Onboarding</div>
+                                    <div class="step-description">Accepts offer through platform, receives digital contract, completes onboarding documentation</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">JOB-1 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["1.1: Create Comprehensive Profile"] --> B["1.2: AI-Powered Job Matching"]
+                                    B --> C["1.2: Review Entry-Level Positions"]
+                                    C --> D["1.3: One-Click Applications"]
+                                    D --> E["1.4: Interview Invitations"]
+                                    E --> F["1.4: Calendar Integration Scheduling"]
+                                    F --> G["1.5: Receive Multiple Offers"]
+                                    G --> H["1.5: Compare Using Platform Tools"]
+                                    H --> I["1.6: Accept Offer & Digital Contract"]
+                                    
+                                    style A fill:#e8f0fe
+                                    style D fill:#fff3e0
+                                    style I fill:#e8f5e8
+                            </div>
+                        </div>
+                        
+                        <div class="journey-highlights">
+                            <div class="highlights-title">Journey Highlights</div>
+                            <div class="highlight-item">
+                                <span class="highlight-icon">📱</span>Mobile-first experience
+                            </div>
+                            <div class="highlight-item">
+                                <span class="highlight-icon">🎯</span>Targeted job matches
+                            </div>
+                            <div class="highlight-item">
+                                <span class="highlight-icon">📊</span>Salary transparency
+                            </div>
+                            <div class="highlight-item">
+                                <span class="highlight-icon">⚡</span>Fast response times
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="scenario-card">
-                <h3 class="scenario-title">Scenario 2: Experienced Professional Career Change</h3>
-                <div class="process-flow">
-                    <div class="process-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-title">Confidential Profile</div>
-                            <div class="step-description">Senior nurse creates profile with privacy settings to search while currently employed</div>
-                        </div>
+            <div class="scenario-item">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">JOB-2</span>
+                        <h3>Experienced Professional Career Change</h3>
                     </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-title">Advanced Filtering</div>
-                            <div class="step-description">Uses detailed filters for specialty, shift preferences, leadership opportunities, salary range</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-title">Direct Recruiter Contact</div>
-                            <div class="step-description">Receives messages from recruiters for positions matching exact criteria</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <div class="step-title">Video Interviews</div>
-                            <div class="step-description">Conducts initial video interviews through platform to minimize time away from current job</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">5</div>
-                        <div class="step-content">
-                            <div class="step-title">Negotiation Support</div>
-                            <div class="step-description">Uses platform salary data and benefits comparison tools during negotiations</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">6</div>
-                        <div class="step-content">
-                            <div class="step-title">Seamless Transition</div>
-                            <div class="step-description">Platform manages reference checks and credential transfers between employers</div>
-                        </div>
-                    </div>
+                    <span class="scenario-icon">▼</span>
                 </div>
-                
-                <div class="mermaid-container">
-                    <div class="mermaid-title">Experienced Professional Career Change Process</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Create Confidential Profile] --> B[Set Privacy Settings]
-                            B --> C[Use Advanced Filters]
-                            C --> D[Receive Recruiter Messages]
-                            D --> E[Video Interviews via Platform]
-                            E --> F[Use Salary Data for Negotiation]
-                            F --> G[Platform Manages References]
-                            G --> H[Seamless Job Transition]
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">2.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Confidential Profile</div>
+                                    <div class="step-description">Senior nurse creates profile with privacy settings to search while currently employed</div>
+                                </div>
+                            </div>
                             
-                            style A fill:#e8f0fe
-                            style E fill:#fff3e0
-                            style H fill:#e8f5e8
+                            <div class="process-step">
+                                <div class="step-number">2.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Advanced Filtering</div>
+                                    <div class="step-description">Uses detailed filters for specialty, shift preferences, leadership opportunities, salary range</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Direct Recruiter Contact</div>
+                                    <div class="step-description">Receives messages from recruiters for positions matching exact criteria</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Video Interviews</div>
+                                    <div class="step-description">Conducts initial video interviews through platform to minimize time away from current job</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Negotiation Support</div>
+                                    <div class="step-description">Uses platform salary data and benefits comparison tools during negotiations</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Seamless Transition</div>
+                                    <div class="step-description">Platform manages reference checks and credential transfers between employers</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">JOB-2 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["2.1: Create Confidential Profile"] --> B["2.1: Set Privacy Settings"]
+                                    B --> C["2.2: Use Advanced Filters"]
+                                    C --> D["2.3: Receive Recruiter Messages"]
+                                    D --> E["2.4: Video Interviews via Platform"]
+                                    E --> F["2.5: Use Salary Data for Negotiation"]
+                                    F --> G["2.6: Platform Manages References"]
+                                    G --> H["2.6: Seamless Job Transition"]
+                                    
+                                    style A fill:#e8f0fe
+                                    style E fill:#fff3e0
+                                    style H fill:#e8f5e8
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="scenario-card">
-                <h3 class="scenario-title">Scenario 3: International Healthcare Professional</h3>
-                <div class="process-flow">
-                    <div class="process-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-title">Credential Verification</div>
-                            <div class="step-description">International doctor uploads foreign credentials for Swiss recognition process</div>
-                        </div>
+            <div class="scenario-item">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">JOB-3</span>
+                        <h3>International Healthcare Professional</h3>
                     </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-title">Compliance Guidance</div>
-                            <div class="step-description">Platform provides step-by-step guidance for FMH recognition and work permit requirements</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-title">Language-Matched Opportunities</div>
-                            <div class="step-description">Filters jobs by language requirements, finds positions accepting international experience</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <div class="step-title">Support Network</div>
-                            <div class="step-description">Connects with other international professionals, accesses integration resources</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">5</div>
-                        <div class="step-content">
-                            <div class="step-title">Employer Advocacy</div>
-                            <div class="step-description">Platform helps explain qualifications to employers unfamiliar with international credentials</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">6</div>
-                        <div class="step-content">
-                            <div class="step-title">Integration Success</div>
-                            <div class="step-description">Secures position with employer experienced in international hires, receives ongoing support</div>
-                        </div>
-                    </div>
+                    <span class="scenario-icon">▼</span>
                 </div>
-                
-                <div class="mermaid-container">
-                    <div class="mermaid-title">International Professional Integration</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Upload Foreign Credentials] --> B[Swiss Recognition Process]
-                            B --> C[FMH & Work Permit Guidance]
-                            C --> D[Language-Matched Job Filtering]
-                            D --> E[Connect with International Network]
-                            E --> F[Platform Employer Advocacy]
-                            F --> G[Secure Position with Integration Support]
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">3.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Credential Verification</div>
+                                    <div class="step-description">International doctor uploads foreign credentials for Swiss recognition process</div>
+                                </div>
+                            </div>
                             
-                            style A fill:#ffebee
-                            style C fill:#e8f0fe
-                            style G fill:#e8f5e8
+                            <div class="process-step">
+                                <div class="step-number">3.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Compliance Guidance</div>
+                                    <div class="step-description">Platform provides step-by-step guidance for FMH recognition and work permit requirements</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Language-Matched Opportunities</div>
+                                    <div class="step-description">Filters jobs by language requirements, finds positions accepting international experience</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Support Network</div>
+                                    <div class="step-description">Connects with other international professionals, accesses integration resources</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Employer Advocacy</div>
+                                    <div class="step-description">Platform helps explain qualifications to employers unfamiliar with international credentials</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Integration Success</div>
+                                    <div class="step-description">Secures position with employer experienced in international hires, receives ongoing support</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">JOB-3 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["3.1: Upload Foreign Credentials"] --> B["3.2: Swiss Recognition Process"]
+                                    B --> C["3.2: FMH & Work Permit Guidance"]
+                                    C --> D["3.3: Language-Matched Job Filtering"]
+                                    D --> E["3.4: Connect with International Network"]
+                                    E --> F["3.5: Platform Employer Advocacy"]
+                                    F --> G["3.6: Secure Position with Integration Support"]
+                                    
+                                    style A fill:#ffebee
+                                    style C fill:#e8f0fe
+                                    style G fill:#e8f5e8
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        function toggleScenario(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+            
+            // Close all scenarios
+            document.querySelectorAll('.scenario-header').forEach(h => {
+                h.classList.remove('active');
+                h.nextElementSibling.classList.remove('active');
+            });
+            
+            // Open clicked scenario if it was closed
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('active');
+            }
+        }
+    </script>
 </body>
 </html>

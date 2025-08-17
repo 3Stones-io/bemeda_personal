@@ -73,6 +73,123 @@
             margin-bottom: 4px;
         }
         
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Scenario Accordion */
+        .scenario-accordion {
+            margin-top: 40px;
+        }
+        
+        .scenario-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .scenario-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        
+        .scenario-header:hover {
+            background: #f0f0f0;
+        }
+        
+        .scenario-header.active {
+            background: #e8f0fe;
+        }
+        
+        .scenario-number {
+            background: #0066cc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 0.9rem;
+        }
+        
+        .scenario-header-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .scenario-icon {
+            font-size: 1.2rem;
+            color: #666;
+            transition: transform 0.3s;
+        }
+        
+        .scenario-header.active .scenario-icon {
+            transform: rotate(180deg);
+        }
+        
+        .scenario-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .scenario-content.active {
+            max-height: 2000px;
+        }
+        
+        .scenario-inner {
+            padding: 24px;
+        }
+        
         .scenarios {
             margin-top: 40px;
         }
@@ -174,6 +291,123 @@
             margin-bottom: 12px;
             color: #333;
         }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Scenario Accordion */
+        .scenario-accordion {
+            margin-top: 40px;
+        }
+        
+        .scenario-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .scenario-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        
+        .scenario-header:hover {
+            background: #f0f0f0;
+        }
+        
+        .scenario-header.active {
+            background: #e8f0fe;
+        }
+        
+        .scenario-number {
+            background: #0066cc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 0.9rem;
+        }
+        
+        .scenario-header-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .scenario-icon {
+            font-size: 1.2rem;
+            color: #666;
+            transition: transform 0.3s;
+        }
+        
+        .scenario-header.active .scenario-icon {
+            transform: rotate(180deg);
+        }
+        
+        .scenario-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .scenario-content.active {
+            max-height: 2000px;
+        }
+        
+        .scenario-inner {
+            padding: 24px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>
@@ -182,6 +416,24 @@
 </head>
 <body>
     <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#scenarios" class="nav-link active">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-status.html" class="nav-link">MVP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../scenarios-table.html" class="nav-link">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
         <div class="header">
             <a href="../index.html" class="back-link">← Back to Overview</a>
             <h1>🏥 Healthcare Organisation</h1>
@@ -209,86 +461,93 @@
             </div>
         </div>
         
-        <div class="scenarios">
-            <div class="scenario-card">
-                <h3 class="scenario-title">Scenario 1: Cold Call to Candidate Placement</h3>
-                <div class="process-flow">
-                    <div class="process-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-title">Initial Contact</div>
-                            <div class="step-description">Organisation receives cold call from Bemeda sales representative about staffing solutions</div>
-                        </div>
+        <div class="scenario-accordion" id="scenarios">
+            <div class="scenario-item">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">ORG-1</span>
+                        <h3>Cold Call to Candidate Placement</h3>
                     </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-title">Agreement & Job Posting</div>
-                            <div class="step-description">Agrees to publish job posting on platform with specific requirements and compliance needs</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-title">Candidate Notification</div>
-                            <div class="step-description">Receives email with link to view matched candidates in their profile dashboard</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <div class="step-title">Candidate Review</div>
-                            <div class="step-description">Reviews candidate profiles, verifies credentials, and initiates contact through platform</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">5</div>
-                        <div class="step-content">
-                            <div class="step-title">Communication</div>
-                            <div class="step-description">Engages with candidates via integrated chat (with email notifications) or directly via phone/email</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">6</div>
-                        <div class="step-content">
-                            <div class="step-title">Follow-up & Closure</div>
-                            <div class="step-description">Receives follow-up email after one week asking "Did the deal happen?" with Yes/No buttons for confirmation</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">7</div>
-                        <div class="step-content">
-                            <div class="step-title">Billing</div>
-                            <div class="step-description">If successful, receives invoice with flat-rate amount. If unsuccessful, receives status update and hiring continuation query</div>
-                        </div>
-                    </div>
+                    <span class="scenario-icon">▼</span>
                 </div>
-                
-                <div class="mermaid-container">
-                    <div class="mermaid-title">Process Flow Diagram</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Cold Call from Bemeda] --> B[Organization Agrees to Job Posting]
-                            B --> C[Job Posted on Platform]
-                            C --> D[Email with Candidate Link Sent]
-                            D --> E[Organization Reviews Candidates]
-                            E --> F[Engagement via Chat/Phone/Email]
-                            F --> G[1 Week Follow-up Email]
-                            G --> H{Deal Happened?}
-                            H -->|Yes| I[Invoice Sent with Flat Rate]
-                            H -->|No| J[Status Update + Still Hiring Query]
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">1.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Initial Contact</div>
+                                    <div class="step-description">Organisation receives cold call from Bemeda sales representative about staffing solutions</div>
+                                </div>
+                            </div>
                             
-                            style A fill:#e8f0fe
-                            style I fill:#e8f5e8
-                            style J fill:#fff3e0
-                    </div>
-                </div>
+                            <div class="process-step">
+                                <div class="step-number">1.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Agreement & Job Posting</div>
+                                    <div class="step-description">Agrees to publish job posting on platform with specific requirements and compliance needs</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Candidate Notification</div>
+                                    <div class="step-description">Receives email with link to view matched candidates in their profile dashboard</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Candidate Review</div>
+                                    <div class="step-description">Reviews candidate profiles, verifies credentials, and initiates contact through platform</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Communication</div>
+                                    <div class="step-description">Engages with candidates via integrated chat (with email notifications) or directly via phone/email</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Follow-up & Closure</div>
+                                    <div class="step-description">Receives follow-up email after one week asking "Did the deal happen?" with Yes/No buttons for confirmation</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.7</div>
+                                <div class="step-content">
+                                    <div class="step-title">Billing</div>
+                                    <div class="step-description">If successful, receives invoice with flat-rate amount. If unsuccessful, receives status update and hiring continuation query</div>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">ORG-1 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["1.1: Cold Call from Bemeda"] --> B["1.2: Organization Agrees to Job Posting"]
+                                    B --> C["1.3: Email with Candidate Link Sent"]
+                                    C --> D["1.4: Organization Reviews Candidates"]
+                                    D --> E["1.5: Engagement via Chat/Phone/Email"]
+                                    E --> F["1.6: 1 Week Follow-up Email"]
+                                    F --> G{1.7: Deal Happened?}
+                                    G -->|Yes| H["1.7a: Invoice Sent with Flat Rate"]
+                                    G -->|No| I["1.7b: Status Update + Still Hiring Query"]
+                                    
+                                    style A fill:#e8f0fe
+                                    style H fill:#e8f5e8
+                                    style I fill:#fff3e0
+                            </div>
+                        </div>
                 
                 <div class="metrics">
                     <div class="metrics-title">Expected Outcomes</div>
@@ -300,18 +559,28 @@
                         <div class="metric-value">85%</div>
                         <div class="metric-label">Candidate match rate</div>
                     </div>
-                    <div class="metric-item">
-                        <div class="metric-value">2-3 weeks</div>
-                        <div class="metric-label">Average time to hire</div>
+                            <div class="metric-item">
+                                <div class="metric-value">2-3 weeks</div>
+                                <div class="metric-label">Average time to hire</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="scenario-card">
-                <h3 class="scenario-title">Scenario 2: Urgent Temporary Staffing Need</h3>
+            <div class="scenario-item">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">ORG-2</span>
+                        <h3>Urgent Temporary Staffing Need</h3>
+                    </div>
+                    <span class="scenario-icon">▼</span>
+                </div>
+                <div class="scenario-content">
+                    <div class="scenario-inner">
                 <div class="process-flow">
                     <div class="process-step">
-                        <div class="step-number">1</div>
+                        <div class="step-number">2.1</div>
                         <div class="step-content">
                             <div class="step-title">Urgent Request</div>
                             <div class="step-description">Hospital faces sudden staff shortage due to illness/vacation and needs immediate temporary coverage</div>
@@ -319,7 +588,7 @@
                     </div>
                     
                     <div class="process-step">
-                        <div class="step-number">2</div>
+                        <div class="step-number">2.2</div>
                         <div class="step-content">
                             <div class="step-title">Platform Access</div>
                             <div class="step-description">Logs into Bemeda platform and posts urgent temporary position with specific shift requirements</div>
@@ -327,7 +596,7 @@
                     </div>
                     
                     <div class="process-step">
-                        <div class="step-number">3</div>
+                        <div class="step-number">2.3</div>
                         <div class="step-content">
                             <div class="step-title">Pool Worker Matching</div>
                             <div class="step-description">System automatically matches request with available pool workers based on qualifications and availability</div>
@@ -335,7 +604,7 @@
                     </div>
                     
                     <div class="process-step">
-                        <div class="step-number">4</div>
+                        <div class="step-number">2.4</div>
                         <div class="step-content">
                             <div class="step-title">Quick Confirmation</div>
                             <div class="step-description">Receives instant notifications of available workers, reviews profiles, and confirms assignment</div>
@@ -343,7 +612,7 @@
                     </div>
                     
                     <div class="process-step">
-                        <div class="step-number">5</div>
+                        <div class="step-number">2.5</div>
                         <div class="step-content">
                             <div class="step-title">Compliance Check</div>
                             <div class="step-description">Platform automatically verifies all compliance requirements (GAV, certifications) are met</div>
@@ -351,7 +620,7 @@
                     </div>
                     
                     <div class="process-step">
-                        <div class="step-number">6</div>
+                        <div class="step-number">2.6</div>
                         <div class="step-content">
                             <div class="step-title">Assignment Completion</div>
                             <div class="step-description">Worker completes shift, organisation confirms hours, and billing is processed automatically</div>
@@ -360,98 +629,161 @@
                 </div>
                 
                 <div class="mermaid-container">
-                    <div class="mermaid-title">Urgent Staffing Process Flow</div>
+                    <div class="mermaid-title">ORG-2 Process Flow Diagram</div>
                     <div class="mermaid">
                         graph TD
-                            A[Staff Shortage Occurs] --> B[Login to Bemeda Platform]
-                            B --> C[Post Urgent Temporary Position]
-                            C --> D[AI Matches Pool Workers]
-                            D --> E[Instant Notifications Sent]
-                            E --> F[Review & Confirm Assignment]
-                            F --> G[Compliance Auto-Verified]
-                            G --> H[Worker Completes Shift]
-                            H --> I[Hours Confirmed & Billing Processed]
+                            A["2.1: Staff Shortage Occurs"] --> B["2.2: Login to Bemeda Platform"]
+                            B --> C["2.2: Post Urgent Temporary Position"]
+                            C --> D["2.3: AI Matches Pool Workers"]
+                            D --> E["2.4: Instant Notifications Sent"]
+                            E --> F["2.4: Review & Confirm Assignment"]
+                            F --> G["2.5: Compliance Auto-Verified"]
+                            G --> H["2.6: Worker Completes Shift"]
+                            H --> I["2.6: Hours Confirmed & Billing Processed"]
                             
                             style A fill:#ffebee
                             style D fill:#e8f0fe
                             style I fill:#e8f5e8
                     </div>
                 </div>
-            </div>
-            
-            <div class="scenario-card">
-                <h3 class="scenario-title">Scenario 3: Try & Hire Program</h3>
-                <div class="process-flow">
-                    <div class="process-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-title">Position Planning</div>
-                            <div class="step-description">Organisation wants to fill permanent position but prefers trial period to ensure fit</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-title">Try & Hire Posting</div>
-                            <div class="step-description">Creates job posting with "Try & Hire" option, specifying trial period duration and conditions</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-title">Candidate Selection</div>
-                            <div class="step-description">Reviews candidates open to trial arrangements, conducts interviews through platform</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <div class="step-title">Trial Period</div>
-                            <div class="step-description">Candidate works for 3-month trial period as temporary employee through Bemeda</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">5</div>
-                        <div class="step-content">
-                            <div class="step-title">Performance Evaluation</div>
-                            <div class="step-description">Regular check-ins and performance tracking through platform during trial</div>
-                        </div>
-                    </div>
-                    
-                    <div class="process-step">
-                        <div class="step-number">6</div>
-                        <div class="step-content">
-                            <div class="step-title">Conversion Decision</div>
-                            <div class="step-description">At trial end, decides to hire permanently or end arrangement, with platform handling all paperwork</div>
+                        
+                        <div class="metrics">
+                            <div class="metrics-title">Expected Outcomes</div>
+                            <div class="metric-item">
+                                <div class="metric-value">30min</div>
+                                <div class="metric-label">Time to match workers</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">95%</div>
+                                <div class="metric-label">Compliance verification rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">2-4h</div>
+                                <div class="metric-label">Response time to urgent requests</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="mermaid-container">
-                    <div class="mermaid-title">Try & Hire Process Flow</div>
-                    <div class="mermaid">
-                        graph TD
-                            A[Position Planning] --> B[Create Try & Hire Posting]
-                            B --> C[Candidate Selection & Interviews]
-                            C --> D[3-Month Trial Period Begins]
-                            D --> E[Regular Performance Check-ins]
-                            E --> F[Performance Evaluation]
-                            F --> G{Convert to Permanent?}
-                            G -->|Yes| H[Permanent Hire Processed]
-                            G -->|No| I[Trial Ends, Documentation Handled]
+            </div>
+            
+            <div class="scenario-item">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">ORG-3</span>
+                        <h3>Try & Hire Program</h3>
+                    </div>
+                    <span class="scenario-icon">▼</span>
+                </div>
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">3.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Position Planning</div>
+                                    <div class="step-description">Organisation wants to fill permanent position but prefers trial period to ensure fit</div>
+                                </div>
+                            </div>
                             
-                            style A fill:#e8f0fe
-                            style D fill:#fff3e0
-                            style H fill:#e8f5e8
-                            style I fill:#ffebee
+                            <div class="process-step">
+                                <div class="step-number">3.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Try & Hire Posting</div>
+                                    <div class="step-description">Creates job posting with "Try & Hire" option, specifying trial period duration and conditions</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Candidate Selection</div>
+                                    <div class="step-description">Reviews candidates open to trial arrangements, conducts interviews through platform</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Trial Period</div>
+                                    <div class="step-description">Candidate works for 3-month trial period as temporary employee through Bemeda</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Performance Evaluation</div>
+                                    <div class="step-description">Regular check-ins and performance tracking through platform during trial</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Conversion Decision</div>
+                                    <div class="step-description">At trial end, decides to hire permanently or end arrangement, with platform handling all paperwork</div>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">ORG-3 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["3.1: Position Planning"] --> B["3.2: Create Try & Hire Posting"]
+                                    B --> C["3.3: Candidate Selection & Interviews"]
+                                    C --> D["3.4: 3-Month Trial Period Begins"]
+                                    D --> E["3.5: Regular Performance Check-ins"]
+                                    E --> F["3.5: Performance Evaluation"]
+                                    F --> G{3.6: Convert to Permanent?}
+                                    G -->|Yes| H["3.6a: Permanent Hire Processed"]
+                                    G -->|No| I["3.6b: Trial Ends, Documentation Handled"]
+                                    
+                                    style A fill:#e8f0fe
+                                    style D fill:#fff3e0
+                                    style H fill:#e8f5e8
+                                    style I fill:#ffebee
+                            </div>
+                        </div>
+                        
+                        <div class="metrics">
+                            <div class="metrics-title">Expected Outcomes</div>
+                            <div class="metric-item">
+                                <div class="metric-value">3 months</div>
+                                <div class="metric-label">Trial period duration</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">80%</div>
+                                <div class="metric-label">Trial to permanent conversion rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">90%</div>
+                                <div class="metric-label">Employee satisfaction during trial</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        function toggleScenario(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+            
+            // Close all scenarios
+            document.querySelectorAll('.scenario-header').forEach(h => {
+                h.classList.remove('active');
+                h.nextElementSibling.classList.remove('active');
+            });
+            
+            // Open clicked scenario if it was closed
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('active');
+            }
+        }
+    </script>
 </body>
 </html>

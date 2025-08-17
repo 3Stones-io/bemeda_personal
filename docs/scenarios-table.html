@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenarios Table View | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .filters {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.9rem;
+        }
+        
+        .scenarios-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        .scenarios-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .scenarios-table th,
+        .scenarios-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        
+        .scenarios-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+        }
+        
+        .scenarios-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .scenario-id {
+            background: #0066cc;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .persona-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            min-width: 100px;
+            display: inline-block;
+        }
+        
+        .persona-organisation { background: #e3f2fd; color: #1565c0; }
+        .persona-temporary { background: #fff3e0; color: #ef6c00; }
+        .persona-jobseeker { background: #e8f5e8; color: #2e7d32; }
+        .persona-pool { background: #f3e5f5; color: #7b1fa2; }
+        .persona-tryhire { background: #ffebee; color: #c62828; }
+        
+        .scenario-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .scenario-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .steps-count {
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .complexity-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .complexity-low { background: #e8f5e8; color: #2e7d32; }
+        .complexity-medium { background: #fff3e0; color: #ef6c00; }
+        .complexity-high { background: #ffebee; color: #c62828; }
+        
+        .view-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .view-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .scenarios-table {
+                font-size: 0.9rem;
+            }
+            
+            .scenarios-table th,
+            .scenarios-table td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#scenarios" class="nav-link">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="mvp-status.html" class="nav-link">MVP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link active">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="page-header">
+            <h1 class="page-title">Scenarios Overview</h1>
+            <p class="page-description">
+                Comprehensive table view of all user scenarios across different personas, showing process flows,
+                complexity levels, and step counts for the Bemeda healthcare staffing platform.
+            </p>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Persona</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'persona')">
+                        <option value="">All Personas</option>
+                        <option value="organisation">Organisation</option>
+                        <option value="temporary">Temporary Worker</option>
+                        <option value="jobseeker">JobSeeker</option>
+                        <option value="pool">Pool Worker</option>
+                        <option value="tryhire">Try & Hire Worker</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Complexity</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'complexity')">
+                        <option value="">All Complexity Levels</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Steps</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'steps')">
+                        <option value="">All Step Counts</option>
+                        <option value="6">6 Steps</option>
+                        <option value="7">7 Steps</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scenarios-table-container">
+            <h2>All Scenarios</h2>
+            <table class="scenarios-table">
+                <thead>
+                    <tr>
+                        <th>Scenario ID</th>
+                        <th>Persona</th>
+                        <th>Scenario</th>
+                        <th>Description</th>
+                        <th>Steps</th>
+                        <th>Complexity</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-persona="organisation" data-complexity="high" data-steps="7">
+                        <td><span class="scenario-id">ORG-1</span></td>
+                        <td><span class="persona-badge persona-organisation">Organisation</span></td>
+                        <td>
+                            <div class="scenario-title">Cold Call to Candidate Placement</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Complete workflow from initial sales contact through candidate placement and billing, 
+                                including platform onboarding and follow-up processes.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">7 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="organisation" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">ORG-2</span></td>
+                        <td><span class="persona-badge persona-organisation">Organisation</span></td>
+                        <td>
+                            <div class="scenario-title">Urgent Temporary Staffing Need</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Rapid response to sudden staffing shortages using pool workers with 
+                                automated matching and compliance verification.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="organisation" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">ORG-3</span></td>
+                        <td><span class="persona-badge persona-organisation">Organisation</span></td>
+                        <td>
+                            <div class="scenario-title">Try & Hire Program</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Risk-mitigation hiring approach with trial periods, performance evaluation, 
+                                and conversion to permanent employment.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="temporary" data-complexity="low" data-steps="6">
+                        <td><span class="scenario-id">TMP-1</span></td>
+                        <td><span class="persona-badge persona-temporary">Temporary Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Weekend Shift Scheduling</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Flexible weekend work arrangement with profile setup, notifications, 
+                                applications, and payment processing.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-low">Low</span></td>
+                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="temporary" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">TMP-2</span></td>
+                        <td><span class="persona-badge persona-temporary">Temporary Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Vacation Coverage Specialist</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Seasonal vacation coverage with advance booking, facility preparation, 
+                                and ongoing relationship building.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="temporary" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">TMP-3</span></td>
+                        <td><span class="persona-badge persona-temporary">Temporary Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Career Transition Support</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Gradual re-entry to healthcare work with skills assessment, 
+                                graduated assignments, and portfolio building.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="jobseeker" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">JOB-1</span></td>
+                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                        <td>
+                            <div class="scenario-title">New Graduate Job Search</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Fresh graduate journey through profile creation, AI matching, 
+                                applications, interviews, and job acceptance.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
+                        <td><span class="scenario-id">JOB-2</span></td>
+                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                        <td>
+                            <div class="scenario-title">Experienced Professional Career Change</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Senior professional transitioning roles with confidential search, 
+                                advanced filtering, and negotiation support.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
+                        <td><span class="scenario-id">JOB-3</span></td>
+                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                        <td>
+                            <div class="scenario-title">International Healthcare Professional</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                International candidate integration with credential verification, 
+                                compliance guidance, and employer advocacy support.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="pool" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">POL-1</span></td>
+                        <td><span class="persona-badge persona-pool">Pool Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Hospital Pool Membership</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Dedicated facility pool membership with onboarding, priority scheduling, 
+                                and performance benefits.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="pool" data-complexity="high" data-steps="6">
+                        <td><span class="scenario-id">POL-2</span></td>
+                        <td><span class="persona-badge persona-pool">Pool Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Multi-Facility Pool Worker</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Strategic multi-facility approach with coordinated scheduling, 
+                                credential management, and income optimization.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="pool" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">POL-3</span></td>
+                        <td><span class="persona-badge persona-pool">Pool Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Specialty Pool Expert</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Specialized expertise in niche areas with premium positioning, 
+                                equipment familiarity, and career advancement.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="tryhire" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">TRY-1</span></td>
+                        <td><span class="persona-badge persona-tryhire">Try & Hire Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Department Fit Evaluation</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Mutual evaluation process with protected trial period, 
+                                regular check-ins, and conversion decision.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/try-hire-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="tryhire" data-complexity="high" data-steps="6">
+                        <td><span class="scenario-id">TRY-2</span></td>
+                        <td><span class="persona-badge persona-tryhire">Try & Hire Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Leadership Role Trial</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Management position trial with structured mentorship, 
+                                progressive autonomy, and 360-degree evaluation.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/try-hire-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="tryhire" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">TRY-3</span></td>
+                        <td><span class="persona-badge persona-tryhire">Try & Hire Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Career Restart Program</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Return-to-practice support with customized trial, 
+                                supported integration, and confidence building.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/try-hire-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        function filterTable(value, type) {
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                let show = true;
+                
+                if (value && type === 'persona') {
+                    show = row.dataset.persona === value;
+                } else if (value && type === 'complexity') {
+                    show = row.dataset.complexity === value;
+                } else if (value && type === 'steps') {
+                    show = row.dataset.steps === value;
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        
+        // Reset all filters when one changes
+        function resetOtherFilters(currentFilter) {
+            const selects = document.querySelectorAll('.filter-select');
+            selects.forEach(select => {
+                if (select !== currentFilter) {
+                    select.value = '';
+                }
+            });
+        }
+        
+        // Add event listeners to reset other filters
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', function() {
+                resetOtherFilters(this);
+            });
+        });
+    </script>
+</body>
+</html>
