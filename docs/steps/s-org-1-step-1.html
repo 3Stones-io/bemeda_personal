@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-ORG-1 Step 1: Cold Call Reception - Bemeda Platform</title>
+    <link rel="stylesheet" href="../css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Step Header */
+        .step-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .breadcrumb a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .step-title-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .step-badge {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .step-name {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .step-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        /* Responsibilities */
+        .responsibilities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .responsibility-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .resp-icon {
+            color: #0066cc;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .resp-person {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .resp-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Dependencies */
+        .dependencies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .dependency-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #ef6c00;
+        }
+        
+        .dep-type {
+            background: #ef6c00;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Technical Requirements */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .tech-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .tech-category {
+            font-weight: 600;
+            color: #0066cc;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .tech-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Timeline */
+        .timeline-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-progress {
+            background: #4caf50;
+            height: 100%;
+            width: 90%;
+            transition: width 0.3s ease;
+        }
+        
+        .timeline-dates {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Issues Section */
+        .issues-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .issues-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .add-btn {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        
+        .add-btn:hover {
+            background: #0052a3;
+        }
+        
+        .issues-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .issue-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .issue-title {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .issue-priority {
+            background: #4caf50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        /* Comments */
+        .comments-section {
+            margin-top: 20px;
+        }
+        
+        .comment-item {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-job.html" class="nav-link active">MVP-JOB</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-tmp.html" class="nav-link">MVP-TMP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../scenarios-table.html" class="nav-link">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../scenarios-table.html" class="nav-link">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Step Header -->
+        <div class="step-header">
+            <div class="breadcrumb">
+                <a href="../scenario-s-org-1.html">S-ORG-1</a>
+                <span>→</span>
+                <a href="../scenario-s-org-1.html#organisation">Organisation Process</a>
+                <span>→</span>
+                <span>Step 1</span>
+            </div>
+            <div class="step-title-section">
+                <span class="step-badge">Step 1</span>
+                <h1 class="step-name">Cold Call Reception</h1>
+            </div>
+            <div class="step-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Duration:</span>
+                    <span>5-10 minutes</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span style="background: #e8f5e8; color: #2e7d32; padding: 2px 8px; border-radius: 4px;">Implemented</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Owner:</span>
+                    <span>Maria Rodriguez</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Due Date:</span>
+                    <span>Completed</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem; margin-top: 16px;">
+                Healthcare organisation receives initial contact from Bemeda sales representative introducing 
+                the platform's staffing solutions and gauging interest for further discussion.
+            </p>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Responsibilities Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">👥</span>
+                    <h2 class="section-title">Responsibilities</h2>
+                </div>
+                <div class="responsibilities-list">
+                    <div class="responsibility-item">
+                        <span class="resp-icon">📞</span>
+                        <div>
+                            <div class="resp-person">Maria Rodriguez (Sales Rep)</div>
+                            <div class="resp-description">
+                                Make initial contact, introduce Bemeda platform, assess organisation's 
+                                staffing challenges, and schedule follow-up meeting
+                            </div>
+                        </div>
+                    </div>
+                    <div class="responsibility-item">
+                        <span class="resp-icon">🏥</span>
+                        <div>
+                            <div class="resp-person">Dr. Klaus Weber (HR Director)</div>
+                            <div class="resp-description">
+                                Listen to presentation, evaluate potential value, share current 
+                                staffing pain points, and decide on next steps
+                            </div>
+                        </div>
+                    </div>
+                    <div class="responsibility-item">
+                        <span class="resp-icon">💻</span>
+                        <div>
+                            <div class="resp-person">CRM System</div>
+                            <div class="resp-description">
+                                Log call details, track lead progression, schedule follow-up reminders, 
+                                and update opportunity status
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dependencies Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">🔗</span>
+                    <h2 class="section-title">Dependencies</h2>
+                </div>
+                <div class="dependencies-list">
+                    <div class="dependency-item">
+                        <span class="dep-type">REQUIRED</span>
+                        <span>Lead generation system with hospital contact database</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">REQUIRED</span>
+                        <span>CRM system for call logging and follow-up tracking</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">REQUIRED</span>
+                        <span>Sales script and platform overview materials</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">AFTER</span>
+                        <span>Step 2: Schedule needs assessment meeting if interested</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Requirements -->
+        <div class="section-card">
+            <div class="section-header">
+                <span class="section-icon">⚙️</span>
+                <h2 class="section-title">Technical Requirements</h2>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-category">CRM Integration</div>
+                    <div class="tech-details">
+                        Salesforce API, lead scoring algorithms, automated follow-up scheduling
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Communication Tools</div>
+                    <div class="tech-details">
+                        VoIP system, call recording, automated dialing, call analytics
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Data Sources</div>
+                    <div class="tech-details">
+                        Hospital directory database, contact validation, compliance screening
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Analytics</div>
+                    <div class="tech-details">
+                        Call success rates, conversion tracking, sales pipeline metrics
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline -->
+        <div class="section-card">
+            <div class="section-header">
+                <span class="section-icon">📅</span>
+                <h2 class="section-title">Timeline</h2>
+            </div>
+            <div class="timeline-bar">
+                <div class="timeline-progress"></div>
+            </div>
+            <div class="timeline-dates">
+                <div>
+                    <strong>Start Date:</strong><br>
+                    January 8, 2024
+                </div>
+                <div>
+                    <strong>Completion Date:</strong><br>
+                    January 15, 2024
+                </div>
+                <div>
+                    <strong>Status:</strong><br>
+                    ✅ Completed
+                </div>
+            </div>
+        </div>
+        
+        <!-- Issues and Comments Section -->
+        <div class="issues-section">
+            <div class="issues-header">
+                <h2 class="section-title">🐛 Issues & Comments</h2>
+                <button class="add-btn">+ Add Issue</button>
+            </div>
+            
+            <div class="issues-list">
+                <div class="issue-item">
+                    <div class="issue-header">
+                        <span class="issue-title">Cold call script needs A/B testing</span>
+                        <span class="issue-priority">Low</span>
+                    </div>
+                    <div class="issue-description" style="color: #666; font-size: 0.9rem; margin-bottom: 8px;">
+                        Current conversion rate from cold calls is 12%. Industry benchmark suggests we could 
+                        achieve 18-20% with optimized scripts. Need to test different opening approaches.
+                    </div>
+                    <div class="issue-meta" style="display: flex; gap: 16px; font-size: 0.8rem; color: #999;">
+                        <span>Created: 1 week ago</span>
+                        <span>Assigned: Maria Rodriguez</span>
+                        <span>Status: Completed</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comments-section">
+                <h3 style="margin-bottom: 16px; color: #1a1a1a;">💬 Recent Comments</h3>
+                
+                <div class="comment-item">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 500; color: #0066cc;">Maria Rodriguez</span>
+                        <span style="color: #999; font-size: 0.8rem;">3 days ago</span>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        Tested three different opening scripts. Version C (problem-focused approach) achieved 
+                        19% conversion rate. Updating training materials.
+                    </div>
+                </div>
+                
+                <div class="comment-item">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 500; color: #0066cc;">David Chen</span>
+                        <span style="color: #999; font-size: 0.8rem;">1 week ago</span>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        CRM integration working well. All calls are being logged automatically with sentiment analysis.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/language-switcher.js"></script>
+</body>
+</html>
