@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMP-Try&Hire - Bemeda Platform</title>
+    <link rel="stylesheet" href="css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #4caf50;
+        }
+        
+        .nav-link.active {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #4caf50;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Scenario Cards */
+        .scenarios-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #4caf50;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .scenario-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-badge {
+            background: #4caf50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .scenario-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        
+        .scenario-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        
+        .scenario-participants {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .participant-chip {
+            background: #e8f5e9;
+            color: #4caf50;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active { background: #e8f5e8; color: #2e7d32; }
+        .status-development { background: #fff3e0; color: #ef6c00; }
+        .status-planning { background: #f3e5f5; color: #7b1fa2; }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="job-vermittlung.html" class="nav-link">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="tmp-verleih.html" class="nav-link active">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="tmp-temporary.html">TMP-Temporary</a>
+                        <a href="tmp-tryhire.html" style="background: #e8f5e9;">TMP & Hire</a>
+                        <a href="tmp-pool.html">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="header">
+            <a href="tmp-verleih.html" class="back-link">← Back to TMP-Verleih</a>
+            <h1>🤝 TMP-Try&Hire</h1>
+            <p>Risk-free evaluation periods before permanent placement</p>
+        </div>
+        
+        <!-- Scenarios Section -->
+        <div class="scenarios-section">
+            <h2 class="section-title">TMP-Try&Hire Scenarios</h2>
+            <div class="scenario-cards">
+                <!-- SZ_TH_01 - Planning -->
+                <a href="scenario-sz-th-01.html" class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">SZ_TH_01</div>
+                            <h3 class="scenario-title">3-Month Trial Period</h3>
+                            <span class="status-badge status-planning">Planning</span>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Hospital evaluates experienced nurse through 3-month temporary assignment with option to convert to permanent position. Platform manages trial period expectations, performance tracking, and conversion process.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🏥 Hospital</span>
+                            <span class="participant-chip">👩‍⚕️ Nurse</span>
+                            <span class="participant-chip">📊 Evaluator</span>
+                        </div>
+                        <div>Priority: High</div>
+                    </div>
+                </a>
+                
+                <!-- SZ_TH_02 - Planning -->
+                <a href="scenario-sz-th-02.html" class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">SZ_TH_02</div>
+                            <h3 class="scenario-title">New Graduate Trial Program</h3>
+                            <span class="status-badge status-planning">Planning</span>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Recent nursing graduate enters 6-month development program with mentorship and structured evaluation. Platform supports progressive responsibility increase and conversion decision framework.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🏥 Hospital</span>
+                            <span class="participant-chip">🎓 Graduate</span>
+                            <span class="participant-chip">👨‍🏫 Mentor</span>
+                        </div>
+                        <div>Priority: Medium</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="js/language-switcher.js"></script>
+</body>
+</html>
