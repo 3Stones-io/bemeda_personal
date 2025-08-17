@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scenarios Table View | Bemeda Platform</title>
+    <link rel="stylesheet" href="css/language-switcher.css">
     <style>
         * {
             margin: 0;
@@ -129,7 +130,27 @@
             padding: 32px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             overflow-x: auto;
+            margin-bottom: 24px;
         }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .mvp-badge {
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .mvp-vermittlung { background: #0066cc; }
+        .mvp-verleih { background: #ef6c00; }
         
         .scenarios-table {
             width: 100%;
@@ -158,18 +179,22 @@
         }
         
         .scenario-id {
-            background: #0066cc;
-            color: white;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 600;
             display: inline-block;
-            min-width: 60px;
+            min-width: 70px;
             text-align: center;
+            color: white;
         }
         
-        .persona-badge {
+        .id-job { background: #0066cc; }
+        .id-org { background: #1976d2; }
+        .id-pol { background: #ef6c00; }
+        .id-tmp { background: #2196f3; }
+        
+        .category-badge {
             padding: 4px 12px;
             border-radius: 4px;
             font-size: 0.8rem;
@@ -179,14 +204,10 @@
             display: inline-block;
         }
         
-        .persona-organisation { background: #e3f2fd; color: #1565c0; }
-        .persona-jobseeker { background: #e8f5e8; color: #2e7d32; }
-        .persona-pool-worker { background: #fff3e0; color: #ef6c00; }
-        .persona-temporary-worker { background: #f3e5f5; color: #7b1fa2; }
-        .persona-temporary { background: #fff3e0; color: #ef6c00; }
-        .persona-jobseeker { background: #e8f5e8; color: #2e7d32; }
-        .persona-pool { background: #f3e5f5; color: #7b1fa2; }
-        .persona-tryhire { background: #ffebee; color: #c62828; }
+        .cat-permanent { background: #e8f0fe; color: #0066cc; }
+        .cat-temporary { background: #e3f2fd; color: #2196f3; }
+        .cat-pool { background: #fff3e0; color: #ef6c00; }
+        .cat-tryhire { background: #e8f5e9; color: #4caf50; }
         
         .scenario-title {
             font-weight: 600;
@@ -200,24 +221,45 @@
             line-height: 1.4;
         }
         
-        .steps-count {
-            background: #f8f9fa;
-            padding: 4px 8px;
+        .participants {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .participant-chip {
+            background: #f0f0f0;
+            padding: 2px 8px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #666;
         }
         
-        .complexity-badge {
+        .status-badge {
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 500;
         }
         
-        .complexity-low { background: #e8f5e8; color: #2e7d32; }
-        .complexity-medium { background: #fff3e0; color: #ef6c00; }
-        .complexity-high { background: #ffebee; color: #c62828; }
+        .status-active { background: #e8f5e8; color: #2e7d32; }
+        .status-development { background: #fff3e0; color: #ef6c00; }
+        .status-planning { background: #f3e5f5; color: #7b1fa2; }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            width: 60px;
+            margin-top: 4px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4caf50;
+            transition: width 0.3s ease;
+        }
         
         .view-link {
             color: #0066cc;
@@ -265,450 +307,393 @@
                     <a href="mvp-tmp.html" class="nav-link">MVP-TMP</a>
                 </li>
                 <li class="nav-item">
-                    <a href="scenarios-table.html" class="nav-link active">Scenarios</a>
+                    <a href="scenarios-table.html" class="nav-link">Scenarios</a>
                 </li>
                 <li class="nav-item">
-                    <a href="scenarios-table.html" class="nav-link">Table View</a>
+                    <a href="scenarios-table.html" class="nav-link active">Table View</a>
                 </li>
             </ul>
         </nav>
         
         <div class="page-header">
-            <h1 class="page-title">Scenarios Overview</h1>
+            <h1 class="page-title">Scenarios Table View</h1>
             <p class="page-description">
-                Comprehensive table view of all user scenarios across different personas, showing process flows,
-                complexity levels, and step counts for the Bemeda healthcare staffing platform.
+                Comprehensive overview of all scenarios organized by MVP and category, showing status, 
+                participants, and progress for the Bemeda healthcare staffing platform.
             </p>
         </div>
         
         <div class="filters">
             <div class="filter-row">
                 <div class="filter-group">
-                    <label class="filter-label">Filter by Persona</label>
-                    <select class="filter-select" onchange="filterTable(this.value, 'persona')">
-                        <option value="">All Personas</option>
-                        <option value="organisation">Organisation</option>
-                        <option value="temporary">Temporary Worker</option>
-                        <option value="jobseeker">JobSeeker</option>
-                        <option value="pool">Pool Worker</option>
-                        <option value="tryhire">Try & Hire Worker</option>
+                    <label class="filter-label">Filter by MVP</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'mvp')">
+                        <option value="">All MVPs</option>
+                        <option value="vermittlung">MVP Vermittlung</option>
+                        <option value="verleih">MVP Verleih</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Filter by Complexity</label>
-                    <select class="filter-select" onchange="filterTable(this.value, 'complexity')">
-                        <option value="">All Complexity Levels</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
+                    <label class="filter-label">Filter by Category</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'category')">
+                        <option value="">All Categories</option>
+                        <option value="permanent">Permanent Placement</option>
+                        <option value="temporary">Temporary Jobs</option>
+                        <option value="pool">Pool (Springer)</option>
+                        <option value="tryhire">Try & Hire</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Filter by Steps</label>
-                    <select class="filter-select" onchange="filterTable(this.value, 'steps')">
-                        <option value="">All Step Counts</option>
-                        <option value="6">6 Steps</option>
-                        <option value="7">7 Steps</option>
+                    <label class="filter-label">Filter by Status</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'status')">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active Development</option>
+                        <option value="development">In Development</option>
+                        <option value="planning">Planning</option>
                     </select>
                 </div>
             </div>
         </div>
         
-        <div class="scenarios-table-container">
-            <h2>All Scenarios</h2>
+        <!-- MVP Vermittlung Section -->
+        <div class="scenarios-table-container" data-mvp="vermittlung">
+            <div class="section-header">
+                <span class="mvp-badge mvp-vermittlung">MVP Vermittlung</span>
+                <h2>Permanent Job Placement Scenarios</h2>
+            </div>
             <table class="scenarios-table">
                 <thead>
                     <tr>
-                        <th>Scenario ID</th>
-                        <th>Persona</th>
+                        <th>ID</th>
+                        <th>Category</th>
                         <th>Scenario</th>
-                        <th>Description</th>
-                        <th>Steps</th>
-                        <th>Complexity</th>
-                        <th>View</th>
+                        <th>Participants</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-persona="organisation" data-complexity="high" data-steps="7">
-                        <td><span class="scenario-id">S-ORG-1</span></td>
-                        <td><span class="persona-badge persona-organisation">Organisation</span></td>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="active">
+                        <td><span class="scenario-id id-org">S-ORG-1</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
                         <td>
                             <div class="scenario-title">Cold Call to Candidate Placement</div>
-                        </td>
-                        <td>
                             <div class="scenario-description">
-                                Complete workflow from initial sales contact through candidate placement and billing, 
-                                including platform onboarding and follow-up processes.
+                                Complete recruitment workflow from initial sales contact through candidate placement
                             </div>
                         </td>
-                        <td><span class="steps-count">7 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="organisation" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">S-ORG-2</span></td>
-                        <td><span class="persona-badge persona-organisation">Organisation</span></td>
                         <td>
-                            <div class="scenario-title">Urgent Temporary Staffing Need</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Rapid response to sudden staffing shortages using pool workers with 
-                                automated matching and compliance verification.
+                            <div class="participants">
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">📞 Sales</span>
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="organisation" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">S-ORG-3</span></td>
-                        <td><span class="persona-badge persona-organisation">Organisation</span></td>
+                        <td><span class="status-badge status-active">Active</span></td>
                         <td>
-                            <div class="scenario-title">Try & Hire Program</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Risk-mitigation hiring approach with trial periods, performance evaluation, 
-                                and conversion to permanent employment.
+                            <div>75%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
+                        <td><a href="scenario-s-org-1.html" class="view-link">View →</a></td>
                     </tr>
-                    <tr data-persona="temporary" data-complexity="low" data-steps="6">
-                        <td><span class="scenario-id">TMP-1</span></td>
-                        <td><span class="persona-badge persona-temporary">Temporary Worker</span></td>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="planning">
+                        <td><span class="scenario-id id-job">S-JOB-1</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
                         <td>
-                            <div class="scenario-title">Weekend Shift Scheduling</div>
-                        </td>
-                        <td>
+                            <div class="scenario-title">New Graduate Job Search</div>
                             <div class="scenario-description">
-                                Flexible weekend work arrangement with profile setup, notifications, 
-                                applications, and payment processing.
+                                Recent nursing graduate creates profile and finds first position
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-low">Low</span></td>
-                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="temporary" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">TMP-2</span></td>
-                        <td><span class="persona-badge persona-temporary">Temporary Worker</span></td>
                         <td>
-                            <div class="scenario-title">Vacation Coverage Specialist</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Seasonal vacation coverage with advance booking, facility preparation, 
-                                and ongoing relationship building.
+                            <div class="participants">
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">🤖 AI System</span>
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>25%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
-                    <tr data-persona="temporary" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">TMP-3</span></td>
-                        <td><span class="persona-badge persona-temporary">Temporary Worker</span></td>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="development">
+                        <td><span class="scenario-id id-job">S-JOB-2</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
+                        <td>
+                            <div class="scenario-title">Experienced Professional Career Change</div>
+                            <div class="scenario-description">
+                                Senior nurse confidentially searches for new opportunities
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">🏥 Organisation</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>40%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="planning">
+                        <td><span class="scenario-id id-job">S-JOB-3</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
+                        <td>
+                            <div class="scenario-title">International Healthcare Professional</div>
+                            <div class="scenario-description">
+                                International doctor navigates Swiss credential recognition
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">📋 Compliance</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>10%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="planning">
+                        <td><span class="scenario-id id-tmp">S-TMP-3</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
                         <td>
                             <div class="scenario-title">Career Transition Support</div>
-                        </td>
-                        <td>
                             <div class="scenario-description">
-                                Gradual re-entry to healthcare work with skills assessment, 
-                                graduated assignments, and portfolio building.
+                                Temporary work as stepping stone to permanent employment
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="jobseeker" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">JOB-1</span></td>
-                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
                         <td>
-                            <div class="scenario-title">New Graduate Job Search</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Fresh graduate journey through profile creation, AI matching, 
-                                applications, interviews, and job acceptance.
+                            <div class="participants">
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">👨‍🏫 Coach</span>
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
-                        <td><span class="scenario-id">JOB-2</span></td>
-                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
                         <td>
-                            <div class="scenario-title">Experienced Professional Career Change</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Senior professional transitioning roles with confidential search, 
-                                advanced filtering, and negotiation support.
+                            <div>15%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%"></div>
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
-                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
-                        <td><span class="scenario-id">JOB-3</span></td>
-                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
-                        <td>
-                            <div class="scenario-title">International Healthcare Professional</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                International candidate integration with credential verification, 
-                                compliance guidance, and employer advocacy support.
-                            </div>
-                        </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- MVP Verleih Section -->
+        <div class="scenarios-table-container" data-mvp="verleih">
+            <div class="section-header">
+                <span class="mvp-badge mvp-verleih">MVP Verleih</span>
+                <h2>Temporary Staffing & Pool Management Scenarios</h2>
+            </div>
+            <table class="scenarios-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Scenario</th>
+                        <th>Participants</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Action</th>
                     </tr>
-                    <tr data-persona="pool" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">POL-1</span></td>
-                        <td><span class="persona-badge persona-pool">Pool Worker</span></td>
+                </thead>
+                <tbody>
+                    <!-- Pool Scenarios -->
+                    <tr data-mvp="verleih" data-category="pool" data-status="active">
+                        <td><span class="scenario-id id-pol">S-POL-1</span></td>
+                        <td><span class="category-badge cat-pool">Pool</span></td>
                         <td>
                             <div class="scenario-title">Hospital Pool Membership</div>
-                        </td>
-                        <td>
                             <div class="scenario-description">
-                                Dedicated facility pool membership with onboarding, priority scheduling, 
-                                and performance benefits.
+                                ICU nurse joins dedicated hospital pool for priority shifts
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">👥 Pool Worker</span>
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">📅 Scheduler</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td>
+                            <div>70%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%"></div>
+                            </div>
+                        </td>
+                        <td><a href="scenario-s-pol-1.html" class="view-link">View →</a></td>
                     </tr>
-                    <tr data-persona="pool" data-complexity="high" data-steps="6">
-                        <td><span class="scenario-id">POL-2</span></td>
-                        <td><span class="persona-badge persona-pool">Pool Worker</span></td>
+                    <tr data-mvp="verleih" data-category="pool" data-status="development">
+                        <td><span class="scenario-id id-pol">S-POL-2</span></td>
+                        <td><span class="category-badge cat-pool">Pool</span></td>
                         <td>
                             <div class="scenario-title">Multi-Facility Pool Worker</div>
-                        </td>
-                        <td>
                             <div class="scenario-description">
-                                Strategic multi-facility approach with coordinated scheduling, 
-                                credential management, and income optimization.
+                                Nurse manages multiple hospital relationships as Springer
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">👥 Pool Worker</span>
+                                <span class="participant-chip">🏥 Multiple Orgs</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>35%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 35%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
-                    <tr data-persona="pool" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">POL-3</span></td>
-                        <td><span class="persona-badge persona-pool">Pool Worker</span></td>
+                    <tr data-mvp="verleih" data-category="pool" data-status="planning">
+                        <td><span class="scenario-id id-pol">S-POL-3</span></td>
+                        <td><span class="category-badge cat-pool">Pool</span></td>
                         <td>
                             <div class="scenario-title">Specialty Pool Expert</div>
-                        </td>
-                        <td>
                             <div class="scenario-description">
-                                Specialized expertise in niche areas with premium positioning, 
-                                equipment familiarity, and career advancement.
+                                Specialist leverages rare skills for premium placements
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="tryhire" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">TRY-1</span></td>
-                        <td><span class="persona-badge persona-tryhire">Try & Hire Worker</span></td>
                         <td>
-                            <div class="scenario-title">Department Fit Evaluation</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Mutual evaluation process with protected trial period, 
-                                regular check-ins, and conversion decision.
+                            <div class="participants">
+                                <span class="participant-chip">👥 Pool Worker</span>
+                                <span class="participant-chip">🔬 Specialist</span>
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/try-hire-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="tryhire" data-complexity="high" data-steps="6">
-                        <td><span class="scenario-id">TRY-2</span></td>
-                        <td><span class="persona-badge persona-tryhire">Try & Hire Worker</span></td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
                         <td>
-                            <div class="scenario-title">Leadership Role Trial</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Management position trial with structured mentorship, 
-                                progressive autonomy, and 360-degree evaluation.
+                            <div>15%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%"></div>
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/try-hire-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="tryhire" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">TRY-3</span></td>
-                        <td><span class="persona-badge persona-tryhire">Try & Hire Worker</span></td>
-                        <td>
-                            <div class="scenario-title">Career Restart Program</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Return-to-practice support with customized trial, 
-                                supported integration, and confidence building.
-                            </div>
-                        </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/try-hire-worker.html#scenarios" class="view-link">View Details</a></td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
                     
-                    <!-- JobSeeker Scenarios -->
-                    <tr data-persona="jobseeker" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">S-JOB-1</span></td>
-                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                    <!-- Temporary Jobs Scenarios -->
+                    <tr data-mvp="verleih" data-category="temporary" data-status="development">
+                        <td><span class="scenario-id id-org">S-ORG-2</span></td>
+                        <td><span class="category-badge cat-temporary">Temporary</span></td>
                         <td>
-                            <div class="scenario-title">New Graduate Job Search</div>
-                        </td>
-                        <td>
+                            <div class="scenario-title">Urgent Temporary Staffing Need</div>
                             <div class="scenario-description">
-                                Recent nursing graduate creates profile, receives AI-powered job matches, and completes application to placement workflow.
+                                Rapid response to sudden staffing shortages
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">🚨 Emergency</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>45%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
-                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
-                        <td><span class="scenario-id">S-JOB-2</span></td>
-                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                    <tr data-mvp="verleih" data-category="temporary" data-status="development">
+                        <td><span class="scenario-id id-tmp">S-TMP-1</span></td>
+                        <td><span class="category-badge cat-temporary">Temporary</span></td>
                         <td>
-                            <div class="scenario-title">Experienced Professional Career Change</div>
-                        </td>
-                        <td>
+                            <div class="scenario-title">Weekend Shift Scheduling</div>
                             <div class="scenario-description">
-                                Senior nurse uses confidential profile with privacy settings to search while employed, utilizing advanced filters and negotiation tools.
+                                Last-minute shift assignments via mobile notifications
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">📱 Mobile App</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>30%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
-                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
-                        <td><span class="scenario-id">S-JOB-3</span></td>
-                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                    <tr data-mvp="verleih" data-category="temporary" data-status="planning">
+                        <td><span class="scenario-id id-tmp">S-TMP-2</span></td>
+                        <td><span class="category-badge cat-temporary">Temporary</span></td>
                         <td>
-                            <div class="scenario-title">International Healthcare Professional</div>
-                        </td>
-                        <td>
+                            <div class="scenario-title">Vacation Coverage Specialist</div>
                             <div class="scenario-description">
-                                International doctor navigates Swiss credential recognition, compliance guidance, and employer advocacy for successful integration.
+                                Extended assignments for planned absences
                             </div>
                         </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    
-                    <!-- Pool Worker Scenarios -->
-                    <tr data-persona="pool-worker" data-complexity="medium" data-steps="5">
-                        <td><span class="scenario-id">S-POL-1</span></td>
-                        <td><span class="persona-badge persona-pool-worker">Pool Worker</span></td>
                         <td>
-                            <div class="scenario-title">Hospital Pool Membership</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Experienced ICU nurse joins preferred hospital's dedicated pool through platform for priority shift access and familiar environment work.
+                            <div class="participants">
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">📋 Credentials</span>
                             </div>
                         </td>
-                        <td><span class="steps-count">5 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="pool-worker" data-complexity="low" data-steps="4">
-                        <td><span class="scenario-id">S-POL-2</span></td>
-                        <td><span class="persona-badge persona-pool-worker">Pool Worker</span></td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
                         <td>
-                            <div class="scenario-title">Multi-Facility Network Worker</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Registered nurse manages multiple hospital relationships through unified platform dashboard with automated scheduling and compliance.
+                            <div>10%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10%"></div>
                             </div>
                         </td>
-                        <td><span class="steps-count">4 Steps</span></td>
-                        <td><span class="complexity-badge complexity-low">Low</span></td>
-                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="pool-worker" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">S-POL-3</span></td>
-                        <td><span class="persona-badge persona-pool-worker">Pool Worker</span></td>
-                        <td>
-                            <div class="scenario-title">Specialized Skills Premium Placement</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Specialist nurse leverages rare skills for premium placements with dynamic pricing and priority booking through skills verification system.
-                            </div>
-                        </td>
-                        <td><span class="steps-count">6 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
                     
-                    <!-- Temporary Worker Scenarios -->
-                    <tr data-persona="temporary-worker" data-complexity="low" data-steps="4">
-                        <td><span class="scenario-id">S-TMP-1</span></td>
-                        <td><span class="persona-badge persona-temporary-worker">Temporary Worker</span></td>
+                    <!-- Try & Hire Scenarios -->
+                    <tr data-mvp="verleih" data-category="tryhire" data-status="planning">
+                        <td><span class="scenario-id id-org">S-ORG-3</span></td>
+                        <td><span class="category-badge cat-tryhire">Try & Hire</span></td>
                         <td>
-                            <div class="scenario-title">Quick Shift Assignment</div>
-                        </td>
-                        <td>
+                            <div class="scenario-title">Try & Hire Program</div>
                             <div class="scenario-description">
-                                Registered nurse receives and accepts last-minute shift assignment through mobile notifications with automated compliance verification.
+                                Risk-mitigation hiring with trial periods
                             </div>
                         </td>
-                        <td><span class="steps-count">4 Steps</span></td>
-                        <td><span class="complexity-badge complexity-low">Low</span></td>
-                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="temporary-worker" data-complexity="medium" data-steps="5">
-                        <td><span class="scenario-id">S-TMP-2</span></td>
-                        <td><span class="persona-badge persona-temporary-worker">Temporary Worker</span></td>
                         <td>
-                            <div class="scenario-title">Cross-Facility Deployment</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Temporary nurse works across multiple healthcare facilities with automated credential sharing and facility-specific orientation tracking.
+                            <div class="participants">
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">👥 Candidate</span>
+                                <span class="participant-chip">📊 HR Team</span>
                             </div>
                         </td>
-                        <td><span class="steps-count">5 Steps</span></td>
-                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
-                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
-                    </tr>
-                    <tr data-persona="temporary-worker" data-complexity="high" data-steps="7">
-                        <td><span class="scenario-id">S-TMP-3</span></td>
-                        <td><span class="persona-badge persona-temporary-worker">Temporary Worker</span></td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
                         <td>
-                            <div class="scenario-title">Emergency Response Deployment</div>
-                        </td>
-                        <td>
-                            <div class="scenario-description">
-                                Critical care nurse responds to healthcare emergency with rapid deployment, enhanced compensation, and specialized support coordination.
+                            <div>20%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
                             </div>
                         </td>
-                        <td><span class="steps-count">7 Steps</span></td>
-                        <td><span class="complexity-badge complexity-high">High</span></td>
-                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
+                        <td><a href="#" class="view-link">View →</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -717,24 +702,37 @@
     
     <script>
         function filterTable(value, type) {
+            const containers = document.querySelectorAll('.scenarios-table-container');
             const rows = document.querySelectorAll('tbody tr');
             
-            rows.forEach(row => {
-                let show = true;
+            // Show/hide entire sections for MVP filter
+            if (type === 'mvp') {
+                containers.forEach(container => {
+                    const mvp = container.dataset.mvp;
+                    container.style.display = (!value || mvp === value) ? 'block' : 'none';
+                });
+            } else {
+                // Show all containers for other filters
+                containers.forEach(container => {
+                    container.style.display = 'block';
+                });
                 
-                if (value && type === 'persona') {
-                    show = row.dataset.persona === value;
-                } else if (value && type === 'complexity') {
-                    show = row.dataset.complexity === value;
-                } else if (value && type === 'steps') {
-                    show = row.dataset.steps === value;
-                }
-                
-                row.style.display = show ? '' : 'none';
-            });
+                // Filter rows within tables
+                rows.forEach(row => {
+                    let show = true;
+                    
+                    if (value && type === 'category') {
+                        show = row.dataset.category === value;
+                    } else if (value && type === 'status') {
+                        show = row.dataset.status === value;
+                    }
+                    
+                    row.style.display = show ? '' : 'none';
+                });
+            }
         }
         
-        // Reset all filters when one changes
+        // Reset other filters when one changes
         function resetOtherFilters(currentFilter) {
             const selects = document.querySelectorAll('.filter-select');
             selects.forEach(select => {
@@ -751,5 +749,6 @@
             });
         });
     </script>
+    <script src="js/language-switcher.js"></script>
 </body>
 </html>

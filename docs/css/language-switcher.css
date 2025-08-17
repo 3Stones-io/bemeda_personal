@@ -1,0 +1,75 @@
+/* Language Switcher Styles */
+.language-switcher {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.1);
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.7);
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    min-width: 40px;
+}
+
+.lang-btn:hover {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border-color: rgba(255,255,255,0.5);
+}
+
+.lang-btn.active {
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border-color: white;
+}
+
+/* Adjust for different nav backgrounds */
+.nav-link.active ~ .language-switcher .lang-btn {
+    border-color: rgba(255,255,255,0.3);
+}
+
+/* Position adjustment for navigation */
+.top-nav {
+    position: relative;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .language-switcher {
+        position: static;
+        transform: none;
+        margin: 10px auto;
+        justify-content: center;
+        background: rgba(0,0,0,0.05);
+    }
+    
+    .lang-btn {
+        color: #666;
+        border-color: #ddd;
+    }
+    
+    .lang-btn:hover {
+        background: #f0f0f0;
+        color: #333;
+        border-color: #999;
+    }
+    
+    .lang-btn.active {
+        background: #0066cc;
+        color: white;
+        border-color: #0066cc;
+    }
+}
