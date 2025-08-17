@@ -237,7 +237,60 @@
         .status-development { background: #fff3e0; color: #ef6c00; }
         .status-planning { background: #f3e5f5; color: #7b1fa2; }
         
+        /* Language Switcher Container */
+        .language-switcher-container {
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .language-switcher {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.8);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        
+        .lang-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 40px;
+        }
+        
+        .lang-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+            border-color: #999;
+        }
+        
+        .lang-btn.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        
+        .top-nav {
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+        }
+        
         @media (max-width: 768px) {
+            .language-switcher-container {
+                justify-content: center;
+            }
+            
             .header h1 {
                 font-size: 2rem;
             }
@@ -246,25 +299,33 @@
 </head>
 <body>
     <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
         <!-- Top Navigation -->
         <nav class="top-nav">
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link">Index</a>
+                    <a href="index.html" class="nav-link" data-i18n="nav.index">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="job-vermittlung.html" class="nav-link">JOB</a>
+                    <a href="job-vermittlung.html" class="nav-link" data-i18n="nav.job">JOB</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="tmp-verleih.html" class="nav-link active">TMP</a>
+                    <a href="tmp-verleih.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
                     <div class="dropdown-content">
-                        <a href="tmp-temporary.html">TMP-Temporary</a>
-                        <a href="tmp-tryhire.html">TMP & Hire</a>
-                        <a href="tmp-pool.html" style="background: #fff3e0;">TMP-Pool</a>
+                        <a href="tmp-temporary.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="tmp-tryhire.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="tmp-pool.html" data-i18n="nav.tmp-pool" style="background: #fff3e0;">TMP-Pool</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a href="scenarios-table.html" class="nav-link">Table View</a>
+                    <a href="scenarios-table.html" class="nav-link" data-i18n="nav.table-view">Table View</a>
                 </li>
             </ul>
         </nav>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S-POL-1: Hospital Pool Membership - Bemeda Platform</title>
+    <link rel="stylesheet" href="css/language-switcher.css">
     <style>
         * {
             margin: 0;
@@ -404,23 +405,33 @@
 </head>
 <body>
     <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
         <!-- Top Navigation -->
         <nav class="top-nav">
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link">Index</a>
+                    <a href="index.html" class="nav-link" data-i18n="nav.index">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="mvp-job.html" class="nav-link">MVP-JOB</a>
+                    <a href="job-vermittlung.html" class="nav-link" data-i18n="nav.job">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="tmp-verleih.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="tmp-temporary.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="tmp-tryhire.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="tmp-pool.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                    </div>
                 </li>
                 <li class="nav-item">
-                    <a href="mvp-tmp.html" class="nav-link active">MVP-TMP</a>
-                </li>
-                <li class="nav-item">
-                    <a href="scenarios-table.html" class="nav-link">Scenarios</a>
-                </li>
-                <li class="nav-item">
-                    <a href="scenarios-table.html" class="nav-link">Table View</a>
+                    <a href="scenarios-table.html" class="nav-link" data-i18n="nav.table-view">Table View</a>
                 </li>
             </ul>
         </nav>
@@ -825,5 +836,6 @@
             </div>
         </div>
     </div>
+    <script src="js/language-switcher.js"></script>
 </body>
 </html>
