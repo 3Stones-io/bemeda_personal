@@ -342,7 +342,7 @@
             <div class="scenario-item">
                 <div class="scenario-header" onclick="toggleScenario(this)">
                     <div class="scenario-header-content">
-                        <span class="scenario-number">JOB-1</span>
+                        <span class="scenario-number">S-JOB-1</span>
                         <h3>New Graduate Job Search</h3>
                     </div>
                     <span class="scenario-icon">▼</span>
@@ -350,48 +350,48 @@
                 <div class="scenario-content">
                     <div class="scenario-inner">
                         <div class="process-flow">
-                            <div class="process-step">
-                                <div class="step-number">1.1</div>
+                            <div class="process-step" id="s-job-1-step-1">
+                                <div class="step-number">S-JOB-1.1</div>
                                 <div class="step-content">
                                     <div class="step-title">Profile Creation</div>
                                     <div class="step-description">Recent nursing graduate creates comprehensive profile with education, internships, and certifications</div>
                                 </div>
                             </div>
                             
-                            <div class="process-step">
-                                <div class="step-number">1.2</div>
+                            <div class="process-step" id="s-job-1-step-2">
+                                <div class="step-number">S-JOB-1.2</div>
                                 <div class="step-content">
                                     <div class="step-title">Smart Job Matching</div>
                                     <div class="step-description">AI-powered system suggests entry-level positions matching qualifications and preferences</div>
                                 </div>
                             </div>
                             
-                            <div class="process-step">
-                                <div class="step-number">1.3</div>
+                            <div class="process-step" id="s-job-1-step-3">
+                                <div class="step-number">S-JOB-1.3</div>
                                 <div class="step-content">
                                     <div class="step-title">One-Click Applications</div>
                                     <div class="step-description">Applies to multiple positions with single click, profile automatically shared with employers</div>
                                 </div>
                             </div>
                             
-                            <div class="process-step">
-                                <div class="step-number">1.4</div>
+                            <div class="process-step" id="s-job-1-step-4">
+                                <div class="step-number">S-JOB-1.4</div>
                                 <div class="step-content">
                                     <div class="step-title">Interview Scheduling</div>
                                     <div class="step-description">Receives interview invitations, schedules directly through platform calendar integration</div>
                                 </div>
                             </div>
                             
-                            <div class="process-step">
-                                <div class="step-number">1.5</div>
+                            <div class="process-step" id="s-job-1-step-5">
+                                <div class="step-number">S-JOB-1.5</div>
                                 <div class="step-content">
                                     <div class="step-title">Offer Comparison</div>
                                     <div class="step-description">Receives multiple offers, uses platform tools to compare salary, benefits, and conditions</div>
                                 </div>
                             </div>
                             
-                            <div class="process-step">
-                                <div class="step-number">1.6</div>
+                            <div class="process-step" id="s-job-1-step-6">
+                                <div class="step-number">S-JOB-1.6</div>
                                 <div class="step-content">
                                     <div class="step-title">Acceptance & Onboarding</div>
                                     <div class="step-description">Accepts offer through platform, receives digital contract, completes onboarding documentation</div>
@@ -400,17 +400,27 @@
                         </div>
                         
                         <div class="mermaid-container">
-                            <div class="mermaid-title">JOB-1 Process Flow Diagram</div>
+                            <div class="mermaid-title">S-JOB-1 Process Flow Diagram</div>
                             <div class="mermaid">
                                 graph TD
-                                    A["1.1: Create Comprehensive Profile"] --> B["1.2: AI-Powered Job Matching"]
-                                    B --> C["1.2: Review Entry-Level Positions"]
-                                    C --> D["1.3: One-Click Applications"]
-                                    D --> E["1.4: Interview Invitations"]
-                                    E --> F["1.4: Calendar Integration Scheduling"]
-                                    F --> G["1.5: Receive Multiple Offers"]
-                                    G --> H["1.5: Compare Using Platform Tools"]
-                                    H --> I["1.6: Accept Offer & Digital Contract"]
+                                    A["Create Comprehensive Profile"] --> B["AI-Powered Job Matching"]
+                                    B --> C["Review Entry-Level Positions"]
+                                    C --> D["One-Click Applications"]
+                                    D --> E["Interview Invitations"]
+                                    E --> F["Calendar Integration Scheduling"]
+                                    F --> G["Receive Multiple Offers"]
+                                    G --> H["Compare Using Platform Tools"]
+                                    H --> I["Accept Offer & Digital Contract"]
+                                    
+                                    click A "#s-job-1-step-1"
+                                    click B "#s-job-1-step-2"
+                                    click C "#s-job-1-step-2"
+                                    click D "#s-job-1-step-3"
+                                    click E "#s-job-1-step-4"
+                                    click F "#s-job-1-step-4"
+                                    click G "#s-job-1-step-5"
+                                    click H "#s-job-1-step-5"
+                                    click I "#s-job-1-step-6"
                                     
                                     style A fill:#e8f0fe
                                     style D fill:#fff3e0
@@ -440,7 +450,7 @@
             <div class="scenario-item">
                 <div class="scenario-header" onclick="toggleScenario(this)">
                     <div class="scenario-header-content">
-                        <span class="scenario-number">JOB-2</span>
+                        <span class="scenario-number">S-JOB-2</span>
                         <h3>Experienced Professional Career Change</h3>
                     </div>
                     <span class="scenario-icon">▼</span>
@@ -498,7 +508,7 @@
                         </div>
                         
                         <div class="mermaid-container">
-                            <div class="mermaid-title">JOB-2 Process Flow Diagram</div>
+                            <div class="mermaid-title">S-JOB-2 Process Flow Diagram</div>
                             <div class="mermaid">
                                 graph TD
                                     A["2.1: Create Confidential Profile"] --> B["2.1: Set Privacy Settings"]
@@ -521,7 +531,7 @@
             <div class="scenario-item">
                 <div class="scenario-header" onclick="toggleScenario(this)">
                     <div class="scenario-header-content">
-                        <span class="scenario-number">JOB-3</span>
+                        <span class="scenario-number">S-JOB-3</span>
                         <h3>International Healthcare Professional</h3>
                     </div>
                     <span class="scenario-icon">▼</span>
@@ -579,7 +589,7 @@
                         </div>
                         
                         <div class="mermaid-container">
-                            <div class="mermaid-title">JOB-3 Process Flow Diagram</div>
+                            <div class="mermaid-title">S-JOB-3 Process Flow Diagram</div>
                             <div class="mermaid">
                                 graph TD
                                     A["3.1: Upload Foreign Credentials"] --> B["3.2: Swiss Recognition Process"]

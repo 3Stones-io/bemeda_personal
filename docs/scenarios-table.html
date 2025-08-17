@@ -180,6 +180,9 @@
         }
         
         .persona-organisation { background: #e3f2fd; color: #1565c0; }
+        .persona-jobseeker { background: #e8f5e8; color: #2e7d32; }
+        .persona-pool-worker { background: #fff3e0; color: #ef6c00; }
+        .persona-temporary-worker { background: #f3e5f5; color: #7b1fa2; }
         .persona-temporary { background: #fff3e0; color: #ef6c00; }
         .persona-jobseeker { background: #e8f5e8; color: #2e7d32; }
         .persona-pool { background: #f3e5f5; color: #7b1fa2; }
@@ -324,7 +327,7 @@
                 </thead>
                 <tbody>
                     <tr data-persona="organisation" data-complexity="high" data-steps="7">
-                        <td><span class="scenario-id">ORG-1</span></td>
+                        <td><span class="scenario-id">S-ORG-1</span></td>
                         <td><span class="persona-badge persona-organisation">Organisation</span></td>
                         <td>
                             <div class="scenario-title">Cold Call to Candidate Placement</div>
@@ -340,7 +343,7 @@
                         <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
                     </tr>
                     <tr data-persona="organisation" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">ORG-2</span></td>
+                        <td><span class="scenario-id">S-ORG-2</span></td>
                         <td><span class="persona-badge persona-organisation">Organisation</span></td>
                         <td>
                             <div class="scenario-title">Urgent Temporary Staffing Need</div>
@@ -356,7 +359,7 @@
                         <td><a href="personas/organisation.html#scenarios" class="view-link">View Details</a></td>
                     </tr>
                     <tr data-persona="organisation" data-complexity="medium" data-steps="6">
-                        <td><span class="scenario-id">ORG-3</span></td>
+                        <td><span class="scenario-id">S-ORG-3</span></td>
                         <td><span class="persona-badge persona-organisation">Organisation</span></td>
                         <td>
                             <div class="scenario-title">Try & Hire Program</div>
@@ -562,6 +565,147 @@
                         <td><span class="steps-count">6 Steps</span></td>
                         <td><span class="complexity-badge complexity-medium">Medium</span></td>
                         <td><a href="personas/try-hire-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    
+                    <!-- JobSeeker Scenarios -->
+                    <tr data-persona="jobseeker" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">S-JOB-1</span></td>
+                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                        <td>
+                            <div class="scenario-title">New Graduate Job Search</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Recent nursing graduate creates profile, receives AI-powered job matches, and completes application to placement workflow.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
+                        <td><span class="scenario-id">S-JOB-2</span></td>
+                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                        <td>
+                            <div class="scenario-title">Experienced Professional Career Change</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Senior nurse uses confidential profile with privacy settings to search while employed, utilizing advanced filters and negotiation tools.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="jobseeker" data-complexity="high" data-steps="6">
+                        <td><span class="scenario-id">S-JOB-3</span></td>
+                        <td><span class="persona-badge persona-jobseeker">JobSeeker</span></td>
+                        <td>
+                            <div class="scenario-title">International Healthcare Professional</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                International doctor navigates Swiss credential recognition, compliance guidance, and employer advocacy for successful integration.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/jobseeker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    
+                    <!-- Pool Worker Scenarios -->
+                    <tr data-persona="pool-worker" data-complexity="medium" data-steps="5">
+                        <td><span class="scenario-id">S-POL-1</span></td>
+                        <td><span class="persona-badge persona-pool-worker">Pool Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Hospital Pool Membership</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Experienced ICU nurse joins preferred hospital's dedicated pool through platform for priority shift access and familiar environment work.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">5 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="pool-worker" data-complexity="low" data-steps="4">
+                        <td><span class="scenario-id">S-POL-2</span></td>
+                        <td><span class="persona-badge persona-pool-worker">Pool Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Multi-Facility Network Worker</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Registered nurse manages multiple hospital relationships through unified platform dashboard with automated scheduling and compliance.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">4 Steps</span></td>
+                        <td><span class="complexity-badge complexity-low">Low</span></td>
+                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="pool-worker" data-complexity="medium" data-steps="6">
+                        <td><span class="scenario-id">S-POL-3</span></td>
+                        <td><span class="persona-badge persona-pool-worker">Pool Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Specialized Skills Premium Placement</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Specialist nurse leverages rare skills for premium placements with dynamic pricing and priority booking through skills verification system.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">6 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/pool-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    
+                    <!-- Temporary Worker Scenarios -->
+                    <tr data-persona="temporary-worker" data-complexity="low" data-steps="4">
+                        <td><span class="scenario-id">S-TMP-1</span></td>
+                        <td><span class="persona-badge persona-temporary-worker">Temporary Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Quick Shift Assignment</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Registered nurse receives and accepts last-minute shift assignment through mobile notifications with automated compliance verification.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">4 Steps</span></td>
+                        <td><span class="complexity-badge complexity-low">Low</span></td>
+                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="temporary-worker" data-complexity="medium" data-steps="5">
+                        <td><span class="scenario-id">S-TMP-2</span></td>
+                        <td><span class="persona-badge persona-temporary-worker">Temporary Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Cross-Facility Deployment</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Temporary nurse works across multiple healthcare facilities with automated credential sharing and facility-specific orientation tracking.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">5 Steps</span></td>
+                        <td><span class="complexity-badge complexity-medium">Medium</span></td>
+                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
+                    </tr>
+                    <tr data-persona="temporary-worker" data-complexity="high" data-steps="7">
+                        <td><span class="scenario-id">S-TMP-3</span></td>
+                        <td><span class="persona-badge persona-temporary-worker">Temporary Worker</span></td>
+                        <td>
+                            <div class="scenario-title">Emergency Response Deployment</div>
+                        </td>
+                        <td>
+                            <div class="scenario-description">
+                                Critical care nurse responds to healthcare emergency with rapid deployment, enhanced compensation, and specialized support coordination.
+                            </div>
+                        </td>
+                        <td><span class="steps-count">7 Steps</span></td>
+                        <td><span class="complexity-badge complexity-high">High</span></td>
+                        <td><a href="personas/temporary-worker.html#scenarios" class="view-link">View Details</a></td>
                     </tr>
                 </tbody>
             </table>

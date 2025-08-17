@@ -24,6 +24,53 @@
             padding: 20px;
         }
         
+        /* Top Navigation - Smaller for index */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+        }
+        
+        .nav-item {
+            flex: 0 0 auto;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -246,6 +293,33 @@
 </head>
 <body>
     <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="mvp-status.html" class="nav-link">MVP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="personas/jobseeker.html" class="nav-link">JobSeeker</a>
+                </li>
+                <li class="nav-item">
+                    <a href="personas/organisation.html" class="nav-link">Organisation</a>
+                </li>
+                <li class="nav-item">
+                    <a href="personas/pool-worker.html" class="nav-link">Pool Worker</a>
+                </li>
+                <li class="nav-item">
+                    <a href="personas/temporary-worker.html" class="nav-link">Temporary Worker</a>
+                </li>
+            </ul>
+        </nav>
+        
         <div class="header">
             <h1>Bemeda Healthcare Platform</h1>
             <p>Connecting Healthcare Talent with Opportunity</p>
