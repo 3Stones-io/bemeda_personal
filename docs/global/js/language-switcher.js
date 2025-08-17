@@ -55,7 +55,21 @@
         if (lang === 'de') {
             // For German, redirect to de/ subdirectory
             if (!window.location.pathname.includes('/de/')) {
-                window.location.href = 'de/' + currentPage;
+                // Check if German version exists before redirecting
+                const germanPath = 'de/' + currentPage;
+                fetch(germanPath, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = germanPath;
+                        } else {
+                            // German version doesn't exist, stay on current page
+                            console.log('German version not available for:', currentPage);
+                        }
+                    })
+                    .catch(() => {
+                        // German version doesn't exist, stay on current page
+                        console.log('German version not available for:', currentPage);
+                    });
             }
         } else {
             // For English, redirect to root

@@ -83,7 +83,8 @@
             position: absolute;
             top: 100%;
             left: 0;
-            right: 0;
+            /* right: 0; */
+            min-width: 240px;
             background: white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border-radius: 0 0 8px 8px;
@@ -101,6 +102,7 @@
             color: #666;
             border-bottom: 1px solid #eee;
             transition: background 0.2s;
+            white-space: nowrap;
         }
         
         .dropdown-content a:last-child {
