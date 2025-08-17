@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-POL-1 Schritt 3: Einrichtungs-Orientierung abschließen - Bemeda Plattform</title>
+    <link rel="stylesheet" href="../../global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #ef6c00;
+        }
+        
+        .nav-link.active {
+            background: #ef6c00;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Step Header */
+        .step-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #ef6c00;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .breadcrumb a {
+            color: #ef6c00;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .step-title-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .step-badge {
+            background: #ef6c00;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .step-name {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .step-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        /* Responsibilities */
+        .responsibilities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .responsibility-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .resp-icon {
+            color: #ef6c00;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .resp-person {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .resp-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Dependencies */
+        .dependencies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .dependency-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #2196f3;
+        }
+        
+        .dep-type {
+            background: #2196f3;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Technical Requirements */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .tech-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .tech-category {
+            font-weight: 600;
+            color: #ef6c00;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .tech-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Timeline */
+        .timeline-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-progress {
+            background: #ff9800;
+            height: 100%;
+            width: 60%;
+            transition: width 0.3s ease;
+        }
+        
+        .timeline-dates {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Issues Section */
+        .issues-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .issues-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .add-btn {
+            background: #ef6c00;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        
+        .add-btn:hover {
+            background: #e65100;
+        }
+        
+        .issues-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .issue-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .issue-title {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .issue-priority {
+            background: #ff9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        /* Comments */
+        .comments-section {
+            margin-top: 20px;
+        }
+        
+        .comment-item {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Startseite</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-job.html" class="nav-link">MVP-JOB</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-tmp.html" class="nav-link active">MVP-TMP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../scenarios-table.html" class="nav-link">Szenarien</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../scenarios-table.html" class="nav-link">Tabellenansicht</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Step Header -->
+        <div class="step-header">
+            <div class="breadcrumb">
+                <a href="../scenario-s-pol-1.html">S-POL-1</a>
+                <span>→</span>
+                <a href="../scenario-s-pol-1.html#pool-worker">Pool Worker Prozess</a>
+                <span>→</span>
+                <span>Schritt 3</span>
+            </div>
+            <div class="step-title-section">
+                <span class="step-badge">Schritt 3</span>
+                <h1 class="step-name">Einrichtungs-Orientierung abschließen</h1>
+            </div>
+            <div class="step-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Dauer:</span>
+                    <span>2-4 Stunden</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span style="background: #fff3e0; color: #ef6c00; padding: 2px 8px; border-radius: 4px;">In Bearbeitung</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Verantwortlich:</span>
+                    <span>Lisa Kraft</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Fälligkeitsdatum:</span>
+                    <span style="color: #ef6c00;">10. Mär 2024</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem; margin-top: 16px;">
+                Pool Worker absolviert umfassende einrichtungsspezifische Orientierung einschließlich Systemschulungen, 
+                Compliance-Anforderungen und Abteilungsverfahren zur Gewährleistung einer reibungslosen Integration.
+            </p>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Responsibilities Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">👥</span>
+                    <h2 class="section-title">Verantwortlichkeiten</h2>
+                </div>
+                <div class="responsibilities-list">
+                    <div class="responsibility-item">
+                        <span class="resp-icon">👩‍⚕️</span>
+                        <div>
+                            <div class="resp-person">Anna Schmidt (Pool Worker)</div>
+                            <div class="resp-description">
+                                Alle Orientierungsmodule abschließen, Kompetenzprüfungen bestehen 
+                                und Zugangsberechtigungen für die Einrichtung erhalten
+                            </div>
+                        </div>
+                    </div>
+                    <div class="responsibility-item">
+                        <span class="resp-icon">👨‍🏫</span>
+                        <div>
+                            <div class="resp-person">Hr. Müller (Orientierungskoordinator)</div>
+                            <div class="resp-description">
+                                Einrichtungsführung durchführen, Systemschulungen leiten und Abschluss 
+                                aller erforderlichen Zertifizierungen und Compliance-Module verifizieren
+                            </div>
+                        </div>
+                    </div>
+                    <div class="responsibility-item">
+                        <span class="resp-icon">💻</span>
+                        <div>
+                            <div class="resp-person">Lernmanagementsystem</div>
+                            <div class="resp-description">
+                                Fortschritt verfolgen, Module bereitstellen, Bewertungen durchführen und 
+                                Abschlusszertifikate automatisch generieren
+                            </div>
+                        </div>
+                    </div>
+                    <div class="responsibility-item">
+                        <span class="resp-icon">🔧</span>
+                        <div>
+                            <div class="resp-person">Lisa Kraft (QA Ingenieurin)</div>
+                            <div class="resp-description">
+                                Sicherstellen, dass das Orientierungs-Tracking-System korrekt funktioniert und 
+                                Abschlussdaten mit dem Pool Worker Profil synchronisiert werden
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dependencies Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">🔗</span>
+                    <h2 class="section-title">Abhängigkeiten</h2>
+                </div>
+                <div class="dependencies-list">
+                    <div class="dependency-item">
+                        <span class="dep-type">VORHER</span>
+                        <span>Schritt 2: Pool-Mitgliedschaftsantrag genehmigt</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">ERFORDERLICH</span>
+                        <span>Lernmanagementsystem mit Einrichtungsmodulen</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">ERFORDERLICH</span>
+                        <span>Hintergrundprüfung und Berechtigungsverifizierung abgeschlossen</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">ERFORDERLICH</span>
+                        <span>Krankenhaus-IT-Systemzugang bereitgestellt</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">DANACH</span>
+                        <span>Schritt 4: Verfügbarkeitspräferenzen und Terminplanung einrichten</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Requirements -->
+        <div class="section-card">
+            <div class="section-header">
+                <span class="section-icon">⚙️</span>
+                <h2 class="section-title">Technische Anforderungen</h2>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-category">Lernmanagementsystem</div>
+                    <div class="tech-details">
+                        SCORM-konforme Module, Fortschrittsverfolgung, Kompetenzprüfungen, mobile Kompatibilität
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Identitätsmanagement</div>
+                    <div class="tech-details">
+                        Active Directory Integration, rollenbasierter Zugang, Ausweisdrucksystem
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Compliance-Tracking</div>
+                    <div class="tech-details">
+                        Zertifizierungs-Ablaufüberwachung, Erneuerungsbenachrichtigungen, Audit-Trail-Wartung
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Plattform-Integration</div>
+                    <div class="tech-details">
+                        Pool Worker Profil-Updates, Verfügbarkeitssystem-Sync, Benachrichtigungs-Trigger
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline -->
+        <div class="section-card">
+            <div class="section-header">
+                <span class="section-icon">📅</span>
+                <h2 class="section-title">Zeitplan</h2>
+            </div>
+            <div class="timeline-bar">
+                <div class="timeline-progress"></div>
+            </div>
+            <div class="timeline-dates">
+                <div>
+                    <strong>Startdatum:</strong><br>
+                    1. März 2024
+                </div>
+                <div>
+                    <strong>Zieldatum:</strong><br>
+                    10. März 2024
+                </div>
+                <div>
+                    <strong>Aktueller Status:</strong><br>
+                    60% Abgeschlossen
+                </div>
+            </div>
+        </div>
+        
+        <!-- Issues and Comments Section -->
+        <div class="issues-section">
+            <div class="issues-header">
+                <h2 class="section-title">🐛 Probleme & Kommentare</h2>
+                <button class="add-btn">+ Problem hinzufügen</button>
+            </div>
+            
+            <div class="issues-list">
+                <div class="issue-item">
+                    <div class="issue-header">
+                        <span class="issue-title">Mobile LMS-Zugriffsprobleme auf iOS-Geräten</span>
+                        <span class="issue-priority">Mittel</span>
+                    </div>
+                    <div class="issue-description" style="color: #666; font-size: 0.9rem; margin-bottom: 8px;">
+                        Pool Worker mit iPhones/iPads erleben Video-Wiedergabeprobleme in Orientierungsmodulen. 
+                        Einige Bewertungen werden im Safari Mobile Browser nicht ordnungsgemäß übermittelt.
+                    </div>
+                    <div class="issue-meta" style="display: flex; gap: 16px; font-size: 0.8rem; color: #999;">
+                        <span>Erstellt: vor 2 Tagen</span>
+                        <span>Zugewiesen: Lisa Kraft</span>
+                        <span>Status: Untersuchung läuft</span>
+                    </div>
+                </div>
+                
+                <div class="issue-item">
+                    <div class="issue-header">
+                        <span class="issue-title">Ausweis-Druckverzögerungen</span>
+                        <span class="issue-priority" style="background: #4caf50;">Niedrig</span>
+                    </div>
+                    <div class="issue-description" style="color: #666; font-size: 0.9rem; margin-bottom: 8px;">
+                        Krankenhaus-Ausweisdrucker benötigt 48-72 Stunden für neue Zugangsausweise. 
+                        Erwägen Sie temporären digitalen Zugang für schnelleres Onboarding.
+                    </div>
+                    <div class="issue-meta" style="display: flex; gap: 16px; font-size: 0.8rem; color: #999;">
+                        <span>Erstellt: vor 1 Woche</span>
+                        <span>Zugewiesen: Hr. Müller</span>
+                        <span>Status: Planung</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comments-section">
+                <h3 style="margin-bottom: 16px; color: #1a1a1a;">💬 Aktuelle Kommentare</h3>
+                
+                <div class="comment-item">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 500; color: #ef6c00;">Lisa Kraft</span>
+                        <span style="color: #999; font-size: 0.8rem;">vor 5 Stunden</span>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        iOS-Kompatibilitätsproblem identifiziert. Arbeite an Fallback-HTML5-Player für Safari. 
+                        Sollte Fix bis Ende der Woche bereitgestellt haben.
+                    </div>
+                </div>
+                
+                <div class="comment-item">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 500; color: #ef6c00;">Anna Schmidt</span>
+                        <span style="color: #999; font-size: 0.8rem;">vor 1 Tag</span>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        85% der Orientierungsmodule abgeschlossen. Schätze die interaktiven Simulationen 
+                        für Notfallverfahren sehr - viel besser als traditionelle Videos!
+                    </div>
+                </div>
+                
+                <div class="comment-item">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 500; color: #ef6c00;">Hr. Müller</span>
+                        <span style="color: #999; font-size: 0.8rem;">vor 2 Tagen</span>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        Pilotprojekt für digitales Ausweissystem startet nächsten Monat. Ermöglicht sofortigen Zugang 
+                        während physische Ausweise gedruckt werden.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../global/js/language-switcher.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+/* Global Language Switcher Styles */
+.language-switcher-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+}
+
+/* Ensure nav does not sit under the switcher */
+.top-nav {
+    margin-top: 60px;
+    overflow: visible !important;
+}
+
+.language-switcher {
+    display: flex;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.lang-btn {
+    padding: 8px 16px;
+    border: none;
+    background: white;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.lang-btn:hover {
+    background: #f8f9fa;
+    color: #0066cc;
+}
+
+.lang-btn.active {
+    background: #0066cc;
+    color: white;
+}
+
+/* Container positioning for language switcher */
+.container {
+    position: relative;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .language-switcher-container {
+        position: static;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .top-nav {
+        margin-top: 0;
+    }
+    
+    .language-switcher {
+        display: inline-flex;
+        margin: 0 auto;
+    }
+}
