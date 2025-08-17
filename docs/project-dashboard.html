@@ -70,6 +70,45 @@
             border-right: none;
         }
         
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
         /* Header */
         .dashboard-header {
             background: white;
@@ -489,13 +528,18 @@
                     <a href="index.html" class="nav-link">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="mvp-job.html" class="nav-link">MVP-JOB</a>
+                    <a href="job-vermittlung.html" class="nav-link">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="tmp-verleih.html" class="nav-link">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="tmp-temporary.html">TMP-Temporary</a>
+                        <a href="tmp-tryhire.html">TMP & Hire</a>
+                        <a href="tmp-pool.html">TMP-Pool</a>
+                    </div>
                 </li>
                 <li class="nav-item">
-                    <a href="mvp-tmp.html" class="nav-link">MVP-TMP</a>
-                </li>
-                <li class="nav-item">
-                    <a href="scenarios-table.html" class="nav-link">Scenarios</a>
+                    <a href="scenarios-table.html" class="nav-link">Table View</a>
                 </li>
                 <li class="nav-item">
                     <a href="team-dashboard.html" class="nav-link">Team</a>
