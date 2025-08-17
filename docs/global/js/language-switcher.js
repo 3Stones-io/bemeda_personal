@@ -14,8 +14,13 @@
         return switcher;
     }
     
-    // Add language switcher to all navigation bars
+    // Add language switcher to all navigation bars (only if none exists)
     function addLanguageSwitchers() {
+        // Check if language switcher already exists
+        if (document.querySelector('.language-switcher-container')) {
+            return; // Don't add if one already exists
+        }
+        
         const navBars = document.querySelectorAll('.top-nav .nav-list');
         navBars.forEach(nav => {
             const switcher = createLanguageSwitcher();
