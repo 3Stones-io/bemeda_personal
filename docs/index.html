@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>BemedaPersonal - Strategic Documentation Framework</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js?v=2025012217"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js?v=2025012217"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css?v=2025012217">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js?v=2025012217"></script>
-    
+    <title>Bemeda - Healthcare Talent Platform</title>
     <style>
         * {
             margin: 0;
@@ -21,1666 +12,342 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #2d3748;
-            background: #f7fafc;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        
-        .header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s ease;
-        }
-        
-        .header h1:hover {
-            opacity: 0.8;
-        }
-        
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .breadcrumb a {
-            color: white;
-            text-decoration: none;
-            transition: opacity 0.2s ease;
-        }
-        
-        .breadcrumb a:hover {
-            opacity: 0.7;
-        }
-        
-        .breadcrumb-separator {
-            opacity: 0.6;
-        }
-        
-        .language-switcher {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 0.25rem;
-            backdrop-filter: blur(4px);
-        }
-        
-        .language-switcher button {
-            background: none;
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-            font-weight: 500;
-            opacity: 0.8;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .language-switcher button:hover {
-            opacity: 1;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-        }
-        
-        .language-switcher button.active {
-            background: rgba(255, 255, 255, 0.2);
-            opacity: 1;
-            font-weight: 600;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .lang-flag {
-            font-size: 1.1rem;
+            color: #333;
+            background-color: #f5f5f7;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
-            min-height: calc(100vh - 140px);
+            padding: 20px;
         }
         
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-            font-size: 1.1rem;
-            color: #718096;
-        }
-        
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .back-button {
-            position: fixed;
-            top: 100px;
-            left: 2rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            display: none;
-        }
-        
-        .back-button:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        }
-        
-        .back-button::before {
-            content: "←";
-            font-weight: bold;
-        }
-        
-        .back-button.visible {
-            display: inline-flex;
-        }
-        
-        /* Home page styles */
-        .home-header {
+        .header {
             text-align: center;
-            padding: 2rem 0;
+            margin-bottom: 40px;
+            padding: 20px 0;
         }
         
-        .home-header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .home-header p {
-            font-size: 1.25rem;
-            color: #718096;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .framework-intro {
-            background: white;
-            margin: 2rem 0;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .framework-intro h2 {
-            color: #4a5568;
-            margin-bottom: 1rem;
-            font-size: 1.875rem;
-        }
-        
-        .framework-intro p {
-            color: #718096;
-            font-size: 1.125rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .phases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .phase-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 4px solid #667eea;
-        }
-        
-        .phase-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        
-        .phase-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #2d3748;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .phase-card .phase-icon {
-            font-size: 1.75rem;
-        }
-        
-        .phase-card p {
-            color: #718096;
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-        }
-        
-        .phase-links {
-            list-style: none;
-        }
-        
-        .phase-links li {
-            margin-bottom: 0.75rem;
-        }
-        
-        .phase-links a {
-            color: #667eea;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        
-        .phase-links a:hover {
-            color: #5a67d8;
-            background: #edf2f7;
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
-        }
-        
-        .phase-links a::before {
-            content: "→";
-            margin-right: 0.5rem;
-            font-weight: bold;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 12px;
-        }
-        
-        .status-complete { background: #c6f6d5; color: #22543d; }
-        .status-draft { background: #fed7c3; color: #7b341e; }
-        .status-progress { background: #bee3f8; color: #2a4365; }
-        
-        /* Content page styles */
-        .content {
-            background: white;
-            margin: 1.5rem 0;
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: none;
-        }
-        
-        .content.active {
-            display: block; /* Default to block layout */
-            gap: 1rem; /* Even more reduced gap */
-        }
-        
-        .content.has-sidebar {
-            display: flex !important; /* Force flex layout when sidebar is visible */
-            gap: 1rem; /* Smaller gap for better spacing */
-        }
-        
-        .content-main {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .content-sidebar {
-            width: 300px; /* Even more reduced width */
-            flex-shrink: 0;
-            background: #f8fafc; /* Back to subtle background */
-            border-radius: 8px;
-            padding: 0.75rem; /* Even more reduced padding */
-            border: 1px solid #e2e8f0; /* Back to subtle border */
-            height: fit-content;
-            max-height: 80vh; /* Limit height */
-            overflow-y: auto; /* Allow scrolling if needed */
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: none; /* Hidden by default */
-            position: sticky; /* Make it float with scroll */
-            top: 110px; /* Proper spacing below header, similar to back button */
-        }
-        
-        .content-sidebar.visible {
-            display: block !important;
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-        }
-        
-        .content-sidebar h3 {
-            color: #4a5568;
-            font-size: 1rem; /* Slightly smaller */
-            margin-bottom: 0.75rem; /* Less margin */
-            padding-bottom: 0.4rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        .content-sidebar .utterances {
-            max-width: 100%;
-        }
-        
-        .comments-toggle {
-            position: fixed;
-            right: 2rem;
-            bottom: 2rem;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            display: none;
-        }
-        
-        .comments-toggle.visible {
-            display: block;
-        }
-        
-        .comments-toggle:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        }
-        
-        .comments-toggle.active {
-            background: #38a169;
-        }
-        
-        .content h1 {
-            color: #2d3748;
+        .header h1 {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 0.5rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
         }
         
-        .content h2 {
-            color: #4a5568;
-            font-size: 1.875rem;
-            margin: 2rem 0 1rem 0;
-            border-left: 4px solid #667eea;
-            padding-left: 1rem;
+        .archive-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
         
-        .content h3 {
-            color: #2d3748;
-            font-size: 1.5rem;
-            margin: 1.5rem 0 1rem 0;
+        .archive-link:hover {
+            text-decoration: underline;
         }
         
-        .content h4 {
-            color: #4a5568;
-            font-size: 1.25rem;
-            margin: 1rem 0 0.5rem 0;
+        /* Vision, Mission, Strategy Cards */
+        .vms-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
         }
         
-        .content p {
-            color: #2d3748;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            line-height: 1.7;
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         
-        .content ul, .content ol {
-            margin: 1rem 0 1rem 2rem;
-            color: #2d3748;
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         }
         
-        .content li {
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
+        .card h3 {
+            color: #0066cc;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
         }
         
-        .content blockquote {
-            border-left: 4px solid #667eea;
-            background: #f7fafc;
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
         
-        .content blockquote p {
-            margin: 0;
-            font-style: italic;
-            color: #4a5568;
+        /* Accordion Styles */
+        .accordion {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .content code {
-            background: #f1f5f9;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 0.9em;
-            color: #e53e3e;
+        .accordion-item {
+            border-bottom: 1px solid #e0e0e0;
         }
         
-        .content pre {
-            background: #1a202c;
-            color: #e2e8f0;
-            padding: 1.5rem;
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .accordion-header {
+            background: #fafafa;
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .accordion-header:hover {
+            background: #f0f0f0;
+        }
+        
+        .accordion-header.active {
+            background: #e8f0fe;
+        }
+        
+        .accordion-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .accordion-icon {
+            font-size: 1.2rem;
+            color: #666;
+            transition: transform 0.3s;
+        }
+        
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .accordion-content.active {
+            max-height: 600px;
+        }
+        
+        .accordion-inner {
+            padding: 24px;
+        }
+        
+        /* Persona Cards */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        
+        .persona-card {
+            background: #f8f9fa;
             border-radius: 8px;
-            overflow-x: auto;
-            margin: 1.5rem 0;
-        }
-        
-        .content pre code {
-            background: none;
-            padding: 0;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
             color: inherit;
         }
         
-        .content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
+        .persona-card:hover {
+            background: #e8f0fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        .content th, .content td {
-            padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            text-align: left;
+        .persona-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
         }
         
-        .content th {
-            background: #f7fafc;
+        .persona-title {
             font-weight: 600;
-            color: #2d3748;
+            margin-bottom: 8px;
+            color: #333;
         }
         
-        .content tr:nth-child(even) {
-            background: #f9fafb;
+        .persona-description {
+            font-size: 0.9rem;
+            color: #666;
         }
         
-        .content .mermaid {
-            background: white;
-            border: 1px solid #e2e8f0;
+        /* MVP Section */
+        .mvp-content {
+            background: #f8f9fa;
             border-radius: 8px;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            text-align: center;
+            padding: 20px;
         }
         
-        .quick-nav {
-            background: white;
-            margin: 2rem 0;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .quick-nav h3 {
-            color: #4a5568;
-            margin-bottom: 1rem;
-        }
-        
-        .nav-grid {
+        .mvp-features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
         }
         
-        .nav-item {
-            padding: 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+        .mvp-feature {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #0066cc;
         }
         
-        .nav-item:hover {
-            border-color: #667eea;
-            background: #f7fafc;
-        }
-        
-        .nav-item h4 {
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-        }
-        
-        .nav-item p {
-            color: #718096;
-            font-size: 0.875rem;
-        }
-        
-        .footer {
-            background: #2d3748;
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-            margin-top: 4rem;
-        }
-        
-        .footer p {
-            opacity: 0.8;
-        }
-        
-        .legend {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .legend h4 {
-            margin-bottom: 0.75rem;
-            color: #4a5568;
-        }
-        
-        .legend-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            font-size: 0.875rem;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .error-message {
-            background: #fed7d7;
-            border: 1px solid #feb2b2;
-            color: #742a2a;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-        
-        .error-message h3 {
-            margin-bottom: 0.5rem;
-        }
-        
+        /* Responsive */
         @media (max-width: 768px) {
-            .phases-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .home-header h1 {
+            .header h1 {
                 font-size: 2rem;
             }
             
-            .content {
-                padding: 2rem;
+            .vms-section {
+                grid-template-columns: 1fr;
             }
             
-            .content.active {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .content-sidebar {
-                width: 100%;
-                position: static;
-                order: 2;
-            }
-            
-            .content-main {
-                order: 1;
-            }
-            
-            .back-button {
-                top: 80px;
-                left: 1rem;
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-            
-            .comments-toggle {
-                right: 1rem;
-                bottom: 1rem;
-                width: 48px;
-                height: 48px;
-                font-size: 1.25rem;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .header-left {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .header-right {
-                width: 100%;
-                justify-content: flex-end;
-            }
-            
-            .language-switcher {
-                margin-top: 0.5rem;
+            .persona-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
-
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <h1 onclick="navigateToHome()">BemedaPersonal</h1>
-                <div class="breadcrumb" id="breadcrumb"></div>
-            </div>
-            <div class="header-right">
-                <div class="language-switcher">
-                    <button id="lang-en" class="active" onclick="switchLanguage('en')" title="English">
-                        <span class="lang-flag">🇬🇧</span>
-                        <span>EN</span>
-                    </button>
-                    <button id="lang-de" onclick="switchLanguage('de')" title="Deutsch">
-                        <span class="lang-flag">🇩🇪</span>
-                        <span>DE</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
-        <!-- Home page content -->
-        <div id="home-content">
-            <!-- Content will be loaded dynamically based on language -->
+        <div class="header">
+            <h1>Bemeda Healthcare Platform</h1>
+            <p>Connecting Healthcare Talent with Opportunity</p>
+            <a href="index-archive.html" class="archive-link">View Previous Documentation →</a>
         </div>
-
-        <!-- Content page -->
-        <div id="content-page" class="content">
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                Loading documentation...
+        
+        <!-- Vision, Mission, Strategy Cards -->
+        <div class="vms-section">
+            <div class="card">
+                <h3>Vision</h3>
+                <p>To become Switzerland's leading digital platform for medical personnel services, seamlessly connecting healthcare talent with opportunity while ensuring full AVG compliance and exceptional user experience.</p>
             </div>
-            <div class="content-main">
-                <div id="markdown-content"></div>
+            
+            <div class="card">
+                <h3>Mission</h3>
+                <p>We empower Swiss healthcare institutions to find qualified medical professionals efficiently and compliantly, while providing healthcare workers with access to meaningful career opportunities through our specialized dual-model platform.</p>
             </div>
-            <div class="content-sidebar" id="comments-sidebar">
-                <h3>💬 Comments & Discussion</h3>
-                <div id="comments-container"></div>
+            
+            <div class="card">
+                <h3>Strategy</h3>
+                <p>• Dual-model platform: permanent & temporary staffing<br>
+                   • Medical sector specialization with FMH verification<br>
+                   • AI-powered matching technology<br>
+                   • Phased market entry across Switzerland<br>
+                   • Success-based revenue model</p>
             </div>
         </div>
-    </div>
-
-    <!-- Floating buttons -->
-    <a href="#" class="back-button" onclick="navigateToHome()" id="back-button" title="Back to Overview">
-        Back to Overview
-    </a>
-    <button class="comments-toggle" id="comments-toggle" onclick="toggleComments()" title="Toggle Comments">
-        💬
-    </button>
-
-    <div class="footer">
-        <div class="container">
-            <p><strong>BemedaPersonal Documentation Framework</strong></p>
-            <p>Last Updated: July 2025 | Version 1.7 | Build: 2025-01-22-18:00 💬</p>
-            <p style="font-size: 0.8em; opacity: 0.7;">
-                <a href="https://github.com/3Stones-io/bemeda_personal/settings" target="_blank" rel="noopener">Repository Settings</a> • 
-                <a href="https://github.com/apps/utterances" target="_blank" rel="noopener">Install Utterances</a> •
-                <button onclick="testSidebar()" style="background: none; border: 1px solid #666; color: #666; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">Test Sidebar</button>
-            </p>
-        </div>
-    </div>
-
-    <script>
-        // Initialize Mermaid with better error handling
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing Mermaid...');
-            try {
-                mermaid.initialize({
-                    startOnLoad: false, // We'll handle initialization manually
-                    theme: 'default',
-                    securityLevel: 'loose',
-                    themeVariables: {
-                        primaryColor: '#667eea',
-                        primaryTextColor: '#2d3748',
-                        primaryBorderColor: '#667eea',
-                        lineColor: '#718096',
-                        secondaryColor: '#f7fafc',
-                        tertiaryColor: '#edf2f7'
-                    },
-                    flowchart: {
-                        useMaxWidth: true,
-                        htmlLabels: true
-                    },
-                    sequence: {
-                        useMaxWidth: true,
-                        wrap: true
-                    }
-                });
-                console.log('Mermaid initialized successfully');
-            } catch (error) {
-                console.error('Mermaid initialization failed:', error);
-            }
-        });
-
-        // Configure marked with custom renderer for Mermaid
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Configuring marked renderer...');
-            
-            try {
-                // Create custom renderer
-                const renderer = {
-                    code(code, lang) {
-                        console.log(`Processing code block with language: ${lang}`);
-                        if (lang === 'mermaid') {
-                            console.log('Creating mermaid div for:', code.substring(0, 50) + '...');
-                            return `<div class="mermaid">${code}</div>`;
-                        }
-                        // Default code block handling with syntax highlighting
-                        if (lang && hljs.getLanguage(lang)) {
-                            try {
-                                const highlighted = hljs.highlight(code, { language: lang }).value;
-                                return `<pre><code class="language-${lang}">${highlighted}</code></pre>`;
-                            } catch (e) {
-                                console.warn('Highlight.js error:', e);
-                                return `<pre><code class="language-${lang}">${code}</code></pre>`;
-                            }
-                        }
-                        try {
-                            const highlighted = hljs.highlightAuto(code).value;
-                            return `<pre><code>${highlighted}</code></pre>`;
-                        } catch (e) {
-                            console.warn('Highlight.js auto error:', e);
-                            return `<pre><code>${code}</code></pre>`;
-                        }
-                    }
-                };
-                
-                // Configure marked
-                marked.use({ 
-                    renderer: renderer,
-                    breaks: true,
-                    gfm: true 
-                });
-                
-                console.log('Marked renderer configured successfully');
-            } catch (error) {
-                console.error('Error configuring marked renderer:', error);
-            }
-        });
-
-        let currentPage = 'home';
-        let currentPath = '';
-        let currentTitle = '';
-        let currentLanguage = 'en';
-
-        // Language configuration
-        const languages = {
-            en: {
-                code: 'en',
-                name: 'English',
-                flag: '🇬🇧',
-                docSuffix: ''
-            },
-            de: {
-                code: 'de', 
-                name: 'Deutsch',
-                flag: '🇩🇪',
-                docSuffix: '_DE'
-            }
-        };
-
-        // Function to switch language
-        function switchLanguage(langCode) {
-            console.log(`Switching language to: ${langCode}`);
-            
-            // Update active button
-            document.querySelectorAll('.language-switcher button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(`lang-${langCode}`).classList.add('active');
-            
-            currentLanguage = langCode;
-            
-            // If we're on the home page, reload content
-            if (currentPage === 'home') {
-                loadHomeContent(langCode);
-            } else if (currentPage === 'content' && currentPath) {
-                // Try to load the document in the new language
-                const newPath = getLocalizedPath(currentPath, langCode);
-                loadMarkdown(newPath, currentTitle);
-            }
-            
-            // Store language preference
-            localStorage.setItem('preferredLanguage', langCode);
-        }
-
-        // Function to get localized document path
-        function getLocalizedPath(path, langCode) {
-            if (langCode === 'en') {
-                return path;
-            }
-            
-            // For German, check if a localized version exists
-            if (langCode === 'de') {
-                // Special case for CLAUDE.md
-                if (path.includes('CLAUDE.md')) {
-                    return 'CLAUDE_DE.md';
-                }
-                
-                // Handle strategic foundation documents
-                const strategicDocs = {
-                    'strategic-foundation/vision.md': 'strategic-foundation/vision_de.md',
-                    'strategic-foundation/mission.md': 'strategic-foundation/mission_de.md',
-                    'strategic-foundation/strategy.md': 'strategic-foundation/strategy_de.md',
-                    'strategic-foundation/goals-objectives.md': 'strategic-foundation/goals-objectives_de.md'
-                };
-                
-                // Handle requirements analysis documents
-                const requirementsDocs = {
-                    'requirements-analysis/user-stories.md': 'requirements-analysis/user-stories_de.md'
-                };
-                
-                if (strategicDocs[path]) {
-                    return strategicDocs[path];
-                }
-                
-                if (requirementsDocs[path]) {
-                    return requirementsDocs[path];
-                }
-                
-                // For other files, we'll keep the original path for now
-                return path;
-            }
-            
-            return path;
-        }
-
-        // Function to load home content based on language
-        function loadHomeContent(langCode) {
-            const homeContent = document.getElementById('home-content');
-            
-            if (langCode === 'de') {
-                homeContent.innerHTML = getGermanHomeContent();
-            } else {
-                homeContent.innerHTML = getEnglishHomeContent();
-            }
-        }
-
-        // Function to get English home content
-        function getEnglishHomeContent() {
-            return `
-            <div class="home-header">
-                <h1>BemedaPersonal</h1>
-                <p>Strategic Documentation Framework for Swiss Personnel Placement & Lending Platform</p>
-            </div>
-
-            <div class="framework-intro">
-                <h2>📋 Documentation Structure</h2>
-                <p>This documentation follows a strategic framework approach, organizing information from high-level vision through implementation details. Each phase builds upon the previous, ensuring comprehensive coverage from strategic foundation to technical implementation.</p>
-                
-                <div style="background: #e3f2fd; border: 1px solid #90caf9; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
-                    <h4 style="color: #1976d2; margin-bottom: 0.5rem;">🚀 New Features & Expanded Documentation</h4>
-                    <p style="color: #1565c0; margin: 0; font-size: 0.9rem;">
-                        <a href="#" onclick="loadMarkdown('CLAUDE_DE.md', 'German Documentation Framework')" style="color: #1565c0; text-decoration: underline;">
-                            View the comprehensive German documentation
-                        </a> with expanded user stories, Pool Worker system, and advanced matching features.
-                    </p>
+        
+        <!-- Accordion Section -->
+        <div class="accordion">
+            <!-- MVP Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h2 class="accordion-title">MVP</h2>
+                    <span class="accordion-icon">▼</span>
                 </div>
-            </div>
-
-            <div class="phases-grid">
-                <div class="phase-card">
-                    <h3><span class="phase-icon">🎯</span> Strategic Foundation</h3>
-                    <p>The foundational vision and strategic direction for BemedaPersonal</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/vision.md', 'Vision')">Vision <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/mission.md', 'Mission')">Mission <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/strategy.md', 'Strategy')">Strategy <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/goals-objectives.md', 'Goals & Objectives')">Goals & Objectives <span class="status-badge status-complete">Complete</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">📋</span> Requirements & Analysis</h3>
-                    <p>Understanding stakeholders, users, and system requirements</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/glossary.md', 'Glossary')">Glossary <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/stakeholder-analysis.md', 'Stakeholder Analysis')">Stakeholder Analysis <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/use-cases.md', 'Use Cases')">Use Cases <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/user-stories.md', 'User Stories')">User Stories <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/functional-requirements.md', 'Functional Requirements')">Functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/non-functional-requirements.md', 'Non-functional Requirements')">Non-functional Requirements <span class="status-badge status-complete">Complete</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">🏗️</span> Architecture & Design</h3>
-                    <p>Technical blueprints and system design specifications</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('architecture-design/index.md', 'Architecture Overview')">Architecture Overview <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('System Architecture')">System Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Technical Architecture')">Technical Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Data Architecture')">Data Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Security Architecture')">Security Architecture <span class="status-badge status-draft">Draft</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">📊</span> Planning & Organization</h3>
-                    <p>Project management, timeline, and resource allocation</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('planning-organization/index.md', 'Planning Overview')">Planning Overview <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Project Plan')">Project Plan <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Risk Assessment')">Risk Assessment <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Resource Planning')">Resource Planning <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Quality Assurance Plan')">Quality Assurance Plan <span class="status-badge status-draft">Draft</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">💻</span> Implementation Framework</h3>
-                    <p>Development standards, guidelines, and best practices</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('implementation-framework/index.md', 'Implementation Overview')">Implementation Overview <span class="status-badge status-complete">Complete</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Development Standards')">Development Standards <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Coding Guidelines')">Coding Guidelines <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Testing Strategy')">Testing Strategy <span class="status-badge status-draft">Draft</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Documentation Standards')">Documentation Standards <span class="status-badge status-draft">Draft</span></a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="legend">
-                <h4>📍 Document Status Legend</h4>
-                <div class="legend-items">
-                    <div class="legend-item">
-                        <span class="status-badge status-complete">Complete</span>
-                        <span>Fully documented and reviewed</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="status-badge status-progress">In Progress</span>
-                        <span>Currently being developed</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="status-badge status-draft">Draft</span>
-                        <span>Initial version, needs development</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="quick-nav">
-                <h3>🚀 Quick Navigation</h3>
-                <div class="nav-grid">
-                    <div class="nav-item">
-                        <h4>Business Context</h4>
-                        <p>Swiss personnel placement (Vermittlung) and lending (Verleih) regulations, dual business model, AVG compliance</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Technical Context</h4>
-                        <p>Phoenix LiveView application built with Elixir/OTP, real-time web application with actor model architecture</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Key Features</h4>
-                        <p>Role-based user flows, digital contract management, integrated billing, multi-language support</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Implementation</h4>
-                        <p>Comprehensive testing and monitoring framework, Swiss regulatory compliance, modern architecture</p>
-                    </div>
-                </div>
-            </div>
-            `;
-        }
-
-        // Function to get German home content
-        function getGermanHomeContent() {
-            return `
-            <div class="home-header">
-                <h1>BemedaPersonal</h1>
-                <p>Strategischer Dokumentations-Framework für die Schweizer Personal-Vermittlungs- & Verleih-Plattform</p>
-            </div>
-
-            <div class="framework-intro">
-                <h2>📋 Dokumentationsstruktur</h2>
-                <p>Diese Dokumentation folgt einem strategischen Framework-Ansatz und organisiert Informationen von der strategischen Vision bis zu Implementierungsdetails. Jede Phase baut auf der vorherigen auf und gewährleistet eine umfassende Abdeckung von der strategischen Grundlage bis zur technischen Umsetzung.</p>
-                
-                <div style="background: #e8f5e8; border: 1px solid #81c784; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
-                    <h4 style="color: #388e3c; margin-bottom: 0.5rem;">🚀 Erweiterte Funktionen & Pool Worker System</h4>
-                    <p style="color: #2e7d32; margin: 0; font-size: 0.9rem;">
-                        <a href="#" onclick="loadMarkdown('CLAUDE_DE.md', 'Deutsche Dokumentations-Framework')" style="color: #2e7d32; text-decoration: underline;">
-                            Vollständige deutsche Dokumentation ansehen
-                        </a> mit erweiterten User Stories, Pool Worker Management, automatischem Matching und personalisierten Headhunting-Services.
-                    </p>
-                </div>
-            </div>
-
-            <div class="phases-grid">
-                <div class="phase-card">
-                    <h3><span class="phase-icon">🎯</span> Strategische Grundlagen</h3>
-                    <p>Die grundlegende Vision und strategische Ausrichtung für BemedaPersonal</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/vision_de.md', 'Vision')">Vision <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/mission_de.md', 'Mission')">Mission <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/strategy_de.md', 'Strategie')">Strategie <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('strategic-foundation/goals-objectives_de.md', 'Ziele & Vorgaben')">Ziele & Vorgaben <span class="status-badge status-complete">Vollständig</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">📋</span> Anforderungen & Analyse</h3>
-                    <p>Verständnis von Stakeholdern, Benutzern und Systemanforderungen</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/glossary.md', 'Glossar')">Glossar <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/stakeholder-analysis_de.md', 'Stakeholder-Analyse')">Stakeholder-Analyse <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/use-cases.md', 'Anwendungsfälle')">Anwendungsfälle <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/user-stories_de.md', 'User Stories')">User Stories <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/functional-requirements.md', 'Funktionale Anforderungen')">Funktionale Anforderungen <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="loadMarkdown('requirements-analysis/non-functional-requirements.md', 'Nicht-funktionale Anforderungen')">Nicht-funktionale Anforderungen <span class="status-badge status-complete">Vollständig</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">🏗️</span> Architektur & Design</h3>
-                    <p>Technische Baupläne und Systemdesign-Spezifikationen</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('architecture-design/index.md', 'Architektur-Übersicht')">Architektur-Übersicht <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('System-Architektur')">System-Architektur <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Technische Architektur')">Technische Architektur <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Datenarchitektur')">Datenarchitektur <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Sicherheitsarchitektur')">Sicherheitsarchitektur <span class="status-badge status-draft">Entwurf</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">📊</span> Planung & Organisation</h3>
-                    <p>Projektmanagement, Zeitplan und Ressourcenzuweisung</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('planning-organization/index.md', 'Planungsübersicht')">Planungsübersicht <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Projektplan')">Projektplan <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Risikobewertung')">Risikobewertung <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Ressourcenplanung')">Ressourcenplanung <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Qualitätssicherungsplan')">Qualitätssicherungsplan <span class="status-badge status-draft">Entwurf</span></a></li>
-                    </ul>
-                </div>
-
-                <div class="phase-card">
-                    <h3><span class="phase-icon">💻</span> Implementierungs-Framework</h3>
-                    <p>Entwicklungsstandards, Richtlinien und Best Practices</p>
-                    <ul class="phase-links">
-                        <li><a href="#" onclick="loadMarkdown('implementation-framework/index.md', 'Implementierungsübersicht')">Implementierungsübersicht <span class="status-badge status-complete">Vollständig</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Entwicklungsstandards')">Entwicklungsstandards <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Coding-Richtlinien')">Coding-Richtlinien <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Test-Strategie')">Test-Strategie <span class="status-badge status-draft">Entwurf</span></a></li>
-                        <li><a href="#" onclick="showDraftMessage('Dokumentationsstandards')">Dokumentationsstandards <span class="status-badge status-draft">Entwurf</span></a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="legend">
-                <h4>📍 Dokumentenstatus-Legende</h4>
-                <div class="legend-items">
-                    <div class="legend-item">
-                        <span class="status-badge status-complete">Vollständig</span>
-                        <span>Vollständig dokumentiert und überprüft</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="status-badge status-progress">In Bearbeitung</span>
-                        <span>Wird derzeit entwickelt</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="status-badge status-draft">Entwurf</span>
-                        <span>Erste Version, benötigt Entwicklung</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="quick-nav">
-                <h3>🚀 Schnell-Navigation</h3>
-                <div class="nav-grid">
-                    <div class="nav-item">
-                        <h4>Geschäftskontext</h4>
-                        <p>Schweizer Personalvermittlungs- und -verleihvorschriften, duales Geschäftsmodell, AVG-Compliance</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Technischer Kontext</h4>
-                        <p>Phoenix LiveView-Anwendung mit Elixir/OTP, Echtzeit-Webanwendung mit Actor-Model-Architektur</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Hauptfunktionen</h4>
-                        <p>Rollenbasierte Benutzerflows, digitales Vertragsmanagement, integrierte Abrechnung, mehrsprachige Unterstützung</p>
-                    </div>
-                    <div class="nav-item">
-                        <h4>Implementierung</h4>
-                        <p>Umfassendes Test- und Überwachungs-Framework, Schweizer Regulierungskonformität, moderne Architektur</p>
-                    </div>
-                </div>
-            </div>
-            `;
-        }
-
-        // Function to process markdown content
-        function processMarkdownContent(markdown, path, title, isFallback = false) {
-            // Validate markdown content
-            if (!markdown || typeof markdown !== 'string') {
-                throw new Error('Invalid markdown content received');
-            }
-            
-            console.log(`Processing markdown for ${path}, length: ${markdown.length} characters`);
-            
-            let html;
-            try {
-                // Try modern marked.parse first
-                if (typeof marked.parse === 'function') {
-                    html = marked.parse(markdown);
-                } else if (typeof marked === 'function') {
-                    // Fallback for older versions
-                    html = marked(markdown);
-                } else {
-                    throw new Error('Marked.js not properly loaded');
-                }
-                console.log('Markdown parsed successfully');
-            } catch (parseError) {
-                console.error('Marked.js parse error:', parseError);
-                console.log('Attempting fallback markdown parser...');
-                try {
-                    html = simpleMarkdownParser(markdown);
-                    console.log('Fallback markdown parser succeeded');
-                } catch (fallbackError) {
-                    console.error('Fallback parser also failed:', fallbackError);
-                    // Last resort: show formatted raw markdown
-                    html = `<div style="background: #f8f9fa; padding: 2rem; border-radius: 8px; border-left: 4px solid #e74c3c;">
-                        <h3>⚠️ Markdown Processing Error</h3>
-                        <p>The markdown parser encountered an error. Displaying raw content:</p>
-                        <pre style="white-space: pre-wrap; background: white; padding: 1rem; margin-top: 1rem;">${markdown}</pre>
-                    </div>`;
-                    console.log('Using last resort raw display');
-                }
-            }
-            
-            // Add fallback notice if using English version for German request
-            if (isFallback) {
-                const fallbackNotice = `
-                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; margin-bottom: 2rem; color: #856404;">
-                        <strong>ℹ️ Hinweis:</strong> Deutsche Version dieses Dokuments ist noch nicht verfügbar. Englische Version wird angezeigt.
-                        <br><small><strong>Note:</strong> German version of this document is not yet available. Showing English version.</small>
-                    </div>
-                `;
-                html = fallbackNotice + html;
-            }
-            
-            showContent(html, path, title);
-            
-            // Re-initialize Mermaid for new content with improved timing
-            console.log('Content loaded, starting Mermaid rendering...');
-            
-            // Immediate attempt
-            renderMermaidDiagrams();
-            
-            // Backup attempts with progressive delays
-            setTimeout(() => {
-                console.log('Second attempt to render Mermaid diagrams');
-                renderMermaidDiagrams();
-            }, 300);
-            
-            setTimeout(() => {
-                console.log('Final attempt to render Mermaid diagrams');
-                renderMermaidDiagrams();
-            }, 1500);
-        }
-
-        // Function to render Mermaid diagrams
-        async function renderMermaidDiagrams() {
-            console.log('renderMermaidDiagrams called');
-            
-            // Wait a bit for content to be fully loaded
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
-            const mermaidElements = document.querySelectorAll('.mermaid');
-            
-            if (mermaidElements.length === 0) {
-                console.log('No Mermaid diagrams found in DOM');
-                // Debug: check if there are any code blocks with mermaid
-                const codeBlocks = document.querySelectorAll('code.language-mermaid, pre code');
-                console.log(`Found ${codeBlocks.length} code blocks total`);
-                return;
-            }
-            
-            console.log(`Found ${mermaidElements.length} Mermaid diagrams to render`);
-            
-            // Process each diagram
-            for (let index = 0; index < mermaidElements.length; index++) {
-                const element = mermaidElements[index];
-                
-                if (element.getAttribute('data-processed')) {
-                    console.log(`Diagram ${index + 1} already processed`);
-                    continue;
-                }
-                
-                const graphDefinition = element.textContent.trim();
-                const graphId = `mermaid-graph-${Date.now()}-${index}`;
-                
-                console.log(`Rendering diagram ${index + 1}:`, graphDefinition.substring(0, 100) + '...');
-                
-                try {
-                    // Check if mermaid is available
-                    if (typeof mermaid === 'undefined') {
-                        throw new Error('Mermaid library not loaded');
-                    }
-                    
-                    const result = await mermaid.render(graphId, graphDefinition);
-                    console.log(`Successfully rendered diagram ${index + 1}`);
-                    element.innerHTML = result.svg;
-                    element.setAttribute('data-processed', 'true');
-                    
-                } catch (error) {
-                    console.error(`Mermaid rendering error for diagram ${index + 1}:`, error);
-                    element.innerHTML = `
-                        <div style="padding: 1rem; background: #fed7d7; border: 1px solid #feb2b2; border-radius: 8px; color: #742a2a;">
-                            <strong>Diagram Rendering Error</strong><br>
-                            <small>Error: ${error.message || 'Invalid diagram syntax'}</small><br>
-                            <details style="margin-top: 0.5rem;">
-                                <summary style="cursor: pointer;">Show diagram code</summary>
-                                <pre style="background: #f1f1f1; padding: 0.5rem; margin-top: 0.5rem; font-size: 0.8em; white-space: pre-wrap;">${graphDefinition}</pre>
-                            </details>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="mvp-content">
+                            <h3>Minimum Viable Product Features</h3>
+                            <div class="mvp-features">
+                                <div class="mvp-feature">User Registration & Profiles</div>
+                                <div class="mvp-feature">Job Posting & Search</div>
+                                <div class="mvp-feature">Application Management</div>
+                                <div class="mvp-feature">Document Verification</div>
+                                <div class="mvp-feature">Basic Matching Algorithm</div>
+                                <div class="mvp-feature">Communication System</div>
+                                <div class="mvp-feature">Contract Generation</div>
+                                <div class="mvp-feature">Compliance Tracking</div>
+                            </div>
                         </div>
-                    `;
-                    element.setAttribute('data-processed', 'error');
-                }
-            }
-        }
-
-        // Function to toggle comments sidebar
-        function toggleComments() {
-            console.log('=== TOGGLE COMMENTS CLICKED ===');
-            
-            const sidebar = document.getElementById('comments-sidebar');
-            const toggle = document.getElementById('comments-toggle');
-            const contentPage = document.getElementById('content-page');
-            
-            if (!sidebar) {
-                console.error('Comments sidebar not found!');
-                return;
-            }
-            
-            console.log('BEFORE - Sidebar classes:', sidebar.className);
-            console.log('BEFORE - Content page classes:', contentPage.className);
-            console.log('BEFORE - Toggle classes:', toggle.className);
-            
-            // Check if sidebar is currently hidden
-            const isHidden = !sidebar.classList.contains('visible');
-            
-            if (isHidden) {
-                sidebar.classList.add('visible');
-                toggle.classList.add('active');
-                toggle.title = 'Hide Comments';
-                
-                // Enable flex layout for sidebar
-                contentPage.classList.add('has-sidebar');
-                
-                console.log('AFTER - Sidebar classes:', sidebar.className);
-                console.log('AFTER - Content page classes:', contentPage.className);
-                console.log('AFTER - Toggle classes:', toggle.className);
-                console.log('Comments sidebar shown');
-            } else {
-                sidebar.classList.remove('visible');
-                toggle.classList.remove('active');
-                toggle.title = 'Show Comments';
-                
-                // Remove flex layout
-                contentPage.classList.remove('has-sidebar');
-                
-                console.log('AFTER - Sidebar classes:', sidebar.className);
-                console.log('AFTER - Content page classes:', contentPage.className);
-                console.log('AFTER - Toggle classes:', toggle.className);
-                console.log('Comments sidebar hidden');
-            }
-        }
-
-        // Function to initialize utterances comments
-        function initializeComments(path, title) {
-            console.log(`Initializing comments for: ${path} - ${title}`);
-            
-            const commentsContainer = document.getElementById('comments-container');
-            const commentsSidebar = document.getElementById('comments-sidebar');
-            const commentsToggle = document.getElementById('comments-toggle');
-            
-            // Clear existing comments
-            commentsContainer.innerHTML = '';
-            
-            // Show toggle button but HIDE sidebar initially (user clicks to show)
-            commentsToggle.classList.add('visible');
-            commentsToggle.classList.remove('active');
-            commentsSidebar.style.display = 'none';
-            commentsSidebar.classList.remove('visible');
-            commentsToggle.title = 'Show Comments';
-            
-            console.log('Comments toggle ready, sidebar hidden initially');
-            
-            // Add loading message
-            commentsContainer.innerHTML = `
-                <div style="text-align: center; padding: 1.5rem; color: #666;">
-                    <div style="margin-bottom: 1rem;">💬 Loading comments...</div>
-                    <div style="font-size: 0.8em; opacity: 0.7;">
-                        Powered by <a href="https://utteranc.es" target="_blank" style="color: #667eea;">Utterances</a>
                     </div>
                 </div>
-            `;
+            </div>
             
-            // Create utterances script
-            const script = document.createElement('script');
-            script.src = 'https://utteranc.es/client.js';
-            script.setAttribute('repo', '3Stones-io/bemeda_personal');
+            <!-- Personas Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h2 class="accordion-title">Personas & Scenarios</h2>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="persona-grid">
+                            <a href="personas/organisation.html" class="persona-card">
+                                <div class="persona-icon">🏥</div>
+                                <div class="persona-title">Organisation</div>
+                                <div class="persona-description">Healthcare institutions seeking qualified medical professionals</div>
+                            </a>
+                            
+                            <a href="personas/temporary-worker.html" class="persona-card">
+                                <div class="persona-icon">⏰</div>
+                                <div class="persona-title">Temporary Worker</div>
+                                <div class="persona-description">Medical professionals seeking flexible short-term assignments</div>
+                            </a>
+                            
+                            <a href="personas/jobseeker.html" class="persona-card">
+                                <div class="persona-icon">🔍</div>
+                                <div class="persona-title">JobSeeker</div>
+                                <div class="persona-description">Healthcare professionals looking for permanent positions</div>
+                            </a>
+                            
+                            <a href="personas/pool-worker.html" class="persona-card">
+                                <div class="persona-icon">👥</div>
+                                <div class="persona-title">Pool Worker</div>
+                                <div class="persona-description">Professionals available for recurring assignments</div>
+                            </a>
+                            
+                            <a href="personas/try-hire-worker.html" class="persona-card">
+                                <div class="persona-icon">🎯</div>
+                                <div class="persona-title">Try & Hire Worker</div>
+                                <div class="persona-description">Candidates open to trial periods before permanent placement</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
             
-            // Create unique issue term per page using path and title
-            const pageIdentifier = `docs/${path.replace('/', '-')}--${title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')}`;
-            script.setAttribute('issue-term', pageIdentifier);
-            
-            script.setAttribute('theme', 'github-light');
-            script.setAttribute('crossorigin', 'anonymous');
-            script.async = true;
-            
-            console.log('Utterances script attributes:', {
-                repo: script.getAttribute('repo'),
-                'issue-term': script.getAttribute('issue-term'),
-                theme: script.getAttribute('theme')
+            // Close all accordions
+            document.querySelectorAll('.accordion-header').forEach(h => {
+                h.classList.remove('active');
+                h.nextElementSibling.classList.remove('active');
             });
             
-            console.log(`Page-specific identifier: ${pageIdentifier}`);
-            
-            // Add error handling and timeout
-            script.onerror = function() {
-                console.error('Failed to load Utterances script');
-                showSetupInstructions();
-            };
-            
-            script.onload = function() {
-                console.log('Utterances script loaded successfully');
-                // Set a timeout to check if comments loaded
-                setTimeout(() => {
-                    const utterancesFrame = commentsContainer.querySelector('.utterances');
-                    if (!utterancesFrame) {
-                        console.warn('Utterances not initialized after 10 seconds');
-                        showSetupInstructions();
-                    }
-                }, 10000);
-            };
-            
-            function showSetupInstructions() {
-                commentsContainer.innerHTML = `
-                    <div style="background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 6px; padding: 1rem; color: #0c5460; font-size: 0.9em;">
-                        <h4 style="margin: 0 0 0.5rem 0; color: #0c5460;">🎯 Repository is Public!</h4>
-                        <p style="margin: 0.5rem 0; font-size: 0.85em;">Comments are almost ready. Next step:</p>
-                        <ol style="text-align: left; margin: 0.5rem 0; padding-left: 1.2em; font-size: 0.85em;">
-                            <li>Install the <a href="https://github.com/apps/utterances" target="_blank" style="color: #0c5460;"><strong>Utterances app</strong></a></li>
-                            <li>Grant access to <strong>3Stones-io/bemeda_personal</strong></li>
-                            <li>Enable <strong>Issues</strong> in <a href="https://github.com/3Stones-io/bemeda_personal/settings" target="_blank" style="color: #0c5460;">repo settings</a></li>
-                        </ol>
-                        <p style="margin: 0.5rem 0 0 0; font-size: 0.8em; opacity: 0.8;">Then refresh this page!</p>
-                    </div>
-                `;
-            }
-            
-            // Append script to container
-            setTimeout(() => {
-                commentsContainer.appendChild(script);
-                console.log('Utterances script added to DOM');
-            }, 500);
-        }
-
-        function updateBreadcrumb(path = '', title = '') {
-            const breadcrumb = document.getElementById('breadcrumb');
-            if (!path) {
-                breadcrumb.innerHTML = '';
-                return;
-            }
-            
-            const pathParts = path.split('/');
-            const section = pathParts[0].replace('-', ' & ').replace(/\b\w/g, l => l.toUpperCase());
-            
-            breadcrumb.innerHTML = `
-                <a href="#" onclick="navigateToHome()">Home</a>
-                <span class="breadcrumb-separator">›</span>
-                <span>${section}</span>
-                <span class="breadcrumb-separator">›</span>
-                <span>${title}</span>
-            `;
-        }
-
-        function navigateToHome() {
-            document.getElementById('home-content').style.display = 'block';
-            document.getElementById('content-page').style.display = 'none';
-            document.getElementById('comments-sidebar').style.display = 'none';
-            document.getElementById('comments-toggle').classList.remove('visible', 'active');
-            document.getElementById('back-button').classList.remove('visible');
-            currentPage = 'home';
-            currentPath = '';
-            currentTitle = '';
-            updateBreadcrumb();
-            
-            // Load home content in current language
-            loadHomeContent(currentLanguage);
-            
-            // Update document title based on language
-            if (currentLanguage === 'de') {
-                document.title = 'BemedaPersonal - Strategischer Dokumentations-Framework';
-            } else {
-                document.title = 'BemedaPersonal - Strategic Documentation Framework';
+            // Open clicked accordion if it was closed
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('active');
             }
         }
-
-        function showDraftMessage(title) {
-            const content = `
-                <div style="text-align: center; padding: 4rem 2rem;">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">📝</div>
-                    <h1>${title}</h1>
-                    <p style="font-size: 1.25rem; color: #718096; margin: 2rem 0;">
-                        This section is currently in draft status and will be developed in future iterations of the documentation framework.
-                    </p>
-                    <div style="background: #fed7c3; border: 1px solid #f6ad55; border-radius: 8px; padding: 1.5rem; margin: 2rem 0; text-align: left;">
-                        <h3 style="color: #7b341e; margin-bottom: 1rem;">📋 Planned Content</h3>
-                        <p style="color: #7b341e; margin: 0;">
-                            Detailed specifications and guidelines for ${title.toLowerCase()} will be added as part of the next development phase. 
-                            This will include comprehensive standards, best practices, and implementation guidelines aligned with the strategic framework.
-                        </p>
-                    </div>
-                </div>
-            `;
-            // Show content but hide comments sidebar for draft messages
-            document.getElementById('home-content').style.display = 'none';
-            document.getElementById('content-page').style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('back-button').classList.add('visible');
-            document.getElementById('markdown-content').innerHTML = content;
-            document.getElementById('comments-sidebar').style.display = 'none';
-            document.getElementById('comments-toggle').classList.remove('visible', 'active');
-            
-            currentPage = 'content';
-            currentPath = '';
-            currentTitle = title;
-            updateBreadcrumb('', title);
-            document.title = `${title} - BemedaPersonal Documentation`;
-            
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
-
-        async function loadMarkdown(path, title) {
-            document.getElementById('loading').style.display = 'flex';
-            document.getElementById('markdown-content').innerHTML = '';
-            
-            // Get the localized path for the current language
-            const localizedPath = getLocalizedPath(path, currentLanguage);
-            
-            try {
-                const response = await fetch(localizedPath);
-                if (!response.ok) {
-                    // If German version not found, fallback to English
-                    if (currentLanguage === 'de' && response.status === 404) {
-                        console.log(`German version not found for ${localizedPath}, falling back to English version`);
-                        const englishResponse = await fetch(path);
-                        if (!englishResponse.ok) {
-                            throw new Error(`HTTP ${englishResponse.status}: ${englishResponse.statusText}`);
-                        }
-                        const markdown = await englishResponse.text();
-                        processMarkdownContent(markdown, path, title, true); // true indicates fallback
-                        return;
-                    } else {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                }
-                const markdown = await response.text();
-                processMarkdownContent(markdown, localizedPath, title, false);
-            } catch (error) {
-                const errorHtml = `
-                    <div class="error-message">
-                        <h3>⚠️ Error Loading Content</h3>
-                        <p><strong>Path:</strong> ${path}</p>
-                        <p><strong>Error:</strong> ${error.message}</p>
-                        <p>Please check that the file exists and the server is running correctly.</p>
-                    </div>
-                `;
-                showContent(errorHtml, path, title);
-            }
-        }
-
-        function showContent(html, path, title) {
-            document.getElementById('home-content').style.display = 'none';
-            document.getElementById('content-page').style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('back-button').classList.add('visible');
-            document.getElementById('markdown-content').innerHTML = html;
-            
-            currentPage = 'content';
-            currentPath = path;
-            currentTitle = title;
-            updateBreadcrumb(path, title);
-            document.title = `${title} - BemedaPersonal Documentation`;
-            
-            // Initialize comments for this page
-            if (path) {
-                initializeComments(path, title);
-            }
-            
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
-
-        // Handle browser back/forward buttons
-        window.addEventListener('popstate', function(event) {
-            if (event.state) {
-                if (event.state.page === 'home') {
-                    navigateToHome();
-                } else if (event.state.page === 'content') {
-                    loadMarkdown(event.state.path, event.state.title);
-                }
-            }
-        });
-
-        // Test function to debug sidebar
-        function testSidebar() {
-            console.log('=== SIDEBAR DEBUG TEST ===');
-            const sidebar = document.getElementById('comments-sidebar');
-            const toggle = document.getElementById('comments-toggle');
-            const contentPage = document.getElementById('content-page');
-            
-            console.log('Sidebar element:', sidebar);
-            console.log('Sidebar classes:', sidebar ? sidebar.className : 'NOT FOUND');
-            console.log('Sidebar style.display:', sidebar ? sidebar.style.display : 'NOT FOUND');
-            console.log('Sidebar computed display:', sidebar ? getComputedStyle(sidebar).display : 'NOT FOUND');
-            
-            console.log('Toggle element:', toggle);
-            console.log('Toggle classes:', toggle ? toggle.className : 'NOT FOUND');
-            
-            console.log('Content page classes:', contentPage ? contentPage.className : 'NOT FOUND');
-            
-            if (sidebar) {
-                console.log('=== TESTING SIDEBAR TOGGLE ===');
-                sidebar.classList.add('visible');
-                const contentPage = document.getElementById('content-page');
-                contentPage.classList.add('has-sidebar');
-                console.log('Sidebar should now be visible beside content');
-            }
-        }
-
-        // Simple markdown fallback function
-        function simpleMarkdownParser(markdown) {
-            return markdown
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-                .replace(/\*(.*)\*/gim, '<em>$1</em>')
-                .replace(/!\[([^\]]*)\]\(([^\)]*)\)/gim, '<img alt="$1" src="$2" />')
-                .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
-                .replace(/\n\n/gim, '</p><p>')
-                .replace(/```mermaid\n([\s\S]*?)\n```/gim, '<div class="mermaid">$1</div>')
-                .replace(/```(\w+)?\n([\s\S]*?)\n```/gim, '<pre><code class="language-$1">$2</code></pre>')
-                .replace(/`([^`]*)`/gim, '<code>$1</code>')
-                .replace(/^\- (.*$)/gim, '<li>$1</li>')
-                .replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>')
-                .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
-                .replace(/(<li>.*<\/li>)/gims, '<ol>$1</ol>')
-                .replace(/^(?!<[hl]|<p|<ul|<ol|<div)/gim, '<p>')
-                .replace(/$(?![hl]>|\/p>|\/ul>|\/ol>|\/div>)/gim, '</p>');
-        }
-
-        // Initialize page
+        
+        // Open first accordion by default
         document.addEventListener('DOMContentLoaded', function() {
-            // Debug: Check if libraries are loaded
-            console.log('DOM loaded, checking library availability:');
-            console.log('- Mermaid available:', typeof mermaid !== 'undefined');
-            console.log('- Marked available:', typeof marked !== 'undefined');
-            console.log('- Highlight.js available:', typeof hljs !== 'undefined');
-            
-            if (typeof marked !== 'undefined') {
-                console.log('- Marked version:', marked.version || 'unknown');
+            const firstAccordion = document.querySelector('.accordion-header');
+            if (firstAccordion) {
+                toggleAccordion(firstAccordion);
             }
-            
-            // Load user's preferred language
-            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
-            currentLanguage = preferredLanguage;
-            
-            // Update language button states
-            document.querySelectorAll('.language-switcher button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(`lang-${preferredLanguage}`).classList.add('active');
-            
-            // Set initial state
-            history.replaceState({ page: 'home' }, '', '#');
-            navigateToHome();
         });
     </script>
 </body>
