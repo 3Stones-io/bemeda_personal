@@ -4,7 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bemeda - Healthcare Talent Platform</title>
-    <link rel="stylesheet" href="global/css/language-switcher.css">
+            <link rel="stylesheet" href="global/css/language-switcher.css">
+        <style>
+            /* Language Switcher - Top Right Only */
+            .language-switcher-container {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                z-index: 1001;
+            }
+            
+            .language-switcher {
+                display: flex;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                overflow: hidden;
+            }
+            
+            .lang-btn {
+                padding: 8px 16px;
+                border: none;
+                background: white;
+                color: #666;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+            
+            .lang-btn:hover {
+                background: #f8f9fa;
+                color: #0066cc;
+            }
+            
+            .lang-btn.active {
+                background: #0066cc;
+                color: white;
+            }
+            
+            /* Container positioning for language switcher */
+            .container {
+                position: relative;
+            }
+        </style>
     <style>
         * {
             margin: 0;
@@ -288,59 +331,12 @@
             transform: translateX(4px);
         }
         
-        /* Language Switcher Container */
-        .language-switcher-container {
-            background: #f8f9fa;
-            padding: 8px 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 0;
-            border-radius: 8px 8px 0 0;
-        }
-        
-        .language-switcher {
-            display: flex;
-            gap: 4px;
-            background: rgba(255,255,255,0.8);
-            padding: 4px;
-            border-radius: 6px;
-        }
-        
-        .lang-btn {
-            background: white;
-            border: 1px solid #ddd;
-            color: #666;
-            padding: 4px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            min-width: 40px;
-        }
-        
-        .lang-btn:hover {
-            background: #f0f0f0;
-            color: #333;
-            border-color: #999;
-        }
-        
-        .lang-btn.active {
-            background: #0066cc;
-            color: white;
-            border-color: #0066cc;
-        }
-        
         .top-nav {
-            border-radius: 0 0 8px 8px;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
         
         @media (max-width: 768px) {
-            .language-switcher-container {
-                justify-content: center;
-            }
             .header h1 {
                 font-size: 2rem;
             }
@@ -357,7 +353,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Language Switcher -->
+        <!-- Language Switcher - Top Right -->
         <div class="language-switcher-container">
             <div class="language-switcher">
                 <button class="lang-btn active" data-lang="en">EN</button>
