@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVP Verleih (Temporary Staffing) - Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* MVP Section */
+        .mvp-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .subsection-title {
+            color: #ef6c00;
+            font-size: 1.4rem;
+            margin-bottom: 24px;
+            font-weight: 600;
+            border-bottom: 2px solid #fff3e0;
+            padding-bottom: 12px;
+        }
+        
+        /* Scenario Cards */
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .scenario-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #ef6c00;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .scenario-badge {
+            background: #ef6c00;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        
+        .scenario-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        
+        .scenario-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        
+        .scenario-persona {
+            color: #ef6c00;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* Implementation Status */
+        .implementation-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .impl-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .impl-status {
+            font-size: 1.2rem;
+            min-width: 28px;
+        }
+        
+        .impl-ready { color: #2e7d32; }
+        .impl-progress { color: #ef6c00; }
+        .impl-pending { color: #666; }
+        
+        .impl-text {
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="mvp-job.html" class="nav-link">MVP-JOB</a>
+                </li>
+                <li class="nav-item">
+                    <a href="mvp-tmp.html" class="nav-link active">MVP-TMP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="header">
+            <a href="index.html" class="back-link">← Back to Main Index</a>
+            <h1>⏰ MVP Verleih</h1>
+            <p>Temporary Staffing & Pool Worker Management Platform</p>
+        </div>
+        
+        <!-- Personas & Scenarios Section -->
+        <div class="mvp-section">
+            <h3 class="subsection-title">👤 Personas & Scenarios</h3>
+            <div class="scenario-grid">
+                <a href="personas/organisation.html#s-org-2" class="scenario-card">
+                    <div class="scenario-badge">S-ORG-2</div>
+                    <div class="scenario-title">Urgent Temporary Staffing Need</div>
+                    <div class="scenario-description">Rapid response to sudden staffing shortages using pool workers with automated matching, compliance verification, and emergency deployment protocols.</div>
+                    <div class="scenario-persona">🏥 Organisation</div>
+                </a>
+                
+                <a href="personas/organisation.html#s-org-3" class="scenario-card">
+                    <div class="scenario-badge">S-ORG-3</div>
+                    <div class="scenario-title">Try & Hire Program</div>
+                    <div class="scenario-description">Risk-mitigation hiring approach with trial periods, performance evaluation, and potential conversion to permanent employment through temporary assignments.</div>
+                    <div class="scenario-persona">🏥 Organisation</div>
+                </a>
+                
+                <a href="personas/pool-worker.html#s-pol-1" class="scenario-card">
+                    <div class="scenario-badge">S-POL-1</div>
+                    <div class="scenario-title">Hospital Pool Membership</div>
+                    <div class="scenario-description">Experienced ICU nurse joins preferred hospital's dedicated pool through platform for priority shift access and familiar environment work with enhanced rates.</div>
+                    <div class="scenario-persona">👥 Pool Worker</div>
+                </a>
+                
+                <a href="personas/pool-worker.html#s-pol-2" class="scenario-card">
+                    <div class="scenario-badge">S-POL-2</div>
+                    <div class="scenario-title">Multi-Facility Pool Worker</div>
+                    <div class="scenario-description">Registered nurse manages multiple hospital relationships through unified platform dashboard with automated scheduling, compliance tracking, and payment management.</div>
+                    <div class="scenario-persona">👥 Pool Worker</div>
+                </a>
+                
+                <a href="personas/pool-worker.html#s-pol-3" class="scenario-card">
+                    <div class="scenario-badge">S-POL-3</div>
+                    <div class="scenario-title">Specialty Pool Expert</div>
+                    <div class="scenario-description">Specialist nurse leverages rare skills for premium placements with dynamic pricing, priority booking, and skills verification across multiple healthcare facilities.</div>
+                    <div class="scenario-persona">👥 Pool Worker</div>
+                </a>
+                
+                <a href="personas/temporary-worker.html#s-tmp-1" class="scenario-card">
+                    <div class="scenario-badge">S-TMP-1</div>
+                    <div class="scenario-title">Weekend Shift Scheduling</div>
+                    <div class="scenario-description">Registered nurse receives and accepts last-minute shift assignments through mobile notifications with automated compliance verification and quick deployment.</div>
+                    <div class="scenario-persona">⏰ Temporary Worker</div>
+                </a>
+                
+                <a href="personas/temporary-worker.html#s-tmp-2" class="scenario-card">
+                    <div class="scenario-badge">S-TMP-2</div>
+                    <div class="scenario-title">Vacation Coverage Specialist</div>
+                    <div class="scenario-description">Temporary nurse works across multiple healthcare facilities with automated credential sharing, facility-specific orientation tracking, and extended assignment management.</div>
+                    <div class="scenario-persona">⏰ Temporary Worker</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Technical Implementation Section -->
+        <div class="mvp-section">
+            <h3 class="subsection-title">⚙️ Technical Implementation</h3>
+            <div class="implementation-items">
+                <div class="impl-item">
+                    <span class="impl-status impl-ready">✅</span>
+                    <span class="impl-text">Pool Worker Registration System</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-progress">🔄</span>
+                    <span class="impl-text">Shift Scheduling & Calendar Integration</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-progress">🔄</span>
+                    <span class="impl-text">Real-time Availability Tracking</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-pending">⏳</span>
+                    <span class="impl-text">Automated Compliance Verification</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-pending">⏳</span>
+                    <span class="impl-text">Pool Management Dashboard</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UI Implementation Section -->
+        <div class="mvp-section">
+            <h3 class="subsection-title">🎨 UI Implementation</h3>
+            <div class="implementation-items">
+                <div class="impl-item">
+                    <span class="impl-status impl-progress">🔄</span>
+                    <span class="impl-text">Mobile-First Shift Booking Interface</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-pending">⏳</span>
+                    <span class="impl-text">Pool Worker Availability Calendar</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-pending">⏳</span>
+                    <span class="impl-text">Emergency Staffing Request Flow</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-pending">⏳</span>
+                    <span class="impl-text">Multi-facility Dashboard</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Issues Section -->
+        <div class="mvp-section">
+            <h3 class="subsection-title">🔗 Related Issues</h3>
+            <div class="implementation-items">
+                <div class="impl-item">
+                    <span class="impl-status impl-progress">🔄</span>
+                    <span class="impl-text">Dynamic Pricing Algorithm</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-pending">⏳</span>
+                    <span class="impl-text">Shift Conflict Resolution</span>
+                </div>
+                <div class="impl-item">
+                    <span class="impl-status impl-pending">⏳</span>
+                    <span class="impl-text">Cross-facility Credential Sharing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

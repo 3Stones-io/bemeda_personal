@@ -97,108 +97,155 @@
             text-decoration: underline;
         }
         
-        /* MVP Section */
-        .mvp-section {
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        /* Scenario Cards - Full Width */
+        .scenarios-section {
             margin-bottom: 40px;
         }
         
-        .subsection-title {
+        .section-title {
             color: #0066cc;
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             margin-bottom: 24px;
             font-weight: 600;
-            border-bottom: 2px solid #e8f0fe;
-            padding-bottom: 12px;
+            text-align: center;
         }
         
-        /* Scenario Cards */
-        .scenario-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
+        .scenario-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
         
         .scenario-card {
-            background: #f8f9fa;
+            background: white;
             border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid #0066cc;
-            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
+            border-left: 4px solid #0066cc;
+            position: relative;
         }
         
         .scenario-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
             text-decoration: none;
             color: inherit;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        /* Active/Inactive States */
+        .scenario-card.active {
+            border-left-color: #0066cc;
+            background: white;
+        }
+        
+        .scenario-card.inactive {
+            background: #f8f9fa;
+            opacity: 0.6;
+            border-left-color: #ccc;
+        }
+        
+        .scenario-card.inactive:hover {
+            opacity: 0.8;
+        }
+        
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-left {
+            flex: 1;
         }
         
         .scenario-badge {
             background: #0066cc;
             color: white;
-            padding: 4px 12px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: 600;
             display: inline-block;
             margin-bottom: 12px;
         }
         
+        .scenario-card.inactive .scenario-badge {
+            background: #999;
+        }
+        
         .scenario-title {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             margin-bottom: 8px;
             color: #1a1a1a;
         }
         
-        .scenario-description {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.5;
+        .scenario-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             margin-bottom: 12px;
         }
         
-        .scenario-persona {
-            color: #0066cc;
-            font-size: 0.85rem;
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
             font-weight: 500;
         }
         
-        /* Implementation Status */
-        .implementation-items {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .status-active { background: #e8f5e8; color: #2e7d32; }
+        .status-development { background: #fff3e0; color: #ef6c00; }
+        .status-planning { background: #f3e5f5; color: #7b1fa2; }
+        
+        .scenario-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
         }
         
-        .impl-item {
+        .scenario-meta {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
         }
         
-        .impl-status {
-            font-size: 1.2rem;
-            min-width: 28px;
+        .scenario-participants {
+            display: flex;
+            gap: 8px;
         }
         
-        .impl-ready { color: #2e7d32; }
-        .impl-progress { color: #ef6c00; }
-        .impl-pending { color: #666; }
+        .participant-chip {
+            background: #e8f0fe;
+            color: #0066cc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
         
-        .impl-text {
-            font-weight: 500;
+        .scenario-progress {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Active Scenario Highlight */
+        .working-indicator {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #4caf50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
         
         @media (max-width: 768px) {
@@ -206,8 +253,15 @@
                 font-size: 2rem;
             }
             
-            .scenario-grid {
-                grid-template-columns: 1fr;
+            .scenario-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .scenario-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
             }
         }
     </style>
@@ -241,113 +295,132 @@
             <p>Permanent Job Placement & Career Matching Platform</p>
         </div>
         
-        <!-- Personas & Scenarios Section -->
-        <div class="mvp-section">
-            <h3 class="subsection-title">👤 Personas & Scenarios</h3>
-            <div class="scenario-grid">
-                <a href="personas/jobseeker.html#s-job-1" class="scenario-card">
-                    <div class="scenario-badge">S-JOB-1</div>
-                    <div class="scenario-title">New Graduate Job Search</div>
-                    <div class="scenario-description">Recent nursing graduate creates comprehensive profile, receives AI-powered job matches, and completes application to placement workflow with full onboarding support.</div>
-                    <div class="scenario-persona">👤 JobSeeker</div>
+        <!-- Scenarios Section -->
+        <div class="scenarios-section">
+            <h2 class="section-title">Vermittlung Scenarios</h2>
+            <div class="scenario-cards">
+                <!-- S-ORG-1 - Active/Working Scenario -->
+                <a href="scenario-s-org-1.html" class="scenario-card active">
+                    <div class="working-indicator">🔄 WORKING</div>
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-ORG-1</div>
+                            <h3 class="scenario-title">Cold Call to Candidate Placement</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-active">Active Development</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: High</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Complete recruitment workflow from initial sales contact through candidate placement and permanent hiring, including platform onboarding and comprehensive follow-up processes. This scenario covers the entire journey from lead generation to successful placement.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🏥 Organisation</span>
+                            <span class="participant-chip">🔍 JobSeeker</span>
+                            <span class="participant-chip">📞 Sales Team</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 75%</div>
+                    </div>
                 </a>
                 
-                <a href="personas/jobseeker.html#s-job-2" class="scenario-card">
-                    <div class="scenario-badge">S-JOB-2</div>
-                    <div class="scenario-title">Experienced Professional Career Change</div>
-                    <div class="scenario-description">Senior nurse uses confidential profile with privacy settings to search while employed, utilizing advanced filters and negotiation tools for career advancement.</div>
-                    <div class="scenario-persona">👤 JobSeeker</div>
+                <!-- S-JOB-1 - Inactive -->
+                <a href="#" class="scenario-card inactive">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-JOB-1</div>
+                            <h3 class="scenario-title">New Graduate Job Search</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-planning">Planning</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Recent nursing graduate creates comprehensive profile, receives AI-powered job matches, and completes application to placement workflow with full onboarding support and career guidance.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🔍 JobSeeker</span>
+                            <span class="participant-chip">🤖 AI System</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 25%</div>
+                    </div>
                 </a>
                 
-                <a href="personas/jobseeker.html#s-job-3" class="scenario-card">
-                    <div class="scenario-badge">S-JOB-3</div>
-                    <div class="scenario-title">International Healthcare Professional</div>
-                    <div class="scenario-description">International doctor navigates Swiss credential recognition, compliance guidance, and employer advocacy for successful permanent integration.</div>
-                    <div class="scenario-persona">👤 JobSeeker</div>
+                <!-- S-JOB-2 - Inactive -->
+                <a href="#" class="scenario-card inactive">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-JOB-2</div>
+                            <h3 class="scenario-title">Experienced Professional Career Change</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-development">In Development</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Senior nurse uses confidential profile with privacy settings to search while employed, utilizing advanced filters and negotiation tools for career advancement and salary optimization.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🔍 JobSeeker</span>
+                            <span class="participant-chip">🏥 Organisation</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 40%</div>
+                    </div>
                 </a>
                 
-                <a href="personas/organisation.html#s-org-1" class="scenario-card">
-                    <div class="scenario-badge">S-ORG-1</div>
-                    <div class="scenario-title">Cold Call to Candidate Placement</div>
-                    <div class="scenario-description">Complete recruitment workflow from initial sales contact through candidate placement and permanent hiring, including platform onboarding and follow-up processes.</div>
-                    <div class="scenario-persona">🏥 Organisation</div>
+                <!-- S-JOB-3 - Inactive -->
+                <a href="#" class="scenario-card inactive">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-JOB-3</div>
+                            <h3 class="scenario-title">International Healthcare Professional</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-planning">Planning</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: Low</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        International doctor navigates Swiss credential recognition, compliance guidance, and employer advocacy for successful permanent integration with specialized support systems.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🔍 JobSeeker</span>
+                            <span class="participant-chip">🏥 Organisation</span>
+                            <span class="participant-chip">📋 Compliance</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 10%</div>
+                    </div>
                 </a>
                 
-                <a href="personas/temporary-worker.html#s-tmp-3" class="scenario-card">
-                    <div class="scenario-badge">S-TMP-3</div>
-                    <div class="scenario-title">Career Transition Support</div>
-                    <div class="scenario-description">Uses temporary work assignments as stepping stones to permanent employment with career coaching and skills development support.</div>
-                    <div class="scenario-persona">⏰ Temporary Worker</div>
+                <!-- S-TMP-3 - Inactive -->
+                <a href="#" class="scenario-card inactive">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-TMP-3</div>
+                            <h3 class="scenario-title">Career Transition Support</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-planning">Planning</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: Low</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Uses temporary work assignments as stepping stones to permanent employment with career coaching, skills development support, and transition planning services.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">⏰ Temporary Worker</span>
+                            <span class="participant-chip">👨‍🏫 Career Coach</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 15%</div>
+                    </div>
                 </a>
-            </div>
-        </div>
-        
-        <!-- Technical Implementation Section -->
-        <div class="mvp-section">
-            <h3 class="subsection-title">⚙️ Technical Implementation</h3>
-            <div class="implementation-items">
-                <div class="impl-item">
-                    <span class="impl-status impl-ready">✅</span>
-                    <span class="impl-text">User Registration & Profile Management</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-ready">✅</span>
-                    <span class="impl-text">Job Posting & Search System</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-ready">✅</span>
-                    <span class="impl-text">Application Management Workflow</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-progress">🔄</span>
-                    <span class="impl-text">AI-Powered Matching Algorithm</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-pending">⏳</span>
-                    <span class="impl-text">Document Verification System</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- UI Implementation Section -->
-        <div class="mvp-section">
-            <h3 class="subsection-title">🎨 UI Implementation</h3>
-            <div class="implementation-items">
-                <div class="impl-item">
-                    <span class="impl-status impl-ready">✅</span>
-                    <span class="impl-text">JobSeeker Profile Creation Flow</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-progress">🔄</span>
-                    <span class="impl-text">Organisation Dashboard</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-pending">⏳</span>
-                    <span class="impl-text">Advanced Search Filters</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-pending">⏳</span>
-                    <span class="impl-text">Candidate Comparison Tools</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Related Issues Section -->
-        <div class="mvp-section">
-            <h3 class="subsection-title">🔗 Related Issues</h3>
-            <div class="implementation-items">
-                <div class="impl-item">
-                    <span class="impl-status impl-progress">🔄</span>
-                    <span class="impl-text">FMH Credential Verification Integration</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-pending">⏳</span>
-                    <span class="impl-text">Multi-language Support (DE/FR/IT)</span>
-                </div>
-                <div class="impl-item">
-                    <span class="impl-status impl-pending">⏳</span>
-                    <span class="impl-text">GDPR Compliance Framework</span>
-                </div>
             </div>
         </div>
     </div>
