@@ -161,7 +161,24 @@
             font-size: 0.9rem;
             color: #666;
         }
+        
+        .mermaid-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .mermaid-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -253,6 +270,26 @@
                     </div>
                 </div>
                 
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Process Flow Diagram</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Cold Call from Bemeda] --> B[Organization Agrees to Job Posting]
+                            B --> C[Job Posted on Platform]
+                            C --> D[Email with Candidate Link Sent]
+                            D --> E[Organization Reviews Candidates]
+                            E --> F[Engagement via Chat/Phone/Email]
+                            F --> G[1 Week Follow-up Email]
+                            G --> H{Deal Happened?}
+                            H -->|Yes| I[Invoice Sent with Flat Rate]
+                            H -->|No| J[Status Update + Still Hiring Query]
+                            
+                            style A fill:#e8f0fe
+                            style I fill:#e8f5e8
+                            style J fill:#fff3e0
+                    </div>
+                </div>
+                
                 <div class="metrics">
                     <div class="metrics-title">Expected Outcomes</div>
                     <div class="metric-item">
@@ -321,6 +358,25 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Urgent Staffing Process Flow</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Staff Shortage Occurs] --> B[Login to Bemeda Platform]
+                            B --> C[Post Urgent Temporary Position]
+                            C --> D[AI Matches Pool Workers]
+                            D --> E[Instant Notifications Sent]
+                            E --> F[Review & Confirm Assignment]
+                            F --> G[Compliance Auto-Verified]
+                            G --> H[Worker Completes Shift]
+                            H --> I[Hours Confirmed & Billing Processed]
+                            
+                            style A fill:#ffebee
+                            style D fill:#e8f0fe
+                            style I fill:#e8f5e8
+                    </div>
+                </div>
             </div>
             
             <div class="scenario-card">
@@ -372,6 +428,26 @@
                             <div class="step-title">Conversion Decision</div>
                             <div class="step-description">At trial end, decides to hire permanently or end arrangement, with platform handling all paperwork</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Try & Hire Process Flow</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Position Planning] --> B[Create Try & Hire Posting]
+                            B --> C[Candidate Selection & Interviews]
+                            C --> D[3-Month Trial Period Begins]
+                            D --> E[Regular Performance Check-ins]
+                            E --> F[Performance Evaluation]
+                            F --> G{Convert to Permanent?}
+                            G -->|Yes| H[Permanent Hire Processed]
+                            G -->|No| I[Trial Ends, Documentation Handled]
+                            
+                            style A fill:#e8f0fe
+                            style D fill:#fff3e0
+                            style H fill:#e8f5e8
+                            style I fill:#ffebee
                     </div>
                 </div>
             </div>

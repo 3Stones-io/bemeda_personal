@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F06 - Communication System | Bemeda MVP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .feature-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .feature-number {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        
+        .feature-title {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .feature-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        
+        .status-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .status-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .status-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .status-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+        
+        .status-not-started { background: #ffebee; color: #c62828; }
+        .status-planning { background: #fff3e0; color: #ef6c00; }
+        .status-in-progress { background: #e3f2fd; color: #1565c0; }
+        .status-testing { background: #f3e5f5; color: #7b1fa2; }
+        .status-completed { background: #e8f5e8; color: #2e7d32; }
+        
+        .implementation-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 40px;
+        }
+        
+        .detail-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .detail-title {
+            font-size: 1.3rem;
+            color: #0066cc;
+            margin-bottom: 16px;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-status {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .implementation-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to MVP Overview</a>
+        </div>
+        
+        <div class="feature-header">
+            <div class="feature-number">F06</div>
+            <h1 class="feature-title">Communication System</h1>
+            <p class="feature-description">
+                Integrated messaging and communication platform enabling seamless interaction between healthcare professionals, 
+                organizations, and HR teams with real-time chat, notifications, and document sharing capabilities.
+            </p>
+            
+            <div class="status-overview">
+                <div class="status-card">
+                    <div class="status-label">Overall Status</div>
+                    <div class="status-value status-in-progress">In Progress</div>
+                </div>
+                <div class="status-card">
+                    <div class="status-label">UI Implementation</div>
+                    <div class="status-value status-in-progress">In Progress</div>
+                </div>
+                <div class="status-card">
+                    <div class="status-label">Backend Development</div>
+                    <div class="status-value status-planning">Planning</div>
+                </div>
+                <div class="status-card">
+                    <div class="status-label">Testing</div>
+                    <div class="status-value status-not-started">Not Started</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="implementation-details">
+            <div class="detail-section">
+                <h2 class="detail-title">UI Implementation Tasks</h2>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <span>Chat Interface Design</span>
+                        <span class="task-status status-in-progress">In Progress</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Message Thread Management</span>
+                        <span class="task-status status-planning">Planning</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Notification Center UI</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>File Sharing Interface</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Contact Management Panel</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Mobile Chat Experience</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="detail-section">
+                <h2 class="detail-title">Technical Implementation Tasks</h2>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <span>Real-time Messaging Engine</span>
+                        <span class="task-status status-planning">Planning</span>
+                    </li>
+                    <li class="task-item">
+                        <span>WebSocket Infrastructure</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Message Database Schema</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Push Notification Service</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>File Upload & Storage API</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Message Encryption System</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Chat History Management</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                    <li class="task-item">
+                        <span>Presence & Status System</span>
+                        <span class="task-status status-not-started">Not Started</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

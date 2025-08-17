@@ -163,7 +163,24 @@
             font-size: 0.9rem;
             color: #666;
         }
+        
+        .mermaid-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .mermaid-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -247,6 +264,25 @@
                     </div>
                 </div>
                 
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Hospital Pool Membership Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Apply to Hospital Pool] --> B[Complete Facility Onboarding]
+                            B --> C[One-Time Training & Tour]
+                            C --> D[Set Recurring Availability]
+                            D --> E[Receive Priority Scheduling]
+                            E --> F[Work Regular Shifts in Same Departments]
+                            F --> G[Build Staff Relationships]
+                            G --> H[Earn Loyalty Bonuses & Preferred Rates]
+                            H --> I[First Consideration for Permanent Roles]
+                            
+                            style A fill:#e8f0fe
+                            style E fill:#fff3e0
+                            style I fill:#e8f5e8
+                    </div>
+                </div>
+                
                 <div class="pool-benefits">
                     <div class="benefits-grid">
                         <div class="benefit-card">
@@ -265,6 +301,27 @@
                             <div class="benefit-icon">🤝</div>
                             <div class="benefit-text">Team Integration</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Multi-Facility Pool Worker Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Join 3 Hospital Pools] --> B[Strategic Pool Selection]
+                            B --> C[Platform Manages Coordinated Scheduling]
+                            C --> D[Mon/Tue: Hospital A]
+                            C --> E[Thu/Fri: Hospital B]
+                            C --> F[Weekends: Hospital C]
+                            D --> G[Credential Sync Across All Facilities]
+                            E --> G
+                            F --> G
+                            G --> H[Build Cross-Network Reputation]
+                            H --> I[Achieve Full-Time Equivalent Income]
+                            
+                            style A fill:#e8f0fe
+                            style C fill:#fff3e0
+                            style I fill:#e8f5e8
                     </div>
                 </div>
             </div>
@@ -320,6 +377,27 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Multi-Facility Coordination Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Strategic Pool Selection] --> B[Join Multiple Hospital Pools]
+                            B --> C[Platform Manages Coordinated Scheduling]
+                            C --> D[Mon/Tue: Hospital A]
+                            C --> E[Thu/Fri: Hospital B]
+                            C --> F[Weekends: Hospital C]
+                            D --> G[Credential Sync Across All Facilities]
+                            E --> G
+                            F --> G
+                            G --> H[Build Cross-Network Reputation]
+                            H --> I[Achieve Full-Time Equivalent Income]
+                            
+                            style A fill:#e8f0fe
+                            style C fill:#fff3e0
+                            style I fill:#e8f5e8
+                    </div>
+                </div>
             </div>
             
             <div class="scenario-card">
@@ -371,6 +449,24 @@
                             <div class="step-title">Career Advancement</div>
                             <div class="step-description">Leverages pool experience to secure senior specialist consultant role across facilities</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Specialty Pool Expert Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Identify Niche Expertise: Dialysis] --> B[Join Exclusive Renal Unit Pools]
+                            B --> C[Platform Highlights Specialized Certifications]
+                            C --> D[Command Premium Pool Rates]
+                            D --> E[Work with Same Equipment Across Facilities]
+                            E --> F[Provide Patient Care Continuity]
+                            F --> G[Train New Permanent Staff]
+                            G --> H[Secure Senior Specialist Consultant Role]
+                            
+                            style A fill:#e8f0fe
+                            style D fill:#fff3e0
+                            style H fill:#e8f5e8
                     </div>
                 </div>
             </div>

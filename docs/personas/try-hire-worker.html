@@ -181,7 +181,24 @@
             background: #0066cc;
             margin: 0 10px;
         }
+        
+        .mermaid-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .mermaid-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -265,6 +282,25 @@
                     </div>
                 </div>
                 
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Department Fit Evaluation Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Discover Try & Hire Opportunity] --> B[Review Trial Terms & Success Criteria]
+                            B --> C[Work as Bemeda Employee During Trial]
+                            C --> D[Monthly Progress Meetings]
+                            D --> E[Documented Performance Tracking]
+                            E --> F{Evaluation at 2.5 Months}
+                            F -->|Positive Fit| G[Seamless Conversion to Permanent]
+                            F -->|Not a Fit| H[Trial Ends with Documentation]
+                            
+                            style A fill:#e8f0fe
+                            style C fill:#fff3e0
+                            style G fill:#e8f5e8
+                            style H fill:#ffebee
+                    </div>
+                </div>
+                
                 <div class="timeline">
                     <div class="timeline-title">Typical Try & Hire Timeline</div>
                     <div class="timeline-phases">
@@ -282,6 +318,24 @@
                             <div class="phase-dot">3M</div>
                             <div class="phase-label">Conversion Decision</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Leadership Role Trial Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Leadership Opportunity Consideration] --> B[6-Month Structured Trial]
+                            B --> C[Mentorship with Current Head Nurse]
+                            C --> D[Leadership Training & Support]
+                            D --> E[Progressive Responsibility Increase]
+                            E --> F[Lead Team Meetings & Handle Scheduling]
+                            F --> G[360° Evaluation Process]
+                            G --> H[Accept Permanent Role with Confidence]
+                            
+                            style A fill:#e8f0fe
+                            style E fill:#fff3e0
+                            style H fill:#e8f5e8
                     </div>
                 </div>
             </div>
@@ -337,6 +391,24 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Leadership Trial Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Senior Nurse Considers Head Role] --> B[6-Month Structured Trial]
+                            B --> C[Mentorship with Current Head Nurse]
+                            C --> D[Leadership Training & Support]
+                            D --> E[Progressive Responsibility Increase]
+                            E --> F[Lead Team Meetings & Handle Scheduling]
+                            F --> G[360° Evaluation Process]
+                            G --> H[Accept Permanent Role with Confidence]
+                            
+                            style A fill:#e8f0fe
+                            style E fill:#fff3e0
+                            style H fill:#e8f5e8
+                    </div>
+                </div>
             </div>
             
             <div class="scenario-card">
@@ -388,6 +460,24 @@
                             <div class="step-title">Successful Return</div>
                             <div class="step-description">Converts to permanent position with full confidence and employer trust</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Career Restart Program Process</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[5-Year Career Break Return] --> B[4-Month Try & Hire with Training]
+                            B --> C[Reduced Patient Load Start]
+                            C --> D[Mentor Pairing & Update Trainings]
+                            D --> E[Gradual Responsibility Increase]
+                            E --> F[Confidence & Skills Rebuilding]
+                            F --> G[Performance Validation]
+                            G --> H[Successful Permanent Conversion]
+                            
+                            style A fill:#ffebee
+                            style D fill:#e8f0fe
+                            style H fill:#e8f5e8
                     </div>
                 </div>
             </div>

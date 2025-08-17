@@ -158,7 +158,24 @@
             color: #0066cc;
             font-weight: 600;
         }
+        
+        .mermaid-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .mermaid-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -242,6 +259,24 @@
                     </div>
                 </div>
                 
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Weekend Shift Process Flow</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Create Profile with Weekend Availability] --> B[Receive Push Notifications for Weekend Shifts]
+                            B --> C[Review Shift Details & Rate]
+                            C --> D[One-Click Application]
+                            D --> E[Confirmation within Hours]
+                            E --> F[Work Shift]
+                            F --> G[Confirm Hours in App]
+                            G --> H[Payment within 5 Days]
+                            
+                            style A fill:#e8f0fe
+                            style D fill:#fff3e0
+                            style H fill:#e8f5e8
+                    </div>
+                </div>
+                
                 <div class="benefits">
                     <div class="benefits-title">Key Benefits</div>
                     <div class="benefit-item">Flexible scheduling around primary job</div>
@@ -302,6 +337,24 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Vacation Coverage Process Flow</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Set Summer Availability] --> B[Receive Advance Booking Requests]
+                            B --> C[Review Multiple Offers]
+                            C --> D[Compare Rates & Locations]
+                            D --> E[Accept Preferred Assignments]
+                            E --> F[Receive Facility Information]
+                            F --> G[Work Coverage Period]
+                            G --> H[Build Future Relationship]
+                            
+                            style A fill:#e8f0fe
+                            style E fill:#fff3e0
+                            style H fill:#e8f5e8
+                    </div>
+                </div>
             </div>
             
             <div class="scenario-card">
@@ -353,6 +406,23 @@
                             <div class="step-title">Permanent Opportunity</div>
                             <div class="step-description">Leverages temporary experience and ratings to secure permanent position when ready</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="mermaid-container">
+                    <div class="mermaid-title">Career Transition Process Flow</div>
+                    <div class="mermaid">
+                        graph TD
+                            A[Career Change Decision] --> B[Complete Skills Assessment]
+                            B --> C[Identify Development Areas]
+                            C --> D[Start with Entry-Level Assignments]
+                            D --> E[Build Experience Across Facilities]
+                            E --> F[Accumulate Positive Ratings]
+                            F --> G[Leverage Experience for Permanent Role]
+                            
+                            style A fill:#ffebee
+                            style B fill:#e8f0fe
+                            style G fill:#e8f5e8
                     </div>
                 </div>
             </div>

@@ -204,6 +204,28 @@
             background: white;
             border-radius: 6px;
             border-left: 3px solid #0066cc;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        
+        .mvp-feature:hover {
+            background: #f0f0f0;
+            transform: translateX(4px);
+        }
+        
+        .feature-number {
+            background: #0066cc;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
         }
         
         /* Responsive */
@@ -254,31 +276,6 @@
         
         <!-- Accordion Section -->
         <div class="accordion">
-            <!-- MVP Section -->
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <h2 class="accordion-title">MVP</h2>
-                    <span class="accordion-icon">▼</span>
-                </div>
-                <div class="accordion-content">
-                    <div class="accordion-inner">
-                        <div class="mvp-content">
-                            <h3>Minimum Viable Product Features</h3>
-                            <div class="mvp-features">
-                                <div class="mvp-feature">User Registration & Profiles</div>
-                                <div class="mvp-feature">Job Posting & Search</div>
-                                <div class="mvp-feature">Application Management</div>
-                                <div class="mvp-feature">Document Verification</div>
-                                <div class="mvp-feature">Basic Matching Algorithm</div>
-                                <div class="mvp-feature">Communication System</div>
-                                <div class="mvp-feature">Contract Generation</div>
-                                <div class="mvp-feature">Compliance Tracking</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Personas Section -->
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
@@ -317,6 +314,55 @@
                                 <div class="persona-title">Try & Hire Worker</div>
                                 <div class="persona-description">Candidates open to trial periods before permanent placement</div>
                             </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MVP Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h2 class="accordion-title">MVP Features <a href="mvp-status.html" style="font-size: 0.8rem; margin-left: 10px; color: #0066cc;">(View Status)</a></h2>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="mvp-content">
+                            <h3>Minimum Viable Product Features</h3>
+                            <div class="mvp-features">
+                                <a href="features/f01-user-registration.html" class="mvp-feature">
+                                    <div class="feature-number">F01</div>
+                                    <div>User Registration & Profiles</div>
+                                </a>
+                                <a href="features/f02-job-posting.html" class="mvp-feature">
+                                    <div class="feature-number">F02</div>
+                                    <div>Job Posting & Search</div>
+                                </a>
+                                <a href="features/f03-application-management.html" class="mvp-feature">
+                                    <div class="feature-number">F03</div>
+                                    <div>Application Management</div>
+                                </a>
+                                <a href="features/f04-document-verification.html" class="mvp-feature">
+                                    <div class="feature-number">F04</div>
+                                    <div>Document Verification</div>
+                                </a>
+                                <a href="features/f05-matching-algorithm.html" class="mvp-feature">
+                                    <div class="feature-number">F05</div>
+                                    <div>Basic Matching Algorithm</div>
+                                </a>
+                                <a href="features/f06-communication-system.html" class="mvp-feature">
+                                    <div class="feature-number">F06</div>
+                                    <div>Communication System</div>
+                                </a>
+                                <a href="features/f07-contract-generation.html" class="mvp-feature">
+                                    <div class="feature-number">F07</div>
+                                    <div>Contract Generation</div>
+                                </a>
+                                <a href="features/f08-compliance-tracking.html" class="mvp-feature">
+                                    <div class="feature-number">F08</div>
+                                    <div>Compliance Tracking</div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
