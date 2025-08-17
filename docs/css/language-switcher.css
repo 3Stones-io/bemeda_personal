@@ -6,15 +6,16 @@
     transform: translateY(-50%);
     display: flex;
     gap: 4px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.05);
     padding: 4px;
     border-radius: 6px;
+    z-index: 100;
 }
 
 .lang-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: rgba(255,255,255,0.7);
+    background: white;
+    border: 1px solid #ddd;
+    color: #666;
     padding: 4px 12px;
     border-radius: 4px;
     cursor: pointer;
@@ -25,15 +26,15 @@
 }
 
 .lang-btn:hover {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border-color: rgba(255,255,255,0.5);
+    background: #f0f0f0;
+    color: #333;
+    border-color: #999;
 }
 
 .lang-btn.active {
-    background: rgba(255,255,255,0.3);
+    background: #0066cc;
     color: white;
-    border-color: white;
+    border-color: #0066cc;
 }
 
 /* Adjust for different nav backgrounds */
