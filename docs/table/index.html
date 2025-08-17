@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenarios Table View | Bemeda Platform</title>
+    <link rel="stylesheet" href="css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .filters {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.9rem;
+        }
+        
+        .scenarios-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .mvp-badge {
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .mvp-vermittlung { background: #0066cc; }
+        .mvp-verleih { background: #ef6c00; }
+        
+        .scenarios-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .scenarios-table th,
+        .scenarios-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        
+        .scenarios-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+        }
+        
+        .scenarios-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .scenario-id {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 70px;
+            text-align: center;
+            color: white;
+        }
+        
+        .id-job { background: #0066cc; }
+        .id-org { background: #1976d2; }
+        .id-pol { background: #ef6c00; }
+        .id-tmp { background: #2196f3; }
+        
+        .category-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            min-width: 100px;
+            display: inline-block;
+        }
+        
+        .cat-permanent { background: #e8f0fe; color: #0066cc; }
+        .cat-temporary { background: #e3f2fd; color: #2196f3; }
+        .cat-pool { background: #fff3e0; color: #ef6c00; }
+        .cat-tryhire { background: #e8f5e9; color: #4caf50; }
+        
+        .scenario-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .scenario-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .participants {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .participant-chip {
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active { background: #e8f5e8; color: #2e7d32; }
+        .status-development { background: #fff3e0; color: #ef6c00; }
+        .status-planning { background: #f3e5f5; color: #7b1fa2; }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            width: 60px;
+            margin-top: 4px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4caf50;
+            transition: width 0.3s ease;
+        }
+        
+        .view-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .view-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Language Switcher Container */
+        .language-switcher-container {
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .language-switcher {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.8);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        
+        .lang-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 40px;
+        }
+        
+        .lang-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+            border-color: #999;
+        }
+        
+        .lang-btn.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        
+        .top-nav {
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .language-switcher-container {
+                justify-content: center;
+            }
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .scenarios-table {
+                font-size: 0.9rem;
+            }
+            
+            .scenarios-table th,
+            .scenarios-table td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../job/index.html" class="nav-link">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="../tmp/index.html" class="nav-link">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="../tmp/temporary/index.html">TMP-Temporary</a>
+                        <a href="../tmp/tryhire/index.html">TMP & Hire</a>
+                        <a href="../tmp/pool/index.html">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="../table/index.html" class="nav-link active">Table View</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../team/index.html" class="nav-link">Team</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../projects/index.html" class="nav-link">Projects</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="page-header">
+            <h1 class="page-title">Scenarios Table View</h1>
+            <p class="page-description">
+                Comprehensive overview of all scenarios organized by MVP and category, showing status, 
+                participants, and progress for the Bemeda healthcare staffing platform.
+            </p>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Filter by MVP</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'mvp')">
+                        <option value="">All MVPs</option>
+                        <option value="vermittlung">MVP Vermittlung</option>
+                        <option value="verleih">MVP Verleih</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Category</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'category')">
+                        <option value="">All Categories</option>
+                        <option value="permanent">Permanent Placement</option>
+                        <option value="temporary">Temporary Jobs</option>
+                        <option value="pool">Pool (Springer)</option>
+                        <option value="tryhire">Try & Hire</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Status</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'status')">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active Development</option>
+                        <option value="development">In Development</option>
+                        <option value="planning">Planning</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MVP Vermittlung Section -->
+        <div class="scenarios-table-container" data-mvp="vermittlung">
+            <div class="section-header">
+                <span class="mvp-badge mvp-vermittlung">MVP Vermittlung</span>
+                <h2>Permanent Job Placement Scenarios</h2>
+            </div>
+            <table class="scenarios-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Scenario</th>
+                        <th>Participants</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="active">
+                        <td><span class="scenario-id id-org">S-ORG-1</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
+                        <td>
+                            <div class="scenario-title">Cold Call to Candidate Placement</div>
+                            <div class="scenario-description">
+                                Complete recruitment workflow from initial sales contact through candidate placement
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">📞 Sales</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td>
+                            <div>75%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </td>
+                        <td><a href="../job/s1/index.html" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="planning">
+                        <td><span class="scenario-id id-job">S-JOB-1</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
+                        <td>
+                            <div class="scenario-title">New Graduate Job Search</div>
+                            <div class="scenario-description">
+                                Recent nursing graduate creates profile and finds first position
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">🤖 AI System</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>25%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="development">
+                        <td><span class="scenario-id id-job">S-JOB-2</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
+                        <td>
+                            <div class="scenario-title">Experienced Professional Career Change</div>
+                            <div class="scenario-description">
+                                Senior nurse confidentially searches for new opportunities
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">🏥 Organisation</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>40%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="planning">
+                        <td><span class="scenario-id id-job">S-JOB-3</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
+                        <td>
+                            <div class="scenario-title">International Healthcare Professional</div>
+                            <div class="scenario-description">
+                                International doctor navigates Swiss credential recognition
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🔍 JobSeeker</span>
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">📋 Compliance</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>10%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="vermittlung" data-category="permanent" data-status="planning">
+                        <td><span class="scenario-id id-tmp">S-TMP-3</span></td>
+                        <td><span class="category-badge cat-permanent">Permanent</span></td>
+                        <td>
+                            <div class="scenario-title">Career Transition Support</div>
+                            <div class="scenario-description">
+                                Temporary work as stepping stone to permanent employment
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">👨‍🏫 Coach</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>15%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- MVP Verleih Section -->
+        <div class="scenarios-table-container" data-mvp="verleih">
+            <div class="section-header">
+                <span class="mvp-badge mvp-verleih">MVP Verleih</span>
+                <h2>Temporary Staffing & Pool Management Scenarios</h2>
+            </div>
+            <table class="scenarios-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Scenario</th>
+                        <th>Participants</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Pool Scenarios -->
+                    <tr data-mvp="verleih" data-category="pool" data-status="active">
+                        <td><span class="scenario-id id-pol">S-POL-1</span></td>
+                        <td><span class="category-badge cat-pool">Pool</span></td>
+                        <td>
+                            <div class="scenario-title">Hospital Pool Membership</div>
+                            <div class="scenario-description">
+                                ICU nurse joins dedicated hospital pool for priority shifts
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">👥 Pool Worker</span>
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">📅 Scheduler</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td>
+                            <div>70%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%"></div>
+                            </div>
+                        </td>
+                        <td><a href="../tmp/pool/s1/index.html" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="verleih" data-category="pool" data-status="development">
+                        <td><span class="scenario-id id-pol">S-POL-2</span></td>
+                        <td><span class="category-badge cat-pool">Pool</span></td>
+                        <td>
+                            <div class="scenario-title">Multi-Facility Pool Worker</div>
+                            <div class="scenario-description">
+                                Nurse manages multiple hospital relationships as Springer
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">👥 Pool Worker</span>
+                                <span class="participant-chip">🏥 Multiple Orgs</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>35%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 35%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="verleih" data-category="pool" data-status="planning">
+                        <td><span class="scenario-id id-pol">S-POL-3</span></td>
+                        <td><span class="category-badge cat-pool">Pool</span></td>
+                        <td>
+                            <div class="scenario-title">Specialty Pool Expert</div>
+                            <div class="scenario-description">
+                                Specialist leverages rare skills for premium placements
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">👥 Pool Worker</span>
+                                <span class="participant-chip">🔬 Specialist</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>15%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    
+                    <!-- Temporary Jobs Scenarios -->
+                    <tr data-mvp="verleih" data-category="temporary" data-status="development">
+                        <td><span class="scenario-id id-org">S-ORG-2</span></td>
+                        <td><span class="category-badge cat-temporary">Temporary</span></td>
+                        <td>
+                            <div class="scenario-title">Urgent Temporary Staffing Need</div>
+                            <div class="scenario-description">
+                                Rapid response to sudden staffing shortages
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">🚨 Emergency</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>45%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="verleih" data-category="temporary" data-status="development">
+                        <td><span class="scenario-id id-tmp">S-TMP-1</span></td>
+                        <td><span class="category-badge cat-temporary">Temporary</span></td>
+                        <td>
+                            <div class="scenario-title">Weekend Shift Scheduling</div>
+                            <div class="scenario-description">
+                                Last-minute shift assignments via mobile notifications
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">📱 Mobile App</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-development">In Dev</span></td>
+                        <td>
+                            <div>30%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="verleih" data-category="temporary" data-status="planning">
+                        <td><span class="scenario-id id-tmp">S-TMP-2</span></td>
+                        <td><span class="category-badge cat-temporary">Temporary</span></td>
+                        <td>
+                            <div class="scenario-title">Vacation Coverage Specialist</div>
+                            <div class="scenario-description">
+                                Extended assignments for planned absences
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">⏰ Temp Worker</span>
+                                <span class="participant-chip">📋 Credentials</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>10%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                    
+                    <!-- Try & Hire Scenarios -->
+                    <tr data-mvp="verleih" data-category="tryhire" data-status="planning">
+                        <td><span class="scenario-id id-org">S-ORG-3</span></td>
+                        <td><span class="category-badge cat-tryhire">Try & Hire</span></td>
+                        <td>
+                            <div class="scenario-title">Try & Hire Program</div>
+                            <div class="scenario-description">
+                                Risk-mitigation hiring with trial periods
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">🏥 Organisation</span>
+                                <span class="participant-chip">👥 Candidate</span>
+                                <span class="participant-chip">📊 HR Team</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-planning">Planning</span></td>
+                        <td>
+                            <div>20%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
+                            </div>
+                        </td>
+                        <td><a href="#" class="view-link">View →</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        function filterTable(value, type) {
+            const containers = document.querySelectorAll('.scenarios-table-container');
+            const rows = document.querySelectorAll('tbody tr');
+            
+            // Show/hide entire sections for MVP filter
+            if (type === 'mvp') {
+                containers.forEach(container => {
+                    const mvp = container.dataset.mvp;
+                    container.style.display = (!value || mvp === value) ? 'block' : 'none';
+                });
+            } else {
+                // Show all containers for other filters
+                containers.forEach(container => {
+                    container.style.display = 'block';
+                });
+                
+                // Filter rows within tables
+                rows.forEach(row => {
+                    let show = true;
+                    
+                    if (value && type === 'category') {
+                        show = row.dataset.category === value;
+                    } else if (value && type === 'status') {
+                        show = row.dataset.status === value;
+                    }
+                    
+                    row.style.display = show ? '' : 'none';
+                });
+            }
+        }
+        
+        // Reset other filters when one changes
+        function resetOtherFilters(currentFilter) {
+            const selects = document.querySelectorAll('.filter-select');
+            selects.forEach(select => {
+                if (select !== currentFilter) {
+                    select.value = '';
+                }
+            });
+        }
+        
+        // Add event listeners to reset other filters
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', function() {
+                resetOtherFilters(this);
+            });
+        });
+    </script>
+    <script src="js/language-switcher.js"></script>
+</body>
+</html>
