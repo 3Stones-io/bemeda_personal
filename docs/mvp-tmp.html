@@ -57,11 +57,11 @@
         
         .nav-link:hover {
             background: #f8f9fa;
-            color: #0066cc;
+            color: #ef6c00;
         }
         
         .nav-link.active {
-            background: #0066cc;
+            background: #ef6c00;
             color: white;
         }
         
@@ -88,7 +88,7 @@
         
         .back-link {
             display: inline-block;
-            color: #0066cc;
+            color: #ef6c00;
             text-decoration: none;
             margin-bottom: 20px;
         }
@@ -97,119 +97,55 @@
             text-decoration: underline;
         }
         
-        /* Scenario Cards - Full Width */
-        .scenarios-section {
+        /* Category Cards Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
             margin-bottom: 40px;
         }
         
-        .section-title {
-            color: #ef6c00;
-            font-size: 1.8rem;
-            margin-bottom: 24px;
-            font-weight: 600;
-            text-align: center;
-        }
-        
-        .scenario-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        .scenario-card {
+        .category-card {
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
-            border-left: 4px solid #ef6c00;
+            border: 2px solid transparent;
             position: relative;
+            overflow: hidden;
         }
         
-        .scenario-card:hover {
-            text-decoration: none;
-            color: inherit;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            border-color: #ef6c00;
         }
         
-        /* Active/Inactive States */
-        .scenario-card.active {
-            border-left-color: #ef6c00;
-            background: white;
-        }
-        
-        .scenario-card.inactive {
-            background: #f8f9fa;
-            opacity: 0.6;
-            border-left-color: #ccc;
-        }
-        
-        .scenario-card.inactive:hover {
-            opacity: 0.8;
-        }
-        
-        .scenario-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .category-icon {
+            font-size: 3rem;
             margin-bottom: 16px;
+            display: block;
         }
         
-        .scenario-left {
-            flex: 1;
-        }
-        
-        .scenario-badge {
-            background: #ef6c00;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
+        .category-title {
+            font-size: 1.8rem;
             font-weight: 600;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-        
-        .scenario-card.inactive .scenario-badge {
-            background: #999;
-        }
-        
-        .scenario-title {
-            font-weight: 600;
-            font-size: 1.3rem;
-            margin-bottom: 8px;
             color: #1a1a1a;
-        }
-        
-        .scenario-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             margin-bottom: 12px;
         }
         
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .status-active { background: #e8f5e8; color: #2e7d32; }
-        .status-development { background: #fff3e0; color: #ef6c00; }
-        .status-planning { background: #f3e5f5; color: #7b1fa2; }
-        
-        .scenario-description {
+        .category-description {
             color: #666;
+            font-size: 1rem;
             line-height: 1.6;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         
-        .scenario-meta {
+        .category-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -217,35 +153,51 @@
             border-top: 1px solid #eee;
         }
         
-        .scenario-participants {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .participant-chip {
+        .scenario-count {
             background: #fff3e0;
             color: #ef6c00;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
         
-        .scenario-progress {
+        .category-status {
             font-size: 0.9rem;
             color: #666;
         }
         
-        /* Active Scenario Highlight */
-        .working-indicator {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #4caf50;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
+        /* Category accent colors */
+        .category-card.temporary-jobs .category-icon { color: #2196f3; }
+        .category-card.temporary-jobs:hover { border-color: #2196f3; }
+        .category-card.temporary-jobs .scenario-count { background: #e3f2fd; color: #2196f3; }
+        
+        .category-card.try-hire .category-icon { color: #4caf50; }
+        .category-card.try-hire:hover { border-color: #4caf50; }
+        .category-card.try-hire .scenario-count { background: #e8f5e9; color: #4caf50; }
+        
+        .category-card.pool .category-icon { color: #ef6c00; }
+        .category-card.pool:hover { border-color: #ef6c00; }
+        
+        /* Info Section */
+        .info-section {
+            background: #fff3e0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+            border-left: 4px solid #ef6c00;
+        }
+        
+        .info-title {
+            font-size: 1.2rem;
             font-weight: 600;
+            color: #ef6c00;
+            margin-bottom: 12px;
+        }
+        
+        .info-text {
+            color: #666;
+            line-height: 1.6;
         }
         
         @media (max-width: 768px) {
@@ -253,15 +205,12 @@
                 font-size: 2rem;
             }
             
-            .scenario-header {
-                flex-direction: column;
-                align-items: flex-start;
+            .categories-grid {
+                grid-template-columns: 1fr;
             }
             
-            .scenario-meta {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
+            .category-card {
+                padding: 24px;
             }
         }
     </style>
@@ -292,185 +241,57 @@
         <div class="header">
             <a href="index.html" class="back-link">← Back to Main Index</a>
             <h1>⏰ MVP Verleih</h1>
-            <p>Temporary Staffing & Pool Worker Management Platform</p>
+            <p>Temporary Staffing & Flexible Work Solutions</p>
         </div>
         
-        <!-- Scenarios Section -->
-        <div class="scenarios-section">
-            <h2 class="section-title">Verleih Scenarios</h2>
-            <div class="scenario-cards">
-                <!-- S-POL-1 - Active/Working Scenario -->
-                <a href="scenario-s-pol-1.html" class="scenario-card active">
-                    <div class="working-indicator">🔄 WORKING</div>
-                    <div class="scenario-header">
-                        <div class="scenario-left">
-                            <div class="scenario-badge">S-POL-1</div>
-                            <h3 class="scenario-title">Hospital Pool Membership</h3>
-                            <div class="scenario-status">
-                                <span class="status-badge status-active">Active Development</span>
-                                <span style="color: #666; font-size: 0.9rem;">Priority: High</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scenario-description">
-                        Experienced ICU nurse joins preferred hospital's dedicated pool through platform for priority shift access and familiar environment work with enhanced rates. Includes pool membership management, availability tracking, and preference matching.
-                    </div>
-                    <div class="scenario-meta">
-                        <div class="scenario-participants">
-                            <span class="participant-chip">👥 Pool Worker</span>
-                            <span class="participant-chip">🏥 Organisation</span>
-                            <span class="participant-chip">📅 Scheduler</span>
-                        </div>
-                        <div class="scenario-progress">Progress: 70%</div>
-                    </div>
-                </a>
-                
-                <!-- S-ORG-2 - Inactive -->
-                <a href="#" class="scenario-card inactive">
-                    <div class="scenario-header">
-                        <div class="scenario-left">
-                            <div class="scenario-badge">S-ORG-2</div>
-                            <h3 class="scenario-title">Urgent Temporary Staffing Need</h3>
-                            <div class="scenario-status">
-                                <span class="status-badge status-development">In Development</span>
-                                <span style="color: #666; font-size: 0.9rem;">Priority: High</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scenario-description">
-                        Rapid response to sudden staffing shortages using pool workers with automated matching, compliance verification, and emergency deployment protocols for critical healthcare coverage.
-                    </div>
-                    <div class="scenario-meta">
-                        <div class="scenario-participants">
-                            <span class="participant-chip">🏥 Organisation</span>
-                            <span class="participant-chip">👥 Pool Worker</span>
-                            <span class="participant-chip">🚨 Emergency</span>
-                        </div>
-                        <div class="scenario-progress">Progress: 45%</div>
-                    </div>
-                </a>
-                
-                <!-- S-ORG-3 - Inactive -->
-                <a href="#" class="scenario-card inactive">
-                    <div class="scenario-header">
-                        <div class="scenario-left">
-                            <div class="scenario-badge">S-ORG-3</div>
-                            <h3 class="scenario-title">Try & Hire Program</h3>
-                            <div class="scenario-status">
-                                <span class="status-badge status-planning">Planning</span>
-                                <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scenario-description">
-                        Risk-mitigation hiring approach with trial periods, performance evaluation, and potential conversion to permanent employment through temporary assignments and structured assessment.
-                    </div>
-                    <div class="scenario-meta">
-                        <div class="scenario-participants">
-                            <span class="participant-chip">🏥 Organisation</span>
-                            <span class="participant-chip">👥 Pool Worker</span>
-                            <span class="participant-chip">📊 HR</span>
-                        </div>
-                        <div class="scenario-progress">Progress: 20%</div>
-                    </div>
-                </a>
-                
-                <!-- S-POL-2 - Inactive -->
-                <a href="#" class="scenario-card inactive">
-                    <div class="scenario-header">
-                        <div class="scenario-left">
-                            <div class="scenario-badge">S-POL-2</div>
-                            <h3 class="scenario-title">Multi-Facility Pool Worker</h3>
-                            <div class="scenario-status">
-                                <span class="status-badge status-development">In Development</span>
-                                <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scenario-description">
-                        Registered nurse manages multiple hospital relationships through unified platform dashboard with automated scheduling, compliance tracking, and centralized payment management.
-                    </div>
-                    <div class="scenario-meta">
-                        <div class="scenario-participants">
-                            <span class="participant-chip">👥 Pool Worker</span>
-                            <span class="participant-chip">🏥 Multiple Orgs</span>
-                        </div>
-                        <div class="scenario-progress">Progress: 35%</div>
-                    </div>
-                </a>
-                
-                <!-- S-POL-3 - Inactive -->
-                <a href="#" class="scenario-card inactive">
-                    <div class="scenario-header">
-                        <div class="scenario-left">
-                            <div class="scenario-badge">S-POL-3</div>
-                            <h3 class="scenario-title">Specialty Pool Expert</h3>
-                            <div class="scenario-status">
-                                <span class="status-badge status-planning">Planning</span>
-                                <span style="color: #666; font-size: 0.9rem;">Priority: Low</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scenario-description">
-                        Specialist nurse leverages rare skills for premium placements with dynamic pricing, priority booking, and skills verification across multiple healthcare facilities and departments.
-                    </div>
-                    <div class="scenario-meta">
-                        <div class="scenario-participants">
-                            <span class="participant-chip">👥 Pool Worker</span>
-                            <span class="participant-chip">🔬 Specialist</span>
-                        </div>
-                        <div class="scenario-progress">Progress: 15%</div>
-                    </div>
-                </a>
-                
-                <!-- S-TMP-1 - Inactive -->
-                <a href="#" class="scenario-card inactive">
-                    <div class="scenario-header">
-                        <div class="scenario-left">
-                            <div class="scenario-badge">S-TMP-1</div>
-                            <h3 class="scenario-title">Weekend Shift Scheduling</h3>
-                            <div class="scenario-status">
-                                <span class="status-badge status-development">In Development</span>
-                                <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scenario-description">
-                        Registered nurse receives and accepts last-minute shift assignments through mobile notifications with automated compliance verification and quick deployment protocols.
-                    </div>
-                    <div class="scenario-meta">
-                        <div class="scenario-participants">
-                            <span class="participant-chip">⏰ Temporary Worker</span>
-                            <span class="participant-chip">📱 Mobile App</span>
-                        </div>
-                        <div class="scenario-progress">Progress: 30%</div>
-                    </div>
-                </a>
-                
-                <!-- S-TMP-2 - Inactive -->
-                <a href="#" class="scenario-card inactive">
-                    <div class="scenario-header">
-                        <div class="scenario-left">
-                            <div class="scenario-badge">S-TMP-2</div>
-                            <h3 class="scenario-title">Vacation Coverage Specialist</h3>
-                            <div class="scenario-status">
-                                <span class="status-badge status-planning">Planning</span>
-                                <span style="color: #666; font-size: 0.9rem;">Priority: Low</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scenario-description">
-                        Temporary nurse works across multiple healthcare facilities with automated credential sharing, facility-specific orientation tracking, and extended assignment management systems.
-                    </div>
-                    <div class="scenario-meta">
-                        <div class="scenario-participants">
-                            <span class="participant-chip">⏰ Temporary Worker</span>
-                            <span class="participant-chip">📋 Credentials</span>
-                        </div>
-                        <div class="scenario-progress">Progress: 10%</div>
-                    </div>
-                </a>
-            </div>
+        <!-- Info Section -->
+        <div class="info-section">
+            <h2 class="info-title">Choose Your Staffing Model</h2>
+            <p class="info-text">
+                Our Verleih platform offers three distinct models for temporary healthcare staffing. Each model is designed to address specific workforce needs - from urgent short-term coverage to strategic long-term solutions. Select the model that best fits your organisation's requirements.
+            </p>
+        </div>
+        
+        <!-- Category Cards -->
+        <div class="categories-grid">
+            <!-- Temporary Jobs Card -->
+            <a href="mvp-tmp-temporary.html" class="category-card temporary-jobs">
+                <span class="category-icon">📅</span>
+                <h2 class="category-title">Temporary Jobs</h2>
+                <p class="category-description">
+                    Short-term assignments and urgent shift coverage. Perfect for addressing immediate staffing gaps, vacation coverage, and seasonal demand fluctuations in healthcare facilities.
+                </p>
+                <div class="category-meta">
+                    <span class="scenario-count">3 Scenarios</span>
+                    <span class="category-status">Active</span>
+                </div>
+            </a>
+            
+            <!-- Try & Hire Card -->
+            <a href="mvp-tmp-tryhire.html" class="category-card try-hire">
+                <span class="category-icon">🤝</span>
+                <h2 class="category-title">Try & Hire</h2>
+                <p class="category-description">
+                    Risk-free evaluation periods before permanent placement. Allows both organisations and professionals to assess fit through temporary assignments with potential for conversion.
+                </p>
+                <div class="category-meta">
+                    <span class="scenario-count">1 Scenario</span>
+                    <span class="category-status">Planning</span>
+                </div>
+            </a>
+            
+            <!-- Pool (Springer) Card -->
+            <a href="mvp-tmp-pool.html" class="category-card pool">
+                <span class="category-icon">👥</span>
+                <h2 class="category-title">Pool (Springer)</h2>
+                <p class="category-description">
+                    Dedicated facility pools and multi-site professionals. Build reliable networks of pre-qualified healthcare workers who know your systems and can provide consistent coverage.
+                </p>
+                <div class="category-meta">
+                    <span class="scenario-count">3 Scenarios</span>
+                    <span class="category-status">Priority</span>
+                </div>
+            </a>
         </div>
     </div>
 </body>

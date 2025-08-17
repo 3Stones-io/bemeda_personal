@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pool (Springer) - MVP Verleih - Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #ef6c00;
+        }
+        
+        .nav-link.active {
+            background: #ef6c00;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #ef6c00;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Scenario Cards - Full Width */
+        .scenarios-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #ef6c00;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .scenario-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            border-left: 4px solid #ef6c00;
+            position: relative;
+        }
+        
+        .scenario-card:hover {
+            text-decoration: none;
+            color: inherit;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        /* Active/Inactive States */
+        .scenario-card.active {
+            border-left-color: #ef6c00;
+            background: white;
+        }
+        
+        .scenario-card.inactive {
+            background: #f8f9fa;
+            opacity: 0.6;
+            border-left-color: #ccc;
+        }
+        
+        .scenario-card.inactive:hover {
+            opacity: 0.8;
+        }
+        
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-left {
+            flex: 1;
+        }
+        
+        .scenario-badge {
+            background: #ef6c00;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        
+        .scenario-card.inactive .scenario-badge {
+            background: #999;
+        }
+        
+        .scenario-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        
+        .scenario-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active { background: #e8f5e8; color: #2e7d32; }
+        .status-development { background: #fff3e0; color: #ef6c00; }
+        .status-planning { background: #f3e5f5; color: #7b1fa2; }
+        
+        .scenario-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        
+        .scenario-participants {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .participant-chip {
+            background: #fff3e0;
+            color: #ef6c00;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .scenario-progress {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Active Scenario Highlight */
+        .working-indicator {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #4caf50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .scenario-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .scenario-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="mvp-job.html" class="nav-link">MVP-JOB</a>
+                </li>
+                <li class="nav-item">
+                    <a href="mvp-tmp.html" class="nav-link active">MVP-TMP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="header">
+            <a href="mvp-tmp.html" class="back-link">← Back to MVP Verleih</a>
+            <h1>👥 Pool (Springer)</h1>
+            <p>Dedicated Facility Pools & Multi-Site Professional Networks</p>
+        </div>
+        
+        <!-- Scenarios Section -->
+        <div class="scenarios-section">
+            <h2 class="section-title">Pool Scenarios</h2>
+            <div class="scenario-cards">
+                <!-- S-POL-1 - Active/Working Scenario -->
+                <a href="scenario-s-pol-1.html" class="scenario-card active">
+                    <div class="working-indicator">🔄 WORKING</div>
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-POL-1</div>
+                            <h3 class="scenario-title">Hospital Pool Membership</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-active">Active Development</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: High</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Experienced ICU nurse joins preferred hospital's dedicated pool through platform for priority shift access and familiar environment work with enhanced rates. Includes pool membership management, availability tracking, and preference matching.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">👥 Pool Worker</span>
+                            <span class="participant-chip">🏥 Organisation</span>
+                            <span class="participant-chip">📅 Scheduler</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 70%</div>
+                    </div>
+                </a>
+                
+                <!-- S-POL-2 - Inactive -->
+                <a href="#" class="scenario-card inactive">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-POL-2</div>
+                            <h3 class="scenario-title">Multi-Facility Pool Worker</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-development">In Development</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: Medium</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Registered nurse manages multiple hospital relationships through unified platform dashboard with automated scheduling, compliance tracking, and centralized payment management. Works as "Springer" across different facilities.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">👥 Pool Worker</span>
+                            <span class="participant-chip">🏥 Multiple Orgs</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 35%</div>
+                    </div>
+                </a>
+                
+                <!-- S-POL-3 - Inactive -->
+                <a href="#" class="scenario-card inactive">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">S-POL-3</div>
+                            <h3 class="scenario-title">Specialty Pool Expert</h3>
+                            <div class="scenario-status">
+                                <span class="status-badge status-planning">Planning</span>
+                                <span style="color: #666; font-size: 0.9rem;">Priority: Low</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Specialist nurse leverages rare skills for premium placements with dynamic pricing, priority booking, and skills verification across multiple healthcare facilities and departments.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">👥 Pool Worker</span>
+                            <span class="participant-chip">🔬 Specialist</span>
+                        </div>
+                        <div class="scenario-progress">Progress: 15%</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
