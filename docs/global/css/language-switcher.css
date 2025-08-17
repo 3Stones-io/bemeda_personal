@@ -1,76 +1,55 @@
-/* Legacy Language Switcher Styles - Disabled */
-.language-switcher.legacy {
+/* Global Language Switcher Styles */
+.language-switcher-container {
     position: absolute;
-    top: 50%;
+    top: 20px;
     right: 20px;
-    transform: translateY(-50%);
+    z-index: 1001;
+}
+
+.language-switcher {
     display: flex;
-    gap: 4px;
-    background: rgba(0,0,0,0.05);
-    padding: 4px;
-    border-radius: 6px;
-    z-index: 50;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
 .lang-btn {
+    padding: 8px 16px;
+    border: none;
     background: white;
-    border: 1px solid #ddd;
     color: #666;
-    padding: 4px 12px;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
     transition: all 0.2s;
-    min-width: 40px;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .lang-btn:hover {
-    background: #f0f0f0;
-    color: #333;
-    border-color: #999;
+    background: #f8f9fa;
+    color: #0066cc;
 }
 
 .lang-btn.active {
     background: #0066cc;
     color: white;
-    border-color: #0066cc;
 }
 
-/* Adjust for different nav backgrounds */
-.nav-link.active ~ .language-switcher .lang-btn {
-    border-color: rgba(255,255,255,0.3);
-}
-
-/* Position adjustment for navigation */
-.top-nav {
+/* Container positioning for language switcher */
+.container {
     position: relative;
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-    .language-switcher {
+    .language-switcher-container {
         position: static;
-        transform: none;
-        margin: 10px auto;
-        justify-content: center;
-        background: rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        text-align: center;
     }
     
-    .lang-btn {
-        color: #666;
-        border-color: #ddd;
-    }
-    
-    .lang-btn:hover {
-        background: #f0f0f0;
-        color: #333;
-        border-color: #999;
-    }
-    
-    .lang-btn.active {
-        background: #0066cc;
-        color: white;
-        border-color: #0066cc;
+    .language-switcher {
+        display: inline-flex;
+        margin: 0 auto;
     }
 }
