@@ -1,3 +1,2 @@
-::1 - - [17/Aug/2025 21:31:18] "GET /job/s1/index.html HTTP/1.1" 200 -
-::1 - - [17/Aug/2025 21:31:37] "GET /tmp/temporary/s1/index.html HTTP/1.1" 200 -
-::1 - - [17/Aug/2025 21:31:40] "GET /table/index.html HTTP/1.1" 200 -
+::1 - - [17/Aug/2025 21:43:40] "GET /index.html HTTP/1.1" 200 -
+::1 - - [17/Aug/2025 21:43:43] "GET /table/index.html HTTP/1.1" 200 -
