@@ -145,9 +145,9 @@
         }
         
         .accordion-header {
-            background: #fafafa;
-            padding: 20px 24px;
+            padding: 24px;
             cursor: pointer;
+            background: #fafafa;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -163,9 +163,9 @@
         }
         
         .accordion-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
+            color: #1a1a1a;
+            font-size: 1.4rem;
+            margin: 0;
         }
         
         .accordion-icon {
@@ -185,97 +185,90 @@
         }
         
         .accordion-content.active {
-            max-height: 600px;
+            max-height: 2000px;
         }
         
         .accordion-inner {
-            padding: 24px;
+            padding: 32px 24px;
         }
         
-        /* Persona Cards */
-        .persona-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
+        /* MVP Subsections */
+        .mvp-subsection {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #eee;
         }
         
-        .persona-card {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: inherit;
+        .mvp-subsection:last-child {
+            border-bottom: none;
         }
         
-        .persona-card:hover {
-            background: #e8f0fe;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .persona-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-        }
-        
-        .persona-title {
+        .subsection-title {
+            color: #0066cc;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
             font-weight: 600;
-            margin-bottom: 8px;
-            color: #333;
         }
         
-        .persona-description {
-            font-size: 0.9rem;
-            color: #666;
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
         }
         
-        /* MVP Section */
-        .mvp-content {
+        .scenario-item-mini {
             background: #f8f9fa;
             border-radius: 8px;
-            padding: 20px;
-        }
-        
-        .mvp-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-top: 16px;
-        }
-        
-        .mvp-feature {
             padding: 12px;
-            background: white;
-            border-radius: 6px;
-            border-left: 3px solid #0066cc;
-            text-decoration: none;
-            color: inherit;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .scenario-badge {
+            background: #0066cc;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        
+        .scenario-title-mini {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        
+        .scenario-persona {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .implementation-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .impl-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.2s;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
         }
         
-        .mvp-feature:hover {
-            background: #f0f0f0;
-            transform: translateX(4px);
+        .impl-status {
+            font-size: 1rem;
+            min-width: 24px;
         }
         
-        .feature-number {
-            background: #0066cc;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            min-width: 40px;
-            text-align: center;
-        }
+        .impl-ready { color: #2e7d32; }
+        .impl-progress { color: #ef6c00; }
+        .impl-pending { color: #666; }
         
-        /* Responsive */
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -285,7 +278,7 @@
                 grid-template-columns: 1fr;
             }
             
-            .persona-grid {
+            .scenario-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -335,7 +328,7 @@
             
             <div class="card">
                 <h3>Mission</h3>
-                <p>We empower Swiss healthcare institutions to find qualified medical professionals efficiently and compliantly, while providing healthcare workers with access to meaningful career opportunities through our specialized dual-model platform.</p>
+                <p>We transform healthcare staffing through innovative technology, providing organizations with instant access to qualified medical professionals while empowering healthcare workers with flexible career opportunities.</p>
             </div>
             
             <div class="card">
@@ -348,94 +341,236 @@
             </div>
         </div>
         
-        <!-- Accordion Section -->
+        <!-- MVP Accordion Section -->
         <div class="accordion">
-            <!-- Personas Section -->
+            <!-- MVP Vermittlung Section -->
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <h2 class="accordion-title">Personas & Scenarios</h2>
+                    <h2 class="accordion-title">📋 MVP Vermittlung (Permanent Placement)</h2>
                     <span class="accordion-icon">▼</span>
                 </div>
                 <div class="accordion-content">
                     <div class="accordion-inner">
-                        <div class="persona-grid">
-                            <a href="personas/organisation.html" class="persona-card">
-                                <div class="persona-icon">🏥</div>
-                                <div class="persona-title">Organisation</div>
-                                <div class="persona-description">Healthcare institutions seeking qualified medical professionals</div>
-                            </a>
-                            
-                            <a href="personas/temporary-worker.html" class="persona-card">
-                                <div class="persona-icon">⏰</div>
-                                <div class="persona-title">Temporary Worker</div>
-                                <div class="persona-description">Medical professionals seeking flexible short-term assignments</div>
-                            </a>
-                            
-                            <a href="personas/jobseeker.html" class="persona-card">
-                                <div class="persona-icon">🔍</div>
-                                <div class="persona-title">JobSeeker</div>
-                                <div class="persona-description">Healthcare professionals looking for permanent positions</div>
-                            </a>
-                            
-                            <a href="personas/pool-worker.html" class="persona-card">
-                                <div class="persona-icon">👥</div>
-                                <div class="persona-title">Pool Worker</div>
-                                <div class="persona-description">Professionals available for recurring assignments</div>
-                            </a>
-                            
-                            <a href="personas/try-hire-worker.html" class="persona-card">
-                                <div class="persona-icon">🎯</div>
-                                <div class="persona-title">Try & Hire Worker</div>
-                                <div class="persona-description">Candidates open to trial periods before permanent placement</div>
-                            </a>
+                        <!-- Personas & Scenarios -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">👤 Personas & Scenarios</h3>
+                            <div class="scenario-grid">
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-JOB-1</div>
+                                    <div class="scenario-title-mini">New Graduate Job Search</div>
+                                    <div class="scenario-persona">JobSeeker</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-JOB-2</div>
+                                    <div class="scenario-title-mini">Experienced Professional Career Change</div>
+                                    <div class="scenario-persona">JobSeeker</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-JOB-3</div>
+                                    <div class="scenario-title-mini">International Healthcare Professional</div>
+                                    <div class="scenario-persona">JobSeeker</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-ORG-1</div>
+                                    <div class="scenario-title-mini">Cold Call to Candidate Placement</div>
+                                    <div class="scenario-persona">Organisation</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-TMP-3</div>
+                                    <div class="scenario-title-mini">Career Transition Support</div>
+                                    <div class="scenario-persona">Temporary Worker</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Technical Implementation -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">⚙️ Technical Implementation</h3>
+                            <div class="implementation-items">
+                                <div class="impl-item">
+                                    <span class="impl-status impl-ready">✅</span>
+                                    User Registration & Profile Management
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-ready">✅</span>
+                                    Job Posting & Search System
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-ready">✅</span>
+                                    Application Management Workflow
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-progress">🔄</span>
+                                    AI-Powered Matching Algorithm
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Document Verification System
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- UI Implementation -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">🎨 UI Implementation</h3>
+                            <div class="implementation-items">
+                                <div class="impl-item">
+                                    <span class="impl-status impl-ready">✅</span>
+                                    JobSeeker Profile Creation Flow
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-progress">🔄</span>
+                                    Organisation Dashboard
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Advanced Search Filters
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Candidate Comparison Tools
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Related Issues -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">🔗 Related Issues</h3>
+                            <div class="implementation-items">
+                                <div class="impl-item">
+                                    <span class="impl-status impl-progress">🔄</span>
+                                    FMH Credential Verification Integration
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Multi-language Support (DE/FR/IT)
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    GDPR Compliance Framework
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- MVP Section -->
+
+            <!-- MVP Verleih Section -->
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <h2 class="accordion-title">MVP Features <a href="mvp-status.html" style="font-size: 0.8rem; margin-left: 10px; color: #0066cc;">(View Status)</a></h2>
+                    <h2 class="accordion-title">⏰ MVP Verleih (Temporary Staffing)</h2>
                     <span class="accordion-icon">▼</span>
                 </div>
                 <div class="accordion-content">
                     <div class="accordion-inner">
-                        <div class="mvp-content">
-                            <h3>Minimum Viable Product Features</h3>
-                            <div class="mvp-features">
-                                <a href="features/f01-user-registration.html" class="mvp-feature">
-                                    <div class="feature-number">F01</div>
-                                    <div>User Registration & Profiles</div>
-                                </a>
-                                <a href="features/f02-job-posting.html" class="mvp-feature">
-                                    <div class="feature-number">F02</div>
-                                    <div>Job Posting & Search</div>
-                                </a>
-                                <a href="features/f03-application-management.html" class="mvp-feature">
-                                    <div class="feature-number">F03</div>
-                                    <div>Application Management</div>
-                                </a>
-                                <a href="features/f04-document-verification.html" class="mvp-feature">
-                                    <div class="feature-number">F04</div>
-                                    <div>Document Verification</div>
-                                </a>
-                                <a href="features/f05-matching-algorithm.html" class="mvp-feature">
-                                    <div class="feature-number">F05</div>
-                                    <div>Basic Matching Algorithm</div>
-                                </a>
-                                <a href="features/f06-communication-system.html" class="mvp-feature">
-                                    <div class="feature-number">F06</div>
-                                    <div>Communication System</div>
-                                </a>
-                                <a href="features/f07-contract-generation.html" class="mvp-feature">
-                                    <div class="feature-number">F07</div>
-                                    <div>Contract Generation</div>
-                                </a>
-                                <a href="features/f08-compliance-tracking.html" class="mvp-feature">
-                                    <div class="feature-number">F08</div>
-                                    <div>Compliance Tracking</div>
-                                </a>
+                        <!-- Personas & Scenarios -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">👤 Personas & Scenarios</h3>
+                            <div class="scenario-grid">
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-ORG-2</div>
+                                    <div class="scenario-title-mini">Urgent Temporary Staffing Need</div>
+                                    <div class="scenario-persona">Organisation</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-ORG-3</div>
+                                    <div class="scenario-title-mini">Try & Hire Program</div>
+                                    <div class="scenario-persona">Organisation</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-POL-1</div>
+                                    <div class="scenario-title-mini">Hospital Pool Membership</div>
+                                    <div class="scenario-persona">Pool Worker</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-POL-2</div>
+                                    <div class="scenario-title-mini">Multi-Facility Pool Worker</div>
+                                    <div class="scenario-persona">Pool Worker</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-POL-3</div>
+                                    <div class="scenario-title-mini">Specialty Pool Expert</div>
+                                    <div class="scenario-persona">Pool Worker</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-TMP-1</div>
+                                    <div class="scenario-title-mini">Weekend Shift Scheduling</div>
+                                    <div class="scenario-persona">Temporary Worker</div>
+                                </div>
+                                <div class="scenario-item-mini">
+                                    <div class="scenario-badge">S-TMP-2</div>
+                                    <div class="scenario-title-mini">Vacation Coverage Specialist</div>
+                                    <div class="scenario-persona">Temporary Worker</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Technical Implementation -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">⚙️ Technical Implementation</h3>
+                            <div class="implementation-items">
+                                <div class="impl-item">
+                                    <span class="impl-status impl-ready">✅</span>
+                                    Pool Worker Registration System
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-progress">🔄</span>
+                                    Shift Scheduling & Calendar Integration
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-progress">🔄</span>
+                                    Real-time Availability Tracking
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Automated Compliance Verification
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Pool Management Dashboard
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- UI Implementation -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">🎨 UI Implementation</h3>
+                            <div class="implementation-items">
+                                <div class="impl-item">
+                                    <span class="impl-status impl-progress">🔄</span>
+                                    Mobile-First Shift Booking Interface
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Pool Worker Availability Calendar
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Emergency Staffing Request Flow
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Multi-facility Dashboard
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Related Issues -->
+                        <div class="mvp-subsection">
+                            <h3 class="subsection-title">🔗 Related Issues</h3>
+                            <div class="implementation-items">
+                                <div class="impl-item">
+                                    <span class="impl-status impl-progress">🔄</span>
+                                    Dynamic Pricing Algorithm
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Shift Conflict Resolution
+                                </div>
+                                <div class="impl-item">
+                                    <span class="impl-status impl-pending">⏳</span>
+                                    Cross-facility Credential Sharing
+                                </div>
                             </div>
                         </div>
                     </div>
