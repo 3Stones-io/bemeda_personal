@@ -1,5 +1,5 @@
-/* Language Switcher Styles */
-.language-switcher {
+/* Legacy Language Switcher Styles - Disabled */
+.language-switcher.legacy {
     position: absolute;
     top: 50%;
     right: 20px;
