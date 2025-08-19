@@ -109,6 +109,124 @@
             color: #0066cc;
         }
         
+        /* Navigation Cards Styles */
+        .structure-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 40px;
+            margin-bottom: 32px;
+        }
+        
+        .structure-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .section-description {
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        /* UID System Card */
+        .uid-system {
+            border-left: 4px solid #0066cc;
+        }
+        
+        .uid-tree {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+        
+        .uid-tree a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .uid-tree a:hover {
+            text-decoration: underline;
+        }
+        
+        .uid-code {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        /* Global System Card */
+        .global-system {
+            border-left: 4px solid #ef6c00;
+        }
+        
+        .global-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .global-category {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid #ef6c00;
+        }
+        
+        .global-category h4 {
+            color: #ef6c00;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .global-category ul {
+            list-style: none;
+            font-size: 0.9rem;
+        }
+        
+        .global-category li {
+            margin-bottom: 4px;
+        }
+        
+        .global-category a {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .global-category a:hover {
+            color: #ef6c00;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .structure-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         .page-header {
             background: white;
             border-radius: 12px;
@@ -310,6 +428,18 @@
             text-decoration: underline;
         }
         
+        .view-link.disabled {
+            color: #999;
+            text-decoration: none;
+            cursor: not-allowed;
+            font-style: italic;
+        }
+        
+        .view-link.disabled:hover {
+            text-decoration: none;
+            color: #999;
+        }
+        
         /* Language Switcher Container */
         .language-switcher-container {
             background: #f8f9fa;
@@ -385,29 +515,33 @@
 </head>
 <body>
     <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
         <!-- Top Navigation -->
         <nav class="top-nav">
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link">Index</a>
+                    <a href="index.html" class="nav-link" data-i18n="nav.index">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="job/index.html" class="nav-link">JOB</a>
+                    <a href="site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="tmp/index.html" class="nav-link">TMP</a>
+                    <a href="site/sitemap/tmp/index.html" class="nav-link" data-i18n="nav.tmp">TMP</a>
                     <div class="dropdown-content">
-                        <a href="tmp/temporary/index.html">TMP-Temporary</a>
-                        <a href="tmp/tryhire/index.html">TMP & Hire</a>
-                        <a href="tmp/pool/index.html">TMP-Pool</a>
+                        <a href="site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="table/index.html" class="nav-link active">Table</a>
-                    <div class="dropdown-content">
-                        <a href="team/index.html">Team Dashboard</a>
-                        <a href="project-dashboard.html">Project Dashboard</a>
-                    </div>
+                <li class="nav-item">
+                    <a href="site/sitemap/table/index.html" class="nav-link active" data-i18n="nav.table-view">Table View</a>
                 </li>
             </ul>
         </nav>
@@ -415,8 +549,9 @@
         <div class="page-header">
             <h1 class="page-title">Scenarios Table View</h1>
             <p class="page-description">
-                Comprehensive overview of all scenarios organized by MVP and category, showing status, 
-                participants, and progress for the Bemeda healthcare staffing platform.
+                Comprehensive overview of all scenarios organized by MVP and category. Active scenarios show implemented 
+                features with working navigation, while development and planning scenarios are currently being built.
+                Updated January 2025 to reflect current implementation status.
             </p>
         </div>
         
@@ -489,12 +624,12 @@
                         </td>
                         <td><span class="status-badge status-active">Active</span></td>
                         <td>
-                            <div>75%</div>
+                            <div>85%</div>
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%"></div>
+                                <div class="progress-fill" style="width: 85%"></div>
                             </div>
                         </td>
-                        <td><a href="job/s1/index.html" class="view-link">View →</a></td>
+                        <td><a href="site/sitemap/job/s1/index.html" class="view-link">View →</a></td>
                     </tr>
                     <tr data-mvp="vermittlung" data-category="permanent" data-status="planning">
                         <td><span class="scenario-id id-job">S-JOB-1</span></td>
@@ -513,12 +648,12 @@
                         </td>
                         <td><span class="status-badge status-planning">Planning</span></td>
                         <td>
-                            <div>25%</div>
+                            <div>15%</div>
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 25%"></div>
+                                <div class="progress-fill" style="width: 15%"></div>
                             </div>
                         </td>
-                        <td><a href="#" class="view-link">View →</a></td>
+                        <td><span class="view-link disabled">Coming Soon</span></td>
                     </tr>
                     <tr data-mvp="vermittlung" data-category="permanent" data-status="development">
                         <td><span class="scenario-id id-job">S-JOB-2</span></td>
@@ -635,12 +770,12 @@
                         </td>
                         <td><span class="status-badge status-active">Active</span></td>
                         <td>
-                            <div>70%</div>
+                            <div>60%</div>
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 70%"></div>
+                                <div class="progress-fill" style="width: 60%"></div>
                             </div>
                         </td>
-                        <td><a href="tmp/pool/s1/index.html" class="view-link">View →</a></td>
+                        <td><a href="site/sitemap/tmp/pool/s1/index.html" class="view-link">View →</a></td>
                     </tr>
                     <tr data-mvp="verleih" data-category="pool" data-status="development">
                         <td><span class="scenario-id id-pol">S-POL-2</span></td>
@@ -659,12 +794,12 @@
                         </td>
                         <td><span class="status-badge status-development">In Dev</span></td>
                         <td>
-                            <div>35%</div>
+                            <div>25%</div>
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: 35%"></div>
+                                <div class="progress-fill" style="width: 25%"></div>
                             </div>
                         </td>
-                        <td><a href="#" class="view-link">View →</a></td>
+                        <td><span class="view-link disabled">In Development</span></td>
                     </tr>
                     <tr data-mvp="verleih" data-category="pool" data-status="planning">
                         <td><span class="scenario-id id-pol">S-POL-3</span></td>
@@ -794,6 +929,110 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Navigation Cards -->
+        <div class="structure-grid">
+            <!-- UID System -->
+            <div class="structure-section uid-system">
+                <div class="section-header">
+                    <span class="section-icon">🎯</span>
+                    <h2 class="section-title">UID-Based Workflows</h2>
+                </div>
+                <div class="section-description">
+                    Scenarios, players, and process steps with systematic UIDs (j_s1_p1_s1)
+                </div>
+                
+                <div class="uid-tree">
+                    📁 <a href="index.html">docs/</a> <span class="uid-code">(i)</span><br>
+                    ├── 📁 <a href="site/sitemap/job/index.html">job/</a> <span class="uid-code">(j)</span><br>
+                    │   └── 📁 <a href="site/sitemap/job/s1/index.html">s1/</a> <span class="uid-code">(j_s1)</span> Cold Call → Placement<br>
+                    │       ├── 📁 <a href="site/sitemap/job/s1/p1/">p1/</a> <span class="uid-code">(j_s1_p1)</span> Organisation<br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p1/s1.html">s1.html</a> <span class="uid-code">(j_s1_p1_s1)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p1/s2.html">s2.html</a> <span class="uid-code">(j_s1_p1_s2)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p1/s3.html">s3.html</a> <span class="uid-code">(j_s1_p1_s3)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p1/s4.html">s4.html</a> <span class="uid-code">(j_s1_p1_s4)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p1/s5.html">s5.html</a> <span class="uid-code">(j_s1_p1_s5)</span><br>
+                    │       │   └── 📄 <a href="site/sitemap/job/s1/p1/s6.html">s6.html</a> <span class="uid-code">(j_s1_p1_s6)</span><br>
+                    │       ├── 📁 <a href="site/sitemap/job/s1/p2/">p2/</a> <span class="uid-code">(j_s1_p2)</span> JobSeeker<br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p2/s1.html">s1.html</a> <span class="uid-code">(j_s1_p2_s1)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p2/s2.html">s2.html</a> <span class="uid-code">(j_s1_p2_s2)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p2/s3.html">s3.html</a> <span class="uid-code">(j_s1_p2_s3)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p2/s4.html">s4.html</a> <span class="uid-code">(j_s1_p2_s4)</span><br>
+                    │       │   ├── 📄 <a href="site/sitemap/job/s1/p2/s5.html">s5.html</a> <span class="uid-code">(j_s1_p2_s5)</span><br>
+                    │       │   └── 📄 <a href="site/sitemap/job/s1/p2/s6.html">s6.html</a> <span class="uid-code">(j_s1_p2_s6)</span><br>
+                    │       └── 📁 <a href="site/sitemap/job/s1/p3/">p3/</a> <span class="uid-code">(j_s1_p3)</span> Sales Team<br>
+                    │           ├── 📄 <a href="site/sitemap/job/s1/p3/s1.html">s1.html</a> <span class="uid-code">(j_s1_p3_s1)</span><br>
+                    │           ├── 📄 <a href="site/sitemap/job/s1/p3/s2.html">s2.html</a> <span class="uid-code">(j_s1_p3_s2)</span><br>
+                    │           ├── 📄 <a href="site/sitemap/job/s1/p3/s3.html">s3.html</a> <span class="uid-code">(j_s1_p3_s3)</span><br>
+                    │           ├── 📄 <a href="site/sitemap/job/s1/p3/s4.html">s4.html</a> <span class="uid-code">(j_s1_p3_s4)</span><br>
+                    │           ├── 📄 <a href="site/sitemap/job/s1/p3/s5.html">s5.html</a> <span class="uid-code">(j_s1_p3_s5)</span><br>
+                    │           └── 📄 <a href="site/sitemap/job/s1/p3/s6.html">s6.html</a> <span class="uid-code">(j_s1_p3_s6)</span><br>
+                    ├── 📁 <a href="site/sitemap/tmp/index.html">tmp/</a> <span class="uid-code">(t)</span><br>
+                    │   ├── 📁 <a href="site/sitemap/tmp/temporary/index.html">temporary/</a> <span class="uid-code">(t_tt)</span><br>
+                    │   ├── 📁 <a href="site/sitemap/tmp/tryhire/index.html">tryhire/</a> <span class="uid-code">(t_th)</span><br>
+                    │   └── 📁 <a href="site/sitemap/tmp/pool/index.html">pool/</a> <span class="uid-code">(t_tp)</span><br>
+                    └── 📁 <a href="site/sitemap/table/index.html">table/</a> <span class="uid-code">(table)</span> This page
+                </div>
+            </div>
+            
+            <!-- Global System -->
+            <div class="structure-section global-system">
+                <div class="section-header">
+                    <span class="section-icon">🌐</span>
+                    <h2 class="section-title">Global Shared Resources</h2>
+                </div>
+                <div class="section-description">
+                    Cross-scenario users, reusable features, and platform-wide resources
+                </div>
+                
+                <div class="global-grid">
+                    <div class="global-category">
+                        <h4>👥 Users</h4>
+                        <ul>
+                            <li><a href="site/assets/users/dr-klaus-weber.html">Dr. Klaus Weber</a></li>
+                            <li><a href="site/assets/users/maria-rodriguez.html">Maria Rodriguez</a></li>
+                            <li><a href="site/assets/users/candidate-maria.html">Candidate Maria</a></li>
+                            <li><a href="site/assets/users/nurse-andreas.html">Nurse Andreas</a></li>
+                            <li><a href="site/assets/users/specialist-sarah.html">Specialist Sarah</a></li>
+                            <li><a href="site/assets/users/david-chen.html">David Chen</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="global-category">
+                        <h4>⚙️ Features</h4>
+                        <ul>
+                            <li><a href="site/assets/features/f01-user-registration.html">User Registration</a></li>
+                            <li><a href="site/assets/features/f04-document-verification.html">Document Verification</a></li>
+                            <li><a href="site/assets/features/f05-basic-matching-algorithm.html">Matching Algorithm</a></li>
+                            <li><a href="site/assets/features/f08-compliance-tracking.html">Compliance Tracking</a></li>
+                            <li><a href="site/assets/features/f09-mobile-notifications.html">Mobile Notifications</a></li>
+                            <li><a href="site/assets/features/f11-crm-integration.html">CRM Integration</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="global-category">
+                        <h4>🎨 Global Assets</h4>
+                        <ul>
+                            <li><a href="site/assets/global/css/">CSS Styles</a></li>
+                            <li><a href="site/assets/global/js/">JavaScript</a></li>
+                            <li><a href="site/assets/templates/">Templates</a></li>
+                            <li><a href="site/assets/global/legal/">Legal Documents</a></li>
+                            <li><a href="site/assets/ui-elements/">UI Elements</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="global-category">
+                        <h4>🌍 Translations</h4>
+                        <ul>
+                            <li><a href="site/assets/translations/de/index.html">German Main Site</a></li>
+                            <li><a href="site/assets/translations/de/job/s1/index.html">German Job S1</a></li>
+                            <li><a href="site/assets/translations/de/tmp/temporary/s1/index.html">German TMP S1</a></li>
+                            <li><a href="site/assets/translations/de/users/">German User Profiles</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     

@@ -230,9 +230,13 @@ class BemedaNavigation {
     render(containerId) {
         const container = document.getElementById(containerId);
         if (container) {
+            // Check if language switcher already exists on the page
+            const existingLanguageSwitcher = document.querySelector('.language-switcher-container');
+            const includeLanguageSwitcher = !existingLanguageSwitcher;
+            
             container.innerHTML = `
                 <div class="navigation-wrapper">
-                    ${this.getLanguageSwitcherHTML()}
+                    ${includeLanguageSwitcher ? this.getLanguageSwitcherHTML() : ''}
                     ${this.getNavigationHTML()}
                 </div>
             `;

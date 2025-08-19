@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Step 1 - Organisation - Scenario 1 - Bemeda Platform</title>
+    <title>Step 6 - Organisation - Scenario 1 - Bemeda Platform</title>
     <link rel="stylesheet" href="../../../../assets/global/css/language-switcher.css">
     <style>
         * {
@@ -70,6 +70,7 @@
             border-right: none;
         }
         
+        
         /* Dropdown Styles */
         .dropdown {
             position: relative;
@@ -85,6 +86,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border-radius: 0 0 8px 8px;
             z-index: 1000;
+            min-width: 200px;
         }
         
         .dropdown:hover .dropdown-content {
@@ -98,6 +100,7 @@
             color: #666;
             border-bottom: 1px solid #eee;
             transition: background 0.2s;
+            white-space: nowrap;
         }
         
         .dropdown-content a:last-child {
@@ -108,7 +111,6 @@
             background: #f8f9fa;
             color: #0066cc;
         }
-        
         /* Step Header */
         .step-header {
             background: white;
@@ -309,7 +311,7 @@
         .timeline-progress {
             background: #4caf50;
             height: 100%;
-            width: 90%;
+            width: 0%;
             transition: width 0.3s ease;
         }
         
@@ -361,7 +363,7 @@
             padding: 16px;
             background: #f8f9fa;
             border-radius: 8px;
-            border-left: 4px solid #4caf50;
+            border-left: 4px solid #ff5252;
         }
         
         .issue-header {
@@ -377,7 +379,7 @@
         }
         
         .issue-priority {
-            background: #4caf50;
+            background: #ff5252;
             color: white;
             padding: 2px 8px;
             border-radius: 4px;
@@ -449,13 +451,13 @@
                 <span>Organisation Process</span>
             </div>
             <div class="step-title-section">
-                <span class="step-badge">Step 1</span>
-                <h1 class="step-name">Organisation - Step 1</h1>
+                <span class="step-badge">Step 6</span>
+                <h1 class="step-name">Organisation - Step 6</h1>
             </div>
             <div class="step-meta">
                 <div class="meta-item">
                     <span class="meta-label">Duration:</span>
-                    <span>5-10 minutes</span>
+                    <span>15-30 minutes</span>
                 </div>
                 <div class="meta-item">
                     <span class="meta-label">Status:</span>
@@ -463,16 +465,16 @@
                 </div>
                 <div class="meta-item">
                     <span class="meta-label">Owner:</span>
-                    <span>Maria Rodriguez</span>
+                    <span>Sales Team</span>
                 </div>
                 <div class="meta-item">
-                    <span class="meta-label">Due Date:</span>
-                    <span>Completed</span>
+                    <span class="meta-label">Completion:</span>
+                    <span>85%</span>
                 </div>
             </div>
             <p style="color: #666; font-size: 1.1rem; margin-top: 16px;">
-                Healthcare organisation receives initial contact from Bemeda sales representative introducing 
-                the platform's staffing solutions and gauging interest for further discussion.
+                Sales representative engages with the organisation to understand their specific staffing challenges, 
+                requirements, and pain points while presenting how Bemeda platform can address their needs.
             </p>
         </div>
         
@@ -488,30 +490,30 @@
                     <div class="responsibility-item">
                         <span class="resp-icon">📞</span>
                         <div>
-                            <div class="resp-person">Maria Rodriguez (Sales Rep)</div>
+                            <div class="resp-person">Sales Representative</div>
                             <div class="resp-description">
-                                Make initial contact, introduce Bemeda platform, assess organisation's 
-                                staffing challenges, and schedule follow-up meeting
+                                Lead the conversation, identify pain points, present platform benefits, 
+                                and document staffing requirements
                             </div>
                         </div>
                     </div>
                     <div class="responsibility-item">
                         <span class="resp-icon">🏥</span>
                         <div>
-                            <div class="resp-person">Dr. Klaus Weber (HR Director)</div>
+                            <div class="resp-person">HR Manager (Organisation)</div>
                             <div class="resp-description">
-                                Listen to presentation, evaluate potential value, share current 
-                                staffing pain points, and decide on next steps
+                                Provide staffing challenges, budget constraints, compliance requirements, 
+                                and specific role needs
                             </div>
                         </div>
                     </div>
                     <div class="responsibility-item">
                         <span class="resp-icon">💻</span>
                         <div>
-                            <div class="resp-person">CRM System</div>
+                            <div class="resp-person">Platform System</div>
                             <div class="resp-description">
-                                Log call details, track lead progression, schedule follow-up reminders, 
-                                and update opportunity status
+                                Support demo capabilities, real-time matching preview, and automated 
+                                documentation of requirements
                             </div>
                         </div>
                     </div>
@@ -526,20 +528,20 @@
                 </div>
                 <div class="dependencies-list">
                     <div class="dependency-item">
-                        <span class="dep-type">REQUIRED</span>
-                        <span>Lead generation system with hospital contact database</span>
+                        <span class="dep-type">BEFORE</span>
+                        <span>Step 1: Initial Cold Call completed successfully</span>
                     </div>
                     <div class="dependency-item">
                         <span class="dep-type">REQUIRED</span>
-                        <span>CRM system for call logging and follow-up tracking</span>
+                        <span>CRM system with client profile access</span>
                     </div>
                     <div class="dependency-item">
                         <span class="dep-type">REQUIRED</span>
-                        <span>Sales script and platform overview materials</span>
+                        <span>Platform demo environment available</span>
                     </div>
                     <div class="dependency-item">
                         <span class="dep-type">AFTER</span>
-                        <span>Step 2: Schedule needs assessment meeting if interested</span>
+                        <span>Step 3: Agreement to publish job posting</span>
                     </div>
                 </div>
             </div>
@@ -555,25 +557,25 @@
                 <div class="tech-item">
                     <div class="tech-category">CRM Integration</div>
                     <div class="tech-details">
-                        Salesforce API, lead scoring algorithms, automated follow-up scheduling
+                        Real-time data sync, opportunity tracking, automated follow-up scheduling
                     </div>
                 </div>
                 <div class="tech-item">
-                    <div class="tech-category">Communication Tools</div>
+                    <div class="tech-category">Demo Platform</div>
                     <div class="tech-details">
-                        VoIP system, call recording, automated dialing, call analytics
+                        Sandbox environment, sample data, role-based access simulation
                     </div>
                 </div>
                 <div class="tech-item">
-                    <div class="tech-category">Data Sources</div>
+                    <div class="tech-category">Documentation Tools</div>
                     <div class="tech-details">
-                        Hospital directory database, contact validation, compliance screening
+                        Requirements capture forms, compliance checklists, pricing calculators
                     </div>
                 </div>
                 <div class="tech-item">
-                    <div class="tech-category">Analytics</div>
+                    <div class="tech-category">Communication</div>
                     <div class="tech-details">
-                        Call success rates, conversion tracking, sales pipeline metrics
+                        Video conferencing integration, screen sharing, chat support
                     </div>
                 </div>
             </div>
@@ -586,20 +588,20 @@
                 <h2 class="section-title">Timeline</h2>
             </div>
             <div class="timeline-bar">
-                <div class="timeline-progress"></div>
+                <div class="timeline-progress" style="width: 85%"></div>
             </div>
             <div class="timeline-dates">
                 <div>
                     <strong>Start Date:</strong><br>
-                    January 8, 2024
-                </div>
-                <div>
-                    <strong>Completion Date:</strong><br>
                     January 15, 2024
                 </div>
                 <div>
-                    <strong>Status:</strong><br>
-                    ✅ Completed
+                    <strong>Target Date:</strong><br>
+                    February 28, 2024
+                </div>
+                <div>
+                    <strong>Current Status:</strong><br>
+                    85% Complete
                 </div>
             </div>
         </div>
@@ -614,17 +616,17 @@
             <div class="issues-list">
                 <div class="issue-item">
                     <div class="issue-header">
-                        <span class="issue-title">Cold call script needs A/B testing</span>
-                        <span class="issue-priority">Low</span>
+                        <span class="issue-title">Demo environment performance issues</span>
+                        <span class="issue-priority">High</span>
                     </div>
                     <div class="issue-description" style="color: #666; font-size: 0.9rem; margin-bottom: 8px;">
-                        Current conversion rate from cold calls is 12%. Industry benchmark suggests we could 
-                        achieve 18-20% with optimized scripts. Need to test different opening approaches.
+                        Platform demo is slow when demonstrating real-time matching with large datasets. 
+                        Need to optimize query performance for sales demonstrations.
                     </div>
                     <div class="issue-meta" style="display: flex; gap: 16px; font-size: 0.8rem; color: #999;">
-                        <span>Created: 1 week ago</span>
-                        <span>Assigned: Maria Rodriguez</span>
-                        <span>Status: Completed</span>
+                        <span>Created: 3 days ago</span>
+                        <span>Assigned: Tech Team</span>
+                        <span>Status: In Progress</span>
                     </div>
                 </div>
             </div>
@@ -634,22 +636,11 @@
                 
                 <div class="comment-item">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                        <span style="font-weight: 500; color: #0066cc;">Maria Rodriguez</span>
-                        <span style="color: #999; font-size: 0.8rem;">3 days ago</span>
+                        <span style="font-weight: 500; color: #0066cc;">Mark Thompson</span>
+                        <span style="color: #999; font-size: 0.8rem;">2 hours ago</span>
                     </div>
                     <div style="font-size: 0.9rem;">
-                        Tested three different opening scripts. Version C (problem-focused approach) achieved 
-                        19% conversion rate. Updating training materials.
-                    </div>
-                </div>
-                
-                <div class="comment-item">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                        <span style="font-weight: 500; color: #0066cc;">David Chen</span>
-                        <span style="color: #999; font-size: 0.8rem;">1 week ago</span>
-                    </div>
-                    <div style="font-size: 0.9rem;">
-                        CRM integration working well. All calls are being logged automatically with sentiment analysis.
+                        Implemented caching for demo data. Performance improved by 60%. Testing with sales team tomorrow.
                     </div>
                 </div>
             </div>
