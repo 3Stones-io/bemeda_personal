@@ -198,6 +198,20 @@
             border-left: 3px solid #ef6c00;
         }
         
+        .process-step.clickable {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .process-step.clickable:hover {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
         .step-number {
             background: #ef6c00;
             color: white;
@@ -439,21 +453,26 @@
                     <a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../../../job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
+                    <a href="/site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="../../index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
+                    <a href="/site/sitemap/tmp/index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
                     <div class="dropdown-content">
-                        <a href="../../temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
-                        <a href="../../tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
-                        <a href="../index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                        <a href="/site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="/site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="/site/sitemap/tmp/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/table/index.html" class="nav-link">Table</a>
+                </li>
                 <li class="nav-item dropdown">
-                    <a href="../../../table/index.html" class="nav-link" data-i18n="nav.table-view">Table</a>
+                    <a href="/site/sitemap/admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
                     <div class="dropdown-content">
-                        <a href="../../../team/index.html" data-i18n="nav.team">Team Dashboard</a>
-                        <a href="../../../project-dashboard.html" data-i18n="nav.project">Project Dashboard</a>
+                        <a href="/site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
+                        <a href="/site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="/site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="/site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
                     </div>
                 </li>
             </ul>
@@ -500,30 +519,30 @@
                 <div class="subsection">
                     <h3 class="subsection-title">📋 Process Flow</h3>
                     <div class="process-steps">
-                        <div class="process-step">
+                        <a href="p3/s1.html" class="process-step clickable">
                             <div class="step-number">1</div>
                             <div class="step-text">Creates comprehensive profile with ICU specialization</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p3/s2.html" class="process-step clickable">
                             <div class="step-number">2</div>
                             <div class="step-text">Applies for pool membership at preferred hospital</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p3/s3.html" class="process-step clickable">
                             <div class="step-number">3</div>
                             <div class="step-text">Completes facility-specific orientation process</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p3/s4.html" class="process-step clickable">
                             <div class="step-number">4</div>
                             <div class="step-text">Sets availability and shift preferences</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p3/s5.html" class="process-step clickable">
                             <div class="step-number">5</div>
                             <div class="step-text">Receives priority shift notifications</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p3/s6.html" class="process-step clickable">
                             <div class="step-number">6</div>
                             <div class="step-text">Works assigned shifts with enhanced rates</div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 
@@ -603,30 +622,30 @@
                 <div class="subsection">
                     <h3 class="subsection-title">📋 Process Flow</h3>
                     <div class="process-steps">
-                        <div class="process-step">
+                        <a href="p1/s1.html" class="process-step clickable">
                             <div class="step-number">1</div>
                             <div class="step-text">Creates dedicated hospital pool for ICU department</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p1/s2.html" class="process-step clickable">
                             <div class="step-number">2</div>
                             <div class="step-text">Sets pool membership criteria and requirements</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p1/s3.html" class="process-step clickable">
                             <div class="step-number">3</div>
                             <div class="step-text">Reviews and approves pool member applications</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p1/s4.html" class="process-step clickable">
                             <div class="step-number">4</div>
                             <div class="step-text">Manages shift scheduling and assignments</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p1/s5.html" class="process-step clickable">
                             <div class="step-number">5</div>
                             <div class="step-text">Monitors pool performance and satisfaction</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p1/s6.html" class="process-step clickable">
                             <div class="step-number">6</div>
                             <div class="step-text">Processes enhanced payments and feedback</div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 
@@ -706,30 +725,30 @@
                 <div class="subsection">
                     <h3 class="subsection-title">📋 Process Flow</h3>
                     <div class="process-steps">
-                        <div class="process-step">
+                        <a href="p2/s1.html" class="process-step clickable">
                             <div class="step-number">1</div>
                             <div class="step-text">Identifies staffing gaps in ICU department</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p2/s2.html" class="process-step clickable">
                             <div class="step-number">2</div>
                             <div class="step-text">Reviews available pool workers with preferences</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p2/s3.html" class="process-step clickable">
                             <div class="step-number">3</div>
                             <div class="step-text">Matches workers to shifts based on criteria</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p2/s4.html" class="process-step clickable">
                             <div class="step-number">4</div>
                             <div class="step-text">Sends priority shift notifications</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p2/s5.html" class="process-step clickable">
                             <div class="step-number">5</div>
                             <div class="step-text">Confirms assignments and updates schedule</div>
-                        </div>
-                        <div class="process-step">
+                        </a>
+                        <a href="p2/s6.html" class="process-step clickable">
                             <div class="step-number">6</div>
                             <div class="step-text">Tracks attendance and performance metrics</div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 
@@ -856,6 +875,33 @@
                     </div>
                     <div class="comment-text">Pool membership workflow approved by compliance team. Ready to integrate with existing credential verification system.</div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Quick Links Section -->
+        <div class="issues-section">
+            <div class="issues-header">
+                <h2 class="section-title">🔗 Quick Links</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; padding: 20px 0;">
+                <a href="/site/assets/ui-elements/index.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">🎨 UI Elements Library</div>
+                        <div class="ui-element-status">View All Components</div>
+                    </div>
+                </a>
+                <a href="../../../assets/features/f01-user-registration.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">📋 Platform Features</div>
+                        <div class="ui-element-status">Browse Features</div>
+                    </div>
+                </a>
+                <a href="../../../assets/templates/process-step-template.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">📄 Templates</div>
+                        <div class="ui-element-status">Documentation</div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

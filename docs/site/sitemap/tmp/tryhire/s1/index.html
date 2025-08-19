@@ -10,7 +10,7 @@
 		body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f7; }
 		.container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; }
 
-		.top-nav { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 0; margin-bottom: 20px; border-radius: 8px; overflow: hidden; }
+		.top-nav { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 0; margin-bottom: 20px; border-radius: 8px; overflow: visible; }
 		.nav-list { display: flex; list-style: none; margin: 0; padding: 0; }
 		.nav-item { flex: 1; }
 		.nav-link { display: block; padding: 16px 20px; text-decoration: none; color: #666; border-right: 1px solid #eee; text-align: center; transition: all 0.2s; }
@@ -36,6 +36,14 @@
 		.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
 		.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; }
 		.badge.status { background: #e8f5e8; color: #2e7d32; }
+		
+		/* Clickable Process Steps */
+		.process-step.clickable:hover {
+			background: #e8f0fe !important;
+			border-left-color: #1976d2 !important;
+			transform: translateX(4px);
+			box-shadow: 0 2px 8px rgba(0,102,204,0.15);
+		}
 	</style>
 </head>
 <body>
@@ -52,22 +60,27 @@
 		<nav class="top-nav">
 			<ul class="nav-list">
 				<li class="nav-item"><a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a></li>
-				<li class="nav-item"><a href="../../../job/index.html" class="nav-link" data-i18n="nav.job">JOB</a></li>
+				<li class="nav-item"><a href="/site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a></li>
 				<li class="nav-item dropdown">
-					<a href="../../index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
+					<a href="/site/sitemap/tmp/index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
 					<div class="dropdown-content">
-						<a href="../../temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
-						<a href="../index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
-						<a href="../../pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+						<a href="/site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+						<a href="/site/sitemap/tmp/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+						<a href="/site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
 					</div>
 				</li>
-				<li class="nav-item dropdown">
-					<a href="../../../table/index.html" class="nav-link" data-i18n="nav.table-view">Table</a>
-					<div class="dropdown-content">
-						<a href="../../../team/index.html" data-i18n="nav.team">Team Dashboard</a>
-						<a href="../../../project-dashboard.html" data-i18n="nav.project">Project Dashboard</a>
-					</div>
-				</li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/table/index.html" class="nav-link">Table</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
+                        <a href="/site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="/site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="/site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
+                    </div>
+                </li>
 			</ul>
 		</nav>
 
@@ -105,18 +118,18 @@
 				<div class="subsection">
 					<h3 class="section-title">📋 Process Flow</h3>
 					<div class="process-steps">
-						<div class="process-step" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;margin-bottom:12px;">
+						<a href="p1/s1.html" class="process-step clickable" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;margin-bottom:12px;text-decoration:none;color:inherit;transition:all 0.2s;">
 							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
 							<div class="step-text">Define trial goals and candidate expectations</div>
-						</div>
-						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;margin-bottom:12px;">
-							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
+						</a>
+						<a href="p1/s2.html" class="process-step clickable" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;margin-bottom:12px;text-decoration:none;color:inherit;transition:all 0.2s;">
+							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
 							<div class="step-text">Evaluate trial performance weekly</div>
-						</div>
-						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;">
-							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">3</div>
+						</a>
+						<a href="p1/s3.html" class="process-step clickable" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;text-decoration:none;color:inherit;transition:all 0.2s;">
+							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">3</div>
 							<div class="step-text">Decide on conversion to permanent</div>
-						</div>
+						</a>
 					</div>
 				</div>
 				<div class="subsection">
@@ -140,14 +153,14 @@
 				<div class="subsection">
 					<h3 class="section-title">📋 Process Flow</h3>
 					<div class="process-steps">
-						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;margin-bottom:12px;">
-							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
+						<a href="p2/s1.html" class="process-step clickable" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;margin-bottom:12px;text-decoration:none;color:inherit;transition:all 0.2s;">
+							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
 							<div class="step-text">Start trial assignment and track goals</div>
-						</div>
-						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;">
-							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
+						</a>
+						<a href="p2/s2.html" class="process-step clickable" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;text-decoration:none;color:inherit;transition:all 0.2s;">
+							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
 							<div class="step-text">Receive feedback and improve</div>
-						</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -161,16 +174,43 @@
 				<div class="subsection">
 					<h3 class="section-title">📋 Process Flow</h3>
 					<div class="process-steps">
-						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;margin-bottom:12px;">
-							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
+						<a href="p3/s1.html" class="process-step clickable" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;margin-bottom:12px;text-decoration:none;color:inherit;transition:all 0.2s;">
+							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">1</div>
 							<div class="step-text">Set evaluation criteria & schedule reviews</div>
-						</div>
-						<div class="process-step disabled" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border-left:3px solid #ddd;opacity:.55;">
-							<div class="step-number" style="background:#ddd;color:#666;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
+						</a>
+						<a href="p3/s2.html" class="process-step clickable" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f8f9fa;border-radius:8px;border-left:3px solid #0066cc;text-decoration:none;color:inherit;transition:all 0.2s;">
+							<div class="step-number" style="background:#0066cc;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;flex-shrink:0;">2</div>
 							<div class="step-text">Recommend conversion outcome</div>
-						</div>
+						</a>
 					</div>
 				</div>
+			</div>
+		</div>
+		
+		<!-- Quick Links Section -->
+		<div class="issues-section">
+			<div class="issues-header">
+				<h2 class="section-title">🔗 Quick Links</h2>
+			</div>
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; padding: 20px 0;">
+				<a href="/site/assets/ui-elements/index.html" style="text-decoration: none;">
+					<div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+						<div class="ui-element-name">🎨 UI Elements Library</div>
+						<div class="ui-element-status">View All Components</div>
+					</div>
+				</a>
+				<a href="../../../assets/features/f01-user-registration.html" style="text-decoration: none;">
+					<div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+						<div class="ui-element-name">📋 Platform Features</div>
+						<div class="ui-element-status">Browse Features</div>
+					</div>
+				</a>
+				<a href="../../../assets/templates/process-step-template.html" style="text-decoration: none;">
+					<div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+						<div class="ui-element-name">📄 Templates</div>
+						<div class="ui-element-status">Documentation</div>
+					</div>
+				</a>
 			</div>
 		</div>
 

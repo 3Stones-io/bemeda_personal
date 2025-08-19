@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Step 1: Project Requirements Assessment - Bemeda Platform</title>
-    <link rel="stylesheet" href="../../../../global/css/language-switcher.css">
+    <title>Step 1 - Hospital - Scenario 1 - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../../../assets/global/css/language-switcher.css">
     <style>
         * {
             margin: 0;
@@ -32,7 +32,7 @@
             padding: 0;
             margin-bottom: 20px;
             border-radius: 8px;
-            overflow: hidden;
+            overflow: visible;
         }
         
         .nav-list {
@@ -245,22 +245,25 @@
         <!-- Top Navigation -->
         <nav class="top-nav">
             <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../../../../job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
-                </li>
+                <li class="nav-item"><a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a></li>
+                <li class="nav-item"><a href="/site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a></li>
                 <li class="nav-item dropdown">
-                    <a href="../../../index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
+                    <a href="/site/sitemap/tmp/index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
                     <div class="dropdown-content">
-                        <a href="../../index.html" data-i18n="nav.tmp-temporary" style="background: #e3f2fd;">TMP-Temporary</a>
-                        <a href="../../../tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
-                        <a href="../../../pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                        <a href="/site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="/site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="/site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a href="../../../../table/index.html" class="nav-link" data-i18n="nav.table-view">Table View</a>
+                <li class="nav-item"><a href="/site/sitemap/table/index.html" class="nav-link" data-i18n="nav.table-view">Table</a></li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
+                        <a href="/site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="/site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="/site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
+                    </div>
                 </li>
             </ul>
         </nav>
@@ -268,21 +271,13 @@
         <!-- Step Header -->
         <div class="step-header">
             <div class="breadcrumb">
-                <a href="../../../../index.html">Index</a>
+                <a href="../index.html">Scenario 1</a>
                 <span>→</span>
-                <a href="../../../index.html">TMP</a>
-                <span>→</span>
-                <a href="../../index.html">Temporary</a>
-                <span>→</span>
-                <a href="../index.html">S1</a>
-                <span>→</span>
-                <a href="../index.html#participant-p1">P1</a>
-                <span>→</span>
-                <span>S1</span>
+                <span>Hospital Process</span>
             </div>
             <div class="step-title-section">
-                <span class="step-badge">P1-S1</span>
-                <h1 class="step-name">Project Requirements Assessment</h1>
+                <span class="step-badge">Step 1</span>
+                <h1 class="step-name">Hospital - Step 1</h1>
             </div>
             <div class="step-meta">
                 <div class="meta-item">
@@ -343,6 +338,6 @@
             </div>
         </div>
     </div>
-    <script src="../../../../global/js/language-switcher.js"></script>
+    <script src="../../../../assets/global/js/language-switcher.js"></script>
 </body>
 </html>

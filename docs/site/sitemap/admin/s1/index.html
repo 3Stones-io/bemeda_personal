@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN-S1: Platform Dashboard Management - Bemeda Admin</title>
+    <link rel="stylesheet" href="../../../assets/global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: visible;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+            position: relative;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+            min-width: 200px;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Scenario Header */
+        .scenario-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            border-left: 4px solid #ff6b35;
+        }
+        
+        .scenario-title-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .scenario-icon {
+            font-size: 4rem;
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid #ffe0b3;
+        }
+        
+        .scenario-id {
+            background: #ff6b35;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        
+        .scenario-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .scenario-description {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        
+        .scenario-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+        
+        .meta-item {
+            text-align: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .meta-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .meta-value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        /* Participants Section */
+        .participants-section {
+            margin-bottom: 40px;
+        }
+        
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+        }
+        
+        .participant-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .participant-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .participant-icon {
+            font-size: 2.5rem;
+            background: #f0f8ff;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #e0efff;
+        }
+        
+        .participant-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .participant-role {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .subsection {
+            margin-bottom: 24px;
+        }
+        
+        .subsection-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Process Steps */
+        .process-steps {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #0066cc;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .process-step:hover {
+            background: #e8f0fe;
+            transform: translateX(4px);
+        }
+        
+        .step-number {
+            background: #0066cc;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .step-text {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        /* UI Elements */
+        .ui-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+        
+        .ui-element {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .ui-element:hover {
+            border-color: #ff6b35;
+            background: #fff3e0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(255,107,53,0.2);
+        }
+        
+        .ui-element-id {
+            background: #ff6b35;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .ui-element-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+        
+        .ui-element-status {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        /* Quick Links */
+        .issues-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .issues-header h2 {
+            color: #1a1a1a;
+            margin-bottom: 24px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .participants-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .scenario-title-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .scenario-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/tmp/index.html" class="nav-link" data-i18n="nav.tmp">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="/site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="/site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/table/index.html" class="nav-link">Table</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/admin/index.html" class="nav-link active" data-i18n="nav.admin">Admin</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard" style="background: #fff3e0;">Platform Dashboard</a>
+                        <a href="/site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="/site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="/site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        
+        <a href="../index.html" class="back-link">
+            ← Back to Admin Portal
+        </a>
+        
+        <!-- Scenario Header -->
+        <div class="scenario-header">
+            <div class="scenario-title-section">
+                <div class="scenario-icon">📊</div>
+                <div>
+                    <span class="scenario-id">ADMIN-S1</span>
+                    <h1 class="scenario-title">Platform Dashboard Management</h1>
+                </div>
+            </div>
+            <p class="scenario-description">
+                Comprehensive monitoring and analysis of platform health, user activity patterns, system performance metrics, and business intelligence for informed decision-making and operational oversight.
+            </p>
+            <div class="scenario-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Complexity</div>
+                    <div class="meta-value">Medium</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Primary Users</div>
+                    <div class="meta-value">Admin Team</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Priority</div>
+                    <div class="meta-value">High</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Frequency</div>
+                    <div class="meta-value">Daily</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Participants Section -->
+        <div class="participants-section">
+            <div class="participants-grid">
+                <!-- Platform Administrator -->
+                <div class="participant-section">
+                    <div class="participant-header">
+                        <span class="participant-icon">👨‍💼</span>
+                        <div>
+                            <h2 class="participant-name">Platform Administrator</h2>
+                            <p class="participant-role">System oversight and strategic monitoring</p>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">📋 Daily Monitoring Tasks</h3>
+                        <div class="process-steps">
+                            <a href="p1/s1.html" class="process-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Review overnight system alerts and health metrics</div>
+                            </a>
+                            <a href="p1/s2.html" class="process-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Analyze user activity and engagement statistics</div>
+                            </a>
+                            <a href="p1/s3.html" class="process-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Monitor job posting and application trends</div>
+                            </a>
+                            <a href="p1/s4.html" class="process-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Review performance bottlenecks and issues</div>
+                            </a>
+                            <a href="p1/s5.html" class="process-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Generate executive reports and insights</div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- UI Implementation -->
+                    <div class="subsection">
+                        <h3 class="subsection-title">🎨 UI Elements</h3>
+                        <div class="ui-elements">
+                            <a href="../../design-system/components/UI-013-admin-dashboard.html" class="ui-element">
+                                <div class="ui-element-id">UI-013</div>
+                                <div class="ui-element-name">Admin Dashboard</div>
+                                <div class="ui-element-status">Ready</div>
+                            </a>
+                            <a href="../../design-system/components/UI-014-system-health.html" class="ui-element">
+                                <div class="ui-element-id">UI-014</div>
+                                <div class="ui-element-name">System Health Monitor</div>
+                                <div class="ui-element-status">Progress</div>
+                            </a>
+                            <a href="../../design-system/components/UI-015-analytics-panel.html" class="ui-element">
+                                <div class="ui-element-id">UI-015</div>
+                                <div class="ui-element-name">Analytics Panel</div>
+                                <div class="ui-element-status">Progress</div>
+                            </a>
+                            <a href="../../design-system/components/UI-016-alert-center.html" class="ui-element">
+                                <div class="ui-element-id">UI-016</div>
+                                <div class="ui-element-name">Alert Center</div>
+                                <div class="ui-element-status">Pending</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Analyst -->
+                <div class="participant-section">
+                    <div class="participant-header">
+                        <span class="participant-icon">📈</span>
+                        <div>
+                            <h2 class="participant-name">Data Analyst</h2>
+                            <p class="participant-role">Business intelligence and metrics analysis</p>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3 class="subsection-title">📊 Analysis Workflow</h3>
+                        <div class="process-steps">
+                            <a href="p2/s1.html" class="process-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Extract data from multiple platform sources</div>
+                            </a>
+                            <a href="p2/s2.html" class="process-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Create custom reports and visualizations</div>
+                            </a>
+                            <a href="p2/s3.html" class="process-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Identify trends and anomalies in data</div>
+                            </a>
+                            <a href="p2/s4.html" class="process-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Prepare insights for stakeholders</div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- UI Implementation -->
+                    <div class="subsection">
+                        <h3 class="subsection-title">🎨 UI Elements</h3>
+                        <div class="ui-elements">
+                            <a href="../../design-system/components/UI-017-data-visualizer.html" class="ui-element">
+                                <div class="ui-element-id">UI-017</div>
+                                <div class="ui-element-name">Data Visualizer</div>
+                                <div class="ui-element-status">Progress</div>
+                            </a>
+                            <a href="../../design-system/components/UI-018-report-builder.html" class="ui-element">
+                                <div class="ui-element-id">UI-018</div>
+                                <div class="ui-element-name">Report Builder</div>
+                                <div class="ui-element-status">Pending</div>
+                            </a>
+                            <a href="../../design-system/components/UI-019-metrics-grid.html" class="ui-element">
+                                <div class="ui-element-id">UI-019</div>
+                                <div class="ui-element-name">Metrics Grid</div>
+                                <div class="ui-element-status">Ready</div>
+                            </a>
+                            <a href="../../design-system/components/UI-020-export-tools.html" class="ui-element">
+                                <div class="ui-element-id">UI-020</div>
+                                <div class="ui-element-name">Export Tools</div>
+                                <div class="ui-element-status">Ready</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Links Section -->
+        <div class="issues-section">
+            <div class="issues-header">
+                <h2>🔗 Quick Links</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; padding: 20px 0;">
+                <a href="/site/assets/ui-elements/index.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">🎨 UI Elements Library</div>
+                        <div class="ui-element-status">View All Components</div>
+                    </div>
+                </a>
+                <a href="/site/design-system/index.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">📋 Design System</div>
+                        <div class="ui-element-status">Component Documentation</div>
+                    </div>
+                </a>
+                <a href="../s2/index.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">🎫 User Support</div>
+                        <div class="ui-element-status">Next Admin Scenario</div>
+                    </div>
+                </a>
+                <a href="/site/sitemap/table/index.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">📊 Table View</div>
+                        <div class="ui-element-status">All Scenarios Overview</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../../assets/global/js/language-switcher.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../../../assets/global/js/mermaid-integration.js"></script>
+</body>
+</html>
