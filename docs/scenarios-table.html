@@ -308,6 +308,7 @@
         
         .mvp-vermittlung { background: #0066cc; }
         .mvp-verleih { background: #ef6c00; }
+        .mvp-admin { background: #7b1fa2; }
         
         .scenarios-table {
             width: 100%;
@@ -350,6 +351,7 @@
         .id-org { background: #1976d2; }
         .id-pol { background: #ef6c00; }
         .id-tmp { background: #2196f3; }
+        .id-admin { background: #7b1fa2; }
         
         .category-badge {
             padding: 4px 12px;
@@ -365,6 +367,7 @@
         .cat-temporary { background: #e3f2fd; color: #2196f3; }
         .cat-pool { background: #fff3e0; color: #ef6c00; }
         .cat-tryhire { background: #e8f5e9; color: #4caf50; }
+        .cat-admin { background: #f3e5f5; color: #7b1fa2; }
         
         .scenario-title {
             font-weight: 600;
@@ -607,7 +610,7 @@
                 </thead>
                 <tbody>
                     <tr data-mvp="vermittlung" data-category="permanent" data-status="active">
-                        <td><span class="scenario-id id-org">S-ORG-1</span></td>
+                        <td><span class="scenario-id id-org">JOB-S1</span></td>
                         <td><span class="category-badge cat-permanent">Permanent</span></td>
                         <td>
                             <div class="scenario-title">Cold Call to Candidate Placement</div>
@@ -753,7 +756,7 @@
                 <tbody>
                     <!-- Pool Scenarios -->
                     <tr data-mvp="verleih" data-category="pool" data-status="active">
-                        <td><span class="scenario-id id-pol">S-POL-1</span></td>
+                        <td><span class="scenario-id id-pol">TMP-POOL-S1</span></td>
                         <td><span class="category-badge cat-pool">Pool</span></td>
                         <td>
                             <div class="scenario-title">Hospital Pool Membership</div>
@@ -931,6 +934,77 @@
             </table>
         </div>
         
+        <!-- Admin Section -->
+        <div class="scenarios-table-container" data-mvp="admin">
+            <div class="section-header">
+                <span class="mvp-badge mvp-admin">Admin Platform</span>
+                <h2>Platform Administration & Analytics Scenarios</h2>
+            </div>
+            <table class="scenarios-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Scenario</th>
+                        <th>Participants</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-mvp="admin" data-category="dashboard" data-status="active">
+                        <td><span class="scenario-id id-admin">ADMIN-S1</span></td>
+                        <td><span class="category-badge cat-admin">Dashboard</span></td>
+                        <td>
+                            <div class="scenario-title">Platform Dashboard Management</div>
+                            <div class="scenario-description">
+                                Comprehensive admin dashboard for monitoring platform performance and user activity
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">👨‍💼 Admin</span>
+                                <span class="participant-chip">📊 Analyst</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-ready">Active</span></td>
+                        <td>
+                            <div>90%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                        </td>
+                        <td><a href="site/sitemap/admin/s1/index.html" class="view-link">View →</a></td>
+                    </tr>
+                    <tr data-mvp="admin" data-category="support" data-status="development">
+                        <td><span class="scenario-id id-admin">ADMIN-S2</span></td>
+                        <td><span class="category-badge cat-admin">Support</span></td>
+                        <td>
+                            <div class="scenario-title">User Support & Query Management</div>
+                            <div class="scenario-description">
+                                Handle user support requests and manage query resolution workflow
+                            </div>
+                        </td>
+                        <td>
+                            <div class="participants">
+                                <span class="participant-chip">👨‍💼 Admin</span>
+                                <span class="participant-chip">🎧 Support</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge status-progress">In Dev</span></td>
+                        <td>
+                            <div>45%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                        </td>
+                        <td><a href="site/sitemap/admin/s2/index.html" class="view-link">View →</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
         <!-- Navigation Cards -->
         <div class="structure-grid">
             <!-- UID System -->
@@ -972,6 +1046,12 @@
                     │   ├── 📁 <a href="site/sitemap/tmp/temporary/index.html">temporary/</a> <span class="uid-code">(t_tt)</span><br>
                     │   ├── 📁 <a href="site/sitemap/tmp/tryhire/index.html">tryhire/</a> <span class="uid-code">(t_th)</span><br>
                     │   └── 📁 <a href="site/sitemap/tmp/pool/index.html">pool/</a> <span class="uid-code">(t_tp)</span><br>
+                    │       └── 📁 <a href="site/sitemap/tmp/pool/s1/index.html">s1/</a> <span class="uid-code">(t_tp_s1)</span> Pool Membership<br>
+                    ├── 📁 <a href="site/sitemap/admin/index.html">admin/</a> <span class="uid-code">(a)</span><br>
+                    │   ├── 📁 <a href="site/sitemap/admin/s1/index.html">s1/</a> <span class="uid-code">(a_s1)</span> Platform Dashboard<br>
+                    │   ├── 📁 <a href="site/sitemap/admin/s2/index.html">s2/</a> <span class="uid-code">(a_s2)</span> User Support<br>
+                    │   ├── 📁 <a href="site/sitemap/admin/s3/index.html">s3/</a> <span class="uid-code">(a_s3)</span> Analytics<br>
+                    │   └── 📁 <a href="site/sitemap/admin/s4/index.html">s4/</a> <span class="uid-code">(a_s4)</span> System Health<br>
                     └── 📁 <a href="site/sitemap/table/index.html">table/</a> <span class="uid-code">(table)</span> This page
                 </div>
             </div>

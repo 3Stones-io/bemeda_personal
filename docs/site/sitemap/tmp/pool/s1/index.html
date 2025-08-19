@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S-POL-1: Hospital Pool Membership - Bemeda Platform</title>
+    <title>TMP-POOL-S1: Hospital Pool Membership - Bemeda Platform</title>
     <link rel="stylesheet" href="../../../global/css/language-switcher.css">
     <style>
         * {
@@ -58,7 +58,7 @@
         
         .nav-link:hover {
             background: #f8f9fa;
-            color: #ef6c00;
+            color: #9c27b0;
         }
         
         .nav-link.active {
@@ -77,12 +77,12 @@
             padding: 32px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 24px;
-            border-left: 4px solid #ef6c00;
+            border-left: 4px solid #9c27b0;
         }
         
         .back-link {
             display: inline-block;
-            color: #ef6c00;
+            color: #9c27b0;
             text-decoration: none;
             margin-bottom: 16px;
         }
@@ -99,7 +99,7 @@
         }
         
         .scenario-badge {
-            background: #ef6c00;
+            background: linear-gradient(135deg, #9c27b0, #7b1fa2);
             color: white;
             padding: 8px 16px;
             border-radius: 8px;
@@ -174,7 +174,7 @@
         .subsection-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #ef6c00;
+            color: #7b1fa2;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
@@ -195,7 +195,7 @@
             padding: 12px;
             background: #f8f9fa;
             border-radius: 8px;
-            border-left: 3px solid #ef6c00;
+            border-left: 3px solid #9c27b0;
         }
         
         .process-step.clickable {
@@ -206,14 +206,14 @@
         }
         
         .process-step.clickable:hover {
-            background: #e3f2fd;
-            border-left-color: #2196f3;
+            background: #f3e5f5;
+            border-left-color: #7b1fa2;
             transform: translateX(4px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .step-number {
-            background: #ef6c00;
+            background: linear-gradient(135deg, #9c27b0, #7b1fa2);
             color: white;
             width: 24px;
             height: 24px;
@@ -252,39 +252,99 @@
         }
         
         .tech-ready { color: #2e7d32; }
-        .tech-progress { color: #ef6c00; }
+        .tech-progress { color: #7b1fa2; }
         .tech-pending { color: #666; }
         
         /* UI Elements */
         .ui-elements {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
         }
         
         .ui-element {
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            padding: 18px 16px;
+            background: white;
+            border-radius: 12px;
             text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.2s;
+            border: 1px solid #f3e5f5;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .ui-element::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #9c27b0, #7b1fa2);
+            transform: translateY(-3px);
+            transition: transform 0.3s ease;
         }
         
         .ui-element:hover {
-            border-color: #ef6c00;
-            background: #fff3e0;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(156,39,176,0.15);
+            border-color: #9c27b0;
+        }
+        
+        .ui-element:hover::before {
+            transform: translateY(0);
+        }
+        
+        .ui-element-id {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 8px;
+            margin: 0 auto 12px auto;
+            box-shadow: 0 2px 8px rgba(156,39,176,0.2);
         }
         
         .ui-element-name {
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            line-height: 1.3;
         }
         
         .ui-element-status {
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+        
+        /* Status-specific styling for TMP purple/green theme */
+        .ui-element-status.status-ready {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .ui-element-status.status-progress {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .ui-element-status.status-pending {
+            background: #f0f4c3;
+            color: #689f38;
         }
         
         /* Issues and Comments */
@@ -310,18 +370,20 @@
         }
         
         .add-btn {
-            background: #ef6c00;
+            background: linear-gradient(135deg, #9c27b0, #7b1fa2);
             color: white;
             padding: 8px 16px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
         
         .add-btn:hover {
-            background: #e65100;
+            background: linear-gradient(135deg, #7b1fa2, #6a1b9a);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(156,39,176,0.3);
         }
         
         .issues-list {
@@ -390,7 +452,7 @@
         
         .comment-author {
             font-weight: 500;
-            color: #ef6c00;
+            color: #7b1fa2;
         }
         
         .comment-date {
@@ -482,7 +544,7 @@
         <div class="scenario-header">
             <a href="../index.html" class="back-link">← Back to TMP-Pool</a>
             <div class="scenario-title">
-                <span class="scenario-badge">S-POL-1</span>
+                <span class="scenario-badge">TMP-POOL-S1</span>
                 <h1 class="scenario-name">Hospital Pool Membership</h1>
             </div>
             <div class="scenario-meta">
@@ -592,20 +654,24 @@
                     <h3 class="subsection-title">🎨 UI Elements</h3>
                     <div class="ui-elements">
                         <div class="ui-element">
+                            <div class="ui-element-id">PD</div>
                             <div class="ui-element-name">Pool Dashboard</div>
-                            <div class="ui-element-status">Ready</div>
+                            <div class="ui-element-status status-ready">Ready</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">AV</div>
                             <div class="ui-element-name">Availability</div>
-                            <div class="ui-element-status">Ready</div>
+                            <div class="ui-element-status status-ready">Ready</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">PR</div>
                             <div class="ui-element-name">Preferences</div>
-                            <div class="ui-element-status">Progress</div>
+                            <div class="ui-element-status status-progress">Progress</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">RC</div>
                             <div class="ui-element-name">Rate Calculator</div>
-                            <div class="ui-element-status">Pending</div>
+                            <div class="ui-element-status status-pending">Pending</div>
                         </div>
                     </div>
                 </div>
@@ -695,20 +761,24 @@
                     <h3 class="subsection-title">🎨 UI Elements</h3>
                     <div class="ui-elements">
                         <div class="ui-element">
+                            <div class="ui-element-id">PA</div>
                             <div class="ui-element-name">Pool Admin</div>
-                            <div class="ui-element-status">Ready</div>
+                            <div class="ui-element-status status-ready">Ready</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">SC</div>
                             <div class="ui-element-name">Scheduler</div>
-                            <div class="ui-element-status">Progress</div>
+                            <div class="ui-element-status status-progress">Progress</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">AN</div>
                             <div class="ui-element-name">Analytics</div>
-                            <div class="ui-element-status">Progress</div>
+                            <div class="ui-element-status status-progress">Progress</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">PY</div>
                             <div class="ui-element-name">Payments</div>
-                            <div class="ui-element-status">Pending</div>
+                            <div class="ui-element-status status-pending">Pending</div>
                         </div>
                     </div>
                 </div>
@@ -798,20 +868,24 @@
                     <h3 class="subsection-title">🎨 UI Elements</h3>
                     <div class="ui-elements">
                         <div class="ui-element">
+                            <div class="ui-element-id">SV</div>
                             <div class="ui-element-name">Schedule View</div>
-                            <div class="ui-element-status">Ready</div>
+                            <div class="ui-element-status status-ready">Ready</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">MT</div>
                             <div class="ui-element-name">Matching Tool</div>
-                            <div class="ui-element-status">Progress</div>
+                            <div class="ui-element-status status-progress">Progress</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">NT</div>
                             <div class="ui-element-name">Notifications</div>
-                            <div class="ui-element-status">Progress</div>
+                            <div class="ui-element-status status-progress">Progress</div>
                         </div>
                         <div class="ui-element">
+                            <div class="ui-element-id">AL</div>
                             <div class="ui-element-name">Analytics</div>
-                            <div class="ui-element-status">Pending</div>
+                            <div class="ui-element-status status-pending">Pending</div>
                         </div>
                     </div>
                 </div>
@@ -884,23 +958,20 @@
                 <h2 class="section-title">🔗 Quick Links</h2>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; padding: 20px 0;">
-                <a href="/site/assets/ui-elements/index.html" style="text-decoration: none;">
-                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
-                        <div class="ui-element-name">🎨 UI Elements Library</div>
-                        <div class="ui-element-status">View All Components</div>
-                    </div>
+                <a href="/site/assets/ui-elements/index.html" class="ui-element">
+                    <div class="ui-element-id">UI</div>
+                    <div class="ui-element-name">UI Elements Library</div>
+                    <div class="ui-element-status status-ready">View All Components</div>
                 </a>
-                <a href="../../../assets/features/f01-user-registration.html" style="text-decoration: none;">
-                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
-                        <div class="ui-element-name">📋 Platform Features</div>
-                        <div class="ui-element-status">Browse Features</div>
-                    </div>
+                <a href="../../../assets/features/f01-user-registration.html" class="ui-element">
+                    <div class="ui-element-id">PF</div>
+                    <div class="ui-element-name">Platform Features</div>
+                    <div class="ui-element-status status-ready">Browse Features</div>
                 </a>
-                <a href="../../../assets/templates/process-step-template.html" style="text-decoration: none;">
-                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
-                        <div class="ui-element-name">📄 Templates</div>
-                        <div class="ui-element-status">Documentation</div>
-                    </div>
+                <a href="../../../assets/templates/process-step-template.html" class="ui-element">
+                    <div class="ui-element-id">TM</div>
+                    <div class="ui-element-name">Templates</div>
+                    <div class="ui-element-status status-ready">Documentation</div>
                 </a>
             </div>
         </div>

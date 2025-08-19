@@ -358,6 +358,21 @@
             font-size: 0.8rem;
         }
         
+        .uid-badge.job {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .uid-badge.tmp {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .uid-badge.admin {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
         .top-nav {
             border-radius: 8px;
             margin-bottom: 20px;
@@ -418,6 +433,89 @@
             <p>Hybrid UID-based workflows + Global shared resources</p>
         </div>
         
+        <!-- Scenarios Overview Table -->
+        <div class="detailed-section">
+            <div class="section-header">
+                <span class="section-icon">📋</span>
+                <h2 class="section-title">Scenarios Overview</h2>
+            </div>
+            
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="showScenarios('all')">All Scenarios</button>
+                <button class="filter-tab" onclick="showScenarios('job')">JOB</button>
+                <button class="filter-tab" onclick="showScenarios('tmp')">TMP</button>
+                <button class="filter-tab" onclick="showScenarios('admin')">Admin</button>
+            </div>
+            
+            <table class="content-table" id="scenariosTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Scenario</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JOB Scenarios -->
+                    <tr data-type="job">
+                        <td><span class="uid-badge job">JOB-S1</span></td>
+                        <td><span class="status-badge active">Permanent</span></td>
+                        <td><a href="../job/s1/index.html">Cold Call to Candidate Placement</a></td>
+                        <td><span class="status-badge active">Active</span></td>
+                        <td>85%</td>
+                        <td><a href="../job/s1/index.html" class="view-btn">View →</a></td>
+                    </tr>
+                    
+                    <!-- TMP Scenarios -->
+                    <tr data-type="tmp">
+                        <td><span class="uid-badge tmp">TMP-POOL-S1</span></td>
+                        <td><span class="status-badge active">Pool</span></td>
+                        <td><a href="../tmp/pool/s1/index.html">Hospital Pool Membership</a></td>
+                        <td><span class="status-badge active">Active</span></td>
+                        <td>60%</td>
+                        <td><a href="../tmp/pool/s1/index.html" class="view-btn">View →</a></td>
+                    </tr>
+                    
+                    <!-- Admin Scenarios -->
+                    <tr data-type="admin">
+                        <td><span class="uid-badge admin">ADMIN-S1</span></td>
+                        <td><span class="status-badge active">Dashboard</span></td>
+                        <td><a href="../admin/s1/index.html">Platform Dashboard Management</a></td>
+                        <td><span class="status-badge active">Active</span></td>
+                        <td>90%</td>
+                        <td><a href="../admin/s1/index.html" class="view-btn">View →</a></td>
+                    </tr>
+                    <tr data-type="admin">
+                        <td><span class="uid-badge admin">ADMIN-S2</span></td>
+                        <td><span class="status-badge progress">Support</span></td>
+                        <td><a href="../admin/s2/index.html">User Support & Query Management</a></td>
+                        <td><span class="status-badge progress">In Dev</span></td>
+                        <td>45%</td>
+                        <td><a href="../admin/s2/index.html" class="view-btn">View →</a></td>
+                    </tr>
+                    <tr data-type="admin">
+                        <td><span class="uid-badge admin">ADMIN-S3</span></td>
+                        <td><span class="status-badge pending">Analytics</span></td>
+                        <td><a href="../admin/s3/index.html">System Analytics & Reports</a></td>
+                        <td><span class="status-badge pending">Planning</span></td>
+                        <td>25%</td>
+                        <td><a href="../admin/s3/index.html" class="view-btn">View →</a></td>
+                    </tr>
+                    <tr data-type="admin">
+                        <td><span class="uid-badge admin">ADMIN-S4</span></td>
+                        <td><span class="status-badge pending">Health</span></td>
+                        <td><a href="../admin/s4/index.html">System Health Monitoring</a></td>
+                        <td><span class="status-badge pending">Planning</span></td>
+                        <td>20%</td>
+                        <td><a href="../admin/s4/index.html" class="view-btn">View →</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
         <!-- Structure Overview -->
         <div class="structure-grid">
             <!-- UID System -->
@@ -449,6 +547,11 @@
                     │   ├── 📁 <a href="/site/sitemap/tmp/tryhire/index.html">tryhire/</a> <span class="uid-code">(t_th)</span><br>
                     │   └── 📁 <a href="/site/sitemap/tmp/pool/index.html">pool/</a> <span class="uid-code">(t_tp)</span><br>
                     │       └── 📁 <a href="./tmp/pool/s1/index.html">s1/</a> <span class="uid-code">(t_tp_s1)</span> Pool Membership<br>
+                    ├── 📁 <a href="/site/sitemap/admin/index.html">admin/</a> <span class="uid-code">(a)</span><br>
+                    │   ├── 📁 <a href="./admin/s1/index.html">s1/</a> <span class="uid-code">(a_s1)</span> Platform Dashboard<br>
+                    │   ├── 📁 <a href="./admin/s2/index.html">s2/</a> <span class="uid-code">(a_s2)</span> User Support<br>
+                    │   ├── 📁 <a href="./admin/s3/index.html">s3/</a> <span class="uid-code">(a_s3)</span> Analytics<br>
+                    │   └── 📁 <a href="./admin/s4/index.html">s4/</a> <span class="uid-code">(a_s4)</span> System Health<br>
                     └── 📁 <a href="index.html">table/</a> <span class="uid-code">(table)</span> This page
                 </div>
             </div>
@@ -632,9 +735,27 @@
     
     <script src="../../assets/global/js/language-switcher.js"></script>
     <script>
+        function showScenarios(type) {
+            const rows = document.querySelectorAll('#scenariosTable tbody tr');
+            const tabs = document.querySelectorAll('.filter-tabs .filter-tab');
+            
+            // Update tab states
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide rows
+            rows.forEach(row => {
+                if (type === 'all' || row.dataset.type === type) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
         function showContent(type) {
             const rows = document.querySelectorAll('#contentTable tbody tr');
-            const tabs = document.querySelectorAll('.filter-tab');
+            const tabs = document.querySelectorAll('#contentTable').closest('.detailed-section').querySelectorAll('.filter-tab');
             
             // Update tab states
             tabs.forEach(tab => tab.classList.remove('active'));
