@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporary Worker - Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .persona-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .persona-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+        
+        .detail-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        
+        .scenarios {
+            margin-top: 40px;
+        }
+        
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .scenario-title {
+            font-size: 1.5rem;
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        
+        .process-flow {
+            margin-top: 24px;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .step-number {
+            background: #0066cc;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .step-description {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .benefits {
+            margin-top: 24px;
+            padding: 20px;
+            background: #e8f0fe;
+            border-radius: 8px;
+        }
+        
+        .benefits-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .benefit-item {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .benefit-item:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: 600;
+        }
+        
+        .mermaid-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .mermaid-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Scenario Accordion */
+        .scenario-accordion {
+            margin-top: 40px;
+        }
+        
+        .scenario-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .scenario-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        
+        .scenario-header:hover {
+            background: #f0f0f0;
+        }
+        
+        .scenario-header.active {
+            background: #e8f0fe;
+        }
+        
+        .scenario-number {
+            background: #0066cc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 0.9rem;
+        }
+        
+        .scenario-header-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .scenario-icon {
+            font-size: 1.2rem;
+            color: #666;
+            transition: transform 0.3s;
+        }
+        
+        .scenario-header.active .scenario-icon {
+            transform: rotate(180deg);
+        }
+        
+        .scenario-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .scenario-content.active {
+            max-height: 2000px;
+        }
+        
+        .scenario-inner {
+            padding: 24px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-job.html" class="nav-link">MVP-JOB</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../mvp-tmp.html" class="nav-link">MVP-TMP</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../table/index.html" class="nav-link active">Scenarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../table/index.html" class="nav-link">Table View</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Overview</a>
+            <h1>⏰ Temporary Worker</h1>
+        </div>
+        
+        <div class="persona-overview">
+            <h2>Persona Profile</h2>
+            <div class="persona-details">
+                <div class="detail-item">
+                    <div class="detail-label">Role</div>
+                    <div>Flexible Healthcare Professional</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Background</div>
+                    <div>Nurses, Medical Assistants, Specialists seeking flexibility</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Primary Goals</div>
+                    <div>Work-life balance, variety of experiences, supplemental income</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Pain Points</div>
+                    <div>Finding reliable assignments, administrative burden, payment delays</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scenario-accordion" id="scenarios">
+            <div class="scenario-item" id="s-tmp-1">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">S-TMP-1</span>
+                        <h3>Weekend Shift Scheduling</h3>
+                    </div>
+                    <span class="scenario-icon">▼</span>
+                </div>
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">1.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Profile Creation</div>
+                                    <div class="step-description">Nurse creates profile specifying availability for weekend shifts only, uploads certifications</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Shift Notifications</div>
+                                    <div class="step-description">Receives push notifications for weekend shifts matching qualifications and location preferences</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Quick Application</div>
+                                    <div class="step-description">Reviews shift details (rate, location, department) and applies with one click</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Confirmation</div>
+                                    <div class="step-description">Receives confirmation within hours, with all details and contact information</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Shift Completion</div>
+                                    <div class="step-description">Completes shift, confirms hours in app, and tracks earnings in real-time</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">1.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Payment</div>
+                                    <div class="step-description">Receives payment within 5 business days, with detailed payslip and tax documentation</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">TMP-1 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["1.1: Create Profile with Weekend Availability"] --> B["1.2: Receive Push Notifications for Weekend Shifts"]
+                                    B --> C["1.3: Review Shift Details & Rate"]
+                                    C --> D["1.4: One-Click Application"]
+                                    D --> E["1.5: Confirmation within Hours"]
+                                    E --> F["1.6: Work Shift"]
+                                    F --> G["1.6: Confirm Hours in App"]
+                                    G --> H["1.6: Payment within 5 Days"]
+                                    
+                                    style A fill:#e8f0fe
+                                    style D fill:#fff3e0
+                                    style H fill:#e8f5e8
+                            </div>
+                        </div>
+                        
+                        <div class="benefits">
+                            <div class="benefits-title">Key Benefits</div>
+                            <div class="benefit-item">Flexible scheduling around primary job</div>
+                            <div class="benefit-item">Transparent rates and quick payment</div>
+                            <div class="benefit-item">No administrative paperwork</div>
+                            <div class="benefit-item">Build reputation through ratings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scenario-item" id="s-tmp-2">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">S-TMP-2</span>
+                        <h3>Vacation Coverage Specialist</h3>
+                    </div>
+                    <span class="scenario-icon">▼</span>
+                </div>
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">2.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Seasonal Availability</div>
+                                    <div class="step-description">Medical specialist sets availability for summer months when regular staff take vacations</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Advance Booking</div>
+                                    <div class="step-description">Receives requests for 2-4 week coverage assignments months in advance</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Assignment Selection</div>
+                                    <div class="step-description">Reviews multiple offers, compares rates and locations, accepts preferred assignments</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Preparation</div>
+                                    <div class="step-description">Receives facility-specific information, protocols, and orientation materials through platform</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Coverage Period</div>
+                                    <div class="step-description">Works full-time for agreed period, with platform handling all compliance and insurance</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Future Opportunities</div>
+                                    <div class="step-description">Facility can request same worker for future coverage, building ongoing relationships</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">TMP-2 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["2.1: Set Summer Availability"] --> B["2.2: Receive Advance Booking Requests"]
+                                    B --> C["2.3: Review Multiple Offers"]
+                                    C --> D["2.3: Compare Rates & Locations"]
+                                    D --> E["2.4: Accept Preferred Assignments"]
+                                    E --> F["2.5: Receive Facility Information"]
+                                    F --> G["2.6: Work Coverage Period"]
+                                    G --> H["2.6: Build Future Relationship"]
+                                    
+                                    style A fill:#e8f0fe
+                                    style E fill:#fff3e0
+                                    style H fill:#e8f5e8
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scenario-item" id="s-tmp-3">
+                <div class="scenario-header" onclick="toggleScenario(this)">
+                    <div class="scenario-header-content">
+                        <span class="scenario-number">S-TMP-3</span>
+                        <h3>Career Transition Support</h3>
+                    </div>
+                    <span class="scenario-icon">▼</span>
+                </div>
+                <div class="scenario-content">
+                    <div class="scenario-inner">
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="step-number">3.1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Career Change</div>
+                                    <div class="step-description">Healthcare worker returning after extended break or changing specialties seeks gradual re-entry</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Skill Assessment</div>
+                                    <div class="step-description">Completes platform skills assessment, identifies areas for refresh or development</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Graduated Assignments</div>
+                                    <div class="step-description">Platform suggests entry-level temporary assignments to rebuild confidence and skills</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Experience Building</div>
+                                    <div class="step-description">Takes various short-term assignments to explore different departments and facilities</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Performance Tracking</div>
+                                    <div class="step-description">Builds portfolio of positive ratings and references from multiple facilities</div>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3.6</div>
+                                <div class="step-content">
+                                    <div class="step-title">Permanent Opportunity</div>
+                                    <div class="step-description">Leverages temporary experience and ratings to secure permanent position when ready</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mermaid-container">
+                            <div class="mermaid-title">TMP-3 Process Flow Diagram</div>
+                            <div class="mermaid">
+                                graph TD
+                                    A["3.1: Career Change Decision"] --> B["3.2: Complete Skills Assessment"]
+                                    B --> C["3.2: Identify Development Areas"]
+                                    C --> D["3.3: Start with Entry-Level Assignments"]
+                                    D --> E["3.4: Build Experience Across Facilities"]
+                                    E --> F["3.5: Accumulate Positive Ratings"]
+                                    F --> G["3.6: Leverage Experience for Permanent Role"]
+                                    
+                                    style A fill:#ffebee
+                                    style B fill:#e8f0fe
+                                    style G fill:#e8f5e8
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleScenario(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+            
+            // Close all scenarios
+            document.querySelectorAll('.scenario-header').forEach(h => {
+                h.classList.remove('active');
+                h.nextElementSibling.classList.remove('active');
+            });
+            
+            // Open clicked scenario if it was closed
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

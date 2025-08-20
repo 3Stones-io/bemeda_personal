@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI-[NUMBER] [Component Name] - Bemeda Design System</title>
+    <link rel="stylesheet" href="../assets/global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Component Header */
+        .component-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .component-id {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+        
+        .component-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .component-description {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+        }
+        
+        /* Component Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            font-size: 1rem;
+            color: #1a1a1a;
+        }
+        
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        
+        /* Design Section */
+        .design-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .design-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #e0e0e0;
+        }
+        
+        .design-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        .design-placeholder {
+            text-align: center;
+            color: #999;
+        }
+        
+        .design-states {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+        
+        .state-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .state-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        /* Implementation Section */
+        .implementation-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .code-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .code-tab {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .code-tab:hover {
+            color: #0066cc;
+        }
+        
+        .code-tab.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 24px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .code-content {
+            display: none;
+        }
+        
+        .code-content.active {
+            display: block;
+        }
+        
+        /* Usage Guidelines */
+        .usage-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .usage-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 24px;
+        }
+        
+        .usage-do, .usage-dont {
+            padding: 24px;
+            border-radius: 8px;
+        }
+        
+        .usage-do {
+            background: #e8f5e8;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .usage-dont {
+            background: #fee;
+            border: 1px solid #fcc;
+        }
+        
+        .usage-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .usage-list {
+            list-style: none;
+        }
+        
+        .usage-list li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .usage-list li::before {
+            position: absolute;
+            left: 0;
+        }
+        
+        .usage-do .usage-list li::before {
+            content: "✓";
+            color: #28a745;
+        }
+        
+        .usage-dont .usage-list li::before {
+            content: "✗";
+            color: #dc3545;
+        }
+        
+        /* Specifications */
+        .specs-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .specs-table {
+            width: 100%;
+            margin-top: 24px;
+            border-collapse: collapse;
+        }
+        
+        .specs-table th,
+        .specs-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .specs-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        /* Accessibility Notes */
+        .accessibility-section {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .accessibility-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Files Section */
+        .files-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .file-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .file-icon {
+            font-size: 1.5rem;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+        
+        .file-path {
+            font-size: 0.9rem;
+            color: #666;
+            font-family: monospace;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .usage-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .component-title {
+                font-size: 2rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Component Header -->
+        <div class="component-header">
+            <span class="component-id">UI-001</span>
+            <h1 class="component-title">[Component Name]</h1>
+            <p class="component-description">
+                [Brief description of the component, its purpose, and when to use it]
+            </p>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Category</span>
+                    <span class="info-value">[e.g., Form Elements, Navigation, Feedback]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <span class="info-value">[Design Complete / In Development / Ready]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Designer</span>
+                    <span class="info-value">[Designer Name]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Last Updated</span>
+                    <span class="info-value">[Date]</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Design Section -->
+            <div class="design-section">
+                <div class="section-header">
+                    <span class="section-icon">🎨</span>
+                    <h2 class="section-title">Design</h2>
+                </div>
+                
+                <div class="design-preview">
+                    <!-- Replace with actual design image -->
+                    <div class="design-placeholder">
+                        <p>📐 Design mockup will be placed here</p>
+                        <p style="font-size: 0.9rem; margin-top: 8px;">Upload to: /mockups/UI-001-[component-name].png</p>
+                    </div>
+                    <!-- <img src="../mockups/UI-001-component-name.png" alt="Component Design"> -->
+                </div>
+                
+                <h3 style="margin-bottom: 16px;">Component States</h3>
+                <div class="design-states">
+                    <div class="state-preview">
+                        <div style="padding: 20px; background: #0066cc; color: white; border-radius: 4px;">Default</div>
+                        <p class="state-label">Default</p>
+                    </div>
+                    <div class="state-preview">
+                        <div style="padding: 20px; background: #0052a3; color: white; border-radius: 4px;">Hover</div>
+                        <p class="state-label">Hover</p>
+                    </div>
+                    <div class="state-preview">
+                        <div style="padding: 20px; background: #004080; color: white; border-radius: 4px;">Active</div>
+                        <p class="state-label">Active</p>
+                    </div>
+                    <div class="state-preview">
+                        <div style="padding: 20px; background: #ccc; color: #999; border-radius: 4px;">Disabled</div>
+                        <p class="state-label">Disabled</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Implementation Section -->
+            <div class="implementation-section">
+                <div class="section-header">
+                    <span class="section-icon">💻</span>
+                    <h2 class="section-title">Implementation</h2>
+                </div>
+                
+                <div class="code-tabs">
+                    <button class="code-tab active" onclick="showCode('html')">HTML</button>
+                    <button class="code-tab" onclick="showCode('css')">CSS</button>
+                    <button class="code-tab" onclick="showCode('javascript')">JavaScript</button>
+                    <button class="code-tab" onclick="showCode('react')">React</button>
+                </div>
+                
+                <div id="html-code" class="code-content active">
+                    <div class="code-block">
+<!-- HTML code example -->
+&lt;!-- Component HTML Structure --&gt;
+&lt;div class="component-class"&gt;
+    &lt;!-- Component content --&gt;
+&lt;/div&gt;
+                    </div>
+                </div>
+                
+                <div id="css-code" class="code-content">
+                    <div class="code-block">
+/* Component CSS Styles */
+.component-class {
+    /* Styles go here */
+}
+                    </div>
+                </div>
+                
+                <div id="javascript-code" class="code-content">
+                    <div class="code-block">
+// Component JavaScript functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Implementation code
+});
+                    </div>
+                </div>
+                
+                <div id="react-code" class="code-content">
+                    <div class="code-block">
+// React Component Implementation
+import React from 'react';
+
+const ComponentName = () => {
+    return (
+        &lt;div className="component-class"&gt;
+            {/* Component JSX */}
+        &lt;/div&gt;
+    );
+};
+
+export default ComponentName;
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Usage Guidelines -->
+        <div class="usage-section">
+            <div class="section-header">
+                <span class="section-icon">📋</span>
+                <h2 class="section-title">Usage Guidelines</h2>
+            </div>
+            
+            <div class="usage-grid">
+                <div class="usage-do">
+                    <h3 class="usage-title">
+                        <span style="color: #28a745;">✓</span>
+                        Do's
+                    </h3>
+                    <ul class="usage-list">
+                        <li>Use for [specific use case]</li>
+                        <li>Maintain consistent spacing</li>
+                        <li>Follow accessibility guidelines</li>
+                        <li>Test across different screen sizes</li>
+                    </ul>
+                </div>
+                
+                <div class="usage-dont">
+                    <h3 class="usage-title">
+                        <span style="color: #dc3545;">✗</span>
+                        Don'ts
+                    </h3>
+                    <ul class="usage-list">
+                        <li>Don't use for [inappropriate use case]</li>
+                        <li>Avoid modifying core styles</li>
+                        <li>Don't nest within similar components</li>
+                        <li>Don't override accessibility features</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Specifications -->
+        <div class="specs-section">
+            <div class="section-header">
+                <span class="section-icon">📏</span>
+                <h2 class="section-title">Specifications</h2>
+            </div>
+            
+            <table class="specs-table">
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                    <th>Notes</th>
+                </tr>
+                <tr>
+                    <td>Min Width</td>
+                    <td>200px</td>
+                    <td>Responsive below this</td>
+                </tr>
+                <tr>
+                    <td>Max Width</td>
+                    <td>100%</td>
+                    <td>Container dependent</td>
+                </tr>
+                <tr>
+                    <td>Height</td>
+                    <td>48px</td>
+                    <td>Standard height</td>
+                </tr>
+                <tr>
+                    <td>Padding</td>
+                    <td>12px 24px</td>
+                    <td>Horizontal and vertical</td>
+                </tr>
+                <tr>
+                    <td>Border Radius</td>
+                    <td>8px</td>
+                    <td>Consistent with design system</td>
+                </tr>
+                <tr>
+                    <td>Font Size</td>
+                    <td>16px</td>
+                    <td>Base font size</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Accessibility -->
+        <div class="accessibility-section">
+            <h3 class="accessibility-title">
+                <span>♿</span>
+                Accessibility Considerations
+            </h3>
+            <ul style="padding-left: 24px;">
+                <li>Ensure proper ARIA labels are included</li>
+                <li>Keyboard navigation must be supported</li>
+                <li>Color contrast ratio must meet WCAG AA standards (4.5:1)</li>
+                <li>Focus states must be clearly visible</li>
+                <li>Screen reader compatibility tested</li>
+            </ul>
+        </div>
+        
+        <!-- Files Section -->
+        <div class="files-section">
+            <div class="section-header">
+                <span class="section-icon">📁</span>
+                <h2 class="section-title">Related Files</h2>
+            </div>
+            
+            <div class="file-list">
+                <div class="file-item">
+                    <span class="file-icon">🎨</span>
+                    <div class="file-info">
+                        <div class="file-name">UI-001-[component-name]-design.fig</div>
+                        <div class="file-path">/design-system/mockups/</div>
+                    </div>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">🖼️</span>
+                    <div class="file-info">
+                        <div class="file-name">UI-001-[component-name].png</div>
+                        <div class="file-path">/design-system/mockups/</div>
+                    </div>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📝</span>
+                    <div class="file-info">
+                        <div class="file-name">UI-001-[component-name].html</div>
+                        <div class="file-path">/design-system/code/</div>
+                    </div>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">🎨</span>
+                    <div class="file-info">
+                        <div class="file-name">UI-001-[component-name].css</div>
+                        <div class="file-path">/design-system/code/</div>
+                    </div>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">⚡</span>
+                    <div class="file-info">
+                        <div class="file-name">UI-001-[component-name].js</div>
+                        <div class="file-path">/design-system/code/</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showCode(language) {
+            // Hide all code blocks
+            document.querySelectorAll('.code-content').forEach(block => {
+                block.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.code-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected code block
+            document.getElementById(language + '-code').classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

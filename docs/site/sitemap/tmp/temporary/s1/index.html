@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenario 1: 3-Month Project Assignment - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../../global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: visible;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #2196f3;
+        }
+        
+        .nav-link.active {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 240px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a { display: block; padding: 12px 20px; text-decoration: none; color: #666; border-bottom: 1px solid #eee; transition: background 0.2s; }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: #f8f9fa; color: #0066cc; }
+        
+        /* Scenario Header */
+        .scenario-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .breadcrumb a {
+            color: #2196f3;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .scenario-title-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-badge {
+            background: #2196f3;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .scenario-name {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .scenario-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        /* Participants Section */
+        .participants-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .participant-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-top: 4px solid #2196f3;
+        }
+        
+        .participant-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .participant-icon {
+            font-size: 2rem;
+        }
+        
+        .participant-info h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .participant-role {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .process-step:hover {
+            background: #e3f2fd;
+            text-decoration: none;
+            color: inherit;
+            transform: translateX(4px);
+        }
+        
+        .process-step.clickable {
+            background: #e3f2fd;
+            border-left: 3px solid #2196f3;
+        }
+        
+        .step-number {
+            background: #2196f3;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        /* Language Switcher Container */
+        .language-switcher-container {
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .language-switcher {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.8);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        
+        .lang-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 40px;
+        }
+        
+        .lang-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+            border-color: #999;
+        }
+        
+        .lang-btn.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        
+        .top-nav {
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .language-switcher-container {
+                justify-content: center;
+            }
+            
+            .participants-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .scenario-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/tmp/index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary" style="background: #e3f2fd;">TMP-Temporary</a>
+                        <a href="/site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="/site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/table/index.html" class="nav-link">Table</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
+                        <a href="/site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="/site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="/site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Scenario Header -->
+        <div class="scenario-header">
+            <div class="breadcrumb">
+                <a href="../../../index.html">Index</a>
+                <span>→</span>
+                <a href="../../index.html">TMP</a>
+                <span>→</span>
+                <a href="../index.html">Temporary</a>
+                <span>→</span>
+                <span>S1</span>
+            </div>
+            <div class="scenario-title-section">
+                                        <span class="scenario-badge">Scenario 1</span>
+                <h1 class="scenario-name">3-Month Project Assignment</h1>
+            </div>
+            <div class="scenario-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span style="background: #f3e5f5; color: #7b1fa2; padding: 2px 8px; border-radius: 4px;">Planning</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Priority:</span>
+                    <span>High</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Duration:</span>
+                    <span>3 months</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Complexity:</span>
+                    <span>Medium</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem; margin-top: 16px;">
+                Hospital requires specialized nurse for 3-month ICU expansion project. Platform handles extended assignment contracts, skill verification, and progressive integration with existing teams.
+            </p>
+        </div>
+        
+        <!-- Participants Section -->
+        <div class="participants-section">
+            <!-- P1: Hospital -->
+            <div class="participant-card" id="participant-p1">
+                <div class="participant-header">
+                    <span class="participant-icon">🏥</span>
+                    <div class="participant-info">
+                        <h3>1: Hospital</h3>
+                        <div class="participant-role">Healthcare Organization</div>
+                    </div>
+                </div>
+                <div class="process-steps">
+                    <a href="p1/s1.html" class="process-step clickable">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Project Requirements Assessment</div>
+                    </a>
+                    <a href="p1/s2.html" class="process-step clickable">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Specialist Request Submission</div>
+                    </a>
+                    <a href="p1/s3.html" class="process-step clickable">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Candidate Review and Interview</div>
+                    </a>
+                    <a href="p1/s4.html" class="process-step clickable">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Contract Negotiation</div>
+                    </a>
+                    <a href="p1/s5.html" class="process-step clickable">
+                        <div class="step-number">5</div>
+                        <div class="step-text">Integration and Onboarding</div>
+                    </a>
+                    <a href="p1/s6.html" class="process-step clickable">
+                        <div class="step-number">6</div>
+                        <div class="step-text">Performance Monitoring</div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- P2: Specialist -->
+            <div class="participant-card" id="participant-p2">
+                <div class="participant-header">
+                    <span class="participant-icon">⏰</span>
+                    <div class="participant-info">
+                        <h3>2: Specialist</h3>
+                        <div class="participant-role">Temporary Healthcare Worker</div>
+                    </div>
+                </div>
+                <div class="process-steps">
+                    <a href="p2/s1.html" class="process-step clickable">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Profile Creation and Verification</div>
+                    </a>
+                    <a href="p2/s2.html" class="process-step clickable">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Assignment Application</div>
+                    </a>
+                    <a href="p2/s3.html" class="process-step clickable">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Interview and Assessment</div>
+                    </a>
+                    <a href="p2/s4.html" class="process-step clickable">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Contract Acceptance</div>
+                    </a>
+                    <a href="p2/s5.html" class="process-step clickable">
+                        <div class="step-number">5</div>
+                        <div class="step-text">Assignment Execution</div>
+                    </a>
+                    <a href="p2/s6.html" class="process-step clickable">
+                        <div class="step-number">6</div>
+                        <div class="step-text">Assignment Completion</div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- P3: Project Manager -->
+            <div class="participant-card" id="participant-p3">
+                <div class="participant-header">
+                    <span class="participant-icon">📋</span>
+                    <div class="participant-info">
+                        <h3>3: Project Manager</h3>
+                        <div class="participant-role">Assignment Coordinator</div>
+                    </div>
+                </div>
+                <div class="process-steps">
+                    <a href="p3/s1.html" class="process-step clickable">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Requirements Analysis</div>
+                    </a>
+                    <a href="p3/s2.html" class="process-step clickable">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Candidate Matching</div>
+                    </a>
+                    <a href="p3/s3.html" class="process-step clickable">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Interview Coordination</div>
+                    </a>
+                    <a href="p3/s4.html" class="process-step clickable">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Contract Management</div>
+                    </a>
+                    <a href="p3/s5.html" class="process-step clickable">
+                        <div class="step-number">5</div>
+                        <div class="step-text">Progress Monitoring</div>
+                    </a>
+                    <a href="p3/s6.html" class="process-step clickable">
+                        <div class="step-number">6</div>
+                        <div class="step-text">Assignment Closure</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Links Section -->
+        <div class="issues-section">
+            <div class="issues-header">
+                <h2 class="section-title">🔗 Quick Links</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; padding: 20px 0;">
+                <a href="/site/assets/ui-elements/index.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">🎨 UI Elements Library</div>
+                        <div class="ui-element-status">View All Components</div>
+                    </div>
+                </a>
+                <a href="../../../assets/features/f01-user-registration.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">📋 Platform Features</div>
+                        <div class="ui-element-status">Browse Features</div>
+                    </div>
+                </a>
+                <a href="../../../assets/templates/process-step-template.html" style="text-decoration: none;">
+                    <div class="ui-element" style="cursor: pointer; transition: all 0.2s;">
+                        <div class="ui-element-name">📄 Templates</div>
+                        <div class="ui-element-status">Documentation</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="../../../global/js/language-switcher.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../../../global/js/mermaid-integration.js"></script>
+    </body>
+    </html>

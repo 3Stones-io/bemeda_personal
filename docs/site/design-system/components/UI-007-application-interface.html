@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI-007 Application Interface - Bemeda Design System</title>
+    <link rel="stylesheet" href="../../assets/global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Component Header */
+        .component-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .component-id {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+        
+        .component-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .component-description {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+        }
+        
+        /* Component Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            font-size: 1rem;
+            color: #1a1a1a;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            background: #cce5ff; color: #004085;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Design Section */
+        .design-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .design-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #e0e0e0;
+        }
+        
+        .design-placeholder {
+            text-align: center;
+            color: #999;
+        }
+        
+        /* Features List */
+        .features-list {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .feature-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        
+        .feature-description {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .component-title {
+                font-size: 2rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">
+            ← Back to Design System
+        </a>
+        
+        <!-- Component Header -->
+        <div class="component-header">
+            <span class="component-id">UI-007</span>
+            <h1 class="component-title">Application Interface</h1>
+            <p class="component-description">
+                Application submission and tracking interface for healthcare professionals to apply for positions and monitor their application progress.
+            </p>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Category</span>
+                    <span class="info-value">Form Elements</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <span class="info-value"><span class="status-badge">Progress</span></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">User Type</span>
+                    <span class="info-value">JobSeeker (Healthcare Professional)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scenario</span>
+                    <span class="info-value">JOB S1 - Permanent Placement</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Design Section -->
+        <div class="design-section">
+            <div class="section-header">
+                <span class="section-icon">🎨</span>
+                <h2 class="section-title">Design Preview</h2>
+            </div>
+            
+            <div class="design-preview">
+                <div class="design-placeholder">
+                    <p>📐 Application Interface design mockup will be placed here</p>
+                    <p style="font-size: 0.9rem; margin-top: 8px;">Upload to: /design-system/mockups/UI-007-application-interface.png</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key Features -->
+        <div class="features-list">
+            <div class="section-header">
+                <span class="section-icon">⚡</span>
+                <h2 class="section-title">Key Features</h2>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3 class="feature-title">Application Form</h3>
+                    <p class="feature-description">Customizable application form with role-specific questions.</p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Document Upload</h3>
+                    <p class="feature-description">Upload CV, cover letter, certificates, and references.</p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Application Tracking</h3>
+                    <p class="feature-description">Real-time status updates and application progress.</p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Communication Log</h3>
+                    <p class="feature-description">History of all interactions with the employer.</p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Interview Scheduling</h3>
+                    <p class="feature-description">Self-service interview scheduling and calendar integration.</p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Application Analytics</h3>
+                    <p class="feature-description">Insights on application performance and feedback.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

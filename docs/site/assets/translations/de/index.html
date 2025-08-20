@@ -1,54 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="canonical" href="site/sitemap/table/index.html">
-    <title>Bemeda - Healthcare Talent Platform</title>
-            <link rel="stylesheet" href="site/assets/global/css/language-switcher.css">
-        <style>
-            /* Language Switcher - Top Right Only */
-            .language-switcher-container {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                z-index: 1001;
-            }
-            
-            .language-switcher {
-                display: flex;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                overflow: hidden;
-            }
-            
-            .lang-btn {
-                padding: 8px 16px;
-                border: none;
-                background: white;
-                color: #666;
-                cursor: pointer;
-                transition: all 0.2s;
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-            
-            .lang-btn:hover {
-                background: #f8f9fa;
-                color: #0066cc;
-            }
-            
-            .lang-btn.active {
-                background: #0066cc;
-                color: white;
-            }
-            
-            /* Container positioning for language switcher */
-            .container {
-                position: relative;
-            }
-        </style>
+    <title>Bemeda - Gesundheitspersonal-Plattform</title>
+    <link rel="stylesheet" href="../global/css/language-switcher.css">
     <style>
         * {
             margin: 0;
@@ -112,45 +68,6 @@
         
         .nav-item:last-child .nav-link {
             border-right: none;
-        }
-        
-        /* Dropdown Styles */
-        .dropdown {
-            position: relative;
-        }
-        
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 0 0 8px 8px;
-            z-index: 1000;
-        }
-        
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        
-        .dropdown-content a {
-            display: block;
-            padding: 12px 20px;
-            text-decoration: none;
-            color: #666;
-            border-bottom: 1px solid #eee;
-            transition: background 0.2s;
-        }
-        
-        .dropdown-content a:last-child {
-            border-bottom: none;
-        }
-        
-        .dropdown-content a:hover {
-            background: #f8f9fa;
-            color: #0066cc;
         }
         
         .header {
@@ -332,11 +249,6 @@
             transform: translateX(4px);
         }
         
-        .top-nav {
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -354,132 +266,110 @@
 </head>
 <body>
     <div class="container">
-        <!-- Language Switcher - Top Right -->
-        <div class="language-switcher-container">
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="de">DE</button>
-            </div>
-        </div>
-        
         <!-- Top Navigation -->
         <nav class="top-nav">
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="/index.html" class="nav-link active" data-i18n="nav.index">Index</a>
+                    <a href="/index.html" class="nav-link active">Startseite</a>
                 </li>
                 <li class="nav-item">
-                    <a href="site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="site/sitemap/tmp/index.html" class="nav-link" data-i18n="nav.tmp">TMP</a>
-                    <div class="dropdown-content">
-                        <a href="site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
-                        <a href="site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
-                        <a href="site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
-                    </div>
+                    <a href="mvp-job.html" class="nav-link">MVP-JOB</a>
                 </li>
                 <li class="nav-item">
-                    <a href="site/sitemap/table/index.html" class="nav-link">Table</a>
+                    <a href="mvp-tmp.html" class="nav-link">MVP-TMP</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="site/sitemap/admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
-                    <div class="dropdown-content">
-                        <a href="site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
-                        <a href="site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
-                        <a href="site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
-                        <a href="site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
-                    </div>
+                <li class="nav-item">
+                    <a href="scenarios-table.html" class="nav-link">Szenarien</a>
                 </li>
             </ul>
         </nav>
         
         <div class="header">
-            <h1>Bemeda Healthcare Platform</h1>
-            <p>Connecting Healthcare Talent with Opportunity</p>
-            <a href="oldsite/index-archive.html" class="archive-link">View Previous Documentation →</a>
+            <h1>Bemeda Gesundheitsplattform</h1>
+            <p>Wir verbinden Gesundheitstalente mit Chancen</p>
+            <a href="../index-archive.html" class="archive-link">Vorherige Dokumentation ansehen →</a>
         </div>
         
         <!-- Vision, Mission, Strategy Cards -->
         <div class="vms-section">
             <div class="card">
                 <h3>Vision</h3>
-                <p>To become Switzerland's leading digital platform for medical personnel services, seamlessly connecting healthcare talent with opportunity while ensuring full AVG compliance and exceptional user experience.</p>
+                <p>Die führende digitale Plattform der Schweiz für medizinische Personaldienstleistungen zu werden, die Gesundheitstalente nahtlos mit Chancen verbindet und dabei volle AVG-Konformität und außergewöhnliche Benutzererfahrung gewährleistet.</p>
             </div>
             
             <div class="card">
                 <h3>Mission</h3>
-                <p>We transform healthcare staffing through innovative technology, providing organizations with instant access to qualified medical professionals while empowering healthcare workers with flexible career opportunities.</p>
+                <p>Wir transformieren die Personalvermittlung im Gesundheitswesen durch innovative Technologie und bieten Organisationen sofortigen Zugang zu qualifizierten medizinischen Fachkräften, während wir Gesundheitspersonal flexible Karrieremöglichkeiten ermöglichen.</p>
             </div>
             
             <div class="card">
-                <h3>Strategy</h3>
-                <p>• Dual-model platform: permanent & temporary staffing<br>
-                   • Medical sector specialization with FMH verification<br>
-                   • AI-powered matching technology<br>
-                   • Phased market entry across Switzerland<br>
-                   • Success-based revenue model</p>
+                <h3>Strategie</h3>
+                <p>• Dual-Modell-Plattform: Fest- und Temporäranstellung<br>
+                   • Spezialisierung auf den Medizinsektor mit FMH-Verifizierung<br>
+                   • KI-gestützte Matching-Technologie<br>
+                   • Phasenweiser Markteintritt in der ganzen Schweiz<br>
+                   • Erfolgsbasiertes Ertragsmodell</p>
             </div>
         </div>
         
-        <!-- Platform Components Section -->
+        <!-- MVP Cards Section -->
         <div class="mvp-cards-section">
-            <h2 class="mvp-cards-title">Platform Components</h2>
+            <h2 class="mvp-cards-title">Plattform MVP-Komponenten</h2>
             <div class="mvp-cards">
-                <!-- JOB-Vermittlung Card -->
-                <a href="site/sitemap/job/index.html" class="mvp-card vermittlung">
+                <!-- MVP Vermittlung Card -->
+                <a href="mvp-job.html" class="mvp-card vermittlung">
                     <span class="mvp-icon">📋</span>
-                    <h3 class="mvp-title">JOB-Vermittlung</h3>
-                    <p class="mvp-subtitle">Permanent Job Placement</p>
+                    <h3 class="mvp-title">MVP Vermittlung</h3>
+                    <p class="mvp-subtitle">Festanstellung</p>
                     <p class="mvp-description">
-                        Comprehensive recruitment and career matching platform focused on permanent healthcare positions. 
-                        Features AI-powered matching, credential verification, and long-term placement success.
+                        Umfassende Rekrutierungs- und Karriere-Matching-Plattform für dauerhafte Positionen im Gesundheitswesen. 
+                        Mit KI-gestütztem Matching, Credential-Verifizierung und langfristigem Vermittlungserfolg.
                     </p>
                     <div class="mvp-stats">
                         <div class="mvp-stat">
                             <div class="mvp-stat-number">5</div>
-                            <div class="mvp-stat-label">Scenarios</div>
+                            <div class="mvp-stat-label">Szenarien</div>
                         </div>
                         <div class="mvp-stat">
                             <div class="mvp-stat-number">3</div>
-                            <div class="mvp-stat-label">Players</div>
+                            <div class="mvp-stat-label">Personas</div>
                         </div>
                         <div class="mvp-stat">
                             <div class="mvp-stat-number">85%</div>
-                            <div class="mvp-stat-label">Complete</div>
+                            <div class="mvp-stat-label">Fertig</div>
                         </div>
                     </div>
-                    <div class="mvp-cta">Explore Permanent Placement Platform</div>
+                    <div class="mvp-cta">Vermittlungs-MVP erkunden</div>
                 </a>
                 
-                <!-- TMP-Verleih Card -->
-                <a href="site/sitemap/tmp/index.html" class="mvp-card verleih">
+                <!-- MVP Verleih Card -->
+                <a href="mvp-tmp.html" class="mvp-card verleih">
                     <span class="mvp-icon">⏰</span>
-                    <h3 class="mvp-title">TMP-Verleih</h3>
-                    <p class="mvp-subtitle">Temporary Staffing & Pool Management</p>
+                    <h3 class="mvp-title">MVP Verleih</h3>
+                    <p class="mvp-subtitle">Temporäreinsätze & Pool-Management</p>
                     <p class="mvp-description">
-                        Dynamic temporary staffing solution with pool worker management, emergency deployment, 
-                        and flexible scheduling. Optimized for rapid response and multi-facility coordination.
+                        Dynamische Temporärvermittlungslösung mit Pool-Worker-Management, Notfalleinsätzen 
+                        und flexibler Einsatzplanung. Optimiert für schnelle Reaktion und standortübergreifende Koordination.
                     </p>
                     <div class="mvp-stats">
                         <div class="mvp-stat">
                             <div class="mvp-stat-number">7</div>
-                            <div class="mvp-stat-label">Scenarios</div>
+                            <div class="mvp-stat-label">Szenarien</div>
                         </div>
                         <div class="mvp-stat">
                             <div class="mvp-stat-number">3</div>
-                            <div class="mvp-stat-label">Categories</div>
+                            <div class="mvp-stat-label">Personas</div>
                         </div>
                         <div class="mvp-stat">
                             <div class="mvp-stat-number">65%</div>
-                            <div class="mvp-stat-label">Complete</div>
+                            <div class="mvp-stat-label">Fertig</div>
                         </div>
                     </div>
-                    <div class="mvp-cta">Explore Temporary Staffing Platform</div>
+                    <div class="mvp-cta">Verleih-MVP erkunden</div>
                 </a>
             </div>
         </div>
     </div>
-    <script src="global/js/language-switcher.js"></script>
+    <script src="../global/js/language-switcher.js"></script>
 </body>
 </html>

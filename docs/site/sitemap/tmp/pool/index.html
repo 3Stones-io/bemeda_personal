@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMP-Pool - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: visible;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #ef6c00;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #ef6c00;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Scenario Cards */
+        .scenarios-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #ef6c00;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .scenario-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            border-left: 4px solid #ef6c00;
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-badge {
+            background: #ef6c00;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        
+        .scenario-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        
+        .scenario-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .scenario-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        
+        .scenario-participants {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .participant-chip {
+            background: #fff3e0;
+            color: #ef6c00;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active { background: #e8f5e8; color: #2e7d32; }
+        .status-development { background: #fff3e0; color: #ef6c00; }
+        .status-planning { background: #f3e5f5; color: #7b1fa2; }
+        
+        /* Language Switcher Container */
+        .language-switcher-container {
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .language-switcher {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.8);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        
+        .lang-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 40px;
+        }
+        
+        .lang-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+            border-color: #999;
+        }
+        
+        .lang-btn.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        
+        .top-nav {
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .language-switcher-container {
+                justify-content: center;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/tmp/index.html" class="nav-link active" data-i18n="nav.tmp">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="/site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="index.html" data-i18n="nav.tmp-pool" style="background: #fff3e0;">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/table/index.html" class="nav-link" data-i18n="nav.table-view">Table</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
+                        <a href="/site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="/site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="/site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to TMP-Verleih</a>
+            <h1>👥 TMP-Pool</h1>
+            <p>Dedicated facility pools and multi-site professionals</p>
+        </div>
+        
+        <!-- Scenarios Section -->
+        <div class="scenarios-section">
+            <h2 class="section-title">TMP-Pool Scenarios</h2>
+            <div class="scenario-cards">
+                <!-- Scenario 1 - Active Scenario -->
+                <a href="s1/index.html" class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">Scenario 1</div>
+                            <h3 class="scenario-title">Hospital Pool Membership</h3>
+                            <span class="status-badge status-active">Active Development</span>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Healthcare worker joins dedicated hospital pool for regular assignments. Platform manages pool membership, rate structures, scheduling preferences, and ensures familiarity with facility protocols.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🏥 Hospital</span>
+                            <span class="participant-chip">👥 Pool Worker</span>
+                            <span class="participant-chip">📅 Scheduler</span>
+                        </div>
+                        <div>Priority: High</div>
+                    </div>
+                </a>
+                
+                <!-- Scenario 2 - Development -->
+                <a href="s2/index.html" class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">Scenario 2</div>
+                            <h3 class="scenario-title">Multi-Facility Pool Professional</h3>
+                            <span class="status-badge status-development">In Development</span>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Experienced nurse maintains pool memberships across 3-5 healthcare facilities. Platform coordinates availability, handles overlapping schedules, and optimizes rate negotiation across multiple sites.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🏥 Multi-Sites</span>
+                            <span class="participant-chip">👥 Pool Worker</span>
+                            <span class="participant-chip">🔄 Coordinator</span>
+                        </div>
+                        <div>Priority: Medium</div>
+                    </div>
+                </a>
+                
+                <!-- Scenario 3 - Planning -->
+                <a href="s3/index.html" class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">Scenario 3</div>
+                            <h3 class="scenario-title">Regional Pool Network</h3>
+                            <span class="status-badge status-planning">Planning</span>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Healthcare region creates shared pool network for emergency coverage. Platform manages cross-facility credentials, standardized rates, and regional deployment for critical staffing shortages.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🌐 Network</span>
+                            <span class="participant-chip">👥 Pool Workers</span>
+                            <span class="participant-chip">🚨 Emergency Mgmt</span>
+                        </div>
+                        <div>Priority: Medium</div>
+                    </div>
+                </a>
+                
+                <!-- Scenario 4 - Emergency Shift Coverage -->
+                <a href="s4/index.html" class="scenario-card">
+                    <div class="scenario-header">
+                        <div class="scenario-left">
+                            <div class="scenario-badge">Scenario 4</div>
+                            <h3 class="scenario-title">Emergency Shift Coverage</h3>
+                            <span class="status-badge status-active">Active Development</span>
+                        </div>
+                    </div>
+                    <div class="scenario-description">
+                        Hospital needs immediate nursing coverage for unexpected staff shortage. Platform matches available pool workers within 2-hour window with automated deployment and rate optimization.
+                    </div>
+                    <div class="scenario-meta">
+                        <div class="scenario-participants">
+                            <span class="participant-chip">🏥 Hospital</span>
+                            <span class="participant-chip">👥 Pool Worker</span>
+                            <span class="participant-chip">🚨 Emergency</span>
+                        </div>
+                        <div>Priority: Critical</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="../../global/js/language-switcher.js"></script>
+</body>
+</html>

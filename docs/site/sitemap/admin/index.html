@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bemeda Admin Portal - Platform Management</title>
+    <link rel="stylesheet" href="../../assets/global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: visible;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+            position: relative;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+            min-width: 200px;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Scenarios Grid */
+        .scenarios-section {
+            margin-bottom: 40px;
+        }
+        
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            border-color: #0066cc;
+        }
+        
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .scenario-icon {
+            font-size: 3rem;
+            width: 80px;
+            height: 80px;
+            background: #f0f8ff;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e0efff;
+        }
+        
+        .scenario-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .scenario-id {
+            background: #0066cc;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .scenario-description {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+        
+        .scenario-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .meta-item {
+            text-align: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .meta-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .meta-value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .scenario-features {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .scenario-features li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: #666;
+        }
+        
+        .scenario-features li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: 600;
+        }
+        
+        /* Admin Overview */
+        .admin-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+        
+        .overview-card {
+            text-align: center;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .overview-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+        
+        .overview-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        
+        .overview-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .scenario-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/tmp/index.html" class="nav-link" data-i18n="nav.tmp">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="/site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="/site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/sitemap/table/index.html" class="nav-link">Table</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="/site/sitemap/admin/index.html" class="nav-link active" data-i18n="nav.admin">Admin</a>
+                    <div class="dropdown-content">
+                        <a href="/site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
+                        <a href="/site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="/site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="/site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        
+        <a href="/index.html" class="back-link">
+            ← Back to Main Index
+        </a>
+        
+        <div class="header">
+            <h1>🛡️ Bemeda Admin Portal</h1>
+            <p>Comprehensive platform management and administrative control center for healthcare recruitment operations</p>
+        </div>
+        
+        <!-- Admin Overview -->
+        <div class="admin-overview">
+            <h2 style="text-align: center; margin-bottom: 32px; color: #1a1a1a;">Administrative Capabilities</h2>
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-icon">📊</div>
+                    <h3 class="overview-title">Platform Monitoring</h3>
+                    <p class="overview-description">Real-time system health, user activity, and performance metrics</p>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">🎫</div>
+                    <h3 class="overview-title">Support Management</h3>
+                    <p class="overview-description">Handle user queries, technical issues, and support tickets</p>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">📝</div>
+                    <h3 class="overview-title">Content Control</h3>
+                    <p class="overview-description">Manage policies, compliance requirements, and platform content</p>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">⚙️</div>
+                    <h3 class="overview-title">System Configuration</h3>
+                    <p class="overview-description">Platform settings, integrations, and feature management</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scenarios Section -->
+        <div class="scenarios-section">
+            <div class="scenarios-grid">
+                <!-- Scenario 1: Platform Dashboard -->
+                <div class="scenario-card" onclick="window.location.href='s1/index.html'">
+                    <div class="scenario-header">
+                        <div class="scenario-icon">📊</div>
+                        <div>
+                            <span class="scenario-id">ADMIN-S1</span>
+                            <h2 class="scenario-title">Platform Dashboard Management</h2>
+                        </div>
+                    </div>
+                    <p class="scenario-description">
+                        Monitor platform health, analyze user activity patterns, track system performance metrics, and oversee overall business operations.
+                    </p>
+                    <div class="scenario-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Complexity</div>
+                            <div class="meta-value">Medium</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Users</div>
+                            <div class="meta-value">Admin Team</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                    </div>
+                    <ul class="scenario-features">
+                        <li>Real-time platform health monitoring</li>
+                        <li>User activity and engagement analytics</li>
+                        <li>System performance metrics tracking</li>
+                        <li>Business intelligence dashboards</li>
+                    </ul>
+                </div>
+                
+                <!-- Scenario 2: User Support -->
+                <div class="scenario-card" onclick="window.location.href='s2/index.html'">
+                    <div class="scenario-header">
+                        <div class="scenario-icon">🎫</div>
+                        <div>
+                            <span class="scenario-id">ADMIN-S2</span>
+                            <h2 class="scenario-title">User Support & Query Management</h2>
+                        </div>
+                    </div>
+                    <p class="scenario-description">
+                        Handle user support tickets, respond to questions from healthcare organizations and professionals, and manage technical assistance.
+                    </p>
+                    <div class="scenario-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Complexity</div>
+                            <div class="meta-value">Medium</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Users</div>
+                            <div class="meta-value">Support Team</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                    </div>
+                    <ul class="scenario-features">
+                        <li>Support ticket management system</li>
+                        <li>Multi-channel communication tools</li>
+                        <li>Knowledge base and FAQ management</li>
+                        <li>Response time tracking and SLA monitoring</li>
+                    </ul>
+                </div>
+                
+                <!-- Scenario 3: Content Management -->
+                <div class="scenario-card" onclick="window.location.href='s3/index.html'">
+                    <div class="scenario-header">
+                        <div class="scenario-icon">📝</div>
+                        <div>
+                            <span class="scenario-id">ADMIN-S3</span>
+                            <h2 class="scenario-title">Content & Policy Management</h2>
+                        </div>
+                    </div>
+                    <p class="scenario-description">
+                        Manage platform policies, compliance requirements, certification standards, and regulatory content for Swiss healthcare.
+                    </p>
+                    <div class="scenario-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Complexity</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Users</div>
+                            <div class="meta-value">Compliance Team</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">Critical</div>
+                        </div>
+                    </div>
+                    <ul class="scenario-features">
+                        <li>Regulatory compliance management</li>
+                        <li>Policy and terms updates</li>
+                        <li>Certification requirement tracking</li>
+                        <li>Content approval workflows</li>
+                    </ul>
+                </div>
+                
+                <!-- Scenario 4: System Settings -->
+                <div class="scenario-card" onclick="window.location.href='s4/index.html'">
+                    <div class="scenario-header">
+                        <div class="scenario-icon">⚙️</div>
+                        <div>
+                            <span class="scenario-id">ADMIN-S4</span>
+                            <h2 class="scenario-title">System Configuration & Settings</h2>
+                        </div>
+                    </div>
+                    <p class="scenario-description">
+                        Configure platform settings, manage feature toggles, handle integrations, and control regional configurations.
+                    </p>
+                    <div class="scenario-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Complexity</div>
+                            <div class="meta-value">High</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Users</div>
+                            <div class="meta-value">Tech Team</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Priority</div>
+                            <div class="meta-value">Medium</div>
+                        </div>
+                    </div>
+                    <ul class="scenario-features">
+                        <li>Feature flag and toggle management</li>
+                        <li>Third-party integration configuration</li>
+                        <li>Regional and localization settings</li>
+                        <li>Security and access control management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../assets/global/js/language-switcher.js"></script>
+</body>
+</html>

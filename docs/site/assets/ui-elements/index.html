@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Elements - Bemeda Platform</title>
+    <link rel="stylesheet" href="../global/css/language-switcher.css">
+    <link rel="stylesheet" href="../global/css/custom.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .ui-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .ui-header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .ui-header p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Category Navigation */
+        .category-nav {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            position: sticky;
+            top: 20px;
+            z-index: 10;
+        }
+        
+        .category-list {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        
+        .category-link {
+            text-decoration: none;
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 8px;
+            white-space: nowrap;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .category-link:hover {
+            background: #f0f0f0;
+            color: #0066cc;
+            border-color: #0066cc;
+        }
+        
+        .category-link.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        
+        /* UI Element Sections */
+        .ui-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .section-description {
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+        }
+        
+        /* Element Grid */
+        .element-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .element-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        .element-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .element-preview {
+            padding: 24px;
+            background: #f8f9fa;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .element-info {
+            padding: 20px;
+            background: white;
+        }
+        
+        .element-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .element-usage {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .element-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: #e8f2ff;
+            color: #0066cc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        /* Code Examples */
+        .code-example {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+            overflow-x: auto;
+        }
+        
+        .code-example code {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .category-list {
+                justify-content: flex-start;
+            }
+            
+            .element-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ui-header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Example UI Components Styling */
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: #0052a3;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        
+        .select-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .card-component {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: #0066cc;
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        .alert-box {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .alert-info {
+            background: #e7f3ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .tabs-container {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 24px;
+        }
+        
+        .tab-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab-item:hover {
+            color: #0066cc;
+        }
+        
+        .tab-item.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip-text {
+            visibility: hidden;
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="ui-header">
+            <h1>UI Elements Library</h1>
+            <p>Comprehensive collection of user interface components used throughout the Bemeda platform</p>
+        </div>
+        
+        <!-- Category Navigation -->
+        <nav class="category-nav">
+            <div class="category-list">
+                <a href="#buttons" class="category-link active">Buttons</a>
+                <a href="#forms" class="category-link">Form Elements</a>
+                <a href="#cards" class="category-link">Cards</a>
+                <a href="#badges" class="category-link">Badges & Status</a>
+                <a href="#navigation" class="category-link">Navigation</a>
+                <a href="#feedback" class="category-link">Feedback</a>
+                <a href="#data" class="category-link">Data Display</a>
+                <a href="#modals" class="category-link">Modals</a>
+            </div>
+        </nav>
+        
+        <!-- Buttons Section -->
+        <section id="buttons" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">🔘</span>
+                <h2 class="section-title">Buttons</h2>
+            </div>
+            <p class="section-description">
+                Interactive elements that trigger actions. Used for form submissions, navigation, and user interactions.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <button class="btn-primary">Primary Button</button>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Primary Button</h3>
+                        <p class="element-usage">Main actions like Submit, Save, Continue</p>
+                        <div class="element-tags">
+                            <span class="tag">Interactive</span>
+                            <span class="tag">High Priority</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="element-card">
+                    <div class="element-preview">
+                        <button class="btn-secondary">Secondary Button</button>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Secondary Button</h3>
+                        <p class="element-usage">Alternative actions like Cancel, Back, Reset</p>
+                        <div class="element-tags">
+                            <span class="tag">Interactive</span>
+                            <span class="tag">Low Priority</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="element-card">
+                    <div class="element-preview">
+                        <button class="btn-success">Success Button</button>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Success Button</h3>
+                        <p class="element-usage">Positive actions like Approve, Accept, Confirm</p>
+                        <div class="element-tags">
+                            <span class="tag">Interactive</span>
+                            <span class="tag">Positive</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="element-card">
+                    <div class="element-preview">
+                        <button class="btn-danger">Danger Button</button>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Danger Button</h3>
+                        <p class="element-usage">Destructive actions like Delete, Remove, Reject</p>
+                        <div class="element-tags">
+                            <span class="tag">Interactive</span>
+                            <span class="tag">Warning</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Forms Section -->
+        <section id="forms" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">📝</span>
+                <h2 class="section-title">Form Elements</h2>
+            </div>
+            <p class="section-description">
+                Input components for collecting user data and preferences.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <input type="text" class="input-field" placeholder="Enter text...">
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Text Input</h3>
+                        <p class="element-usage">Single-line text entry for names, emails, etc.</p>
+                        <div class="element-tags">
+                            <span class="tag">Input</span>
+                            <span class="tag">Data Entry</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="element-card">
+                    <div class="element-preview">
+                        <select class="select-field">
+                            <option>Select an option...</option>
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                        </select>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Select Dropdown</h3>
+                        <p class="element-usage">Choose from predefined options</p>
+                        <div class="element-tags">
+                            <span class="tag">Input</span>
+                            <span class="tag">Selection</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="element-card">
+                    <div class="element-preview">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="demo-checkbox">
+                            <label for="demo-checkbox">I agree to the terms</label>
+                        </div>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Checkbox</h3>
+                        <p class="element-usage">Binary choices, multiple selections</p>
+                        <div class="element-tags">
+                            <span class="tag">Input</span>
+                            <span class="tag">Boolean</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cards Section -->
+        <section id="cards" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">🃏</span>
+                <h2 class="section-title">Cards</h2>
+            </div>
+            <p class="section-description">
+                Container components for grouping related content.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <div class="card-component">
+                            <h3 style="margin-bottom: 12px;">Card Title</h3>
+                            <p style="color: #666;">This is a basic card component with content.</p>
+                        </div>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Basic Card</h3>
+                        <p class="element-usage">Content containers for profiles, listings, etc.</p>
+                        <div class="element-tags">
+                            <span class="tag">Container</span>
+                            <span class="tag">Layout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Badges Section -->
+        <section id="badges" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">🏷️</span>
+                <h2 class="section-title">Badges & Status</h2>
+            </div>
+            <p class="section-description">
+                Visual indicators for status, labels, and categorization.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <span class="status-badge status-active">Active</span>
+                            <span class="status-badge status-pending">Pending</span>
+                            <span class="status-badge status-completed">Completed</span>
+                            <span class="status-badge status-error">Error</span>
+                        </div>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Status Badges</h3>
+                        <p class="element-usage">Show application status, user roles, task progress</p>
+                        <div class="element-tags">
+                            <span class="tag">Visual</span>
+                            <span class="tag">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Navigation Section -->
+        <section id="navigation" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">🧭</span>
+                <h2 class="section-title">Navigation</h2>
+            </div>
+            <p class="section-description">
+                Components for site navigation and user wayfinding.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <div class="tabs-container">
+                            <div class="tab-item active">Overview</div>
+                            <div class="tab-item">Details</div>
+                            <div class="tab-item">Settings</div>
+                        </div>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Tabs</h3>
+                        <p class="element-usage">Switch between different views or sections</p>
+                        <div class="element-tags">
+                            <span class="tag">Navigation</span>
+                            <span class="tag">Interactive</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Feedback Section -->
+        <section id="feedback" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">💬</span>
+                <h2 class="section-title">Feedback & Alerts</h2>
+            </div>
+            <p class="section-description">
+                Components for user notifications and system messages.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <div style="width: 100%;">
+                            <div class="alert-box alert-info">ℹ️ Information message</div>
+                            <div class="alert-box alert-success">✅ Success message</div>
+                            <div class="alert-box alert-warning">⚠️ Warning message</div>
+                            <div class="alert-box alert-error">❌ Error message</div>
+                        </div>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Alert Messages</h3>
+                        <p class="element-usage">System feedback, notifications, warnings</p>
+                        <div class="element-tags">
+                            <span class="tag">Feedback</span>
+                            <span class="tag">Status</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="element-card">
+                    <div class="element-preview">
+                        <div class="tooltip">
+                            Hover over me
+                            <span class="tooltip-text">This is a helpful tooltip!</span>
+                        </div>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Tooltip</h3>
+                        <p class="element-usage">Contextual help and additional information</p>
+                        <div class="element-tags">
+                            <span class="tag">Help</span>
+                            <span class="tag">Interactive</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Data Display Section -->
+        <section id="data" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h2 class="section-title">Data Display</h2>
+            </div>
+            <p class="section-description">
+                Components for presenting information and metrics.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <div style="width: 100%;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                            <p style="text-align: center; margin-top: 8px; color: #666;">75% Complete</p>
+                        </div>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Progress Bar</h3>
+                        <p class="element-usage">Show completion status, loading states, quotas</p>
+                        <div class="element-tags">
+                            <span class="tag">Visual</span>
+                            <span class="tag">Progress</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Modals Section -->
+        <section id="modals" class="ui-section">
+            <div class="section-header">
+                <span class="section-icon">🪟</span>
+                <h2 class="section-title">Modals & Overlays</h2>
+            </div>
+            <p class="section-description">
+                Overlay components for focused interactions and confirmations.
+            </p>
+            
+            <div class="element-grid">
+                <div class="element-card">
+                    <div class="element-preview">
+                        <button class="btn-primary" onclick="alert('Modal would open here')">Open Modal</button>
+                    </div>
+                    <div class="element-info">
+                        <h3 class="element-name">Modal Dialog</h3>
+                        <p class="element-usage">Confirmations, forms, detailed information</p>
+                        <div class="element-tags">
+                            <span class="tag">Overlay</span>
+                            <span class="tag">Interactive</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script src="../global/js/language-switcher.js"></script>
+    <script src="../global/js/navigation.js"></script>
+    <script>
+        // Category navigation smooth scrolling
+        document.querySelectorAll('.category-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                // Update active state
+                document.querySelectorAll('.category-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Smooth scroll to section
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+        
+        // Update active category on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.ui-section');
+            const scrollPosition = window.scrollY + 200;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.category-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector(`.category-link[href="#${sectionId}"]`)?.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

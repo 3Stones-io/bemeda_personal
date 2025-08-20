@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profiles - Bemeda Platform</title>
+    <link rel="stylesheet" href="../global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            text-align: center;
+            border-left: 4px solid #ef6c00;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        /* Users Grid */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #ef6c00;
+            transition: all 0.2s;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ef6c00;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .user-info h3 {
+            font-size: 1.3rem;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .user-role {
+            color: #ef6c00;
+            font-weight: 500;
+        }
+        
+        .user-description {
+            color: #666;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+        
+        .user-scenarios {
+            margin-bottom: 16px;
+        }
+        
+        .user-scenarios h4 {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .scenario-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .scenario-tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .scenario-tag:hover {
+            background: #e0e0e0;
+            text-decoration: none;
+        }
+        
+        .view-profile {
+            display: inline-block;
+            background: #ef6c00;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        
+        .view-profile:hover {
+            background: #d84315;
+            text-decoration: none;
+            color: white;
+        }
+        
+        /* Language Switcher Container */
+        .language-switcher-container {
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .language-switcher {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.8);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        
+        .lang-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 40px;
+        }
+        
+        .lang-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+            border-color: #999;
+        }
+        
+        .lang-btn.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        
+        .top-nav {
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .language-switcher-container {
+                justify-content: center;
+            }
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/index.html" class="nav-link" data-i18n="nav.index">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="../tmp/index.html" class="nav-link" data-i18n="nav.tmp">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="../tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="../tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="../tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="../table/index.html" class="nav-link" data-i18n="nav.table-view">Table View</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../team/index.html" class="nav-link" data-i18n="nav.team">Team</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../projects/index.html" class="nav-link" data-i18n="nav.projects">Projects</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>👥 User Profiles</h1>
+            <p>Cross-scenario personas that appear throughout the platform</p>
+        </div>
+        
+        <!-- Users Grid -->
+        <div class="users-grid">
+            <!-- Dr. Klaus Weber -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-avatar">KW</div>
+                    <div class="user-info">
+                        <h3>Dr. Klaus Weber</h3>
+                        <div class="user-role">Hospital HR Director</div>
+                    </div>
+                </div>
+                <div class="user-description">
+                    Experienced healthcare administrator focused on strategic staffing solutions and operational efficiency. Drives organizational adoption of new technologies.
+                </div>
+                <div class="user-scenarios">
+                    <h4>Appears in scenarios:</h4>
+                    <div class="scenario-tags">
+                        <a href="../job/s1/index.html" class="scenario-tag">j_s1 (P1 - Organisation)</a>
+                        <a href="../tmp/temporary/s1/index.html" class="scenario-tag">t_tt_s1 (P1 - Hospital)</a>
+                        <a href="../projects/index.html" class="scenario-tag">Project Management</a>
+                    </div>
+                </div>
+                <a href="dr-klaus-weber.html" class="view-profile">View Full Profile</a>
+            </div>
+            
+            <!-- Candidate Maria -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-avatar">CM</div>
+                    <div class="user-info">
+                        <h3>Candidate Maria</h3>
+                        <div class="user-role">Healthcare Job Seeker</div>
+                    </div>
+                </div>
+                <div class="user-description">
+                    Qualified healthcare professional seeking permanent positions. Represents typical job seekers navigating the platform's recruitment processes.
+                </div>
+                <div class="user-scenarios">
+                    <h4>Appears in scenarios:</h4>
+                    <div class="scenario-tags">
+                        <a href="../job/s1/index.html" class="scenario-tag">j_s1 (P2 - JobSeeker)</a>
+                        <span class="scenario-tag">Job Applications</span>
+                        <span class="scenario-tag">Profile Management</span>
+                    </div>
+                </div>
+                <a href="candidate-maria.html" class="view-profile">View Full Profile</a>
+            </div>
+            
+            <!-- Nurse Andreas -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-avatar">NA</div>
+                    <div class="user-info">
+                        <h3>Nurse Andreas</h3>
+                        <div class="user-role">Pool Worker & Specialist</div>
+                    </div>
+                </div>
+                <div class="user-description">
+                    Experienced nurse seeking flexible work opportunities through pool membership and temporary assignments. Values work-life balance and variety.
+                </div>
+                <div class="user-scenarios">
+                    <h4>Appears in scenarios:</h4>
+                    <div class="scenario-tags">
+                        <a href="../tmp/pool/s1/index.html" class="scenario-tag">t_tp_s1 (Pool Member)</a>
+                        <a href="../tmp/temporary/s1/index.html" class="scenario-tag">t_tt_s1 (P2 - Specialist)</a>
+                        <span class="scenario-tag">Pool Work</span>
+                    </div>
+                </div>
+                <a href="nurse-andreas.html" class="view-profile">View Full Profile</a>
+            </div>
+            
+            <!-- Specialist Sarah -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-avatar">SS</div>
+                    <div class="user-info">
+                        <h3>Specialist Sarah</h3>
+                        <div class="user-role">Temporary Assignment Specialist</div>
+                    </div>
+                </div>
+                <div class="user-description">
+                    Highly skilled healthcare specialist taking on project-based assignments. Focuses on challenging, short-term positions with specialized requirements.
+                </div>
+                <div class="user-scenarios">
+                    <h4>Appears in scenarios:</h4>
+                    <div class="scenario-tags">
+                        <a href="../tmp/temporary/s1/index.html" class="scenario-tag">t_tt_s1 (P2 - Specialist)</a>
+                        <span class="scenario-tag">Temporary Assignments</span>
+                        <span class="scenario-tag">Project Work</span>
+                    </div>
+                </div>
+                <a href="specialist-sarah.html" class="view-profile">View Full Profile</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../global/js/language-switcher.js"></script>
+</body>
+</html>
