@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Feature Table | Bemeda Platform</title>
+    <link rel="stylesheet" href="../../assets/global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .overall-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .unified-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            overflow-x: auto;
+        }
+        
+        .unified-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .unified-table th,
+        .unified-table td {
+            padding: 16px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        
+        .unified-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .unified-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .feature-id {
+            background: #0066cc;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .feature-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .feature-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .status-cell {
+            text-align: center;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+            min-width: 100px;
+        }
+        
+        .status-complete { background: #e8f5e8; color: #2e7d32; }
+        .status-development { background: #fff3e0; color: #ef6c00; }
+        .status-testing { background: #e3f2fd; color: #1976d2; }
+        .status-planning { background: #f3e5f5; color: #7b1fa2; }
+        .status-blocked { background: #ffebee; color: #c62828; }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            width: 80px;
+            margin: 0 auto;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4caf50;
+            transition: width 0.3s ease;
+        }
+        
+        .overall-progress {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .view-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border: 1px solid #0066cc;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .view-link:hover {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .filters {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .unified-table {
+                font-size: 0.9rem;
+            }
+            
+            .unified-table th,
+            .unified-table td {
+                padding: 12px 8px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2rem;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../../index.html" class="back-link">← Back to Main Dashboard</a>
+            <h1 class="header-title">Unified Feature Table</h1>
+            <p class="header-description">
+                Complete overview of all platform features with progress tracking across business analysis, 
+                design, testing, and technical implementation. Single source of truth for project status.
+            </p>
+            
+            <div class="overall-stats">
+                <div class="stat-card">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Total Features</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">28</div>
+                    <div class="stat-label">Components</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">78%</div>
+                    <div class="stat-label">Overall Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Team Members</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Status</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'status')">
+                        <option value="">All Statuses</option>
+                        <option value="complete">Complete</option>
+                        <option value="development">In Development</option>
+                        <option value="testing">Testing</option>
+                        <option value="planning">Planning</option>
+                        <option value="blocked">Blocked</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Progress</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'progress')">
+                        <option value="">All Progress Levels</option>
+                        <option value="high">High (80%+)</option>
+                        <option value="medium">Medium (40-79%)</option>
+                        <option value="low">Low (0-39%)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Feature</label>
+                    <select class="filter-select" onchange="filterTable(this.value, 'feature')">
+                        <option value="">All Features</option>
+                        <option value="job-search">Job Search</option>
+                        <option value="user-profiles">User Profiles</option>
+                        <option value="application">Application Management</option>
+                        <option value="communication">Communication</option>
+                        <option value="job-posting">Job Posting Tools</option>
+                        <option value="contract">Contract Management</option>
+                        <option value="infrastructure">Platform Infrastructure</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="unified-table-container">
+            <table class="unified-table" id="unifiedTable">
+                <thead>
+                    <tr>
+                        <th>Feature ID</th>
+                        <th>Feature Name & Description</th>
+                        <th>Business Status</th>
+                        <th>Design Status</th>
+                        <th>Testing Status</th>
+                        <th>Technical Status</th>
+                        <th>Overall Progress</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Job Search & Discovery -->
+                    <tr data-feature="job-search" data-status="development" data-progress="high">
+                        <td><span class="feature-id">F001</span></td>
+                        <td>
+                            <div class="feature-name">Job Search & Discovery</div>
+                            <div class="feature-description">
+                                Advanced job search with filtering, location search, salary information, 
+                                and email notifications across 25+ healthcare professions.
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-testing">🧪 Testing</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <div class="overall-progress">84%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 84%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="../features/job-search-discovery/" class="view-link">View →</a>
+                        </td>
+                    </tr>
+                    
+                    <!-- User Profiles -->
+                    <tr data-feature="user-profiles" data-status="development" data-progress="high">
+                        <td><span class="feature-id">F002</span></td>
+                        <td>
+                            <div class="feature-name">User Profiles & Resume Builder</div>
+                            <div class="feature-description">
+                                Complete profile creation with medical specialty selection, resume builder, 
+                                portfolio management, and privacy controls.
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-testing">🧪 Testing</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <div class="overall-progress">89%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 89%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="../features/user-profiles/" class="view-link">View →</a>
+                        </td>
+                    </tr>
+                    
+                    <!-- Application Management -->
+                    <tr data-feature="application" data-status="development" data-progress="medium">
+                        <td><span class="feature-id">F003</span></td>
+                        <td>
+                            <div class="feature-name">Application Management</div>
+                            <div class="feature-description">
+                                Streamlined application process with custom cover letters, video applications, 
+                                status tracking, and duplicate prevention.
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-testing">🧪 Testing</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <div class="overall-progress">70%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="../features/application-management/" class="view-link">View →</a>
+                        </td>
+                    </tr>
+                    
+                    <!-- Communication -->
+                    <tr data-feature="communication" data-status="development" data-progress="medium">
+                        <td><span class="feature-id">F004</span></td>
+                        <td>
+                            <div class="feature-name">Communication & Messaging</div>
+                            <div class="feature-description">
+                                Real-time chat, document sharing, message history, and multi-language support 
+                                with email notifications and status alerts.
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-planning">📝 Planning</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <div class="overall-progress">59%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 59%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="../features/communication/" class="view-link">View →</a>
+                        </td>
+                    </tr>
+                    
+                    <!-- Job Posting Tools -->
+                    <tr data-feature="job-posting" data-status="development" data-progress="medium">
+                        <td><span class="feature-id">F005</span></td>
+                        <td>
+                            <div class="feature-name">Job Posting & Employer Tools</div>
+                            <div class="feature-description">
+                                Detailed job builder, video integration, candidate management, 
+                                rating system, and application analytics.
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-planning">📝 Planning</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 55%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <div class="overall-progress">53%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 53%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="../features/job-posting-tools/" class="view-link">View →</a>
+                        </td>
+                    </tr>
+                    
+                    <!-- Contract Management -->
+                    <tr data-feature="contract" data-status="development" data-progress="low">
+                        <td><span class="feature-id">F006</span></td>
+                        <td>
+                            <div class="feature-name">Contract & Offer Management</div>
+                            <div class="feature-description">
+                                Digital job offers, contract templates, variable processing, 
+                                digital signatures, and secure document storage.
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-planning">📝 Planning</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-planning">📝 Planning</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 35%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <div class="overall-progress">43%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 43%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="../features/contract-management/" class="view-link">View →</a>
+                        </td>
+                    </tr>
+                    
+                    <!-- Platform Infrastructure -->
+                    <tr data-feature="infrastructure" data-status="development" data-progress="high">
+                        <td><span class="feature-id">F007</span></td>
+                        <td>
+                            <div class="feature-name">Platform Infrastructure</div>
+                            <div class="feature-description">
+                                Multi-language support, rating system, media management, 
+                                background processing, and real-time features.
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-complete">✅ Complete</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-testing">🧪 Testing</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <span class="status-badge status-development">🔄 In Progress</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                        </td>
+                        <td class="status-cell">
+                            <div class="overall-progress">93%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 93%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="../features/platform-infrastructure/" class="view-link">View →</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        function filterTable(value, type) {
+            const rows = document.querySelectorAll('#unifiedTable tbody tr');
+            
+            rows.forEach(row => {
+                let show = true;
+                
+                if (value && type === 'status') {
+                    const status = row.dataset.status;
+                    show = status === value;
+                } else if (value && type === 'progress') {
+                    const progress = row.dataset.progress;
+                    show = progress === value;
+                } else if (value && type === 'feature') {
+                    const feature = row.dataset.feature;
+                    show = feature === value;
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        
+        // Reset other filters when one changes
+        function resetOtherFilters(currentFilter) {
+            const selects = document.querySelectorAll('.filter-select');
+            selects.forEach(select => {
+                if (select !== currentFilter) {
+                    select.value = '';
+                }
+            });
+        }
+        
+        // Add event listeners to reset other filters
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', function() {
+                resetOtherFilters(this);
+            });
+        });
+    </script>
+    <script src="../../assets/global/js/language-switcher.js"></script>
+</body>
+</html>

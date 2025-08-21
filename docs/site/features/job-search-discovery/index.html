@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F001 - Job Search & Discovery | Bemeda Platform</title>
+    <link rel="stylesheet" href="../../assets/global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #0066cc40;
+        }
+        
+        .feature-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .feature-id {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .feature-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 16px;
+        }
+        
+        .status-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .status-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--status-color);
+        }
+        
+        .status-card.business { --status-color: #0066cc; }
+        .status-card.design { --status-color: #9c27b0; }
+        .status-card.testing { --status-color: #f44336; }
+        .status-card.technical { --status-color: #4caf50; }
+        
+        .status-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--status-color);
+        }
+        
+        .status-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 4px;
+            background: var(--status-color);
+            color: white;
+            display: inline-block;
+        }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--status-color);
+            transition: width 0.3s ease;
+        }
+        
+        .participant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .participant-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--section-color);
+        }
+        
+        .participant-section.business { --section-color: #0066cc; }
+        .participant-section.design { --section-color: #9c27b0; }
+        .participant-section.testing { --section-color: #f44336; }
+        .participant-section.technical { --section-color: #4caf50; }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .section-owner {
+            color: var(--section-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .section-content {
+            margin-bottom: 20px;
+        }
+        
+        .content-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .content-item:last-child {
+            border-bottom: none;
+        }
+        
+        .content-icon {
+            font-size: 1.2rem;
+            color: var(--section-color);
+        }
+        
+        .content-text {
+            flex: 1;
+        }
+        
+        .content-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .content-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .content-link {
+            color: var(--section-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 12px;
+            border: 1px solid var(--section-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .content-link:hover {
+            background: var(--section-color);
+            color: white;
+        }
+        
+        .cross-references {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        
+        .cross-references h3 {
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        
+        .reference-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid #0066cc;
+        }
+        
+        .reference-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .reference-links {
+            list-style: none;
+        }
+        
+        .reference-links li {
+            margin-bottom: 6px;
+        }
+        
+        .reference-links a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .reference-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .quick-actions h3 {
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 12px 20px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: #0052a3;
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .feature-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .participant-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../../unified-table/" class="back-link">← Back to Unified Table</a>
+            
+            <div class="feature-header">
+                <span class="feature-icon">🔍</span>
+                <div>
+                    <span class="feature-id">F001</span>
+                    <h1 class="feature-title">Job Search & Discovery</h1>
+                </div>
+            </div>
+            
+            <p class="feature-description">
+                Advanced job search functionality with comprehensive filtering, location-based search, 
+                salary information display, and email notifications across 25+ healthcare professions. 
+                Enables healthcare professionals to find relevant opportunities efficiently.
+            </p>
+            
+            <div class="status-overview">
+                <div class="status-card business">
+                    <div class="status-label">Business Analysis</div>
+                    <div class="status-value">Complete</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+                
+                <div class="status-card design">
+                    <div class="status-label">UX/UI Design</div>
+                    <div class="status-value">75% Complete</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+                
+                <div class="status-card testing">
+                    <div class="status-label">Testing & QA</div>
+                    <div class="status-value">60% Complete</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
+                    </div>
+                </div>
+                
+                <div class="status-card technical">
+                    <div class="status-label">Technical Implementation</div>
+                    <div class="status-value">Complete</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="participant-grid">
+            <!-- Nicole's Business Analysis Section -->
+            <div class="participant-section business">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <div>
+                        <h3 class="section-title">Business Analysis</h3>
+                        <p class="section-owner">Nicole - Business Analysis</p>
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <div class="content-item">
+                        <span class="content-icon">📖</span>
+                        <div class="content-text">
+                            <div class="content-title">Business Scenarios</div>
+                            <div class="content-description">Complete user journey documentation</div>
+                        </div>
+                        <a href="business/scenarios.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">👤</span>
+                        <div class="content-text">
+                            <div class="content-title">User Stories</div>
+                            <div class="content-description">Detailed user story documentation</div>
+                        </div>
+                        <a href="business/user-stories.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">🎯</span>
+                        <div class="content-text">
+                            <div class="content-title">Use Cases</div>
+                            <div class="content-description">Comprehensive use case analysis</div>
+                        </div>
+                        <a href="business/use-cases.html" class="content-link">View</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Oghogho's UX/UI Design Section -->
+            <div class="participant-section design">
+                <div class="section-header">
+                    <span class="section-icon">🎨</span>
+                    <div>
+                        <h3 class="section-title">UX/UI Design</h3>
+                        <p class="section-owner">Oghogho - User Experience</p>
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <div class="content-item">
+                        <span class="content-icon">📱</span>
+                        <div class="content-text">
+                            <div class="content-title">Interface Mockups</div>
+                            <div class="content-description">Search interface design mockups</div>
+                        </div>
+                        <a href="design/mockups.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">🧩</span>
+                        <div class="content-text">
+                            <div class="content-title">Design Components</div>
+                            <div class="content-description">Search and filter components</div>
+                        </div>
+                        <a href="design/components.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">🔄</span>
+                        <div class="content-text">
+                            <div class="content-title">User Flows</div>
+                            <div class="content-description">Search user experience flows</div>
+                        </div>
+                        <a href="design/user-flows.html" class="content-link">View</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dejan's Testing Section -->
+            <div class="participant-section testing">
+                <div class="section-header">
+                    <span class="section-icon">🐛</span>
+                    <div>
+                        <h3 class="section-title">Testing & QA</h3>
+                        <p class="section-owner">Dejan - Quality Engineering</p>
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <div class="content-item">
+                        <span class="content-icon">🧪</span>
+                        <div class="content-text">
+                            <div class="content-title">Test Cases</div>
+                            <div class="content-description">Comprehensive test scenarios</div>
+                        </div>
+                        <a href="testing/test-cases.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">✅</span>
+                        <div class="content-text">
+                            <div class="content-title">Acceptance Criteria</div>
+                            <div class="content-description">Feature acceptance criteria</div>
+                        </div>
+                        <a href="testing/acceptance-criteria.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">📝</span>
+                        <div class="content-text">
+                            <div class="content-title">Bug Reports</div>
+                            <div class="content-description">Known issues and bugs</div>
+                        </div>
+                        <a href="testing/bug-reports.html" class="content-link">View</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Almir's Technical Section -->
+            <div class="participant-section technical">
+                <div class="section-header">
+                    <span class="section-icon">⚙️</span>
+                    <div>
+                        <h3 class="section-title">Technical Implementation</h3>
+                        <p class="section-owner">Almir - Technical Lead</p>
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <div class="content-item">
+                        <span class="content-icon">📋</span>
+                        <div class="content-text">
+                            <div class="content-title">Technical Specifications</div>
+                            <div class="content-description">Detailed technical requirements</div>
+                        </div>
+                        <a href="technical/specifications.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">🔌</span>
+                        <div class="content-text">
+                            <div class="content-title">API Documentation</div>
+                            <div class="content-description">Search API endpoints and usage</div>
+                        </div>
+                        <a href="technical/api-docs.html" class="content-link">View</a>
+                    </div>
+                    
+                    <div class="content-item">
+                        <span class="content-icon">🗄️</span>
+                        <div class="content-text">
+                            <div class="content-title">Database Schema</div>
+                            <div class="content-description">Search-related database design</div>
+                        </div>
+                        <a href="technical/database-schema.html" class="content-link">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cross-references">
+            <h3>🔗 Cross-References & Dependencies</h3>
+            <div class="reference-grid">
+                <div class="reference-item">
+                    <div class="reference-title">Related Features</div>
+                    <ul class="reference-links">
+                        <li><a href="../user-profiles/">F002 - User Profiles</a></li>
+                        <li><a href="../application-management/">F003 - Application Management</a></li>
+                        <li><a href="../job-posting-tools/">F005 - Job Posting Tools</a></li>
+                    </ul>
+                </div>
+                
+                <div class="reference-item">
+                    <div class="reference-title">Business Dependencies</div>
+                    <ul class="reference-links">
+                        <li><a href="../../participants/scenarios/job-placement/">Job Placement Scenarios</a></li>
+                        <li><a href="../../assets/users/">User Personas</a></li>
+                        <li><a href="../../assets/features/">Feature Requirements</a></li>
+                    </ul>
+                </div>
+                
+                <div class="reference-item">
+                    <div class="reference-title">Technical Dependencies</div>
+                    <ul class="reference-links">
+                        <li><a href="../../assets/global/">Global Assets</a></li>
+                        <li><a href="../../design-system/">Design System</a></li>
+                        <li><a href="../../assets/templates/">Process Templates</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <h3>⚡ Quick Actions</h3>
+            <div class="action-buttons">
+                <a href="../../unified-table/" class="action-btn">📊 View All Features</a>
+                <a href="../../participants/scenarios/" class="action-btn secondary">📋 Business Scenarios</a>
+                <a href="../../participants/ux-ui/" class="action-btn secondary">🎨 Design System</a>
+                <a href="../../participants/testing/" class="action-btn secondary">🐛 Testing Dashboard</a>
+                <a href="../../participants/features/" class="action-btn secondary">⚙️ Technical Specs</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../assets/global/js/language-switcher.js"></script>
+</body>
+</html>
