@@ -156,6 +156,8 @@ defmodule GithubWorkflows do
           name: "Set up environment variables",
           run: """
           cat > .env.prod << EOL
+          ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}
           APPSIGNAL_APP_ENV=stage
           APPSIGNAL_PUSH_API_KEY=${{ secrets.APPSIGNAL_PUSH_API_KEY }}
           DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@bemeda-personal-db:5432/bemeda_personal

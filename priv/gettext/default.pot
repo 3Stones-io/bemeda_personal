@@ -142,3 +142,93 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Please review the information below"
 msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Admin Dashboard"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Arbeitgeber"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Automatische Aktualisierung alle 60 Sekunden"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Benutzer gesamt"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Bewerbungen"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Bewerbungsstatus-Übersicht"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Jobsuchende"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Jobsuchender"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Letzte Aktualisierung:"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Neue Benutzer"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Neue Bewerbungen"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Neue Stellenanzeigen"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Registrierungen"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Stellenanzeigen"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Systemübersicht und Statistiken"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Tägliche Bewerbungen (30 Tage)"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Tägliche Registrierungen (30 Tage)"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Unternehmen"
+msgstr ""

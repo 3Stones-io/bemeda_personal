@@ -82,3 +82,7 @@ config :bemeda_personal, :digital_signatures,
   providers: %{
     mock: %{}
   }
+
+config :bemeda_personal, :admin,
+  password: "admin",
+  username: "admin"

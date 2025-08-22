@@ -100,3 +100,7 @@ config :bemeda_personal, :digital_signatures,
       test_mode: true
     }
   }
+
+config :bemeda_personal, :admin,
+  password: "admin",
+  username: "admin"

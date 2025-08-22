@@ -294,4 +294,20 @@ if config_env() == :prod do
         test_mode: System.get_env("SIGNWELL_TEST_MODE", "false") == "true"
       }
     }
+
+  admin_username =
+    System.get_env("ADMIN_USERNAME") ||
+      raise """
+      environment variable ADMIN_USERNAME is missing.
+      """
+
+  admin_password =
+    System.get_env("ADMIN_PASSWORD") ||
+      raise """
+      environment variable ADMIN_PASSWORD is missing.
+      """
+
+  config :bemeda_personal, :admin,
+    password: admin_password,
+    username: admin_username
 end

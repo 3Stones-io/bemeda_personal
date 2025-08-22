@@ -142,3 +142,93 @@ msgstr "Si è verificato un errore. Riprova."
 #, elixir-autogen, elixir-format
 msgid "Please review the information below"
 msgstr "Si prega di verificare le informazioni qui sotto"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Admin Dashboard"
+msgstr "Dashboard amministratore"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Arbeitgeber"
+msgstr "Datori di lavoro"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Automatische Aktualisierung alle 60 Sekunden"
+msgstr "Aggiornamento automatico ogni 60 secondi"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Benutzer gesamt"
+msgstr "Totale utenti"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Bewerbungen"
+msgstr "Candidature"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Bewerbungsstatus-Übersicht"
+msgstr "Panoramica stato candidature"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Jobsuchende"
+msgstr "Persone in cerca di lavoro"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Jobsuchender"
+msgstr "Persona in cerca di lavoro"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Letzte Aktualisierung:"
+msgstr "Ultimo aggiornamento:"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Neue Benutzer"
+msgstr "Nuovi utenti"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Neue Bewerbungen"
+msgstr "Nuove candidature"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Neue Stellenanzeigen"
+msgstr "Nuovi annunci di lavoro"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Registrierungen"
+msgstr "Registrazioni"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Stellenanzeigen"
+msgstr "Annunci di lavoro"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Systemübersicht und Statistiken"
+msgstr "Panoramica del sistema e statistiche"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Tägliche Bewerbungen (30 Tage)"
+msgstr "Candidature giornaliere (30 giorni)"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Tägliche Registrierungen (30 Tage)"
+msgstr "Registrazioni giornaliere (30 giorni)"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Unternehmen"
+msgstr "Aziende"

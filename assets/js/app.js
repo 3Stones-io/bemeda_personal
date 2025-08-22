@@ -23,6 +23,7 @@ import { LiveSocket } from 'phoenix_live_view'
 import topbar from '../vendor/topbar'
 
 // Import hooks
+import AdminChart from './hooks/admin_chart'
 import ChatInput from './hooks/chat_input'
 import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
@@ -42,6 +43,7 @@ import TextTruncate from './hooks/text_truncate'
 
 // Define hooks object
 const Hooks = {
+  AdminChart,
   ChatInput,
   CopyToClipboard,
   CurrentCheckbox,

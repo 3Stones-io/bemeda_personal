@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.Router do
   import BemedaPersonalWeb.UserAuth
   import PhoenixStorybook.Router
 
+  alias BemedaPersonalWeb.AdminAuth
   alias BemedaPersonalWeb.Locale
 
   pipeline :browser do
@@ -19,6 +20,12 @@ defmodule BemedaPersonalWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :admin do
+    plug :browser
+    plug AdminAuth
+    plug Locale
   end
 
   # PUBLIC ROUTES (no authentication required)
@@ -217,6 +224,26 @@ defmodule BemedaPersonalWeb.Router do
 
     # Public resume route
     live "/resumes/:id", Resume.IndexLive, :show
+  end
+
+  # ADMIN ROUTES
+  scope "/admin", BemedaPersonalWeb do
+    pipe_through :admin
+
+    live_session :admin,
+      layout: {BemedaPersonalWeb.Layouts, :admin},
+      on_mount:
+        Enum.filter(
+          [
+            if(Application.compile_env(:bemeda_personal, :sql_sandbox),
+              do: {BemedaPersonalWeb.LiveAcceptance, :default}
+            ),
+            {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+          ],
+          & &1
+        ) do
+      live "/", AdminLive.Dashboard, :index
+    end
   end
 
   # Health check route

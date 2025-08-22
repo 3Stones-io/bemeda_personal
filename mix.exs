@@ -96,7 +96,7 @@ defmodule BemedaPersonal.MixProject do
       {:mix_audit, "~> 2.1", only: :test, runtime: false},
       {:optimum_credo, "~> 0.1", only: :test, runtime: false},
       {:sobelow, "~> 0.13", only: :test, runtime: false},
-      {:tidewave, "~> 0.1", only: :dev}
+      {:tidewave, "~> 0.4", only: :dev}
     ]
   end
 
