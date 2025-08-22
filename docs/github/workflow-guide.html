@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Workflow Guide - GitHub Integration | Bemeda Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; color: #24292f; background-color: #f6f8fa;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 48px; }
+        .header h1 {
+            font-size: 2.5rem; font-weight: 600; color: #0969da; margin-bottom: 16px;
+            display: flex; align-items: center; justify-content: center; gap: 16px;
+        }
+        .workflow-card {
+            background: white; border-radius: 12px; padding: 32px; margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #0969da;
+        }
+        .step-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px; margin: 24px 0;
+        }
+        .step-item {
+            padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;
+        }
+        .step-number {
+            background: #0969da; color: white; width: 32px; height: 32px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 600; margin-bottom: 12px;
+        }
+        .example-box {
+            background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px;
+            padding: 16px; margin: 16px 0;
+        }
+        .code-block {
+            background: #1f2937; color: #f9fafb; padding: 16px; border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span>👥</span>Team Workflow Guide</h1>
+            <p style="font-size: 1.2rem; color: #656d76; max-width: 600px; margin: 0 auto;">
+                How to collaborate effectively using our GitHub-integrated component system
+            </p>
+        </div>
+
+        <!-- Reading Components -->
+        <div class="workflow-card">
+            <h2 style="color: #374151; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 1.5rem;">📖</span> Reading Components
+            </h2>
+            <p style="color: #6b7280; margin-bottom: 24px;">
+                Component pages are designed for easy reading with all the information you need upfront.
+            </p>
+            
+            <div class="step-grid">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4 style="margin-bottom: 8px;">Navigate to Component</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Browse scenarios or use search to find the component you need
+                    </p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4 style="margin-bottom: 8px;">Review Content</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Read user stories, acceptance criteria, and see related components
+                    </p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4 style="margin-bottom: 8px;">Check Status</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        View completion status, priority, and recent team comments
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editing Components -->
+        <div class="workflow-card">
+            <h2 style="color: #374151; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 1.5rem;">✏️</span> Editing Components
+            </h2>
+            <p style="color: #6b7280; margin-bottom: 24px;">
+                All component editing happens in GitHub Issues for full collaboration features.
+            </p>
+            
+            <div class="step-grid">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4 style="margin-bottom: 8px;">Click "Edit Component"</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Use the blue "Edit Component" button in the GitHub banner
+                    </p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4 style="margin-bottom: 8px;">Update in GitHub</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Edit the issue description, add labels, change status
+                    </p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4 style="margin-bottom: 8px;">Auto-Sync</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Changes appear on the component page within a few minutes
+                    </p>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4 style="color: #0369a1; margin-bottom: 8px;">💡 Pro Tip: What You Can Edit</h4>
+                <ul style="color: #374151; padding-left: 20px;">
+                    <li>Component title and description</li>
+                    <li>Acceptance criteria and requirements</li>
+                    <li>Status labels (planning → in-progress → completed)</li>
+                    <li>Priority level (high, medium, low)</li>
+                    <li>Related component links</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Team Discussions -->
+        <div class="workflow-card">
+            <h2 style="color: #374151; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 1.5rem;">💬</span> Team Discussions
+            </h2>
+            <p style="color: #6b7280; margin-bottom: 24px;">
+                All team discussions happen in GitHub Issues and automatically appear on component pages.
+            </p>
+            
+            <div class="step-grid">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4 style="margin-bottom: 8px;">Add Comments</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Click "View Discussion" or "Add Comment" to join conversations
+                    </p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4 style="margin-bottom: 8px;">@ Mention Teammates</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Use @username to notify specific team members about updates
+                    </p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4 style="margin-bottom: 8px;">Real-time Sync</h4>
+                    <p style="color: #6b7280; font-size: 0.9rem;">
+                        Comments appear on component pages automatically
+                    </p>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4 style="color: #0369a1; margin-bottom: 8px;">💬 Comment Examples</h4>
+                <div class="code-block">
+@maria Can you review the acceptance criteria for US001?
+
+Status update: Testing completed ✅ 
+Ready to move to production phase.
+
+@team This component blocks US003 - need input on approach
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Management -->
+        <div class="workflow-card">
+            <h2 style="color: #374151; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 1.5rem;">📊</span> Status Management
+            </h2>
+            <p style="color: #6b7280; margin-bottom: 24px;">
+                Track component progress using GitHub labels and project board views.
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0;">
+                <div style="padding: 16px; background: #fefce8; border-radius: 8px; border: 1px solid #facc15;">
+                    <div style="background: #facc15; color: #000; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 500; margin-bottom: 8px; display: inline-block;">
+                        status:planning
+                    </div>
+                    <div style="color: #a16207; font-size: 0.9rem;">Component is being designed and specified</div>
+                </div>
+                <div style="padding: 16px; background: #dbeafe; border-radius: 8px; border: 1px solid #3b82f6;">
+                    <div style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 500; margin-bottom: 8px; display: inline-block;">
+                        status:in-progress
+                    </div>
+                    <div style="color: #1d4ed8; font-size: 0.9rem;">Component is actively being developed</div>
+                </div>
+                <div style="padding: 16px; background: #dcfce7; border-radius: 8px; border: 1px solid #22c55e;">
+                    <div style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 500; margin-bottom: 8px; display: inline-block;">
+                        status:completed
+                    </div>
+                    <div style="color: #16a34a; font-size: 0.9rem;">Component is finished and deployed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div style="background: white; border-radius: 12px; padding: 24px; text-align: center;">
+            <h3 style="color: #374151; margin-bottom: 16px;">🔗 Quick Access</h3>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://github.com/orgs/3Stones-io/projects/12" 
+                   style="background: #0969da; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: 500;"
+                   target="_blank">
+                    📊 Project Board
+                </a>
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent" 
+                   style="background: #6b7280; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: 500;"
+                   target="_blank">
+                    📋 All Components
+                </a>
+                <a href="index.html" 
+                   style="background: #059669; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: 500;">
+                    🏠 GitHub Status
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid #d1d5db;">
+            <p style="color: #6b7280; font-size: 0.9rem;">
+                Need help? Contact the development team or check our 
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues" style="color: #0969da;">GitHub Issues</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
