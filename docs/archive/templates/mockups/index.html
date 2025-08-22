@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M### - Mockups Index | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            border-left: 4px solid #c2185b;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #c2185b;
+            text-decoration: none;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        
+        .mockups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .mockup-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #c2185b;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .mockup-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(194, 24, 91, 0.15);
+        }
+        
+        .mockup-id {
+            background: #c2185b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        
+        .mockup-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        
+        .mockup-description {
+            color: #666;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+        
+        .mockup-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            height: 120px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
+            border: 2px dashed #ddd;
+        }
+        
+        .mockup-details {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .mockup-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-missing {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .create-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .create-btn {
+            background: #c2185b;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        
+        .create-btn:hover {
+            background: #ad1457;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../../structure-diagram.html" class="back-link">← Back to Structure Overview</a>
+            
+            <h1 class="header-title">📱 M### - Mockups Index</h1>
+            <p class="header-description">
+                Visual interface designs and wireframes that define the user experience. 
+                Mockups provide detailed layouts, interactions, and visual hierarchy for all platform screens.
+            </p>
+            
+            <div class="create-section">
+                <h3 style="margin-bottom: 12px; color: #333;">🚀 Quick Actions</h3>
+                <a href="template.html" class="create-btn">📋 View Template</a>
+                <a href="M001.html" class="create-btn" style="margin-left: 12px;">+ Create New Mockup</a>
+            </div>
+        </div>
+        
+        <div class="mockups-grid">
+            <!-- M001 - Job Search Interface -->
+            <a href="M001.html" class="mockup-card">
+                <div class="mockup-id">M001</div>
+                <h3 class="mockup-name">Job Search Interface</h3>
+                <p class="mockup-description">
+                    Main job search page with advanced filtering, sorting options, 
+                    and responsive job listing display for healthcare professionals.
+                </p>
+                <div class="mockup-preview">
+                    📱 Mockup Preview Placeholder
+                </div>
+                <div class="mockup-details">
+                    <span>Type: Web Interface</span>
+                    <span>Screens: 3</span>
+                    <span>Components: C001, C002</span>
+                </div>
+                <div class="mockup-status status-missing">❌ Template Needed</div>
+            </a>
+            
+            <!-- M002 - Profile Creation Wizard -->
+            <a href="M002.html" class="mockup-card">
+                <div class="mockup-id">M002</div>
+                <h3 class="mockup-name">Profile Creation Wizard</h3>
+                <p class="mockup-description">
+                    Multi-step profile creation interface for healthcare professionals 
+                    including skills, certifications, and availability settings.
+                </p>
+                <div class="mockup-preview">
+                    📱 Mockup Preview Placeholder
+                </div>
+                <div class="mockup-details">
+                    <span>Type: Multi-step Form</span>
+                    <span>Steps: 5</span>
+                    <span>Components: C003, C004</span>
+                </div>
+                <div class="mockup-status status-missing">❌ Template Needed</div>
+            </a>
+            
+            <!-- M003 - Job Posting Dashboard -->
+            <a href="M003.html" class="mockup-card">
+                <div class="mockup-id">M003</div>
+                <h3 class="mockup-name">Job Posting Dashboard</h3>
+                <p class="mockup-description">
+                    Organisation dashboard for creating, managing, and tracking 
+                    job postings with candidate management capabilities.
+                </p>
+                <div class="mockup-preview">
+                    📱 Mockup Preview Placeholder
+                </div>
+                <div class="mockup-details">
+                    <span>Type: Dashboard</span>
+                    <span>Views: 4</span>
+                    <span>Components: C005, C006</span>
+                </div>
+                <div class="mockup-status status-missing">❌ Template Needed</div>
+            </a>
+            
+            <!-- M004 - CRM Interface -->
+            <a href="M004.html" class="mockup-card">
+                <div class="mockup-id">M004</div>
+                <h3 class="mockup-name">CRM Interface</h3>
+                <p class="mockup-description">
+                    Sales team CRM interface with lead tracking, communication history, 
+                    and performance analytics for client relationship management.
+                </p>
+                <div class="mockup-preview">
+                    📱 Mockup Preview Placeholder
+                </div>
+                <div class="mockup-details">
+                    <span>Type: CRM Dashboard</span>
+                    <span>Modules: 6</span>
+                    <span>Components: C007, C008</span>
+                </div>
+                <div class="mockup-status status-missing">❌ Template Needed</div>
+            </a>
+            
+            <!-- M005 - Mobile Application -->
+            <a href="M005.html" class="mockup-card">
+                <div class="mockup-id">M005</div>
+                <h3 class="mockup-name">Mobile Application</h3>
+                <p class="mockup-description">
+                    Mobile app interface for healthcare professionals to browse jobs, 
+                    receive notifications, and manage applications on the go.
+                </p>
+                <div class="mockup-preview">
+                    📱 Mockup Preview Placeholder
+                </div>
+                <div class="mockup-details">
+                    <span>Type: Mobile App</span>
+                    <span>Screens: 12</span>
+                    <span>Components: C009, C010</span>
+                </div>
+                <div class="mockup-status status-missing">❌ Template Needed</div>
+            </a>
+            
+            <!-- M006 - Interview Scheduling -->
+            <a href="M006.html" class="mockup-card">
+                <div class="mockup-id">M006</div>
+                <h3 class="mockup-name">Interview Scheduling</h3>
+                <p class="mockup-description">
+                    Interview coordination interface with calendar integration, 
+                    video calling, and feedback collection capabilities.
+                </p>
+                <div class="mockup-preview">
+                    📱 Mockup Preview Placeholder
+                </div>
+                <div class="mockup-details">
+                    <span>Type: Scheduling Tool</span>
+                    <span>Features: 8</span>
+                    <span>Components: C011, C012</span>
+                </div>
+                <div class="mockup-status status-missing">❌ Template Needed</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

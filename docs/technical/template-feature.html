@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F### - Feature Template | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        /* Header */
+        .feature-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #1b5e20;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .feature-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .feature-id {
+            background: #e8f5e8;
+            color: #1b5e20;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border: 2px solid #1b5e20;
+        }
+        
+        .feature-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .feature-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-active { 
+            background: #fff3e0; 
+            color: #ef6c00; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px dashed #1b5e20;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .diagram-placeholder {
+            color: #666;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+        
+        .tech-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .spec-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .spec-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .spec-content {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .components-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .component-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #1b5e20;
+        }
+        
+        .component-id {
+            background: #e0e0e0;
+            color: #424242;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .component-title {
+            flex: 1;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .component-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-complete {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .api-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .api-endpoint {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid #1b5e20;
+        }
+        
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .http-method {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .method-get { background: #e8f5e8; color: #2e7d32; }
+        .method-post { background: #e3f2fd; color: #1976d2; }
+        .method-put { background: #fff3e0; color: #ef6c00; }
+        .method-delete { background: #ffebee; color: #d32f2f; }
+        
+        .endpoint-path {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .endpoint-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        .requirements-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .requirement-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #2e7d32;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .requirement-check {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+        
+        .requirement-priority {
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: auto;
+        }
+        
+        .priority-high {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .priority-low {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .relationship-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .relationship-card {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .relationship-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .relationship-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .relationship-link {
+            background: #e8f0fe;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.2s ease;
+        }
+        
+        .relationship-link:hover {
+            background: #1976d2;
+            color: white;
+        }
+        
+        .implementation-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .timeline-phase {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid #1b5e20;
+        }
+        
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .phase-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .phase-duration {
+            background: #e8f5e8;
+            color: #1b5e20;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .phase-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .feature-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .tech-specs {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li><a href="../scenarios/index.html" class="nav-link">📋 Scenarios</a></li>
+                <li><a href="../ux-ui/index.html" class="nav-link">🎨 UX/UI</a></li>
+                <li><a href="../technical/index.html" class="nav-link active">⚙️ Technical</a></li>
+                <li><a href="../testing/index.html" class="nav-link">🧪 Testing</a></li>
+                <li><a href="../unified-view/index.html" class="nav-link">📊 Unified View</a></li>
+                <li><a href="../registry/index.html" class="nav-link">🔍 Registry</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Feature Header -->
+        <div class="feature-header">
+            <a href="index.html" class="back-link">← Back to Technical Features</a>
+            <div class="feature-title">
+                <span class="feature-id">F###</span>
+                <h1 class="feature-name">[Feature Name]</h1>
+            </div>
+            <div class="feature-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Category:</span>
+                    <span>[Feature Category]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Complexity:</span>
+                    <span>High</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-active">In Development</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Priority:</span>
+                    <span>High</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">[High-level description of what this feature accomplishes and its business value]</p>
+        </div>
+        
+        <!-- Feature Overview -->
+        <div class="content-section">
+            <h2 class="section-title">📋 Feature Overview</h2>
+            <div class="tech-specs">
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🎯</span>
+                        <span>Business Value</span>
+                    </div>
+                    <div class="spec-content">
+                        [Explain how this feature delivers business value, what problems it solves, and what opportunities it creates for users and the organization.]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>👥</span>
+                        <span>Target Users</span>
+                    </div>
+                    <div class="spec-content">
+                        [Define who will use this feature, their roles, skill levels, and how they will interact with it in their daily workflows.]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🔧</span>
+                        <span>Core Functionality</span>
+                    </div>
+                    <div class="spec-content">
+                        [Describe the main capabilities and functions this feature provides, including key use cases and workflows it enables.]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>📊</span>
+                        <span>Success Metrics</span>
+                    </div>
+                    <div class="spec-content">
+                        [Define how success will be measured - performance metrics, user adoption rates, business KPIs, etc.]
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Architecture -->
+        <div class="content-section">
+            <h2 class="section-title">🏗️ System Architecture</h2>
+            <div class="architecture-diagram">
+                <div class="diagram-placeholder">
+                    [Architecture diagram showing system components, data flow, and integration points]
+                </div>
+            </div>
+            <div class="tech-specs">
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🔄</span>
+                        <span>Data Flow</span>
+                    </div>
+                    <div class="spec-content">
+                        [Describe how data moves through the system, including input sources, processing steps, storage, and output destinations.]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🔌</span>
+                        <span>Integration Points</span>
+                    </div>
+                    <div class="spec-content">
+                        [List external systems, APIs, databases, and services this feature integrates with and how they connect.]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🛡️</span>
+                        <span>Security Considerations</span>
+                    </div>
+                    <div class="spec-content">
+                        [Outline security requirements, authentication, authorization, data protection, and compliance considerations.]
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Components -->
+        <div class="content-section">
+            <h2 class="section-title">🔧 Technical Components</h2>
+            <p style="color: #666; margin-bottom: 20px;">Lower-level technical building blocks that implement this feature:</p>
+            <div class="components-list">
+                <div class="component-item">
+                    <span class="component-id">TC###</span>
+                    <span class="component-title">[Component Name] - [Brief Description]</span>
+                    <span class="component-status status-complete">Complete</span>
+                </div>
+                <div class="component-item">
+                    <span class="component-id">TC###</span>
+                    <span class="component-title">[Component Name] - [Brief Description]</span>
+                    <span class="component-status status-complete">Complete</span>
+                </div>
+                <div class="component-item">
+                    <span class="component-id">TC###</span>
+                    <span class="component-title">[Component Name] - [Brief Description]</span>
+                    <span class="component-status status-pending">In Progress</span>
+                </div>
+                <div class="component-item">
+                    <span class="component-id">TC###</span>
+                    <span class="component-title">[Component Name] - [Brief Description]</span>
+                    <span class="component-status status-pending">Pending</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- API Specifications -->
+        <div class="content-section">
+            <h2 class="section-title">🔌 API Specifications</h2>
+            <p style="color: #666; margin-bottom: 20px;">RESTful endpoints that expose this feature's functionality:</p>
+            <div class="api-section">
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-get">GET</span>
+                        <span class="endpoint-path">/api/v1/[resource]</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does, parameters it accepts, and response format]
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-post">POST</span>
+                        <span class="endpoint-path">/api/v1/[resource]</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does, request body format, and response]
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-put">PUT</span>
+                        <span class="endpoint-path">/api/v1/[resource]/{id}</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does for updating resources]
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-delete">DELETE</span>
+                        <span class="endpoint-path">/api/v1/[resource]/{id}</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does for deleting resources]
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Requirements -->
+        <div class="content-section">
+            <h2 class="section-title">📋 Technical Requirements</h2>
+            <ul class="requirements-list">
+                <li class="requirement-item">
+                    <span class="requirement-check">✓</span>
+                    <span>Performance: [Specific performance requirements and benchmarks]</span>
+                    <span class="requirement-priority priority-high">High</span>
+                </li>
+                <li class="requirement-item">
+                    <span class="requirement-check">✓</span>
+                    <span>Scalability: [Scaling requirements and capacity planning]</span>
+                    <span class="requirement-priority priority-high">High</span>
+                </li>
+                <li class="requirement-item">
+                    <span class="requirement-check">✓</span>
+                    <span>Reliability: [Uptime, fault tolerance, and recovery requirements]</span>
+                    <span class="requirement-priority priority-medium">Medium</span>
+                </li>
+                <li class="requirement-item">
+                    <span class="requirement-check">✓</span>
+                    <span>Compatibility: [Browser, device, and system compatibility needs]</span>
+                    <span class="requirement-priority priority-medium">Medium</span>
+                </li>
+                <li class="requirement-item">
+                    <span class="requirement-check">✓</span>
+                    <span>Security: [Authentication, authorization, and data protection needs]</span>
+                    <span class="requirement-priority priority-high">High</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Implementation Timeline -->
+        <div class="content-section">
+            <h2 class="section-title">📅 Implementation Timeline</h2>
+            <div class="implementation-timeline">
+                <div class="timeline-phase">
+                    <div class="phase-header">
+                        <span class="phase-title">Phase 1: Foundation</span>
+                        <span class="phase-duration">2 weeks</span>
+                    </div>
+                    <div class="phase-description">
+                        Set up core infrastructure, database schemas, and basic API endpoints
+                    </div>
+                </div>
+                
+                <div class="timeline-phase">
+                    <div class="phase-header">
+                        <span class="phase-title">Phase 2: Core Logic</span>
+                        <span class="phase-duration">3 weeks</span>
+                    </div>
+                    <div class="phase-description">
+                        Implement main business logic, data processing, and integration services
+                    </div>
+                </div>
+                
+                <div class="timeline-phase">
+                    <div class="phase-header">
+                        <span class="phase-title">Phase 3: Integration</span>
+                        <span class="phase-duration">2 weeks</span>
+                    </div>
+                    <div class="phase-description">
+                        Connect with external systems, implement security, and optimize performance
+                    </div>
+                </div>
+                
+                <div class="timeline-phase">
+                    <div class="phase-header">
+                        <span class="phase-title">Phase 4: Testing & Deployment</span>
+                        <span class="phase-duration">1 week</span>
+                    </div>
+                    <div class="phase-description">
+                        Comprehensive testing, bug fixes, documentation, and production deployment
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature Relationships -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Feature Relationships</h2>
+            <p style="color: #666; margin-bottom: 20px;">How this feature connects to other components across domains:</p>
+            <div class="relationship-grid">
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🎯</span>
+                        <span>Use Cases</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">UC###</a>
+                        <a href="#" class="relationship-link">UC###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>👤</span>
+                        <span>User Stories</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">US###</a>
+                        <a href="#" class="relationship-link">US###</a>
+                        <a href="#" class="relationship-link">US###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🧩</span>
+                        <span>UI Components</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">C###</a>
+                        <a href="#" class="relationship-link">C###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>📱</span>
+                        <span>Mockups</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">M###</a>
+                        <a href="#" class="relationship-link">M###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🧪</span>
+                        <span>Test Cases</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">T###</a>
+                        <a href="#" class="relationship-link">T###</a>
+                        <a href="#" class="relationship-link">T###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>📋</span>
+                        <span>Acceptance Criteria</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">A###</a>
+                        <a href="#" class="relationship-link">A###</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

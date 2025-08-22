@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US010 - Final Selection and Reference Checks | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #4a148c;
+            color: white;
+        }
+        
+        /* Header */
+        .story-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #4a148c;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .story-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .story-id {
+            background: #f3e5f5;
+            color: #4a148c;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border: 2px solid #4a148c;
+        }
+        
+        .story-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .story-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-active { 
+            background: #e8f5e8; 
+            color: #2e7d32; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .story-format {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4a148c;
+            margin-bottom: 20px;
+        }
+        
+        .story-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .story-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .breakdown-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .breakdown-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .breakdown-value {
+            font-weight: 600;
+            color: #4a148c;
+            margin-top: 4px;
+        }
+        
+        .criteria-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .criteria-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #2e7d32;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .criteria-check {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+        
+        .responsibilities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .responsibility-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .resp-icon {
+            color: #0066cc;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .resp-person {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .resp-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .dependencies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .dependency-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #ef6c00;
+        }
+        
+        .dep-type {
+            background: #ef6c00;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .tech-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .tech-category {
+            font-weight: 600;
+            color: #0066cc;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .tech-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .timeline-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-progress {
+            background: #4caf50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .timeline-dates {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .relationship-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .relationship-card {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .relationship-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .relationship-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .relationship-link {
+            background: #e8f0fe;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.2s ease;
+        }
+        
+        .relationship-link:hover {
+            background: #1976d2;
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .story-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .relationship-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li><a href="../../index.html" class="nav-link">🏠 Home</a></li>
+                <li><a href="../index.html" class="nav-link active">📋 Scenarios</a></li>
+                <li><a href="../../ux-ui/index.html" class="nav-link">🎨 UX/UI</a></li>
+                <li><a href="../../technical/index.html" class="nav-link">⚙️ Technical</a></li>
+                <li><a href="../../testing/index.html" class="nav-link">🧪 Testing</a></li>
+                <li><a href="../../unified-view/index.html" class="nav-link">📊 Unified View</a></li>
+                <li><a href="../../registry/index.html" class="nav-link">🔍 Registry</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Story Header -->
+        <div class="story-header">
+            <a href="index.html" class="back-link">← Back to S001 - Cold Call to Placement</a>
+            <div class="story-title">
+                <span class="story-id">US010</span>
+                <h1 class="story-name">Final Selection and Reference Checks</h1>
+            </div>
+            <div class="story-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Scenario:</span>
+                    <span>S001 - Cold Call to Placement</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Participant:</span>
+                    <span>Organisation</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-active">Pending</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Priority:</span>
+                    <span>High</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">Healthcare organisation conducts final candidate selection process, performing comprehensive reference checks and background verification before making hiring decisions.</p>
+        </div>
+        
+        <!-- User Story Format -->
+        <div class="content-section">
+            <h2 class="section-title">📝 User Story</h2>
+            <div class="story-format">
+                <div class="story-text">
+                    As a <strong>Healthcare Organisation (HR Director)</strong>, I want to <strong>conduct thorough final selection and reference verification</strong> so that <strong>I can make confident hiring decisions based on validated candidate credentials and professional background</strong>.
+                </div>
+                <div class="story-breakdown">
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">Who</div>
+                        <div class="breakdown-value">Healthcare Organisation</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">What</div>
+                        <div class="breakdown-value">Final Selection & Verification</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">Why</div>
+                        <div class="breakdown-value">Confident Hiring Decisions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Acceptance Criteria -->
+        <div class="content-section">
+            <h2 class="section-title">✅ Acceptance Criteria</h2>
+            <p style="color: #666; margin-bottom: 16px;">Specific conditions that must be met for this story to be considered complete:</p>
+            <ul class="criteria-list">
+                <li class="criteria-item">
+                    <span class="criteria-check">✓</span>
+                    <span>Comprehensive reference checks are conducted with previous employers and professional contacts</span>
+                </li>
+                <li class="criteria-item">
+                    <span class="criteria-check">✓</span>
+                    <span>Background verification including credentials, certifications, and employment history is completed</span>
+                </li>
+                <li class="criteria-item">
+                    <span class="criteria-check">✓</span>
+                    <span>Final candidate ranking and selection decision is made based on all available information</span>
+                </li>
+                <li class="criteria-item">
+                    <span class="criteria-check">✓</span>
+                    <span>Selected candidate is approved by hiring committee and senior management</span>
+                </li>
+                <li class="criteria-item">
+                    <span class="criteria-check">✓</span>
+                    <span>Documentation of selection rationale and verification results is maintained for audit purposes</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Responsibilities -->
+        <div class="content-section">
+            <h2 class="section-title">👥 Responsibilities</h2>
+            <div class="responsibilities-list">
+                <div class="responsibility-item">
+                    <span class="resp-icon">🔍</span>
+                    <div>
+                        <div class="resp-person">Anna Fischer (HR Coordinator)</div>
+                        <div class="resp-description">
+                            Coordinate reference checks, verify credentials, conduct background verification, and compile final candidate profile
+                        </div>
+                    </div>
+                </div>
+                <div class="responsibility-item">
+                    <span class="resp-icon">⚖️</span>
+                    <div>
+                        <div class="resp-person">Hiring Committee</div>
+                        <div class="resp-description">
+                            Review all verification results, discuss candidate merits, make final selection decision, and approve hiring recommendation
+                        </div>
+                    </div>
+                </div>
+                <div class="responsibility-item">
+                    <span class="resp-icon">🛡️</span>
+                    <div>
+                        <div class="resp-person">Verification Services</div>
+                        <div class="resp-description">
+                            Perform background checks, validate credentials, verify employment history, and provide compliance reports
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dependencies -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Dependencies</h2>
+            <div class="dependencies-list">
+                <div class="dependency-item">
+                    <span class="dep-type">BEFORE</span>
+                    <span>US009: Interview evaluation completed and top candidates identified</span>
+                </div>
+                <div class="dependency-item">
+                    <span class="dep-type">REQUIRED</span>
+                    <span>Background verification and reference checking services</span>
+                </div>
+                <div class="dependency-item">
+                    <span class="dep-type">REQUIRED</span>
+                    <span>Hiring committee availability for decision making</span>
+                </div>
+                <div class="dependency-item">
+                    <span class="dep-type">AFTER</span>
+                    <span>US011: Job offer creation and presentation to selected candidate</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Requirements -->
+        <div class="content-section">
+            <h2 class="section-title">⚙️ Technical Requirements</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-category">Verification Platform</div>
+                    <div class="tech-details">
+                        Reference check workflows, background screening APIs, credential verification, compliance tracking
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Decision Support</div>
+                    <div class="tech-details">
+                        Committee collaboration tools, decision matrices, approval workflows, documentation systems
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Security & Compliance</div>
+                    <div class="tech-details">
+                        Data encryption, audit logging, privacy controls, regulatory compliance, secure storage
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Integration Services</div>
+                    <div class="tech-details">
+                        Third-party verification APIs, employment databases, certification bodies, reference networks
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline -->
+        <div class="content-section">
+            <h2 class="section-title">📅 Implementation Timeline</h2>
+            <div class="timeline-bar">
+                <div class="timeline-progress"></div>
+            </div>
+            <div class="timeline-dates">
+                <div>
+                    <strong>Start Date:</strong><br>
+                    May 11, 2024
+                </div>
+                <div>
+                    <strong>Target Date:</strong><br>
+                    May 25, 2024
+                </div>
+                <div>
+                    <strong>Current Status:</strong><br>
+                    Not Started
+                </div>
+            </div>
+        </div>
+        
+        <!-- Component Relationships -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Component Relationships</h2>
+            <p style="color: #666; margin-bottom: 20px;">How this user story connects to other components across domains:</p>
+            <div class="relationship-grid">
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🎯</span>
+                        <span>Use Cases</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="UC010.html" class="relationship-link">UC010</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🎨</span>
+                        <span>UI Flows</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="UX010.html" class="relationship-link">UX010</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>⚙️</span>
+                        <span>Features</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="../../technical/F018.html" class="relationship-link">F018</a>
+                        <a href="../../technical/F019.html" class="relationship-link">F019</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🔧</span>
+                        <span>Tech Components</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="../../technical/TC015.html" class="relationship-link">TC015</a>
+                        <a href="../../technical/TC016.html" class="relationship-link">TC016</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🧪</span>
+                        <span>Test Cases</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="../../testing/T010.html" class="relationship-link">T010</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>📋</span>
+                        <span>Next Steps</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="US011.html" class="relationship-link">US011</a>
+                        <a href="US013.html" class="relationship-link">US013</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

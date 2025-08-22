@@ -1,0 +1,56 @@
+{
+  "navigation": {
+    "main": [
+      {
+        "id": "home",
+        "label": "🏠 Home",
+        "path": "index.html",
+        "description": "Main landing page with platform overview"
+      },
+      {
+        "id": "scenarios",
+        "label": "📋 Scenarios",
+        "path": "scenarios/index.html",
+        "description": "User stories, workflows, and business scenarios"
+      },
+      {
+        "id": "ux-ui",
+        "label": "🎨 UX/UI",
+        "path": "ux-ui/index.html",
+        "description": "Design system, mockups, and user interface components"
+      },
+      {
+        "id": "technical",
+        "label": "⚙️ Technical",
+        "path": "technical/index.html",
+        "description": "Technical specifications, APIs, and architecture"
+      },
+      {
+        "id": "testing",
+        "label": "🧪 Testing",
+        "path": "testing/index.html",
+        "description": "Test cases, quality assurance, and acceptance criteria"
+      },
+      {
+        "id": "unified-view",
+        "label": "📊 Unified View",
+        "path": "unified-view/index.html",
+        "description": "Cross-domain analytics and progress tracking"
+      },
+      {
+        "id": "registry",
+        "label": "🔍 Registry",
+        "path": "registry/index.html",
+        "description": "Component search and discovery system"
+      },
+      {
+        "id": "github",
+        "label": "🐙 GitHub",
+        "path": "github/index.html",
+        "description": "Integration guide, repository info, and collaboration workflow"
+      }
+    ],
+    "version": "1.0.0",
+    "lastUpdated": "2024-08-22"
+  }
+}

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 3 - Sales Team - Scenario 1 - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../../../assets/global/css/language-switcher.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: visible;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #666;
+            border-right: 1px solid #eee;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+        
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            z-index: 1000;
+            min-width: 200px;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        /* Step Header */
+        .step-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .breadcrumb a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .step-title-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .step-badge {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .step-name {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .step-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        /* Responsibilities */
+        .responsibilities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .responsibility-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .resp-icon {
+            color: #0066cc;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .resp-person {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .resp-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Dependencies */
+        .dependencies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .dependency-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #ef6c00;
+        }
+        
+        .dep-type {
+            background: #ef6c00;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Technical Requirements */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .tech-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .tech-category {
+            font-weight: 600;
+            color: #0066cc;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .tech-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Timeline */
+        .timeline-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-progress {
+            background: #4caf50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .timeline-dates {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Issues Section */
+        .issues-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .issues-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .add-btn {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        
+        .add-btn:hover {
+            background: #0052a3;
+        }
+        
+        .issues-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .issue-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #ff5252;
+        }
+        
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .issue-title {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .issue-priority {
+            background: #ff5252;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        /* Comments */
+        .comments-section {
+            margin-top: 20px;
+        }
+        
+        .comment-item {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="../../../../../../../index.html" class="nav-link" data-i18n="nav.index">Index</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../index.html" class="nav-link active" data-i18n="nav.job">JOB</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="tmp/index.html" class="nav-link" data-i18n="nav.tmp">TMP</a>
+                    <div class="dropdown-content">
+                        <a href="tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
+                        <a href="tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
+                        <a href="tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="table/index.html" class="nav-link" data-i18n="nav.table-view">Table View</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="../../../../../admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
+                    <div class="dropdown-content">
+                        <a href="../../../../../admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
+                        <a href="../../../../../admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
+                        <a href="../../../../../admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
+                        <a href="../../../../../admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
+                    </div>
+                </li>
+            
+            </ul>
+        </nav>
+        
+        <!-- Step Header -->
+        <div class="step-header">
+            <div class="breadcrumb">
+                <a href="../index.html">Scenario 1</a>
+                <span>→</span>
+                <span>Sales Team Process</span>
+            </div>
+            <div class="step-title-section">
+                <span class="step-badge">Step 3</span>
+                <h1 class="step-name">Sales Team - Step 3</h1>
+            </div>
+            <div class="step-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Duration:</span>
+                    <span>15-30 minutes</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span style="background: #e8f5e8; color: #2e7d32; padding: 2px 8px; border-radius: 4px;">Implemented</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Owner:</span>
+                    <span>Sales Team</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Completion:</span>
+                    <span>85%</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem; margin-top: 16px;">
+                Sales representative engages with the organisation to understand their specific staffing challenges, 
+                requirements, and pain points while presenting how Bemeda platform can address their needs.
+            </p>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Responsibilities Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">👥</span>
+                    <h2 class="section-title">Responsibilities</h2>
+                </div>
+                <div class="responsibilities-list">
+                    <div class="responsibility-item">
+                        <span class="resp-icon">📞</span>
+                        <div>
+                            <div class="resp-person">Sales Representative</div>
+                            <div class="resp-description">
+                                Lead the conversation, identify pain points, present platform benefits, 
+                                and document staffing requirements
+                            </div>
+                        </div>
+                    </div>
+                    <div class="responsibility-item">
+                        <span class="resp-icon">🏥</span>
+                        <div>
+                            <div class="resp-person">HR Manager (Organisation)</div>
+                            <div class="resp-description">
+                                Provide staffing challenges, budget constraints, compliance requirements, 
+                                and specific role needs
+                            </div>
+                        </div>
+                    </div>
+                    <div class="responsibility-item">
+                        <span class="resp-icon">💻</span>
+                        <div>
+                            <div class="resp-person">Platform System</div>
+                            <div class="resp-description">
+                                Support demo capabilities, real-time matching preview, and automated 
+                                documentation of requirements
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dependencies Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-icon">🔗</span>
+                    <h2 class="section-title">Dependencies</h2>
+                </div>
+                <div class="dependencies-list">
+                    <div class="dependency-item">
+                        <span class="dep-type">BEFORE</span>
+                        <span>Step 1: Initial Cold Call completed successfully</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">REQUIRED</span>
+                        <span>CRM system with client profile access</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">REQUIRED</span>
+                        <span>Platform demo environment available</span>
+                    </div>
+                    <div class="dependency-item">
+                        <span class="dep-type">AFTER</span>
+                        <span>Step 3: Agreement to publish job posting</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Requirements -->
+        <div class="section-card">
+            <div class="section-header">
+                <span class="section-icon">⚙️</span>
+                <h2 class="section-title">Technical Requirements</h2>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-category">CRM Integration</div>
+                    <div class="tech-details">
+                        Real-time data sync, opportunity tracking, automated follow-up scheduling
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Demo Platform</div>
+                    <div class="tech-details">
+                        Sandbox environment, sample data, role-based access simulation
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Documentation Tools</div>
+                    <div class="tech-details">
+                        Requirements capture forms, compliance checklists, pricing calculators
+                    </div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-category">Communication</div>
+                    <div class="tech-details">
+                        Video conferencing integration, screen sharing, chat support
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline -->
+        <div class="section-card">
+            <div class="section-header">
+                <span class="section-icon">📅</span>
+                <h2 class="section-title">Timeline</h2>
+            </div>
+            <div class="timeline-bar">
+                <div class="timeline-progress" style="width: 85%"></div>
+            </div>
+            <div class="timeline-dates">
+                <div>
+                    <strong>Start Date:</strong><br>
+                    January 15, 2024
+                </div>
+                <div>
+                    <strong>Target Date:</strong><br>
+                    February 28, 2024
+                </div>
+                <div>
+                    <strong>Current Status:</strong><br>
+                    85% Complete
+                </div>
+            </div>
+        </div>
+        
+        <!-- Issues and Comments Section -->
+        <div class="issues-section">
+            <div class="issues-header">
+                <h2 class="section-title">🐛 Issues & Comments</h2>
+                <button class="add-btn">+ Add Issue</button>
+            </div>
+            
+            <div class="issues-list">
+                <div class="issue-item">
+                    <div class="issue-header">
+                        <span class="issue-title">Demo environment performance issues</span>
+                        <span class="issue-priority">High</span>
+                    </div>
+                    <div class="issue-description" style="color: #666; font-size: 0.9rem; margin-bottom: 8px;">
+                        Platform demo is slow when demonstrating real-time matching with large datasets. 
+                        Need to optimize query performance for sales demonstrations.
+                    </div>
+                    <div class="issue-meta" style="display: flex; gap: 16px; font-size: 0.8rem; color: #999;">
+                        <span>Created: 3 days ago</span>
+                        <span>Assigned: Tech Team</span>
+                        <span>Status: In Progress</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comments-section">
+                <h3 style="margin-bottom: 16px; color: #1a1a1a;">💬 Recent Comments</h3>
+                
+                <div class="comment-item">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-weight: 500; color: #0066cc;">Mark Thompson</span>
+                        <span style="color: #999; font-size: 0.8rem;">2 hours ago</span>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        Implemented caching for demo data. Performance improved by 60%. Testing with sales team tomorrow.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../../../assets/global/js/language-switcher.js"></script>
+</body>
+</html>

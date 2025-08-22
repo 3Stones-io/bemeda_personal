@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C### - UI Component Template | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        /* Header */
+        .component-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #c2185b;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .component-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .component-id {
+            background: #f8bbd9;
+            color: #c2185b;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border: 2px solid #c2185b;
+        }
+        
+        .component-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .component-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-complete { 
+            background: #e3f2fd; 
+            color: #1976d2; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .component-preview {
+            background: #f8f9fa;
+            border: 2px dashed #c2185b;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .preview-placeholder {
+            color: #666;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+        
+        .design-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .spec-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .spec-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .spec-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .spec-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+        
+        .spec-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .spec-value {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        
+        .code-section {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .code-title {
+            color: #569cd6;
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .copy-btn:hover {
+            background: #005a9e;
+        }
+        
+        .states-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .state-example {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .state-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .state-preview {
+            background: #f5f5f5;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .state-description {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .usage-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .usage-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #c2185b;
+        }
+        
+        .usage-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .usage-description {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .relationship-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .relationship-card {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .relationship-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .relationship-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .relationship-link {
+            background: #e8f0fe;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.2s ease;
+        }
+        
+        .relationship-link:hover {
+            background: #1976d2;
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .component-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .design-specs {
+                grid-template-columns: 1fr;
+            }
+            
+            .states-demo {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li><a href="../scenarios/index.html" class="nav-link">📋 Scenarios</a></li>
+                <li><a href="../ux-ui/index.html" class="nav-link active">🎨 UX/UI</a></li>
+                <li><a href="../technical/index.html" class="nav-link">⚙️ Technical</a></li>
+                <li><a href="../testing/index.html" class="nav-link">🧪 Testing</a></li>
+                <li><a href="../unified-view/index.html" class="nav-link">📊 Unified View</a></li>
+                <li><a href="../registry/index.html" class="nav-link">🔍 Registry</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Component Header -->
+        <div class="component-header">
+            <a href="index.html" class="back-link">← Back to UX/UI Components</a>
+            <div class="component-title">
+                <span class="component-id">C###</span>
+                <h1 class="component-name">[Component Name]</h1>
+            </div>
+            <div class="component-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Category:</span>
+                    <span>[Component Category]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Type:</span>
+                    <span>[Component Type]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-complete">Complete</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Version:</span>
+                    <span>1.0</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">[Brief description of the component's purpose and functionality]</p>
+        </div>
+        
+        <!-- Component Preview -->
+        <div class="content-section">
+            <h2 class="section-title">👁️ Component Preview</h2>
+            <div class="component-preview">
+                <div class="preview-placeholder">
+                    [Live component preview/mockup would appear here]
+                </div>
+            </div>
+        </div>
+        
+        <!-- Design Specifications -->
+        <div class="content-section">
+            <h2 class="section-title">📐 Design Specifications</h2>
+            <div class="design-specs">
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🎨</span>
+                        <span>Visual Properties</span>
+                    </div>
+                    <ul class="spec-list">
+                        <li class="spec-item">
+                            <span class="spec-label">Background:</span>
+                            <span class="spec-value">#ffffff</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Border:</span>
+                            <span class="spec-value">1px solid #e0e0e0</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Border Radius:</span>
+                            <span class="spec-value">6px</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Text Color:</span>
+                            <span class="spec-value">#333333</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>📏</span>
+                        <span>Dimensions</span>
+                    </div>
+                    <ul class="spec-list">
+                        <li class="spec-item">
+                            <span class="spec-label">Min Width:</span>
+                            <span class="spec-value">200px</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Height:</span>
+                            <span class="spec-value">40px</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Padding:</span>
+                            <span class="spec-value">12px 16px</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Margin:</span>
+                            <span class="spec-value">8px 0</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🔤</span>
+                        <span>Typography</span>
+                    </div>
+                    <ul class="spec-list">
+                        <li class="spec-item">
+                            <span class="spec-label">Font Family:</span>
+                            <span class="spec-value">Inter, system-ui</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Font Size:</span>
+                            <span class="spec-value">14px</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Font Weight:</span>
+                            <span class="spec-value">400</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Line Height:</span>
+                            <span class="spec-value">1.5</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>⚡</span>
+                        <span>Interactions</span>
+                    </div>
+                    <ul class="spec-list">
+                        <li class="spec-item">
+                            <span class="spec-label">Hover:</span>
+                            <span class="spec-value">Border: #0066cc</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Focus:</span>
+                            <span class="spec-value">Outline: 2px #0066cc</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Transition:</span>
+                            <span class="spec-value">all 0.2s ease</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Cursor:</span>
+                            <span class="spec-value">text</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Component States -->
+        <div class="content-section">
+            <h2 class="section-title">🔄 Component States</h2>
+            <div class="states-demo">
+                <div class="state-example">
+                    <div class="state-title">Default</div>
+                    <div class="state-preview">[Default State Preview]</div>
+                    <div class="state-description">Normal resting state</div>
+                </div>
+                
+                <div class="state-example">
+                    <div class="state-title">Hover</div>
+                    <div class="state-preview">[Hover State Preview]</div>
+                    <div class="state-description">User hovers over component</div>
+                </div>
+                
+                <div class="state-example">
+                    <div class="state-title">Focus</div>
+                    <div class="state-preview">[Focus State Preview]</div>
+                    <div class="state-description">Component receives focus</div>
+                </div>
+                
+                <div class="state-example">
+                    <div class="state-title">Error</div>
+                    <div class="state-preview">[Error State Preview]</div>
+                    <div class="state-description">Validation error state</div>
+                </div>
+                
+                <div class="state-example">
+                    <div class="state-title">Disabled</div>
+                    <div class="state-preview">[Disabled State Preview]</div>
+                    <div class="state-description">Component is disabled</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Implementation Code -->
+        <div class="content-section">
+            <h2 class="section-title">💻 Implementation</h2>
+            
+            <!-- HTML -->
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="code-title">HTML Structure</span>
+                    <button class="copy-btn" onclick="copyCode('html')">Copy</button>
+                </div>
+                <pre id="html-code"><code>&lt;div class="component-wrapper"&gt;
+  &lt;label for="input-id" class="component-label"&gt;[Label Text]&lt;/label&gt;
+  &lt;input 
+    type="[input-type]" 
+    id="input-id" 
+    class="component-input" 
+    placeholder="[Placeholder text]"
+    aria-describedby="help-text"
+  /&gt;
+  &lt;div id="help-text" class="component-help"&gt;[Help text]&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+            
+            <!-- CSS -->
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="code-title">CSS Styles</span>
+                    <button class="copy-btn" onclick="copyCode('css')">Copy</button>
+                </div>
+                <pre id="css-code"><code>.component-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.component-input {
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: Inter, system-ui;
+  transition: all 0.2s ease;
+}
+
+.component-input:hover {
+  border-color: #0066cc;
+}
+
+.component-input:focus {
+  outline: 2px solid #0066cc;
+  border-color: #0066cc;
+}
+
+.component-input:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}</code></pre>
+            </div>
+            
+            <!-- JavaScript -->
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="code-title">JavaScript Behavior</span>
+                    <button class="copy-btn" onclick="copyCode('js')">Copy</button>
+                </div>
+                <pre id="js-code"><code>// Component initialization
+function initializeComponent(element) {
+  // Validation logic
+  element.addEventListener('blur', validateInput);
+  
+  // Custom behavior
+  element.addEventListener('input', handleInput);
+}
+
+function validateInput(event) {
+  const input = event.target;
+  const value = input.value;
+  
+  // Validation rules
+  if (!value) {
+    showError(input, 'This field is required');
+  } else {
+    clearError(input);
+  }
+}
+
+function handleInput(event) {
+  // Real-time input handling
+  console.log('Input changed:', event.target.value);
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- Usage Examples -->
+        <div class="content-section">
+            <h2 class="section-title">📚 Usage Examples</h2>
+            <div class="usage-examples">
+                <div class="usage-item">
+                    <div class="usage-title">Registration Forms</div>
+                    <div class="usage-description">Used for email input in user registration and login forms</div>
+                </div>
+                
+                <div class="usage-item">
+                    <div class="usage-title">Contact Forms</div>
+                    <div class="usage-description">Collecting email addresses in contact and feedback forms</div>
+                </div>
+                
+                <div class="usage-item">
+                    <div class="usage-title">Profile Settings</div>
+                    <div class="usage-description">Email field in user profile and account settings pages</div>
+                </div>
+                
+                <div class="usage-item">
+                    <div class="usage-title">Newsletter Signup</div>
+                    <div class="usage-description">Simple email collection for newsletter subscriptions</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Component Relationships -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Component Relationships</h2>
+            <p style="color: #666; margin-bottom: 20px;">How this component connects to other elements across the platform:</p>
+            <div class="relationship-grid">
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>👤</span>
+                        <span>User Stories</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">US###</a>
+                        <a href="#" class="relationship-link">US###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>📱</span>
+                        <span>Mockups</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">M###</a>
+                        <a href="#" class="relationship-link">M###</a>
+                        <a href="#" class="relationship-link">M###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🔄</span>
+                        <span>UI Flows</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">UX###</a>
+                        <a href="#" class="relationship-link">UX###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>⚙️</span>
+                        <span>Features</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">F###</a>
+                        <a href="#" class="relationship-link">F###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🧪</span>
+                        <span>Test Cases</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">T###</a>
+                        <a href="#" class="relationship-link">T###</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(type) {
+            const codeElement = document.getElementById(type + '-code');
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#007acc';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

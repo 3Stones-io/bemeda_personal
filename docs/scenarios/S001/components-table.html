@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components Table View - JOB-S1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .description {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Table Section */
+        .table-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Standard ID Badges */
+        .standard-id {
+            display: inline-block;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            white-space: nowrap;
+        }
+        
+        .id-scenario { background: #fff3e0; color: #e65100; border: 1px solid #e65100; }
+        .id-user-story { background: #f3e5f5; color: #4a148c; border: 1px solid #4a148c; }
+        .id-use-case { background: #e1f5fe; color: #01579b; border: 1px solid #01579b; }
+        .id-mockup { background: #f8bbd9; color: #c2185b; border: 1px solid #c2185b; }
+        .id-component { background: #f8bbd9; color: #c2185b; border: 1px solid #c2185b; }
+        .id-user-flow { background: #f8bbd9; color: #c2185b; border: 1px solid #c2185b; }
+        .id-test-case { background: #ffebee; color: #f44336; border: 1px solid #f44336; }
+        .id-acceptance { background: #ffebee; color: #f44336; border: 1px solid #f44336; }
+        .id-tech-spec { background: #e8f5e8; color: #1b5e20; border: 1px solid #1b5e20; }
+        .id-api { background: #e8f5e8; color: #1b5e20; border: 1px solid #1b5e20; }
+        .id-database { background: #e8f5e8; color: #1b5e20; border: 1px solid #1b5e20; }
+        .id-feature { background: #e8f5e8; color: #1b5e20; border: 1px solid #1b5e20; }
+        .id-tech-component { background: #e0e0e0; color: #424242; border: 1px solid #424242; }
+        
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active { background: #e8f5e8; color: #2e7d32; }
+        .status-complete { background: #e8f5e8; color: #2e7d32; }
+        .status-progress { background: #fff3e0; color: #ef6c00; }
+        .status-pending { background: #f3e5f5; color: #7b1fa2; }
+        
+        /* Participant badges */
+        .participant-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #e8f0fe;
+            color: #0066cc;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        /* Links */
+        .link-cell a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .link-cell a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 10px;
+            }
+            
+            table {
+                font-size: 0.85rem;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+        
+        /* Summary Stats */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #0066cc;
+        }
+        
+        .summary-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">← Back to JOB-S1</a>
+            <h1>Components Table View</h1>
+            <p class="description">Complete inventory of all components in JOB-S1: Cold Call to Candidate Placement</p>
+        </div>
+        
+        <!-- Summary Stats -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-number">18</div>
+                <div class="summary-label">User Stories</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number">18</div>
+                <div class="summary-label">User Interface Flows</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number">3</div>
+                <div class="summary-label">Use Cases</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number">4</div>
+                <div class="summary-label">Features</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number">16</div>
+                <div class="summary-label">Technical Components</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number">16</div>
+                <div class="summary-label">UI Components</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number">8</div>
+                <div class="summary-label">Interface Mockups</div>
+            </div>
+        </div>
+        
+        <!-- User Stories Table -->
+        <div class="table-section">
+            <h2 class="section-title">👤 User Stories (US###)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th width="150">Participant</th>
+                        <th>Title</th>
+                        <th width="100">Status</th>
+                        <th width="80">Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US001</span></td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                        <td>Receives cold call from Bemeda sales representative</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p1/s1.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US002</span></td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                        <td>Discusses staffing needs and platform benefits</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p1/s2.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US003</span></td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                        <td>Agrees to publish job posting with specific requirements</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p1/s3.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US004</span></td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                        <td>Reviews matched candidates in dashboard</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p1/s4.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US005</span></td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                        <td>Conducts interviews and selects candidate</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p1/s5.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US006</span></td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                        <td>Completes hiring process and onboarding</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p1/s6.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US007</span></td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                        <td>Creates comprehensive profile on platform</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p2/s1.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US008</span></td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                        <td>Receives notification of matching job opportunity</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p2/s2.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US009</span></td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                        <td>Reviews job details and applies</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p2/s3.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US010</span></td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                        <td>Participates in interview process</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p2/s4.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US011</span></td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                        <td>Receives job offer and accepts</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p2/s5.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US012</span></td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                        <td>Completes onboarding and starts position</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p2/s6.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US013</span></td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                        <td>Identifies potential healthcare organisation</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p3/s1.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US014</span></td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                        <td>Makes initial contact via cold call</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p3/s2.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US015</span></td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                        <td>Presents platform benefits and capabilities</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p3/s3.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US016</span></td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                        <td>Facilitates platform onboarding</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p3/s4.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US017</span></td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                        <td>Monitors placement success</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p3/s5.html">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-story">US018</span></td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                        <td>Follows up for additional opportunities</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td class="link-cell"><a href="p3/s6.html">View →</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- User Interface Flows Table -->
+        <div class="table-section">
+            <h2 class="section-title">🔄 User Interface Flows (UX###)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th width="200">Flow</th>
+                        <th>Description</th>
+                        <th width="150">Related To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX001</span></td>
+                        <td>Organisation Onboarding</td>
+                        <td>Landing Page - Initial platform introduction</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX002</span></td>
+                        <td>Organisation Onboarding</td>
+                        <td>Registration Form - Account creation with organization details</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX003</span></td>
+                        <td>Organisation Onboarding</td>
+                        <td>Email Verification - Security confirmation</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX004</span></td>
+                        <td>Organisation Onboarding</td>
+                        <td>Profile Setup - Organization profile completion</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX005</span></td>
+                        <td>Organisation Onboarding</td>
+                        <td>First Job Posting - Guided job creation</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX006</span></td>
+                        <td>Organisation Onboarding</td>
+                        <td>Dashboard Access - Full platform features unlocked</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX007</span></td>
+                        <td>Job Seeker Application</td>
+                        <td>Registration - Account creation with personal details</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX008</span></td>
+                        <td>Job Seeker Application</td>
+                        <td>Profile Creation - Skills, experience, and document upload</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX009</span></td>
+                        <td>Job Seeker Application</td>
+                        <td>Job Search - Browse and filter available positions</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX010</span></td>
+                        <td>Job Seeker Application</td>
+                        <td>Job Details - Review full position requirements</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX011</span></td>
+                        <td>Job Seeker Application</td>
+                        <td>Application Submit - Complete and send application</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX012</span></td>
+                        <td>Job Seeker Application</td>
+                        <td>Interview Booking - Schedule meeting with employer</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX013</span></td>
+                        <td>Sales Lead Management</td>
+                        <td>CRM Dashboard - Overview of all leads and activities</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX014</span></td>
+                        <td>Sales Lead Management</td>
+                        <td>New Lead Entry - Add prospect organization details</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX015</span></td>
+                        <td>Sales Lead Management</td>
+                        <td>Contact Qualification - Assess lead quality and potential</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX016</span></td>
+                        <td>Sales Lead Management</td>
+                        <td>Follow-up Scheduling - Plan next contact activities</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX017</span></td>
+                        <td>Sales Lead Management</td>
+                        <td>Conversion Tracking - Monitor progress to closure</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-user-flow">UX018</span></td>
+                        <td>Sales Lead Management</td>
+                        <td>Client Onboarding - Transition to active customer</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Use Cases Table -->
+        <div class="table-section">
+            <h2 class="section-title">🎯 Use Cases (UC###)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th width="300">Title</th>
+                        <th>Description</th>
+                        <th>User Stories</th>
+                        <th width="100">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="standard-id id-use-case">UC001</span></td>
+                        <td>Healthcare Organization Onboarding</td>
+                        <td>Complete client acquisition and platform setup process</td>
+                        <td>US001, US002, US003, US013, US014, US016</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-use-case">UC002</span></td>
+                        <td>Professional Recruitment Process</td>
+                        <td>End-to-end candidate matching and application process</td>
+                        <td>US007, US008, US009, US004</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-use-case">UC003</span></td>
+                        <td>Placement Coordination</td>
+                        <td>Complete hiring workflow and placement management</td>
+                        <td>US005, US006, US010, US011, US012, US017</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Features Table -->
+        <div class="table-section">
+            <h2 class="section-title">⚙️ Features (F###)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th width="250">Title</th>
+                        <th>Description</th>
+                        <th>Technical Components</th>
+                        <th width="100">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="standard-id id-feature">F001</span></td>
+                        <td>Job Search Discovery</td>
+                        <td>Advanced search algorithms, filtering, and job matching system</td>
+                        <td>TC001, TC002, TC003, TC004</td>
+                        <td><span class="status-badge status-complete">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-feature">F002</span></td>
+                        <td>User Profile Management</td>
+                        <td>Comprehensive profile creation, validation, and document management</td>
+                        <td>TC005, TC006, TC007, TC008</td>
+                        <td><span class="status-badge status-complete">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-feature">F004</span></td>
+                        <td>Communication Platform</td>
+                        <td>Multi-channel messaging, notifications, and scheduling system</td>
+                        <td>TC013, TC014, TC015, TC016</td>
+                        <td><span class="status-badge status-progress">75% Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-feature">F005</span></td>
+                        <td>Job Posting Tools</td>
+                        <td>Job posting creation, management, and workflow integration</td>
+                        <td>TC009, TC010, TC011, TC012</td>
+                        <td><span class="status-badge status-complete">Complete</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Technical Components Table -->
+        <div class="table-section">
+            <h2 class="section-title">🔧 Technical Components (TC###)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th>Component</th>
+                        <th width="150">Feature</th>
+                        <th width="100">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC001</span></td>
+                        <td>Elasticsearch-based search engine</td>
+                        <td><span class="standard-id id-feature">F001</span></td>
+                        <td>Backend</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC002</span></td>
+                        <td>Machine learning matching algorithms</td>
+                        <td><span class="standard-id id-feature">F001</span></td>
+                        <td>Algorithm</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC003</span></td>
+                        <td>Real-time filtering and sorting</td>
+                        <td><span class="standard-id id-feature">F001</span></td>
+                        <td>Backend</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC004</span></td>
+                        <td>Geolocation-based search</td>
+                        <td><span class="standard-id id-feature">F001</span></td>
+                        <td>Service</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC005</span></td>
+                        <td>Multi-step profile wizard</td>
+                        <td><span class="standard-id id-feature">F002</span></td>
+                        <td>Frontend</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC006</span></td>
+                        <td>Document storage and validation</td>
+                        <td><span class="standard-id id-feature">F002</span></td>
+                        <td>Backend</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC007</span></td>
+                        <td>Skills and certification tracking</td>
+                        <td><span class="standard-id id-feature">F002</span></td>
+                        <td>Database</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC008</span></td>
+                        <td>Privacy and data protection</td>
+                        <td><span class="standard-id id-feature">F002</span></td>
+                        <td>Security</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC009</span></td>
+                        <td>Job posting creation wizard</td>
+                        <td><span class="standard-id id-feature">F005</span></td>
+                        <td>Frontend</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC010</span></td>
+                        <td>Template management system</td>
+                        <td><span class="standard-id id-feature">F005</span></td>
+                        <td>Backend</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC011</span></td>
+                        <td>Approval workflow engine</td>
+                        <td><span class="standard-id id-feature">F005</span></td>
+                        <td>Workflow</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC012</span></td>
+                        <td>Multi-channel publishing</td>
+                        <td><span class="standard-id id-feature">F005</span></td>
+                        <td>Integration</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC013</span></td>
+                        <td>Real-time messaging system</td>
+                        <td><span class="standard-id id-feature">F004</span></td>
+                        <td>Backend</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC014</span></td>
+                        <td>Email and SMS notifications</td>
+                        <td><span class="standard-id id-feature">F004</span></td>
+                        <td>Service</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC015</span></td>
+                        <td>Calendar integration</td>
+                        <td><span class="standard-id id-feature">F004</span></td>
+                        <td>Integration</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-tech-component">TC016</span></td>
+                        <td>Communication history tracking</td>
+                        <td><span class="standard-id id-feature">F004</span></td>
+                        <td>Database</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- UI Components Table -->
+        <div class="table-section">
+            <h2 class="section-title">🧩 UI Components (C###)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th>Component</th>
+                        <th width="150">Category</th>
+                        <th width="100">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="standard-id id-component">C001</span></td>
+                        <td>Email Input Field</td>
+                        <td>Form Components</td>
+                        <td>Input</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C002</span></td>
+                        <td>Password Input Field</td>
+                        <td>Form Components</td>
+                        <td>Input</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C003</span></td>
+                        <td>Submit Button</td>
+                        <td>Form Components</td>
+                        <td>Button</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C004</span></td>
+                        <td>Validation Messages</td>
+                        <td>Form Components</td>
+                        <td>Feedback</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C005</span></td>
+                        <td>Top Navigation Bar</td>
+                        <td>Navigation Components</td>
+                        <td>Navigation</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C006</span></td>
+                        <td>Breadcrumb Navigation</td>
+                        <td>Navigation Components</td>
+                        <td>Navigation</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C007</span></td>
+                        <td>Sidebar Menu</td>
+                        <td>Navigation Components</td>
+                        <td>Navigation</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C008</span></td>
+                        <td>Tab Navigation</td>
+                        <td>Navigation Components</td>
+                        <td>Navigation</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C009</span></td>
+                        <td>Job Listing Card</td>
+                        <td>Data Display</td>
+                        <td>Card</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C010</span></td>
+                        <td>Candidate Profile Card</td>
+                        <td>Data Display</td>
+                        <td>Card</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C011</span></td>
+                        <td>Progress Indicator</td>
+                        <td>Data Display</td>
+                        <td>Indicator</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C012</span></td>
+                        <td>Status Badge</td>
+                        <td>Data Display</td>
+                        <td>Badge</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C013</span></td>
+                        <td>Search Filter</td>
+                        <td>Interactive Elements</td>
+                        <td>Filter</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C014</span></td>
+                        <td>Date Picker</td>
+                        <td>Interactive Elements</td>
+                        <td>Picker</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C015</span></td>
+                        <td>File Upload</td>
+                        <td>Interactive Elements</td>
+                        <td>Upload</td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-component">C016</span></td>
+                        <td>Modal Dialog</td>
+                        <td>Interactive Elements</td>
+                        <td>Modal</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Interface Mockups Table -->
+        <div class="table-section">
+            <h2 class="section-title">📱 Interface Mockups (M###)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th>Screen</th>
+                        <th>Description</th>
+                        <th width="150">Participant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M001</span></td>
+                        <td>Dashboard Landing Screen</td>
+                        <td>Overview with navigation and metrics</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M002</span></td>
+                        <td>Job Posting Form Screen</td>
+                        <td>Multi-step wizard layout</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M003</span></td>
+                        <td>Candidate List Screen</td>
+                        <td>Table with filtering and actions</td>
+                        <td><span class="participant-badge">🏥 Organisation</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M004</span></td>
+                        <td>Registration Screen</td>
+                        <td>Sign-up form with validation</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M005</span></td>
+                        <td>Profile Creation Screen</td>
+                        <td>Skills and document upload</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M006</span></td>
+                        <td>Job Search Screen</td>
+                        <td>Search with advanced filters</td>
+                        <td><span class="participant-badge">🔍 JobSeeker</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M007</span></td>
+                        <td>CRM Dashboard Screen</td>
+                        <td>Lead pipeline and metrics</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="standard-id id-mockup">M008</span></td>
+                        <td>Lead Management Screen</td>
+                        <td>Contact forms and history</td>
+                        <td><span class="participant-badge">📞 Sales Team</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

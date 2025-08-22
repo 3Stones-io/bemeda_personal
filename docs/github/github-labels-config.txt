@@ -1,0 +1,86 @@
+# GitHub Labels Configuration for Bemeda Platform
+# Copy and paste these exact settings when creating each label
+
+## Core Platform Labels
+
+Label: platform
+Color: #7057ff
+Description: Bemeda Platform related issues
+
+Label: user-story
+Color: #4a148c
+Description: User story components
+
+Label: feature
+Color: #2e7d32
+Description: Feature specifications
+
+Label: technical
+Color: #1976d2
+Description: Technical components
+
+Label: api
+Color: #ff5722
+Description: API endpoint specifications
+
+Label: ux-ui
+Color: #9c27b0
+Description: UX/UI design components
+
+Label: testing
+Color: #795548
+Description: Testing and QA components
+
+Label: bug
+Color: #d73a49
+Description: Bug reports
+
+## Priority Labels
+
+Label: priority:high
+Color: #d73a49
+Description: High priority items
+
+Label: priority:medium
+Color: #fbca04
+Description: Medium priority items
+
+Label: priority:low
+Color: #0e8a16
+Description: Low priority items
+
+## Status Labels
+
+Label: status:planning
+Color: #ffffff
+Description: Planning phase
+
+Label: status:in-progress
+Color: #0052cc
+Description: Currently in progress
+
+Label: status:review
+Color: #5319e7
+Description: Under review
+
+Label: status:completed
+Color: #28a745
+Description: Completed
+
+## Domain Labels
+
+Label: domain:scenarios
+Color: #4a148c
+Description: Scenarios and user stories
+
+Label: domain:technical
+Color: #1976d2
+Description: Technical specifications
+
+Label: domain:ux-ui
+Color: #9c27b0
+Description: UX/UI design components
+
+Label: domain:testing
+Color: #795548
+Description: Testing and QA

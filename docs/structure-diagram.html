@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bemeda Platform - Structure Diagram</title>
+    <link rel="stylesheet" href="site/assets/global/css/language-switcher.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Language Switcher - Top Right Only */
+        .language-switcher-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+        
+        .language-switcher {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            background: white;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .lang-btn:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .lang-btn.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .back-nav {
+            margin-bottom: 20px;
+        }
+        
+        .back-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: white;
+            color: #0066cc;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        
+        .back-nav a:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .diagram-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .diagram-section h2 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        
+        .diagram-section h3 {
+            color: #0066cc;
+            margin: 30px 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .diagram-section p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .mermaid {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .insights-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .insights-section h3 {
+            color: #0066cc;
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+        
+        .insights-section ul {
+            margin-left: 20px;
+            color: #666;
+        }
+        
+        .insights-section li {
+            margin-bottom: 8px;
+        }
+        
+        .navigation-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .nav-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .nav-card h4 {
+            color: #0066cc;
+            margin-bottom: 8px;
+        }
+        
+        .nav-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .diagram-section {
+                padding: 20px;
+            }
+            
+            .navigation-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Language Switcher - Top Right -->
+        <div class="language-switcher-container">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="de">DE</button>
+            </div>
+        </div>
+        
+        <!-- Back Navigation -->
+        <div class="back-nav">
+            <a href="index.html">← Back to Main Dashboard</a>
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>🏗️ Platform Structure Diagram</h1>
+            <p>Complete system architecture and organizational overview</p>
+        </div>
+        
+        
+        <!-- Scenarios vs User Stories vs Use Cases -->
+        <div class="diagram-section">
+            <h2>📋 Scenarios vs User Stories vs Use Cases - Definitions</h2>
+            
+            <h3>🔑 Key Terminology Clarification</h3>
+            
+            <div class="mermaid">
+graph TB
+    subgraph "📖 Business Scenario Level"
+        SCENARIO[📖 Scenario<br/>Complete end to end business workflow<br/>Example Cold Call to Candidate Placement]
+    end
+    
+    subgraph "👤 Individual Process Level"
+        subgraph "P1 Journey"
+            US1[👤 User Story 1<br/>Individual step in process<br/>s1.html Receives cold call]
+            US2[👤 User Story 2<br/>Individual step in process<br/>s2.html Discusses needs]
+            US3[👤 User Story 3<br/>Individual step in process<br/>s3.html Posts job]
+        end
+        
+        subgraph "P2 Journey"
+            US4[👤 User Story 4<br/>Individual step in process<br/>s1.html Creates profile]
+            US5[👤 User Story 5<br/>Individual step in process<br/>s2.html Gets notification]
+            US6[👤 User Story 6<br/>Individual step in process<br/>s3.html Applies to job]
+        end
+    end
+    
+    subgraph "🎨 User Interface Experience Level"
+        UX1[🎨 Interface Design 1<br/>Job Search Interface<br/>Mockups components user flows]
+        UX2[🎨 Interface Design 2<br/>Profile Creation Interface<br/>Mockups components user flows]
+        UX3[🎨 Interface Design 3<br/>Job Posting Interface<br/>Mockups components user flows]
+        UX4[🎨 Interface Design 4<br/>Communication Interface<br/>Mockups components user flows]
+    end
+    
+    subgraph "🎯 Functional Requirement Level"
+        UC1[🎯 Use Case 1<br/>Cross participant business function<br/>Example Healthcare Organization Onboarding]
+        UC2[🎯 Use Case 2<br/>Cross participant business function<br/>Example Candidate Job Matching Engine]
+        UC3[🎯 Use Case 3<br/>Cross participant business function<br/>Example Interview Placement Process]
+    end
+    
+    subgraph "⚙️ Technical Implementation Level"
+        F001[⚙️ Feature F001<br/>Job Search Discovery<br/>Technical component implementation]
+        F002[⚙️ Feature F002<br/>User Profiles<br/>Technical component implementation]
+        F005[⚙️ Feature F005<br/>Job Posting Tools<br/>Technical component implementation]
+        F004[⚙️ Feature F004<br/>Communication<br/>Technical component implementation]
+    end
+    
+    SCENARIO --> US1
+    SCENARIO --> US2
+    SCENARIO --> US3
+    SCENARIO --> US4
+    SCENARIO --> US5
+    SCENARIO --> US6
+    
+    US1 --> UX1
+    US2 --> UX1
+    US3 --> UX3
+    US4 --> UX2
+    US5 --> UX2
+    US6 --> UX2
+    
+    UX1 --> UC1
+    UX2 --> UC2
+    UX3 --> UC1
+    UX4 --> UC3
+    
+    UC1 --> F005
+    UC1 --> F004
+    UC2 --> F001
+    UC2 --> F002
+    UC3 --> F004
+    
+    classDef scenarioLevel fill:#fff3e0,stroke:#e65100,stroke-width:3px
+    classDef userStoryLevel fill:#f3e5f5,stroke:#4a148c,stroke-width:1px
+    classDef uiuxLevel fill:#f8bbd9,stroke:#c2185b,stroke-width:2px
+    classDef useCaseLevel fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef featureLevel fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    
+    class SCENARIO scenarioLevel
+    class US1,US2,US3,US4,US5,US6 userStoryLevel
+    class UX1,UX2,UX3,UX4 uiuxLevel
+    class UC1,UC2,UC3 useCaseLevel
+    class F001,F002,F005,F004 featureLevel
+            </div>
+            
+        </div>
+        
+        <!-- Template Analysis Section -->
+        <div class="diagram-section">
+            <h2>📊 Template Analysis & Implementation Status</h2>
+            <p style="margin-bottom: 20px; color: #666;">Current status of standardized templates and indexes across all documentation categories.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                
+                <!-- Business Analysis Layer -->
+                <div style="background: #fff3e0; border-radius: 12px; padding: 20px; border-left: 4px solid #e65100;">
+                    <h3 style="color: #e65100; margin-bottom: 16px;">📋 Business Analysis Layer</h3>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">S### - Scenarios</h4>
+                        <div style="background: #ffccbc; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #d84315; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Need: S001, S002, S003... template files</p>
+                        <a href="templates/scenarios/index.html" style="color: #e65100; font-size: 0.85rem;">→ Create Scenarios Index</a>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">US### - User Stories</h4>
+                        <div style="background: #ffccbc; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #d84315; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Need: US001, US002, US003... template files</p>
+                        <a href="templates/user-stories/index.html" style="color: #e65100; font-size: 0.85rem;">→ Create User Stories Index</a>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #333; margin-bottom: 8px;">UC### - Use Cases</h4>
+                        <div style="background: #ffccbc; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #d84315; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Need: UC001, UC002, UC003... template files</p>
+                        <a href="templates/use-cases/index.html" style="color: #e65100; font-size: 0.85rem;">→ Create Use Cases Index</a>
+                    </div>
+                </div>
+                
+                <!-- Design Layer -->
+                <div style="background: #f8bbd9; border-radius: 12px; padding: 20px; border-left: 4px solid #c2185b;">
+                    <h3 style="color: #c2185b; margin-bottom: 16px;">🎨 UI/UX Design Layer</h3>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">M### - Mockups</h4>
+                        <div style="background: #f8bbd9; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #ad1457; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Need: M001, M002, M003... template files</p>
+                        <a href="templates/mockups/index.html" style="color: #c2185b; font-size: 0.85rem;">→ Create Mockups Index</a>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">C### - Components</h4>
+                        <div style="background: #c8e6c9; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #2e7d32; font-weight: 600;">⚠️ Partial (12 UI-### found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Exists as UI-### pattern, need C### migration</p>
+                        <a href="site/design-system/components/" style="color: #c2185b; font-size: 0.85rem;">→ View Existing Components</a>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #333; margin-bottom: 8px;">UF### - User Flows</h4>
+                        <div style="background: #f8bbd9; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #ad1457; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Need: UF001, UF002, UF003... template files</p>
+                        <a href="templates/user-flows/index.html" style="color: #c2185b; font-size: 0.85rem;">→ Create User Flows Index</a>
+                    </div>
+                </div>
+                
+                <!-- Testing Layer -->
+                <div style="background: #ffebee; border-radius: 12px; padding: 20px; border-left: 4px solid #f44336;">
+                    <h3 style="color: #f44336; margin-bottom: 16px;">🐛 Testing & QA Layer</h3>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">TC### - Test Cases</h4>
+                        <div style="background: #ffcdd2; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #c62828; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Need: TC001, TC002, TC003... template files</p>
+                        <a href="templates/test-cases/index.html" style="color: #f44336; font-size: 0.85rem;">→ Create Test Cases Index</a>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #333; margin-bottom: 8px;">AC### - Acceptance Criteria</h4>
+                        <div style="background: #ffcdd2; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #c62828; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Need: AC001, AC002, AC003... template files</p>
+                        <a href="templates/acceptance-criteria/index.html" style="color: #f44336; font-size: 0.85rem;">→ Create Acceptance Criteria Index</a>
+                    </div>
+                </div>
+                
+                <!-- Technical Layer -->
+                <div style="background: #e8f5e8; border-radius: 12px; padding: 20px; border-left: 4px solid #4caf50;">
+                    <h3 style="color: #4caf50; margin-bottom: 16px;">⚙️ Technical Implementation Layer</h3>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">F### - Features</h4>
+                        <div style="background: #c8e6c9; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #2e7d32; font-weight: 600;">✅ Exists (8 f##- found)</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666;">Good foundation, need F### standardization</p>
+                        <a href="site/assets/features/" style="color: #4caf50; font-size: 0.85rem;">→ View Existing Features</a>
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">TS### - Technical Specs</h4>
+                        <div style="background: #ffcdd2; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #c62828; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <a href="templates/tech-specs/index.html" style="color: #4caf50; font-size: 0.85rem;">→ Create Tech Specs Index</a>
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <h4 style="color: #333; margin-bottom: 8px;">API### - API Endpoints</h4>
+                        <div style="background: #ffcdd2; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #c62828; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <a href="templates/api-endpoints/index.html" style="color: #4caf50; font-size: 0.85rem;">→ Create API Index</a>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #333; margin-bottom: 8px;">DB### - Database Schemas</h4>
+                        <div style="background: #ffcdd2; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <span style="color: #c62828; font-weight: 600;">❌ Missing (0 found)</span>
+                        </div>
+                        <a href="templates/database-schemas/index.html" style="color: #4caf50; font-size: 0.85rem;">→ Create Database Index</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary Statistics -->
+            <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h3 style="color: #333; margin-bottom: 16px;">📈 Implementation Summary</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <div style="text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 600; color: #2e7d32;">20</div>
+                        <div style="color: #666; font-size: 0.9rem;">Total Templates Needed</div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 600; color: #ef6c00;">20</div>
+                        <div style="color: #666; font-size: 0.9rem;">Templates Missing</div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 600; color: #1976d2;">20</div>
+                        <div style="color: #666; font-size: 0.9rem;">Index Pages Needed</div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: 600; color: #7b1fa2;">0%</div>
+                        <div style="color: #666; font-size: 0.9rem;">Implementation Complete</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4 style="color: #333; margin-bottom: 12px;">Next Steps:</h4>
+                    <ol style="margin-left: 20px; color: #666;">
+                        <li style="margin-bottom: 8px;">Create template directories for each missing category</li>
+                        <li style="margin-bottom: 8px;">Build standardized template files (S001, US001, UC001, etc.)</li>
+                        <li style="margin-bottom: 8px;">Implement index pages with cross-references</li>
+                        <li style="margin-bottom: 8px;">Migrate existing f##- files to F### pattern</li>
+                        <li>Establish automated template generation system</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                fontSize: '14px'
+            }
+        });
+        
+        // Language switcher functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    langButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Here you would typically load the appropriate language content
+                    console.log('Language switched to:', this.dataset.lang);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

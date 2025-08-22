@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="site/sitemap/table/index.html">
     <title>Bemeda - Healthcare Talent Platform</title>
-            <link rel="stylesheet" href="site/assets/global/css/language-switcher.css">
+    <link rel="stylesheet" href="assets/css/navigation.css">
+    <link rel="stylesheet" href="site/assets/global/css/language-switcher.css">
         <style>
             /* Language Switcher - Top Right Only */
             .language-switcher-container {
@@ -265,6 +266,10 @@
             --accent-color: #667eea;
         }
         
+        .mvp-card.architecture {
+            --accent-color: #ff7043;
+        }
+        
         .mvp-icon {
             font-size: 3rem;
             margin-bottom: 16px;
@@ -362,37 +367,10 @@
             </div>
         </div>
         
-        <!-- Top Navigation -->
-        <nav class="top-nav">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link active" data-i18n="nav.index">Index</a>
-                </li>
-                <li class="nav-item">
-                    <a href="site/sitemap/job/index.html" class="nav-link" data-i18n="nav.job">JOB</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="site/sitemap/tmp/index.html" class="nav-link" data-i18n="nav.tmp">TMP</a>
-                    <div class="dropdown-content">
-                        <a href="site/sitemap/tmp/temporary/index.html" data-i18n="nav.tmp-temporary">TMP-Temporary</a>
-                        <a href="site/sitemap/tmp/tryhire/index.html" data-i18n="nav.tmp-tryhire">TMP & Hire</a>
-                        <a href="site/sitemap/tmp/pool/index.html" data-i18n="nav.tmp-pool">TMP-Pool</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a href="site/sitemap/table/index.html" class="nav-link">Table</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="site/sitemap/admin/index.html" class="nav-link" data-i18n="nav.admin">Admin</a>
-                    <div class="dropdown-content">
-                        <a href="site/sitemap/admin/s1/index.html" data-i18n="nav.admin-dashboard">Platform Dashboard</a>
-                        <a href="site/sitemap/admin/s2/index.html" data-i18n="nav.admin-support">User Support</a>
-                        <a href="site/sitemap/admin/s3/index.html" data-i18n="nav.admin-content">Content Management</a>
-                        <a href="site/sitemap/admin/s4/index.html" data-i18n="nav.admin-settings">System Settings</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
+        <!-- Dynamic Navigation Container -->
+        <div id="navigation-container">
+            <!-- Navigation will be loaded dynamically -->
+        </div>
         
         <div class="header">
             <h1>Bemeda Healthcare Platform</h1>
@@ -421,147 +399,205 @@
             </div>
         </div>
         
-        <!-- Unified Feature Table Section -->
+        <!-- Quick Access Section -->
         <div class="mvp-cards-section">
-            <h2 class="mvp-cards-title">Unified Feature Overview</h2>
+            <h2 class="mvp-cards-title">Quick Access</h2>
             <div class="mvp-cards">
-                <a href="site/unified-table/" class="mvp-card unified">
+                <a href="unified-view/index.html" class="mvp-card unified">
                     <span class="mvp-icon">📊</span>
-                    <h3 class="mvp-title">Unified Feature Table</h3>
-                    <p class="mvp-subtitle">Single Source of Truth</p>
+                    <h3 class="mvp-title">Unified View</h3>
+                    <p class="mvp-subtitle">Cross-Domain Analytics</p>
                     <p class="mvp-description">
-                        Complete overview of all platform features with progress tracking across business analysis, 
-                        design, testing, and technical implementation. Single source of truth for project status.
+                        Complete overview of all platform components with progress tracking across scenarios, 
+                        design, testing, and technical implementation. Real-time project insights.
                     </p>
                     <div class="mvp-stats">
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">7</div>
-                            <div class="mvp-stat-label">Features</div>
+                            <div class="mvp-stat-number">18</div>
+                            <div class="mvp-stat-label">User Stories</div>
                         </div>
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">28</div>
+                            <div class="mvp-stat-number">50+</div>
                             <div class="mvp-stat-label">Components</div>
                         </div>
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">78%</div>
-                            <div class="mvp-stat-label">Overall</div>
+                            <div class="mvp-stat-number">75%</div>
+                            <div class="mvp-stat-label">Progress</div>
                         </div>
                     </div>
-                    <div class="mvp-cta">View Unified Table</div>
+                    <div class="mvp-cta">View Analytics</div>
+                </a>
+                
+                <a href="registry/index.html" class="mvp-card architecture">
+                    <span class="mvp-icon">🔍</span>
+                    <h3 class="mvp-title">Component Registry</h3>
+                    <p class="mvp-subtitle">Search & Discovery</p>
+                    <p class="mvp-description">
+                        Centralized component search and discovery system. Find user stories, features, 
+                        test cases, and technical specifications across all domains.
+                    </p>
+                    <div class="mvp-stats">
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">4</div>
+                            <div class="mvp-stat-label">Domains</div>
+                        </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">8</div>
+                            <div class="mvp-stat-label">Types</div>
+                        </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">100%</div>
+                            <div class="mvp-stat-label">Searchable</div>
+                        </div>
+                    </div>
+                    <div class="mvp-cta">Search Components</div>
                 </a>
             </div>
         </div>
         
-        <!-- Team Participants Section -->
+        <!-- Platform Domains Section -->
         <div class="mvp-cards-section">
-            <h2 class="mvp-cards-title">Project Team Domains</h2>
+            <h2 class="mvp-cards-title">Platform Domains</h2>
             <div class="mvp-cards">
-                <!-- Nicole's Scenarios Domain -->
-                <a href="site/participants/scenarios/index.html" class="mvp-card scenarios">
+                <!-- Scenarios Domain -->
+                <a href="scenarios/index.html" class="mvp-card scenarios">
                     <span class="mvp-icon">📋</span>
-                    <h3 class="mvp-title">Scenarios & Workflows</h3>
-                    <p class="mvp-subtitle">Nicole - Business Analysis</p>
+                    <h3 class="mvp-title">Scenarios & User Stories</h3>
+                    <p class="mvp-subtitle">Business Analysis & Workflows</p>
                     <p class="mvp-description">
-                        Complete user journey documentation, process flows, and business logic. 
-                        Covers all staffing scenarios from job placement to pool management.
+                        Complete user journey documentation, process flows, and business scenarios. 
+                        Covers all staffing workflows from cold calls to long-term relationship management.
                     </p>
                     <div class="mvp-stats">
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">12</div>
+                            <div class="mvp-stat-number">18</div>
+                            <div class="mvp-stat-label">User Stories</div>
+                        </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">1</div>
                             <div class="mvp-stat-label">Scenarios</div>
                         </div>
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">4</div>
-                            <div class="mvp-stat-label">Workflows</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">85%</div>
+                            <div class="mvp-stat-number">100%</div>
                             <div class="mvp-stat-label">Complete</div>
                         </div>
                     </div>
                     <div class="mvp-cta">Explore Business Scenarios</div>
                 </a>
                 
-                <!-- Oghogho's UX/UI Domain -->
-                <a href="site/participants/ux-ui/index.html" class="mvp-card ux-ui">
+                <!-- UX/UI Domain -->
+                <a href="ux-ui/index.html" class="mvp-card ux-ui">
                     <span class="mvp-icon">🎨</span>
                     <h3 class="mvp-title">UX/UI & Design System</h3>
-                    <p class="mvp-subtitle">Oghogho - User Experience</p>
+                    <p class="mvp-subtitle">User Experience & Interface Design</p>
                     <p class="mvp-description">
                         User interface components, design patterns, mockups, and accessibility guidelines. 
                         Complete design system with interactive components and user flows.
                     </p>
                     <div class="mvp-stats">
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">12</div>
+                            <div class="mvp-stat-number">12+</div>
                             <div class="mvp-stat-label">Components</div>
                         </div>
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">8</div>
-                            <div class="mvp-stat-label">Mockups</div>
+                            <div class="mvp-stat-number">8+</div>
+                            <div class="mvp-stat-label">UI Flows</div>
                         </div>
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">70%</div>
-                            <div class="mvp-stat-label">Complete</div>
+                            <div class="mvp-stat-number">Templates</div>
+                            <div class="mvp-stat-label">Ready</div>
                         </div>
                     </div>
                     <div class="mvp-cta">Explore Design System</div>
                 </a>
                 
-                <!-- Dejan's Testing Domain -->
-                <a href="site/participants/testing/index.html" class="mvp-card testing">
-                    <span class="mvp-icon">🐛</span>
-                    <h3 class="mvp-title">Testing & Quality Assurance</h3>
-                    <p class="mvp-subtitle">Dejan - Quality Engineering</p>
-                    <p class="mvp-description">
-                        Test scenarios, bug tracking, quality metrics, and performance testing. 
-                        Comprehensive QA documentation and testing procedures.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">24</div>
-                            <div class="mvp-stat-label">Test Cases</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">6</div>
-                            <div class="mvp-stat-label">Bug Reports</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">60%</div>
-                            <div class="mvp-stat-label">Complete</div>
-                        </div>
-                    </div>
-                    <div class="mvp-cta">Explore Testing Documentation</div>
-                </a>
-                
-                <!-- Almir's Features Domain -->
-                <a href="site/participants/features/index.html" class="mvp-card features">
+                <!-- Technical Domain -->
+                <a href="technical/index.html" class="mvp-card features">
                     <span class="mvp-icon">⚙️</span>
-                    <h3 class="mvp-title">Features & Implementation</h3>
-                    <p class="mvp-subtitle">Almir - Technical Lead</p>
+                    <h3 class="mvp-title">Technical Specifications</h3>
+                    <p class="mvp-subtitle">Architecture & Implementation</p>
                     <p class="mvp-description">
                         Technical specifications, API documentation, database schemas, and integration guides. 
                         Complete feature documentation with implementation details.
                     </p>
                     <div class="mvp-stats">
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">8</div>
-                            <div class="mvp-stat-label">Features</div>
+                            <div class="mvp-stat-number">Templates</div>
+                            <div class="mvp-stat-label">Available</div>
                         </div>
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">5</div>
-                            <div class="mvp-stat-label">APIs</div>
+                            <div class="mvp-stat-number">API</div>
+                            <div class="mvp-stat-label">Specs</div>
                         </div>
                         <div class="mvp-stat">
-                            <div class="mvp-stat-number">75%</div>
-                            <div class="mvp-stat-label">Complete</div>
+                            <div class="mvp-stat-number">DB</div>
+                            <div class="mvp-stat-label">Schemas</div>
                         </div>
                     </div>
-                    <div class="mvp-cta">Explore Technical Features</div>
+                    <div class="mvp-cta">Explore Technical Specs</div>
+                </a>
+                
+                <!-- Testing Domain -->
+                <a href="testing/index.html" class="mvp-card testing">
+                    <span class="mvp-icon">🧪</span>
+                    <h3 class="mvp-title">Testing & Quality Assurance</h3>
+                    <p class="mvp-subtitle">Quality Engineering & Validation</p>
+                    <p class="mvp-description">
+                        Test scenarios, acceptance criteria, quality metrics, and validation procedures. 
+                        Comprehensive QA documentation and testing frameworks.
+                    </p>
+                    <div class="mvp-stats">
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">Templates</div>
+                            <div class="mvp-stat-label">Ready</div>
+                        </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">A###</div>
+                            <div class="mvp-stat-label">Criteria</div>
+                        </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">T###</div>
+                            <div class="mvp-stat-label">Test Cases</div>
+                        </div>
+                    </div>
+                    <div class="mvp-cta">Explore Testing Framework</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Integration & Collaboration Section -->
+        <div class="mvp-cards-section">
+            <h2 class="mvp-cards-title">Integration & Collaboration</h2>
+            <div class="mvp-cards">
+                <!-- GitHub Integration -->
+                <a href="github/index.html" class="mvp-card" style="--accent-color: #24292e;">
+                    <span class="mvp-icon">🐙</span>
+                    <h3 class="mvp-title">GitHub Integration</h3>
+                    <p class="mvp-subtitle">Real-World Collaboration System</p>
+                    <p class="mvp-description">
+                        Comprehensive integration guide for connecting this documentation system with GitHub. 
+                        Includes metadata-driven workflows, issue synchronization, and team collaboration features.
+                    </p>
+                    <div class="mvp-stats">
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">Ready</div>
+                            <div class="mvp-stat-label">Framework</div>
+                        </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">Guide</div>
+                            <div class="mvp-stat-label">Complete</div>
+                        </div>
+                        <div class="mvp-stat">
+                            <div class="mvp-stat-number">RW</div>
+                            <div class="mvp-stat-label">Production</div>
+                        </div>
+                    </div>
+                    <div class="mvp-cta">View Integration Guide</div>
                 </a>
             </div>
         </div>
     </div>
+    <script src="assets/js/navigation.js"></script>
     <script src="global/js/language-switcher.js"></script>
 </body>
 </html>

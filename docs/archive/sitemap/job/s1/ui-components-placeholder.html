@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Components Placeholder - JOB-S1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .note {
+            background: #fff3e0;
+            border-left: 4px solid #ef6c00;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 8px;
+        }
+        
+        /* All the original styles for UI components */
+        .issues-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .issues-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .standard-id {
+            display: inline-block;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .id-scenario { background: #fff3e0; color: #e65100; border: 1px solid #e65100; }
+        .id-user-story { background: #f3e5f5; color: #4a148c; border: 1px solid #4a148c; }
+        .id-use-case { background: #e1f5fe; color: #01579b; border: 1px solid #01579b; }
+        .id-mockup { background: #f8bbd9; color: #c2185b; border: 1px solid #c2185b; }
+        .id-component { background: #f8bbd9; color: #c2185b; border: 1px solid #c2185b; }
+        .id-user-flow { background: #f8bbd9; color: #c2185b; border: 1px solid #c2185b; }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #0066cc;
+        }
+        
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .participant-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .participant-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .participant-icon {
+            font-size: 1.5rem;
+        }
+        
+        .participant-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .subsection {
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>UI Components Placeholder - JOB-S1</h1>
+            <p style="color: #666; margin-top: 8px;">Temporary storage for UI Design System components</p>
+        </div>
+        
+        <div class="note">
+            <strong>Note:</strong> These UI components have been temporarily moved from the main JOB-S1 page for cleaner organization. They can be restored when needed for implementation. User Interface Flows (UX###) remain on the main page.
+        </div>
+
+        <!-- UI Design System Section -->
+        <div class="issues-section" style="margin-bottom: 32px;">
+            <div class="issues-header">
+                <h2 class="section-title">🎨 UI Design System</h2>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">Complete UI architecture organized by atomic components, mockups, and user flows following proper design system hierarchy.</p>
+        </div>
+
+        <!-- Atomic Components -->
+        <div class="issues-section" style="margin-bottom: 32px;">
+            <div class="issues-header">
+                <h2 class="section-title">🧩 C### - Atomic Components</h2>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">Individual, reusable UI building blocks that can be combined to create larger interfaces.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                <!-- Form Components -->
+                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #c2185b;">
+                    <h4 style="color: #c2185b; margin-bottom: 8px;">Form Components</h4>
+                    <div class="process-steps" style="gap: 8px;">
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C001</span>
+                            <span style="font-size: 0.9rem;">Email Input Field</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C002</span>
+                            <span style="font-size: 0.9rem;">Password Input Field</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C003</span>
+                            <span style="font-size: 0.9rem;">Submit Button</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C004</span>
+                            <span style="font-size: 0.9rem;">Validation Messages</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Components -->
+                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #c2185b;">
+                    <h4 style="color: #c2185b; margin-bottom: 8px;">Navigation Components</h4>
+                    <div class="process-steps" style="gap: 8px;">
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C005</span>
+                            <span style="font-size: 0.9rem;">Top Navigation Bar</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C006</span>
+                            <span style="font-size: 0.9rem;">Breadcrumb Navigation</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C007</span>
+                            <span style="font-size: 0.9rem;">Sidebar Menu</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C008</span>
+                            <span style="font-size: 0.9rem;">Tab Navigation</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Display Components -->
+                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #c2185b;">
+                    <h4 style="color: #c2185b; margin-bottom: 8px;">Data Display</h4>
+                    <div class="process-steps" style="gap: 8px;">
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C009</span>
+                            <span style="font-size: 0.9rem;">Job Listing Card</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C010</span>
+                            <span style="font-size: 0.9rem;">Candidate Profile Card</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C011</span>
+                            <span style="font-size: 0.9rem;">Progress Indicator</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C012</span>
+                            <span style="font-size: 0.9rem;">Status Badge</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Interactive Components -->
+                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #c2185b;">
+                    <h4 style="color: #c2185b; margin-bottom: 8px;">Interactive Elements</h4>
+                    <div class="process-steps" style="gap: 8px;">
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C013</span>
+                            <span style="font-size: 0.9rem;">Search Filter</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C014</span>
+                            <span style="font-size: 0.9rem;">Date Picker</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C015</span>
+                            <span style="font-size: 0.9rem;">File Upload</span>
+                        </div>
+                        <div class="process-step" style="padding: 8px;">
+                            <span class="standard-id id-component">C016</span>
+                            <span style="font-size: 0.9rem;">Modal Dialog</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mockups Section -->
+        <div class="issues-section" style="margin-bottom: 32px;">
+            <div class="issues-header">
+                <h2 class="section-title">📱 M### - Interface Mockups</h2>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">Screen-level designs showing how atomic components are composed into complete interfaces.</p>
+            
+            <div class="participants-grid">
+                <!-- Organisation Mockups -->
+                <div class="participant-section">
+                    <div class="participant-header">
+                        <span class="participant-icon">🏥</span>
+                        <h2 class="participant-title">Organisation Interface Mockups</h2>
+                    </div>
+                    
+                    <div class="subsection">
+                        <div class="process-steps">
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M001</span>
+                                <span class="step-text">Dashboard Landing Screen - Overview with navigation and metrics</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M002</span>
+                                <span class="step-text">Job Posting Form Screen - Multi-step wizard layout</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M003</span>
+                                <span class="step-text">Candidate List Screen - Table with filtering and actions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- JobSeeker Mockups -->
+                <div class="participant-section">
+                    <div class="participant-header">
+                        <span class="participant-icon">🔍</span>
+                        <h2 class="participant-title">JobSeeker Interface Mockups</h2>
+                    </div>
+                    
+                    <div class="subsection">
+                        <div class="process-steps">
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M004</span>
+                                <span class="step-text">Registration Screen - Sign-up form with validation</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M005</span>
+                                <span class="step-text">Profile Creation Screen - Skills and document upload</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M006</span>
+                                <span class="step-text">Job Search Screen - Search with advanced filters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sales Team Mockups -->
+                <div class="participant-section">
+                    <div class="participant-header">
+                        <span class="participant-icon">📞</span>
+                        <h2 class="participant-title">Sales Team Interface Mockups</h2>
+                    </div>
+                    
+                    <div class="subsection">
+                        <div class="process-steps">
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M007</span>
+                                <span class="step-text">CRM Dashboard Screen - Lead pipeline and metrics</span>
+                            </div>
+                            <div class="process-step">
+                                <span class="standard-id id-mockup">M008</span>
+                                <span class="step-text">Lead Management Screen - Contact forms and history</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

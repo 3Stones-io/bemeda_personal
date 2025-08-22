@@ -1,0 +1,67 @@
+{
+  "component": {
+    "id": "US001",
+    "type": "user-story",
+    "title": "Organisation Posts Job and Manages Applications",
+    "description": "Healthcare organisation posts a job opening, manages incoming applications, and tracks the entire hiring process from posting to placement.",
+    "domain": "scenarios",
+    "scenario": "S001",
+    "participant": "Organisation",
+    "status": "completed",
+    "priority": "high",
+    "metadata": {
+      "created": "2024-01-15T10:00:00Z",
+      "updated": "2024-08-22T14:30:00Z",
+      "version": "1.2.0",
+      "author": "system",
+      "assignee": "nicole.business-analyst"
+    },
+    "github": {
+      "repository": "spitexbemeda/Bemeda-Personal-Page",
+      "issue": null,
+      "branch": "gh-pages",
+      "issue_prefix": "[PLATFORM]",
+      "labels": ["platform", "user-story", "priority:high", "status:completed", "domain:scenarios"],
+      "milestone": "MVP-Phase-1"
+    },
+    "relationships": {
+      "dependencies": ["F001", "TC001"],
+      "acceptance_criteria": ["A001", "A002"],
+      "test_cases": ["T001"],
+      "ui_flows": ["UX001"],
+      "api_endpoints": ["API001", "API002"],
+      "database_schemas": ["DB001"]
+    },
+    "progress": {
+      "business_analysis": 100,
+      "ui_design": 85,
+      "technical_spec": 90,
+      "implementation": 75,
+      "testing": 60,
+      "overall": 82
+    },
+    "acceptance_criteria": [
+      {
+        "id": "AC001",
+        "description": "Organisation successfully creates job posting with all required fields",
+        "status": "completed"
+      },
+      {
+        "id": "AC002", 
+        "description": "Job posting is published and visible to job seekers",
+        "status": "completed"
+      },
+      {
+        "id": "AC003",
+        "description": "Applications are received and tracked in real-time",
+        "status": "in-progress"
+      }
+    ],
+    "tags": ["mvp", "core-functionality", "job-posting", "application-management"],
+    "effort_estimate": {
+      "story_points": 8,
+      "hours_estimated": 40,
+      "hours_actual": 35
+    }
+  }
+}

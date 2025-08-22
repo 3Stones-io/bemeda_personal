@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API### - [API Endpoint Name] | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #ff5722;
+            color: white;
+        }
+        
+        /* Header */
+        .api-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #ff5722;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .api-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .api-id {
+            background: #ffebe9;
+            color: #ff5722;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border: 2px solid #ff5722;
+        }
+        
+        .api-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .api-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-stable { 
+            background: #e8f5e8; 
+            color: #2e7d32; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        .status-beta { 
+            background: #fff3e0; 
+            color: #ef6c00; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        .status-deprecated { 
+            background: #ffebee; 
+            color: #c62828; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Endpoint Details */
+        .endpoint-box {
+            background: #263238;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .method-badge {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: white;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .method-get { background: #4caf50; }
+        .method-post { background: #2196f3; }
+        .method-put { background: #ff9800; }
+        .method-patch { background: #795548; }
+        .method-delete { background: #f44336; }
+        
+        .endpoint-path {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 1.2rem;
+        }
+        
+        /* Parameters */
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .params-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .params-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .param-name {
+            font-family: 'Monaco', 'Menlo', monospace;
+            color: #ff5722;
+            font-weight: 500;
+        }
+        
+        .param-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .param-required {
+            background: #ffebe9;
+            color: #ff5722;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .param-optional {
+            background: #f5f5f5;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        /* Code Examples */
+        .code-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: -1px;
+        }
+        
+        .code-tab {
+            padding: 8px 16px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s;
+        }
+        
+        .code-tab.active {
+            background: #263238;
+            color: white;
+        }
+        
+        .code-block {
+            background: #263238;
+            color: #aed581;
+            padding: 20px;
+            border-radius: 0 8px 8px 8px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .code-comment {
+            color: #546e7a;
+        }
+        
+        .code-string {
+            color: #c3e88d;
+        }
+        
+        .code-keyword {
+            color: #89ddff;
+        }
+        
+        /* Response Examples */
+        .response-example {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .response-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .status-code {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        
+        .status-code.success { color: #2e7d32; }
+        .status-code.error { color: #c62828; }
+        
+        .status-message {
+            color: #666;
+        }
+        
+        /* Authentication */
+        .auth-requirement {
+            background: #fff3e0;
+            border-left: 3px solid #ff9800;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .auth-header {
+            font-weight: 600;
+            color: #ef6c00;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Rate Limiting */
+        .rate-limit-info {
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid #1976d2;
+        }
+        
+        .limit-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        
+        .limit-label {
+            color: #666;
+        }
+        
+        .limit-value {
+            font-weight: 600;
+            color: #1976d2;
+        }
+        
+        /* Error Codes */
+        .error-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .error-item {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 16px;
+            padding: 12px;
+            background: #ffebee;
+            border-radius: 6px;
+            align-items: center;
+        }
+        
+        .error-code {
+            font-weight: 600;
+            color: #c62828;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .error-description {
+            color: #666;
+        }
+        
+        /* Related Links */
+        .related-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .related-link {
+            background: #e8f0fe;
+            color: #1976d2;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .related-link:hover {
+            background: #1976d2;
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .api-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .endpoint-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .params-table {
+                font-size: 0.9rem;
+            }
+            
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li><a href="../scenarios/index.html" class="nav-link">📋 Scenarios</a></li>
+                <li><a href="../ux-ui/index.html" class="nav-link">🎨 UX/UI</a></li>
+                <li><a href="index.html" class="nav-link active">⚙️ Technical</a></li>
+                <li><a href="../testing/index.html" class="nav-link">🧪 Testing</a></li>
+                <li><a href="../unified-view/index.html" class="nav-link">📊 Unified View</a></li>
+                <li><a href="../registry/index.html" class="nav-link">🔍 Registry</a></li>
+            </ul>
+        </nav>
+        
+        <!-- API Header -->
+        <div class="api-header">
+            <a href="index.html" class="back-link">← Back to Technical</a>
+            <div class="api-title">
+                <span class="api-id">API###</span>
+                <h1 class="api-name">[API Endpoint Name]</h1>
+            </div>
+            <div class="api-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Service:</span>
+                    <span>[Service Name]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Version:</span>
+                    <span>v1</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-stable">Stable</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Last Updated:</span>
+                    <span>2024-01-15</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">[Brief description of what this API endpoint does and its purpose in the platform]</p>
+        </div>
+        
+        <!-- Endpoint Details -->
+        <div class="content-section">
+            <h2 class="section-title">🔌 Endpoint Details</h2>
+            <div class="endpoint-box">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/api/v1/[resource]/[action]</span>
+            </div>
+            <p style="color: #666; margin-bottom: 16px;">[Detailed description of the endpoint functionality and use cases]</p>
+        </div>
+        
+        <!-- Authentication -->
+        <div class="content-section">
+            <h2 class="section-title">🔐 Authentication</h2>
+            <div class="auth-requirement">
+                <div class="auth-header">
+                    <span>🔑</span>
+                    <span>Bearer Token Required</span>
+                </div>
+                <p style="color: #666;">This endpoint requires a valid JWT token in the Authorization header.</p>
+                <div class="code-block" style="margin-top: 12px;">
+Authorization: Bearer &lt;your-jwt-token&gt;
+                </div>
+            </div>
+        </div>
+        
+        <!-- Parameters -->
+        <div class="content-section">
+            <h2 class="section-title">📝 Request Parameters</h2>
+            
+            <h3 style="margin-bottom: 12px; color: #333;">Path Parameters</h3>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="param-name">id</span></td>
+                        <td><span class="param-type">string</span></td>
+                        <td><span class="param-required">Required</span></td>
+                        <td>Unique identifier of the resource</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="margin-bottom: 12px; color: #333;">Request Body</h3>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="param-name">name</span></td>
+                        <td><span class="param-type">string</span></td>
+                        <td><span class="param-required">Required</span></td>
+                        <td>Name of the resource (max 255 characters)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">description</span></td>
+                        <td><span class="param-type">string</span></td>
+                        <td><span class="param-optional">Optional</span></td>
+                        <td>Detailed description of the resource</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">metadata</span></td>
+                        <td><span class="param-type">object</span></td>
+                        <td><span class="param-optional">Optional</span></td>
+                        <td>Additional metadata as key-value pairs</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Code Examples -->
+        <div class="content-section">
+            <h2 class="section-title">💻 Code Examples</h2>
+            <div class="code-tabs">
+                <button class="code-tab active">cURL</button>
+                <button class="code-tab">JavaScript</button>
+                <button class="code-tab">Python</button>
+            </div>
+            <div class="code-block">
+<span class="code-comment"># Example request using cURL</span>
+curl -X POST https://api.bemeda.com/v1/[resource]/[action] \
+  -H <span class="code-string">"Authorization: Bearer YOUR_JWT_TOKEN"</span> \
+  -H <span class="code-string">"Content-Type: application/json"</span> \
+  -d <span class="code-string">'{
+    "name": "Example Resource",
+    "description": "This is an example",
+    "metadata": {
+      "key": "value"
+    }
+  }'</span>
+            </div>
+        </div>
+        
+        <!-- Response Examples -->
+        <div class="content-section">
+            <h2 class="section-title">📤 Response Examples</h2>
+            
+            <div class="response-example">
+                <div class="response-status">
+                    <span class="status-code success">200 OK</span>
+                    <span class="status-message">Successful response</span>
+                </div>
+                <div class="code-block">
+{
+  <span class="code-string">"success"</span>: <span class="code-keyword">true</span>,
+  <span class="code-string">"data"</span>: {
+    <span class="code-string">"id"</span>: <span class="code-string">"123e4567-e89b-12d3-a456-426614174000"</span>,
+    <span class="code-string">"name"</span>: <span class="code-string">"Example Resource"</span>,
+    <span class="code-string">"description"</span>: <span class="code-string">"This is an example"</span>,
+    <span class="code-string">"created_at"</span>: <span class="code-string">"2024-01-15T10:30:00Z"</span>,
+    <span class="code-string">"updated_at"</span>: <span class="code-string">"2024-01-15T10:30:00Z"</span>
+  }
+}
+                </div>
+            </div>
+            
+            <div class="response-example">
+                <div class="response-status">
+                    <span class="status-code error">400 Bad Request</span>
+                    <span class="status-message">Validation error</span>
+                </div>
+                <div class="code-block">
+{
+  <span class="code-string">"success"</span>: <span class="code-keyword">false</span>,
+  <span class="code-string">"error"</span>: {
+    <span class="code-string">"code"</span>: <span class="code-string">"VALIDATION_ERROR"</span>,
+    <span class="code-string">"message"</span>: <span class="code-string">"Invalid request parameters"</span>,
+    <span class="code-string">"details"</span>: [
+      {
+        <span class="code-string">"field"</span>: <span class="code-string">"name"</span>,
+        <span class="code-string">"message"</span>: <span class="code-string">"Name is required"</span>
+      }
+    ]
+  }
+}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Codes -->
+        <div class="content-section">
+            <h2 class="section-title">❌ Error Codes</h2>
+            <div class="error-grid">
+                <div class="error-item">
+                    <span class="error-code">400</span>
+                    <span class="error-description">Bad Request - Invalid parameters or malformed request</span>
+                </div>
+                <div class="error-item">
+                    <span class="error-code">401</span>
+                    <span class="error-description">Unauthorized - Missing or invalid authentication token</span>
+                </div>
+                <div class="error-item">
+                    <span class="error-code">403</span>
+                    <span class="error-description">Forbidden - Insufficient permissions for this operation</span>
+                </div>
+                <div class="error-item">
+                    <span class="error-code">404</span>
+                    <span class="error-description">Not Found - Requested resource does not exist</span>
+                </div>
+                <div class="error-item">
+                    <span class="error-code">429</span>
+                    <span class="error-description">Too Many Requests - Rate limit exceeded</span>
+                </div>
+                <div class="error-item">
+                    <span class="error-code">500</span>
+                    <span class="error-description">Internal Server Error - Unexpected server error</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rate Limiting -->
+        <div class="content-section">
+            <h2 class="section-title">🚦 Rate Limiting</h2>
+            <div class="rate-limit-info">
+                <div class="limit-item">
+                    <span class="limit-label">Rate Limit:</span>
+                    <span class="limit-value">100 requests per minute</span>
+                </div>
+                <div class="limit-item">
+                    <span class="limit-label">Burst Limit:</span>
+                    <span class="limit-value">20 requests per second</span>
+                </div>
+                <div class="limit-item">
+                    <span class="limit-label">Headers Returned:</span>
+                    <span class="limit-value">X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Components -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Related Components</h2>
+            <div class="related-links">
+                <a href="TS###.html" class="related-link">TS### - Technical Spec</a>
+                <a href="../scenarios/S001/US###.html" class="related-link">US### - User Story</a>
+                <a href="F###.html" class="related-link">F### - Feature</a>
+                <a href="DB###.html" class="related-link">DB### - Database Schema</a>
+                <a href="../testing/T###.html" class="related-link">T### - Test Case</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

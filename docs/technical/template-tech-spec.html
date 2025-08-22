@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TS### - [Technical Specification Title] | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #1976d2;
+            color: white;
+        }
+        
+        /* Header */
+        .spec-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .spec-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .spec-id {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border: 2px solid #1976d2;
+        }
+        
+        .spec-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .spec-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-draft { 
+            background: #fff3e0; 
+            color: #ef6c00; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        .status-approved { 
+            background: #e8f5e8; 
+            color: #2e7d32; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        .status-implemented { 
+            background: #e3f2fd; 
+            color: #1976d2; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Architecture Overview */
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #999;
+        }
+        
+        .architecture-layers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        
+        .layer-card {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #1976d2;
+        }
+        
+        .layer-name {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+        
+        .layer-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Code Structure */
+        .code-block {
+            background: #263238;
+            color: #aed581;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .code-comment {
+            color: #546e7a;
+        }
+        
+        /* Tech Stack */
+        .tech-stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .tech-card {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .tech-category {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tech-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .tech-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .tech-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .tech-version {
+            color: #666;
+            font-size: 0.9rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        /* API Specifications */
+        .api-endpoint {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 3px solid #4caf50;
+        }
+        
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .method-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+        }
+        
+        .method-get { background: #4caf50; }
+        .method-post { background: #2196f3; }
+        .method-put { background: #ff9800; }
+        .method-delete { background: #f44336; }
+        
+        .endpoint-path {
+            font-family: 'Monaco', 'Menlo', monospace;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        /* Security Specifications */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        
+        .security-item {
+            padding: 16px;
+            background: #fff3e0;
+            border-radius: 8px;
+            border-left: 3px solid #ff9800;
+        }
+        
+        .security-title {
+            font-weight: 600;
+            color: #ef6c00;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .security-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Performance Requirements */
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 16px;
+            background: #e8f5e8;
+            border-radius: 8px;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 4px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Dependencies */
+        .dependency-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .dependency-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .dep-type {
+            background: #1976d2;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .dep-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .dep-version {
+            color: #666;
+            font-size: 0.9rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            margin-left: auto;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .spec-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .tech-stack-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li><a href="../scenarios/index.html" class="nav-link">📋 Scenarios</a></li>
+                <li><a href="../ux-ui/index.html" class="nav-link">🎨 UX/UI</a></li>
+                <li><a href="index.html" class="nav-link active">⚙️ Technical</a></li>
+                <li><a href="../testing/index.html" class="nav-link">🧪 Testing</a></li>
+                <li><a href="../unified-view/index.html" class="nav-link">📊 Unified View</a></li>
+                <li><a href="../registry/index.html" class="nav-link">🔍 Registry</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Spec Header -->
+        <div class="spec-header">
+            <a href="index.html" class="back-link">← Back to Technical</a>
+            <div class="spec-title">
+                <span class="spec-id">TS###</span>
+                <h1 class="spec-name">[Technical Specification Title]</h1>
+            </div>
+            <div class="spec-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Component:</span>
+                    <span>[Component Name]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Type:</span>
+                    <span>Backend Service / Frontend Module / API</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-draft">Draft</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Version:</span>
+                    <span>1.0.0</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">[Brief description of the technical component, its purpose, and role in the platform architecture]</p>
+        </div>
+        
+        <!-- Architecture Overview -->
+        <div class="content-section">
+            <h2 class="section-title">🏗️ Architecture Overview</h2>
+            <div class="architecture-diagram">
+                [Architecture Diagram Placeholder]
+            </div>
+            <div class="architecture-layers">
+                <div class="layer-card">
+                    <div class="layer-name">Presentation Layer</div>
+                    <div class="layer-description">
+                        React components, UI state management, user interactions
+                    </div>
+                </div>
+                <div class="layer-card">
+                    <div class="layer-name">Business Logic Layer</div>
+                    <div class="layer-description">
+                        Service classes, validation rules, business workflows
+                    </div>
+                </div>
+                <div class="layer-card">
+                    <div class="layer-name">Data Access Layer</div>
+                    <div class="layer-description">
+                        Repository pattern, database queries, caching strategies
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Stack -->
+        <div class="content-section">
+            <h2 class="section-title">🛠️ Technology Stack</h2>
+            <div class="tech-stack-grid">
+                <div class="tech-card">
+                    <div class="tech-category">
+                        <span>🎨</span>
+                        <span>Frontend</span>
+                    </div>
+                    <div class="tech-items">
+                        <div class="tech-item">
+                            <span class="tech-name">React</span>
+                            <span class="tech-version">18.2.0</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">TypeScript</span>
+                            <span class="tech-version">5.0.0</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Redux Toolkit</span>
+                            <span class="tech-version">1.9.5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-category">
+                        <span>⚙️</span>
+                        <span>Backend</span>
+                    </div>
+                    <div class="tech-items">
+                        <div class="tech-item">
+                            <span class="tech-name">Node.js</span>
+                            <span class="tech-version">18.16.0</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Express.js</span>
+                            <span class="tech-version">4.18.2</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">PostgreSQL</span>
+                            <span class="tech-version">15.3</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-category">
+                        <span>☁️</span>
+                        <span>Infrastructure</span>
+                    </div>
+                    <div class="tech-items">
+                        <div class="tech-item">
+                            <span class="tech-name">AWS EC2</span>
+                            <span class="tech-version">-</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Docker</span>
+                            <span class="tech-version">24.0.2</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Kubernetes</span>
+                            <span class="tech-version">1.27.3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Code Structure -->
+        <div class="content-section">
+            <h2 class="section-title">📁 Code Structure</h2>
+            <div class="code-block">
+<span class="code-comment">// Example component structure</span>
+src/
+├── components/
+│   ├── [ComponentName]/
+│   │   ├── index.tsx
+│   │   ├── [ComponentName].tsx
+│   │   ├── [ComponentName].test.tsx
+│   │   ├── [ComponentName].styles.ts
+│   │   └── types.ts
+│   └── shared/
+├── services/
+│   ├── api/
+│   ├── auth/
+│   └── validation/
+├── hooks/
+├── utils/
+└── types/
+            </div>
+            <p style="color: #666; margin-top: 16px;">Key architectural decisions and patterns used in this component.</p>
+        </div>
+        
+        <!-- API Specifications -->
+        <div class="content-section">
+            <h2 class="section-title">🔌 API Specifications</h2>
+            <div class="api-endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/api/v1/[resource]</span>
+                </div>
+                <p style="color: #666; margin-bottom: 8px;">Retrieves a list of resources with pagination and filtering</p>
+            </div>
+            
+            <div class="api-endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/api/v1/[resource]</span>
+                </div>
+                <p style="color: #666; margin-bottom: 8px;">Creates a new resource with validation</p>
+            </div>
+            
+            <div class="api-endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge method-put">PUT</span>
+                    <span class="endpoint-path">/api/v1/[resource]/{id}</span>
+                </div>
+                <p style="color: #666; margin-bottom: 8px;">Updates an existing resource</p>
+            </div>
+        </div>
+        
+        <!-- Security Specifications -->
+        <div class="content-section">
+            <h2 class="section-title">🔒 Security Specifications</h2>
+            <div class="security-grid">
+                <div class="security-item">
+                    <div class="security-title">
+                        <span>🔐</span>
+                        <span>Authentication</span>
+                    </div>
+                    <div class="security-details">
+                        JWT-based authentication with refresh tokens
+                    </div>
+                </div>
+                <div class="security-item">
+                    <div class="security-title">
+                        <span>🛡️</span>
+                        <span>Authorization</span>
+                    </div>
+                    <div class="security-details">
+                        Role-based access control (RBAC) with permissions
+                    </div>
+                </div>
+                <div class="security-item">
+                    <div class="security-title">
+                        <span>🔑</span>
+                        <span>Data Encryption</span>
+                    </div>
+                    <div class="security-details">
+                        AES-256 encryption for sensitive data at rest
+                    </div>
+                </div>
+                <div class="security-item">
+                    <div class="security-title">
+                        <span>🚦</span>
+                        <span>Rate Limiting</span>
+                    </div>
+                    <div class="security-details">
+                        100 requests per minute per user
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Performance Requirements -->
+        <div class="content-section">
+            <h2 class="section-title">⚡ Performance Requirements</h2>
+            <div class="performance-metrics">
+                <div class="metric-card">
+                    <div class="metric-value">&lt;200ms</div>
+                    <div class="metric-label">API Response Time</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">99.9%</div>
+                    <div class="metric-label">Uptime SLA</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">10K/sec</div>
+                    <div class="metric-label">Throughput</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">&lt;2s</div>
+                    <div class="metric-label">Page Load Time</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dependencies -->
+        <div class="content-section">
+            <h2 class="section-title">📦 Dependencies & Integrations</h2>
+            <div class="dependency-list">
+                <div class="dependency-item">
+                    <span class="dep-type">LIBRARY</span>
+                    <span class="dep-name">axios</span>
+                    <span class="dep-version">^1.4.0</span>
+                </div>
+                <div class="dependency-item">
+                    <span class="dep-type">SERVICE</span>
+                    <span class="dep-name">Authentication Service</span>
+                    <span class="dep-version">API v2</span>
+                </div>
+                <div class="dependency-item">
+                    <span class="dep-type">DATABASE</span>
+                    <span class="dep-name">PostgreSQL</span>
+                    <span class="dep-version">15.3</span>
+                </div>
+                <div class="dependency-item">
+                    <span class="dep-type">EXTERNAL</span>
+                    <span class="dep-name">Background Check API</span>
+                    <span class="dep-version">v1.0</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Components -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Related Components</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <a href="TC###.html" style="background: #e3f2fd; color: #1976d2; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem;">TC###</a>
+                <a href="../scenarios/S001/US###.html" style="background: #f3e5f5; color: #4a148c; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem;">US###</a>
+                <a href="F###.html" style="background: #e8f5e8; color: #2e7d32; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem;">F###</a>
+                <a href="API###.html" style="background: #fff3e0; color: #ef6c00; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem;">API###</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

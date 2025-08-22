@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components by Type | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .view-controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .breadcrumb {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover,
+        .view-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.9rem;
+        }
+
+        .types-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .type-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .type-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .type-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .type-badge {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .badge-user-story {
+            background: #f3e5f5;
+            color: #4a148c;
+            border: 2px solid #4a148c;
+        }
+
+        .badge-use-case {
+            background: #e1f5fe;
+            color: #01579b;
+            border: 2px solid #01579b;
+        }
+
+        .badge-ui-component {
+            background: #f8bbd9;
+            color: #c2185b;
+            border: 2px solid #c2185b;
+        }
+
+        .badge-mockup {
+            background: #f8bbd9;
+            color: #c2185b;
+            border: 2px solid #c2185b;
+        }
+
+        .badge-ui-flow {
+            background: #f8bbd9;
+            color: #c2185b;
+            border: 2px solid #c2185b;
+        }
+
+        .badge-feature {
+            background: #e8f5e8;
+            color: #1b5e20;
+            border: 2px solid #1b5e20;
+        }
+
+        .badge-tech-component {
+            background: #e0e0e0;
+            color: #424242;
+            border: 2px solid #424242;
+        }
+
+        .badge-test-case {
+            background: #ffebee;
+            color: #f44336;
+            border: 2px solid #f44336;
+        }
+
+        .type-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .type-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .type-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .component-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .component-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .component-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .component-id {
+            background: #f8f9fa;
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .component-domain {
+            background: #e8f4f8;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .component-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .component-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .component-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .meta-tag {
+            background: #f0f8ff;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .component-scenarios {
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+
+        .scenarios-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .scenario-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .scenario-link {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-decoration: none;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-link:hover {
+            background: #e65100;
+            color: white;
+        }
+
+        .component-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-complete {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .components-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .type-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">🏷️ By Type</div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">🏠 Home</a></li>
+                    <li><a href="../scenarios/index.html">📋 Scenarios</a></li>
+                    <li><a href="../ux-ui/index.html">🎨 UX/UI</a></li>
+                    <li><a href="../technical/index.html">⚙️ Technical</a></li>
+                    <li><a href="../testing/index.html">🧪 Testing</a></li>
+                    <li><a href="index.html" class="active">📊 Unified View</a></li>
+                    <li><a href="../registry/index.html">🔍 Registry</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">🏷️ Components by Type</h1>
+                <p class="page-subtitle">Cross-domain component view organized by component category</p>
+            </div>
+
+            <div class="view-controls">
+                <div class="breadcrumb">
+                    <a href="index.html">📊 Unified View</a> / Components by Type
+                </div>
+                <div class="view-options">
+                    <a href="by-scenario.html" class="view-btn">📋 By Scenario</a>
+                    <a href="by-type.html" class="view-btn active">🏷️ By Type</a>
+                    <a href="relationships.html" class="view-btn">🕸️ Relationships</a>
+                    <a href="master-table.html" class="view-btn">📊 Master Table</a>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <span class="filter-label">Filter by:</span>
+                <select class="filter-select" id="domainFilter">
+                    <option value="">All Domains</option>
+                    <option value="business-logic">📋 Business Logic</option>
+                    <option value="ux-ui">🎨 UX/UI Design</option>
+                    <option value="technical">⚙️ Technical</option>
+                    <option value="testing">🧪 Testing</option>
+                </select>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="complete">Complete</option>
+                </select>
+                <select class="filter-select" id="scenarioFilter">
+                    <option value="">All Scenarios</option>
+                    <option value="S001">S001 - Cold Call to Placement</option>
+                    <option value="S002">S002 - Temporary Staffing</option>
+                    <option value="S003">S003 - Try & Hire</option>
+                </select>
+            </div>
+
+            <div class="types-container">
+                <!-- User Stories -->
+                <div class="type-section" data-domain="business-logic">
+                    <div class="type-header">
+                        <div class="type-title">
+                            <span class="type-badge badge-user-story">US###</span>
+                            <span class="type-name">User Stories</span>
+                        </div>
+                        <div class="type-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span>24 Components</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>📋</span>
+                                <span>3 Scenarios</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⚡</span>
+                                <span>85% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="type-description">
+                        Individual actions taken by participants throughout scenario workflows. Each story represents 
+                        a specific user interaction or system response that contributes to the larger business process.
+                    </p>
+                    <div class="components-grid">
+                        <a href="../scenarios/S001/index.html#US001" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">US001</span>
+                                <span class="component-domain">Business Logic</span>
+                            </div>
+                            <h3 class="component-title">Receives cold call from Bemeda sales</h3>
+                            <p class="component-description">Healthcare organization receives initial contact from Bemeda sales team</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Organisation</span>
+                                <span class="component-status status-active">Active</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="../scenarios/S001/index.html#US002" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">US002</span>
+                                <span class="component-domain">Business Logic</span>
+                            </div>
+                            <h3 class="component-title">Discusses staffing needs and platform benefits</h3>
+                            <p class="component-description">Organization shares requirements and learns about platform capabilities</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Organisation</span>
+                                <span class="component-status status-active">Active</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="../scenarios/S001/index.html#US007" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">US007</span>
+                                <span class="component-domain">Business Logic</span>
+                            </div>
+                            <h3 class="component-title">Creates comprehensive profile on platform</h3>
+                            <p class="component-description">JobSeeker completes detailed profile including skills and experience</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">JobSeeker</span>
+                                <span class="component-status status-active">Active</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                    <a href="#" class="scenario-link">S002</a>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- UI Components -->
+                <div class="type-section" data-domain="ux-ui">
+                    <div class="type-header">
+                        <div class="type-title">
+                            <span class="type-badge badge-ui-component">C###</span>
+                            <span class="type-name">UI Components</span>
+                        </div>
+                        <div class="type-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span>16 Components</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>🎨</span>
+                                <span>4 Categories</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⚡</span>
+                                <span>75% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="type-description">
+                        Atomic design elements and reusable interface components like buttons, forms, navigation elements, 
+                        cards, and interactive widgets that form the building blocks of all interfaces.
+                    </p>
+                    <div class="components-grid">
+                        <a href="../ux-ui/components/index.html#C001" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">C001</span>
+                                <span class="component-domain">UX/UI</span>
+                            </div>
+                            <h3 class="component-title">Email Input Field</h3>
+                            <p class="component-description">Standardized email input field with validation and error handling</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Form Components</span>
+                                <span class="component-status status-complete">Complete</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                    <a href="#" class="scenario-link">S002</a>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="../ux-ui/components/index.html#C005" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">C005</span>
+                                <span class="component-domain">UX/UI</span>
+                            </div>
+                            <h3 class="component-title">Top Navigation Bar</h3>
+                            <p class="component-description">Main horizontal navigation menu with responsive design</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Navigation</span>
+                                <span class="component-status status-complete">Complete</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                    <a href="#" class="scenario-link">S002</a>
+                                    <a href="#" class="scenario-link">S003</a>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="../ux-ui/components/index.html#C009" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">C009</span>
+                                <span class="component-domain">UX/UI</span>
+                            </div>
+                            <h3 class="component-title">Job Listing Card</h3>
+                            <p class="component-description">Card component displaying job information in search results</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Data Display</span>
+                                <span class="component-status status-active">Active</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                    <a href="#" class="scenario-link">S002</a>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="type-section" data-domain="technical">
+                    <div class="type-header">
+                        <div class="type-title">
+                            <span class="type-badge badge-feature">F###</span>
+                            <span class="type-name">Features</span>
+                        </div>
+                        <div class="type-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span>8 Features</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⚙️</span>
+                                <span>Core Platform</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⚡</span>
+                                <span>60% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="type-description">
+                        High-level system capabilities and business logic implementations. Features define what the system 
+                        can do and how business requirements are translated into technical functionality.
+                    </p>
+                    <div class="components-grid">
+                        <a href="../technical/features/index.html#F001" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">F001</span>
+                                <span class="component-domain">Technical</span>
+                            </div>
+                            <h3 class="component-title">Job Search Discovery</h3>
+                            <p class="component-description">Advanced search algorithms, filtering, and job matching system</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Search Engine</span>
+                                <span class="component-status status-complete">Complete</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                    <a href="#" class="scenario-link">S002</a>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="../technical/features/index.html#F004" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">F004</span>
+                                <span class="component-domain">Technical</span>
+                            </div>
+                            <h3 class="component-title">Communication Platform</h3>
+                            <p class="component-description">Multi-channel messaging, notifications, and scheduling system</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Core Infrastructure</span>
+                                <span class="component-status status-active">Active</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Used in scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                    <a href="#" class="scenario-link">S002</a>
+                                    <a href="#" class="scenario-link">S003</a>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Test Cases -->
+                <div class="type-section" data-domain="testing">
+                    <div class="type-header">
+                        <div class="type-title">
+                            <span class="type-badge badge-test-case">T###</span>
+                            <span class="type-name">Test Cases</span>
+                        </div>
+                        <div class="type-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span>15 Test Cases</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>🧪</span>
+                                <span>Multiple Types</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⚡</span>
+                                <span>70% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="type-description">
+                        Detailed test scenarios covering functional, integration, and regression testing. Includes unit 
+                        tests, end-to-end scenarios, and automated test specifications.
+                    </p>
+                    <div class="components-grid">
+                        <a href="../testing/test-cases/index.html#T001" class="component-card">
+                            <div class="component-header">
+                                <span class="component-id">T001</span>
+                                <span class="component-domain">Testing</span>
+                            </div>
+                            <h3 class="component-title">Sales Call Reception Test</h3>
+                            <p class="component-description">Verify organization can receive and respond to sales calls effectively</p>
+                            <div class="component-meta">
+                                <span class="meta-tag">Integration Test</span>
+                                <span class="component-status status-active">Active</span>
+                            </div>
+                            <div class="component-scenarios">
+                                <div class="scenarios-label">Tests scenarios:</div>
+                                <div class="scenario-links">
+                                    <a href="../scenarios/S001/index.html" class="scenario-link">S001</a>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Filter functionality
+        function applyFilters() {
+            const domainFilter = document.getElementById('domainFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const scenarioFilter = document.getElementById('scenarioFilter').value;
+
+            const sections = document.querySelectorAll('.type-section');
+            
+            sections.forEach(section => {
+                const sectionDomain = section.dataset.domain;
+                let showSection = true;
+                
+                if (domainFilter && sectionDomain !== domainFilter) {
+                    showSection = false;
+                }
+                
+                section.style.display = showSection ? 'block' : 'none';
+            });
+        }
+
+        // Add event listeners
+        document.getElementById('domainFilter').addEventListener('change', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('scenarioFilter').addEventListener('change', applyFilters);
+    </script>
+</body>
+</html>

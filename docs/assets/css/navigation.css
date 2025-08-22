@@ -1,0 +1,136 @@
+/**
+ * Global Navigation Styles
+ * Consistent navigation styling across all pages
+ */
+
+/* Top Navigation */
+.top-nav {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #666;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link:hover {
+    background: #f8f9fa;
+    color: #0066cc;
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    background: #0066cc;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
+}
+
+/* Active indicator */
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #0066cc;
+    border-radius: 50%;
+}
+
+/* Loading state */
+.nav-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.nav-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top: 2px solid #0066cc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Responsive Navigation */
+@media (max-width: 768px) {
+    .nav-list {
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-list {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .nav-link {
+        text-align: center;
+        padding: 12px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .top-nav {
+        background: #1a1a1a;
+        border: 1px solid #333;
+    }
+    
+    .nav-link {
+        color: #ccc;
+    }
+    
+    .nav-link:hover {
+        background: #333;
+        color: #4fc3f7;
+    }
+    
+    .nav-link.active {
+        background: #1976d2;
+        color: white;
+    }
+}

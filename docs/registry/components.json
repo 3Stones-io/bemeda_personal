@@ -1,0 +1,341 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "last_updated": "2024-01-21",
+    "total_components": 142
+  },
+  "user_stories": {
+    "US001": {
+      "id": "US001",
+      "title": "Receives cold call from Bemeda sales",
+      "domain": "business-logic",
+      "category": "user-story",
+      "scenario": "S001",
+      "participant": "Organisation",
+      "description": "Healthcare organization receives initial contact from Bemeda sales team",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "use_cases": ["UC001"],
+        "ui_flows": ["UX001", "UX002"],
+        "features": ["F005"],
+        "test_cases": ["T001", "T002"]
+      }
+    },
+    "US002": {
+      "id": "US002", 
+      "title": "Provides organisation information during call",
+      "domain": "business-logic",
+      "category": "user-story",
+      "scenario": "S001",
+      "participant": "Organisation",
+      "description": "Organization shares basic information and requirements during sales call",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "use_cases": ["UC001"],
+        "ui_flows": ["UX003"],
+        "features": ["F001", "F005"],
+        "test_cases": ["T003"]
+      }
+    },
+    "US003": {
+      "id": "US003",
+      "title": "Agrees to platform demonstration",
+      "domain": "business-logic", 
+      "category": "user-story",
+      "scenario": "S001",
+      "participant": "Organisation",
+      "description": "Organization expresses interest and schedules platform demo",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "use_cases": ["UC002"],
+        "ui_flows": ["UX004"],
+        "features": ["F002"],
+        "test_cases": ["T004"]
+      }
+    },
+    "US004": {
+      "id": "US004",
+      "title": "Registers account on platform",
+      "domain": "business-logic",
+      "category": "user-story", 
+      "scenario": "S001",
+      "participant": "Organisation",
+      "description": "Organization creates account and completes initial setup",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "use_cases": ["UC003"],
+        "ui_flows": ["UX005", "UX006"],
+        "ui_components": ["C001", "C002", "C003", "C004"],
+        "mockups": ["M001"],
+        "features": ["F003", "F004"],
+        "test_cases": ["T005", "T006"]
+      }
+    },
+    "US005": {
+      "id": "US005",
+      "title": "Posts first job opening",
+      "domain": "business-logic",
+      "category": "user-story",
+      "scenario": "S001", 
+      "participant": "Organisation",
+      "description": "Organization creates and publishes their first job listing",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "use_cases": ["UC004"],
+        "ui_flows": ["UX007", "UX008"],
+        "mockups": ["M002"],
+        "features": ["F006", "F007"],
+        "test_cases": ["T007", "T008"]
+      }
+    }
+  },
+  "use_cases": {
+    "UC001": {
+      "id": "UC001",
+      "title": "Healthcare Organization Onboarding",
+      "domain": "business-logic",
+      "category": "use-case",
+      "scenario": "S001",
+      "description": "Complete client acquisition and platform setup process",
+      "status": "active",
+      "priority": "high",
+      "user_stories": ["US001", "US002", "US003"],
+      "related": {
+        "features": ["F001", "F004", "F005"],
+        "test_cases": ["T001", "T002", "T003"]
+      }
+    },
+    "UC002": {
+      "id": "UC002", 
+      "title": "Platform Demonstration Process",
+      "domain": "business-logic",
+      "category": "use-case",
+      "scenario": "S001",
+      "description": "Showcase platform capabilities to potential clients",
+      "status": "active",
+      "priority": "high",
+      "user_stories": ["US003"],
+      "related": {
+        "features": ["F002"],
+        "test_cases": ["T004"]
+      }
+    }
+  },
+  "ui_flows": {
+    "UX001": {
+      "id": "UX001",
+      "title": "Sales call initiation flow",
+      "domain": "ux-ui",
+      "category": "ui-flow",
+      "scenario": "S001",
+      "participant": "Organisation",
+      "description": "User interface flow for handling incoming sales calls",
+      "status": "active",
+      "priority": "medium",
+      "related": {
+        "user_stories": ["US001"],
+        "ui_components": ["C005", "C006"],
+        "features": ["F005"]
+      }
+    },
+    "UX002": {
+      "id": "UX002",
+      "title": "Information gathering interface",
+      "domain": "ux-ui", 
+      "category": "ui-flow",
+      "scenario": "S001",
+      "participant": "Organisation",
+      "description": "Flow for collecting organization details during sales process",
+      "status": "active",
+      "priority": "medium",
+      "related": {
+        "user_stories": ["US001", "US002"],
+        "ui_components": ["C001", "C002"],
+        "features": ["F001"]
+      }
+    }
+  },
+  "ui_components": {
+    "C001": {
+      "id": "C001",
+      "title": "Email Input Field",
+      "domain": "ux-ui",
+      "category": "ui-component",
+      "subcategory": "Form Components",
+      "type": "Input",
+      "description": "Standardized email input field with validation",
+      "status": "active",
+      "used_in": ["S001"],
+      "related": {
+        "user_stories": ["US004"],
+        "mockups": ["M001", "M004"],
+        "features": ["F003"]
+      }
+    },
+    "C002": {
+      "id": "C002",
+      "title": "Password Input Field", 
+      "domain": "ux-ui",
+      "category": "ui-component",
+      "subcategory": "Form Components",
+      "type": "Input",
+      "description": "Secure password input with strength validation",
+      "status": "active",
+      "used_in": ["S001"],
+      "related": {
+        "user_stories": ["US004"],
+        "mockups": ["M001", "M004"],
+        "features": ["F003", "F004"]
+      }
+    },
+    "C003": {
+      "id": "C003",
+      "title": "Submit Button",
+      "domain": "ux-ui",
+      "category": "ui-component", 
+      "subcategory": "Form Components",
+      "type": "Button",
+      "description": "Primary action button for form submissions",
+      "status": "active",
+      "used_in": ["S001"],
+      "related": {
+        "user_stories": ["US004"],
+        "mockups": ["M001", "M002"],
+        "features": ["F003", "F006"]
+      }
+    },
+    "C004": {
+      "id": "C004",
+      "title": "Validation Messages",
+      "domain": "ux-ui",
+      "category": "ui-component",
+      "subcategory": "Form Components", 
+      "type": "Feedback",
+      "description": "Error and success validation feedback messages",
+      "status": "active",
+      "used_in": ["S001"],
+      "related": {
+        "user_stories": ["US004"],
+        "features": ["F003", "F004"]
+      }
+    },
+    "C005": {
+      "id": "C005",
+      "title": "Top Navigation Bar",
+      "domain": "ux-ui",
+      "category": "ui-component",
+      "subcategory": "Navigation Components",
+      "type": "Navigation",
+      "description": "Main horizontal navigation menu",
+      "status": "active", 
+      "used_in": ["S001"],
+      "related": {
+        "mockups": ["M001", "M002", "M003"],
+        "features": ["F008"]
+      }
+    }
+  },
+  "mockups": {
+    "M001": {
+      "id": "M001",
+      "title": "Dashboard Landing Screen",
+      "domain": "ux-ui",
+      "category": "mockup",
+      "scenario": "S001", 
+      "participant": "Organisation",
+      "description": "Overview with navigation and metrics",
+      "status": "active",
+      "components_used": ["C001", "C002", "C003", "C005"],
+      "related": {
+        "user_stories": ["US004"],
+        "ui_flows": ["UX005"],
+        "features": ["F003", "F008"]
+      }
+    },
+    "M002": {
+      "id": "M002",
+      "title": "Job Posting Form Screen",
+      "domain": "ux-ui", 
+      "category": "mockup",
+      "scenario": "S001",
+      "participant": "Organisation", 
+      "description": "Multi-step wizard layout",
+      "status": "active",
+      "components_used": ["C003", "C005"],
+      "related": {
+        "user_stories": ["US005"],
+        "ui_flows": ["UX007", "UX008"],
+        "features": ["F006", "F007"]
+      }
+    }
+  },
+  "features": {
+    "F001": {
+      "id": "F001",
+      "title": "User Data Collection",
+      "domain": "technical",
+      "category": "feature",
+      "scenario": "S001",
+      "description": "Collect and store organization information during onboarding",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "user_stories": ["US002"],
+        "ui_components": ["C001", "C002"],
+        "tech_components": ["TC001", "TC002"]
+      }
+    },
+    "F002": {
+      "id": "F002",
+      "title": "Demo Scheduling System", 
+      "domain": "technical",
+      "category": "feature",
+      "scenario": "S001",
+      "description": "Schedule and manage platform demonstrations",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "user_stories": ["US003"],
+        "use_cases": ["UC002"],
+        "tech_components": ["TC003"]
+      }
+    }
+  },
+  "tech_components": {
+    "TC001": {
+      "id": "TC001",
+      "title": "User Authentication Service",
+      "domain": "technical",
+      "category": "tech-component",
+      "type": "Service",
+      "description": "Handles user login, registration, and session management",
+      "status": "active",
+      "related": {
+        "features": ["F001", "F003"],
+        "ui_components": ["C001", "C002"]
+      }
+    }
+  },
+  "test_cases": {
+    "T001": {
+      "id": "T001",
+      "title": "Sales Call Reception Test",
+      "domain": "testing", 
+      "category": "test-case",
+      "type": "Integration",
+      "scenario": "S001",
+      "description": "Verify organization can receive and respond to sales calls",
+      "status": "active",
+      "priority": "high",
+      "related": {
+        "user_stories": ["US001"],
+        "features": ["F005"]
+      }
+    }
+  }
+}

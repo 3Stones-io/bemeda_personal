@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components by Scenario | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .view-controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .breadcrumb {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover,
+        .view-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .scenarios-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .scenario-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .scenario-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scenario-id {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .scenario-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .scenario-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .domain-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .domain-section {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .domain-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .domain-icon {
+            font-size: 1.2rem;
+        }
+
+        .domain-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .domain-count {
+            background: #e8f4f8;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: auto;
+        }
+
+        .components-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .component-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e8e8e8;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .component-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .component-id {
+            background: #f8f9fa;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .component-title {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .component-status {
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-complete {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .cross-reference {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .cross-ref-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .cross-ref-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .cross-ref-link {
+            background: #e8f0fe;
+            color: #667eea;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.2s ease;
+        }
+
+        .cross-ref-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .domain-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .scenario-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">📊 By Scenario</div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">🏠 Home</a></li>
+                    <li><a href="../scenarios/index.html">📋 Scenarios</a></li>
+                    <li><a href="../ux-ui/index.html">🎨 UX/UI</a></li>
+                    <li><a href="../technical/index.html">⚙️ Technical</a></li>
+                    <li><a href="../testing/index.html">🧪 Testing</a></li>
+                    <li><a href="index.html" class="active">📊 Unified View</a></li>
+                    <li><a href="../registry/index.html">🔍 Registry</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">📊 Components by Scenario</h1>
+                <p class="page-subtitle">Cross-domain component view organized by business scenarios</p>
+            </div>
+
+            <div class="view-controls">
+                <div class="breadcrumb">
+                    <a href="index.html">📊 Unified View</a> / Components by Scenario
+                </div>
+                <div class="view-options">
+                    <a href="by-scenario.html" class="view-btn active">📋 By Scenario</a>
+                    <a href="by-type.html" class="view-btn">🏷️ By Type</a>
+                    <a href="relationships.html" class="view-btn">🕸️ Relationships</a>
+                    <a href="master-table.html" class="view-btn">📊 Master Table</a>
+                </div>
+            </div>
+
+            <div class="scenarios-container">
+                <!-- S001 - Cold Call to Placement -->
+                <div class="scenario-section">
+                    <div class="scenario-header">
+                        <div class="scenario-title">
+                            <span class="scenario-id">S001</span>
+                            <span class="scenario-name">Cold Call to Candidate Placement</span>
+                        </div>
+                        <div class="scenario-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span>47 Components</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>🔗</span>
+                                <span>89 Cross-References</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⚡</span>
+                                <span>75% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="domain-sections">
+                        <!-- Business Logic Domain -->
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">📋</span>
+                                <span class="domain-title">Business Logic</span>
+                                <span class="domain-count">21</span>
+                            </div>
+                            <div class="components-list">
+                                <a href="../scenarios/S001/index.html#US001" class="component-item">
+                                    <span class="component-id">US001</span>
+                                    <span class="component-title">Receives cold call from Bemeda sales</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../scenarios/S001/index.html#US002" class="component-item">
+                                    <span class="component-id">US002</span>
+                                    <span class="component-title">Discusses staffing needs</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../scenarios/S001/index.html#US003" class="component-item">
+                                    <span class="component-id">US003</span>
+                                    <span class="component-title">Agrees to job posting</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../scenarios/S001/index.html#UC001" class="component-item">
+                                    <span class="component-id">UC001</span>
+                                    <span class="component-title">Healthcare Organization Onboarding</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../scenarios/S001/index.html#UC002" class="component-item">
+                                    <span class="component-id">UC002</span>
+                                    <span class="component-title">Professional Recruitment Process</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../scenarios/S001/index.html#UC003" class="component-item">
+                                    <span class="component-id">UC003</span>
+                                    <span class="component-title">Placement Coordination</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- UX/UI Design Domain -->
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">🎨</span>
+                                <span class="domain-title">UX/UI Design</span>
+                                <span class="domain-count">36</span>
+                            </div>
+                            <div class="components-list">
+                                <a href="../ux-ui/components/index.html#C001" class="component-item">
+                                    <span class="component-id">C001</span>
+                                    <span class="component-title">Email Input Field</span>
+                                    <span class="component-status status-complete">Complete</span>
+                                </a>
+                                <a href="../ux-ui/components/index.html#C002" class="component-item">
+                                    <span class="component-id">C002</span>
+                                    <span class="component-title">Password Input Field</span>
+                                    <span class="component-status status-complete">Complete</span>
+                                </a>
+                                <a href="../ux-ui/components/index.html#C003" class="component-item">
+                                    <span class="component-id">C003</span>
+                                    <span class="component-title">Submit Button</span>
+                                    <span class="component-status status-complete">Complete</span>
+                                </a>
+                                <a href="../ux-ui/mockups/index.html#M001" class="component-item">
+                                    <span class="component-id">M001</span>
+                                    <span class="component-title">Dashboard Landing Screen</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../ux-ui/mockups/index.html#M002" class="component-item">
+                                    <span class="component-id">M002</span>
+                                    <span class="component-title">Job Posting Form Screen</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../ux-ui/flows/index.html#UX001" class="component-item">
+                                    <span class="component-id">UX001</span>
+                                    <span class="component-title">Sales call initiation flow</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Technical Domain -->
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">⚙️</span>
+                                <span class="domain-title">Technical</span>
+                                <span class="domain-count">22</span>
+                            </div>
+                            <div class="components-list">
+                                <a href="../technical/features/index.html#F001" class="component-item">
+                                    <span class="component-id">F001</span>
+                                    <span class="component-title">Job Search Discovery</span>
+                                    <span class="component-status status-complete">Complete</span>
+                                </a>
+                                <a href="../technical/features/index.html#F002" class="component-item">
+                                    <span class="component-id">F002</span>
+                                    <span class="component-title">User Profile Management</span>
+                                    <span class="component-status status-complete">Complete</span>
+                                </a>
+                                <a href="../technical/features/index.html#F004" class="component-item">
+                                    <span class="component-id">F004</span>
+                                    <span class="component-title">Communication Platform</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../technical/tech-components/index.html#TC001" class="component-item">
+                                    <span class="component-id">TC001</span>
+                                    <span class="component-title">User Authentication Service</span>
+                                    <span class="component-status status-complete">Complete</span>
+                                </a>
+                                <a href="../technical/tech-components/index.html#TC002" class="component-item">
+                                    <span class="component-id">TC002</span>
+                                    <span class="component-title">Search Engine Service</span>
+                                    <span class="component-status status-complete">Complete</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Testing Domain -->
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">🧪</span>
+                                <span class="domain-title">Testing & QA</span>
+                                <span class="domain-count">15</span>
+                            </div>
+                            <div class="components-list">
+                                <a href="../testing/test-cases/index.html#T001" class="component-item">
+                                    <span class="component-id">T001</span>
+                                    <span class="component-title">Sales Call Reception Test</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../testing/test-cases/index.html#T002" class="component-item">
+                                    <span class="component-id">T002</span>
+                                    <span class="component-title">Organization Onboarding Test</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                                <a href="../testing/test-cases/index.html#T003" class="component-item">
+                                    <span class="component-id">T003</span>
+                                    <span class="component-title">Job Posting Validation Test</span>
+                                    <span class="component-status status-pending">Pending</span>
+                                </a>
+                                <a href="../testing/acceptance/index.html#A001" class="component-item">
+                                    <span class="component-id">A001</span>
+                                    <span class="component-title">End-to-End Placement Criteria</span>
+                                    <span class="component-status status-active">Active</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cross-reference">
+                        <div class="cross-ref-title">🔗 Cross-Scenario Dependencies:</div>
+                        <div class="cross-ref-links">
+                            <a href="#S002" class="cross-ref-link">S002</a>
+                            <a href="#S003" class="cross-ref-link">S003</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S002 - Temporary Staffing -->
+                <div class="scenario-section">
+                    <div class="scenario-header">
+                        <div class="scenario-title">
+                            <span class="scenario-id">S002</span>
+                            <span class="scenario-name">Temporary Staffing Solutions</span>
+                        </div>
+                        <div class="scenario-stats">
+                            <div class="stat-item">
+                                <span>📊</span>
+                                <span>32 Components</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>🔗</span>
+                                <span>45 Cross-References</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>⚡</span>
+                                <span>35% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="domain-sections">
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">📋</span>
+                                <span class="domain-title">Business Logic</span>
+                                <span class="domain-count">12</span>
+                            </div>
+                            <div class="components-list">
+                                <div class="empty-state">Components in development...</div>
+                            </div>
+                        </div>
+
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">🎨</span>
+                                <span class="domain-title">UX/UI Design</span>
+                                <span class="domain-count">8</span>
+                            </div>
+                            <div class="components-list">
+                                <div class="empty-state">Design specifications pending...</div>
+                            </div>
+                        </div>
+
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">⚙️</span>
+                                <span class="domain-title">Technical</span>
+                                <span class="domain-count">7</span>
+                            </div>
+                            <div class="components-list">
+                                <div class="empty-state">Technical analysis in progress...</div>
+                            </div>
+                        </div>
+
+                        <div class="domain-section">
+                            <div class="domain-header">
+                                <span class="domain-icon">🧪</span>
+                                <span class="domain-title">Testing & QA</span>
+                                <span class="domain-count">5</span>
+                            </div>
+                            <div class="components-list">
+                                <div class="empty-state">Test planning phase...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cross-reference">
+                        <div class="cross-ref-title">🔗 Shared Components with:</div>
+                        <div class="cross-ref-links">
+                            <a href="#S001" class="cross-ref-link">S001</a>
+                            <a href="#S003" class="cross-ref-link">S003</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional scenarios can be added here following the same pattern -->
+            </div>
+        </div>
+    </main>
+</body>
+</html>

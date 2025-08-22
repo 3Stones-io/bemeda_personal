@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB### - [Database Schema Name] | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .nav-link.active {
+            background: #9c27b0;
+            color: white;
+        }
+        
+        /* Header */
+        .db-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #9c27b0;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .db-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .db-id {
+            background: #f3e5f5;
+            color: #9c27b0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border: 2px solid #9c27b0;
+        }
+        
+        .db-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .db-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-production { 
+            background: #e8f5e8; 
+            color: #2e7d32; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        .status-staging { 
+            background: #fff3e0; 
+            color: #ef6c00; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        .status-development { 
+            background: #e3f2fd; 
+            color: #1976d2; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Table Schema */
+        .schema-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .schema-table th {
+            background: #f3e5f5;
+            color: #9c27b0;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #9c27b0;
+        }
+        
+        .schema-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+        
+        .column-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .data-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+        
+        .constraint-badge {
+            background: #ffebe9;
+            color: #ff5722;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 4px;
+        }
+        
+        .constraint-badge.primary-key {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .constraint-badge.foreign-key {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .constraint-badge.unique {
+            background: #f3e5f5;
+            color: #9c27b0;
+        }
+        
+        /* SQL Code */
+        .sql-block {
+            background: #263238;
+            color: #aed581;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+        
+        .sql-keyword {
+            color: #89ddff;
+            font-weight: 600;
+        }
+        
+        .sql-string {
+            color: #c3e88d;
+        }
+        
+        .sql-comment {
+            color: #546e7a;
+        }
+        
+        /* ER Diagram */
+        .er-diagram {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #999;
+        }
+        
+        /* Relationships */
+        .relationships-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .relationship-item {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            align-items: center;
+        }
+        
+        .table-ref {
+            font-weight: 600;
+            color: #9c27b0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            text-align: center;
+        }
+        
+        .relationship-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        /* Indexes */
+        .indexes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .index-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #4caf50;
+        }
+        
+        .index-name {
+            font-weight: 600;
+            color: #333;
+            font-family: 'Monaco', 'Menlo', monospace;
+            margin-bottom: 4px;
+        }
+        
+        .index-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .index-type {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+        
+        /* Migration History */
+        .migration-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .migration-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #ff9800;
+        }
+        
+        .migration-version {
+            font-weight: 600;
+            color: #ef6c00;
+            font-family: 'Monaco', 'Menlo', monospace;
+            text-align: center;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .migration-description {
+            color: #666;
+        }
+        
+        .migration-date {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        /* Performance Stats */
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .performance-card {
+            text-align: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .performance-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #9c27b0;
+            margin-bottom: 4px;
+        }
+        
+        .performance-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Related Links */
+        .related-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .related-link {
+            background: #f3e5f5;
+            color: #9c27b0;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .related-link:hover {
+            background: #9c27b0;
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .db-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .relationship-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .migration-item {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li><a href="../scenarios/index.html" class="nav-link">📋 Scenarios</a></li>
+                <li><a href="../ux-ui/index.html" class="nav-link">🎨 UX/UI</a></li>
+                <li><a href="index.html" class="nav-link active">⚙️ Technical</a></li>
+                <li><a href="../testing/index.html" class="nav-link">🧪 Testing</a></li>
+                <li><a href="../unified-view/index.html" class="nav-link">📊 Unified View</a></li>
+                <li><a href="../registry/index.html" class="nav-link">🔍 Registry</a></li>
+            </ul>
+        </nav>
+        
+        <!-- DB Header -->
+        <div class="db-header">
+            <a href="index.html" class="back-link">← Back to Technical</a>
+            <div class="db-title">
+                <span class="db-id">DB###</span>
+                <h1 class="db-name">[Database Schema Name]</h1>
+            </div>
+            <div class="db-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Database:</span>
+                    <span>PostgreSQL 15.3</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Schema:</span>
+                    <span>public</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-production">Production</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Version:</span>
+                    <span>1.2.0</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">[Brief description of the database schema, its purpose, and main entities it manages]</p>
+        </div>
+        
+        <!-- Table Schema -->
+        <div class="content-section">
+            <h2 class="section-title">🗃️ Table Schema</h2>
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Constraints</th>
+                        <th>Default Value</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="column-name">id</span></td>
+                        <td><span class="data-type">UUID</span></td>
+                        <td><span class="constraint-badge primary-key">PRIMARY KEY</span></td>
+                        <td>gen_random_uuid()</td>
+                        <td>Unique identifier for the record</td>
+                    </tr>
+                    <tr>
+                        <td><span class="column-name">name</span></td>
+                        <td><span class="data-type">VARCHAR(255)</span></td>
+                        <td><span class="constraint-badge">NOT NULL</span></td>
+                        <td>-</td>
+                        <td>Name of the entity</td>
+                    </tr>
+                    <tr>
+                        <td><span class="column-name">email</span></td>
+                        <td><span class="data-type">VARCHAR(320)</span></td>
+                        <td>
+                            <span class="constraint-badge">NOT NULL</span>
+                            <span class="constraint-badge unique">UNIQUE</span>
+                        </td>
+                        <td>-</td>
+                        <td>Email address (RFC 5322 compliant)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="column-name">user_id</span></td>
+                        <td><span class="data-type">UUID</span></td>
+                        <td><span class="constraint-badge foreign-key">FOREIGN KEY</span></td>
+                        <td>-</td>
+                        <td>Reference to users table</td>
+                    </tr>
+                    <tr>
+                        <td><span class="column-name">created_at</span></td>
+                        <td><span class="data-type">TIMESTAMPTZ</span></td>
+                        <td><span class="constraint-badge">NOT NULL</span></td>
+                        <td>NOW()</td>
+                        <td>Timestamp when record was created</td>
+                    </tr>
+                    <tr>
+                        <td><span class="column-name">updated_at</span></td>
+                        <td><span class="data-type">TIMESTAMPTZ</span></td>
+                        <td><span class="constraint-badge">NOT NULL</span></td>
+                        <td>NOW()</td>
+                        <td>Timestamp when record was last updated</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- SQL DDL -->
+        <div class="content-section">
+            <h2 class="section-title">📝 SQL DDL Statement</h2>
+            <div class="sql-block">
+<span class="sql-comment">-- Create table statement</span>
+<span class="sql-keyword">CREATE TABLE</span> [table_name] (
+    id <span class="sql-keyword">UUID PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+    name <span class="sql-keyword">VARCHAR</span>(255) <span class="sql-keyword">NOT NULL</span>,
+    email <span class="sql-keyword">VARCHAR</span>(320) <span class="sql-keyword">NOT NULL UNIQUE</span>,
+    user_id <span class="sql-keyword">UUID REFERENCES</span> users(id) <span class="sql-keyword">ON DELETE CASCADE</span>,
+    created_at <span class="sql-keyword">TIMESTAMPTZ NOT NULL DEFAULT</span> <span class="sql-keyword">NOW</span>(),
+    updated_at <span class="sql-keyword">TIMESTAMPTZ NOT NULL DEFAULT</span> <span class="sql-keyword">NOW</span>()
+);
+
+<span class="sql-comment">-- Create indexes</span>
+<span class="sql-keyword">CREATE INDEX</span> idx_[table_name]_email <span class="sql-keyword">ON</span> [table_name](email);
+<span class="sql-keyword">CREATE INDEX</span> idx_[table_name]_user_id <span class="sql-keyword">ON</span> [table_name](user_id);
+<span class="sql-keyword">CREATE INDEX</span> idx_[table_name]_created_at <span class="sql-keyword">ON</span> [table_name](created_at);
+
+<span class="sql-comment">-- Create trigger for updated_at</span>
+<span class="sql-keyword">CREATE OR REPLACE FUNCTION</span> update_updated_at_column()
+<span class="sql-keyword">RETURNS TRIGGER AS</span> $$
+<span class="sql-keyword">BEGIN</span>
+    NEW.updated_at = <span class="sql-keyword">NOW</span>();
+    <span class="sql-keyword">RETURN</span> NEW;
+<span class="sql-keyword">END</span>;
+$$ <span class="sql-keyword">LANGUAGE</span> plpgsql;
+
+<span class="sql-keyword">CREATE TRIGGER</span> update_[table_name]_updated_at
+    <span class="sql-keyword">BEFORE UPDATE ON</span> [table_name]
+    <span class="sql-keyword">FOR EACH ROW EXECUTE FUNCTION</span> update_updated_at_column();
+            </div>
+        </div>
+        
+        <!-- ER Diagram -->
+        <div class="content-section">
+            <h2 class="section-title">📊 Entity Relationship Diagram</h2>
+            <div class="er-diagram">
+                [ER Diagram Placeholder - Include visual representation of table relationships]
+            </div>
+        </div>
+        
+        <!-- Relationships -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Table Relationships</h2>
+            <div class="relationships-grid">
+                <div class="relationship-item">
+                    <span class="table-ref">[table_name]</span>
+                    <span class="relationship-type">N:1</span>
+                    <span class="table-ref">users</span>
+                </div>
+                <div class="relationship-item">
+                    <span class="table-ref">[table_name]</span>
+                    <span class="relationship-type">1:N</span>
+                    <span class="table-ref">related_table</span>
+                </div>
+                <div class="relationship-item">
+                    <span class="table-ref">[table_name]</span>
+                    <span class="relationship-type">N:M</span>
+                    <span class="table-ref">junction_table</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Indexes -->
+        <div class="content-section">
+            <h2 class="section-title">📇 Indexes & Performance</h2>
+            <div class="indexes-list">
+                <div class="index-item">
+                    <div class="index-name">idx_[table_name]_email <span class="index-type">UNIQUE</span></div>
+                    <div class="index-details">Unique index on email column for fast lookups and duplicate prevention</div>
+                </div>
+                <div class="index-item">
+                    <div class="index-name">idx_[table_name]_user_id <span class="index-type">BTREE</span></div>
+                    <div class="index-details">Index on foreign key for efficient joins with users table</div>
+                </div>
+                <div class="index-item">
+                    <div class="index-name">idx_[table_name]_created_at <span class="index-type">BTREE</span></div>
+                    <div class="index-details">Index on created_at for time-based queries and pagination</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Performance Stats -->
+        <div class="content-section">
+            <h2 class="section-title">📈 Performance Statistics</h2>
+            <div class="performance-grid">
+                <div class="performance-card">
+                    <div class="performance-value">2.3M</div>
+                    <div class="performance-label">Total Records</div>
+                </div>
+                <div class="performance-card">
+                    <div class="performance-value">156MB</div>
+                    <div class="performance-label">Table Size</div>
+                </div>
+                <div class="performance-card">
+                    <div class="performance-value">12ms</div>
+                    <div class="performance-label">Avg Query Time</div>
+                </div>
+                <div class="performance-card">
+                    <div class="performance-value">98.7%</div>
+                    <div class="performance-label">Index Hit Ratio</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Migration History -->
+        <div class="content-section">
+            <h2 class="section-title">🔄 Migration History</h2>
+            <div class="migration-timeline">
+                <div class="migration-item">
+                    <div class="migration-version">v1.2.0</div>
+                    <div>
+                        <div class="migration-description">Added email uniqueness constraint and improved indexing</div>
+                        <div class="migration-date">January 15, 2024</div>
+                    </div>
+                </div>
+                <div class="migration-item">
+                    <div class="migration-version">v1.1.0</div>
+                    <div>
+                        <div class="migration-description">Added user_id foreign key and cascade delete</div>
+                        <div class="migration-date">December 20, 2023</div>
+                    </div>
+                </div>
+                <div class="migration-item">
+                    <div class="migration-version">v1.0.0</div>
+                    <div>
+                        <div class="migration-description">Initial table creation with basic schema</div>
+                        <div class="migration-date">November 10, 2023</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Access Patterns -->
+        <div class="content-section">
+            <h2 class="section-title">🔍 Common Access Patterns</h2>
+            <ul style="color: #666; padding-left: 20px; line-height: 2;">
+                <li><strong>Lookup by Email:</strong> Fast unique index lookup for authentication</li>
+                <li><strong>Filter by User:</strong> Efficiently retrieve all records for a specific user</li>
+                <li><strong>Time-based Queries:</strong> Paginated results ordered by creation date</li>
+                <li><strong>Bulk Operations:</strong> Batch inserts and updates with minimal locking</li>
+            </ul>
+        </div>
+        
+        <!-- Security Considerations -->
+        <div class="content-section">
+            <h2 class="section-title">🔒 Security Considerations</h2>
+            <ul style="color: #666; padding-left: 20px; line-height: 2;">
+                <li><strong>Row Level Security (RLS):</strong> Enabled for multi-tenant data isolation</li>
+                <li><strong>Encryption:</strong> Sensitive columns encrypted using application-level encryption</li>
+                <li><strong>Audit Trail:</strong> All changes tracked via audit triggers</li>
+                <li><strong>Access Control:</strong> Database roles restrict access to specific operations</li>
+            </ul>
+        </div>
+        
+        <!-- Related Components -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Related Components</h2>
+            <div class="related-links">
+                <a href="API###.html" class="related-link">API### - Related API</a>
+                <a href="TS###.html" class="related-link">TS### - Technical Spec</a>
+                <a href="../scenarios/S001/US###.html" class="related-link">US### - User Story</a>
+                <a href="../testing/T###.html" class="related-link">T### - Test Cases</a>
+                <a href="F###.html" class="related-link">F### - Feature</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

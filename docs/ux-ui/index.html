@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX/UI Design Domain | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .domain-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .domain-title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .domain-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .domain-description {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .category-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .component-count {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            margin-top: 50px;
+            border-radius: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">🎨 UX/UI Design</div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">🏠 Home</a></li>
+                    <li><a href="../scenarios/index.html">📋 Scenarios</a></li>
+                    <li><a href="#" class="active">🎨 UX/UI</a></li>
+                    <li><a href="../technical/index.html">⚙️ Technical</a></li>
+                    <li><a href="../testing/index.html">🧪 Testing</a></li>
+                    <li><a href="../unified-view/index.html">📊 Unified View</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="domain-header">
+                <h1 class="domain-title">🎨 UX/UI Design Domain</h1>
+                <p class="domain-subtitle">Oghogho's Domain</p>
+                <p class="domain-description">
+                    User experience and interface design components that define how users interact with the platform. 
+                    This domain covers visual design, user flows, interface mockups, and reusable UI components.
+                </p>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card">
+                    <span class="category-icon">🧩</span>
+                    <h2 class="category-title">UI Components (C###)</h2>
+                    <div class="component-count">16 Components</div>
+                    <p class="category-description">
+                        Atomic design elements and reusable interface components like buttons, forms, navigation elements, 
+                        cards, and interactive widgets that form the building blocks of all interfaces.
+                    </p>
+                    <div class="category-actions">
+                        <a href="components/index.html" class="btn btn-primary">Browse Components</a>
+                        <a href="components/template.html" class="btn btn-secondary">New Component</a>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">📱</span>
+                    <h2 class="category-title">Interface Mockups (M###)</h2>
+                    <div class="component-count">8 Mockups</div>
+                    <p class="category-description">
+                        Screen-level designs showing how atomic components are composed into complete interfaces. 
+                        Includes wireframes, high-fidelity mockups, and responsive design layouts.
+                    </p>
+                    <div class="category-actions">
+                        <a href="mockups/index.html" class="btn btn-primary">View Mockups</a>
+                        <a href="mockups/template.html" class="btn btn-secondary">New Mockup</a>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">🔄</span>
+                    <h2 class="category-title">User Interface Flows (UX###)</h2>
+                    <div class="component-count">12 Flows</div>
+                    <p class="category-description">
+                        Step-by-step user journey maps showing how users navigate through different interfaces. 
+                        Includes user flows, interaction patterns, and navigation sequences.
+                    </p>
+                    <div class="category-actions">
+                        <a href="flows/index.html" class="btn btn-primary">View Flows</a>
+                        <a href="flows/template.html" class="btn btn-secondary">New Flow</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">36</span>
+                        <span class="stat-label">Total Components</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5</span>
+                        <span class="stat-label">Active Scenarios</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">12</span>
+                        <span class="stat-label">Participants</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">85%</span>
+                        <span class="stat-label">Completion Rate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Component Table | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .view-controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .breadcrumb {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover,
+        .view-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .table-controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .search-input {
+            flex: 1;
+            max-width: 300px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.9rem;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #5a67d8;
+        }
+
+        .results-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .components-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .components-table th,
+        .components-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .components-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .components-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .table-id {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 600;
+            color: #333;
+            background: #f0f8ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .domain-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .domain-business {
+            background: #f3e5f5;
+            color: #4a148c;
+        }
+
+        .domain-ux-ui {
+            background: #f8bbd9;
+            color: #c2185b;
+        }
+
+        .domain-technical {
+            background: #e8f5e8;
+            color: #1b5e20;
+        }
+
+        .domain-testing {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-complete {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-blocked {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .priority-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .priority-low {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .component-title {
+            font-weight: 500;
+            color: #333;
+            max-width: 250px;
+        }
+
+        .related-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-width: 200px;
+        }
+
+        .related-link {
+            background: #e8f0fe;
+            color: #1976d2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-decoration: none;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.2s ease;
+        }
+
+        .related-link:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        .sortable:hover {
+            background: #e8f0fe;
+        }
+
+        .sortable::after {
+            content: '⇅';
+            position: absolute;
+            right: 5px;
+            opacity: 0.5;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .pagination-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background: #f0f8ff;
+            border-color: #667eea;
+        }
+
+        .pagination-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .table-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .components-table {
+                font-size: 0.8rem;
+            }
+            
+            .components-table th,
+            .components-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">📊 Master Table</div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">🏠 Home</a></li>
+                    <li><a href="../scenarios/index.html">📋 Scenarios</a></li>
+                    <li><a href="../ux-ui/index.html">🎨 UX/UI</a></li>
+                    <li><a href="../technical/index.html">⚙️ Technical</a></li>
+                    <li><a href="../testing/index.html">🧪 Testing</a></li>
+                    <li><a href="index.html" class="active">📊 Unified View</a></li>
+                    <li><a href="../registry/index.html">🔍 Registry</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">📊 Master Component Table</h1>
+                <p class="page-subtitle">Complete searchable table of all platform components</p>
+            </div>
+
+            <div class="view-controls">
+                <div class="breadcrumb">
+                    <a href="index.html">📊 Unified View</a> / Master Component Table
+                </div>
+                <div class="view-options">
+                    <a href="by-scenario.html" class="view-btn">📋 By Scenario</a>
+                    <a href="by-type.html" class="view-btn">🏷️ By Type</a>
+                    <a href="relationships.html" class="view-btn">🕸️ Relationships</a>
+                    <a href="master-table.html" class="view-btn active">📊 Master Table</a>
+                </div>
+            </div>
+
+            <div class="table-controls">
+                <div class="search-section">
+                    <input type="text" class="search-input" placeholder="Search components..." id="searchInput">
+                    <div class="filter-group">
+                        <select class="filter-select" id="domainFilter">
+                            <option value="">All Domains</option>
+                            <option value="business-logic">📋 Business Logic</option>
+                            <option value="ux-ui">🎨 UX/UI Design</option>
+                            <option value="technical">⚙️ Technical</option>
+                            <option value="testing">🧪 Testing</option>
+                        </select>
+                        <select class="filter-select" id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="complete">Complete</option>
+                            <option value="blocked">Blocked</option>
+                        </select>
+                        <select class="filter-select" id="scenarioFilter">
+                            <option value="">All Scenarios</option>
+                            <option value="S001">S001</option>
+                            <option value="S002">S002</option>
+                            <option value="S003">S003</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-actions">
+                    <button class="action-btn" onclick="exportTable('csv')">📄 Export CSV</button>
+                    <button class="action-btn" onclick="exportTable('json')">📋 Export JSON</button>
+                </div>
+            </div>
+
+            <div class="results-info" id="resultsInfo">
+                Showing 142 components (1-50 of 142)
+            </div>
+
+            <div class="table-container">
+                <table class="components-table" id="componentsTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="id">ID</th>
+                            <th class="sortable" data-sort="title">Title</th>
+                            <th class="sortable" data-sort="domain">Domain</th>
+                            <th class="sortable" data-sort="category">Category</th>
+                            <th class="sortable" data-sort="status">Status</th>
+                            <th class="sortable" data-sort="priority">Priority</th>
+                            <th class="sortable" data-sort="scenario">Scenario</th>
+                            <th>Related</th>
+                            <th class="sortable" data-sort="updated">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- User Stories -->
+                        <tr data-domain="business-logic" data-status="active" data-scenario="S001">
+                            <td><span class="table-id">US001</span></td>
+                            <td><span class="component-title">Receives cold call from Bemeda sales</span></td>
+                            <td><span class="domain-badge domain-business">📋 Business Logic</span></td>
+                            <td>User Story</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">UC001</a>
+                                    <a href="#" class="related-link">UX001</a>
+                                    <a href="#" class="related-link">F005</a>
+                                    <a href="#" class="related-link">T001</a>
+                                </div>
+                            </td>
+                            <td>2024-01-21</td>
+                        </tr>
+                        <tr data-domain="business-logic" data-status="active" data-scenario="S001">
+                            <td><span class="table-id">US002</span></td>
+                            <td><span class="component-title">Discusses staffing needs and platform benefits</span></td>
+                            <td><span class="domain-badge domain-business">📋 Business Logic</span></td>
+                            <td>User Story</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">UC001</a>
+                                    <a href="#" class="related-link">UX003</a>
+                                    <a href="#" class="related-link">F001</a>
+                                </div>
+                            </td>
+                            <td>2024-01-21</td>
+                        </tr>
+                        <tr data-domain="business-logic" data-status="active" data-scenario="S001">
+                            <td><span class="table-id">UC001</span></td>
+                            <td><span class="component-title">Healthcare Organization Onboarding</span></td>
+                            <td><span class="domain-badge domain-business">📋 Business Logic</span></td>
+                            <td>Use Case</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">US001</a>
+                                    <a href="#" class="related-link">US002</a>
+                                    <a href="#" class="related-link">US003</a>
+                                    <a href="#" class="related-link">F001</a>
+                                    <a href="#" class="related-link">F004</a>
+                                </div>
+                            </td>
+                            <td>2024-01-20</td>
+                        </tr>
+
+                        <!-- UI Components -->
+                        <tr data-domain="ux-ui" data-status="complete" data-scenario="S001">
+                            <td><span class="table-id">C001</span></td>
+                            <td><span class="component-title">Email Input Field</span></td>
+                            <td><span class="domain-badge domain-ux-ui">🎨 UX/UI</span></td>
+                            <td>UI Component</td>
+                            <td><span class="status-badge status-complete">Complete</span></td>
+                            <td><span class="priority-badge priority-medium">Medium</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">US004</a>
+                                    <a href="#" class="related-link">M001</a>
+                                    <a href="#" class="related-link">M004</a>
+                                    <a href="#" class="related-link">F003</a>
+                                </div>
+                            </td>
+                            <td>2024-01-19</td>
+                        </tr>
+                        <tr data-domain="ux-ui" data-status="complete" data-scenario="S001">
+                            <td><span class="table-id">C005</span></td>
+                            <td><span class="component-title">Top Navigation Bar</span></td>
+                            <td><span class="domain-badge domain-ux-ui">🎨 UX/UI</span></td>
+                            <td>UI Component</td>
+                            <td><span class="status-badge status-complete">Complete</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">M001</a>
+                                    <a href="#" class="related-link">M002</a>
+                                    <a href="#" class="related-link">M003</a>
+                                    <a href="#" class="related-link">F008</a>
+                                </div>
+                            </td>
+                            <td>2024-01-18</td>
+                        </tr>
+                        <tr data-domain="ux-ui" data-status="active" data-scenario="S001">
+                            <td><span class="table-id">M001</span></td>
+                            <td><span class="component-title">Dashboard Landing Screen</span></td>
+                            <td><span class="domain-badge domain-ux-ui">🎨 UX/UI</span></td>
+                            <td>Mockup</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">US004</a>
+                                    <a href="#" class="related-link">UX005</a>
+                                    <a href="#" class="related-link">C001</a>
+                                    <a href="#" class="related-link">C005</a>
+                                    <a href="#" class="related-link">F003</a>
+                                </div>
+                            </td>
+                            <td>2024-01-21</td>
+                        </tr>
+
+                        <!-- Features -->
+                        <tr data-domain="technical" data-status="complete" data-scenario="S001">
+                            <td><span class="table-id">F001</span></td>
+                            <td><span class="component-title">Job Search Discovery</span></td>
+                            <td><span class="domain-badge domain-technical">⚙️ Technical</span></td>
+                            <td>Feature</td>
+                            <td><span class="status-badge status-complete">Complete</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">UC002</a>
+                                    <a href="#" class="related-link">TC001</a>
+                                    <a href="#" class="related-link">TC002</a>
+                                    <a href="#" class="related-link">TC003</a>
+                                    <a href="#" class="related-link">TC004</a>
+                                </div>
+                            </td>
+                            <td>2024-01-17</td>
+                        </tr>
+                        <tr data-domain="technical" data-status="active" data-scenario="S001">
+                            <td><span class="table-id">F004</span></td>
+                            <td><span class="component-title">Communication Platform</span></td>
+                            <td><span class="domain-badge domain-technical">⚙️ Technical</span></td>
+                            <td>Feature</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">UC001</a>
+                                    <a href="#" class="related-link">UC003</a>
+                                    <a href="#" class="related-link">TC013</a>
+                                    <a href="#" class="related-link">TC014</a>
+                                </div>
+                            </td>
+                            <td>2024-01-20</td>
+                        </tr>
+                        <tr data-domain="technical" data-status="complete" data-scenario="S001">
+                            <td><span class="table-id">TC001</span></td>
+                            <td><span class="component-title">User Authentication Service</span></td>
+                            <td><span class="domain-badge domain-technical">⚙️ Technical</span></td>
+                            <td>Tech Component</td>
+                            <td><span class="status-badge status-complete">Complete</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">F001</a>
+                                    <a href="#" class="related-link">F003</a>
+                                    <a href="#" class="related-link">C001</a>
+                                    <a href="#" class="related-link">C002</a>
+                                </div>
+                            </td>
+                            <td>2024-01-15</td>
+                        </tr>
+
+                        <!-- Test Cases -->
+                        <tr data-domain="testing" data-status="active" data-scenario="S001">
+                            <td><span class="table-id">T001</span></td>
+                            <td><span class="component-title">Sales Call Reception Test</span></td>
+                            <td><span class="domain-badge domain-testing">🧪 Testing</span></td>
+                            <td>Test Case</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><span class="priority-badge priority-high">High</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">US001</a>
+                                    <a href="#" class="related-link">F005</a>
+                                    <a href="#" class="related-link">UC001</a>
+                                </div>
+                            </td>
+                            <td>2024-01-21</td>
+                        </tr>
+                        <tr data-domain="testing" data-status="pending" data-scenario="S001">
+                            <td><span class="table-id">A001</span></td>
+                            <td><span class="component-title">End-to-End Placement Criteria</span></td>
+                            <td><span class="domain-badge domain-testing">🧪 Testing</span></td>
+                            <td>Acceptance Criteria</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td><span class="priority-badge priority-medium">Medium</span></td>
+                            <td>S001</td>
+                            <td>
+                                <div class="related-links">
+                                    <a href="#" class="related-link">UC003</a>
+                                    <a href="#" class="related-link">US005</a>
+                                    <a href="#" class="related-link">US006</a>
+                                </div>
+                            </td>
+                            <td>2024-01-19</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn">‹ Previous</button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <button class="pagination-btn">Next ›</button>
+                <span class="pagination-info">Page 1 of 3 (142 total components)</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Search and filter functionality
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const domainFilter = document.getElementById('domainFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const scenarioFilter = document.getElementById('scenarioFilter').value;
+
+            const rows = document.querySelectorAll('#componentsTable tbody tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const domain = row.dataset.domain;
+                const status = row.dataset.status;
+                const scenario = row.dataset.scenario;
+                const text = row.textContent.toLowerCase();
+
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
+                const matchesDomain = !domainFilter || domain === domainFilter;
+                const matchesStatus = !statusFilter || status === statusFilter;
+                const matchesScenario = !scenarioFilter || scenario === scenarioFilter;
+
+                const isVisible = matchesSearch && matchesDomain && matchesStatus && matchesScenario;
+                row.style.display = isVisible ? '' : 'none';
+                
+                if (isVisible) visibleCount++;
+            });
+
+            document.getElementById('resultsInfo').textContent = 
+                `Showing ${visibleCount} components (filtered from 142 total)`;
+        }
+
+        // Sort functionality
+        function sortTable(column) {
+            const table = document.getElementById('componentsTable');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const aVal = a.querySelector(`[data-sort="${column}"]`)?.textContent || a.cells[getColumnIndex(column)].textContent;
+                const bVal = b.querySelector(`[data-sort="${column}"]`)?.textContent || b.cells[getColumnIndex(column)].textContent;
+                return aVal.localeCompare(bVal);
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function getColumnIndex(column) {
+            const headers = ['id', 'title', 'domain', 'category', 'status', 'priority', 'scenario', 'related', 'updated'];
+            return headers.indexOf(column);
+        }
+
+        // Export functionality
+        function exportTable(format) {
+            const table = document.getElementById('componentsTable');
+            const rows = Array.from(table.querySelectorAll('tbody tr')).filter(row => row.style.display !== 'none');
+            
+            if (format === 'csv') {
+                exportToCSV(rows);
+            } else if (format === 'json') {
+                exportToJSON(rows);
+            }
+        }
+
+        function exportToCSV(rows) {
+            const headers = ['ID', 'Title', 'Domain', 'Category', 'Status', 'Priority', 'Scenario', 'Related', 'Last Updated'];
+            let csv = headers.join(',') + '\n';
+            
+            rows.forEach(row => {
+                const cells = Array.from(row.cells).map(cell => 
+                    '"' + cell.textContent.replace(/"/g, '""') + '"'
+                );
+                csv += cells.join(',') + '\n';
+            });
+            
+            downloadFile('components.csv', csv, 'text/csv');
+        }
+
+        function exportToJSON(rows) {
+            const data = rows.map(row => ({
+                id: row.cells[0].textContent.trim(),
+                title: row.cells[1].textContent.trim(),
+                domain: row.cells[2].textContent.trim(),
+                category: row.cells[3].textContent.trim(),
+                status: row.cells[4].textContent.trim(),
+                priority: row.cells[5].textContent.trim(),
+                scenario: row.cells[6].textContent.trim(),
+                related: row.cells[7].textContent.trim(),
+                lastUpdated: row.cells[8].textContent.trim()
+            }));
+            
+            downloadFile('components.json', JSON.stringify(data, null, 2), 'application/json');
+        }
+
+        function downloadFile(filename, content, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('domainFilter').addEventListener('change', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('scenarioFilter').addEventListener('change', applyFilters);
+
+        document.querySelectorAll('.sortable').forEach(header => {
+            header.addEventListener('click', () => {
+                sortTable(header.dataset.sort);
+            });
+        });
+    </script>
+</body>
+</html>

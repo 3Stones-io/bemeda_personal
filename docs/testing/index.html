@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing & QA Domain | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .domain-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .domain-title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .domain-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .domain-description {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .category-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .component-count {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            margin-top: 50px;
+            border-radius: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">🧪 Testing & QA</div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">🏠 Home</a></li>
+                    <li><a href="../scenarios/index.html">📋 Scenarios</a></li>
+                    <li><a href="../ux-ui/index.html">🎨 UX/UI</a></li>
+                    <li><a href="../technical/index.html">⚙️ Technical</a></li>
+                    <li><a href="#" class="active">🧪 Testing</a></li>
+                    <li><a href="../unified-view/index.html">📊 Unified View</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="domain-header">
+                <h1 class="domain-title">🧪 Testing & QA Domain</h1>
+                <p class="domain-subtitle">Dejan's Domain</p>
+                <p class="domain-description">
+                    Quality assurance, testing strategies, bug tracking, and acceptance criteria that ensure platform 
+                    reliability and user satisfaction. This domain covers all aspects of software quality validation.
+                </p>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card">
+                    <span class="category-icon">✅</span>
+                    <h2 class="category-title">Test Cases (T###)</h2>
+                    <div class="component-count">45 Test Cases</div>
+                    <p class="category-description">
+                        Detailed test scenarios covering functional, integration, and regression testing. Includes unit 
+                        tests, end-to-end scenarios, and automated test specifications.
+                    </p>
+                    <div class="category-actions">
+                        <a href="test-cases/index.html" class="btn btn-primary">View Test Cases</a>
+                        <a href="test-cases/template.html" class="btn btn-secondary">New Test Case</a>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">🐛</span>
+                    <h2 class="category-title">Bug Reports (B###)</h2>
+                    <div class="component-count">12 Active Bugs</div>
+                    <p class="category-description">
+                        Issue tracking and bug documentation including reproduction steps, severity levels, and resolution 
+                        status. Covers defects, improvements, and technical debt items.
+                    </p>
+                    <div class="category-actions">
+                        <a href="bug-reports/index.html" class="btn btn-primary">View Bugs</a>
+                        <a href="bug-reports/template.html" class="btn btn-secondary">Report Bug</a>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <span class="category-icon">📋</span>
+                    <h2 class="category-title">Acceptance Criteria (A###)</h2>
+                    <div class="component-count">38 Criteria</div>
+                    <p class="category-description">
+                        Definition of done specifications and quality gates that determine when features meet requirements. 
+                        Includes functional criteria, performance benchmarks, and user experience standards.
+                    </p>
+                    <div class="category-actions">
+                        <a href="acceptance/index.html" class="btn btn-primary">View Criteria</a>
+                        <a href="acceptance/template.html" class="btn btn-secondary">New Criteria</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">95</span>
+                        <span class="stat-label">Total Test Items</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">87%</span>
+                        <span class="stat-label">Test Coverage</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">12</span>
+                        <span class="stat-label">Active Issues</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Pass Rate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

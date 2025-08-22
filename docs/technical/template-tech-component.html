@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TC### - Tech Component Template | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        /* Header */
+        .component-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #424242;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .component-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .component-id {
+            background: #e0e0e0;
+            color: #424242;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border: 2px solid #424242;
+        }
+        
+        .component-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .component-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-active { 
+            background: #e8f5e8; 
+            color: #2e7d32; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .component-overview {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #424242;
+            margin-bottom: 20px;
+        }
+        
+        .overview-item {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .overview-label {
+            font-weight: 600;
+            color: #333;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .overview-value {
+            color: #666;
+        }
+        
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px dashed #424242;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .diagram-placeholder {
+            color: #666;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+        
+        .tech-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .spec-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .spec-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .spec-content {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .code-section {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .code-title {
+            color: #569cd6;
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .copy-btn:hover {
+            background: #005a9e;
+        }
+        
+        .api-endpoints {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .api-endpoint {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid #424242;
+        }
+        
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .http-method {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .method-get { background: #e8f5e8; color: #2e7d32; }
+        .method-post { background: #e3f2fd; color: #1976d2; }
+        .method-put { background: #fff3e0; color: #ef6c00; }
+        .method-delete { background: #ffebee; color: #d32f2f; }
+        
+        .endpoint-path {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .endpoint-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        .dependencies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .dependency-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 3px solid #424242;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .dependency-type {
+            background: #e0e0e0;
+            color: #424242;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .dependency-name {
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+        
+        .dependency-version {
+            color: #666;
+            font-size: 0.9rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #424242;
+            margin-bottom: 4px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .metric-description {
+            color: #999;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        
+        .configuration-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+        
+        .configuration-table th,
+        .configuration-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .configuration-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .configuration-table tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .config-key {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .config-value {
+            font-family: 'Monaco', 'Menlo', monospace;
+            color: #666;
+        }
+        
+        .security-considerations {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .security-item {
+            background: #ffebee;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 4px solid #f44336;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .security-icon {
+            color: #f44336;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+        
+        .security-text {
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .deployment-environments {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        
+        .environment-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .environment-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .environment-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .env-production { background: #e8f5e8; color: #2e7d32; }
+        .env-staging { background: #fff3e0; color: #ef6c00; }
+        .env-development { background: #e3f2fd; color: #1976d2; }
+        
+        .environment-details {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .relationship-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .relationship-card {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .relationship-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .relationship-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .relationship-link {
+            background: #e8f0fe;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.2s ease;
+        }
+        
+        .relationship-link:hover {
+            background: #1976d2;
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .component-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .tech-specs {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .deployment-environments {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .configuration-table {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <ul class="nav-list">
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li><a href="../scenarios/index.html" class="nav-link">📋 Scenarios</a></li>
+                <li><a href="../ux-ui/index.html" class="nav-link">🎨 UX/UI</a></li>
+                <li><a href="../technical/index.html" class="nav-link active">⚙️ Technical</a></li>
+                <li><a href="../testing/index.html" class="nav-link">🧪 Testing</a></li>
+                <li><a href="../unified-view/index.html" class="nav-link">📊 Unified View</a></li>
+                <li><a href="../registry/index.html" class="nav-link">🔍 Registry</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Component Header -->
+        <div class="component-header">
+            <a href="index.html" class="back-link">← Back to Technical Components</a>
+            <div class="component-title">
+                <span class="component-id">TC###</span>
+                <h1 class="component-name">[Tech Component Name]</h1>
+            </div>
+            <div class="component-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Type:</span>
+                    <span>[Service/Library/Module/API]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Layer:</span>
+                    <span>[Frontend/Backend/Infrastructure]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-active">Active</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Version:</span>
+                    <span>1.2.0</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">[Brief description of what this technical component does and its role in the system architecture]</p>
+        </div>
+        
+        <!-- Component Overview -->
+        <div class="content-section">
+            <h2 class="section-title">📋 Component Overview</h2>
+            <div class="component-overview">
+                <div class="overview-item">
+                    <span class="overview-label">Purpose:</span>
+                    <span class="overview-value">[What this component accomplishes and why it exists]</span>
+                </div>
+                <div class="overview-item">
+                    <span class="overview-label">Technology:</span>
+                    <span class="overview-value">[Programming language, framework, or technology stack used]</span>
+                </div>
+                <div class="overview-item">
+                    <span class="overview-label">Responsibility:</span>
+                    <span class="overview-value">[Primary responsibilities and boundaries of this component]</span>
+                </div>
+                <div class="overview-item">
+                    <span class="overview-label">Scalability:</span>
+                    <span class="overview-value">[How this component scales and handles increased load]</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Architecture Diagram -->
+        <div class="content-section">
+            <h2 class="section-title">🏗️ Architecture Diagram</h2>
+            <div class="architecture-diagram">
+                <div class="diagram-placeholder">
+                    [Technical architecture diagram showing component interfaces, data flow, and system integration]
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Specifications -->
+        <div class="content-section">
+            <h2 class="section-title">⚙️ Technical Specifications</h2>
+            <div class="tech-specs">
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>💾</span>
+                        <span>Data Processing</span>
+                    </div>
+                    <div class="spec-content">
+                        <strong>Input Format:</strong> [Data formats accepted]<br>
+                        <strong>Output Format:</strong> [Data formats produced]<br>
+                        <strong>Processing Model:</strong> [Synchronous/Asynchronous/Stream]<br>
+                        <strong>Capacity:</strong> [Volume and throughput capabilities]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🔌</span>
+                        <span>Interfaces</span>
+                    </div>
+                    <div class="spec-content">
+                        <strong>Public APIs:</strong> [REST/GraphQL/gRPC endpoints]<br>
+                        <strong>Integration Points:</strong> [External system connections]<br>
+                        <strong>Events:</strong> [Published/Consumed events]<br>
+                        <strong>Protocols:</strong> [Communication protocols used]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🗄️</span>
+                        <span>Data Storage</span>
+                    </div>
+                    <div class="spec-content">
+                        <strong>Database:</strong> [Database type and schema]<br>
+                        <strong>Caching:</strong> [Caching strategy and technology]<br>
+                        <strong>Persistence:</strong> [Data persistence requirements]<br>
+                        <strong>Backup:</strong> [Backup and recovery strategy]
+                    </div>
+                </div>
+                
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <span>🔒</span>
+                        <span>Security</span>
+                    </div>
+                    <div class="spec-content">
+                        <strong>Authentication:</strong> [Auth mechanisms used]<br>
+                        <strong>Authorization:</strong> [Permission model]<br>
+                        <strong>Encryption:</strong> [Data encryption standards]<br>
+                        <strong>Compliance:</strong> [Security standards met]
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- API Endpoints -->
+        <div class="content-section">
+            <h2 class="section-title">🔌 API Endpoints</h2>
+            <p style="color: #666; margin-bottom: 16px;">Public interfaces exposed by this component:</p>
+            <div class="api-endpoints">
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-get">GET</span>
+                        <span class="endpoint-path">/api/v1/[resource]</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does, parameters it accepts, and response format]
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-post">POST</span>
+                        <span class="endpoint-path">/api/v1/[resource]</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does, request body format, and response]
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-put">PUT</span>
+                        <span class="endpoint-path">/api/v1/[resource]/{id}</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does for updating resources]
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span class="http-method method-delete">DELETE</span>
+                        <span class="endpoint-path">/api/v1/[resource]/{id}</span>
+                    </div>
+                    <div class="endpoint-description">
+                        [Description of what this endpoint does for deleting resources]
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Implementation Code -->
+        <div class="content-section">
+            <h2 class="section-title">💻 Implementation Sample</h2>
+            
+            <!-- Core Logic -->
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="code-title">Core Service Implementation</span>
+                    <button class="copy-btn" onclick="copyCode('core')">Copy</button>
+                </div>
+                <pre id="core-code"><code>// Core service class implementation
+export class [ComponentName]Service {
+  constructor(
+    private config: [ComponentName]Config,
+    private logger: Logger,
+    private database: Database
+  ) {}
+  
+  async processRequest(input: [InputType]): Promise<[OutputType]> {
+    this.logger.info('Processing request', { input });
+    
+    try {
+      // Validation logic
+      this.validateInput(input);
+      
+      // Core business logic
+      const result = await this.executeBusinessLogic(input);
+      
+      // Response formatting
+      return this.formatResponse(result);
+    } catch (error) {
+      this.logger.error('Request processing failed', { error });
+      throw error;
+    }
+  }
+  
+  private validateInput(input: [InputType]): void {
+    // Input validation logic
+  }
+  
+  private async executeBusinessLogic(input: [InputType]): Promise<any> {
+    // Core component functionality
+  }
+}</code></pre>
+            </div>
+            
+            <!-- Configuration -->
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="code-title">Configuration Schema</span>
+                    <button class="copy-btn" onclick="copyCode('config')">Copy</button>
+                </div>
+                <pre id="config-code"><code>// Component configuration interface
+export interface [ComponentName]Config {
+  // Database connection
+  database: {
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+    database: string;
+  };
+  
+  // Service settings
+  service: {
+    timeout: number;
+    retries: number;
+    batchSize: number;
+  };
+  
+  // External integrations
+  integrations: {
+    [serviceName]: {
+      baseUrl: string;
+      apiKey: string;
+      timeout: number;
+    };
+  };
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- Dependencies -->
+        <div class="content-section">
+            <h2 class="section-title">📦 Dependencies</h2>
+            <div class="dependencies-list">
+                <div class="dependency-item">
+                    <span class="dependency-type">Runtime</span>
+                    <span class="dependency-name">Node.js Runtime Environment</span>
+                    <span class="dependency-version">v18.0+</span>
+                </div>
+                
+                <div class="dependency-item">
+                    <span class="dependency-type">Database</span>
+                    <span class="dependency-name">PostgreSQL Database</span>
+                    <span class="dependency-version">v14.0+</span>
+                </div>
+                
+                <div class="dependency-item">
+                    <span class="dependency-type">Library</span>
+                    <span class="dependency-name">Express.js Framework</span>
+                    <span class="dependency-version">v4.18.0</span>
+                </div>
+                
+                <div class="dependency-item">
+                    <span class="dependency-type">Service</span>
+                    <span class="dependency-name">Redis Cache Service</span>
+                    <span class="dependency-version">v7.0+</span>
+                </div>
+                
+                <div class="dependency-item">
+                    <span class="dependency-type">External</span>
+                    <span class="dependency-name">External API Integration</span>
+                    <span class="dependency-version">v2.1</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Configuration -->
+        <div class="content-section">
+            <h2 class="section-title">⚙️ Configuration</h2>
+            <table class="configuration-table">
+                <thead>
+                    <tr>
+                        <th>Configuration Key</th>
+                        <th>Default Value</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="config-key">DATABASE_URL</td>
+                        <td class="config-value">localhost:5432</td>
+                        <td>Database connection string</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td class="config-key">CACHE_TTL</td>
+                        <td class="config-value">3600</td>
+                        <td>Cache time-to-live in seconds</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td class="config-key">MAX_CONNECTIONS</td>
+                        <td class="config-value">100</td>
+                        <td>Maximum database connections</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td class="config-key">LOG_LEVEL</td>
+                        <td class="config-value">info</td>
+                        <td>Logging verbosity level</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td class="config-key">API_TIMEOUT</td>
+                        <td class="config-value">30000</td>
+                        <td>API request timeout in milliseconds</td>
+                        <td>No</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Performance Metrics -->
+        <div class="content-section">
+            <h2 class="section-title">📈 Performance Metrics</h2>
+            <div class="performance-metrics">
+                <div class="metric-card">
+                    <div class="metric-value">50ms</div>
+                    <div class="metric-label">Avg Response Time</div>
+                    <div class="metric-description">P95 under load</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">1000</div>
+                    <div class="metric-label">RPS Capacity</div>
+                    <div class="metric-description">Requests per second</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">99.9%</div>
+                    <div class="metric-label">Uptime SLA</div>
+                    <div class="metric-description">Service availability</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">512MB</div>
+                    <div class="metric-label">Memory Usage</div>
+                    <div class="metric-description">Peak memory consumption</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security Considerations -->
+        <div class="content-section">
+            <h2 class="section-title">🔒 Security Considerations</h2>
+            <div class="security-considerations">
+                <div class="security-item">
+                    <span class="security-icon">🔑</span>
+                    <span class="security-text">All API endpoints require valid authentication tokens</span>
+                </div>
+                
+                <div class="security-item">
+                    <span class="security-icon">🛡️</span>
+                    <span class="security-text">Input validation and sanitization prevents injection attacks</span>
+                </div>
+                
+                <div class="security-item">
+                    <span class="security-icon">🔐</span>
+                    <span class="security-text">Sensitive data is encrypted at rest and in transit</span>
+                </div>
+                
+                <div class="security-item">
+                    <span class="security-icon">📝</span>
+                    <span class="security-text">All operations are logged for audit and monitoring</span>
+                </div>
+                
+                <div class="security-item">
+                    <span class="security-icon">⏱️</span>
+                    <span class="security-text">Rate limiting prevents abuse and DoS attacks</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Deployment Environments -->
+        <div class="content-section">
+            <h2 class="section-title">🚀 Deployment Environments</h2>
+            <div class="deployment-environments">
+                <div class="environment-card">
+                    <div class="environment-title">
+                        <span>🌐</span>
+                        <span>Production</span>
+                        <span class="environment-status env-production">Live</span>
+                    </div>
+                    <div class="environment-details">
+                        <strong>URL:</strong> https://api.bemeda.com<br>
+                        <strong>Instances:</strong> 3 load-balanced nodes<br>
+                        <strong>Resources:</strong> 4 CPU, 8GB RAM<br>
+                        <strong>Monitoring:</strong> Full APM enabled
+                    </div>
+                </div>
+                
+                <div class="environment-card">
+                    <div class="environment-title">
+                        <span>🧪</span>
+                        <span>Staging</span>
+                        <span class="environment-status env-staging">Active</span>
+                    </div>
+                    <div class="environment-details">
+                        <strong>URL:</strong> https://staging-api.bemeda.com<br>
+                        <strong>Instances:</strong> 1 single node<br>
+                        <strong>Resources:</strong> 2 CPU, 4GB RAM<br>
+                        <strong>Purpose:</strong> Pre-production testing
+                    </div>
+                </div>
+                
+                <div class="environment-card">
+                    <div class="environment-title">
+                        <span>👨‍💻</span>
+                        <span>Development</span>
+                        <span class="environment-status env-development">Local</span>
+                    </div>
+                    <div class="environment-details">
+                        <strong>URL:</strong> http://localhost:3000<br>
+                        <strong>Instances:</strong> Local development<br>
+                        <strong>Resources:</strong> Variable<br>
+                        <strong>Purpose:</strong> Development and debugging
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Component Relationships -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Component Relationships</h2>
+            <p style="color: #666; margin-bottom: 20px;">How this tech component connects to other components across domains:</p>
+            <div class="relationship-grid">
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>⚙️</span>
+                        <span>Features</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">F###</a>
+                        <a href="#" class="relationship-link">F###</a>
+                        <a href="#" class="relationship-link">F###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🔧</span>
+                        <span>Tech Components</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">TC###</a>
+                        <a href="#" class="relationship-link">TC###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🧩</span>
+                        <span>UI Components</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">C###</a>
+                        <a href="#" class="relationship-link">C###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>👤</span>
+                        <span>User Stories</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">US###</a>
+                        <a href="#" class="relationship-link">US###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>🧪</span>
+                        <span>Test Cases</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">T###</a>
+                        <a href="#" class="relationship-link">T###</a>
+                        <a href="#" class="relationship-link">T###</a>
+                    </div>
+                </div>
+                
+                <div class="relationship-card">
+                    <div class="relationship-title">
+                        <span>📊</span>
+                        <span>API Endpoints</span>
+                    </div>
+                    <div class="relationship-links">
+                        <a href="#" class="relationship-link">API###</a>
+                        <a href="#" class="relationship-link">API###</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(type) {
+            const codeElement = document.getElementById(type + '-code');
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#007acc';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

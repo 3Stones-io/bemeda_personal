@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US### - User Stories Index | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            border-left: 4px solid #4a148c;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #4a148c;
+            text-decoration: none;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        
+        .participant-sections {
+            margin-bottom: 32px;
+        }
+        
+        .participant-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid var(--section-color);
+        }
+        
+        .participant-section.organisation { --section-color: #0066cc; }
+        .participant-section.jobseeker { --section-color: #2e7d32; }
+        .participant-section.sales { --section-color: #ef6c00; }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .section-icon {
+            font-size: 1.8rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .user-stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .user-story-card {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid var(--section-color);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
+        
+        .user-story-card:hover {
+            background: #e8f0fe;
+            transform: translateX(4px);
+        }
+        
+        .story-id {
+            background: var(--section-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .story-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .story-description {
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .create-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .create-btn {
+            background: #4a148c;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        
+        .create-btn:hover {
+            background: #2e0a5c;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../../structure-diagram.html" class="back-link">← Back to Structure Overview</a>
+            
+            <h1 class="header-title">👤 US### - User Stories Index</h1>
+            <p class="header-description">
+                Individual steps each participant takes within scenarios. User stories represent 
+                specific actions, decisions, or processes that users perform to achieve their goals.
+            </p>
+            
+            <div class="create-section">
+                <h3 style="margin-bottom: 12px; color: #333;">🚀 Quick Actions</h3>
+                <a href="template.html" class="create-btn">📋 View Template</a>
+                <a href="US001.html" class="create-btn" style="margin-left: 12px;">+ Create New User Story</a>
+            </div>
+        </div>
+        
+        <div class="participant-sections">
+            <!-- Organisation Participant User Stories -->
+            <div class="participant-section organisation">
+                <div class="section-header">
+                    <span class="section-icon">🏥</span>
+                    <h2 class="section-title">Organisation User Stories</h2>
+                </div>
+                
+                <div class="user-stories-grid">
+                    <a href="US001.html" class="user-story-card">
+                        <div class="story-id">US001</div>
+                        <div class="story-title">Receive Sales Contact</div>
+                        <div class="story-description">
+                            "As a healthcare organisation, I want to receive information about staffing solutions so that I can evaluate potential partnerships."
+                        </div>
+                    </a>
+                    
+                    <a href="US002.html" class="user-story-card">
+                        <div class="story-id">US002</div>
+                        <div class="story-title">Discuss Staffing Needs</div>
+                        <div class="story-description">
+                            "As an HR director, I want to discuss our current staffing challenges so that I can find suitable solutions."
+                        </div>
+                    </a>
+                    
+                    <a href="US003.html" class="user-story-card">
+                        <div class="story-id">US003</div>
+                        <div class="story-title">Create Job Posting</div>
+                        <div class="story-description">
+                            "As an organisation, I want to create detailed job postings so that I can attract qualified candidates."
+                        </div>
+                    </a>
+                    
+                    <a href="US004.html" class="user-story-card">
+                        <div class="story-id">US004</div>
+                        <div class="story-title">Review Matched Candidates</div>
+                        <div class="story-description">
+                            "As an hiring manager, I want to review candidate profiles so that I can select the best matches."
+                        </div>
+                    </a>
+                    
+                    <a href="US005.html" class="user-story-card">
+                        <div class="story-id">US005</div>
+                        <div class="story-title">Conduct Interviews</div>
+                        <div class="story-description">
+                            "As an organisation, I want to interview candidates so that I can assess their suitability for the role."
+                        </div>
+                    </a>
+                    
+                    <a href="US006.html" class="user-story-card">
+                        <div class="story-id">US006</div>
+                        <div class="story-title">Complete Hiring Process</div>
+                        <div class="story-description">
+                            "As an organisation, I want to finalize the hiring process so that I can onboard the selected candidate."
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- JobSeeker Participant User Stories -->
+            <div class="participant-section jobseeker">
+                <div class="section-header">
+                    <span class="section-icon">🔍</span>
+                    <h2 class="section-title">JobSeeker User Stories</h2>
+                </div>
+                
+                <div class="user-stories-grid">
+                    <a href="US007.html" class="user-story-card">
+                        <div class="story-id">US007</div>
+                        <div class="story-title">Create Profile</div>
+                        <div class="story-description">
+                            "As a healthcare professional, I want to create a comprehensive profile so that I can be matched with suitable opportunities."
+                        </div>
+                    </a>
+                    
+                    <a href="US008.html" class="user-story-card">
+                        <div class="story-id">US008</div>
+                        <div class="story-title">Receive Job Notifications</div>
+                        <div class="story-description">
+                            "As a job seeker, I want to receive notifications about matching jobs so that I can apply quickly."
+                        </div>
+                    </a>
+                    
+                    <a href="US009.html" class="user-story-card">
+                        <div class="story-id">US009</div>
+                        <div class="story-title">Apply for Position</div>
+                        <div class="story-description">
+                            "As a healthcare professional, I want to apply for positions so that I can secure employment."
+                        </div>
+                    </a>
+                    
+                    <a href="US010.html" class="user-story-card">
+                        <div class="story-id">US010</div>
+                        <div class="story-title">Participate in Interview</div>
+                        <div class="story-description">
+                            "As a candidate, I want to participate in interviews so that I can demonstrate my qualifications."
+                        </div>
+                    </a>
+                    
+                    <a href="US011.html" class="user-story-card">
+                        <div class="story-id">US011</div>
+                        <div class="story-title">Accept Job Offer</div>
+                        <div class="story-description">
+                            "As a candidate, I want to accept job offers so that I can secure employment and start working."
+                        </div>
+                    </a>
+                    
+                    <a href="US012.html" class="user-story-card">
+                        <div class="story-id">US012</div>
+                        <div class="story-title">Complete Onboarding</div>
+                        <div class="story-description">
+                            "As a new hire, I want to complete onboarding so that I can start my new position successfully."
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sales Team Participant User Stories -->
+            <div class="participant-section sales">
+                <div class="section-header">
+                    <span class="section-icon">📞</span>
+                    <h2 class="section-title">Sales Team User Stories</h2>
+                </div>
+                
+                <div class="user-stories-grid">
+                    <a href="US013.html" class="user-story-card">
+                        <div class="story-id">US013</div>
+                        <div class="story-title">Identify Target Organisations</div>
+                        <div class="story-description">
+                            "As a sales representative, I want to identify potential clients so that I can build a pipeline of prospects."
+                        </div>
+                    </a>
+                    
+                    <a href="US014.html" class="user-story-card">
+                        <div class="story-id">US014</div>
+                        <div class="story-title">Make Initial Contact</div>
+                        <div class="story-description">
+                            "As a sales rep, I want to make cold calls so that I can introduce our platform to potential clients."
+                        </div>
+                    </a>
+                    
+                    <a href="US015.html" class="user-story-card">
+                        <div class="story-id">US015</div>
+                        <div class="story-title">Present Platform Benefits</div>
+                        <div class="story-description">
+                            "As a sales representative, I want to present our platform so that I can demonstrate value to prospects."
+                        </div>
+                    </a>
+                    
+                    <a href="US016.html" class="user-story-card">
+                        <div class="story-id">US016</div>
+                        <div class="story-title">Facilitate Onboarding</div>
+                        <div class="story-description">
+                            "As a sales rep, I want to guide client onboarding so that I can ensure successful platform adoption."
+                        </div>
+                    </a>
+                    
+                    <a href="US017.html" class="user-story-card">
+                        <div class="story-id">US017</div>
+                        <div class="story-title">Monitor Placement Success</div>
+                        <div class="story-description">
+                            "As a sales representative, I want to track placement outcomes so that I can measure client satisfaction."
+                        </div>
+                    </a>
+                    
+                    <a href="US018.html" class="user-story-card">
+                        <div class="story-id">US018</div>
+                        <div class="story-title">Follow Up for Growth</div>
+                        <div class="story-description">
+                            "As a sales rep, I want to identify expansion opportunities so that I can grow account revenue."
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
