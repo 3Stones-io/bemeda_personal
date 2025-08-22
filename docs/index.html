@@ -199,143 +199,89 @@
             line-height: 1.5;
         }
         
-        /* MVP Cards Section */
-        .mvp-cards-section {
-            margin-top: 40px;
+        /* Section Styles */
+        .section {
+            margin-bottom: 32px;
         }
         
-        .mvp-cards-title {
-            text-align: center;
-            font-size: 2rem;
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
             color: #1a1a1a;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            text-align: center;
         }
         
-        .mvp-cards {
+        /* Card Grid */
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
         }
         
-        .mvp-card {
+        .nav-card {
             background: white;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
             text-decoration: none;
             color: inherit;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .mvp-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .mvp-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--accent-color);
-        }
-        
-        .mvp-card.scenarios {
-            --accent-color: #0066cc;
-        }
-        
-        .mvp-card.ux-ui {
-            --accent-color: #9c27b0;
-        }
-        
-        .mvp-card.testing {
-            --accent-color: #f44336;
-        }
-        
-        .mvp-card.features {
-            --accent-color: #4caf50;
-        }
-        
-        .mvp-card.unified {
-            --accent-color: #667eea;
-        }
-        
-        .mvp-card.architecture {
-            --accent-color: #ff7043;
-        }
-        
-        .mvp-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
+            transition: all 0.2s ease;
             display: block;
         }
         
-        .mvp-title {
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #1a1a1a;
+        .nav-card:hover {
+            border-color: #0066cc;
+            box-shadow: 0 2px 8px rgba(0,102,204,0.1);
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: inherit;
         }
         
-        .mvp-subtitle {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 16px;
-        }
-        
-        .mvp-description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .mvp-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .mvp-stat {
-            text-align: center;
-        }
-        
-        .mvp-stat-number {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent-color);
-        }
-        
-        .mvp-stat-label {
-            font-size: 0.8rem;
-            color: #666;
-        }
-        
-        .mvp-cta {
-            color: var(--accent-color);
-            font-weight: 500;
+        .nav-card-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
         
-        .mvp-cta::after {
-            content: '→';
-            transition: transform 0.2s;
+        .nav-card-icon {
+            font-size: 1.5rem;
         }
         
-        .mvp-card:hover .mvp-cta::after {
-            transform: translateX(4px);
+        .nav-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0;
         }
+        
+        .nav-card-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        
+        .nav-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .nav-card-status {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .status-ready { background: #e8f5e8; color: #2e7d32; }
+        .status-active { background: #e3f2fd; color: #1976d2; }
+        .status-beta { background: #fff3e0; color: #f57c00; }
         
         .top-nav {
             border-radius: 8px;
@@ -400,202 +346,115 @@
         </div>
         
         <!-- Quick Access Section -->
-        <div class="mvp-cards-section">
-            <h2 class="mvp-cards-title">Quick Access</h2>
-            <div class="mvp-cards">
-                <a href="unified-view/index.html" class="mvp-card unified">
-                    <span class="mvp-icon">📊</span>
-                    <h3 class="mvp-title">Unified View</h3>
-                    <p class="mvp-subtitle">Cross-Domain Analytics</p>
-                    <p class="mvp-description">
-                        Complete overview of all platform components with progress tracking across scenarios, 
-                        design, testing, and technical implementation. Real-time project insights.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">18</div>
-                            <div class="mvp-stat-label">User Stories</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">50+</div>
-                            <div class="mvp-stat-label">Components</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">75%</div>
-                            <div class="mvp-stat-label">Progress</div>
-                        </div>
+        <div class="section">
+            <h2 class="section-title">Quick Access</h2>
+            <div class="card-grid">
+                <a href="unified-view/index.html" class="nav-card">
+                    <div class="nav-card-header">
+                        <span class="nav-card-icon">📊</span>
+                        <h3 class="nav-card-title">Unified View</h3>
                     </div>
-                    <div class="mvp-cta">View Analytics</div>
+                    <p class="nav-card-description">
+                        Complete overview of all platform components with progress tracking across domains.
+                    </p>
+                    <div class="nav-card-meta">
+                        <span>118 Components</span>
+                        <span class="nav-card-status status-ready">Ready</span>
+                    </div>
                 </a>
                 
-                <a href="registry/index.html" class="mvp-card architecture">
-                    <span class="mvp-icon">🔍</span>
-                    <h3 class="mvp-title">Component Registry</h3>
-                    <p class="mvp-subtitle">Search & Discovery</p>
-                    <p class="mvp-description">
-                        Centralized component search and discovery system. Find user stories, features, 
-                        test cases, and technical specifications across all domains.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">4</div>
-                            <div class="mvp-stat-label">Domains</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">8</div>
-                            <div class="mvp-stat-label">Types</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">100%</div>
-                            <div class="mvp-stat-label">Searchable</div>
-                        </div>
+                <a href="registry/index.html" class="nav-card">
+                    <div class="nav-card-header">
+                        <span class="nav-card-icon">🔍</span>
+                        <h3 class="nav-card-title">Component Registry</h3>
                     </div>
-                    <div class="mvp-cta">Search Components</div>
+                    <p class="nav-card-description">
+                        Centralized search and discovery system for all components.
+                    </p>
+                    <div class="nav-card-meta">
+                        <span>4 Domains</span>
+                        <span class="nav-card-status status-ready">Ready</span>
+                    </div>
+                </a>
+                
+                <a href="github/index.html" class="nav-card">
+                    <div class="nav-card-header">
+                        <span class="nav-card-icon">🔗</span>
+                        <h3 class="nav-card-title">GitHub Integration</h3>
+                    </div>
+                    <p class="nav-card-description">
+                        Two-way sync system with GitHub Issues for real-time collaboration.
+                    </p>
+                    <div class="nav-card-meta">
+                        <span>Live Sync</span>
+                        <span class="nav-card-status status-active">Active</span>
+                    </div>
                 </a>
             </div>
         </div>
         
         <!-- Platform Domains Section -->
-        <div class="mvp-cards-section">
-            <h2 class="mvp-cards-title">Platform Domains</h2>
-            <div class="mvp-cards">
-                <!-- Scenarios Domain -->
-                <a href="scenarios/index.html" class="mvp-card scenarios">
-                    <span class="mvp-icon">📋</span>
-                    <h3 class="mvp-title">Scenarios & User Stories</h3>
-                    <p class="mvp-subtitle">Business Analysis & Workflows</p>
-                    <p class="mvp-description">
-                        Complete user journey documentation, process flows, and business scenarios. 
-                        Covers all staffing workflows from cold calls to long-term relationship management.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">18</div>
-                            <div class="mvp-stat-label">User Stories</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">1</div>
-                            <div class="mvp-stat-label">Scenarios</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">100%</div>
-                            <div class="mvp-stat-label">Complete</div>
-                        </div>
+        <div class="section">
+            <h2 class="section-title">Platform Domains</h2>
+            <div class="card-grid">
+                <a href="scenarios/index.html" class="nav-card">
+                    <div class="nav-card-header">
+                        <span class="nav-card-icon">📋</span>
+                        <h3 class="nav-card-title">Scenarios & User Stories</h3>
                     </div>
-                    <div class="mvp-cta">Explore Business Scenarios</div>
+                    <p class="nav-card-description">
+                        User journeys, process flows, and business scenarios for platform workflows.
+                    </p>
+                    <div class="nav-card-meta">
+                        <span>18 User Stories</span>
+                        <span class="nav-card-status status-ready">Complete</span>
+                    </div>
                 </a>
                 
-                <!-- UX/UI Domain -->
-                <a href="ux-ui/index.html" class="mvp-card ux-ui">
-                    <span class="mvp-icon">🎨</span>
-                    <h3 class="mvp-title">UX/UI & Design System</h3>
-                    <p class="mvp-subtitle">User Experience & Interface Design</p>
-                    <p class="mvp-description">
-                        User interface components, design patterns, mockups, and accessibility guidelines. 
-                        Complete design system with interactive components and user flows.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">12+</div>
-                            <div class="mvp-stat-label">Components</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">8+</div>
-                            <div class="mvp-stat-label">UI Flows</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">Templates</div>
-                            <div class="mvp-stat-label">Ready</div>
-                        </div>
+                <a href="ux-ui/index.html" class="nav-card">
+                    <div class="nav-card-header">
+                        <span class="nav-card-icon">🎨</span>
+                        <h3 class="nav-card-title">UX/UI & Design</h3>
                     </div>
-                    <div class="mvp-cta">Explore Design System</div>
+                    <p class="nav-card-description">
+                        Interface components, design patterns, mockups, and user experience flows.
+                    </p>
+                    <div class="nav-card-meta">
+                        <span>22 Components</span>
+                        <span class="nav-card-status status-beta">In Progress</span>
+                    </div>
                 </a>
                 
-                <!-- Technical Domain -->
-                <a href="technical/index.html" class="mvp-card features">
-                    <span class="mvp-icon">⚙️</span>
-                    <h3 class="mvp-title">Technical Specifications</h3>
-                    <p class="mvp-subtitle">Architecture & Implementation</p>
-                    <p class="mvp-description">
-                        Technical specifications, API documentation, database schemas, and integration guides. 
-                        Complete feature documentation with implementation details.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">Templates</div>
-                            <div class="mvp-stat-label">Available</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">API</div>
-                            <div class="mvp-stat-label">Specs</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">DB</div>
-                            <div class="mvp-stat-label">Schemas</div>
-                        </div>
+                <a href="technical/index.html" class="nav-card">
+                    <div class="nav-card-header">
+                        <span class="nav-card-icon">⚙️</span>
+                        <h3 class="nav-card-title">Technical Specs</h3>
                     </div>
-                    <div class="mvp-cta">Explore Technical Specs</div>
+                    <p class="nav-card-description">
+                        Architecture, APIs, database schemas, and implementation specifications.
+                    </p>
+                    <div class="nav-card-meta">
+                        <span>66 Components</span>
+                        <span class="nav-card-status status-active">Active</span>
+                    </div>
                 </a>
                 
-                <!-- Testing Domain -->
-                <a href="testing/index.html" class="mvp-card testing">
-                    <span class="mvp-icon">🧪</span>
-                    <h3 class="mvp-title">Testing & Quality Assurance</h3>
-                    <p class="mvp-subtitle">Quality Engineering & Validation</p>
-                    <p class="mvp-description">
-                        Test scenarios, acceptance criteria, quality metrics, and validation procedures. 
-                        Comprehensive QA documentation and testing frameworks.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">Templates</div>
-                            <div class="mvp-stat-label">Ready</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">A###</div>
-                            <div class="mvp-stat-label">Criteria</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">T###</div>
-                            <div class="mvp-stat-label">Test Cases</div>
-                        </div>
+                <a href="testing/index.html" class="nav-card">
+                    <div class="nav-card-header">
+                        <span class="nav-card-icon">🧪</span>
+                        <h3 class="nav-card-title">Testing & QA</h3>
                     </div>
-                    <div class="mvp-cta">Explore Testing Framework</div>
+                    <p class="nav-card-description">
+                        Test cases, acceptance criteria, quality metrics, and validation procedures.
+                    </p>
+                    <div class="nav-card-meta">
+                        <span>8 Test Cases</span>
+                        <span class="nav-card-status status-beta">Planning</span>
+                    </div>
                 </a>
             </div>
         </div>
         
-        <!-- Integration & Collaboration Section -->
-        <div class="mvp-cards-section">
-            <h2 class="mvp-cards-title">Integration & Collaboration</h2>
-            <div class="mvp-cards">
-                <!-- GitHub Integration -->
-                <a href="github/index.html" class="mvp-card" style="--accent-color: #24292e;">
-                    <span class="mvp-icon">🐙</span>
-                    <h3 class="mvp-title">GitHub Integration</h3>
-                    <p class="mvp-subtitle">Real-World Collaboration System</p>
-                    <p class="mvp-description">
-                        Comprehensive integration guide for connecting this documentation system with GitHub. 
-                        Includes metadata-driven workflows, issue synchronization, and team collaboration features.
-                    </p>
-                    <div class="mvp-stats">
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">Ready</div>
-                            <div class="mvp-stat-label">Framework</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">Guide</div>
-                            <div class="mvp-stat-label">Complete</div>
-                        </div>
-                        <div class="mvp-stat">
-                            <div class="mvp-stat-number">RW</div>
-                            <div class="mvp-stat-label">Production</div>
-                        </div>
-                    </div>
-                    <div class="mvp-cta">View Integration Guide</div>
-                </a>
-            </div>
-        </div>
     </div>
     <script src="assets/js/navigation.js"></script>
     <script src="global/js/language-switcher.js"></script>

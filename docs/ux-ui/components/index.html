@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Components (C###) - UX/UI Domain | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            border: 1px solid #e5e5e5;
+            margin-bottom: 24px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 24px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Component Table */
+        .components-table {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #f8f9fa;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .add-component-btn {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .add-component-btn:hover {
+            background: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+
+        .component-grid {
+            padding: 24px;
+        }
+
+        .component-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px auto;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+            align-items: center;
+        }
+
+        .component-item:hover {
+            background: #f8f9fa;
+        }
+
+        .component-item:last-child {
+            border-bottom: none;
+        }
+
+        .component-id {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 600;
+            color: #0066cc;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .component-details {
+            flex: 1;
+        }
+
+        .component-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .component-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .component-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .component-tag {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tag-complexity-simple { background: #f0fdf4; color: #16a34a; }
+        .tag-complexity-medium { background: #fef3c7; color: #d97706; }
+        .tag-complexity-complex { background: #fef2f2; color: #dc2626; }
+
+        .tag-status-design { background: #f3e8ff; color: #7c3aed; }
+        .tag-status-development { background: #dbeafe; color: #1d4ed8; }
+        .tag-status-complete { background: #dcfce7; color: #166534; }
+
+        .component-preview {
+            width: 100px;
+            height: 60px;
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #999;
+        }
+
+        .component-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .action-view {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .action-edit {
+            background: #0066cc;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .action-view:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .action-edit:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .component-item {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .component-actions {
+                justify-content: flex-start;
+            }
+
+            .component-preview {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to UX/UI Domain</a>
+            <h1>🧩 UI Components (C###)</h1>
+            <p class="subtitle">Atomic design elements and reusable interface components</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">16</div>
+                    <div class="stat-label">Total Components</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">In Development</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Complete</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Design Phase</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="components-table">
+            <div class="table-header">
+                <h2 class="table-title">UI Component Library</h2>
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=component-definition.yml&title=[COMPONENT]%20C###%20-%20New%20UI%20Component" 
+                   class="add-component-btn" target="_blank">+ Add Component</a>
+            </div>
+            
+            <div class="component-grid">
+                <!-- Sample UI components -->
+                <div class="component-item">
+                    <div class="component-id">C001</div>
+                    <div class="component-details">
+                        <div class="component-title">Primary Button</div>
+                        <div class="component-description">Main action button with hover states, disabled states, and loading indicators for form submissions.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-complexity-simple">Simple</span>
+                            <span class="component-tag tag-status-complete">Complete</span>
+                        </div>
+                    </div>
+                    <div class="component-preview">🔘</div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=C001" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+C001" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">C002</div>
+                    <div class="component-details">
+                        <div class="component-title">Job Card</div>
+                        <div class="component-description">Reusable job posting card displaying title, organization, location, and key requirements with apply button.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-complexity-medium">Medium</span>
+                            <span class="component-tag tag-status-development">Development</span>
+                        </div>
+                    </div>
+                    <div class="component-preview">📄</div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=C002" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+C002" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">C003</div>
+                    <div class="component-details">
+                        <div class="component-title">User Profile Header</div>
+                        <div class="component-description">Professional profile header with avatar, name, credentials, and verification status indicators.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-complexity-medium">Medium</span>
+                            <span class="component-tag tag-status-complete">Complete</span>
+                        </div>
+                    </div>
+                    <div class="component-preview">👤</div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=C003" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+C003" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">C004</div>
+                    <div class="component-details">
+                        <div class="component-title">Search Filter Panel</div>
+                        <div class="component-description">Advanced search and filtering interface for job listings with location, specialty, and availability filters.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-complexity-complex">Complex</span>
+                            <span class="component-tag tag-status-development">Development</span>
+                        </div>
+                    </div>
+                    <div class="component-preview">🔍</div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=C004" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+C004" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">C005</div>
+                    <div class="component-details">
+                        <div class="component-title">Notification Badge</div>
+                        <div class="component-description">Small notification indicator for messages, applications, and system alerts with count display.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-complexity-simple">Simple</span>
+                            <span class="component-tag tag-status-complete">Complete</span>
+                        </div>
+                    </div>
+                    <div class="component-preview">🔔</div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=C005" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+C005" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <!-- More components would be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

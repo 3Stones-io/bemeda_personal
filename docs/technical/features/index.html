@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features (F###) - Technical Domain | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            border: 1px solid #e5e5e5;
+            margin-bottom: 24px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 24px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Component Table */
+        .components-table {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #f8f9fa;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .add-component-btn {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .add-component-btn:hover {
+            background: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+
+        .component-grid {
+            padding: 24px;
+        }
+
+        .component-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .component-item:hover {
+            background: #f8f9fa;
+        }
+
+        .component-item:last-child {
+            border-bottom: none;
+        }
+
+        .component-id {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 600;
+            color: #0066cc;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .component-details {
+            flex: 1;
+        }
+
+        .component-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .component-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .component-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .component-tag {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tag-priority-high { background: #fef2f2; color: #dc2626; }
+        .tag-priority-medium { background: #fef3c7; color: #d97706; }
+        .tag-priority-low { background: #f0fdf4; color: #16a34a; }
+
+        .tag-status-planning { background: #fef3c7; color: #a16207; }
+        .tag-status-progress { background: #dbeafe; color: #1d4ed8; }
+        .tag-status-completed { background: #dcfce7; color: #166534; }
+
+        .component-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .action-view {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .action-edit {
+            background: #0066cc;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .action-view:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .action-edit:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .component-item {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .component-actions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Technical Domain</a>
+            <h1>🔧 Features (F###)</h1>
+            <p class="subtitle">High-level system capabilities and business logic implementations</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">22</div>
+                    <div class="stat-label">Total Features</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Planning</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="components-table">
+            <div class="table-header">
+                <h2 class="table-title">Feature Components</h2>
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=component-definition.yml&title=[COMPONENT]%20F###%20-%20New%20Feature" 
+                   class="add-component-btn" target="_blank">+ Add Feature</a>
+            </div>
+            
+            <div class="component-grid">
+                <!-- Sample feature components - these would be generated from GitHub Issues -->
+                <div class="component-item">
+                    <div class="component-id">F001</div>
+                    <div class="component-details">
+                        <div class="component-title">User Authentication System</div>
+                        <div class="component-description">Complete authentication flow with registration, login, password recovery, and session management for all user types.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-priority-high">High Priority</span>
+                            <span class="component-tag tag-status-completed">Completed</span>
+                        </div>
+                    </div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=F001" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+F001" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">F002</div>
+                    <div class="component-details">
+                        <div class="component-title">Job Posting Management</div>
+                        <div class="component-description">Healthcare organizations can create, edit, and manage job postings with specific requirements, qualifications, and scheduling needs.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-priority-high">High Priority</span>
+                            <span class="component-tag tag-status-progress">In Progress</span>
+                        </div>
+                    </div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=F002" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+F002" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">F003</div>
+                    <div class="component-details">
+                        <div class="component-title">Candidate Matching Algorithm</div>
+                        <div class="component-description">AI-powered matching system that pairs healthcare professionals with suitable job opportunities based on skills, location, and preferences.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-priority-medium">Medium Priority</span>
+                            <span class="component-tag tag-status-progress">In Progress</span>
+                        </div>
+                    </div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=F003" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+F003" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">F004</div>
+                    <div class="component-details">
+                        <div class="component-title">Document Verification System</div>
+                        <div class="component-description">Automated verification of professional licenses, certifications, and credentials for healthcare staff with FMH integration.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-priority-high">High Priority</span>
+                            <span class="component-tag tag-status-planning">Planning</span>
+                        </div>
+                    </div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=F004" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+F004" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-id">F005</div>
+                    <div class="component-details">
+                        <div class="component-title">Communication System</div>
+                        <div class="component-description">In-platform messaging, notifications, and communication tools for seamless interaction between all platform participants.</div>
+                        <div class="component-meta">
+                            <span class="component-tag tag-priority-medium">Medium Priority</span>
+                            <span class="component-tag tag-status-completed">Completed</span>
+                        </div>
+                    </div>
+                    <div class="component-actions">
+                        <a href="../../component-viewer.html?id=F005" class="action-btn action-view">View</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=label%3Acomponent+F005" 
+                           class="action-btn action-edit" target="_blank">Edit</a>
+                    </div>
+                </div>
+
+                <!-- More components would be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

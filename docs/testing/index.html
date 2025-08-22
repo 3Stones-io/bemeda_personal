@@ -12,17 +12,18 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
             min-height: 100vh;
             color: #333;
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: white;
             padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .container {
@@ -40,7 +41,7 @@
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            color: white;
+            color: #333;
         }
 
         .nav-links {
@@ -50,16 +51,20 @@
         }
 
         .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
+            color: #666;
             text-decoration: none;
             padding: 8px 16px;
             border-radius: 4px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        .nav-links a:hover,
+        .nav-links a:hover {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+        
         .nav-links a.active {
-            background: rgba(255, 255, 255, 0.2);
+            background: #0066cc;
             color: white;
         }
 
@@ -73,56 +78,58 @@
         }
 
         .domain-title {
-            font-size: 3rem;
-            color: white;
+            font-size: 2.2rem;
+            color: #1a1a1a;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 600;
         }
 
         .domain-subtitle {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            color: #666;
             margin-bottom: 20px;
         }
 
         .domain-description {
             max-width: 600px;
             margin: 0 auto;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            color: #555;
             line-height: 1.6;
         }
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
         }
 
         .category-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            transition: all 0.2s ease;
         }
 
         .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #0066cc;
+            box-shadow: 0 2px 8px rgba(0,102,204,0.1);
+            transform: translateY(-1px);
         }
 
         .category-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            margin-bottom: 12px;
             display: block;
         }
 
         .category-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            font-weight: 600;
         }
 
         .category-description {
@@ -132,14 +139,14 @@
         }
 
         .component-count {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            background: #f0f0f0;
+            color: #666;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
             font-weight: 500;
             display: inline-block;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .category-actions {
@@ -158,50 +165,55 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            background: #0066cc;
             color: white;
         }
 
         .btn-secondary {
             background: transparent;
-            color: #27ae60;
-            border: 2px solid #27ae60;
+            color: #0066cc;
+            border: 1px solid #0066cc;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
         }
 
         .stats-bar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
-            margin-top: 50px;
-            border-radius: 12px;
+            background: white;
+            padding: 24px;
+            margin-top: 32px;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
             text-align: center;
         }
 
         .stat-item {
-            color: white;
+            color: #333;
         }
 
         .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 600;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            color: #0066cc;
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
+            font-size: 0.8rem;
+            color: #666;
         }
     </style>
 </head>
@@ -244,7 +256,7 @@
                     </p>
                     <div class="category-actions">
                         <a href="test-cases/index.html" class="btn btn-primary">View Test Cases</a>
-                        <a href="test-cases/template.html" class="btn btn-secondary">New Test Case</a>
+                        <a href="../github/index.html" class="btn btn-secondary">GitHub Issues</a>
                     </div>
                 </div>
 
@@ -258,7 +270,7 @@
                     </p>
                     <div class="category-actions">
                         <a href="bug-reports/index.html" class="btn btn-primary">View Bugs</a>
-                        <a href="bug-reports/template.html" class="btn btn-secondary">Report Bug</a>
+                        <a href="../github/index.html" class="btn btn-secondary">GitHub Issues</a>
                     </div>
                 </div>
 
@@ -272,7 +284,7 @@
                     </p>
                     <div class="category-actions">
                         <a href="acceptance/index.html" class="btn btn-primary">View Criteria</a>
-                        <a href="acceptance/template.html" class="btn btn-secondary">New Criteria</a>
+                        <a href="../github/index.html" class="btn btn-secondary">GitHub Issues</a>
                     </div>
                 </div>
             </div>
