@@ -1,0 +1,230 @@
+name: 🔄 Sync Components from GitHub Issues
+
+on:
+  issues:
+    types: [opened, edited, closed, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited]
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Enable debug logging'
+        required: false
+        default: 'false'
+
+jobs:
+  sync-components:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: read
+      pages: write
+      id-token: write
+      
+    steps:
+      - name: 🔍 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: 📥 Fetch Component Issues
+        uses: actions/github-script@v7
+        id: fetch-components
+        with:
+          script: |
+            // Fetch all issues with 'component' label
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'component',
+              state: 'all',
+              per_page: 100
+            });
+            
+            console.log(`Found ${issues.length} component issues`);
+            
+            // Parse component metadata from issue bodies
+            const components = {};
+            
+            for (const issue of issues) {
+              try {
+                // Extract JSON from issue body
+                const jsonMatch = issue.body.match(/```json\n([\s\S]*?)\n```/);
+                if (jsonMatch) {
+                  const metadata = JSON.parse(jsonMatch[1]);
+                  
+                  // Enrich with GitHub data
+                  metadata.github = {
+                    issue_number: issue.number,
+                    url: issue.html_url,
+                    state: issue.state,
+                    created_at: issue.created_at,
+                    updated_at: issue.updated_at,
+                    labels: issue.labels.map(l => l.name)
+                  };
+                  
+                  components[metadata.id] = metadata;
+                  console.log(`✅ Parsed component: ${metadata.id}`);
+                }
+              } catch (error) {
+                console.error(`❌ Failed to parse issue #${issue.number}: ${error.message}`);
+              }
+            }
+            
+            // Write to file
+            const fs = require('fs');
+            fs.writeFileSync(
+              'docs/MASTER-REGISTRY.json',
+              JSON.stringify({
+                version: "2.0.0",
+                generated_at: new Date().toISOString(),
+                generated_by: "GitHub Actions",
+                total_components: Object.keys(components).length,
+                components: components
+              }, null, 2)
+            );
+            
+            return Object.keys(components).length;
+            
+      - name: 🏗️ Generate Documentation
+        run: |
+          # Create a simple generation script
+          cat > generate-docs.js << 'EOF'
+          const fs = require('fs');
+          const registry = JSON.parse(fs.readFileSync('docs/MASTER-REGISTRY.json'));
+          
+          // Generate component index
+          let indexHtml = `<!DOCTYPE html>
+          <html>
+          <head>
+              <title>Component Registry - Generated from GitHub</title>
+              <style>
+                  body { font-family: system-ui; margin: 40px; }
+                  .component { margin: 20px 0; padding: 20px; border: 1px solid #ddd; }
+                  .meta { background: #f5f5f5; padding: 10px; font-family: monospace; }
+              </style>
+          </head>
+          <body>
+              <h1>📋 Component Registry</h1>
+              <p>Generated from GitHub Issues at ${registry.generated_at}</p>
+              <p>Total Components: ${registry.total_components}</p>
+              <hr>`;
+          
+          for (const [id, component] of Object.entries(registry.components)) {
+            indexHtml += `
+              <div class="component">
+                  <h2>${id}: ${component.title}</h2>
+                  <p>${component.description}</p>
+                  <div class="meta">
+                      <strong>Type:</strong> ${component.type}<br>
+                      <strong>GitHub:</strong> <a href="${component.github.url}">Issue #${component.github.issue_number}</a><br>
+                      <strong>Status:</strong> ${component.github.state}
+                  </div>
+              </div>`;
+          }
+          
+          indexHtml += '</body></html>';
+          fs.writeFileSync('docs/generated/component-registry.html', indexHtml);
+          
+          console.log('✅ Generated component registry');
+          EOF
+          
+          # Ensure directory exists
+          mkdir -p docs/generated
+          
+          # Run generator
+          node generate-docs.js
+          
+      - name: 📝 Update CLAUDE.md
+        run: |
+          cat > CLAUDE.md << 'EOF'
+          # Claude AI Context - Auto-generated from GitHub Issues
+          
+          Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          ## 🚨 Component Naming - ALWAYS CHECK THIS
+          
+          This file is auto-generated from GitHub Issues labeled 'component'.
+          The GitHub Issues are the SINGLE SOURCE OF TRUTH.
+          
+          ## Current Components
+          
+          EOF
+          
+          # Add component list from registry
+          node -e "
+          const registry = JSON.parse(require('fs').readFileSync('docs/MASTER-REGISTRY.json'));
+          for (const [id, comp] of Object.entries(registry.components)) {
+            console.log(\`- **\${id}**: \${comp.title} (Issue #\${comp.github.issue_number})\`);
+          }
+          " >> CLAUDE.md
+          
+      - name: 💾 Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git add docs/MASTER-REGISTRY.json docs/generated/ CLAUDE.md
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🤖 Sync components from GitHub Issues
+            
+            - Updated MASTER-REGISTRY.json from GitHub Issues
+            - Regenerated component documentation
+            - Updated CLAUDE.md context file
+            
+            Triggered by: ${{ github.event_name }} on issue #${{ github.event.issue.number || 'N/A' }}"
+            
+            git push
+          fi
+          
+      - name: 🔧 Setup Pages (if changes were made)
+        if: success()
+        uses: actions/configure-pages@v4
+        
+      - name: 🏗️ Build site with Jekyll
+        if: success()
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+          
+      - name: 📤 Upload Pages artifact
+        if: success()
+        uses: actions/upload-pages-artifact@v3
+        
+      - name: 📊 Summary
+        run: |
+          echo "## 📊 Sync Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Components synced: ${{ steps.fetch-components.outputs.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Registry updated: docs/MASTER-REGISTRY.json" >> $GITHUB_STEP_SUMMARY
+          echo "- Documentation generated: docs/generated/" >> $GITHUB_STEP_SUMMARY
+          echo "- Claude context updated: CLAUDE.md" >> $GITHUB_STEP_SUMMARY
+          echo "- Site built and ready for deployment" >> $GITHUB_STEP_SUMMARY
+
+  # Deploy job (runs after sync completes successfully)
+  deploy:
+    if: github.ref == 'refs/heads/gh-pages'
+    needs: sync-components
+    runs-on: ubuntu-latest
+    
+    permissions:
+      pages: write
+      id-token: write
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

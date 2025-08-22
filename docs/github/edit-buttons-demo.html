@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Edit Buttons Demo | Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .demo-title {
+            font-size: 1.8rem;
+            color: #24292e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1e4e8;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .demo-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e1e4e8;
+        }
+        
+        .demo-label {
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 10px;
+        }
+        
+        .demo-description {
+            font-size: 0.9rem;
+            color: #586069;
+            margin-bottom: 15px;
+        }
+        
+        .component-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .component-id {
+            background: #0969da;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        th {
+            background: #f6f8fa;
+            font-weight: 600;
+        }
+        
+        .floating-edit-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .floating-edit-btn a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #238636;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+        }
+        
+        .floating-edit-btn a:hover {
+            background: #2ea043;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .inline-component-mention {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f6f8fa;
+            border-radius: 6px;
+            border-left: 4px solid #0969da;
+        }
+        
+        .bulk-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="demo-section">
+            <h1 style="font-size: 2.5rem; color: #24292e; margin-bottom: 10px;">🔗 GitHub Edit Buttons Demo</h1>
+            <p style="color: #586069; font-size: 1.1rem;">Interactive examples of edit buttons throughout the Bemeda Platform documentation</p>
+        </div>
+
+        <!-- Component Page Header -->
+        <div class="demo-section">
+            <h2 class="demo-title">1. Component Page Header</h2>
+            <p style="color: #586069; margin-bottom: 20px;">Main edit button in component headers (like US001.html)</p>
+            
+            <div class="component-header">
+                <div>
+                    <span class="component-id">US001</span>
+                    <h3 style="margin: 10px 0 0 0;">Organisation Receives Cold Call</h3>
+                </div>
+                <a href="#" class="btn-edit-component" data-component-id="US001">
+                    📝 Edit on GitHub
+                </a>
+            </div>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Existing Component</div>
+                    <div class="demo-description">Links to existing GitHub issue for editing</div>
+                    <a href="#" class="btn-edit-component" data-component-id="US001">📝 Edit US001</a>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-label">New Component</div>
+                    <div class="demo-description">Creates new GitHub issue if component doesn't exist</div>
+                    <a href="#" class="btn-edit-component" data-component-id="US999">📝 Edit US999</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component Table -->
+        <div class="demo-section">
+            <h2 class="demo-title">2. Component Registry Table</h2>
+            <p style="color: #586069; margin-bottom: 20px;">Edit buttons in component listing tables</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Participant</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>US001</strong></td>
+                        <td>Organisation Receives Cold Call</td>
+                        <td>Organisation</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td>
+                            <a href="#" class="btn-edit-mini" data-component-id="US001">Edit</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>US002</strong></td>
+                        <td>Discuss Staffing Needs</td>
+                        <td>Organisation</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td>
+                            <a href="#" class="btn-edit-mini" data-component-id="US002">Edit</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>US999</strong></td>
+                        <td>Example New Component</td>
+                        <td>Unknown</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>
+                            <a href="#" class="btn-edit-mini" data-component-id="US999">Create</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="demo-section">
+            <h2 class="demo-title">3. Bulk Edit Actions</h2>
+            <p style="color: #586069; margin-bottom: 20px;">Registry-wide editing and creation actions</p>
+            
+            <div class="bulk-actions">
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aopen+label%3Acomponent" 
+                   class="btn-edit-component">
+                    📋 View All Components on GitHub
+                </a>
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=component-definition.yml&labels=component" 
+                   class="btn-edit-component edit-create">
+                    ➕ Create New Component
+                </a>
+                <a href="https://github.com/3Stones-io/bemeda_personal/projects/12" 
+                   class="btn-edit-component">
+                    📊 Open Project Board
+                </a>
+            </div>
+        </div>
+
+        <!-- Inline Component References -->
+        <div class="demo-section">
+            <h2 class="demo-title">4. Inline Component References</h2>
+            <p style="color: #586069; margin-bottom: 20px;">Automatic edit links for component IDs mentioned in text</p>
+            
+            <div class="inline-component-mention">
+                <p>This feature depends on <strong>US001</strong> and <strong>US002</strong> being completed first. 
+                   The UI components <strong>UI001</strong> and technical component <strong>TC001</strong> are also required.</p>
+                <p><em>Note: Component IDs in text automatically become clickable edit links!</em></p>
+            </div>
+        </div>
+
+        <!-- Auto-Detection Demo -->
+        <div class="demo-section">
+            <h2 class="demo-title">5. Auto-Detection Examples</h2>
+            <p style="color: #586069; margin-bottom: 20px;">The JavaScript automatically finds and enhances these elements</p>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-label">Class-based Detection</div>
+                    <div class="demo-description">Elements with .component-edit class</div>
+                    <a href="#" class="component-edit" data-component-id="US003">Class-based Edit Button</a>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-label">Data Attribute</div>
+                    <div class="demo-description">Any element with data-component-id</div>
+                    <button data-component-id="US004" style="padding: 8px 16px; border: none; background: #f6f8fa; border-radius: 4px; cursor: pointer;">
+                        Button with Component ID
+                    </button>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-label">Manual Enhancement</div>
+                    <div class="demo-description">Programmatically added via JavaScript</div>
+                    <div id="manual-button-container">
+                        <!-- Button will be added by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript API Demo -->
+        <div class="demo-section">
+            <h2 class="demo-title">6. JavaScript API</h2>
+            <p style="color: #586069; margin-bottom: 20px;">Global utilities available for developers</p>
+            
+            <div style="background: #f6f8fa; padding: 20px; border-radius: 6px; font-family: monospace; margin: 20px 0;">
+                <div><strong>Available Functions:</strong></div>
+                <br>
+                <div>• <code>window.githubEdit.getEditUrl('US001')</code> - Get edit URL for component</div>
+                <div>• <code>window.githubEdit.getComponents()</code> - Get all mapped components</div>
+                <div>• <code>window.githubEdit.refresh()</code> - Refresh component mapping</div>
+                <div>• <code>window.githubEdit.addEditButton(element, 'US001')</code> - Add edit button to element</div>
+            </div>
+            
+            <button onclick="testAPI()" style="padding: 8px 16px; background: #0969da; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Test JavaScript API
+            </button>
+            <div id="api-result" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Floating Edit Button -->
+    <div class="floating-edit-btn">
+        <a href="#" data-component-id="DEMO">
+            ✏️ Edit This Demo
+        </a>
+    </div>
+
+    <!-- GitHub Edit Buttons Script -->
+    <script src="../assets/js/github-edit-buttons.js"></script>
+    
+    <script>
+        // Demo-specific JavaScript
+        function testAPI() {
+            const result = document.getElementById('api-result');
+            result.style.display = 'block';
+            
+            if (window.githubEdit) {
+                const components = window.githubEdit.getComponents();
+                const us001Url = window.githubEdit.getEditUrl('US001');
+                
+                result.innerHTML = `
+                    <strong>API Test Results:</strong><br>
+                    • Components loaded: ${components.size}<br>
+                    • US001 edit URL: <a href="${us001Url}" target="_blank">${us001Url}</a><br>
+                    • API ready: ✅
+                `;
+            } else {
+                result.innerHTML = '❌ GitHub Edit API not yet loaded. Please wait...';
+            }
+        }
+        
+        // Add a manual edit button when the API is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (window.githubEdit) {
+                    const container = document.getElementById('manual-button-container');
+                    const button = document.createElement('a');
+                    button.href = '#';
+                    button.textContent = 'Manual Edit Button';
+                    button.style.cssText = 'padding: 8px 16px; background: #238636; color: white; text-decoration: none; border-radius: 4px; display: inline-block;';
+                    
+                    window.githubEdit.addEditButton(button, 'US005');
+                    container.appendChild(button);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

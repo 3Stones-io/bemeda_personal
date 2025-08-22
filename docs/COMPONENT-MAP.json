@@ -1,0 +1,133 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2024-01-22",
+  "description": "Temporary component mapping until MASTER-REGISTRY.json is implemented",
+  "components": {
+    "US001": {
+      "title": "Organisation Receives Cold Call",
+      "description": "Organisation receives cold call from Bemeda sales representative",
+      "participant": "Organisation",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US002": {
+      "title": "Discuss Staffing Needs", 
+      "description": "Organisation discusses staffing needs and platform benefits",
+      "participant": "Organisation",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US003": {
+      "title": "Agree to Job Posting",
+      "description": "Organisation agrees to publish job posting with specific requirements",
+      "participant": "Organisation",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US004": {
+      "title": "Review Matched Candidates",
+      "description": "Organisation reviews matched candidates in dashboard",
+      "participant": "Organisation",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US005": {
+      "title": "Conduct Interviews",
+      "description": "Organisation conducts interviews and selects candidate",
+      "participant": "Organisation",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US006": {
+      "title": "Complete Hiring Process",
+      "description": "Organisation completes hiring process and onboarding",
+      "participant": "Organisation",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US007": {
+      "title": "JobSeeker Creates Profile",
+      "description": "JobSeeker creates comprehensive profile on platform",
+      "participant": "JobSeeker",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US008": {
+      "title": "Receive Job Notification",
+      "description": "JobSeeker receives notification of matching job opportunity",
+      "participant": "JobSeeker",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US009": {
+      "title": "Review and Apply",
+      "description": "JobSeeker reviews job details and applies",
+      "participant": "JobSeeker",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US010": {
+      "title": "Participate in Interview",
+      "description": "JobSeeker participates in interview process",
+      "participant": "JobSeeker",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US011": {
+      "title": "Receive Job Offer",
+      "description": "JobSeeker receives job offer and accepts",
+      "participant": "JobSeeker",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US012": {
+      "title": "Complete Onboarding",
+      "description": "JobSeeker completes onboarding and starts position",
+      "participant": "JobSeeker",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US013": {
+      "title": "Identify Healthcare Org",
+      "description": "Sales Team identifies potential healthcare organisation",
+      "participant": "Sales Team",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US014": {
+      "title": "Make Initial Contact",
+      "description": "Sales Team makes initial contact via cold call",
+      "participant": "Sales Team",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US015": {
+      "title": "Present Platform Benefits",
+      "description": "Sales Team presents platform benefits and capabilities",
+      "participant": "Sales Team",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US016": {
+      "title": "Facilitate Onboarding",
+      "description": "Sales Team facilitates platform onboarding",
+      "participant": "Sales Team",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US017": {
+      "title": "Monitor Placement Success",
+      "description": "Sales Team monitors placement success",
+      "participant": "Sales Team",
+      "type": "user-story",
+      "scenario": "S001"
+    },
+    "US018": {
+      "title": "Follow-up Opportunities",
+      "description": "Sales Team follows up for additional opportunities",
+      "participant": "Sales Team",
+      "type": "user-story",
+      "scenario": "S001"
+    }
+  }
+}

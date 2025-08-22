@@ -1,0 +1,192 @@
+name: 🧩 Component Definition
+description: Define a new platform component (User Story, Technical Component, UI Component, etc.)
+title: "[COMPONENT] [ID] - [Title]"
+labels: ["component"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📋 Component Definition Template
+        
+        This template ensures your component is properly indexed and managed by our automated systems.
+        **All fields marked with * are required for proper indexing.**
+
+  - type: input
+    id: component_id
+    attributes:
+      label: "Component ID *"
+      description: "Unique identifier following our naming convention"
+      placeholder: "US001, TC001, UI001, F001, etc."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component_type
+    attributes:
+      label: "Component Type *"
+      description: "Select the type of component you're creating"
+      options:
+        - user-story
+        - technical-component  
+        - ui-component
+        - feature
+        - test-case
+        - use-case
+        - api-endpoint
+        - database-schema
+    validations:
+      required: true
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: "Domain *"
+      description: "Which domain does this component belong to?"
+      options:
+        - scenarios
+        - technical
+        - ux-ui
+        - testing
+        - platform-infrastructure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: participant
+    attributes:
+      label: "Primary Participant"
+      description: "Who is the main actor for this component?"
+      options:
+        - Organisation
+        - JobSeeker
+        - Sales Team
+        - System
+        - Admin
+        - Developer
+        - External Service
+    validations:
+      required: false
+
+  - type: input
+    id: title
+    attributes:
+      label: "Component Title *"
+      description: "Clear, descriptive title for the component"
+      placeholder: "Organisation Receives Cold Call"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description *"
+      description: "Brief description of what this component does"
+      placeholder: "Organisation receives cold call from Bemeda sales representative and discusses initial staffing needs..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority"
+      description: "Implementation priority for this component"
+      options:
+        - high
+        - medium
+        - low
+      default: 2
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: "Status"
+      description: "Current status of this component"
+      options:
+        - planning
+        - in-progress
+        - review
+        - completed
+        - on-hold
+      default: 0
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "Acceptance Criteria"
+      description: "List the criteria that must be met for this component to be considered complete"
+      placeholder: |
+        - [ ] Component implemented according to specifications
+        - [ ] Unit tests written and passing
+        - [ ] Documentation updated
+        - [ ] Peer review completed
+      value: |
+        - [ ] Component implemented according to specifications
+        - [ ] Unit tests written and passing
+        - [ ] Documentation updated
+        - [ ] Peer review completed
+
+  - type: textarea
+    id: related_components
+    attributes:
+      label: "Related Components"
+      description: "List any components this depends on or relates to"
+      placeholder: "US001, TC002, UI003"
+
+  - type: input
+    id: figma_url
+    attributes:
+      label: "Figma/Design URL"
+      description: "Link to design files if applicable"
+      placeholder: "https://figma.com/..."
+
+  - type: input
+    id: spec_url
+    attributes:
+      label: "Specification URL"
+      description: "Link to detailed specification document"
+      placeholder: "https://3stones-io.github.io/bemeda_personal/docs/..."
+
+  - type: textarea
+    id: metadata_json
+    attributes:
+      label: "Component Metadata (Auto-generated) *"
+      description: "This JSON will be automatically generated based on your inputs above. Do not edit manually."
+      value: |
+        ```json
+        {
+          "id": "",
+          "type": "",
+          "title": "",
+          "description": "",
+          "domain": "",
+          "participant": "",
+          "priority": "",
+          "status": "",
+          "related_components": [],
+          "urls": {
+            "figma": "",
+            "spec": ""
+          },
+          "acceptance_criteria": []
+        }
+        ```
+      render: json
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: "Validation Checklist"
+      description: "Please confirm the following before submitting:"
+      options:
+        - label: "I have followed the component naming convention (US001, TC001, etc.)"
+          required: true
+        - label: "I have selected the correct component type and domain"
+          required: true
+        - label: "I understand this will be automatically indexed and deployed"
+          required: true
+        - label: "I have provided all required information marked with *"
+          required: true

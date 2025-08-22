@@ -1,0 +1,265 @@
+name: 🏷️ Auto-Label Component Issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  auto-label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      
+    steps:
+      - name: 🔍 Check if this is a component issue
+        uses: actions/github-script@v7
+        id: check-component
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            // Check if it's a component issue
+            const isComponent = issue.title.includes('[COMPONENT]') || 
+                              issue.labels.some(label => label.name === 'component') ||
+                              issue.body?.includes('Component Metadata');
+            
+            if (!isComponent) {
+              console.log('Not a component issue, skipping');
+              return { skip: true };
+            }
+            
+            console.log('Component issue detected, processing...');
+            return { skip: false };
+
+      - name: 🏷️ Auto-label component issue
+        if: steps.check-component.outputs.result != '{"skip":true}'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const issueNumber = issue.number;
+            const body = issue.body || '';
+            const title = issue.title;
+            
+            console.log(`Processing issue #${issueNumber}: ${title}`);
+            
+            // Parse component information from issue body
+            let componentInfo = {};
+            
+            try {
+              // Extract form data from issue template
+              const formData = body.match(/### Component Type \*\s*\n\s*([\w-]+)/);
+              const domainData = body.match(/### Domain \*\s*\n\s*([\w-]+)/);
+              const participantData = body.match(/### Primary Participant\s*\n\s*([\w\s]+)/);
+              const priorityData = body.match(/### Priority\s*\n\s*([\w]+)/);
+              const statusData = body.match(/### Status\s*\n\s*([\w-]+)/);
+              const componentIdData = body.match(/### Component ID \*\s*\n\s*([A-Z]+\d+)/);
+              
+              componentInfo = {
+                type: formData?.[1]?.trim(),
+                domain: domainData?.[1]?.trim(),
+                participant: participantData?.[1]?.trim(),
+                priority: priorityData?.[1]?.trim(),
+                status: statusData?.[1]?.trim(),
+                id: componentIdData?.[1]?.trim()
+              };
+              
+              console.log('Parsed component info:', componentInfo);
+            } catch (error) {
+              console.error('Error parsing component info:', error);
+            }
+            
+            // Generate labels based on component info
+            const labelsToAdd = new Set(['component']); // Always add component label
+            
+            // Add type-specific labels
+            if (componentInfo.type) {
+              labelsToAdd.add(`component:${componentInfo.type}`);
+            }
+            
+            // Add domain labels
+            if (componentInfo.domain) {
+              labelsToAdd.add(`domain:${componentInfo.domain}`);
+            }
+            
+            // Add participant labels
+            if (componentInfo.participant) {
+              const participantSlug = componentInfo.participant.toLowerCase().replace(/\s+/g, '-');
+              labelsToAdd.add(`participant:${participantSlug}`);
+            }
+            
+            // Add priority labels
+            if (componentInfo.priority) {
+              labelsToAdd.add(`priority:${componentInfo.priority}`);
+            }
+            
+            // Add status labels
+            if (componentInfo.status) {
+              labelsToAdd.add(`status:${componentInfo.status}`);
+            }
+            
+            // Get current labels
+            const currentLabels = issue.labels.map(label => label.name);
+            
+            // Only add labels that don't already exist
+            const newLabels = Array.from(labelsToAdd).filter(label => !currentLabels.includes(label));
+            
+            if (newLabels.length > 0) {
+              console.log(`Adding labels: ${newLabels.join(', ')}`);
+              
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: newLabels
+              });
+              
+              // Update JSON metadata in issue body
+              await updateMetadataInIssue(componentInfo, issueNumber);
+            } else {
+              console.log('No new labels to add');
+            }
+            
+            // Function to update JSON metadata
+            async function updateMetadataInIssue(info, issueNum) {
+              try {
+                // Generate updated JSON metadata
+                const metadata = {
+                  id: info.id || '',
+                  type: info.type || '',
+                  title: title.replace(/^\[COMPONENT\]\s*[A-Z]+\d+\s*-\s*/, '') || '',
+                  description: body.match(/### Description \*\s*\n\s*(.*?)(?=\n###|$)/s)?.[1]?.trim() || '',
+                  domain: info.domain || '',
+                  participant: info.participant || '',
+                  priority: info.priority || '',
+                  status: info.status || '',
+                  related_components: [],
+                  urls: {
+                    figma: body.match(/### Figma\/Design URL\s*\n\s*(https?:\/\/[^\s]+)/)?.[1] || '',
+                    spec: body.match(/### Specification URL\s*\n\s*(https?:\/\/[^\s]+)/)?.[1] || ''
+                  },
+                  acceptance_criteria: [],
+                  github: {
+                    issue_number: issueNum,
+                    url: `https://github.com/${context.repo.owner}/${context.repo.repo}/issues/${issueNum}`,
+                    created_at: issue.created_at,
+                    updated_at: new Date().toISOString()
+                  }
+                };
+                
+                // Update the JSON block in the issue body
+                const jsonBlockPattern = /```json\s*\n([\s\S]*?)\n```/;
+                const updatedBody = body.replace(jsonBlockPattern, 
+                  '```json\n' + JSON.stringify(metadata, null, 2) + '\n```'
+                );
+                
+                if (updatedBody !== body) {
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNum,
+                    body: updatedBody
+                  });
+                  
+                  console.log('✅ Updated JSON metadata in issue body');
+                }
+              } catch (error) {
+                console.error('Error updating metadata:', error);
+              }
+            }
+
+      - name: 🚨 Validate component requirements
+        if: steps.check-component.outputs.result != '{"skip":true}'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || '';
+            const title = issue.title;
+            
+            const warnings = [];
+            const errors = [];
+            
+            // Check required fields
+            if (!title.includes('[COMPONENT]')) {
+              errors.push('❌ Title must include [COMPONENT] prefix');
+            }
+            
+            if (!body.includes('Component ID')) {
+              errors.push('❌ Component ID is required');
+            }
+            
+            if (!body.includes('Component Type')) {
+              errors.push('❌ Component Type is required');
+            }
+            
+            if (!body.includes('Domain')) {
+              errors.push('❌ Domain is required');
+            }
+            
+            // Check naming convention
+            const componentIdMatch = body.match(/### Component ID \*\s*\n\s*([A-Z]+\d+)/);
+            if (componentIdMatch) {
+              const componentId = componentIdMatch[1];
+              const validPattern = /^(US|UC|UI|TC|F|T|API|DB)\d{3}$/;
+              
+              if (!validPattern.test(componentId)) {
+                warnings.push(`⚠️ Component ID "${componentId}" doesn't follow naming convention (US001, TC001, etc.)`);
+              }
+            }
+            
+            // Post validation comment if there are issues
+            if (errors.length > 0 || warnings.length > 0) {
+              let comment = '## 🤖 Component Validation Results\n\n';
+              
+              if (errors.length > 0) {
+                comment += '### ❌ Errors (must be fixed):\n';
+                errors.forEach(error => comment += `- ${error}\n`);
+                comment += '\n';
+              }
+              
+              if (warnings.length > 0) {
+                comment += '### ⚠️ Warnings:\n';
+                warnings.forEach(warning => comment += `- ${warning}\n`);
+                comment += '\n';
+              }
+              
+              comment += '### 📋 Next Steps:\n';
+              comment += '- Edit this issue to fix any errors\n';
+              comment += '- Ensure all required fields are filled out\n';
+              comment += '- Follow the component naming convention\n';
+              comment += '- The issue will be automatically re-processed when updated\n\n';
+              comment += '*This validation was performed automatically by GitHub Actions.*';
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: comment
+              });
+              
+              if (errors.length > 0) {
+                // Add 'needs-fixes' label for errors
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: ['needs-fixes']
+                });
+              }
+            } else {
+              console.log('✅ Component validation passed');
+              
+              // Remove 'needs-fixes' label if it exists
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  name: 'needs-fixes'
+                });
+              } catch (error) {
+                // Label might not exist, that's fine
+              }
+            }
