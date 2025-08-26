@@ -1582,6 +1582,166 @@ graph TB
     class TC1,TC2,TC3,TC4 techComponentLevel
             </div>
         </div>
+        
+        <!-- Abstract Requirements Engineering System -->
+        <div class="issues-section" style="margin-bottom: 32px;">
+            <div class="issues-header">
+                <h2 class="section-title">🏗️ Abstract Requirements Engineering System</h2>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">General structure of our requirements engineering and project planning system, applicable to any scenario or domain.</p>
+            
+            <div class="mermaid" style="background: white; padding: 20px; border-radius: 8px;">
+graph TB
+    subgraph "📋 Scenario Level"
+        S[📋 S###: Business Scenario<br/>High-level business context<br/>Multiple participants and goals]
+    end
+    
+    subgraph "👥 Participant Layer"
+        P1[👥 Participant 1<br/>Role/Actor in scenario]
+        P2[👥 Participant 2<br/>Role/Actor in scenario]
+        P3[👥 Participant N<br/>Role/Actor in scenario]
+    end
+    
+    subgraph "📝 Process Flow Layer - User Stories"
+        US1[📝 US### User Story<br/>Individual participant step<br/>What + Why + Acceptance criteria]
+        US2[📝 US### User Story<br/>Individual participant step<br/>What + Why + Acceptance criteria]
+        US3[📝 US### User Story<br/>Individual participant step<br/>What + Why + Acceptance criteria]
+    end
+    
+    subgraph "🎨 UI/UX Layer"
+        UXF[🎨 UX### User Flow<br/>Screen navigation paths<br/>How users complete tasks]
+        UXC[🧩 C### UI Components<br/>Atomic design elements<br/>Buttons, inputs, cards, etc.]
+        UXM[📱 M### Mockups<br/>Screen-level designs<br/>Complete interfaces]
+    end
+    
+    subgraph "🎯 Use Case Layer"
+        UC[🎯 UC### Use Case<br/>Cross-participant functions<br/>Business requirements spanning multiple stories]
+    end
+    
+    subgraph "⚙️ Feature Layer"
+        F[⚙️ F### Feature<br/>Technical capabilities<br/>How use cases are implemented]
+    end
+    
+    subgraph "🔧 Technical Component Layer"
+        TC[🔧 TC### Technical Component<br/>Code modules and services<br/>Actual implementation units]
+    end
+    
+    subgraph "🧪 Testing Layer"
+        T1[🧪 T### Test Cases<br/>Acceptance tests for stories]
+        T2[🧪 Integration Tests<br/>Cross-component validation]
+        T3[🧪 E2E Tests<br/>Full scenario validation]
+    end
+    
+    subgraph "📊 Management Layer"
+        PM[📊 Project Boards<br/>Sprint planning<br/>Progress tracking]
+        DOC[📚 Documentation<br/>Generated from components<br/>Living documentation]
+        GH[🐙 GitHub Integration<br/>Issues as database<br/>Automation workflows]
+    end
+    
+    S --> P1
+    S --> P2
+    S --> P3
+    
+    P1 --> US1
+    P2 --> US2
+    P3 --> US3
+    
+    US1 --> UXF
+    US2 --> UXF
+    US3 --> UXF
+    
+    UXF --> UXC
+    UXF --> UXM
+    
+    US1 --> UC
+    US2 --> UC
+    US3 --> UC
+    
+    UC --> F
+    
+    F --> TC
+    
+    US1 --> T1
+    UC --> T2
+    S --> T3
+    
+    TC --> GH
+    F --> GH
+    UC --> GH
+    US1 --> GH
+    
+    GH --> DOC
+    GH --> PM
+    
+    classDef scenarioBox fill:#fff3e0,stroke:#e65100,stroke-width:3px
+    classDef participantBox fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef userStoryBox fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef uiuxBox fill:#f8bbd9,stroke:#c2185b,stroke-width:2px
+    classDef useCaseBox fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef featureBox fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef techBox fill:#e0e0e0,stroke:#424242,stroke-width:2px
+    classDef testBox fill:#ffebee,stroke:#f44336,stroke-width:2px
+    classDef mgmtBox fill:#f0f4c3,stroke:#827717,stroke-width:2px
+    
+    class S scenarioBox
+    class P1,P2,P3 participantBox
+    class US1,US2,US3 userStoryBox
+    class UXF,UXC,UXM uiuxBox
+    class UC useCaseBox
+    class F featureBox
+    class TC techBox
+    class T1,T2,T3 testBox
+    class PM,DOC,GH mgmtBox
+            </div>
+            
+            <div style="margin-top: 24px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                <h3 style="color: #1a1a1a; margin-bottom: 16px;">🔍 Key Principles & Improvements</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4 style="color: #0066cc; margin-bottom: 8px;">✅ Current Strengths</h4>
+                        <ul style="color: #666; font-size: 0.95rem; line-height: 1.8;">
+                            <li><strong>Hierarchical structure</strong> - Clear levels from business to technical</li>
+                            <li><strong>Traceability</strong> - Each component traces back to business needs</li>
+                            <li><strong>GitHub integration</strong> - Living documentation from issues</li>
+                            <li><strong>Participant focus</strong> - User stories organized by actors</li>
+                            <li><strong>Cross-cutting concerns</strong> - Use cases span multiple stories</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #1b5e20; margin-bottom: 8px;">💡 Suggested Improvements</h4>
+                        <ul style="color: #666; font-size: 0.95rem; line-height: 1.8;">
+                            <li><strong>Add priority scoring</strong> - MoSCoW or numerical priority at each level</li>
+                            <li><strong>Include dependencies</strong> - Explicit links between related components</li>
+                            <li><strong>Version tracking</strong> - Component versioning for iterative development</li>
+                            <li><strong>Risk assessment</strong> - Technical and business risks per component</li>
+                            <li><strong>Estimation fields</strong> - Story points or time estimates for planning</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #ef6c00; margin-bottom: 8px;">🚀 Future Enhancements</h4>
+                        <ul style="color: #666; font-size: 0.95rem; line-height: 1.8;">
+                            <li><strong>AI-powered matching</strong> - Suggest related components automatically</li>
+                            <li><strong>Impact analysis</strong> - Show what changes when a component updates</li>
+                            <li><strong>Progress visualization</strong> - Burndown charts per scenario/sprint</li>
+                            <li><strong>Requirement conflicts</strong> - Detect contradicting requirements</li>
+                            <li><strong>Template library</strong> - Reusable patterns for common scenarios</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 16px; background: #e8f4fd; border-radius: 8px; border-left: 4px solid #0066cc;">
+                    <h4 style="color: #0066cc; margin-bottom: 8px;">📐 Architecture Benefits</h4>
+                    <p style="color: #333; margin: 0;">
+                        This abstract model ensures <strong>consistency across all scenarios</strong> while remaining flexible enough to accommodate different domains. 
+                        The <strong>GitHub-first approach</strong> provides version control, collaboration, and automation out of the box. 
+                        Each level serves a specific audience: business stakeholders (scenarios/use cases), designers (UI/UX), developers (features/components), and QA (testing).
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="../../global/js/language-switcher.js"></script>
 </body>
