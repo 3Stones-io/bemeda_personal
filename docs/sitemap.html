@@ -370,7 +370,6 @@
             <div class="tree-structure"><span class="tree-root">🏠 <a href="index.html">Bemeda Platform</a></span> <span class="tree-count">(118 components)</span>
 ├─── <span class="tree-tools">🔧 <a href="dashboard/index.html">Project Dashboard</a></span> <span class="tree-count">(real-time metrics)</span>
 ├─── <span class="tree-tools">🔍 <a href="unified-view/index.html">Component Registry</a></span> <span class="tree-count">(search & discovery)</span>
-├─── <span class="tree-tools">🔗 <a href="github/index.html">GitHub Integration</a></span> <span class="tree-count">(two-way sync)</span>
 ├─── <span class="tree-tools">📊 <a href="sitemap.html">Platform Sitemap</a></span> <span class="tree-count">(this page)</span>
 ├─── <span class="tree-tools">📋 <a href="integration/index.html">Integration Hub</a></span> <span class="tree-count">(template system)</span>
 │
@@ -599,12 +598,34 @@
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             `;
             
+            // Determine the details link based on component type
+            let detailsLink = '#';
+            if (componentId.includes('_US001')) detailsLink = 'scenarios/S001/US001.html';
+            else if (componentId.includes('_US002')) detailsLink = 'scenarios/S001/US002.html';
+            else if (componentId.includes('_US003')) detailsLink = 'scenarios/S001/US003.html';
+            else if (componentId.includes('_US004')) detailsLink = 'scenarios/S001/US004.html';
+            else if (componentId.includes('_US005')) detailsLink = 'scenarios/S001/US005.html';
+            else if (componentId.includes('_US006')) detailsLink = 'scenarios/S001/US006.html';
+            else if (componentId.includes('_US007')) detailsLink = 'scenarios/S001/US007.html';
+            else if (componentId.includes('_US008')) detailsLink = 'scenarios/S001/US008.html';
+            else if (componentId.includes('_US009')) detailsLink = 'scenarios/S001/US009.html';
+            else if (componentId.includes('_US010')) detailsLink = 'scenarios/S001/US010.html';
+            else if (componentId.includes('_US011')) detailsLink = 'scenarios/S001/US011.html';
+            else if (componentId.includes('_US012')) detailsLink = 'scenarios/S001/US012.html';
+            else if (componentId.includes('_US013')) detailsLink = 'scenarios/S001/US013.html';
+            else if (componentId.includes('_US014')) detailsLink = 'scenarios/S001/US014.html';
+            else if (componentId.includes('_US015')) detailsLink = 'scenarios/S001/US015.html';
+            else if (componentId.includes('_US016')) detailsLink = 'scenarios/S001/US016.html';
+            else if (componentId.includes('_US017')) detailsLink = 'scenarios/S001/US017.html';
+            else if (componentId.includes('_US018')) detailsLink = 'scenarios/S001/US018.html';
+            else if (componentId === 'B_S001') detailsLink = 'scenarios/S001/index.html';
+            
             popup.innerHTML = `
                 <h3 style="margin: 0 0 12px 0; color: #0066cc; font-size: 1.2rem;">Component Details</h3>
                 <p style="margin: 0 0 8px 0;"><strong>ID:</strong> ${componentId}</p>
                 <p style="margin: 0 0 16px 0; color: #666; font-size: 0.9rem;">
                     This component is part of the <strong>B_S001: Cold Call to Placement Scenario</strong>.<br>
-                    Click the links below to view more details or manage this component.
+                    Choose an option to view more details or manage this component.
                 </p>
                 <div style="display: flex; gap: 8px; justify-content: flex-end;">
                     <button onclick="document.getElementById('component-popup').remove()" style="
@@ -614,15 +635,25 @@
                         border-radius: 4px; 
                         cursor: pointer;
                     ">Close</button>
-                    <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+${componentId}" 
-                       target="_blank" style="
+                    <a href="${detailsLink}" style="
                         padding: 6px 12px; 
-                        background: #0066cc; 
-                        color: white; 
+                        background: #e8f0fe; 
+                        color: #0066cc;
                         text-decoration: none; 
                         border-radius: 4px; 
                         font-size: 0.9rem;
-                    ">View in GitHub</a>
+                        font-weight: 500;
+                    ">Details</a>
+                    <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+${componentId}" 
+                       target="_blank" style="
+                        padding: 6px 12px; 
+                        background: #f3f4f6; 
+                        color: #374151; 
+                        text-decoration: none; 
+                        border-radius: 4px; 
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                    ">GitHub</a>
                 </div>
             `;
 
