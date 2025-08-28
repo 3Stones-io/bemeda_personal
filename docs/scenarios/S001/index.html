@@ -210,6 +210,7 @@
             border: 1px solid #e9ecef;
             border-radius: 8px;
             padding: 16px;
+            position: relative;
             transition: all 0.2s ease;
         }
         
@@ -218,10 +219,23 @@
             box-shadow: 0 2px 8px rgba(0,102,204,0.1);
         }
         
+        .step-id {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #666;
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
         .step-text {
             font-weight: 500;
-            margin-left: 12px;
             color: #333;
+            margin-top: 8px;
         }
         
         .step-links {
@@ -366,51 +380,147 @@
                     <h3 class="subsection-title">📋 Process Flow</h3>
                     <div class="process-steps">
                         <div class="process-step">
-                            <span class="standard-id id-user-story">B_S001_US001</span>
-                            <span class="step-text">Organisation Receives Cold Call</span>
+                            <div class="step-id">B_S001_US001_USS001</div>
+                            <div class="step-text">Receive initial sales call</div>
                             <div class="step-links">
                                 <a href="US001.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US001" target="_blank" class="step-link github">GitHub</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US001_USS001" target="_blank" class="step-link github">GitHub</a>
                             </div>
                         </div>
                         <div class="process-step">
-                            <span class="standard-id id-user-story">B_S001_US002</span>
-                            <span class="step-text">Discuss Staffing Needs</span>
+                            <div class="step-id">B_S001_US001_USS002</div>
+                            <div class="step-text">Listen to platform overview</div>
+                            <div class="step-links">
+                                <a href="US001.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US001_USS002" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US001_USS003</div>
+                            <div class="step-text">Express interest or concerns</div>
+                            <div class="step-links">
+                                <a href="US001.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US001_USS003" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US002_USS001</div>
+                            <div class="step-text">Share current staffing challenges</div>
                             <div class="step-links">
                                 <a href="US002.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US002" target="_blank" class="step-link github">GitHub</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US002_USS001" target="_blank" class="step-link github">GitHub</a>
                             </div>
                         </div>
                         <div class="process-step">
-                            <span class="standard-id id-user-story">B_S001_US003</span>
-                            <span class="step-text">Agree to Job Posting</span>
+                            <div class="step-id">B_S001_US002_USS002</div>
+                            <div class="step-text">Discuss specific requirements</div>
+                            <div class="step-links">
+                                <a href="US002.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US002_USS002" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US002_USS003</div>
+                            <div class="step-text">Review platform capabilities</div>
+                            <div class="step-links">
+                                <a href="US002.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US002_USS003" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US003_USS001</div>
+                            <div class="step-text">Decide to proceed with platform</div>
                             <div class="step-links">
                                 <a href="US003.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US003" target="_blank" class="step-link github">GitHub</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US003_USS001" target="_blank" class="step-link github">GitHub</a>
                             </div>
                         </div>
                         <div class="process-step">
-                            <span class="standard-id id-user-story">B_S001_US004</span>
-                            <span class="step-text">Review Matched Candidates</span>
+                            <div class="step-id">B_S001_US003_USS002</div>
+                            <div class="step-text">Complete registration process</div>
+                            <div class="step-links">
+                                <a href="US003.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US003_USS002" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US003_USS003</div>
+                            <div class="step-text">Create first job posting</div>
+                            <div class="step-links">
+                                <a href="US003.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US003_USS003" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US004_USS001</div>
+                            <div class="step-text">Receive candidate notifications</div>
                             <div class="step-links">
                                 <a href="US004.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US004" target="_blank" class="step-link github">GitHub</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US004_USS001" target="_blank" class="step-link github">GitHub</a>
                             </div>
                         </div>
                         <div class="process-step">
-                            <span class="standard-id id-user-story">B_S001_US005</span>
-                            <span class="step-text">Conduct Interviews</span>
+                            <div class="step-id">B_S001_US004_USS002</div>
+                            <div class="step-text">Review candidate profiles</div>
+                            <div class="step-links">
+                                <a href="US004.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US004_USS002" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US004_USS003</div>
+                            <div class="step-text">Shortlist suitable candidates</div>
+                            <div class="step-links">
+                                <a href="US004.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US004_USS003" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US005_USS001</div>
+                            <div class="step-text">Schedule interview sessions</div>
                             <div class="step-links">
                                 <a href="US005.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US005" target="_blank" class="step-link github">GitHub</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US005_USS001" target="_blank" class="step-link github">GitHub</a>
                             </div>
                         </div>
                         <div class="process-step">
-                            <span class="standard-id id-user-story">B_S001_US006</span>
-                            <span class="step-text">Complete Hiring Process</span>
+                            <div class="step-id">B_S001_US005_USS002</div>
+                            <div class="step-text">Conduct candidate interviews</div>
+                            <div class="step-links">
+                                <a href="US005.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US005_USS002" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US005_USS003</div>
+                            <div class="step-text">Evaluate interview results</div>
+                            <div class="step-links">
+                                <a href="US005.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US005_USS003" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US006_USS001</div>
+                            <div class="step-text">Select preferred candidate</div>
                             <div class="step-links">
                                 <a href="US006.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US006" target="_blank" class="step-link github">GitHub</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US006_USS001" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US006_USS002</div>
+                            <div class="step-text">Extend job offer</div>
+                            <div class="step-links">
+                                <a href="US006.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US006_USS002" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US006_USS003</div>
+                            <div class="step-text">Complete onboarding</div>
+                            <div class="step-links">
+                                <a href="US006.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US006_USS003" target="_blank" class="step-link github">GitHub</a>
                             </div>
                         </div>
                     </div>
@@ -448,11 +558,27 @@
                     <h3 class="subsection-title">📋 Process Flow</h3>
                     <div class="process-steps">
                         <div class="process-step">
-                            <span class="standard-id id-user-story">B_S001_US007</span>
-                            <span class="step-text">JobSeeker Creates Profile</span>
+                            <div class="step-id">B_S001_US007_USS001</div>
+                            <div class="step-text">Register on platform</div>
                             <div class="step-links">
                                 <a href="US007.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US007" target="_blank" class="step-link github">GitHub</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US007_USS001" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US007_USS002</div>
+                            <div class="step-text">Complete profile information</div>
+                            <div class="step-links">
+                                <a href="US007.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US007_USS002" target="_blank" class="step-link github">GitHub</a>
+                            </div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-id">B_S001_US007_USS003</div>
+                            <div class="step-text">Upload credentials</div>
+                            <div class="step-links">
+                                <a href="US007.html" class="step-link">Details</a>
+                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US007_USS003" target="_blank" class="step-link github">GitHub</a>
                             </div>
                         </div>
                         <div class="process-step">
