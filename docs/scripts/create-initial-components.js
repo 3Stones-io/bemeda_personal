@@ -123,7 +123,7 @@ ${component.description}
 - Will be expanded with detailed requirements
 - Links to template: /integration/templates/${component.id.replace(/_/g, '-')}-template.html`;
 
-      const command = `gh issue create --title "[COMPONENT] ${component.id} - ${component.title}" --body "${body.replace(/"/g, '\\"')}" --label "component,initial-setup"`;
+      const command = `gh issue create --title "[COMPONENT] ${component.id} - ${component.title}" --body "${body.replace(/"/g, '\\"')}" --label "component"`;
       
       console.log(`Creating ${component.id}...`);
       execSync(command, { stdio: 'inherit' });
