@@ -1,0 +1,275 @@
+/* Bemeda Platform - Global Color System
+   Based on the component structure diagram
+   ======================================= */
+
+:root {
+    /* Primary Brand Colors */
+    --color-primary: #f9f;
+    --color-primary-dark: #333;
+    
+    /* Domain Primary Colors */
+    --color-business: #ff9800;
+    --color-business-dark: #e65100;
+    --color-business-light: #ffe0b2;
+    --color-business-lighter: #fff3e0;
+    
+    --color-ux: #ec407a;
+    --color-ux-dark: #c2185b;
+    --color-ux-light: #fce4ec;
+    --color-ux-lighter: #fef1f5;
+    
+    --color-tech: #43a047;
+    --color-tech-dark: #1b5e20;
+    --color-tech-light: #e8f5e9;
+    --color-tech-lighter: #f1f9f1;
+    
+    --color-testing: #2196f3;
+    --color-testing-dark: #0d47a1;
+    --color-testing-light: #e3f2fd;
+    --color-testing-lighter: #f0f7ff;
+    
+    /* Neutral Colors */
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #666;
+    --color-text-tertiary: #999;
+    
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f5f5f7;
+    --color-bg-tertiary: #f8f9fa;
+    --color-bg-hover: #f0f0f0;
+    
+    /* Border Colors */
+    --color-border-light: #f0f0f0;
+    --color-border-medium: #e0e0e0;
+    --color-border-dark: #d0d0d0;
+    
+    /* Interactive Colors */
+    --color-link: #0066cc;
+    --color-link-hover: #0052a3;
+    --color-focus: #0066cc;
+    
+    /* Status Colors */
+    --color-success: #43a047;
+    --color-warning: #ff9800;
+    --color-error: #f44336;
+    --color-info: #2196f3;
+    
+    /* Shadow Colors */
+    --shadow-light: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-medium: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-heavy: 0 12px 40px rgba(0,0,0,0.15);
+    
+    /* Domain Gradients */
+    --gradient-business: linear-gradient(135deg, var(--color-business-dark) 0%, var(--color-business) 100%);
+    --gradient-ux: linear-gradient(135deg, var(--color-ux-dark) 0%, var(--color-ux) 100%);
+    --gradient-tech: linear-gradient(135deg, var(--color-tech-dark) 0%, var(--color-tech) 100%);
+    --gradient-testing: linear-gradient(135deg, var(--color-testing-dark) 0%, var(--color-testing) 100%);
+}
+
+/* Domain-specific color classes */
+.domain-business {
+    --domain-color: var(--color-business);
+    --domain-color-dark: var(--color-business-dark);
+    --domain-color-light: var(--color-business-light);
+    --domain-color-lighter: var(--color-business-lighter);
+    --domain-gradient: var(--gradient-business);
+}
+
+.domain-ux {
+    --domain-color: var(--color-ux);
+    --domain-color-dark: var(--color-ux-dark);
+    --domain-color-light: var(--color-ux-light);
+    --domain-color-lighter: var(--color-ux-lighter);
+    --domain-gradient: var(--gradient-ux);
+}
+
+.domain-tech {
+    --domain-color: var(--color-tech);
+    --domain-color-dark: var(--color-tech-dark);
+    --domain-color-light: var(--color-tech-light);
+    --domain-color-lighter: var(--color-tech-lighter);
+    --domain-gradient: var(--gradient-tech);
+}
+
+.domain-testing {
+    --domain-color: var(--color-testing);
+    --domain-color-dark: var(--color-testing-dark);
+    --domain-color-light: var(--color-testing-light);
+    --domain-color-lighter: var(--color-testing-lighter);
+    --domain-gradient: var(--gradient-testing);
+}
+
+/* Component type indicators */
+.component-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.component-badge.business {
+    background: var(--color-business);
+    color: white;
+}
+
+.component-badge.ux {
+    background: var(--color-ux);
+    color: white;
+}
+
+.component-badge.tech {
+    background: var(--color-tech);
+    color: white;
+}
+
+.component-badge.testing {
+    background: var(--color-testing);
+    color: white;
+}
+
+/* Domain cards */
+.domain-card {
+    background: var(--color-bg-primary);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow-medium);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.domain-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--domain-gradient);
+    transform: translateY(-4px);
+    transition: transform 0.3s ease;
+}
+
+.domain-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-heavy);
+    border-color: var(--domain-color);
+}
+
+.domain-card:hover::before {
+    transform: translateY(0);
+}
+
+/* Domain icons */
+.domain-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--domain-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: white;
+}
+
+/* Navigation with domain colors */
+.nav-domain {
+    background: var(--domain-color-lighter);
+    border-bottom: 3px solid var(--domain-color);
+}
+
+.nav-domain .nav-link {
+    color: var(--domain-color-dark);
+}
+
+.nav-domain .nav-link:hover {
+    background: var(--domain-color-light);
+}
+
+.nav-domain .nav-link.active {
+    background: var(--domain-color);
+    color: white;
+}
+
+/* Breadcrumbs with domain colors */
+.breadcrumb-domain {
+    background: var(--domain-color-lighter);
+    padding: 12px 20px;
+    border-radius: 8px;
+}
+
+.breadcrumb-domain a {
+    color: var(--domain-color-dark);
+}
+
+.breadcrumb-domain .separator {
+    color: var(--domain-color);
+}
+
+/* Tables with domain accents */
+.table-domain {
+    border-top: 3px solid var(--domain-color);
+}
+
+.table-domain thead {
+    background: var(--domain-color-lighter);
+}
+
+.table-domain thead th {
+    color: var(--domain-color-dark);
+    border-bottom: 2px solid var(--domain-color-light);
+}
+
+.table-domain tbody tr:hover {
+    background: var(--domain-color-lighter);
+}
+
+/* Buttons with domain colors */
+.btn-domain {
+    background: var(--domain-gradient);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-domain:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--domain-color), 0.3);
+}
+
+.btn-domain-outline {
+    background: transparent;
+    color: var(--domain-color);
+    border: 2px solid var(--domain-color);
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-domain-outline:hover {
+    background: var(--domain-color);
+    color: white;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.status-planning { background: var(--color-info); }
+.status-in-progress { background: var(--color-warning); }
+.status-review { background: var(--color-ux); }
+.status-completed { background: var(--color-success); }

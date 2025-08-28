@@ -3,484 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unified View - Component Registry | Bemeda Platform</title>
+    <title>Component Registry - Bemeda Platform</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f7;
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .header {
-            background: white;
-            padding: 20px 0;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            color: #666;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
-
-        .nav-links a:hover {
-            background: #f8f9fa;
-            color: #0066cc;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+            margin: 0;
+            padding: 0;
         }
         
-        .nav-links a.active {
-            background: #0066cc;
-            color: white;
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        .main-content {
-            padding: 40px 0;
-        }
-
-        .page-header {
+        
+        .header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
+            padding: 30px 0;
         }
-
-        .page-title {
-            font-size: 2.2rem;
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 10px;
-            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
         }
-
-        .page-subtitle {
+        
+        .header p {
             font-size: 1.1rem;
             color: #666;
-            margin-bottom: 20px;
         }
-
-        .page-description {
-            max-width: 700px;
-            margin: 0 auto;
-            font-size: 1rem;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .views-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .view-card {
-            background: rgba(255, 255, 255, 0.95);
+        
+        /* Filter Controls */
+        .filter-controls {
+            background: var(--color-bg-primary);
             border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
         }
-
-        .view-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
         }
-
-        .view-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .view-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .view-description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .stats-preview {
-            background: #f8f9fa;
-            padding: 15px;
+        
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 10px 16px;
+            border: 2px solid var(--color-border-light);
             border-radius: 8px;
-            margin-bottom: 20px;
+            font-size: 0.95rem;
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
         }
-
-        .stats-row {
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-business);
+        }
+        
+        .filter-select {
+            padding: 10px 14px;
+            border: 2px solid var(--color-border-light);
+            border-radius: 8px;
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+            font-size: 0.9rem;
+            min-width: 140px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-business);
+        }
+        
+        .clear-btn {
+            padding: 10px 16px;
+            background: var(--color-bg-tertiary);
+            border: 2px solid var(--color-border-light);
+            border-radius: 8px;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .clear-btn:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-text-primary);
+        }
+        
+        .controls-section {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--color-bg-tertiary);
+            border: 2px solid var(--color-border-light);
+            border-radius: 8px;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-border-medium);
+            color: var(--color-text-primary);
+        }
+        
+        /* Table Styles */
+        .table-container {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: var(--color-bg-tertiary);
+            padding: 16px 20px;
+            border-bottom: 2px solid var(--color-border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
         }
-
-        .stats-row:last-child {
-            margin-bottom: 0;
+        
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
         }
-
-        .stat-label {
-            color: #666;
+        
+        .results-count {
+            color: var(--color-text-secondary);
             font-size: 0.9rem;
         }
-
-        .stat-value {
+        
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 70vh;
+        }
+        
+        .component-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .component-table th,
+        .component-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .component-table th {
+            background: var(--color-bg-tertiary);
             font-weight: 600;
-            color: #333;
+            color: var(--color-text-primary);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-
-        .view-actions {
-            display: flex;
-            gap: 15px;
+        
+        .component-table tbody tr {
+            transition: background-color 0.2s;
         }
-
-        .btn {
-            padding: 12px 24px;
+        
+        .component-table tbody tr:hover {
+            background: var(--color-bg-hover);
+        }
+        
+        .component-table tbody tr.hidden {
+            display: none;
+        }
+        
+        /* Table Cell Styles */
+        .table-id {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: var(--color-bg-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .table-title {
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+        
+        .table-domain {
+            padding: 4px 12px;
             border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .table-domain.business { 
+            background: var(--color-business-lighter); 
+            color: var(--color-business-dark); 
+        }
+        .table-domain.ux { 
+            background: var(--color-ux-lighter); 
+            color: var(--color-ux-dark); 
+        }
+        .table-domain.technical { 
+            background: var(--color-tech-lighter); 
+            color: var(--color-tech-dark); 
+        }
+        
+        .table-status {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        
+        .table-status.todo { 
+            background: #f8f9fa; 
+            color: #6c757d; 
+            border: 1px solid #dee2e6;
+        }
+        .table-status.in-progress { 
+            background: #fff3cd; 
+            color: #856404; 
+            border: 1px solid #ffeaa7;
+        }
+        .table-status.done { 
+            background: #d1ecf1; 
+            color: #0c5460; 
+            border: 1px solid #bee5eb;
+        }
+        
+        .table-type {
+            color: var(--color-text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .table-updated {
+            color: var(--color-text-tertiary);
+            font-size: 0.85rem;
+        }
+        
+        .table-link {
+            color: var(--color-business);
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.3s ease;
-            display: inline-block;
+            transition: color 0.2s;
+        }
+        
+        .table-link:hover {
+            color: var(--color-business-dark);
+        }
+        
+        /* Loading and Empty States */
+        .loading-state,
+        .empty-state {
             text-align: center;
-            flex: 1;
+            padding: 60px 20px;
+            color: var(--color-text-secondary);
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .global-stats {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            margin: 50px 0;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .global-stats h2 {
-            color: white;
-            margin-bottom: 30px;
-            font-size: 1.8rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 30px;
-        }
-
-        .global-stat {
-            color: white;
-        }
-
-        .global-stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .global-stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .search-bar {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
+        
+        .empty-state {
+            background: var(--color-bg-tertiary);
             border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            margin: 20px;
         }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-input,
+            .filter-select {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .controls-section {
+                justify-content: stretch;
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .component-table {
+                font-size: 0.8rem;
+            }
+            
+            .component-table th,
+            .component-table td {
+                padding: 8px 12px;
+            }
+            
+            .page-header {
+                padding: 20px;
+            }
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="nav">
-                <div class="logo">📊 Unified View</div>
-                <ul class="nav-links">
-                    <li><a href="../index.html">🏠 Home</a></li>
-                    <li><a href="../scenarios/index.html">📋 Scenarios</a></li>
-                    <li><a href="../ux-ui/index.html">🎨 UX/UI</a></li>
-                    <li><a href="../technical/index.html">⚙️ Technical</a></li>
-                    <li><a href="../testing/index.html">🧪 Testing</a></li>
-                    <li><a href="#" class="active">📊 Unified View</a></li>
-                </ul>
-            </nav>
+    <div class="container">
+        <a href="../index.html" class="back-link">
+            ← Back to Home
+        </a>
+        
+        <div class="header">
+            <h1>🔍 Component Registry</h1>
+            <p>Comprehensive searchable table of all platform components with live GitHub integration</p>
         </div>
-    </header>
-
-    <main class="main-content">
-        <div class="container">
-            <div class="page-header">
-                <h1 class="page-title">📊 Unified View</h1>
-                <p class="page-subtitle">Cross-Domain Component Management</p>
-                <p class="page-description">
-                    Comprehensive views of all platform components across Business Logic, UX/UI, Technical, and Testing domains. 
-                    Find relationships, track dependencies, and manage components from a unified perspective.
-                </p>
+        
+        <div class="filter-controls">
+            <div class="filter-section">
+                <input type="text" id="search-input" placeholder="Search components by ID, title, or description..." class="search-input">
+                <select id="domain-filter" class="filter-select">
+                    <option value="">All Domains</option>
+                    <option value="business">Business Logic</option>
+                    <option value="ux">UX/UI Design</option>
+                    <option value="technical">Technical</option>
+                </select>
+                <select id="status-filter" class="filter-select">
+                    <option value="">All Statuses</option>
+                    <option value="todo">Todo</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+                <select id="type-filter" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="Scenario">Scenarios</option>
+                    <option value="User Story">User Stories</option>
+                    <option value="Story Step">Story Steps</option>
+                    <option value="Mockup">Mockups</option>
+                    <option value="User Flow">User Flows</option>
+                    <option value="UI Component">UI Components</option>
+                    <option value="Use Case">Use Cases</option>
+                    <option value="Feature">Features</option>
+                    <option value="Tech Component">Tech Components</option>
+                    <option value="Test Case">Test Cases</option>
+                </select>
+                <button onclick="clearFilters()" class="clear-btn">Clear All</button>
             </div>
-
-            <div class="search-bar">
-                <input type="text" class="search-input" placeholder="🔍 Search components by ID, name, or keyword..." id="globalSearch">
-            </div>
-
-            <div class="global-stats">
-                <h2>Global Component Statistics</h2>
-                <div class="stats-grid">
-                    <div class="global-stat">
-                        <span class="global-stat-number">142</span>
-                        <span class="global-stat-label">Total Components</span>
-                    </div>
-                    <div class="global-stat">
-                        <span class="global-stat-number">5</span>
-                        <span class="global-stat-label">Active Scenarios</span>
-                    </div>
-                    <div class="global-stat">
-                        <span class="global-stat-number">4</span>
-                        <span class="global-stat-label">Domains</span>
-                    </div>
-                    <div class="global-stat">
-                        <span class="global-stat-number">89%</span>
-                        <span class="global-stat-label">Implementation Rate</span>
-                    </div>
-                    <div class="global-stat">
-                        <span class="global-stat-number">256</span>
-                        <span class="global-stat-label">Cross-References</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="views-grid">
-                <div class="view-card">
-                    <span class="view-icon">📋</span>
-                    <h2 class="view-title">By Scenario</h2>
-                    <p class="view-description">
-                        View all components organized by business scenarios. See how user stories, use cases, 
-                        and technical implementations come together in each workflow.
-                    </p>
-                    <div class="stats-preview">
-                        <div class="stats-row">
-                            <span class="stat-label">S001 Components:</span>
-                            <span class="stat-value">47</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">S002 Components:</span>
-                            <span class="stat-value">32</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Cross-Scenario:</span>
-                            <span class="stat-value">15</span>
-                        </div>
-                    </div>
-                    <div class="view-actions">
-                        <a href="by-scenario.html" class="btn btn-primary">View by Scenario</a>
-                    </div>
-                </div>
-
-                <div class="view-card">
-                    <span class="view-icon">🏷️</span>
-                    <h2 class="view-title">By Component Type</h2>
-                    <p class="view-description">
-                        Browse components grouped by type across all domains. Compare similar components 
-                        and identify reuse opportunities.
-                    </p>
-                    <div class="stats-preview">
-                        <div class="stats-row">
-                            <span class="stat-label">User Stories:</span>
-                            <span class="stat-value">24</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">UI Components:</span>
-                            <span class="stat-value">16</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Features:</span>
-                            <span class="stat-value">22</span>
-                        </div>
-                    </div>
-                    <div class="view-actions">
-                        <a href="by-type.html" class="btn btn-primary">View by Type</a>
-                    </div>
-                </div>
-
-                <div class="view-card">
-                    <span class="view-icon">🕸️</span>
-                    <h2 class="view-title">Relationship Map</h2>
-                    <p class="view-description">
-                        Visualize dependencies and relationships between components. Track how changes 
-                        in one component might affect others across domains.
-                    </p>
-                    <div class="stats-preview">
-                        <div class="stats-row">
-                            <span class="stat-label">Dependencies:</span>
-                            <span class="stat-value">156</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Cross-Domain Links:</span>
-                            <span class="stat-value">89</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Orphaned:</span>
-                            <span class="stat-value">3</span>
-                        </div>
-                    </div>
-                    <div class="view-actions">
-                        <a href="relationships.html" class="btn btn-primary">View Relationships</a>
-                    </div>
-                </div>
-
-                <div class="view-card">
-                    <span class="view-icon">📊</span>
-                    <h2 class="view-title">Master Component Table</h2>
-                    <p class="view-description">
-                        Complete table view of all components with advanced filtering, sorting, and search. 
-                        Export data and perform bulk operations.
-                    </p>
-                    <div class="stats-preview">
-                        <div class="stats-row">
-                            <span class="stat-label">Total Rows:</span>
-                            <span class="stat-value">142</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Filterable Fields:</span>
-                            <span class="stat-value">12</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Export Formats:</span>
-                            <span class="stat-value">3</span>
-                        </div>
-                    </div>
-                    <div class="view-actions">
-                        <a href="master-table.html" class="btn btn-primary">View Table</a>
-                    </div>
-                </div>
-
-                <div class="view-card">
-                    <span class="view-icon">📈</span>
-                    <h2 class="view-title">Progress Dashboard</h2>
-                    <p class="view-description">
-                        Track implementation progress across all domains and scenarios. Monitor completion 
-                        rates, identify bottlenecks, and plan resource allocation.
-                    </p>
-                    <div class="stats-preview">
-                        <div class="stats-row">
-                            <span class="stat-label">Completed:</span>
-                            <span class="stat-value">89%</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">In Progress:</span>
-                            <span class="stat-value">8%</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Blocked:</span>
-                            <span class="stat-value">3%</span>
-                        </div>
-                    </div>
-                    <div class="view-actions">
-                        <a href="progress-dashboard.html" class="btn btn-primary">View Dashboard</a>
-                    </div>
-                </div>
-
-                <div class="view-card">
-                    <span class="view-icon">🔍</span>
-                    <h2 class="view-title">Component Registry</h2>
-                    <p class="view-description">
-                        Search and browse the master component registry. View detailed component information, 
-                        edit metadata, and manage global component definitions.
-                    </p>
-                    <div class="stats-preview">
-                        <div class="stats-row">
-                            <span class="stat-label">Registry Entries:</span>
-                            <span class="stat-value">142</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Last Updated:</span>
-                            <span class="stat-value">Today</span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="stat-label">Version:</span>
-                            <span class="stat-value">1.0</span>
-                        </div>
-                    </div>
-                    <div class="view-actions">
-                        <a href="../registry/index.html" class="btn btn-primary">Browse Registry</a>
-                    </div>
-                </div>
+            
+            <div class="controls-section">
+                <button onclick="refreshRegistry()" class="control-btn">
+                    <span>🔄</span> Refresh
+                </button>
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent" 
+                   target="_blank" class="control-btn">
+                    <span>📋</span> GitHub Issues
+                </a>
+                <a href="../dashboard/index.html" class="control-btn">
+                    <span>📊</span> Dashboard
+                </a>
             </div>
         </div>
-    </main>
-
-    <script>
-        // Simple search functionality
-        document.getElementById('globalSearch').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            // This would connect to a search API in a real implementation
-            console.log('Searching for:', searchTerm);
-        });
-    </script>
+        
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">All Components</h2>
+                <span id="results-count" class="results-count">Loading...</span>
+            </div>
+            
+            <div class="table-wrapper">
+                <table class="component-table" id="component-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Component ID</th>
+                            <th>Title</th>
+                            <th style="width: 120px;">Domain</th>
+                            <th style="width: 100px;">Type</th>
+                            <th style="width: 100px;">Status</th>
+                            <th style="width: 100px;">Updated</th>
+                            <th style="width: 80px;">Links</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr>
+                            <td colspan="7" class="loading-state">
+                                🔄 Loading components from GitHub...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../assets/js/registry-table.js"></script>
 </body>
 </html>

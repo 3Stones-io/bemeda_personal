@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bemeda Platform - Color System Guide</title>
+    <link rel="stylesheet" href="color-system.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg-primary);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .color-section {
+            margin-bottom: 60px;
+        }
+        
+        .color-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .color-swatch {
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .color-display {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .color-info {
+            padding: 16px;
+            background: var(--color-bg-primary);
+        }
+        
+        .color-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .color-var {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            font-family: monospace;
+        }
+        
+        .usage-example {
+            background: var(--color-bg-tertiary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .usage-example h4 {
+            margin-top: 0;
+        }
+        
+        .code {
+            background: var(--color-text-primary);
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bemeda Platform Color System Guide</h1>
+        
+        <div class="color-section">
+            <h2>Domain Colors</h2>
+            <p>Primary colors representing each major domain in the platform</p>
+            <div class="color-group">
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-business); color: white;">
+                        Business
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Business Orange</div>
+                        <div class="color-var">--color-business</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-business-dark); color: white;">
+                        Business Dark
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Business Dark Orange</div>
+                        <div class="color-var">--color-business-dark</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-business-light);">
+                        Business Light
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Business Light Orange</div>
+                        <div class="color-var">--color-business-light</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-ux); color: white;">
+                        UX/UI
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">UX Pink</div>
+                        <div class="color-var">--color-ux</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-ux-dark); color: white;">
+                        UX Dark
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">UX Dark Pink</div>
+                        <div class="color-var">--color-ux-dark</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-ux-light);">
+                        UX Light
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">UX Light Pink</div>
+                        <div class="color-var">--color-ux-light</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-tech); color: white;">
+                        Technical
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Tech Green</div>
+                        <div class="color-var">--color-tech</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-tech-dark); color: white;">
+                        Tech Dark
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Tech Dark Green</div>
+                        <div class="color-var">--color-tech-dark</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-tech-light);">
+                        Tech Light
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Tech Light Green</div>
+                        <div class="color-var">--color-tech-light</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="color-section">
+            <h2>Text Colors</h2>
+            <p>Consistent text hierarchy throughout the platform</p>
+            <div class="color-group">
+                <div class="color-swatch">
+                    <div class="color-display" style="background: white; color: var(--color-text-primary); border: 1px solid var(--color-border-light);">
+                        Primary Text
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Primary Text</div>
+                        <div class="color-var">--color-text-primary</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: white; color: var(--color-text-secondary); border: 1px solid var(--color-border-light);">
+                        Secondary Text
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Secondary Text</div>
+                        <div class="color-var">--color-text-secondary</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: white; color: var(--color-text-tertiary); border: 1px solid var(--color-border-light);">
+                        Tertiary Text
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Tertiary Text</div>
+                        <div class="color-var">--color-text-tertiary</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="color-section">
+            <h2>Background Colors</h2>
+            <p>Layer your UI with consistent background colors</p>
+            <div class="color-group">
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-bg-primary); border: 1px solid var(--color-border-light);">
+                        Primary BG
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Primary Background</div>
+                        <div class="color-var">--color-bg-primary</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-bg-secondary);">
+                        Secondary BG
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Secondary Background</div>
+                        <div class="color-var">--color-bg-secondary</div>
+                    </div>
+                </div>
+                
+                <div class="color-swatch">
+                    <div class="color-display" style="background: var(--color-bg-tertiary);">
+                        Tertiary BG
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name">Tertiary Background</div>
+                        <div class="color-var">--color-bg-tertiary</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="usage-example">
+            <h4>Usage Example - Domain Cards</h4>
+            <div class="code">
+&lt;div class="domain-card domain-business"&gt;
+    &lt;div class="domain-icon"&gt;📋&lt;/div&gt;
+    &lt;h3&gt;Business Component&lt;/h3&gt;
+&lt;/div&gt;
+
+/* CSS */
+.domain-business {
+    --domain-color: var(--color-business);
+    --domain-color-dark: var(--color-business-dark);
+}</div>
+        </div>
+        
+        <div class="usage-example">
+            <h4>Usage Example - Status Indicators</h4>
+            <div class="code">
+&lt;span class="component-badge business"&gt;B_S001&lt;/span&gt;
+&lt;span class="component-badge ux"&gt;U_UX001&lt;/span&gt;
+&lt;span class="component-badge tech"&gt;T_F001&lt;/span&gt;</div>
+        </div>
+    </div>
+</body>
+</html>

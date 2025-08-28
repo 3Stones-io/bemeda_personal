@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical - Bemeda Platform</title>
+    <title>Business Logic - Bemeda Platform</title>
     <link rel="stylesheet" href="../assets/css/color-system.css">
     <style>
         body {
@@ -13,10 +13,10 @@
             background: var(--color-bg-secondary);
             margin: 0;
             padding: 0;
-            --domain-color: var(--color-tech);
-            --domain-color-dark: var(--color-tech-dark);
-            --domain-color-light: var(--color-tech-light);
-            --domain-color-lighter: var(--color-tech-lighter);
+            --domain-color: var(--color-business);
+            --domain-color-dark: var(--color-business-dark);
+            --domain-color-light: var(--color-business-light);
+            --domain-color-lighter: var(--color-business-lighter);
         }
         
         .container {
@@ -123,15 +123,15 @@
             color: #999;
         }
 
-        .component-tags {
+        .participant-tags {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
 
-        .component-tag {
-            background: #e8f5e8;
-            color: var(--domain-color-dark);
+        .participant-tag {
+            background: #e8f4fd;
+            color: #0066cc;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -227,46 +227,45 @@
         </a>
         
         <div class="page-header">
-            <h1>⚙️ Technical</h1>
-            <p>Technical architecture and implementation components across all scenarios</p>
+            <h1>📋 Business Logic</h1>
+            <p>Complete business scenarios from user stories through implementation</p>
         </div>
 
         <!-- Scenario Cards Grid -->
         <div class="scenarios-grid">
-            <!-- Scenario S001 Technical Card -->
+            <!-- Scenario S001 Card -->
             <div class="scenario-card">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
                     <div style="flex: 1;">
-                        <div class="scenario-id">T_S001</div>
-                        <h2 class="scenario-title">Cold Call to Placement - Technical Components</h2>
-                        <p class="scenario-description">Technical architecture, features, and components supporting the complete recruitment platform backend.</p>
+                        <div class="scenario-id">B_S001</div>
+                        <h2 class="scenario-title">Cold Call to Candidate Placement</h2>
+                        <p class="scenario-description">Complete recruitment workflow from initial sales contact through successful candidate placement and ongoing relationship management.</p>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <a href="../scenarios/S001/tech.html" class="action-button">⚙️ View Tech Details</a>
+                        <a href="../scenarios/S001/index.html" class="action-button">📋 View Details</a>
                     </div>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-label">Use Cases</div>
-                        <div class="stat-value">3 Use Cases</div>
-                        <div class="stat-detail">UC001-UC003</div>
+                        <div class="stat-label">User Stories</div>
+                        <div class="stat-value">18 Stories</div>
+                        <div class="stat-detail">3 User Types</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Features</div>
-                        <div class="stat-value">12 Features</div>
-                        <div class="stat-detail">F001-F012</div>
+                        <div class="stat-label">Story Steps</div>
+                        <div class="stat-value">18 Steps</div>
+                        <div class="stat-detail">USS001-USS018</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Components</div>
-                        <div class="stat-value">16 Components</div>
-                        <div class="stat-detail">TC001-TC016</div>
+                        <div class="stat-label">Progress</div>
+                        <div class="stat-value" style="color: #28a745;">75%</div>
+                        <div class="stat-detail">Active Development</div>
                     </div>
                 </div>
-                <div class="component-tags">
-                    <span class="component-tag">🎯 Use Cases</span>
-                    <span class="component-tag">⚡ Features</span>
-                    <span class="component-tag">🔧 Tech Components</span>
-                    <span class="component-tag">🏗️ Architecture</span>
+                <div class="participant-tags">
+                    <span class="participant-tag">🏥 Healthcare Organisations</span>
+                    <span class="participant-tag">🔍 JobSeekers</span>
+                    <span class="participant-tag">📞 Sales Team</span>
                 </div>
             </div>
             
@@ -274,29 +273,29 @@
             <div class="scenario-card coming-soon">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
                     <div style="flex: 1;">
-                        <div class="scenario-id" style="color: #999;">T_S002</div>
-                        <h2 class="scenario-title" style="color: #666;">Temporary Staffing - Technical Components</h2>
-                        <p class="scenario-description" style="color: #999;">Technical extensions for short-term placements and emergency staffing workflows.</p>
+                        <div class="scenario-id" style="color: #999;">B_S002</div>
+                        <h2 class="scenario-title" style="color: #666;">Temporary Staffing Solutions</h2>
+                        <p class="scenario-description" style="color: #999;">Short-term staffing solutions for healthcare emergencies and seasonal demands.</p>
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <span class="action-button secondary">🚧 Planned</span>
                     </div>
                 </div>
-                <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Inherits 80% technical foundation from S001</div>
+                <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Inherits 80% from S001</div>
             </div>
             
             <div class="scenario-card coming-soon">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
                     <div style="flex: 1;">
-                        <div class="scenario-id" style="color: #999;">T_S003</div>
-                        <h2 class="scenario-title" style="color: #666;">Recurring Placements - Technical Components</h2>
-                        <p class="scenario-description" style="color: #999;">Advanced technical features for bulk processing and client relationship automation.</p>
+                        <div class="scenario-id" style="color: #999;">B_S003</div>
+                        <h2 class="scenario-title" style="color: #666;">Recurring Placements</h2>
+                        <p class="scenario-description" style="color: #999;">Long-term partnership management with repeat client relationships.</p>
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <span class="action-button secondary">🚧 Planned</span>
                     </div>
                 </div>
-                <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Enterprise-level technical optimizations</div>
+                <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Inherits 95% from S001+S002</div>
             </div>
         </div>
         
@@ -304,19 +303,16 @@
         <div class="quick-actions">
             <h3>Quick Actions</h3>
             <div class="action-links">
-                <a href="../dashboard/index.html#tech" class="action-link">
-                    <span>📊</span> View Tech Kanban Board
+                <a href="../dashboard/index.html#business" class="action-link">
+                    <span>📊</span> View Kanban Board
                 </a>
-                <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=component-definition.yml&labels=component,domain:technical" 
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=component-definition.yml&labels=component,domain:scenarios" 
                    class="action-link" target="_blank">
-                    <span>➕</span> Create New Tech Component
+                    <span>➕</span> Create New Component
                 </a>
-                <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3Atechnical%22" 
+                <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3Ascenarios%22" 
                    class="action-link" target="_blank">
-                    <span>🔗</span> GitHub Tech Project
-                </a>
-                <a href="../unified-view/index.html?filter=technical" class="action-link">
-                    <span>🔍</span> Browse All Tech Components
+                    <span>🔗</span> GitHub Project
                 </a>
             </div>
         </div>

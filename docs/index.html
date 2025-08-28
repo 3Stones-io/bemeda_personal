@@ -3,53 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="canonical" href="site/sitemap/table/index.html">
     <title>Bemeda - Healthcare Talent Platform</title>
-    <link rel="stylesheet" href="assets/css/navigation.css">
-    <link rel="stylesheet" href="site/assets/global/css/language-switcher.css">
-        <style>
-            /* Language Switcher - Top Right Only */
-            .language-switcher-container {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                z-index: 1001;
-            }
-            
-            .language-switcher {
-                display: flex;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                overflow: hidden;
-            }
-            
-            .lang-btn {
-                padding: 8px 16px;
-                border: none;
-                background: white;
-                color: #666;
-                cursor: pointer;
-                transition: all 0.2s;
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-            
-            .lang-btn:hover {
-                background: #f8f9fa;
-                color: #0066cc;
-            }
-            
-            .lang-btn.active {
-                background: #0066cc;
-                color: white;
-            }
-            
-            /* Container positioning for language switcher */
-            .container {
-                position: relative;
-            }
-        </style>
+    <link rel="stylesheet" href="assets/css/color-system.css">
     <style>
         * {
             margin: 0;
@@ -60,8 +15,8 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f7;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
         }
         
         .container {
@@ -70,222 +25,316 @@
             padding: 20px;
         }
         
-        /* Top Navigation */
-        .top-nav {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 0;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .nav-list {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .nav-item {
-            flex: 1;
-        }
-        
-        .nav-link {
-            display: block;
-            padding: 16px 20px;
-            text-decoration: none;
-            color: #666;
-            border-right: 1px solid #eee;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        
-        .nav-link:hover {
-            background: #f8f9fa;
-            color: #0066cc;
-        }
-        
-        .nav-link.active {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .nav-item:last-child .nav-link {
-            border-right: none;
-        }
-        
-        /* Dropdown Styles */
-        .dropdown {
-            position: relative;
-        }
-        
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 0 0 8px 8px;
-            z-index: 1000;
-        }
-        
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        
-        .dropdown-content a {
-            display: block;
-            padding: 12px 20px;
-            text-decoration: none;
-            color: #666;
-            border-bottom: 1px solid #eee;
-            transition: background 0.2s;
-        }
-        
-        .dropdown-content a:last-child {
-            border-bottom: none;
-        }
-        
-        .dropdown-content a:hover {
-            background: #f8f9fa;
-            color: #0066cc;
-        }
-        
+        /* Compact Header */
         .header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 20px 0;
+            padding: 30px 0 20px;
         }
         
         .header h1 {
             font-size: 2.5rem;
-            color: #1a1a1a;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+        }
+        
+        /* Quick Links Section */
+        .quick-links {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--color-bg-tertiary);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            font-size: 0.95rem;
+        }
+        
+        .quick-link:hover {
+            background: var(--color-bg-primary);
+            border-color: var(--color-link);
+            color: var(--color-link);
+            transform: translateX(4px);
+        }
+        
+        .quick-link-icon {
+            font-size: 1.1rem;
+        }
+        
+        /* Workflow Section */
+        .workflow-section {
+            margin-bottom: 60px;
+        }
+        
+        .workflow-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+            align-items: center;
+        }
+        
+        /* Alternate card positions */
+        .workflow-row:nth-child(odd) .workflow-card {
+            order: 1;
+        }
+        
+        .workflow-row:nth-child(odd) .workflow-content {
+            order: 2;
+        }
+        
+        .workflow-row:nth-child(even) .workflow-card {
+            order: 2;
+        }
+        
+        .workflow-row:nth-child(even) .workflow-content {
+            order: 1;
+        }
+        
+        .workflow-card {
+            background: var(--color-bg-primary);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .workflow-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--card-color) 0%, var(--card-color-light) 100%);
+            transform: translateY(-4px);
+            transition: transform 0.3s ease;
+        }
+        
+        .workflow-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-heavy);
+            border-color: var(--card-color);
+        }
+        
+        .workflow-card:hover::before {
+            transform: translateY(0);
+        }
+        
+        .workflow-card:active {
+            transform: translateY(-2px);
+        }
+        
+        /* Card color theming */
+        .card-business { --card-color: var(--color-business-dark); --card-color-light: var(--color-business); }
+        .card-ux { --card-color: var(--color-ux-dark); --card-color-light: var(--color-ux); }
+        .card-technical { --card-color: var(--color-tech-dark); --card-color-light: var(--color-tech); }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+        }
+        
+        .card-badge {
+            background: var(--card-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
             margin-bottom: 10px;
         }
         
-        /* Vision, Mission, Strategy Cards */
-        .vms-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        }
-        
-        .card h3 {
-            color: #0066cc;
-            margin-bottom: 12px;
-            font-size: 1.3rem;
-        }
-        
-        .card p {
-            color: #666;
-            font-size: 0.95rem;
+        .card-description {
+            color: var(--color-text-secondary);
             line-height: 1.5;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
         }
         
-        /* Section Styles */
-        .section {
-            margin-bottom: 32px;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        /* Card Grid */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .nav-card {
-            background: white;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            padding: 20px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s ease;
-            display: block;
-        }
-        
-        .nav-card:hover {
-            border-color: #0066cc;
-            box-shadow: 0 2px 8px rgba(0,102,204,0.1);
-            transform: translateY(-1px);
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .nav-card-header {
+        .card-components {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
         }
         
-        .nav-card-icon {
-            font-size: 1.5rem;
+        .component-tag {
+            padding: 4px 8px;
+            background: var(--color-bg-hover);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
         }
         
-        .nav-card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 0;
-        }
-        
-        .nav-card-description {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-        
-        .nav-card-meta {
+        .card-stats {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 12px;
-            border-top: 1px solid #f0f0f0;
-            font-size: 0.8rem;
-            color: #999;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-border-light);
         }
         
-        .nav-card-status {
-            padding: 2px 6px;
-            border-radius: 4px;
+        .card-count {
+            font-size: 0.9rem;
+            color: var(--color-text-tertiary);
             font-weight: 500;
         }
         
-        .status-ready { background: #e8f5e8; color: #2e7d32; }
-        .status-active { background: #e3f2fd; color: #1976d2; }
-        .status-beta { background: #fff3e0; color: #f57c00; }
+        .card-arrow {
+            color: var(--card-color);
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
         
-        .top-nav {
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .workflow-card:hover .card-arrow {
+            transform: translateX(4px);
+        }
+        
+        .workflow-content {
+            padding: 0 20px;
+        }
+        
+        .content-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .content-description {
+            font-size: 1.05rem;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        
+        .content-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .content-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .content-features li::before {
+            content: "✓";
+            color: var(--color-link);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 1px;
+        }
+        
+        /* Dashboard Preview */
+        .dashboard-preview {
+            background: var(--color-bg-primary);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 60px 0;
+            box-shadow: var(--shadow-medium);
+            border: 2px solid var(--color-border-light);
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .dashboard-subtitle {
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: var(--color-bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-link);
+            margin-bottom: 4px;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
         }
         
         @media (max-width: 768px) {
@@ -293,170 +342,268 @@
                 font-size: 2rem;
             }
             
-            .vms-section {
+            .workflow-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .workflow-row:nth-child(odd) .workflow-card,
+            .workflow-row:nth-child(even) .workflow-card {
+                order: 1;
+            }
+            
+            .workflow-row:nth-child(odd) .workflow-content,
+            .workflow-row:nth-child(even) .workflow-content {
+                order: 2;
+            }
+            
+            .quick-links-grid {
                 grid-template-columns: 1fr;
             }
             
-            .mvp-cards {
-                grid-template-columns: 1fr;
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Language Switcher - Top Right -->
-        <div class="language-switcher-container">
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="de">DE</button>
-            </div>
-        </div>
-        
-        <!-- Dynamic Navigation Container -->
-        <div id="navigation-container">
-            <!-- Navigation will be loaded dynamically -->
-        </div>
-        
+        <!-- Compact Header -->
         <div class="header">
             <h1>Bemeda Healthcare Platform</h1>
-            <p>Connecting Healthcare Talent with Opportunity</p>
+            <p>Requirements Engineering & Project Planning System</p>
         </div>
         
-        <!-- Vision, Mission, Strategy Cards -->
-        <div class="vms-section">
-            <div class="card">
-                <h3>Vision</h3>
-                <p>To become Switzerland's leading digital platform for medical personnel services, seamlessly connecting healthcare talent with opportunity while ensuring full AVG compliance and exceptional user experience.</p>
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <div class="quick-links-grid">
+                <a href="dashboard/index.html" class="quick-link">
+                    <span class="quick-link-icon">📊</span>
+                    <span>Project Dashboard</span>
+                </a>
+                <a href="unified-view/index.html" class="quick-link">
+                    <span class="quick-link-icon">🔍</span>
+                    <span>Component Registry</span>
+                </a>
+                <a href="github/index.html" class="quick-link">
+                    <span class="quick-link-icon">🔗</span>
+                    <span>GitHub Integration</span>
+                </a>
+                <a href="sitemap.html" class="quick-link">
+                    <span class="quick-link-icon">🗺️</span>
+                    <span>Platform Sitemap</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Workflow Section - 3 Levels -->
+        <div class="workflow-section">
+            
+            <!-- Business Logic Row -->
+            <div class="workflow-row">
+                <a href="business/index.html" class="workflow-card card-business">
+                    <div class="card-header">
+                        <div class="card-icon">📋</div>
+                        <span class="card-badge">Level 1</span>
+                    </div>
+                    <h3 class="card-title">Business Logic</h3>
+                    <p class="card-description">
+                        Complete business workflows from scenarios through user stories to individual steps
+                    </p>
+                    <div class="card-components">
+                        <span class="component-tag">B_S### Scenarios</span>
+                        <span class="component-tag">B_US### User Stories</span>
+                        <span class="component-tag">B_USS### Story Steps</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="card-count">18 Components</span>
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                
+                <div class="workflow-content">
+                    <h2 class="content-title">Define Business Requirements</h2>
+                    <p class="content-description">
+                        Start with high-level scenarios, break them down into user stories for each participant, 
+                        then detail individual steps that users take to achieve their goals.
+                    </p>
+                    <ul class="content-features">
+                        <li>Business scenarios with multiple participants</li>
+                        <li>User stories following "As a... I want..." format</li>
+                        <li>Granular story steps with acceptance criteria</li>
+                        <li>End-to-end workflow documentation</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="card">
-                <h3>Mission</h3>
-                <p>We transform healthcare staffing through innovative technology, providing organizations with instant access to qualified medical professionals while empowering healthcare workers with flexible career opportunities.</p>
+            <!-- UX/UI Row -->
+            <div class="workflow-row">
+                <a href="uxui/index.html" class="workflow-card card-ux">
+                    <div class="card-header">
+                        <div class="card-icon">🎨</div>
+                        <span class="card-badge">Level 2</span>
+                    </div>
+                    <h3 class="card-title">UX/UI Design</h3>
+                    <p class="card-description">
+                        User experience flows, atomic components, and screen mockups bringing stories to life
+                    </p>
+                    <div class="card-components">
+                        <span class="component-tag">U_UX### User Flows</span>
+                        <span class="component-tag">U_C### Components</span>
+                        <span class="component-tag">U_M### Mockups</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="card-count">42 Components</span>
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                
+                <div class="workflow-content">
+                    <h2 class="content-title">Design User Experience</h2>
+                    <p class="content-description">
+                        Transform business requirements into intuitive interfaces through systematic design processes 
+                        and reusable component libraries.
+                    </p>
+                    <ul class="content-features">
+                        <li>Navigation flows mapping user journeys</li>
+                        <li>Atomic design components for consistency</li>
+                        <li>Complete screen mockups and prototypes</li>
+                        <li>Responsive design patterns</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="card">
-                <h3>Strategy</h3>
-                <p>• Dual-model platform: permanent & temporary staffing<br>
-                   • Medical sector specialization with FMH verification<br>
-                   • AI-powered matching technology<br>
-                   • Phased market entry across Switzerland<br>
-                   • Success-based revenue model</p>
+            <!-- Technical Row -->
+            <div class="workflow-row">
+                <a href="technical/index.html" class="workflow-card card-technical">
+                    <div class="card-header">
+                        <div class="card-icon">⚙️</div>
+                        <span class="card-badge">Level 3</span>
+                    </div>
+                    <h3 class="card-title">Technical Implementation</h3>
+                    <p class="card-description">
+                        Functional requirements, platform features, and code components powering the system
+                    </p>
+                    <div class="card-components">
+                        <span class="component-tag">T_UC### Use Cases</span>
+                        <span class="component-tag">T_F### Features</span>
+                        <span class="component-tag">T_TC### Components</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="card-count">58 Components</span>
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                
+                <div class="workflow-content">
+                    <h2 class="content-title">Build Platform Features</h2>
+                    <p class="content-description">
+                        Implement cross-cutting use cases through technical features and modular components, 
+                        creating a scalable and maintainable platform.
+                    </p>
+                    <ul class="content-features">
+                        <li>Use cases spanning multiple user stories</li>
+                        <li>Platform features and capabilities</li>
+                        <li>Technical components and services</li>
+                        <li>APIs and system integrations</li>
+                    </ul>
+                </div>
             </div>
         </div>
         
-        <!-- Quick Access Section -->
-        <div class="section">
-            <h2 class="section-title">Quick Access</h2>
-            <div class="card-grid">
-                <a href="unified-view/index.html" class="nav-card">
-                    <div class="nav-card-header">
-                        <span class="nav-card-icon">📊</span>
-                        <h3 class="nav-card-title">Unified View</h3>
-                    </div>
-                    <p class="nav-card-description">
-                        Complete overview of all platform components with progress tracking across domains.
-                    </p>
-                    <div class="nav-card-meta">
-                        <span>118 Components</span>
-                        <span class="nav-card-status status-ready">Ready</span>
-                    </div>
-                </a>
-                
-                <a href="registry/index.html" class="nav-card">
-                    <div class="nav-card-header">
-                        <span class="nav-card-icon">🔍</span>
-                        <h3 class="nav-card-title">Component Registry</h3>
-                    </div>
-                    <p class="nav-card-description">
-                        Centralized search and discovery system for all components.
-                    </p>
-                    <div class="nav-card-meta">
-                        <span>4 Domains</span>
-                        <span class="nav-card-status status-ready">Ready</span>
-                    </div>
-                </a>
-                
-                <a href="github/index.html" class="nav-card">
-                    <div class="nav-card-header">
-                        <span class="nav-card-icon">🔗</span>
-                        <h3 class="nav-card-title">GitHub Integration</h3>
-                    </div>
-                    <p class="nav-card-description">
-                        Two-way sync system with GitHub Issues for real-time collaboration.
-                    </p>
-                    <div class="nav-card-meta">
-                        <span>Live Sync</span>
-                        <span class="nav-card-status status-active">Active</span>
-                    </div>
-                </a>
+        <!-- Component Structure Overview -->
+        <div style="background: white; border-radius: 16px; padding: 32px; margin: 60px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h2 style="text-align: center; font-size: 1.8rem; font-weight: 600; color: #1a1a1a; margin-bottom: 24px;">Component Structure Overview</h2>
+            <div class="mermaid" style="text-align: center;">
+graph TD
+    A[Bemeda Platform] --> B[Business Logic]
+    A --> U[UX/UI Design]
+    A --> T[Technical Implementation]
+    
+    B --> B1[B_S### Scenarios]
+    B --> B2[B_US### User Stories]
+    B --> B3[B_USS### Story Steps]
+    
+    B1 --> |contains| B2
+    B2 --> |broken into| B3
+    
+    U --> U3[U_M### Mockups]
+    U --> U1[U_UX### User Flows]
+    U --> U2[U_C### Components]
+    
+    U3 --> |contains| U1
+    U1 --> |uses| U2
+    
+    T --> T1[T_UC### Use Cases]
+    T --> T2[T_F### Features]
+    T --> T3[T_TC### Tech Components]
+    T --> T4[T_T### Testing]
+    
+    T1 --> |implemented by| T2
+    T2 --> |built with| T3
+    T3 --> |validated by| T4
+    
+    style A fill:#f9f,stroke:#333,stroke-width:4px
+    style B fill:#ff9800,stroke:#e65100,stroke-width:2px
+    style U fill:#ec407a,stroke:#c2185b,stroke-width:2px
+    style T fill:#43a047,stroke:#1b5e20,stroke-width:2px
+    
+    classDef businessClass fill:#ffe0b2,stroke:#e65100
+    classDef uxClass fill:#fce4ec,stroke:#c2185b
+    classDef techClass fill:#e8f5e9,stroke:#1b5e20
+    classDef testingClass fill:#e3f2fd,stroke:#0d47a1
+    
+    class B1,B2,B3 businessClass
+    class U1,U2,U3 uxClass
+    class T1,T2,T3 techClass
+    class T4 testingClass
             </div>
+            <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+            <script>
+                mermaid.initialize({ startOnLoad: true, theme: 'default' });
+            </script>
         </div>
         
-        <!-- Platform Domains Section -->
-        <div class="section">
-            <h2 class="section-title">Platform Domains</h2>
-            <div class="card-grid">
-                <a href="scenarios/index.html" class="nav-card">
-                    <div class="nav-card-header">
-                        <span class="nav-card-icon">📋</span>
-                        <h3 class="nav-card-title">Scenarios & User Stories</h3>
-                    </div>
-                    <p class="nav-card-description">
-                        User journeys, process flows, and business scenarios for platform workflows.
-                    </p>
-                    <div class="nav-card-meta">
-                        <span>18 User Stories</span>
-                        <span class="nav-card-status status-ready">Complete</span>
-                    </div>
-                </a>
-                
-                <a href="ux-ui/index.html" class="nav-card">
-                    <div class="nav-card-header">
-                        <span class="nav-card-icon">🎨</span>
-                        <h3 class="nav-card-title">UX/UI & Design</h3>
-                    </div>
-                    <p class="nav-card-description">
-                        Interface components, design patterns, mockups, and user experience flows.
-                    </p>
-                    <div class="nav-card-meta">
-                        <span>22 Components</span>
-                        <span class="nav-card-status status-beta">In Progress</span>
-                    </div>
-                </a>
-                
-                <a href="technical/index.html" class="nav-card">
-                    <div class="nav-card-header">
-                        <span class="nav-card-icon">⚙️</span>
-                        <h3 class="nav-card-title">Technical Specs</h3>
-                    </div>
-                    <p class="nav-card-description">
-                        Architecture, APIs, database schemas, and implementation specifications.
-                    </p>
-                    <div class="nav-card-meta">
-                        <span>66 Components</span>
-                        <span class="nav-card-status status-active">Active</span>
-                    </div>
-                </a>
-                
-                <a href="testing/index.html" class="nav-card">
-                    <div class="nav-card-header">
-                        <span class="nav-card-icon">🧪</span>
-                        <h3 class="nav-card-title">Testing & QA</h3>
-                    </div>
-                    <p class="nav-card-description">
-                        Test cases, acceptance criteria, quality metrics, and validation procedures.
-                    </p>
-                    <div class="nav-card-meta">
-                        <span>8 Test Cases</span>
-                        <span class="nav-card-status status-beta">Planning</span>
-                    </div>
+        <!-- Dashboard Preview -->
+        <div id="dashboard" class="dashboard-preview">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">Project Dashboard</h2>
+                <p class="dashboard-subtitle">Real-time project status and metrics</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="metric-card">
+                    <div class="metric-value">118</div>
+                    <div class="metric-label">Total Components</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">75%</div>
+                    <div class="metric-label">Overall Progress</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">18</div>
+                    <div class="metric-label">Active Stories</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">5</div>
+                    <div class="metric-label">In Review</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 24px;">
+                <a href="dashboard/index.html" style="display: inline-flex; align-items: center; gap: 8px; color: var(--color-link); text-decoration: none; font-weight: 500; padding: 12px 24px; background: var(--color-bg-hover); border-radius: 8px; transition: all 0.2s;">
+                    📊 Open Project Dashboard <span>→</span>
                 </a>
             </div>
+            
+            <div style="background: #e3f2fd; border: 1px solid #2196f3; border-radius: 12px; padding: 16px; margin-top: 20px; text-align: center;">
+                <p style="margin: 0; color: #1565c0; font-weight: 500; font-size: 0.95rem;">
+                    💡 <strong>New:</strong> Unified Project Dashboard with compact kanban views for all domains. 
+                    Limited to 4-5 cards per column with "more" links to GitHub Project.
+                </p>
+            </div>
         </div>
-        
     </div>
-    <script src="assets/js/navigation.js"></script>
-    <script src="global/js/language-switcher.js"></script>
 </body>
 </html>
