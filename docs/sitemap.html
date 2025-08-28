@@ -373,13 +373,24 @@
 ├─── <span class="tree-tools">📊 <a href="sitemap.html">Platform Sitemap</a></span>
 ├─── <span class="tree-tools">📋 <a href="integration/index.html">Integration Hub</a></span>
 │
-├─── <span class="tree-business">📖 <a href="scenarios/index.html">Scenarios</a></span>
-│    ├─── <span class="tree-business"><a href="scenarios/S001/index.html">B_S001: Cold Call to Placement</a></span>
-│    │    ├─── <span class="tree-business">🏥 B_S001_US001: Organisation (3 steps)</span>
-│    │    ├─── <span class="tree-business">🔍 B_S001_US002: JobSeeker (3 steps)</span>
-│    │    └─── <span class="tree-business">📞 B_S001_US003: Sales Team (3 steps)</span>
-│    ├─── <span class="tree-business">B_S002: Temporary Staffing (planned)</span>
+<span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business">📖 <a href="scenarios/index.html">Scenarios</a></span></span>
+<div class="tree-children expanded">│    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business"><a href="scenarios/S001/index.html">B_S001: Cold Call to Placement</a></span></span>
+<div class="tree-children expanded">│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><span class="tree-business">🏥 B_S001_US001: Organisation</span></span>
+<div class="tree-children collapsed">│    │    │    ├─── <span class="tree-component">B_S001_US001_USS001: Receive initial sales call</span>
+│    │    │    ├─── <span class="tree-component">B_S001_US001_USS002: Listen to platform overview</span>
+│    │    │    └─── <span class="tree-component">B_S001_US001_USS003: Express interest or concerns</span>
+</div>│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><span class="tree-business">🔍 B_S001_US002: JobSeeker</span></span>
+<div class="tree-children collapsed">│    │    │    ├─── <span class="tree-component">B_S001_US002_USS001: Create professional profile</span>
+│    │    │    ├─── <span class="tree-component">B_S001_US002_USS002: Apply to matched opportunities</span>
+│    │    │    └─── <span class="tree-component">B_S001_US002_USS003: Complete interview and onboarding</span>
+</div>│    │    └─── <span class="tree-expandable" onclick="toggleNode(this)"><span class="tree-toggle">▶</span><span class="tree-business">📞 B_S001_US003: Sales Team</span></span>
+<div class="tree-children collapsed">│    │         ├─── <span class="tree-component">B_S001_US003_USS001: Identify target healthcare organisations</span>
+│    │         ├─── <span class="tree-component">B_S001_US003_USS002: Make initial contact and pitch platform</span>
+│    │         └─── <span class="tree-component">B_S001_US003_USS003: Support onboarding and maintain relationships</span>
+</div>
+</div>│    ├─── <span class="tree-business">B_S002: Temporary Staffing (planned)</span>
 │    └─── <span class="tree-business">B_S003: Recurring Placements (planned)</span>
+</div>
 ├─── <span class="tree-ux">🎨 <a href="uxui/index.html">UX/UI Design</a></span>
 ├─── <span class="tree-technical">⚙️ <a href="technical/index.html">Technical</a></span>
 └─── <span class="tree-tools">📋 <a href="integration/index.html">Template System</a></span>
