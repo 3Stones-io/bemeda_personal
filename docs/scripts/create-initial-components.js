@@ -13,11 +13,38 @@ const initialComponents = [
     title: 'Organisation Receives Cold Call',
     description: 'Healthcare organisation receives cold call from Bemeda sales representative'
   },
+  // User Story Steps for US001 - Organisation Receives Cold Call
   {
     id: 'B_S001_US001_USS001',
     type: 'user-story-step',
-    title: 'Organisation Receives Cold Call Step',
-    description: 'Detailed step for organisation receiving cold call'
+    title: 'Receive initial sales call',
+    description: 'Healthcare organisation receives initial contact from Bemeda sales representative'
+  },
+  {
+    id: 'B_S001_US001_USS002',
+    type: 'user-story-step',
+    title: 'Listen to platform overview',
+    description: 'Organisation listens to overview of Bemeda platform capabilities and benefits'
+  },
+  {
+    id: 'B_S001_US001_USS003',
+    type: 'user-story-step',
+    title: 'Express interest or concerns',
+    description: 'Organisation expresses initial interest level and any concerns or questions'
+  },
+  
+  // Add more User Stories
+  {
+    id: 'B_S001_US002',
+    type: 'user-story',
+    title: 'Discuss Staffing Needs',
+    description: 'Healthcare organisation discusses specific staffing challenges and requirements with sales representative'
+  },
+  {
+    id: 'B_S001_US003',
+    type: 'user-story',
+    title: 'Agree to Job Posting',
+    description: 'Healthcare organisation agrees to use platform and create their first job posting'
   },
   {
     id: 'U_S001',
