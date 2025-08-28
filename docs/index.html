@@ -386,9 +386,9 @@
                     <span class="quick-link-icon">🔍</span>
                     <span>Component Registry</span>
                 </a>
-                <a href="github/index.html" class="quick-link">
+                <a href="integration/index.html" class="quick-link">
                     <span class="quick-link-icon">🔗</span>
-                    <span>GitHub Integration</span>
+                    <span>Integration</span>
                 </a>
                 <a href="sitemap.html" class="quick-link">
                     <span class="quick-link-icon">🗺️</span>
@@ -402,20 +402,21 @@
             
             <!-- Business Logic Row -->
             <div class="workflow-row">
-                <a href="business/index.html" class="workflow-card card-business">
+                <a href="scenarios/index.html" class="workflow-card card-business">
                     <div class="card-header">
                         <div class="card-icon">📋</div>
                         <span class="card-badge">Level 1</span>
                     </div>
-                    <h3 class="card-title">Business Logic</h3>
+                    <h3 class="card-title">Scenarios</h3>
+                    <div style="font-size: 0.9rem; color: var(--color-text-tertiary); margin-bottom: 8px; font-weight: 500;">Business Logic</div>
                     <p class="card-description">
                         Complete business workflows from scenarios through user stories to individual steps
                     </p>
-                    <div class="card-components">
-                        <span class="component-tag">B_S### Scenarios</span>
-                        <span class="component-tag">B_US### User Stories</span>
-                        <span class="component-tag">B_USS### Story Steps</span>
-                    </div>
+                                            <div class="card-components">
+                          <span class="component-tag">B_S### Scenarios</span>
+                          <span class="component-tag">B_S###_US### User Stories</span>
+                          <span class="component-tag">B_S###_US###_USS### Story Steps</span>
+                        </div>
                     <div class="card-stats">
                         <span class="card-count">18 Components</span>
                         <span class="card-arrow">→</span>
@@ -449,9 +450,10 @@
                         User experience flows, atomic components, and screen mockups bringing stories to life
                     </p>
                     <div class="card-components">
-                        <span class="component-tag">U_UX### User Flows</span>
-                        <span class="component-tag">U_C### Components</span>
-                        <span class="component-tag">U_M### Mockups</span>
+                        <span class="component-tag">U_S### UX Scenarios</span>
+                        <span class="component-tag">U_S###_UX### User Flows</span>
+                        <span class="component-tag">U_S###_C### Components</span>
+                        <span class="component-tag">U_S###_M### Mockups</span>
                     </div>
                     <div class="card-stats">
                         <span class="card-count">42 Components</span>
@@ -486,9 +488,10 @@
                         Functional requirements, platform features, and code components powering the system
                     </p>
                     <div class="card-components">
-                        <span class="component-tag">T_UC### Use Cases</span>
-                        <span class="component-tag">T_F### Features</span>
-                        <span class="component-tag">T_TC### Components</span>
+                        <span class="component-tag">T_S### Technical Scenarios</span>
+                        <span class="component-tag">T_S###_UC### Use Cases</span>
+                        <span class="component-tag">T_S###_F### Features</span>
+                        <span class="component-tag">T_S###_TC### Components</span>
                     </div>
                     <div class="card-stats">
                         <span class="card-count">58 Components</span>
@@ -522,42 +525,45 @@ graph TD
     A --> T[Technical Implementation]
     
     B --> B1[B_S### Scenarios]
-    B --> B2[B_US### User Stories]
-    B --> B3[B_USS### Story Steps]
+    B --> B2[B_S###_US### User Stories]
+    B --> B3[B_S###_US###_USS### Story Steps]
     
     B1 --> |contains| B2
     B2 --> |broken into| B3
     
-    U --> U3[U_M### Mockups]
-    U --> U1[U_UX### User Flows]
-    U --> U2[U_C### Components]
+    U --> U1[U_S### UX Scenarios]
+    U --> U2[U_S###_UX### User Flows]
+    U --> U3[U_S###_M### Mockups]
+    U --> U4[U_S###_C### Components]
     
-    U3 --> |contains| U1
-    U1 --> |uses| U2
+    U1 --> |contains| U2
+    U2 --> |uses| U4
+    U3 --> |implements| U2
     
-    T --> T1[T_UC### Use Cases]
-    T --> T2[T_F### Features]
-    T --> T3[T_TC### Tech Components]
-    T --> T4[T_T### Testing]
+    T --> T1[T_S### Technical Scenarios]
+    T --> T2[T_S###_UC### Use Cases]
+    T --> T3[T_S###_F### Features]
+    T --> T4[T_S###_TC### Test]
     
-    T1 --> |implemented by| T2
-    T2 --> |built with| T3
-    T3 --> |validated by| T4
+    T1 --> |contains| T2
+    T2 --> |implemented by| T3
+    T3 --> |built with| T4
     
     style A fill:#f9f,stroke:#333,stroke-width:4px
     style B fill:#ff9800,stroke:#e65100,stroke-width:2px
     style U fill:#ec407a,stroke:#c2185b,stroke-width:2px
     style T fill:#43a047,stroke:#1b5e20,stroke-width:2px
+    style T4 fill:#1976d2,stroke:#0d47a1,stroke-width:2px
     
     classDef businessClass fill:#ffe0b2,stroke:#e65100
     classDef uxClass fill:#fce4ec,stroke:#c2185b
     classDef techClass fill:#e8f5e9,stroke:#1b5e20
-    classDef testingClass fill:#e3f2fd,stroke:#0d47a1
+    classDef testClass fill:#e3f2fd,stroke:#0d47a1
     
     class B1,B2,B3 businessClass
-    class U1,U2,U3 uxClass
+    class U1,U2,U3,U4 uxClass
     class T1,T2,T3 techClass
-    class T4 testingClass
+    class T4 testClass
             </div>
             <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
             <script>

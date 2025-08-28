@@ -1,0 +1,147 @@
+name: Component Definition
+description: Define a new platform component
+title: "[COMPONENT] [ID] - [Title]"
+labels: ["component"]
+body:
+  - type: input
+    id: component_id
+    attributes:
+      label: Component ID
+      description: "Unique identifier following naming convention (e.g., B_S001_US001, U_S001_UX001)"
+      placeholder: "B_S001_US001"
+    validations:
+      required: true
+      pattern: "^[BUTS]_S[0-9]{3}(_[A-Z]{2,3}[0-9]{3})*$"
+      
+  - type: dropdown
+    id: component_type
+    attributes:
+      label: Component Type
+      description: "Select the type of component"
+      options:
+        - business-scenario
+        - user-story
+        - user-story-step
+        - ux-scenario
+        - user-flow
+        - interface-mockup
+        - ui-component
+        - technical-scenario
+        - use-case
+        - platform-feature
+        - technical-component
+        - test-scenario
+        - test-case
+        - bug-report
+        - acceptance-criteria
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      description: "Select the domain this component belongs to"
+      options:
+        - business
+        - ux-ui
+        - technical
+        - testing
+    validations:
+      required: true
+      
+  - type: input
+    id: scenario
+    attributes:
+      label: Scenario
+      description: "Parent scenario ID (e.g., B_S001, U_S001)"
+      placeholder: "B_S001"
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: participant
+    attributes:
+      label: Primary Participant
+      description: "Main user/actor for this component"
+      options:
+        - organisation
+        - jobseeker
+        - sales-team
+        - admin
+        - system
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: "Component priority level"
+      options:
+        - low
+        - medium
+        - high
+        - critical
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      description: "Current development status"
+      options:
+        - planning
+        - active
+        - in-progress
+        - review
+        - completed
+        - blocked
+    validations:
+      required: true
+      
+  - type: textarea
+    id: title
+    attributes:
+      label: Component Title
+      description: "Human-readable title for the component"
+      placeholder: "Organisation Receives Cold Call"
+    validations:
+      required: true
+      
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Detailed description of the component"
+      placeholder: "Healthcare organisation receives cold call from Bemeda sales representative..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: "List of acceptance criteria (one per line)"
+      placeholder: "- [ ] Cold call script defined
+- [ ] Success metrics established
+- [ ] Follow-up process documented"
+      
+  - type: textarea
+    id: related_components
+    attributes:
+      label: Related Components
+      description: "List of related component IDs (one per line)"
+      placeholder: "B_S001_US001_USS001
+U_S001_UX001
+T_S001_UC001"
+      
+  - type: textarea
+    id: implementation_notes
+    attributes:
+      label: Implementation Notes
+      description: "Additional notes for implementation"
+      placeholder: "Links to UX flow U_S001_UX001
+Requires technical component T_S001_TC001
+Tested by TEST_S001_T001"

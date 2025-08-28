@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scenarios & User Stories | Bemeda Platform</title>
-    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <title>Scenarios - Bemeda Platform</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f7;
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+            margin: 0;
+            padding: 0;
+            --domain-color: var(--color-business);
+            --domain-color-dark: var(--color-business-dark);
+            --domain-color-light: var(--color-business-light);
+            --domain-color-lighter: var(--color-business-lighter);
         }
         
         .container {
@@ -25,475 +25,300 @@
             padding: 20px;
         }
         
-        /* Header */
-        .header {
-            background: white;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            border-left: 3px solid #4a148c;
-        }
-        
         .back-link {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             color: #0066cc;
             text-decoration: none;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
+            margin-bottom: 32px;
+            font-weight: 500;
         }
         
         .back-link:hover {
             text-decoration: underline;
         }
         
-        h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 1rem;
-        }
-        
-        .domain-lead {
-            margin-top: 12px;
-            padding: 8px 16px;
-            background: #f3e5f5;
-            color: #4a148c;
-            border-radius: 6px;
-            display: inline-block;
-            font-weight: 500;
-        }
-        
-        /* Quick Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 16px;
-            border-radius: 6px;
-            border: 1px solid #e5e5e5;
+        .page-header {
+            background: var(--color-bg-primary);
+            border-bottom: 3px solid var(--domain-color);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
             text-align: center;
-            transition: border-color 0.2s;
         }
         
-        .stat-card:hover {
-            border-color: #4a148c;
+        .page-header h1 {
+            margin: 0 0 8px 0;
+            color: var(--color-text-primary);
+            font-size: 2.5rem;
         }
         
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #4a148c;
+        .page-header p {
+            margin: 0;
+            color: var(--color-text-secondary);
+            font-size: 1.1rem;
         }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.8rem;
-            margin-top: 4px;
-        }
-        
-        /* Scenarios Grid */
-        .scenarios-section {
-            background: white;
-            border-radius: 8px;
-            padding: 24px;
-            border: 1px solid #e5e5e5;
-            margin-bottom: 24px;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-        
-        .add-btn {
-            background: #4a148c;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .add-btn:hover {
-            background: #6a1b9a;
-        }
-        
+
         .scenarios-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 24px;
+            margin-bottom: 30px;
         }
-        
+
         .scenario-card {
-            border: 1px solid #e5e5e5;
-            border-radius: 6px;
-            padding: 20px;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: inherit;
-            display: block;
             background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--domain-color);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        
+
         .scenario-card:hover {
-            border-color: #4a148c;
-            box-shadow: 0 2px 8px rgba(74,20,140,0.1);
-            transform: translateY(-1px);
-            text-decoration: none;
-            color: inherit;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
         }
-        
-        .scenario-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
+
+        .scenario-card.coming-soon {
+            opacity: 0.6;
+            border-left-color: #ccc;
         }
-        
+
         .scenario-id {
-            background: #f3e5f5;
-            color: #4a148c;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
             font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--domain-color);
+            margin-bottom: 4px;
+            font-family: 'Monaco', monospace;
         }
-        
-        .scenario-status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .status-active { background: #e8f5e8; color: #2e7d32; }
-        .status-draft { background: #fff3e0; color: #ef6c00; }
-        .status-planned { background: #e3f2fd; color: #1976d2; }
-        
+
         .scenario-title {
-            font-size: 1.1rem;
+            font-size: 1.6rem;
             font-weight: 600;
             color: #1a1a1a;
             margin-bottom: 8px;
         }
-        
+
         .scenario-description {
             color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            line-height: 1.4;
+            margin-bottom: 16px;
+            line-height: 1.5;
         }
-        
-        .scenario-meta {
-            display: flex;
-            gap: 20px;
-            font-size: 0.85rem;
-            color: #999;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 12px;
-        }
-        
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        /* Component Types */
-        .component-types {
-            background: white;
-            border-radius: 8px;
-            padding: 24px;
-            border: 1px solid #e5e5e5;
-        }
-        
-        .types-grid {
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
-            margin-top: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
         }
-        
-        .type-card {
-            padding: 16px;
-            border: 1px solid #e5e5e5;
-            border-radius: 6px;
-            transition: all 0.2s;
+
+        .stat-card {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
         }
-        
-        .type-card:hover {
-            border-color: #4a148c;
-            box-shadow: 0 2px 6px rgba(74,20,140,0.1);
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 4px;
         }
-        
-        .type-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .type-badge {
-            display: inline-block;
+
+        .stat-value {
+            font-size: 1.2rem;
             font-weight: 600;
-            font-size: 0.75rem;
+            color: var(--domain-color);
+        }
+
+        .stat-detail {
+            font-size: 0.7rem;
+            color: #999;
+        }
+
+        .participant-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .participant-tag {
+            background: #e8f4fd;
+            color: #0066cc;
             padding: 4px 8px;
             border-radius: 4px;
-            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
-        
-        .id-user-story { background: #f3e5f5; color: #4a148c; border: 1px solid #4a148c; }
-        .id-use-case { background: #e1f5fe; color: #01579b; border: 1px solid #01579b; }
-        
-        .type-title {
-            font-weight: 600;
-            color: #1a1a1a;
-            font-size: 1rem;
+
+        .action-button {
+            padding: 8px 16px;
+            background: var(--domain-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            transition: background 0.2s;
         }
-        
-        .type-description {
+
+        .action-button:hover {
+            background: var(--domain-color-dark);
+        }
+
+        .action-button.secondary {
+            background: #f0f0f0;
             color: #666;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
         }
-        
-        .type-count {
-            font-size: 0.8rem;
-            color: #999;
+
+        .quick-actions {
+            background: var(--domain-color-lighter);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
         }
-        
-        /* Responsive */
+
+        .quick-actions h3 {
+            margin-top: 0;
+            color: var(--domain-color-dark);
+        }
+
+        .action-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .action-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--color-bg-primary);
+            border-radius: 8px;
+            color: var(--domain-color-dark);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .action-link:hover {
+            background: var(--domain-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
-            .scenarios-grid {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
             
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .action-links {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Top Navigation -->
-        <nav style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <ul style="display: flex; list-style: none; margin: 0; padding: 0; gap: 30px; justify-content: center;">
-                <li><a href="../index.html" style="text-decoration: none; color: #666; padding: 8px 16px; border-radius: 4px; transition: all 0.2s;">🏠 Home</a></li>
-                <li><a href="#" style="text-decoration: none; color: white; background: #4a148c; padding: 8px 16px; border-radius: 4px;">📋 Scenarios</a></li>
-                <li><a href="../ux-ui/index.html" style="text-decoration: none; color: #666; padding: 8px 16px; border-radius: 4px; transition: all 0.2s;">🎨 UX/UI</a></li>
-                <li><a href="../technical/index.html" style="text-decoration: none; color: #666; padding: 8px 16px; border-radius: 4px; transition: all 0.2s;">⚙️ Technical</a></li>
-                <li><a href="../testing/index.html" style="text-decoration: none; color: #666; padding: 8px 16px; border-radius: 4px; transition: all 0.2s;">🧪 Testing</a></li>
-                <li><a href="../unified-view/index.html" style="text-decoration: none; color: #666; padding: 8px 16px; border-radius: 4px; transition: all 0.2s;">📊 Component Registry</a></li>
-                <li><a href="../registry/index.html" style="text-decoration: none; color: #666; padding: 8px 16px; border-radius: 4px; transition: all 0.2s;">🔍 Registry</a></li>
-            </ul>
-        </nav>
+        <a href="../index.html" class="back-link">
+            ← Back to Home
+        </a>
         
-        <!-- Dynamic Navigation Container -->
-        <div id="navigation-container">
-            <!-- Navigation will be loaded dynamically -->
+        <div class="page-header">
+            <h1>📋 Scenarios</h1>
+            <p>Business Logic - Complete business scenarios from user stories through implementation</p>
         </div>
         
-        <div class="header">
-            <h1>📋 Scenarios & User Stories</h1>
-            <p class="subtitle">User journeys, process flows, and business scenarios for the Bemeda platform</p>
-            <span class="domain-lead">🎯 Domain: Business Analysis & Workflows</span>
-        </div>
-        
-        <!-- Quick Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">1</div>
-                <div class="stat-label">Scenarios</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">18</div>
-                <div class="stat-label">User Stories</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">Templates</div>
-                <div class="stat-label">Ready</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">S001 Complete</div>
-            </div>
-        </div>
-        
-        <!-- Active Scenarios -->
-        <div class="scenarios-section">
-            <div class="section-header">
-                <h2 class="section-title">📋 Scenarios</h2>
-                <a href="template.html" class="add-btn">+ New Scenario</a>
+        <!-- Scenario Cards Grid -->
+        <div class="scenarios-grid">
+            <!-- Scenario S001 Card -->
+            <div class="scenario-card">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                    <div style="flex: 1;">
+                        <div class="scenario-id">B_S001</div>
+                        <h2 class="scenario-title">Cold Call to Candidate Placement</h2>
+                        <p class="scenario-description">Complete recruitment workflow from initial sales contact through successful candidate placement and ongoing relationship management.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="S001/index.html" class="action-button">📋 View Details</a>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">User Stories</div>
+                        <div class="stat-value">18 Stories</div>
+                        <div class="stat-detail">3 User Types</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Story Steps</div>
+                        <div class="stat-value">18 Steps</div>
+                        <div class="stat-detail">USS001-USS018</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Progress</div>
+                        <div class="stat-value" style="color: #28a745;">75%</div>
+                        <div class="stat-detail">Active Development</div>
+                    </div>
+                </div>
+                <div class="participant-tags">
+                    <span class="participant-tag">🏥 Healthcare Organisations</span>
+                    <span class="participant-tag">🔍 JobSeekers</span>
+                    <span class="participant-tag">📞 Sales Team</span>
+                </div>
             </div>
             
-            <div class="scenarios-grid">
-                <!-- S001 - JOB Placement -->
-                <a href="S001/index.html" class="scenario-card">
-                    <div class="scenario-header">
-                        <span class="scenario-id">S001</span>
-                        <span class="scenario-status status-active">Active</span>
+            <!-- Additional Scenarios Placeholder -->
+            <div class="scenario-card coming-soon">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                    <div style="flex: 1;">
+                        <div class="scenario-id" style="color: #999;">B_S002</div>
+                        <h2 class="scenario-title" style="color: #666;">Temporary Staffing Solutions</h2>
+                        <p class="scenario-description" style="color: #999;">Short-term staffing solutions for healthcare emergencies and seasonal demands.</p>
                     </div>
-                    <h3 class="scenario-title">Cold Call to Candidate Placement</h3>
-                    <p class="scenario-description">
-                        Complete recruitment workflow from initial sales contact through candidate placement 
-                        and permanent hiring, including platform onboarding and follow-up processes.
-                    </p>
-                    <div class="scenario-meta">
-                        <div class="meta-item">
-                            <span>👤</span>
-                            <span>18 User Stories</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>🎯</span>
-                            <span>3 Use Cases</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>📊</span>
-                            <span>75% Complete</span>
-                        </div>
+                    <div style="display: flex; gap: 8px;">
+                        <span class="action-button secondary">🚧 Planned</span>
                     </div>
-                </a>
-                
-                <!-- S002 - TMP Temporary -->
-                <a href="S002/index.html" class="scenario-card">
-                    <div class="scenario-header">
-                        <span class="scenario-id">S002</span>
-                        <span class="scenario-status status-active">Active</span>
+                </div>
+                <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Inherits 80% from S001</div>
+            </div>
+            
+            <div class="scenario-card coming-soon">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                    <div style="flex: 1;">
+                        <div class="scenario-id" style="color: #999;">B_S003</div>
+                        <h2 class="scenario-title" style="color: #666;">Recurring Placements</h2>
+                        <p class="scenario-description" style="color: #999;">Long-term partnership management with repeat client relationships.</p>
                     </div>
-                    <h3 class="scenario-title">Temporary Staffing Request</h3>
-                    <p class="scenario-description">
-                        Healthcare facility requests temporary staff coverage, from initial request through 
-                        assignment completion and feedback collection.
-                    </p>
-                    <div class="scenario-meta">
-                        <div class="meta-item">
-                            <span>👤</span>
-                            <span>15 User Stories</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>🎯</span>
-                            <span>3 Use Cases</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>📊</span>
-                            <span>60% Complete</span>
-                        </div>
+                    <div style="display: flex; gap: 8px;">
+                        <span class="action-button secondary">🚧 Planned</span>
                     </div>
-                </a>
-                
-                <!-- S003 - TMP Pool -->
-                <a href="S003/index.html" class="scenario-card">
-                    <div class="scenario-header">
-                        <span class="scenario-id">S003</span>
-                        <span class="scenario-status status-draft">Draft</span>
-                    </div>
-                    <h3 class="scenario-title">Pool Management & Availability</h3>
-                    <p class="scenario-description">
-                        Healthcare professionals join and manage their participation in the temporary 
-                        staffing pool, including availability and assignment preferences.
-                    </p>
-                    <div class="scenario-meta">
-                        <div class="meta-item">
-                            <span>👤</span>
-                            <span>12 User Stories</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>🎯</span>
-                            <span>2 Use Cases</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>📊</span>
-                            <span>40% Complete</span>
-                        </div>
-                    </div>
-                </a>
-                
-                <!-- S004 - Admin Platform -->
-                <a href="S004/index.html" class="scenario-card">
-                    <div class="scenario-header">
-                        <span class="scenario-id">S004</span>
-                        <span class="scenario-status status-planned">Planned</span>
-                    </div>
-                    <h3 class="scenario-title">Platform Administration</h3>
-                    <p class="scenario-description">
-                        Platform administrators manage users, content, settings, and monitor system 
-                        health while providing support to all user types.
-                    </p>
-                    <div class="scenario-meta">
-                        <div class="meta-item">
-                            <span>👤</span>
-                            <span>20 User Stories</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>🎯</span>
-                            <span>4 Use Cases</span>
-                        </div>
-                        <div class="meta-item">
-                            <span>📊</span>
-                            <span>25% Complete</span>
-                        </div>
-                    </div>
-                </a>
+                </div>
+                <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Inherits 95% from S001+S002</div>
             </div>
         </div>
         
-        <!-- Component Types in This Domain -->
-        <div class="component-types">
-            <h2 class="section-title">📚 Component Types in Business Logic</h2>
-            
-            <div class="types-grid">
-                <div class="type-card">
-                    <div class="type-header">
-                        <span class="type-badge id-user-story">US###</span>
-                        <h3 class="type-title">User Stories</h3>
-                    </div>
-                    <p class="type-description">
-                        Individual actions taken by participants throughout the scenario workflow. 
-                        Each story represents a specific user interaction or system response.
-                    </p>
-                    <p class="type-count">Total: 72 stories across all scenarios</p>
-                </div>
-                
-                <div class="type-card">
-                    <div class="type-header">
-                        <span class="type-badge id-use-case">UC###</span>
-                        <h3 class="type-title">Use Cases</h3>
-                    </div>
-                    <p class="type-description">
-                        Cross-participant business functions that span multiple user stories. 
-                        Define system requirements and success criteria.
-                    </p>
-                    <p class="type-count">Total: 12 use cases defined</p>
-                </div>
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="action-links">
+                <a href="../dashboard/index.html#business" class="action-link">
+                    <span>📊</span> View Scenarios Kanban Board
+                </a>
+                <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=component-definition.yml&labels=component,domain:scenarios" 
+                   class="action-link" target="_blank">
+                    <span>➕</span> Create New Scenario Component
+                </a>
+                <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3Ascenarios%22" 
+                   class="action-link" target="_blank">
+                    <span>🔗</span> GitHub Scenarios Project
+                </a>
+                <a href="../integration/index.html" class="action-link">
+                    <span>🔄</span> View Integration Overview
+                </a>
             </div>
         </div>
     </div>
-    
-    <script src="../assets/js/navigation.js"></script>
 </body>
 </html>

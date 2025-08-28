@@ -1,0 +1,101 @@
+name: Sync Components from Issues
+
+on:
+  issues:
+    types: [opened, edited, closed, labeled, unlabeled]
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  sync-components:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Fetch All Component Issues
+        id: fetch-issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'component',
+              state: 'all',
+              per_page: 100
+            });
+            
+            const components = issues.data.map(issue => {
+              // Extract metadata from issue body
+              const metadata = extractMetadata(issue.body);
+              return {
+                issue_number: issue.number,
+                issue_url: issue.html_url,
+                title: issue.title,
+                state: issue.state,
+                labels: issue.labels.map(l => l.name),
+                created_at: issue.created_at,
+                updated_at: issue.updated_at,
+                ...metadata
+              };
+            });
+            
+            // Write to registry
+            fs.writeFileSync('docs/MASTER-REGISTRY.json', 
+              JSON.stringify(components, null, 2));
+            
+            console.log(`Processed ${components.length} component issues`);
+            return components.length;
+            
+            function extractMetadata(body) {
+              const lines = body.split('\n');
+              const metadata = {};
+              
+              for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('**Component ID:**')) {
+                  metadata.component_id = lines[i + 1].trim();
+                } else if (line.startsWith('**Component Type:**')) {
+                  metadata.component_type = lines[i + 1].trim();
+                } else if (line.startsWith('**Domain:**')) {
+                  metadata.domain = lines[i + 1].trim();
+                } else if (line.startsWith('**Scenario:**')) {
+                  metadata.scenario = lines[i + 1].trim();
+                } else if (line.startsWith('**Primary Participant:**')) {
+                  metadata.participant = lines[i + 1].trim();
+                } else if (line.startsWith('**Priority:**')) {
+                  metadata.priority = lines[i + 1].trim();
+                } else if (line.startsWith('**Status:**')) {
+                  metadata.status = lines[i + 1].trim();
+                } else if (line.startsWith('**Component Title:**')) {
+                  metadata.title = lines[i + 1].trim();
+                } else if (line.startsWith('**Description:**')) {
+                  metadata.description = lines[i + 1].trim();
+                }
+              }
+              
+              return metadata;
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Generate Component Map
+        run: |
+          node scripts/generate-component-map.js
+          
+      - name: Update Documentation
+        run: |
+          node scripts/update-documentation.js
+          
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add .
+          git commit -m "🤖 Auto-sync from GitHub issues (${{ steps.fetch-issues.outputs.result }} components)" || exit 0
+          git push

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEST_S001_T001: Test Case Template - Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .test-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .test-badge {
+            background: #1976d2;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .test-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .test-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-active { background: #e8f5e8; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; }
+        
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+        
+        .test-description {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-description h3 {
+            color: #1976d2;
+            margin-bottom: 12px;
+        }
+        
+        .test-description p {
+            font-size: 1.1rem;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .test-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 3px solid #1976d2;
+        }
+        
+        .detail-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .detail-content {
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .test-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .test-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid #1976d2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .step-number {
+            background: #1976d2;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-action {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .step-expected {
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .test-results {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-placeholder {
+            background: white;
+            border: 2px dashed #1976d2;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        
+        .implementation-components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .component-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .component-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .component-id {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1976d2;
+            background: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .component-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .component-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .links-section {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .link-btn {
+            padding: 8px 16px;
+            background: #1976d2;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .link-btn:hover {
+            background: #1565c0;
+        }
+        
+        .link-btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        
+        .link-btn.secondary:hover {
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Integration Hub</a>
+            <div class="test-title">
+                <span class="test-badge">TEST_S001_T001</span>
+                <h1 class="test-name">Test Case Template</h1>
+            </div>
+            <div class="test-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-active">Template Ready</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Type:</span>
+                    <span>Test Case</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Domain:</span>
+                    <span>Testing & QA</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Scenario:</span>
+                    <span>TEST_S001</span>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 1.1rem;">Template for creating test cases and validation scenarios within the TEST_S001 scenario framework.</p>
+        </div>
+
+        <!-- Test Case Description -->
+        <div class="content-section">
+            <h2 class="section-title">📋 Test Case Description</h2>
+            <div class="test-description">
+                <h3>User Registration Flow Test</h3>
+                <p>This test case validates the complete user registration flow for healthcare organizations. It ensures that new users can successfully create accounts, receive confirmation emails, and access the platform after registration.</p>
+            </div>
+        </div>
+
+        <!-- Test Case Details -->
+        <div class="content-section">
+            <h2 class="section-title">📐 Test Case Details</h2>
+            <div class="test-details">
+                <div class="detail-card">
+                    <div class="detail-title">Test Objective</div>
+                    <div class="detail-content">Verify that healthcare organizations can successfully register and access the Bemeda platform</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-title">Test Environment</div>
+                    <div class="detail-content">Staging environment<br>Chrome browser v120+<br>Desktop resolution 1920x1080</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-title">Test Data</div>
+                    <div class="detail-content">Valid email address<br>Strong password<br>Organization details</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-title">Priority</div>
+                    <div class="detail-content">High - Critical path for user onboarding</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Steps -->
+        <div class="content-section">
+            <h2 class="section-title">🔄 Test Steps</h2>
+            <div class="test-steps">
+                <div class="test-step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <div class="step-action">Navigate to registration page</div>
+                        <div class="step-expected">Registration form loads with all required fields visible</div>
+                    </div>
+                </div>
+                
+                <div class="test-step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <div class="step-action">Fill in organization details</div>
+                        <div class="step-expected">All fields accept valid input without validation errors</div>
+                    </div>
+                </div>
+                
+                <div class="test-step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <div class="step-action">Submit registration form</div>
+                        <div class="step-expected">Form submits successfully and confirmation message appears</div>
+                    </div>
+                </div>
+                
+                <div class="test-step">
+                    <span class="step-number">4</span>
+                    <div class="step-content">
+                        <div class="step-action">Check email for confirmation</div>
+                        <div class="step-expected">Confirmation email received with activation link</div>
+                    </div>
+                </div>
+                
+                <div class="test-step">
+                    <span class="step-number">5</span>
+                    <div class="step-content">
+                        <div class="step-action">Click activation link</div>
+                        <div class="step-expected">Account activated and user redirected to dashboard</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="content-section">
+            <h2 class="section-title">✅ Test Results</h2>
+            <div class="test-results">
+                <div class="result-placeholder">
+                    ✅ Test Results Placeholder<br>
+                    <small>Add test execution results and screenshots here</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Components -->
+        <div class="content-section">
+            <h2 class="section-title">🔧 Implementation Components</h2>
+            <div class="implementation-components">
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">TEST_S001_AC001</span>
+                        <span>Acceptance Criteria</span>
+                    </div>
+                    <h4 class="component-title">Registration Success Criteria</h4>
+                    <p class="component-description">Acceptance criteria for successful user registration flow</p>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">TEST_S001_B001</span>
+                        <span>Bug Report</span>
+                    </div>
+                    <h4 class="component-title">Registration Validation Issues</h4>
+                    <p class="component-description">Bug reports for registration form validation problems</p>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">T_S001_TC001</span>
+                        <span>Tech Component</span>
+                    </div>
+                    <h4 class="component-title">Authentication Service</h4>
+                    <p class="component-description">Technical component being tested for registration functionality</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Usage -->
+        <div class="content-section">
+            <h2 class="section-title">📋 Template Usage Instructions</h2>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <h3 style="color: #1976d2; margin-bottom: 12px;">How to Use This Template</h3>
+                <ol style="color: #333; line-height: 1.8;">
+                    <li><strong>Copy this template</strong> for each new test case in the TEST_S001 scenario</li>
+                    <li><strong>Update the test case ID</strong> to match the hierarchical naming (e.g., TEST_S001_T002)</li>
+                    <li><strong>Replace the test content</strong> with the specific testing scenario details</li>
+                    <li><strong>Define test steps</strong> with clear actions and expected results</li>
+                    <li><strong>Add test results</strong> including screenshots and execution notes</li>
+                    <li><strong>Link implementation components</strong> from Testing and Technical domains</li>
+                    <li><strong>Create GitHub issues</strong> for each component using the integration system</li>
+                </ol>
+                
+                <div class="links-section">
+                    <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=test-case.md" target="_blank" class="link-btn">🔗 Create GitHub Issue</a>
+                    <a href="../index.html" class="link-btn secondary">📋 Back to Integration</a>
+                    <a href="TEST_S001-template.html" class="link-btn secondary">📖 Testing Template</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

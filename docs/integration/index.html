@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration - Bemeda Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #f6f8fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0969da;
+            text-decoration: none;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            color: #0969da;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            color: #656d76;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #dcfdf7;
+            color: #047857;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        /* Component Registry Section */
+        .component-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #d1d9e0;
+        }
+        
+        .component-section h2 {
+            color: #24292f;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #f6f8fa;
+            padding-bottom: 12px;
+        }
+        
+        .domain-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .domain-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        .business-domain { background: linear-gradient(135deg, #e65100, #ff9800); }
+        .ux-domain { background: linear-gradient(135deg, #c2185b, #ec407a); }
+        .tech-domain { background: linear-gradient(135deg, #1b5e20, #43a047); }
+        
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        
+        @media (max-width: 1200px) {
+            .component-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .component-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .component-card {
+            background: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .component-card:hover {
+            border-color: #0969da;
+            box-shadow: 0 2px 8px rgba(9,105,218,0.1);
+        }
+        
+        .component-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .component-id {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #0969da;
+            background: #e8f0fe;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .component-count {
+            font-size: 0.8rem;
+            color: #656d76;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .component-title {
+            font-weight: 600;
+            color: #24292f;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+        
+        .component-description {
+            font-size: 0.9rem;
+            color: #656d76;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .component-links {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .component-link {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .site-link {
+            background: #e8f0fe;
+            color: #0969da;
+        }
+        
+        .site-link:hover {
+            background: #0969da;
+            color: white;
+        }
+        
+        .github-link {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .github-link:hover {
+            background: #24292f;
+            color: white;
+        }
+        
+        /* Integration Workflow Section */
+        .workflow-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #d1d9e0;
+        }
+        
+        .workflow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #0969da;
+        }
+        
+        .step-number {
+            background: #0969da;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            color: #24292f;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .step-content p {
+            color: #656d76;
+            font-size: 0.95rem;
+        }
+        
+        /* New Scenario Creation */
+        .creation-workflow {
+            background: #fffbeb;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .creation-workflow h4 {
+            color: #92400e;
+            margin-bottom: 12px;
+        }
+        
+        .creation-steps {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .creation-steps li {
+            color: #92400e;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .creation-steps li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">
+            ← Back to Home
+        </a>
+        
+        <div class="header">
+            <div class="status-badge">
+                ✅ <span>Integration Active</span>
+            </div>
+            <h1>
+                <span>🔄</span>
+                Platform Integration
+            </h1>
+            <p>Complete component management system with site templates and GitHub synchronization for seamless development workflow.</p>
+        </div>
+
+        <!-- Component Registry -->
+        <div class="component-section">
+            <h2>📋 Business Logic Components</h2>
+            <div class="domain-header">
+                <div class="domain-icon business-domain">📋</div>
+                <div>
+                    <h3>Business scenarios, user stories, and user story steps</h3>
+                    <p style="color: #656d76; font-size: 0.9rem;">Foundation layer defining all business requirements and user interactions</p>
+                </div>
+            </div>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">S###</span>
+                        <span class="component-count">1 master template</span>
+                    </div>
+                    <h4 class="component-title">Scenario Master Template</h4>
+                    <p class="component-description">Complete scenario template combining all domain components (S001: Cold Call to Placement - Complete Business, UX/UI, Technical, and Testing implementation)</p>
+                    <div class="component-links">
+                        <a href="templates/S001-master-template.html" class="component-link site-link">📄 Master Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">B_S###</span>
+                        <span class="component-count">3 scenarios</span>
+                    </div>
+                    <h4 class="component-title">Business Scenarios</h4>
+                    <p class="component-description">High-level business scenarios defining complete end-to-end workflows (B_S001: Cold Call to Placement, B_S002: Temporary Staffing, B_S003: Recurring Placements)</p>
+                    <div class="component-links">
+                        <a href="templates/B_S001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">B_S###_US###</span>
+                        <span class="component-count">18 stories</span>
+                    </div>
+                    <h4 class="component-title">User Stories</h4>
+                    <p class="component-description">Detailed user stories implementing specific actions (B_S001_US001-018: Organisation, JobSeeker, and Sales Team workflows)</p>
+                    <div class="component-links">
+                        <a href="templates/B_S001_US001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">B_S###_US###_USS###</span>
+                        <span class="component-count">18 steps</span>
+                    </div>
+                    <h4 class="component-title">User Story Steps</h4>
+                    <p class="component-description">Detailed user story steps implementing specific actions (B_S001_US001_USS001-018: individual workflow steps for each user story)</p>
+                    <div class="component-links">
+                        <a href="templates/B_S001_US001_USS001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- UX/UI Components -->
+        <div class="component-section">
+            <h2>🎨 UX/UI Design Components</h2>
+            <div class="domain-header">
+                <div class="domain-icon ux-domain">🎨</div>
+                <div>
+                    <h3>User experience flows, mockups, and interface components</h3>
+                    <p style="color: #656d76; font-size: 0.9rem;">Design layer transforming business requirements into intuitive user interfaces</p>
+                </div>
+            </div>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">U_S###</span>
+                        <span class="component-count">3 scenarios</span>
+                    </div>
+                    <h4 class="component-title">UX Scenarios</h4>
+                    <p class="component-description">UX/UI implementations for business scenarios (U_S001: Cold Call to Placement - UX Components, U_S002: Temporary Staffing - UX, U_S003: Recurring Placements - UX)</p>
+                    <div class="component-links">
+                        <a href="templates/U_S001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+U_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">U_S###_UX###</span>
+                        <span class="component-count">18 flows</span>
+                    </div>
+                    <h4 class="component-title">User Interface Flows</h4>
+                    <p class="component-description">User interface flows and interaction patterns (U_S001_UX001-018: onboarding, job seeker applications, sales lead management)</p>
+                    <div class="component-links">
+                        <a href="templates/U_S001_UX001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+U_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">U_S###_M###</span>
+                        <span class="component-count">8 mockups</span>
+                    </div>
+                    <h4 class="component-title">Interface Mockups</h4>
+                    <p class="component-description">Screen mockups and interface prototypes (U_S001_M001-008: dashboards, forms, and user interfaces)</p>
+                    <div class="component-links">
+                        <a href="templates/U_S001_M001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+U_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">U_S###_C###</span>
+                        <span class="component-count">16 components</span>
+                    </div>
+                    <h4 class="component-title">UI Components</h4>
+                    <p class="component-description">Reusable interface components (U_S001_C001-016: forms, buttons, navigation, modals, validation, indicators, etc.)</p>
+                    <div class="component-links">
+                        <a href="templates/U_S001_C001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+U_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Infrastructure Components -->
+        <div class="component-section">
+            <h2>⚙️ Platform Infrastructure Components</h2>
+            <div class="domain-header">
+                <div class="domain-icon tech-domain">⚙️</div>
+                <div>
+                    <h3>Use cases, platform features, and technical components</h3>
+                    <p style="color: #656d76; font-size: 0.9rem;">Implementation layer providing platform functionality and system architecture</p>
+                </div>
+            </div>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">T_S###</span>
+                        <span class="component-count">3 scenarios</span>
+                    </div>
+                    <h4 class="component-title">Technical Scenarios</h4>
+                    <p class="component-description">Technical implementations for business scenarios (T_S001: Cold Call to Placement - Technical Components, T_S002: Temporary Staffing - Technical, T_S003: Recurring Placements - Technical)</p>
+                    <div class="component-links">
+                        <a href="templates/T_S001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+T_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">T_S###_UC###</span>
+                        <span class="component-count">3 use cases</span>
+                    </div>
+                    <h4 class="component-title">Use Cases</h4>
+                    <p class="component-description">High-level technical use cases (T_S001_UC001-003: Healthcare Organisation Onboarding, Professional Recruitment Process, Placement Coordination)</p>
+                    <div class="component-links">
+                        <a href="templates/T_S001_UC001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+T_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">T_S###_F###</span>
+                        <span class="component-count">4 features</span>
+                    </div>
+                    <h4 class="component-title">Platform Features</h4>
+                    <p class="component-description">Core platform capabilities (T_S001_F001-004: Job Search Discovery, User Profile Management, Communication Platform, Job Posting Tools)</p>
+                    <div class="component-links">
+                        <a href="templates/T_S001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+T_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">T_S###_TC###</span>
+                        <span class="component-count">16 components</span>
+                    </div>
+                    <h4 class="component-title">Technical Components</h4>
+                    <p class="component-description">Core technical services and infrastructure (T_S001_TC001-016: authentication, search, data management, integrations, etc.)</p>
+                    <div class="component-links">
+                        <a href="templates/T_S001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+T_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testing Components -->
+        <div class="component-section">
+            <h2>🧪 Testing & Quality Assurance Components</h2>
+            <div class="domain-header">
+                <div class="domain-icon" style="background: linear-gradient(135deg, #1976d2, #42a5f5);">🧪</div>
+                <div>
+                    <h3>Test cases, acceptance criteria, and quality validation</h3>
+                    <p style="color: #656d76; font-size: 0.9rem;">Quality assurance layer ensuring platform reliability and user satisfaction</p>
+                </div>
+            </div>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">TEST_S###_T###</span>
+                        <span class="component-count">45 test cases</span>
+                    </div>
+                    <h4 class="component-title">Test Cases</h4>
+                    <p class="component-description">Detailed test scenarios covering functional, integration, and regression testing across all user stories and components (TEST_S001_T001-045)</p>
+                    <div class="component-links">
+                        <a href="templates/TEST_S001_T001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+TEST_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">TEST_S###_B###</span>
+                        <span class="component-count">12 bug reports</span>
+                    </div>
+                    <h4 class="component-title">Bug Reports</h4>
+                    <p class="component-description">Issue tracking and bug documentation with reproduction steps, severity levels, and resolution status (TEST_S001_B001-012)</p>
+                    <div class="component-links">
+                        <a href="templates/TEST_S001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+TEST_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-header">
+                        <span class="component-id">TEST_S###_AC###</span>
+                        <span class="component-count">18 criteria sets</span>
+                    </div>
+                    <h4 class="component-title">Acceptance Criteria</h4>
+                    <p class="component-description">Validation criteria for user stories ensuring requirements are met and business value is delivered (TEST_S001_AC001-018)</p>
+                    <div class="component-links">
+                        <a href="templates/TEST_S001-template.html" class="component-link site-link">📄 Template</a>
+                        <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+TEST_S" target="_blank" class="component-link github-link">🔗 GitHub Issues</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Integration Workflow -->
+        <div class="workflow-section">
+            <h2>🔄 How GitHub Integration Works</h2>
+            <p style="color: #656d76; margin-bottom: 32px;">Understanding the seamless workflow between site templates and GitHub collaboration</p>
+            
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Component Creation</h4>
+                    <p>Create new components using enforced GitHub issue templates with required fields (Component ID, Type, Domain, Title, Description). Auto-validation ensures proper structure and labeling.</p>
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Real-Time Synchronization</h4>
+                    <p>GitHub Actions automatically sync component changes to the master registry, update documentation, and deploy to GitHub Pages. Status changes in GitHub Project boards reflect immediately on site pages.</p>
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Collaborative Management</h4>
+                    <p>Team members can comment, update status, assign tasks, and track progress directly in GitHub Issues. All changes are visible on both GitHub Project boards and site component pages.</p>
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Consistent Representation</h4>
+                    <p>Every component has dual representation: a human-friendly page on the site with detailed templates and a GitHub issue for collaboration. Edit buttons on site pages link directly to corresponding GitHub issues.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Scenario Creation Workflow -->
+        <div class="workflow-section">
+            <h2>🚀 New Scenario Creation Workflow</h2>
+            <p style="color: #656d76; margin-bottom: 24px;">Proposed systematic approach for creating and implementing new business scenarios</p>
+            
+            <div class="creation-workflow">
+                <h4>📋 Phase 1: Business Requirements Definition</h4>
+                <ul class="creation-steps">
+                    <li>Create B_S00X scenario issue defining high-level business workflow</li>
+                    <li>Break down into US### user stories with USS### user story steps</li>
+                    <li>Define acceptance criteria (AC###) for each story and step</li>
+                    <li>Identify participant types and their specific journeys</li>
+                    <li>Map component relationships and reuse opportunities from existing scenarios</li>
+                </ul>
+            </div>
+            
+            <div class="creation-workflow">
+                <h4>🎨 Phase 2: UX/UI Design Implementation</h4>
+                <ul class="creation-steps">
+                    <li>Design UX### user interface flows for each story step</li>
+                    <li>Create M### mockups for new screens and interfaces</li>
+                    <li>Identify reusable C### UI components vs. new component needs</li>
+                    <li>Prototype navigation patterns and interaction flows</li>
+                </ul>
+            </div>
+            
+            <div class="creation-workflow">
+                <h4>⚙️ Phase 3: Technical Architecture Planning</h4>
+                <ul class="creation-steps">
+                    <li>Define F### platform features and capabilities required</li>
+                    <li>Design TC### technical components and service architecture</li>
+                    <li>Plan API integrations and data flow patterns</li>
+                    <li>Specify database schemas and system interfaces</li>
+                </ul>
+            </div>
+            
+            <div class="creation-workflow">
+                <h4>🧪 Phase 4: Testing & Quality Assurance</h4>
+                <ul class="creation-steps">
+                    <li>Create T### test cases covering all user story steps</li>
+                    <li>Validate AC### acceptance criteria for each user story</li>
+                    <li>Document B### bug reports during testing phases</li>
+                    <li>Plan integration testing for component interactions</li>
+                    <li>Establish regression testing for inherited components</li>
+                </ul>
+            </div>
+            
+            <p style="color: #656d76; font-size: 0.9rem; margin-top: 20px; font-style: italic;">
+                <strong>💡 Efficiency Note:</strong> Each new scenario typically inherits 80-95% of components from previous scenarios, significantly reducing development time and ensuring consistency across the platform.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
