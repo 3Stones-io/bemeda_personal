@@ -39,25 +39,23 @@
             text-decoration: underline;
         }
         
-        .page-header {
-            background: var(--color-bg-primary);
-            border-bottom: 3px solid var(--domain-color);
-            border-radius: 16px;
-            padding: 40px;
-            margin-bottom: 30px;
+        .header {
             text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0 20px;
         }
         
-        .page-header h1 {
-            margin: 0 0 8px 0;
-            color: var(--color-text-primary);
+        .header h1 {
             font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
         }
         
-        .page-header p {
-            margin: 0;
-            color: var(--color-text-secondary);
+        .header p {
             font-size: 1.1rem;
+            color: var(--color-text-secondary);
         }
 
         .scenarios-grid {
@@ -187,41 +185,6 @@
             color: #666;
         }
 
-        .quick-actions {
-            background: var(--domain-color-lighter);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-        }
-
-        .quick-actions h3 {
-            margin-top: 0;
-            color: var(--domain-color-dark);
-        }
-
-        .action-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .action-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: var(--color-bg-primary);
-            border-radius: 8px;
-            color: var(--domain-color-dark);
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .action-link:hover {
-            background: var(--domain-color);
-            color: white;
-            transform: translateY(-2px);
-        }
 
         @media (max-width: 768px) {
             .stats-grid {
@@ -240,7 +203,7 @@
             ← Back to Home
         </a>
         
-        <div class="page-header">
+        <div class="header">
             <h1>📋 Scenarios</h1>
             <p>Business Logic - Complete business scenarios from user stories through implementation</p>
         </div>
@@ -298,26 +261,6 @@
             </div>
         </div>
         
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <h3>Quick Actions</h3>
-            <div class="action-links">
-                <a href="../dashboard/index.html#business" class="action-link">
-                    <span>📊</span> View Scenarios Kanban Board
-                </a>
-                <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?template=component-definition.yml&labels=component,domain:scenarios" 
-                   class="action-link" target="_blank">
-                    <span>➕</span> Create New Scenario Component
-                </a>
-                <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3Ascenarios%22" 
-                   class="action-link" target="_blank">
-                    <span>🔗</span> GitHub Scenarios Project
-                </a>
-                <a href="../integration/index.html" class="action-link">
-                    <span>🔄</span> View Integration Overview
-                </a>
-            </div>
-        </div>
     </div>
 </body>
 </html>
