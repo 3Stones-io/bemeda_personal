@@ -60,6 +60,9 @@
             border-top: 3px solid var(--domain-color);
             transition: all 0.2s ease;
             position: relative;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
         }
 
         .scenario-card:hover {
@@ -211,7 +214,7 @@
         <!-- Scenario Cards Grid -->
         <div class="scenarios-grid">
             <!-- Scenario S001 UX Card -->
-            <div class="scenario-card">
+            <a href="../integration/templates/U_S001-template.html" class="scenario-card">
                 <div class="scenario-header">
                     <div class="scenario-id">U_S001</div>
                     <h2 class="scenario-title">Cold Call to Placement - UX</h2>
@@ -232,11 +235,11 @@
                     <span class="component-tag">🧩 Components</span>
                 </div>
                 
-                <a href="../scenarios/S001/ux.html" class="action-button">🎨 View UX Details</a>
-            </div>
+                <span class="action-button" onclick="event.preventDefault(); event.stopPropagation(); window.open('https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+U_S001', '_blank');">🔗 GitHub</span>
+            </a>
             
             <!-- Additional Scenarios Placeholder -->
-            <div class="scenario-card coming-soon">
+            <a href="../integration/templates/U_S002-template.html" class="scenario-card coming-soon">
                 <div class="scenario-header">
                     <div class="scenario-id" style="background: #f5f5f5; color: #999;">U_S002</div>
                     <h2 class="scenario-title" style="color: #666;">Temporary Staffing - UX</h2>
@@ -246,9 +249,9 @@
                 <div style="text-align: center; padding: 16px; color: #999; font-style: italic; font-size: 0.9rem;">
                     🚧 Coming Soon - Inherits 80% UX patterns from S001
                 </div>
-            </div>
+            </a>
             
-            <div class="scenario-card coming-soon">
+            <a href="../integration/templates/U_S003-template.html" class="scenario-card coming-soon">
                 <div class="scenario-header">
                     <div class="scenario-id" style="background: #f5f5f5; color: #999;">U_S003</div>
                     <h2 class="scenario-title" style="color: #666;">Recurring Placements - UX</h2>
@@ -258,7 +261,7 @@
                 <div style="text-align: center; padding: 16px; color: #999; font-style: italic; font-size: 0.9rem;">
                     🚧 Coming Soon - Advanced UX patterns for power users
                 </div>
-            </div>
+            </a>
         </div>
         
     </div>
