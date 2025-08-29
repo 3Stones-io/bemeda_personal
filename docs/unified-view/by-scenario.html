@@ -242,12 +242,14 @@
             align-items: center;
             gap: 10px;
             padding: 8px 12px;
+            padding-right: 80px; /* Make room for GitHub button */
             background: white;
             border-radius: 6px;
             border: 1px solid #e8e8e8;
             transition: all 0.2s ease;
             text-decoration: none;
             color: inherit;
+            position: relative;
         }
 
         .component-item:hover {
@@ -528,13 +530,49 @@
                                     <span class="domain-count">${domain.components.length}</span>
                                 </div>
                                 <div class="components-list">
-                                    ${domain.components.map(component => `
-                                        <a href="#" class="component-item">
+                                    ${domain.components.map(component => {
+                                        let detailLink = '#';
+                                        // Determine the detail link based on component ID
+                                        if (component.id.startsWith('B_S001')) {
+                                            if (component.id === 'B_S001') {
+                                                detailLink = '../scenarios/S001/index.html';
+                                            } else if (component.id.includes('_US')) {
+                                                const userStoryNum = component.id.match(/_US(\d+)/);
+                                                if (userStoryNum) {
+                                                    detailLink = `../scenarios/S001/US${userStoryNum[1].padStart(3, '0')}.html`;
+                                                }
+                                            }
+                                        } else if (component.id.startsWith('U_S001')) {
+                                            detailLink = '../integration/templates/U_S001-template.html';
+                                        } else if (component.id.startsWith('T_S001')) {
+                                            detailLink = '../integration/templates/T_S001-template.html';
+                                        } else if (component.id.startsWith('TEST_S001')) {
+                                            detailLink = '../testing/index.html';
+                                        }
+                                        
+                                        return `
+                                        <a href="${detailLink}" class="component-item" style="position: relative;">
                                             <div class="component-id">${component.id}</div>
                                             <div class="component-title">${component.title}</div>
                                             <div class="component-status status-${component.status}">${component.status}</div>
+                                            <button onclick="event.preventDefault(); event.stopPropagation(); window.open('https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+${component.id}', '_blank');" style="
+                                                position: absolute;
+                                                right: 10px;
+                                                top: 50%;
+                                                transform: translateY(-50%);
+                                                padding: 4px 8px;
+                                                background: #f3f4f6;
+                                                border: 1px solid #e5e7eb;
+                                                border-radius: 4px;
+                                                color: #374151;
+                                                font-size: 0.75rem;
+                                                cursor: pointer;
+                                                transition: all 0.2s;
+                                            " onmouseover="this.style.background='#374151'; this.style.color='white';" onmouseout="this.style.background='#f3f4f6'; this.style.color='#374151';">
+                                                GitHub
+                                            </button>
                                         </a>
-                                    `).join('')}
+                                    `}).join('')}
                                 </div>
                             </div>
                         `).join('')}

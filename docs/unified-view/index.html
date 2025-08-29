@@ -346,6 +346,133 @@
         .back-link:hover {
             text-decoration: underline;
         }
+        
+        /* View Toggle Buttons */
+        .view-toggle-btn {
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 0 2px;
+        }
+        
+        .view-toggle-btn:hover {
+            color: #333;
+            background: #e6f3ff;
+        }
+        
+        .view-toggle-btn.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        /* Compare View Styles */
+        .compare-container {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .compare-container.active {
+            display: grid;
+        }
+        
+        .compare-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .compare-header {
+            background: #f8f9fa;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .compare-content {
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 0;
+        }
+        
+        .component-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .component-item:last-child {
+            border-bottom: none;
+        }
+        
+        .component-id {
+            font-family: 'Monaco', monospace;
+            font-size: 0.8rem;
+            background: #e8f0fe;
+            color: #0066cc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+        
+        .component-title {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        .component-status {
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .component-status.github {
+            background: #28a745;
+            color: white;
+        }
+        
+        .component-status.local {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .component-status.both {
+            background: #007bff;
+            color: white;
+        }
+        
+        .mismatch-highlight {
+            background: #fff3cd !important;
+            border-left: 3px solid #ffc107 !important;
+        }
+        
+        .missing-highlight {
+            background: #f8d7da !important;
+            border-left: 3px solid #dc3545 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .compare-container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -357,6 +484,21 @@
         <div class="header">
             <h1>🔍 Component Registry</h1>
             <p>Comprehensive searchable table of all platform components with live GitHub integration</p>
+            
+            <!-- View Toggle -->
+            <div style="margin-top: 24px;">
+                <div style="background: #f8f9fa; border-radius: 8px; padding: 4px; display: inline-flex; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <button id="github-view-btn" class="view-toggle-btn active" onclick="switchView('github')">
+                        📊 GitHub Data
+                    </button>
+                    <button id="local-view-btn" class="view-toggle-btn" onclick="switchView('local')">
+                        📋 Local Structure
+                    </button>
+                    <button id="compare-view-btn" class="view-toggle-btn" onclick="switchView('compare')">
+                        ⚖️ Compare Both
+                    </button>
+                </div>
+            </div>
         </div>
         
         <div class="filter-controls">
@@ -433,8 +575,235 @@
                 </table>
             </div>
         </div>
+        
+        <!-- Compare View -->
+        <div id="compare-container" class="compare-container">
+            <div class="compare-panel">
+                <div class="compare-header">
+                    📊 GitHub Issues
+                    <span id="github-count" style="background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; margin-left: auto;">0</span>
+                </div>
+                <div class="compare-content" id="github-components">
+                    <div style="padding: 20px; text-align: center; color: #666;">Loading GitHub components...</div>
+                </div>
+            </div>
+            
+            <div class="compare-panel">
+                <div class="compare-header">
+                    📋 Local Structure
+                    <span id="local-count" style="background: #ffc107; color: #000; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; margin-left: auto;">0</span>
+                </div>
+                <div class="compare-content" id="local-components">
+                    <div style="padding: 20px; text-align: center; color: #666;">Loading local components...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mismatch Summary -->
+        <div id="mismatch-summary" class="compare-container" style="display: none; margin-top: 20px; grid-template-columns: 1fr;">
+            <div class="compare-panel">
+                <div class="compare-header">
+                    ⚠️ Component Analysis
+                </div>
+                <div class="compare-content" style="padding: 20px;">
+                    <div id="mismatch-details">Analysis will appear here...</div>
+                </div>
+            </div>
+        </div>
     </div>
     
+    <script>
+        // Local component structure - our expected components
+        const LOCAL_COMPONENTS = [
+            // Business Logic - B_S001
+            { id: 'B_S001', title: 'Cold Call to Placement', domain: 'business', type: 'Scenario' },
+            
+            // Organisation - B_S001_US001
+            { id: 'B_S001_US001', title: 'Organisation User Story', domain: 'business', type: 'User Story' },
+            { id: 'B_S001_US001_USS001', title: 'Receive initial sales call', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US001_USS002', title: 'Listen to platform overview', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US001_USS003', title: 'Express interest or concerns', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US001_USS004', title: 'Discuss staffing needs', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US001_USS005', title: 'Agree to job posting', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US001_USS006', title: 'Review matched candidates', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US001_USS007', title: 'Conduct interviews', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US001_USS008', title: 'Complete hiring process', domain: 'business', type: 'Story Step' },
+            
+            // JobSeeker - B_S001_US002
+            { id: 'B_S001_US002', title: 'JobSeeker User Story', domain: 'business', type: 'User Story' },
+            { id: 'B_S001_US002_USS001', title: 'Create professional profile', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US002_USS002', title: 'Receive job notifications', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US002_USS003', title: 'Review and apply to jobs', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US002_USS004', title: 'Participate in interviews', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US002_USS005', title: 'Receive job offers', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US002_USS006', title: 'Complete onboarding', domain: 'business', type: 'Story Step' },
+            
+            // Sales Team - B_S001_US003
+            { id: 'B_S001_US003', title: 'Sales Team User Story', domain: 'business', type: 'User Story' },
+            { id: 'B_S001_US003_USS001', title: 'Identify target healthcare organisations', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US003_USS002', title: 'Make initial contact', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US003_USS003', title: 'Present platform benefits', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US003_USS004', title: 'Facilitate onboarding', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US003_USS005', title: 'Monitor placement success', domain: 'business', type: 'Story Step' },
+            { id: 'B_S001_US003_USS006', title: 'Follow-up opportunities', domain: 'business', type: 'Story Step' },
+            
+            // UX/UI Components
+            { id: 'U_S001', title: 'Cold Call to Placement UX Scenario', domain: 'ux', type: 'UX Scenario' },
+            { id: 'U_S001_UX001', title: 'Organisation Dashboard Flow', domain: 'ux', type: 'User Flow' },
+            { id: 'U_S001_M001', title: 'Healthcare Organisation Dashboard', domain: 'ux', type: 'Mockup' },
+            { id: 'U_S001_C001', title: 'Navigation Bar Component', domain: 'ux', type: 'UI Component' },
+            
+            // Technical Components
+            { id: 'T_S001', title: 'Technical Implementation for Cold Call to Placement', domain: 'technical', type: 'Tech Scenario' },
+            { id: 'T_S001_UC001', title: 'User Authentication and Registration', domain: 'technical', type: 'Use Case' },
+            { id: 'T_S001_F001', title: 'User Registration Feature', domain: 'technical', type: 'Feature' },
+            { id: 'T_S001_TC001', title: 'Authentication Service', domain: 'technical', type: 'Tech Component' }
+        ];
+        
+        let currentView = 'github';
+        let githubComponents = [];
+        
+        function switchView(view) {
+            currentView = view;
+            
+            // Update button states
+            document.querySelectorAll('.view-toggle-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(view + '-view-btn').classList.add('active');
+            
+            // Show/hide appropriate containers
+            const tableContainer = document.querySelector('.table-container');
+            const filterControls = document.querySelector('.filter-controls');
+            const compareContainer = document.getElementById('compare-container');
+            const mismatchSummary = document.getElementById('mismatch-summary');
+            
+            if (view === 'github') {
+                tableContainer.style.display = 'block';
+                filterControls.style.display = 'block';
+                compareContainer.classList.remove('active');
+                mismatchSummary.style.display = 'none';
+            } else if (view === 'local') {
+                tableContainer.style.display = 'none';
+                filterControls.style.display = 'none';
+                compareContainer.classList.add('active');
+                mismatchSummary.style.display = 'none';
+                renderLocalComponents();
+            } else if (view === 'compare') {
+                tableContainer.style.display = 'none';
+                filterControls.style.display = 'none';
+                compareContainer.classList.add('active');
+                mismatchSummary.style.display = 'block';
+                renderComparison();
+            }
+        }
+        
+        function renderLocalComponents() {
+            const localContainer = document.getElementById('local-components');
+            document.getElementById('local-count').textContent = LOCAL_COMPONENTS.length;
+            
+            const html = LOCAL_COMPONENTS.map(comp => `
+                <div class="component-item">
+                    <div>
+                        <span class="component-id">${comp.id}</span>
+                        <span class="component-title">${comp.title}</span>
+                    </div>
+                    <span class="component-status local">${comp.type}</span>
+                </div>
+            `).join('');
+            
+            localContainer.innerHTML = html;
+        }
+        
+        function renderGithubComponents() {
+            const githubContainer = document.getElementById('github-components');
+            document.getElementById('github-count').textContent = githubComponents.length;
+            
+            if (githubComponents.length === 0) {
+                githubContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">No GitHub components found</div>';
+                return;
+            }
+            
+            const html = githubComponents.map(comp => `
+                <div class="component-item">
+                    <div>
+                        <span class="component-id">${comp.componentId || comp.id}</span>
+                        <span class="component-title">${comp.title}</span>
+                    </div>
+                    <span class="component-status github">${comp.status || 'unknown'}</span>
+                </div>
+            `).join('');
+            
+            githubContainer.innerHTML = html;
+        }
+        
+        function renderComparison() {
+            renderLocalComponents();
+            renderGithubComponents();
+            analyzeComponents();
+        }
+        
+        function analyzeComponents() {
+            const localIds = LOCAL_COMPONENTS.map(c => c.id);
+            const githubIds = githubComponents.map(c => c.componentId || c.id);
+            
+            const onlyLocal = LOCAL_COMPONENTS.filter(c => !githubIds.includes(c.id));
+            const onlyGithub = githubComponents.filter(c => !localIds.includes(c.componentId || c.id));
+            const inBoth = LOCAL_COMPONENTS.filter(c => githubIds.includes(c.id));
+            
+            const mismatchDetails = document.getElementById('mismatch-details');
+            mismatchDetails.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                    <div style="text-align: center; padding: 16px; background: #e8f5e8; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 600; color: #28a745;">${inBoth.length}</div>
+                        <div style="font-size: 0.9rem; color: #666;">In Both</div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; background: #fff3cd; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 600; color: #856404;">${onlyLocal.length}</div>
+                        <div style="font-size: 0.9rem; color: #666;">Only Local</div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; background: #f8d7da; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 600; color: #721c24;">${onlyGithub.length}</div>
+                        <div style="font-size: 0.9rem; color: #666;">Only GitHub</div>
+                    </div>
+                </div>
+                
+                ${onlyLocal.length > 0 ? `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #856404; margin-bottom: 8px;">📋 Missing from GitHub (${onlyLocal.length})</h4>
+                    <div style="background: #fff3cd; border-radius: 6px; padding: 12px; font-size: 0.85rem;">
+                        ${onlyLocal.map(c => `<div>• ${c.id}: ${c.title}</div>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${onlyGithub.length > 0 ? `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #721c24; margin-bottom: 8px;">📊 Extra in GitHub (${onlyGithub.length})</h4>
+                    <div style="background: #f8d7da; border-radius: 6px; padding: 12px; font-size: 0.85rem;">
+                        ${onlyGithub.map(c => `<div>• ${c.componentId || c.id}: ${c.title}</div>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${inBoth.length > 0 ? `
+                <div>
+                    <h4 style="color: #28a745; margin-bottom: 8px;">✅ Synchronized (${inBoth.length})</h4>
+                    <div style="background: #e8f5e8; border-radius: 6px; padding: 12px; font-size: 0.85rem;">
+                        ${inBoth.slice(0, 5).map(c => `<div>• ${c.id}: ${c.title}</div>`).join('')}
+                        ${inBoth.length > 5 ? `<div style="margin-top: 8px; font-style: italic;">... and ${inBoth.length - 5} more</div>` : ''}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+        }
+        
+        // Enhanced registry table integration
+        window.updateComparisonData = function(components) {
+            githubComponents = components;
+            if (currentView === 'compare') {
+                renderComparison();
+            }
+        };
+    </script>
     <script src="../assets/js/registry-table.js"></script>
 </body>
 </html>

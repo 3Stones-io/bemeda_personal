@@ -88,6 +88,19 @@
             background: #f0f8ff;
             border-radius: 2px;
         }
+        
+        .tree-component {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        a.tree-component:hover {
+            color: #0066cc !important;
+            background: #f0f8ff;
+            padding: 0 4px;
+            margin: 0 -4px;
+            border-radius: 2px;
+        }
 
         /* Expandable Tree Controls */
         .tree-expandable {
@@ -375,29 +388,29 @@
 │
 <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business">📖 <a href="scenarios/index.html">Scenarios</a></span></span>
 <div class="tree-children expanded">│    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business"><a href="scenarios/S001/index.html">B_S001: Cold Call to Placement</a></span></span>
-<div class="tree-children expanded">│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><span class="tree-business">🏥 B_S001_US001: Organisation</span></span>
-<div class="tree-children collapsed">│    │    │    ├─── <span class="tree-component">B_S001_US001_USS001: Receive initial sales call</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US001_USS002: Listen to platform overview</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US001_USS003: Express interest or concerns</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US001_USS004: Discuss staffing needs</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US001_USS005: Agree to job posting</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US001_USS006: Review matched candidates</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US001_USS007: Conduct interviews</span>
-│    │    │    └─── <span class="tree-component">B_S001_US001_USS008: Complete hiring process</span>
-</div>│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><span class="tree-business">🔍 B_S001_US002: JobSeeker</span></span>
-<div class="tree-children collapsed">│    │    │    ├─── <span class="tree-component">B_S001_US002_USS001: Create professional profile</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US002_USS002: Receive job notifications</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US002_USS003: Review and apply to jobs</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US002_USS004: Participate in interviews</span>
-│    │    │    ├─── <span class="tree-component">B_S001_US002_USS005: Receive job offers</span>
-│    │    │    └─── <span class="tree-component">B_S001_US002_USS006: Complete onboarding</span>
-</div>│    │    └─── <span class="tree-expandable" onclick="toggleNode(this)"><span class="tree-toggle">▶</span><span class="tree-business">📞 B_S001_US003: Sales Team</span></span>
-<div class="tree-children collapsed">│    │         ├─── <span class="tree-component">B_S001_US003_USS001: Identify target healthcare organisations</span>
-│    │         ├─── <span class="tree-component">B_S001_US003_USS002: Make initial contact</span>
-│    │         ├─── <span class="tree-component">B_S001_US003_USS003: Present platform benefits</span>
-│    │         ├─── <span class="tree-component">B_S001_US003_USS004: Facilitate onboarding</span>
-│    │         ├─── <span class="tree-component">B_S001_US003_USS005: Monitor placement success</span>
-│    │         └─── <span class="tree-component">B_S001_US003_USS006: Follow-up opportunities</span>
+<div class="tree-children expanded">│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><a href="scenarios/S001/US001.html" class="tree-business" style="text-decoration: none; color: inherit;" onclick="event.stopPropagation();">🏥 B_S001_US001: Organisation</a></span>
+<div class="tree-children collapsed">│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS001: Receive initial sales call</a>
+│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS002: Listen to platform overview</a>
+│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS003: Express interest or concerns</a>
+│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS004: Discuss staffing needs</a>
+│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS005: Agree to job posting</a>
+│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS006: Review matched candidates</a>
+│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS007: Conduct interviews</a>
+│    │    │    └─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS008: Complete hiring process</a>
+</div>│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><a href="scenarios/S001/US002.html" class="tree-business" style="text-decoration: none; color: inherit;" onclick="event.stopPropagation();">🔍 B_S001_US002: JobSeeker</a></span>
+<div class="tree-children collapsed">│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS001: Create professional profile</a>
+│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS002: Receive job notifications</a>
+│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS003: Review and apply to jobs</a>
+│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS004: Participate in interviews</a>
+│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS005: Receive job offers</a>
+│    │    │    └─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS006: Complete onboarding</a>
+</div>│    │    └─── <span class="tree-expandable" onclick="toggleNode(this)"><span class="tree-toggle">▶</span><a href="scenarios/S001/US003.html" class="tree-business" style="text-decoration: none; color: inherit;" onclick="event.stopPropagation();">📞 B_S001_US003: Sales Team</a></span>
+<div class="tree-children collapsed">│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS001: Identify target healthcare organisations</a>
+│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS002: Make initial contact</a>
+│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS003: Present platform benefits</a>
+│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS004: Facilitate onboarding</a>
+│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS005: Monitor placement success</a>
+│    │         └─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS006: Follow-up opportunities</a>
 </div>
 </div>│    ├─── <span class="tree-business">B_S002: Temporary Staffing (planned)</span>
 │    └─── <span class="tree-business">B_S003: Recurring Placements (planned)</span>

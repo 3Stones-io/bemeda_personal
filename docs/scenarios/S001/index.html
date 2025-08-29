@@ -24,61 +24,6 @@
             padding: 20px;
         }
         
-        /* Top Navigation */
-        .top-nav {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 0;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: visible;
-        }
-        
-        .nav-list {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .nav-item {
-            flex: 1;
-        }
-        
-        .nav-link {
-            display: block;
-            padding: 16px 20px;
-            text-decoration: none;
-            color: #666;
-            border-right: 1px solid #eee;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        
-        .nav-link:hover {
-            background: #f8f9fa;
-            color: #0066cc;
-        }
-        
-        .nav-link.active {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .nav-item:last-child .nav-link {
-            border-right: none;
-        }
-        
-        /* Header */
-        .scenario-header {
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 24px;
-            border-left: 4px solid #0066cc;
-        }
-        
         .back-link {
             display: inline-block;
             color: #0066cc;
@@ -90,6 +35,15 @@
             text-decoration: underline;
         }
         
+        .scenario-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-left: 4px solid #0066cc;
+        }
+        
         .scenario-title {
             display: flex;
             align-items: center;
@@ -99,449 +53,376 @@
         
         .scenario-name {
             font-size: 2.2rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #1a1a1a;
+            margin: 0;
         }
         
-        .scenario-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .meta-label {
-            font-weight: 500;
+        .scenario-description {
+            font-size: 1.1rem;
             color: #666;
-        }
-        
-        .status-active { 
-            background: #e8f5e8; 
-            color: #2e7d32; 
-            padding: 4px 8px; 
-            border-radius: 4px; 
-            font-size: 0.9rem; 
-        }
-        
-        /* Standard ID Styles */
-        .standard-id {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            font-family: 'Monaco', 'Menlo', monospace;
-            display: inline-block;
-            text-align: center;
-            min-width: 80px;
-            color: white;
-        }
-        
-        .id-scenario { background: linear-gradient(135deg, #0066cc, #004499); }
-        .id-user-story { background: linear-gradient(135deg, #e65100, #bf360c); }
-        .id-user-flow { background: linear-gradient(135deg, #c2185b, #ad1457); }
-        .id-mockup { background: linear-gradient(135deg, #7b1fa2, #6a1b9a); }
-        .id-component { background: linear-gradient(135deg, #303f9f, #283593); }
-        .id-use-case { background: linear-gradient(135deg, #1b5e20, #2e7d32); }
-        .id-feature { background: linear-gradient(135deg, #01579b, #0277bd); }
-        .id-tech-component { background: linear-gradient(135deg, #4e342e, #5d4037); }
-        
-        /* Participants Grid */
-        .participants-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
+            line-height: 1.6;
         }
         
         .participant-section {
             background: white;
             border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
         .participant-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
             border-bottom: 2px solid #f0f0f0;
         }
         
         .participant-icon {
-            font-size: 1.5rem;
+            font-size: 2rem;
         }
         
         .participant-title {
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 600;
             color: #1a1a1a;
         }
         
-        .subsection {
-            margin-bottom: 24px;
-        }
-        
-        .subsection-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
         .process-steps {
-            display: flex;
-            flex-direction: column;
+            display: grid;
             gap: 12px;
         }
         
         .process-step {
             background: #f8f9fa;
-            border: 1px solid #e9ecef;
             border-radius: 8px;
             padding: 16px;
+            border: 1px solid #e1e4e8;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
             position: relative;
-            transition: all 0.2s ease;
         }
         
         .process-step:hover {
+            background: #e8f0fe;
             border-color: #0066cc;
-            box-shadow: 0 2px 8px rgba(0,102,204,0.1);
+            transform: translateX(2px);
         }
         
         .step-id {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #666;
-            font-family: 'Monaco', 'Menlo', monospace;
-            background: rgba(255,255,255,0.8);
-            padding: 2px 6px;
-            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #0066cc;
+            background: #e8f0fe;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            display: inline-block;
+            margin-bottom: 8px;
         }
         
         .step-text {
+            font-size: 1rem;
             font-weight: 500;
-            color: #333;
-            margin-top: 8px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
         }
         
-        .step-links {
-            margin-top: 12px;
+        .step-actions {
             display: flex;
             gap: 8px;
+            justify-content: flex-end;
         }
         
-        .step-link {
-            padding: 6px 12px;
+        .step-button {
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .step-button.details {
             background: #e8f0fe;
             color: #0066cc;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s;
         }
         
-        .step-link:hover {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .step-link.github {
+        .step-button.github {
             background: #f3f4f6;
             color: #374151;
         }
         
-        .step-link.github:hover {
-            background: #374151;
-            color: white;
-        }
-        
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        /* Mermaid diagrams */
-        .mermaid {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 16px 0;
+        .step-button:hover {
+            opacity: 0.8;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>
-        mermaid.initialize({ startOnLoad: true });
+        function openGitHub(componentId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Try different search strategies for better results
+            let searchQuery;
+            
+            // For USS components, also search for parent US and S
+            if (componentId.includes('_USS')) {
+                // Extract parent components
+                const parts = componentId.split('_');
+                const scenario = parts.slice(0, 2).join('_'); // B_S001
+                const userStory = parts.slice(0, 3).join('_'); // B_S001_US001
+                
+                // Search for this USS OR its parent US OR parent scenario
+                searchQuery = `is:issue label:component (${componentId} OR ${userStory} OR ${scenario} in:title)`;
+            } else if (componentId.includes('_US')) {
+                // For US components, search for US or parent scenario
+                const scenario = componentId.split('_').slice(0, 2).join('_');
+                searchQuery = `is:issue label:component (${componentId} OR ${scenario} in:title)`;
+            } else {
+                // For scenario components
+                searchQuery = `is:issue label:component ${componentId} in:title`;
+            }
+            
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            console.log('GitHub search:', searchQuery);
+            window.open(url, '_blank');
+        }
     </script>
 </head>
 <body>
     <div class="container">
+        <a href="../index.html" class="back-link">← Back to Scenarios</a>
         
-        <!-- Top Navigation -->
-        <nav class="top-nav">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="../../index.html" class="nav-link">🏠 Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../../business/index.html" class="nav-link active">📋 Business Logic</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../../uxui/index.html" class="nav-link">🎨 UX/UI Design</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../../technical/index.html" class="nav-link">⚙️ Technical</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../../dashboard/index.html" class="nav-link">📊 Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../../unified-view/index.html" class="nav-link">🔍 Registry</a>
-                </li>
-            </ul>
-        </nav>
-        
-        <!-- Quick Navigation -->
-        <div style="background: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
-            <span style="color: #666; font-weight: 500;">Quick Links:</span>
-            <a href="#user-stories" style="color: #0066cc; text-decoration: none; font-size: 0.9rem;">📝 User Stories</a>
-            <a href="#ui-components" style="color: #0066cc; text-decoration: none; font-size: 0.9rem;">🎨 UI Components</a>
-            <a href="#tech-components" style="color: #0066cc; text-decoration: none; font-size: 0.9rem;">⚙️ Tech Components</a>
-            <a href="#testing" style="color: #0066cc; text-decoration: none; font-size: 0.9rem;">🧪 Testing</a>
-            <a href="../../sitemap.html" style="color: #0066cc; text-decoration: none; font-size: 0.9rem;">🗺️ Sitemap</a>
-        </div>
-        
-        <!-- Scenario Header -->
         <div class="scenario-header">
-            <a href="../../business/index.html" class="back-link">← Back to Business Logic</a>
             <div class="scenario-title">
-                <span class="standard-id id-scenario">B_S001</span>
-                <h1 class="scenario-name">Cold Call to Candidate Placement</h1>
+                <h1 class="scenario-name">B_S001: Cold Call to Placement</h1>
             </div>
-            <div class="scenario-meta">
-                <div class="meta-item">
-                    <span class="meta-label">Status:</span>
-                    <span class="status-active">Active Development</span>
-                </div>
-                <div class="meta-item">
-                    <span class="meta-label">Priority:</span>
-                    <span>High</span>
-                </div>
-                <div class="meta-item">
-                    <span class="meta-label">Progress:</span>
-                    <span>75%</span>
-                </div>
-                <div class="meta-item">
-                    <span class="meta-label">MVP:</span>
-                    <span>Vermittlung</span>
-                </div>
-            </div>
-            <p style="color: #666; font-size: 1.1rem;">Complete recruitment workflow from initial sales contact through candidate placement and permanent hiring, including platform onboarding and comprehensive follow-up processes.</p>
+            <p class="scenario-description">
+                Complete workflow from initial cold call to successful healthcare placement, covering organisation needs, 
+                job seeker journey, and sales team coordination.
+            </p>
         </div>
         
-        <!-- Individual Process Level - User Stories -->
-        <div id="user-stories" class="issues-section" style="margin-bottom: 32px;">
-            <div class="issues-header">
-                <h2 class="section-title">👤 Individual Process Level - User Stories</h2>
-            </div>
-            <p style="color: #666; margin-bottom: 20px;">Individual steps each participant takes throughout the complete scenario workflow.</p>
-        </div>
-
-        <!-- Participants Sections -->
-        <div class="participants-grid">
-            <!-- Organisation Participant -->
-            <div class="participant-section">
-                <div class="participant-header">
-                    <span class="participant-icon">🏥</span>
-                    <h2 class="participant-title">1: Organisation</h2>
-                </div>
-                
-                <!-- Process Flow -->
-                <div class="subsection">
-                    <h3 class="subsection-title">📋 Process Flow</h3>
-                    <div class="process-steps">
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US001_USS001</div>
-                            <div class="step-text">Receive initial sales call</div>
-                            <div class="step-links">
-                                <a href="US001.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US001_USS001" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US001_USS002</div>
-                            <div class="step-text">Listen to platform overview</div>
-                            <div class="step-links">
-                                <a href="US001.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US001_USS002" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US001_USS003</div>
-                            <div class="step-text">Express interest or concerns</div>
-                            <div class="step-links">
-                                <a href="US001.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US001_USS003" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Mermaid Diagram -->
-                <div class="subsection">
-                    <h3 class="subsection-title">🔄 Process Diagram</h3>
-                    <div class="mermaid">
-                        graph TD
-                            A[Cold Call Received] --> B[Discuss Needs]
-                            B --> C[Job Posting Created]
-                            C --> D[Review Candidates]
-                            D --> E[Interview Process]
-                            E --> F[Candidate Selection]
-                            F --> G[Complete Hiring]
-                            
-                            style A fill:#e8f0fe
-                            style C fill:#fff3e0
-                            style G fill:#e8f5e8
-                    </div>
-                </div>
-                
+        <!-- Organisation Participant -->
+        <div class="participant-section">
+            <div class="participant-header">
+                <span class="participant-icon">🏥</span>
+                <h2 class="participant-title">Organisation (B_S001_US001)</h2>
             </div>
             
-            <!-- JobSeeker Participant -->
-            <div class="participant-section">
-                <div class="participant-header">
-                    <span class="participant-icon">🔍</span>
-                    <h2 class="participant-title">2: JobSeeker</h2>
-                </div>
-                
-                <!-- Process Flow -->
-                <div class="subsection">
-                    <h3 class="subsection-title">📋 Process Flow</h3>
-                    <div class="process-steps">
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US002_USS001</div>
-                            <div class="step-text">Create professional profile</div>
-                            <div class="step-links">
-                                <a href="US002.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US002_USS001" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US002_USS002</div>
-                            <div class="step-text">Apply to matched opportunities</div>
-                            <div class="step-links">
-                                <a href="US002.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US002_USS002" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US002_USS003</div>
-                            <div class="step-text">Complete interview and onboarding</div>
-                            <div class="step-links">
-                                <a href="US002.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US002_USS003" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
+            <div class="process-steps">
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS001</div>
+                    <div class="step-text">Receive initial sales call</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS001', event);">GitHub</button>
                     </div>
-                </div>
+                </a>
                 
-                <!-- Mermaid Diagram -->
-                <div class="subsection">
-                    <h3 class="subsection-title">🔄 Process Diagram</h3>
-                    <div class="mermaid">
-                        graph TD
-                            A[Create Profile] --> B[Receive Match]
-                            B --> C[Review & Apply]
-                            C --> D[Interview]
-                            D --> E[Receive Offer]
-                            E --> F[Accept Position]
-                            F --> G[Start Work]
-                            
-                            style A fill:#e8f0fe
-                            style C fill:#fff3e0
-                            style G fill:#e8f5e8
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS002</div>
+                    <div class="step-text">Listen to platform overview</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS002', event);">GitHub</button>
                     </div>
-                </div>
+                </a>
                 
-            </div>
-            
-            <!-- Sales Team Participant -->
-            <div class="participant-section">
-                <div class="participant-header">
-                    <span class="participant-icon">📞</span>
-                    <h2 class="participant-title">3: Sales Team</h2>
-                </div>
-                
-                <!-- Process Flow -->
-                <div class="subsection">
-                    <h3 class="subsection-title">📋 Process Flow</h3>
-                    <div class="process-steps">
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US003_USS001</div>
-                            <div class="step-text">Identify target healthcare organisations</div>
-                            <div class="step-links">
-                                <a href="US003.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US003_USS001" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US003_USS002</div>
-                            <div class="step-text">Make initial contact and pitch platform</div>
-                            <div class="step-links">
-                                <a href="US003.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US003_USS002" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
-                        <div class="process-step">
-                            <div class="step-id">B_S001_US003_USS003</div>
-                            <div class="step-text">Support onboarding and maintain relationships</div>
-                            <div class="step-links">
-                                <a href="US003.html" class="step-link">Details</a>
-                                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001_US003_USS003" target="_blank" class="step-link github">GitHub</a>
-                            </div>
-                        </div>
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS003</div>
+                    <div class="step-text">Express interest or concerns</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS003', event);">GitHub</button>
                     </div>
-                </div>
+                </a>
                 
-                <!-- Mermaid Diagram -->
-                <div class="subsection">
-                    <h3 class="subsection-title">🔄 Process Diagram</h3>
-                    <div class="mermaid">
-                        graph TD
-                            A[Identify Prospects] --> B[Initial Contact]
-                            B --> C[Demonstrate Platform]
-                            C --> D[Facilitate Onboarding]
-                            D --> E[Monitor Success]
-                            E --> F[Identify Expansion]
-                            F --> G[Maintain Relationship]
-                            
-                            style A fill:#e8f0fe
-                            style C fill:#fff3e0
-                            style G fill:#e8f5e8
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS004</div>
+                    <div class="step-text">Discuss staffing needs</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS004', event);">GitHub</button>
                     </div>
-                </div>
+                </a>
                 
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS005</div>
+                    <div class="step-text">Agree to job posting</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS005', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS006</div>
+                    <div class="step-text">Review matched candidates</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS006', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS007</div>
+                    <div class="step-text">Conduct interviews</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS007', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US001_USS008</div>
+                    <div class="step-text">Complete hiring process</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US001_USS008', event);">GitHub</button>
+                    </div>
+                </a>
             </div>
         </div>
+        
+        <!-- JobSeeker Participant -->
+        <div class="participant-section">
+            <div class="participant-header">
+                <span class="participant-icon">🔍</span>
+                <h2 class="participant-title">JobSeeker (B_S001_US002)</h2>
+            </div>
+            
+            <div class="process-steps">
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US002_USS001</div>
+                    <div class="step-text">Create professional profile</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US002_USS001', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US002_USS002</div>
+                    <div class="step-text">Receive job notifications</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US002_USS002', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US002_USS003</div>
+                    <div class="step-text">Review and apply to jobs</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US002_USS003', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US002_USS004</div>
+                    <div class="step-text">Participate in interviews</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US002_USS004', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US002_USS005</div>
+                    <div class="step-text">Receive job offers</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US002_USS005', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US002_USS006</div>
+                    <div class="step-text">Complete onboarding</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US002_USS006', event);">GitHub</button>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Sales Team Participant -->
+        <div class="participant-section">
+            <div class="participant-header">
+                <span class="participant-icon">📞</span>
+                <h2 class="participant-title">Sales Team (B_S001_US003)</h2>
+            </div>
+            
+            <div class="process-steps">
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US003_USS001</div>
+                    <div class="step-text">Identify target healthcare organisations</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US003_USS001', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US003_USS002</div>
+                    <div class="step-text">Make initial contact</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US003_USS002', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US003_USS003</div>
+                    <div class="step-text">Present platform benefits</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US003_USS003', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US003_USS004</div>
+                    <div class="step-text">Facilitate onboarding</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US003_USS004', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US003_USS005</div>
+                    <div class="step-text">Monitor placement success</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US003_USS005', event);">GitHub</button>
+                    </div>
+                </a>
+                
+                <a href="../integration/templates/B_S001-template.html" class="process-step">
+                    <div class="step-id">B_S001_US003_USS006</div>
+                    <div class="step-text">Follow-up opportunities</div>
+                    <div class="step-actions">
+                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
+                        <button class="step-button github" onclick="openGitHub('B_S001_US003_USS006', event);">GitHub</button>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

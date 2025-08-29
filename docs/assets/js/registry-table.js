@@ -81,12 +81,22 @@ class RegistryTable {
             this.renderTable();
             this.updateResultsCount();
             
+            // Update comparison view if function exists
+            if (typeof window.updateComparisonData === 'function') {
+                window.updateComparisonData(this.components);
+            }
+            
         } catch (error) {
             console.warn('Failed to fetch from GitHub, using mock data:', error);
             this.components = this.getMockComponents();
             this.filteredComponents = [...this.components];
             this.renderTable();
             this.updateResultsCount();
+            
+            // Update comparison view with mock data if function exists
+            if (typeof window.updateComparisonData === 'function') {
+                window.updateComparisonData(this.components);
+            }
         }
 
         this.isLoading = false;

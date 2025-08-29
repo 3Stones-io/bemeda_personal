@@ -234,7 +234,7 @@
         <!-- Scenario Cards Grid -->
         <div class="scenarios-grid">
             <!-- Scenario S001 Card -->
-            <div class="scenario-card">
+            <a href="../scenarios/S001/index.html" class="scenario-card" style="text-decoration: none; color: inherit; display: block;">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
                     <div style="flex: 1;">
                         <div class="scenario-id">B_S001</div>
@@ -242,7 +242,7 @@
                         <p class="scenario-description">Complete recruitment workflow from initial sales contact through successful candidate placement and ongoing relationship management.</p>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <a href="../scenarios/S001/index.html" class="action-button">📋 View Details</a>
+                        <span class="action-button" onclick="event.preventDefault(); event.stopPropagation(); window.open('https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001', '_blank');">🔗 GitHub</span>
                     </div>
                 </div>
                 <div class="stats-grid">
@@ -267,10 +267,10 @@
                     <span class="participant-tag">🔍 JobSeekers</span>
                     <span class="participant-tag">📞 Sales Team</span>
                 </div>
-            </div>
+            </a>
             
             <!-- Additional Scenarios Placeholder -->
-            <div class="scenario-card coming-soon">
+            <a href="../integration/templates/B_S002-template.html" class="scenario-card coming-soon" style="text-decoration: none; color: inherit; display: block;">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
                     <div style="flex: 1;">
                         <div class="scenario-id" style="color: #999;">B_S002</div>
@@ -278,13 +278,13 @@
                         <p class="scenario-description" style="color: #999;">Short-term staffing solutions for healthcare emergencies and seasonal demands.</p>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <span class="action-button secondary">🚧 Planned</span>
+                        <span class="action-button secondary" onclick="event.preventDefault(); event.stopPropagation();">🚧 Planned</span>
                     </div>
                 </div>
                 <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Inherits 80% from S001</div>
-            </div>
+            </a>
             
-            <div class="scenario-card coming-soon">
+            <a href="../integration/templates/B_S003-template.html" class="scenario-card coming-soon" style="text-decoration: none; color: inherit; display: block;">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
                     <div style="flex: 1;">
                         <div class="scenario-id" style="color: #999;">B_S003</div>
@@ -292,11 +292,11 @@
                         <p class="scenario-description" style="color: #999;">Long-term partnership management with repeat client relationships.</p>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <span class="action-button secondary">🚧 Planned</span>
+                        <span class="action-button secondary" onclick="event.preventDefault(); event.stopPropagation();">🚧 Planned</span>
                     </div>
                 </div>
                 <div style="text-align: center; padding: 20px; color: #999; font-style: italic;">Coming Soon - Inherits 95% from S001+S002</div>
-            </div>
+            </a>
         </div>
         
         <!-- Quick Actions -->
