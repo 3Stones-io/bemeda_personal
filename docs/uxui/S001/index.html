@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U_S001: Cold Call to Placement - UX/UI Design - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Compact Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-link);
+            text-decoration: none;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* UX Component Grid */
+        .ux-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .ux-section {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+            border-left: 4px solid var(--color-ux);
+        }
+        
+        .ux-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--color-border-light);
+        }
+        
+        .ux-icon {
+            font-size: 2rem;
+        }
+        
+        .ux-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .ux-components {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .ux-component {
+            background: var(--color-bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid var(--color-border-light);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+        }
+        
+        .ux-component:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-ux);
+            transform: translateX(2px);
+        }
+        
+        .component-id {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-ux);
+            background: var(--color-ux-lighter);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .component-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .component-description {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .component-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .component-button {
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .component-button.github {
+            background: var(--color-bg-hover);
+            color: var(--color-text-secondary);
+        }
+        
+        .component-button:hover {
+            opacity: 0.8;
+        }
+    </style>
+    <script>
+        function openGitHub(componentId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            let searchQuery = `is:issue label:component ${componentId} in:title`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            console.log('GitHub search:', searchQuery);
+            window.open(url, '_blank');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to UX/UI Design</a>
+        
+        <!-- Compact Header -->
+        <div class="header">
+            <h1>U_S001: Cold Call to Placement - UX Design</h1>
+            <p>User experience flows, mockups, and components for the complete recruitment workflow from initial contact through successful placement.</p>
+        </div>
+        
+        <!-- UX Components Grid -->
+        <div class="ux-grid">
+            <!-- User Flows Section -->
+            <div class="ux-section">
+                <div class="ux-header">
+                    <span class="ux-icon">🔄</span>
+                    <h2 class="ux-title">User Flows</h2>
+                </div>
+            
+                <div class="ux-components">
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_UX001</div>
+                        <div class="component-text">Organisation Dashboard Flow</div>
+                        <div class="component-description">Complete navigation flow for healthcare organisations from login through candidate selection and hiring decisions.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_UX001', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_UX002</div>
+                        <div class="component-text">JobSeeker Application Flow</div>
+                        <div class="component-description">End-to-end user journey from profile creation through job application, interview scheduling, and offer acceptance.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_UX002', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_UX003</div>
+                        <div class="component-text">Sales Team CRM Flow</div>
+                        <div class="component-description">Sales representative workflow from lead identification through client onboarding and success monitoring.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_UX003', event);">GitHub</button>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        
+            <!-- Mockups Section -->
+            <div class="ux-section">
+                <div class="ux-header">
+                    <span class="ux-icon">🖼️</span>
+                    <h2 class="ux-title">Screen Mockups</h2>
+                </div>
+                
+                <div class="ux-components">
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_M001</div>
+                        <div class="component-text">Healthcare Organisation Dashboard</div>
+                        <div class="component-description">Main dashboard interface showing active job postings, candidate pipeline, and recruitment analytics.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_M001', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_M002</div>
+                        <div class="component-text">JobSeeker Profile Creation</div>
+                        <div class="component-description">Multi-step profile creation wizard with skills assessment, experience validation, and preference settings.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_M002', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_M003</div>
+                        <div class="component-text">Sales CRM Interface</div>
+                        <div class="component-description">Customer relationship management interface for tracking leads, opportunities, and client interactions.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_M003', event);">GitHub</button>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        
+            <!-- UI Components Section -->
+            <div class="ux-section">
+                <div class="ux-header">
+                    <span class="ux-icon">🧩</span>
+                    <h2 class="ux-title">UI Components</h2>
+                </div>
+                
+                <div class="ux-components">
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_C001</div>
+                        <div class="component-text">Navigation Bar Component</div>
+                        <div class="component-description">Responsive navigation with role-based menu items, notifications, and user profile access.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_C001', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_C002</div>
+                        <div class="component-text">Candidate Card Component</div>
+                        <div class="component-description">Reusable candidate display card with key information, skills tags, and action buttons.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_C002', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_C003</div>
+                        <div class="component-text">Job Posting Form</div>
+                        <div class="component-description">Interactive form component for creating and editing job postings with validation and auto-save.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_C003', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/U_S001-template.html" class="ux-component">
+                        <div class="component-id">U_S001_C004</div>
+                        <div class="component-text">Progress Tracker Component</div>
+                        <div class="component-description">Visual progress indicator showing recruitment pipeline stages and current status.</div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('U_S001_C004', event);">GitHub</button>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+        </div> <!-- End ux-grid -->
+        
+    </div>
+</body>
+</html>

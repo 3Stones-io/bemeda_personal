@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{SCENARIO_ID}}: {{SCENARIO_TITLE}} - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Compact Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-link);
+            text-decoration: none;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Three column layout for participants */
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .participant-section {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        @media (max-width: 1200px) {
+            .participants-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .participant-section {
+                padding: 32px;
+            }
+        }
+        
+        .participant-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--color-border-light);
+        }
+        
+        .participant-icon {
+            font-size: 2rem;
+        }
+        
+        .participant-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .process-steps {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .process-step {
+            background: var(--color-bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid var(--color-border-light);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+        }
+        
+        .process-step:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-link);
+            transform: translateX(2px);
+        }
+        
+        .step-id {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-link);
+            background: var(--color-bg-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .step-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .step-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .step-button {
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .step-button.github {
+            background: var(--color-bg-hover);
+            color: var(--color-text-secondary);
+        }
+        
+        .step-button:hover {
+            opacity: 0.8;
+        }
+    </style>
+    <script>
+        function openGitHub(componentId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Try different search strategies for better results
+            let searchQuery;
+            
+            // For USS components, also search for parent US and S
+            if (componentId.includes('_USS')) {
+                // Extract parent components
+                const parts = componentId.split('_');
+                const scenario = parts.slice(0, 2).join('_'); // B_S001
+                const userStory = parts.slice(0, 3).join('_'); // B_S001_US001
+                
+                // Search for this USS OR its parent US OR parent scenario
+                searchQuery = `is:issue label:component (${componentId} OR ${userStory} OR ${scenario} in:title)`;
+            } else if (componentId.includes('_US')) {
+                // For US components, search for US or parent scenario
+                const scenario = componentId.split('_').slice(0, 2).join('_');
+                searchQuery = `is:issue label:component (${componentId} OR ${scenario} in:title)`;
+            } else {
+                // For scenario components
+                searchQuery = `is:issue label:component ${componentId} in:title`;
+            }
+            
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            console.log('GitHub search:', searchQuery);
+            window.open(url, '_blank');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to {{SECTION_NAME}}</a>
+        
+        <!-- Compact Header -->
+        <div class="header">
+            <h1>{{SCENARIO_ID}}: {{SCENARIO_TITLE}}</h1>
+            <p>{{SCENARIO_DESCRIPTION}}</p>
+        </div>
+        
+        <!-- Three Participants Side by Side -->
+        <div class="participants-grid">
+            <!-- {{PARTICIPANT_1_NAME}} Participant -->
+            <div class="participant-section">
+                <div class="participant-header">
+                    <span class="participant-icon">{{PARTICIPANT_1_ICON}}</span>
+                    <h2 class="participant-title">{{PARTICIPANT_1_NAME}} ({{PARTICIPANT_1_ID}})</h2>
+                </div>
+            
+                <div class="process-steps">
+                    <!-- PARTICIPANT 1 STEPS - Replace with actual steps -->
+                    <a href="{{TEMPLATE_LINK}}" class="process-step">
+                        <div class="step-id">{{STEP_ID}}</div>
+                        <div class="step-text">{{STEP_TEXT}}</div>
+                        <div class="step-actions">
+                            <button class="step-button github" onclick="openGitHub('{{STEP_ID}}', event);">GitHub</button>
+                        </div>
+                    </a>
+                    <!-- Repeat for all steps -->
+                </div>
+            </div>
+        
+            <!-- {{PARTICIPANT_2_NAME}} Participant -->
+            <div class="participant-section">
+                <div class="participant-header">
+                    <span class="participant-icon">{{PARTICIPANT_2_ICON}}</span>
+                    <h2 class="participant-title">{{PARTICIPANT_2_NAME}} ({{PARTICIPANT_2_ID}})</h2>
+                </div>
+                
+                <div class="process-steps">
+                    <!-- PARTICIPANT 2 STEPS - Replace with actual steps -->
+                    <a href="{{TEMPLATE_LINK}}" class="process-step">
+                        <div class="step-id">{{STEP_ID}}</div>
+                        <div class="step-text">{{STEP_TEXT}}</div>
+                        <div class="step-actions">
+                            <button class="step-button github" onclick="openGitHub('{{STEP_ID}}', event);">GitHub</button>
+                        </div>
+                    </a>
+                    <!-- Repeat for all steps -->
+                </div>
+            </div>
+        
+            <!-- {{PARTICIPANT_3_NAME}} Participant -->
+            <div class="participant-section">
+                <div class="participant-header">
+                    <span class="participant-icon">{{PARTICIPANT_3_ICON}}</span>
+                    <h2 class="participant-title">{{PARTICIPANT_3_NAME}} ({{PARTICIPANT_3_ID}})</h2>
+                </div>
+                
+                <div class="process-steps">
+                    <!-- PARTICIPANT 3 STEPS - Replace with actual steps -->
+                    <a href="{{TEMPLATE_LINK}}" class="process-step">
+                        <div class="step-id">{{STEP_ID}}</div>
+                        <div class="step-text">{{STEP_TEXT}}</div>
+                        <div class="step-actions">
+                            <button class="step-button github" onclick="openGitHub('{{STEP_ID}}', event);">GitHub</button>
+                        </div>
+                    </a>
+                    <!-- Repeat for all steps -->
+                </div>
+            </div>
+            
+        </div> <!-- End participants-grid -->
+        
+    </div>
+</body>
+</html>

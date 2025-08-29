@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B_S001: Cold Call to Placement - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
     <style>
         * {
             margin: 0;
@@ -14,63 +15,74 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f7;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
         
+        /* Compact Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+        }
+        
         .back-link {
-            display: inline-block;
-            color: #0066cc;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-link);
             text-decoration: none;
-            margin-bottom: 16px;
+            margin-bottom: 32px;
+            font-weight: 500;
         }
         
         .back-link:hover {
             text-decoration: underline;
         }
         
-        .scenario-header {
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 24px;
-            border-left: 4px solid #0066cc;
-        }
-        
-        .scenario-title {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .scenario-name {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin: 0;
-        }
-        
-        .scenario-description {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 24px;
-            line-height: 1.6;
+        /* Three column layout for participants */
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
         }
         
         .participant-section {
-            background: white;
+            background: var(--color-bg-primary);
             border-radius: 12px;
-            padding: 32px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        @media (max-width: 1200px) {
+            .participants-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .participant-section {
+                padding: 32px;
+            }
         }
         
         .participant-header {
@@ -79,7 +91,7 @@
             gap: 16px;
             margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--color-border-light);
         }
         
         .participant-icon {
@@ -87,9 +99,9 @@
         }
         
         .participant-title {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--color-text-primary);
         }
         
         .process-steps {
@@ -98,10 +110,10 @@
         }
         
         .process-step {
-            background: #f8f9fa;
+            background: var(--color-bg-tertiary);
             border-radius: 8px;
             padding: 16px;
-            border: 1px solid #e1e4e8;
+            border: 1px solid var(--color-border-light);
             transition: all 0.2s;
             cursor: pointer;
             text-decoration: none;
@@ -111,16 +123,16 @@
         }
         
         .process-step:hover {
-            background: #e8f0fe;
-            border-color: #0066cc;
+            background: var(--color-bg-hover);
+            border-color: var(--color-link);
             transform: translateX(2px);
         }
         
         .step-id {
             font-size: 0.8rem;
             font-weight: 700;
-            color: #0066cc;
-            background: #e8f0fe;
+            color: var(--color-link);
+            background: var(--color-bg-secondary);
             padding: 4px 8px;
             border-radius: 4px;
             font-family: 'Monaco', monospace;
@@ -131,7 +143,7 @@
         .step-text {
             font-size: 1rem;
             font-weight: 500;
-            color: #1a1a1a;
+            color: var(--color-text-primary);
             margin-bottom: 8px;
         }
         
@@ -151,14 +163,9 @@
             font-weight: 500;
         }
         
-        .step-button.details {
-            background: #e8f0fe;
-            color: #0066cc;
-        }
-        
         .step-button.github {
-            background: #f3f4f6;
-            color: #374151;
+            background: var(--color-bg-hover);
+            color: var(--color-text-secondary);
         }
         
         .step-button:hover {
@@ -203,29 +210,26 @@
     <div class="container">
         <a href="../index.html" class="back-link">← Back to Scenarios</a>
         
-        <div class="scenario-header">
-            <div class="scenario-title">
-                <h1 class="scenario-name">B_S001: Cold Call to Placement</h1>
-            </div>
-            <p class="scenario-description">
-                Complete workflow from initial cold call to successful healthcare placement, covering organisation needs, 
-                job seeker journey, and sales team coordination.
-            </p>
+        <!-- Compact Header -->
+        <div class="header">
+            <h1>B_S001: Cold Call to Placement</h1>
+            <p>Complete workflow from initial cold call to successful healthcare placement, covering organisation needs, job seeker journey, and sales team coordination.</p>
         </div>
         
-        <!-- Organisation Participant -->
-        <div class="participant-section">
-            <div class="participant-header">
-                <span class="participant-icon">🏥</span>
-                <h2 class="participant-title">Organisation (B_S001_US001)</h2>
-            </div>
+        <!-- Three Participants Side by Side -->
+        <div class="participants-grid">
+            <!-- Organisation Participant -->
+            <div class="participant-section">
+                <div class="participant-header">
+                    <span class="participant-icon">🏥</span>
+                    <h2 class="participant-title">Organisation (B_S001_US001)</h2>
+                </div>
             
             <div class="process-steps">
                 <a href="../integration/templates/B_S001-template.html" class="process-step">
                     <div class="step-id">B_S001_US001_USS001</div>
                     <div class="step-text">Receive initial sales call</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS001', event);">GitHub</button>
                     </div>
                 </a>
@@ -234,7 +238,6 @@
                     <div class="step-id">B_S001_US001_USS002</div>
                     <div class="step-text">Listen to platform overview</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS002', event);">GitHub</button>
                     </div>
                 </a>
@@ -243,7 +246,6 @@
                     <div class="step-id">B_S001_US001_USS003</div>
                     <div class="step-text">Express interest or concerns</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS003', event);">GitHub</button>
                     </div>
                 </a>
@@ -252,7 +254,6 @@
                     <div class="step-id">B_S001_US001_USS004</div>
                     <div class="step-text">Discuss staffing needs</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS004', event);">GitHub</button>
                     </div>
                 </a>
@@ -261,7 +262,6 @@
                     <div class="step-id">B_S001_US001_USS005</div>
                     <div class="step-text">Agree to job posting</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS005', event);">GitHub</button>
                     </div>
                 </a>
@@ -270,7 +270,6 @@
                     <div class="step-id">B_S001_US001_USS006</div>
                     <div class="step-text">Review matched candidates</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS006', event);">GitHub</button>
                     </div>
                 </a>
@@ -279,7 +278,6 @@
                     <div class="step-id">B_S001_US001_USS007</div>
                     <div class="step-text">Conduct interviews</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS007', event);">GitHub</button>
                     </div>
                 </a>
@@ -288,7 +286,6 @@
                     <div class="step-id">B_S001_US001_USS008</div>
                     <div class="step-text">Complete hiring process</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US001_USS008', event);">GitHub</button>
                     </div>
                 </a>
@@ -307,7 +304,6 @@
                     <div class="step-id">B_S001_US002_USS001</div>
                     <div class="step-text">Create professional profile</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US002_USS001', event);">GitHub</button>
                     </div>
                 </a>
@@ -316,7 +312,6 @@
                     <div class="step-id">B_S001_US002_USS002</div>
                     <div class="step-text">Receive job notifications</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US002_USS002', event);">GitHub</button>
                     </div>
                 </a>
@@ -325,7 +320,6 @@
                     <div class="step-id">B_S001_US002_USS003</div>
                     <div class="step-text">Review and apply to jobs</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US002_USS003', event);">GitHub</button>
                     </div>
                 </a>
@@ -334,7 +328,6 @@
                     <div class="step-id">B_S001_US002_USS004</div>
                     <div class="step-text">Participate in interviews</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US002_USS004', event);">GitHub</button>
                     </div>
                 </a>
@@ -343,7 +336,6 @@
                     <div class="step-id">B_S001_US002_USS005</div>
                     <div class="step-text">Receive job offers</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US002_USS005', event);">GitHub</button>
                     </div>
                 </a>
@@ -352,7 +344,6 @@
                     <div class="step-id">B_S001_US002_USS006</div>
                     <div class="step-text">Complete onboarding</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US002_USS006', event);">GitHub</button>
                     </div>
                 </a>
@@ -371,7 +362,6 @@
                     <div class="step-id">B_S001_US003_USS001</div>
                     <div class="step-text">Identify target healthcare organisations</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US003_USS001', event);">GitHub</button>
                     </div>
                 </a>
@@ -380,7 +370,6 @@
                     <div class="step-id">B_S001_US003_USS002</div>
                     <div class="step-text">Make initial contact</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US003_USS002', event);">GitHub</button>
                     </div>
                 </a>
@@ -389,7 +378,6 @@
                     <div class="step-id">B_S001_US003_USS003</div>
                     <div class="step-text">Present platform benefits</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US003_USS003', event);">GitHub</button>
                     </div>
                 </a>
@@ -398,7 +386,6 @@
                     <div class="step-id">B_S001_US003_USS004</div>
                     <div class="step-text">Facilitate onboarding</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US003_USS004', event);">GitHub</button>
                     </div>
                 </a>
@@ -407,7 +394,6 @@
                     <div class="step-id">B_S001_US003_USS005</div>
                     <div class="step-text">Monitor placement success</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US003_USS005', event);">GitHub</button>
                     </div>
                 </a>
@@ -416,12 +402,13 @@
                     <div class="step-id">B_S001_US003_USS006</div>
                     <div class="step-text">Follow-up opportunities</div>
                     <div class="step-actions">
-                        <button class="step-button details" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='../integration/templates/B_S001-template.html';">Details</button>
                         <button class="step-button github" onclick="openGitHub('B_S001_US003_USS006', event);">GitHub</button>
                     </div>
                 </a>
             </div>
         </div>
+        
+        </div> <!-- End participants-grid -->
         
     </div>
 </body>

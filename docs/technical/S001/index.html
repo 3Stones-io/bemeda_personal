@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T_S001: Cold Call to Placement - Technical Implementation - Bemeda Platform</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Compact Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-link);
+            text-decoration: none;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Technical Component Grid */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .tech-section {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+            border-left: 4px solid var(--color-tech);
+        }
+        
+        .tech-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--color-border-light);
+        }
+        
+        .tech-icon {
+            font-size: 2rem;
+        }
+        
+        .tech-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .tech-components {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .tech-component {
+            background: var(--color-bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid var(--color-border-light);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+        }
+        
+        .tech-component:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-tech);
+            transform: translateX(2px);
+        }
+        
+        .component-id {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-tech);
+            background: var(--color-tech-lighter);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .component-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .component-description {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .tech-tag {
+            background: var(--color-tech-lighter);
+            color: var(--color-tech-dark);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .component-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .component-button {
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .component-button.github {
+            background: var(--color-bg-hover);
+            color: var(--color-text-secondary);
+        }
+        
+        .component-button:hover {
+            opacity: 0.8;
+        }
+    </style>
+    <script>
+        function openGitHub(componentId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            let searchQuery = `is:issue label:component ${componentId} in:title`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            console.log('GitHub search:', searchQuery);
+            window.open(url, '_blank');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Technical Implementation</a>
+        
+        <!-- Compact Header -->
+        <div class="header">
+            <h1>T_S001: Cold Call to Placement - Technical Implementation</h1>
+            <p>Functional requirements, platform features, and technical components powering the complete recruitment workflow system.</p>
+        </div>
+        
+        <!-- Technical Components Grid -->
+        <div class="tech-grid">
+            <!-- Use Cases Section -->
+            <div class="tech-section">
+                <div class="tech-header">
+                    <span class="tech-icon">📋</span>
+                    <h2 class="tech-title">Use Cases</h2>
+                </div>
+            
+                <div class="tech-components">
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_UC001</div>
+                        <div class="component-text">User Authentication and Registration</div>
+                        <div class="component-description">Complete authentication system with role-based access control for healthcare organisations, job seekers, and sales team members.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">OAuth 2.0</span>
+                            <span class="tech-tag">JWT</span>
+                            <span class="tech-tag">RBAC</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_UC001', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_UC002</div>
+                        <div class="component-text">Profile Management System</div>
+                        <div class="component-description">Comprehensive profile creation and management for different user types with skills validation and verification workflows.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">GraphQL</span>
+                            <span class="tech-tag">Validation</span>
+                            <span class="tech-tag">File Upload</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_UC002', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_UC003</div>
+                        <div class="component-text">Notification and Communication</div>
+                        <div class="component-description">Multi-channel notification system for job alerts, interview scheduling, and status updates across email, SMS, and in-app.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">WebSocket</span>
+                            <span class="tech-tag">Email API</span>
+                            <span class="tech-tag">SMS Gateway</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_UC003', event);">GitHub</button>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        
+            <!-- Features Section -->
+            <div class="tech-section">
+                <div class="tech-header">
+                    <span class="tech-icon">⚡</span>
+                    <h2 class="tech-title">Platform Features</h2>
+                </div>
+                
+                <div class="tech-components">
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_F001</div>
+                        <div class="component-text">Job Matching Algorithm</div>
+                        <div class="component-description">AI-powered matching system that pairs candidates with opportunities based on skills, experience, location, and preferences.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Machine Learning</span>
+                            <span class="tech-tag">Elasticsearch</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_F001', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_F002</div>
+                        <div class="component-text">Interview Scheduling System</div>
+                        <div class="component-description">Automated scheduling platform with calendar integration, timezone handling, and video conference setup.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Calendar API</span>
+                            <span class="tech-tag">Video SDK</span>
+                            <span class="tech-tag">Timezone</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_F002', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_F003</div>
+                        <div class="component-text">Analytics and Reporting</div>
+                        <div class="component-description">Comprehensive analytics dashboard with recruitment metrics, performance indicators, and custom reporting.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Analytics</span>
+                            <span class="tech-tag">Charts</span>
+                            <span class="tech-tag">Export</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_F003', event);">GitHub</button>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        
+            <!-- Technical Components Section -->
+            <div class="tech-section">
+                <div class="tech-header">
+                    <span class="tech-icon">🔧</span>
+                    <h2 class="tech-title">Technical Components</h2>
+                </div>
+                
+                <div class="tech-components">
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_TC001</div>
+                        <div class="component-text">API Gateway Service</div>
+                        <div class="component-description">Centralized API gateway handling authentication, rate limiting, request routing, and response transformation.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Kong</span>
+                            <span class="tech-tag">Rate Limiting</span>
+                            <span class="tech-tag">Load Balancer</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_TC001', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_TC002</div>
+                        <div class="component-text">Database Architecture</div>
+                        <div class="component-description">Scalable database design with user data, job postings, applications, and audit trails using PostgreSQL and Redis.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="tech-tag">Redis</span>
+                            <span class="tech-tag">Migrations</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_TC002', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_TC003</div>
+                        <div class="component-text">File Storage Service</div>
+                        <div class="component-description">Secure file storage and management for resumes, certificates, and other documents with virus scanning and CDN delivery.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">AWS S3</span>
+                            <span class="tech-tag">CDN</span>
+                            <span class="tech-tag">Virus Scan</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_TC003', event);">GitHub</button>
+                        </div>
+                    </a>
+                    
+                    <a href="../integration/templates/T_S001-template.html" class="tech-component">
+                        <div class="component-id">T_S001_TC004</div>
+                        <div class="component-text">Search Engine Service</div>
+                        <div class="component-description">Full-text search capabilities for jobs, candidates, and content with advanced filtering and faceted search.</div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Elasticsearch</span>
+                            <span class="tech-tag">Indexing</span>
+                            <span class="tech-tag">Facets</span>
+                        </div>
+                        <div class="component-actions">
+                            <button class="component-button github" onclick="openGitHub('T_S001_TC004', event);">GitHub</button>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+        </div> <!-- End tech-grid -->
+        
+    </div>
+</body>
+</html>
