@@ -4,8 +4,9 @@
 
 :root {
     /* Primary Brand Colors */
-    --color-primary: #f9f;
-    --color-primary-dark: #333;
+    --color-primary: #1e40af;
+    --color-primary-dark: #1e3a8a;
+    --color-secondary: #059669;
     
     /* Domain Primary Colors */
     --color-business: #ff9800;
@@ -13,10 +14,10 @@
     --color-business-light: #ffe0b2;
     --color-business-lighter: #fff3e0;
     
-    --color-ux: #ec407a;
-    --color-ux-dark: #c2185b;
-    --color-ux-light: #fce4ec;
-    --color-ux-lighter: #fef1f5;
+    --color-ux: #dc2626;
+    --color-ux-dark: #991b1b;
+    --color-ux-light: #fee2e2;
+    --color-ux-lighter: #fef2f2;
     
     --color-tech: #43a047;
     --color-tech-dark: #1b5e20;
@@ -44,9 +45,13 @@
     --color-border-dark: #d0d0d0;
     
     /* Interactive Colors */
-    --color-link: #0066cc;
-    --color-link-hover: #0052a3;
-    --color-focus: #0066cc;
+    --color-link: #1e40af;
+    --color-link-hover: #1e3a8a;
+    --color-focus: #1e40af;
+    
+    /* Additional Colors */
+    --color-accent: #f1f5f9;
+    --color-border: #e2e8f0;
     
     /* Status Colors */
     --color-success: #43a047;

@@ -88,19 +88,6 @@
             background: #f0f8ff;
             border-radius: 2px;
         }
-        
-        .tree-component {
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        a.tree-component:hover {
-            color: #0066cc !important;
-            background: #f0f8ff;
-            padding: 0 4px;
-            margin: 0 -4px;
-            border-radius: 2px;
-        }
 
         /* Expandable Tree Controls */
         .tree-expandable {
@@ -374,92 +361,117 @@
         
         <div class="header">
             <h1>🗺️ Platform Sitemap</h1>
-            <p>Tree view of the complete Bemeda Requirements Engineering System with Template Architecture</p>
+            <p>Tree view of the complete Bemeda Requirements Engineering System</p>
         </div>
         
         <!-- ASCII Tree Structure -->
         <div class="tree-container">
             <h2 class="tree-title">🏗️ Platform Architecture Tree</h2>
-            <div class="tree-structure"><span class="tree-root">🏠 <a href="index.html">Bemeda Platform</a></span>
-├─── <span class="tree-tools">🔧 <a href="dashboard/index.html">Project Dashboard</a></span>
-├─── <span class="tree-tools">🔍 <a href="unified-view/index.html">Component Registry</a></span>
-├─── <span class="tree-tools">📊 <a href="sitemap.html">Platform Sitemap</a></span>
-├─── <span class="tree-tools">📋 <a href="integration/index.html">Integration Hub</a></span>
+            <div class="tree-structure"><span class="tree-root">🏠 <a href="index.html">Bemeda Platform</a></span> <span class="tree-count">(118 components)</span>
+├─── <span class="tree-tools">🔧 <a href="dashboard/index.html">Project Dashboard</a></span> <span class="tree-count">(real-time metrics)</span>
+├─── <span class="tree-tools">🔍 <a href="unified-view/index.html">Component Registry</a></span> <span class="tree-count">(search & discovery)</span>
+├─── <span class="tree-tools">🔗 <a href="github/index.html">GitHub Integration</a></span> <span class="tree-count">(two-way sync)</span>
+├─── <span class="tree-tools">📊 <a href="sitemap.html">Platform Sitemap</a></span> <span class="tree-count">(this page)</span>
 │
-<span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business">📖 <a href="scenarios/index.html">Scenarios</a></span></span>
-<div class="tree-children expanded">│    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business"><a href="scenarios/S001/index.html">B_S001: Cold Call to Placement</a></span></span>
-<div class="tree-children expanded">│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><a href="scenarios/S001/US001.html" class="tree-business" style="text-decoration: none; color: inherit;" onclick="event.stopPropagation();">🏥 B_S001_US001: Organisation</a></span>
-<div class="tree-children collapsed">│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS001: Receive initial sales call</a>
-│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS002: Listen to platform overview</a>
-│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS003: Express interest or concerns</a>
-│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS004: Discuss staffing needs</a>
-│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS005: Agree to job posting</a>
-│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS006: Review matched candidates</a>
-│    │    │    ├─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS007: Conduct interviews</a>
-│    │    │    └─── <a href="scenarios/S001/US001.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US001_USS008: Complete hiring process</a>
-</div>│    │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><a href="scenarios/S001/US002.html" class="tree-business" style="text-decoration: none; color: inherit;" onclick="event.stopPropagation();">🔍 B_S001_US002: JobSeeker</a></span>
-<div class="tree-children collapsed">│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS001: Create professional profile</a>
-│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS002: Receive job notifications</a>
-│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS003: Review and apply to jobs</a>
-│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS004: Participate in interviews</a>
-│    │    │    ├─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS005: Receive job offers</a>
-│    │    │    └─── <a href="scenarios/S001/US002.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US002_USS006: Complete onboarding</a>
-</div>│    │    └─── <span class="tree-expandable" onclick="toggleNode(this)"><span class="tree-toggle">▶</span><a href="scenarios/S001/US003.html" class="tree-business" style="text-decoration: none; color: inherit;" onclick="event.stopPropagation();">📞 B_S001_US003: Sales Team</a></span>
-<div class="tree-children collapsed">│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS001: Identify target healthcare organisations</a>
-│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS002: Make initial contact</a>
-│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS003: Present platform benefits</a>
-│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS004: Facilitate onboarding</a>
-│    │         ├─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS005: Monitor placement success</a>
-│    │         └─── <a href="scenarios/S001/US003.html" class="tree-component" style="text-decoration: none; color: inherit;">B_S001_US003_USS006: Follow-up opportunities</a>
+<span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business">📖 <a href="scenarios/S001/index.html">B_S001: Cold Call to Placement Scenario</a></span> <span class="tree-count">(Complete end-to-end implementation)</span></span>
+<div class="tree-children expanded">│    └─── <span class="tree-expandable" onclick="toggleNode(this)">└─── <span class="tree-toggle">▼</span><span class="tree-business">📝 User Stories & Steps (with Implementation Components)</span></span>
+<div class="tree-children expanded">│         <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business">🏥 Organisation Journey (B_US001-006)</span></span>
+<div class="tree-children expanded">│         │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-component" onclick="jumpToSection('B_USS001')">B_USS001: Organisation Receives Cold Call</span></span>
+<div class="tree-children expanded">│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_UX001')">🎨 U_UX001: Cold Call Reception Flow</span>
+│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_M001')">🎨 U_M001: Healthcare Organisation Dashboard</span> <span class="tree-count">(shared USS001-006)</span>
+│         │    │    └─── <span class="tree-technical" onclick="jumpToSection('T_TC001')">⚙️ T_TC001: User Authentication Service</span> <span class="tree-count">(foundation)</span>
+</div>│         │    │
+│         │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-component" onclick="jumpToSection('B_USS002')">B_USS002: Discuss Staffing Needs</span></span>
+<div class="tree-children expanded">│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_UX002')">🎨 U_UX002: Staffing Needs Discussion Flow</span>
+│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_M001')">🎨 U_M001: Healthcare Organisation Dashboard</span> <span class="tree-count">(reused)</span>
+│         │    │    └─── <span class="tree-technical" onclick="jumpToSection('T_UC001')">⚙️ T_UC001: Healthcare Organisation Onboarding</span> <span class="tree-count">(shared USS001-006)</span>
+</div>│         │    │
+│         │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-component" onclick="jumpToSection('B_USS003')">B_USS003: Agree to Job Posting</span></span>
+<div class="tree-children expanded">│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_UX003')">🎨 U_UX003: Job Posting Agreement Flow</span>
+│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_M002')">🎨 U_M002: Job Posting Form Screen</span>
+│         │    │    └─── <span class="tree-technical" onclick="jumpToSection('T_F003')">⚙️ T_F003: Job Posting Management</span>
+</div>│         │    │
+│         │    ├─── <span class="tree-component" onclick="jumpToSection('B_USS004')">B_USS004: Review Matched Candidates</span> <span class="tree-count">(+ 2 UI + 3 Tech components)</span>
+│         │    ├─── <span class="tree-component" onclick="jumpToSection('B_USS005')">B_USS005: Conduct Interviews</span> <span class="tree-count">(+ 1 UI + 2 Tech components)</span>
+│         │    └─── <span class="tree-component" onclick="jumpToSection('B_USS006')">B_USS006: Complete Hiring Process</span> <span class="tree-count">(+ 1 UI + 1 Tech component)</span>
+</div>│         │
+│         <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-business">🔍 JobSeeker Journey (B_US007-012)</span></span>
+<div class="tree-children expanded">│         │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-component" onclick="jumpToSection('B_USS007')">B_USS007: JobSeeker Creates Profile</span></span>
+<div class="tree-children expanded">│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_UX007')">🎨 U_UX007: Profile Creation Flow</span>
+│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_M005')">🎨 U_M005: JobSeeker Dashboard</span> <span class="tree-count">(shared USS007-012)</span>
+│         │    │    ├─── <span class="tree-technical" onclick="jumpToSection('T_F002')">⚙️ T_F002: User Profile Management</span>
+│         │    │    └─── <span class="tree-technical" onclick="jumpToSection('T_TC001')">⚙️ T_TC001: User Authentication Service</span> <span class="tree-count">(reused)</span>
+</div>│         │    │
+│         │    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-component" onclick="jumpToSection('B_USS009')">B_USS009: Review and Apply</span></span>
+<div class="tree-children expanded">│         │    │    ├─── <span class="tree-ux" onclick="jumpToSection('U_UX009')">🎨 U_UX009: Job Application Flow</span>
+│         │    │    ├─── <span class="tree-technical" onclick="jumpToSection('T_F001')">⚙️ T_F001: Job Search Discovery</span>
+│         │    │    └─── <span class="tree-technical" onclick="jumpToSection('T_TC002')">⚙️ T_TC002: Search Engine Service</span>
+</div>│         │    │
+│         │    ├─── <span class="tree-component" onclick="jumpToSection('B_USS008')">B_USS008: Receive Job Notification</span> <span class="tree-count">(+ 1 UI + 1 Tech)</span>
+│         │    ├─── <span class="tree-component" onclick="jumpToSection('B_USS010')">B_USS010: Participate in Interview</span> <span class="tree-count">(+ 1 UI + 2 Tech)</span>
+│         │    ├─── <span class="tree-component" onclick="jumpToSection('B_USS011')">B_USS011: Receive Job Offer</span> <span class="tree-count">(+ 1 UI + 1 Tech)</span>
+│         │    └─── <span class="tree-component" onclick="jumpToSection('B_USS012')">B_USS012: Complete Onboarding</span> <span class="tree-count">(+ 1 UI + 1 Tech)</span>
+</div>│         │
+│         └─── <span class="tree-expandable" onclick="toggleNode(this)">└─── <span class="tree-toggle">▼</span><span class="tree-business">📞 Sales Team Journey (B_US013-018)</span></span>
+<div class="tree-children expanded">│              <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-component" onclick="jumpToSection('B_USS013')">B_USS013: Identify Healthcare Org</span></span>
+<div class="tree-children expanded">│              │    ├─── <span class="tree-ux" onclick="jumpToSection('U_UX013')">🎨 U_UX013: Organisation Identification Flow</span>
+│              │    ├─── <span class="tree-ux" onclick="jumpToSection('U_M008')">🎨 U_M008: Sales Team CRM Screen</span> <span class="tree-count">(shared USS013-018)</span>
+│              │    └─── <span class="tree-technical" onclick="jumpToSection('T_UC003')">⚙️ T_UC003: Placement Coordination</span> <span class="tree-count">(shared USS013-018)</span>
+</div>│              │
+│              <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-component" onclick="jumpToSection('B_USS014')">B_USS014: Make Initial Contact</span></span>
+<div class="tree-children expanded">│              │    ├─── <span class="tree-ux" onclick="jumpToSection('U_UX014')">🎨 U_UX014: Initial Contact Flow</span>
+│              │    ├─── <span class="tree-technical" onclick="jumpToSection('T_F004')">⚙️ T_F004: Communication Platform</span>
+│              │    └─── <span class="tree-technical" onclick="jumpToSection('T_TC001')">⚙️ T_TC001: User Authentication Service</span> <span class="tree-count">(reused)</span>
+</div>│              │
+│              ├─── <span class="tree-component" onclick="jumpToSection('B_USS015')">B_USS015: Present Platform Benefits</span> <span class="tree-count">(+ 1 UI + 1 Tech)</span>
+│              ├─── <span class="tree-component" onclick="jumpToSection('B_USS016')">B_USS016: Facilitate Onboarding</span> <span class="tree-count">(+ 1 UI + 2 Tech)</span>
+│              ├─── <span class="tree-component" onclick="jumpToSection('B_USS017')">B_USS017: Monitor Placement Success</span> <span class="tree-count">(+ 1 UI + 1 Tech)</span>
+│              └─── <span class="tree-component" onclick="jumpToSection('B_USS018')">B_USS018: Follow-up Opportunities</span> <span class="tree-count">(+ 1 UI + 1 Tech)</span>
+</div></div></div>
+│
+<span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▶</span><span class="tree-business">📖 B_S002: Temporary Staffing Scenario</span> <span class="tree-count">(32 components, inherits from S001)</span></span>
+<div class="tree-children collapsed">│    ├─── <span class="tree-business">📝 User Stories & Steps</span> <span class="tree-count">(12 new, 6 inherited)</span>
+│    ├─── <span class="tree-ux">🎨 UX/UI Implementation for S002</span> <span class="tree-count">(8 new, 15 inherited from S001)</span>
+│    └─── <span class="tree-technical">⚙️ Technical Implementation for S002</span> <span class="tree-count">(7 new, 📈 80% reused from S001)</span>
+</div>│
+<span class="tree-expandable" onclick="toggleNode(this)">└─── <span class="tree-toggle">▶</span><span class="tree-business">📖 B_S003: Recurring Placements Scenario</span> <span class="tree-count">(18 components, inherits from S001+S002)</span></span>
+<div class="tree-children collapsed">     ├─── <span class="tree-business">📝 User Stories & Steps</span> <span class="tree-count">(6 new, 12 inherited)</span>
+     ├─── <span class="tree-ux">🎨 UX/UI Implementation for S003</span> <span class="tree-count">(3 new, 20 inherited)</span>
+     └─── <span class="tree-technical">⚙️ Technical Implementation for S003</span> <span class="tree-count">(2 new, 📈 95% reused)</span>
 </div>
-</div>│    ├─── <span class="tree-business">B_S002: Temporary Staffing (planned)</span>
-│    └─── <span class="tree-business">B_S003: Recurring Placements (planned)</span>
+│
+<span class="tree-expandable" onclick="toggleNode(this)">└─── <span class="tree-toggle">▶</span><span class="tree-tools">🧪 <a href="testing/index.html">Testing & QA</a></span> <span class="tree-count">(Cross-scenario validation)</span></span>
+<div class="tree-children collapsed">     ├─── <span class="tree-component">Scenario S001 Test Suite</span> <span class="tree-count">(End-to-end validation)</span>
+     ├─── <span class="tree-component">Scenario S002 Test Suite</span> <span class="tree-count">(Incremental testing)</span>
+     ├─── <span class="tree-component">Scenario S003 Test Suite</span> <span class="tree-count">(Regression testing)</span>
+     ├─── <span class="tree-component">Cross-Scenario Integration Tests</span> <span class="tree-count">(Component reuse validation)</span>
+     └─── <span class="tree-component">Platform Performance Tests</span> <span class="tree-count">(Load testing across scenarios)</span>
 </div>
-<span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-ux">🎨 <a href="uxui/index.html">UX/UI Design</a></span></span>
-<div class="tree-children expanded">│    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-ux"><a href="uxui/S001/index.html">U_S001: Cold Call to Placement - UX Design</a></span></span>
-<div class="tree-children expanded">│    │    ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">🔄 User Flows</a>
-│    │    │    ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_UX001: Organisation Dashboard Flow</a>
-│    │    │    ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_UX002: JobSeeker Application Flow</a>
-│    │    │    └─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_UX003: Sales Team CRM Flow</a>
-│    │    ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">🖼️ Screen Mockups</a>
-│    │    │    ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_M001: Healthcare Organisation Dashboard</a>
-│    │    │    ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_M002: JobSeeker Profile Creation</a>
-│    │    │    └─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_M003: Sales CRM Interface</a>
-│    │    └─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">🧩 UI Components</a>
-│    │         ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_C001: Navigation Bar Component</a>
-│    │         ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_C002: Candidate Card Component</a>
-│    │         ├─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_C003: Job Posting Form</a>
-│    │         └─── <a href="uxui/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">U_S001_C004: Progress Tracker Component</a>
-</div>│    ├─── <span class="tree-ux">U_S002: Temporary Staffing UX (planned)</span>
-│    └─── <span class="tree-ux">U_S003: Recurring Placements UX (planned)</span>
-</div><span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-technical">⚙️ <a href="technical/index.html">Technical Implementation</a></span></span>
-<div class="tree-children expanded">│    <span class="tree-expandable" onclick="toggleNode(this)">├─── <span class="tree-toggle">▼</span><span class="tree-technical"><a href="technical/S001/index.html">T_S001: Cold Call to Placement - Technical</a></span></span>
-<div class="tree-children expanded">│    │    ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">📋 Use Cases</a>
-│    │    │    ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_UC001: User Authentication and Registration</a>
-│    │    │    ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_UC002: Profile Management System</a>
-│    │    │    └─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_UC003: Notification and Communication</a>
-│    │    ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">⚡ Platform Features</a>
-│    │    │    ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_F001: Job Matching Algorithm</a>
-│    │    │    ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_F002: Interview Scheduling System</a>
-│    │    │    └─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_F003: Analytics and Reporting</a>
-│    │    └─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">🔧 Technical Components</a>
-│    │         ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_TC001: API Gateway Service</a>
-│    │         ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_TC002: Database Architecture</a>
-│    │         ├─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_TC003: File Storage Service</a>
-│    │         └─── <a href="technical/S001/index.html" class="tree-component" style="text-decoration: none; color: inherit;">T_S001_TC004: Search Engine Service</a>
-</div>│    ├─── <span class="tree-technical">T_S002: Temporary Staffing Technical (planned)</span>
-│    └─── <span class="tree-technical">T_S003: Recurring Placements Technical (planned)</span>
-</div>
-├─── <span class="tree-tools">🧪 <a href="testing/index.html">Testing & QA</a></span>
-├─── <span class="tree-tools">📋 <a href="integration/index.html">Integration Hub</a></span>
-├─── <span class="tree-tools">📊 <a href="dashboard/index.html">Dashboard</a></span>
-├─── <span class="tree-tools">🗂️ <a href="unified-view/index.html">Unified View</a></span>
-├─── <span class="tree-tools">🏗️ <a href="structure-diagram.html">Structure Diagram</a></span>
-├─── <span class="tree-tools">📋 <a href="component-viewer.html">Component Viewer</a></span>
-└─── <span class="tree-tools">🚀 <a href="setup-new-project.html">Setup New Project</a></span>
 </div>
         </div>
         
+        <!-- Summary Stats -->
+        <div class="sitemap-section" style="background: #f8f9fa; border: none;">
+            <h3 style="text-align: center; color: #666; margin-bottom: 20px;">Platform Statistics</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; text-align: center;">
+                <div>
+                    <div style="font-size: 2rem; font-weight: 700; color: #0066cc;">118</div>
+                    <div style="color: #666; font-size: 0.9rem;">Total Components</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: 700; color: #e65100;">18</div>
+                    <div style="color: #666; font-size: 0.9rem;">User Stories</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: 700; color: #c2185b;">46</div>
+                    <div style="color: #666; font-size: 0.9rem;">UI Elements</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: 700; color: #1b5e20;">24</div>
+                    <div style="color: #666; font-size: 0.9rem;">Tech Components</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -513,34 +525,12 @@
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             `;
             
-            // Determine the details link based on component type
-            let detailsLink = '#';
-            if (componentId.includes('_US001')) detailsLink = 'scenarios/S001/US001.html';
-            else if (componentId.includes('_US002')) detailsLink = 'scenarios/S001/US002.html';
-            else if (componentId.includes('_US003')) detailsLink = 'scenarios/S001/US003.html';
-            else if (componentId.includes('_US004')) detailsLink = 'scenarios/S001/US004.html';
-            else if (componentId.includes('_US005')) detailsLink = 'scenarios/S001/US005.html';
-            else if (componentId.includes('_US006')) detailsLink = 'scenarios/S001/US006.html';
-            else if (componentId.includes('_US007')) detailsLink = 'scenarios/S001/US007.html';
-            else if (componentId.includes('_US008')) detailsLink = 'scenarios/S001/US008.html';
-            else if (componentId.includes('_US009')) detailsLink = 'scenarios/S001/US009.html';
-            else if (componentId.includes('_US010')) detailsLink = 'scenarios/S001/US010.html';
-            else if (componentId.includes('_US011')) detailsLink = 'scenarios/S001/US011.html';
-            else if (componentId.includes('_US012')) detailsLink = 'scenarios/S001/US012.html';
-            else if (componentId.includes('_US013')) detailsLink = 'scenarios/S001/US013.html';
-            else if (componentId.includes('_US014')) detailsLink = 'scenarios/S001/US014.html';
-            else if (componentId.includes('_US015')) detailsLink = 'scenarios/S001/US015.html';
-            else if (componentId.includes('_US016')) detailsLink = 'scenarios/S001/US016.html';
-            else if (componentId.includes('_US017')) detailsLink = 'scenarios/S001/US017.html';
-            else if (componentId.includes('_US018')) detailsLink = 'scenarios/S001/US018.html';
-            else if (componentId === 'B_S001') detailsLink = 'scenarios/S001/index.html';
-            
             popup.innerHTML = `
                 <h3 style="margin: 0 0 12px 0; color: #0066cc; font-size: 1.2rem;">Component Details</h3>
                 <p style="margin: 0 0 8px 0;"><strong>ID:</strong> ${componentId}</p>
                 <p style="margin: 0 0 16px 0; color: #666; font-size: 0.9rem;">
                     This component is part of the <strong>B_S001: Cold Call to Placement Scenario</strong>.<br>
-                    Choose an option to view more details or manage this component.
+                    Click the links below to view more details or manage this component.
                 </p>
                 <div style="display: flex; gap: 8px; justify-content: flex-end;">
                     <button onclick="document.getElementById('component-popup').remove()" style="
@@ -550,25 +540,15 @@
                         border-radius: 4px; 
                         cursor: pointer;
                     ">Close</button>
-                    <a href="${detailsLink}" style="
-                        padding: 6px 12px; 
-                        background: #e8f0fe; 
-                        color: #0066cc;
-                        text-decoration: none; 
-                        border-radius: 4px; 
-                        font-size: 0.9rem;
-                        font-weight: 500;
-                    ">Details</a>
                     <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+${componentId}" 
                        target="_blank" style="
                         padding: 6px 12px; 
-                        background: #f3f4f6; 
-                        color: #374151; 
+                        background: #0066cc; 
+                        color: white; 
                         text-decoration: none; 
                         border-radius: 4px; 
                         font-size: 0.9rem;
-                        font-weight: 500;
-                    ">GitHub</a>
+                    ">View in GitHub</a>
                 </div>
             `;
 

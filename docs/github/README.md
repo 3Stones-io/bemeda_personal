@@ -166,3 +166,4 @@ gh workflow run "Sync Components from Issues"
 5. **Create additional scenarios** using the manual process
 
 This setup gives us the perfect balance of automation and control, with GitHub as our collaborative hub and automatic documentation generation.
+

@@ -6,13 +6,17 @@
     <title>Component Registry - Bemeda Platform</title>
     <link rel="stylesheet" href="../assets/css/color-system.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--color-text-primary);
             background: var(--color-bg-secondary);
-            margin: 0;
-            padding: 0;
         }
         
         .container {
@@ -21,160 +25,188 @@
             padding: 20px;
         }
         
+        /* Header */
         .header {
             text-align: center;
             margin-bottom: 40px;
             padding: 30px 0;
+            background: linear-gradient(135deg, #1e40af 0%, #0f172a 100%);
+            border-radius: 16px;
+            color: white;
         }
         
         .header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             letter-spacing: -1px;
+            color: white;
         }
         
         .header p {
             font-size: 1.1rem;
-            color: #666;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            color: white;
         }
         
-        /* Filter Controls */
-        .filter-controls {
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-link);
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
             background: var(--color-bg-primary);
+            padding: 12px;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
             box-shadow: var(--shadow-light);
         }
         
-        .filter-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-            align-items: center;
+        .nav-tab {
+            padding: 10px 20px;
+            background: var(--color-bg-tertiary);
+            border: none;
+            border-radius: 8px;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-weight: 500;
         }
         
-        .search-input {
+        .nav-tab:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-text-primary);
+        }
+        
+        .nav-tab.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background: var(--color-bg-primary);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 30px;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Search and Filter */
+        .controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
             flex: 1;
             min-width: 250px;
             padding: 10px 16px;
-            border: 2px solid var(--color-border-light);
+            border: 1px solid var(--color-border-medium);
             border-radius: 8px;
-            font-size: 0.95rem;
-            background: var(--color-bg-secondary);
-            color: var(--color-text-primary);
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: var(--color-business);
-        }
-        
-        .filter-select {
-            padding: 10px 14px;
-            border: 2px solid var(--color-border-light);
-            border-radius: 8px;
-            background: var(--color-bg-secondary);
-            color: var(--color-text-primary);
-            font-size: 0.9rem;
-            min-width: 140px;
-        }
-        
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--color-business);
-        }
-        
-        .clear-btn {
-            padding: 10px 16px;
             background: var(--color-bg-tertiary);
-            border: 2px solid var(--color-border-light);
-            border-radius: 8px;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            font-size: 0.95rem;
         }
         
-        .clear-btn:hover {
-            background: var(--color-bg-hover);
-            color: var(--color-text-primary);
+        .search-box:focus {
+            outline: none;
+            border-color: var(--color-primary);
         }
         
-        .controls-section {
+        .filter-group {
             display: flex;
-            gap: 12px;
-            justify-content: flex-end;
+            gap: 8px;
             align-items: center;
         }
         
-        .control-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .filter-btn {
             padding: 8px 16px;
             background: var(--color-bg-tertiary);
-            border: 2px solid var(--color-border-light);
-            border-radius: 8px;
-            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border-light);
+            border-radius: 6px;
             cursor: pointer;
-            text-decoration: none;
             font-size: 0.9rem;
             transition: all 0.2s;
-        }
-        
-        .control-btn:hover {
-            background: var(--color-bg-hover);
-            border-color: var(--color-border-medium);
-            color: var(--color-text-primary);
-        }
-        
-        /* Table Styles */
-        .table-container {
-            background: var(--color-bg-primary);
-            border-radius: 12px;
-            box-shadow: var(--shadow-medium);
-            overflow: hidden;
-        }
-        
-        .table-header {
-            background: var(--color-bg-tertiary);
-            padding: 16px 20px;
-            border-bottom: 2px solid var(--color-border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .table-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--color-text-primary);
-            margin: 0;
-        }
-        
-        .results-count {
             color: var(--color-text-secondary);
-            font-size: 0.9rem;
         }
         
-        .table-wrapper {
-            overflow-x: auto;
-            max-height: 70vh;
+        .filter-btn:hover {
+            background: var(--color-bg-hover);
         }
         
+        .filter-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        /* Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: var(--color-bg-tertiary);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-number.github { color: #2ea043; }
+        .stat-number.local { color: #0969da; }
+        .stat-number.both { color: #0ea5e9; }
+        .stat-number.missing { color: #d1242f; }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+        
+        /* Component Table */
         .component-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            margin-top: 20px;
         }
         
         .component-table th,
         .component-table td {
-            padding: 12px 16px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid var(--color-border-light);
         }
@@ -185,625 +217,531 @@
             color: var(--color-text-primary);
             position: sticky;
             top: 0;
-            z-index: 10;
         }
         
-        .component-table tbody tr {
-            transition: background-color 0.2s;
-        }
-        
-        .component-table tbody tr:hover {
+        .component-table tr:hover {
             background: var(--color-bg-hover);
-        }
-        
-        .component-table tbody tr.hidden {
-            display: none;
-        }
-        
-        /* Table Cell Styles */
-        .table-id {
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-weight: 600;
-            font-size: 0.85rem;
-            background: var(--color-bg-secondary);
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        
-        .table-title {
-            font-weight: 500;
-            color: var(--color-text-primary);
-        }
-        
-        .table-domain {
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-        
-        .table-domain.business { 
-            background: var(--color-business-lighter); 
-            color: var(--color-business-dark); 
-        }
-        .table-domain.ux { 
-            background: var(--color-ux-lighter); 
-            color: var(--color-ux-dark); 
-        }
-        .table-domain.technical { 
-            background: var(--color-tech-lighter); 
-            color: var(--color-tech-dark); 
-        }
-        
-        .table-status {
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-        
-        .table-status.todo { 
-            background: #f8f9fa; 
-            color: #6c757d; 
-            border: 1px solid #dee2e6;
-        }
-        .table-status.in-progress { 
-            background: #fff3cd; 
-            color: #856404; 
-            border: 1px solid #ffeaa7;
-        }
-        .table-status.done { 
-            background: #d1ecf1; 
-            color: #0c5460; 
-            border: 1px solid #bee5eb;
-        }
-        
-        .table-type {
-            color: var(--color-text-secondary);
-            font-size: 0.85rem;
-        }
-        
-        .table-updated {
-            color: var(--color-text-tertiary);
-            font-size: 0.85rem;
-        }
-        
-        .table-link {
-            color: var(--color-business);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        
-        .table-link:hover {
-            color: var(--color-business-dark);
-        }
-        
-        /* Loading and Empty States */
-        .loading-state,
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--color-text-secondary);
-        }
-        
-        .empty-state {
-            background: var(--color-bg-tertiary);
-            border-radius: 8px;
-            margin: 20px;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .filter-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .search-input,
-            .filter-select {
-                min-width: auto;
-                width: 100%;
-            }
-            
-            .controls-section {
-                justify-content: stretch;
-                flex-wrap: wrap;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .component-table {
-                font-size: 0.8rem;
-            }
-            
-            .component-table th,
-            .component-table td {
-                padding: 8px 12px;
-            }
-            
-            .page-header {
-                padding: 20px;
-            }
-        }
-        
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #0066cc;
-            text-decoration: none;
-            margin-bottom: 32px;
-            font-weight: 500;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        /* View Toggle Buttons */
-        .view-toggle-btn {
-            padding: 10px 16px;
-            border: none;
-            background: transparent;
-            color: #666;
-            cursor: pointer;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            margin: 0 2px;
-        }
-        
-        .view-toggle-btn:hover {
-            color: #333;
-            background: #e6f3ff;
-        }
-        
-        .view-toggle-btn.active {
-            background: #0066cc;
-            color: white;
-        }
-        
-        /* Compare View Styles */
-        .compare-container {
-            display: none;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .compare-container.active {
-            display: grid;
-        }
-        
-        .compare-panel {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-        
-        .compare-header {
-            background: #f8f9fa;
-            padding: 16px 20px;
-            border-bottom: 1px solid #e1e4e8;
-            font-weight: 600;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .compare-content {
-            max-height: 600px;
-            overflow-y: auto;
-            padding: 0;
-        }
-        
-        .component-item {
-            padding: 12px 20px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .component-item:last-child {
-            border-bottom: none;
         }
         
         .component-id {
             font-family: 'Monaco', monospace;
-            font-size: 0.8rem;
-            background: #e8f0fe;
-            color: #0066cc;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-todo { background: #fee2e2; color: #991b1b; }
+        .status-in-progress { background: #fef3c7; color: #92400e; }
+        .status-done { background: #dcfce7; color: #166534; }
+        .status-planning { background: #e0e7ff; color: #3730a3; }
+        
+        .source-badge {
             padding: 2px 6px;
             border-radius: 4px;
-            margin-right: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
         }
         
-        .component-title {
+        .source-github { background: #f6f8fa; color: #24292f; border: 1px solid #d1d9e0; }
+        .source-local { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .source-both { background: #cffafe; color: #0e7490; border: 1px solid #67e8f9; }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 0;
+            border-left: 2px solid var(--color-border-light);
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 24px;
+            width: 10px;
+            height: 10px;
+            background: var(--color-primary);
+            border-radius: 50%;
+        }
+        
+        .timeline-item.current::before {
+            background: #2ea043;
+            width: 12px;
+            height: 12px;
+            left: -7px;
+        }
+        
+        .timeline-date {
+            min-width: 100px;
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+        
+        .timeline-content {
             flex: 1;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-text-primary);
+        }
+        
+        .timeline-description {
             font-size: 0.9rem;
-            color: #333;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
         }
         
-        .component-status {
-            font-size: 0.8rem;
-            padding: 2px 8px;
-            border-radius: 12px;
-            background: #f0f0f0;
-            color: #666;
+        .timeline-components {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         
-        .component-status.github {
-            background: #28a745;
-            color: white;
+        .timeline-component {
+            background: var(--color-bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: 'Monaco', monospace;
         }
         
-        .component-status.local {
-            background: #ffc107;
-            color: #000;
+        /* Sitemap Tree */
+        .sitemap-tree {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            background: var(--color-bg-tertiary);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
         }
         
-        .component-status.both {
-            background: #007bff;
-            color: white;
+        .tree-node {
+            color: var(--color-text-primary);
         }
         
-        .mismatch-highlight {
-            background: #fff3cd !important;
-            border-left: 3px solid #ffc107 !important;
-        }
-        
-        .missing-highlight {
-            background: #f8d7da !important;
-            border-left: 3px solid #dc3545 !important;
-        }
+        .tree-epic { color: #0969da; font-weight: 600; }
+        .tree-story { color: #0ea5e9; font-weight: 500; }
+        .tree-step { color: #6b7280; }
+        .tree-tech { color: #059669; font-weight: 500; }
+        .tree-ux { color: #dc2626; font-weight: 500; }
         
         @media (max-width: 768px) {
-            .compare-container {
-                grid-template-columns: 1fr;
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="../index.html" class="back-link">
-            ← Back to Home
-        </a>
+        <a href="../index.html" class="back-link">← Back to Home</a>
         
         <div class="header">
             <h1>🔍 Component Registry</h1>
             <p>Comprehensive searchable table of all platform components with live GitHub integration</p>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('github-data', this)">
+                📊 GitHub Data
+            </button>
+            <button class="nav-tab" onclick="switchTab('local-structure', this)">
+                📋 Local Structure
+            </button>
+            <button class="nav-tab" onclick="switchTab('comparison', this)">
+                ⚖️ Compare Both
+            </button>
+            <button class="nav-tab" onclick="switchTab('chronological', this)">
+                ⏱️ Timeline View
+            </button>
+            <button class="nav-tab" onclick="switchTab('sitemap', this)">
+                🗺️ Sitemap Tree
+            </button>
+        </div>
+        
+        <!-- GitHub Data Section -->
+        <div id="github-data" class="content-section active">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number github" id="github-count">100</div>
+                    <div class="stat-label">📊 GitHub Issues</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">47</div>
+                    <div class="stat-label">🔄 In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">53</div>
+                    <div class="stat-label">📋 Todo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">✅ Done</div>
+                </div>
+            </div>
             
-            <!-- View Toggle -->
-            <div style="margin-top: 24px;">
-                <div style="background: #f8f9fa; border-radius: 8px; padding: 4px; display: inline-flex; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    <button id="github-view-btn" class="view-toggle-btn active" onclick="switchView('github')">
-                        📊 GitHub Data
-                    </button>
-                    <button id="local-view-btn" class="view-toggle-btn" onclick="switchView('local')">
-                        📋 Local Structure
-                    </button>
-                    <button id="compare-view-btn" class="view-toggle-btn" onclick="switchView('compare')">
-                        ⚖️ Compare Both
-                    </button>
+            <div class="controls">
+                <input type="text" class="search-box" placeholder="Search components..." id="github-search">
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="filterGitHub('all')">All</button>
+                    <button class="filter-btn" onclick="filterGitHub('B_')">Business</button>
+                    <button class="filter-btn" onclick="filterGitHub('U_')">UX</button>
+                    <button class="filter-btn" onclick="filterGitHub('T_')">Technical</button>
+                    <button class="filter-btn" onclick="filterGitHub('TEST_')">Testing</button>
+                </div>
+            </div>
+            
+            <table class="component-table">
+                <thead>
+                    <tr>
+                        <th>Component ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                        <th>Updated</th>
+                    </tr>
+                </thead>
+                <tbody id="github-table-body">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Local Structure Section -->
+        <div id="local-structure" class="content-section">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number local">32</div>
+                    <div class="stat-label">📋 Local Structure</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">📖 Scenarios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">18</div>
+                    <div class="stat-label">👥 User Stories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">54</div>
+                    <div class="stat-label">📝 Story Steps</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <input type="text" class="search-box" placeholder="Search local components..." id="local-search">
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="filterLocal('all')">All</button>
+                    <button class="filter-btn" onclick="filterLocal('Scenario')">Scenarios</button>
+                    <button class="filter-btn" onclick="filterLocal('User Story')">User Stories</button>
+                    <button class="filter-btn" onclick="filterLocal('Story Step')">Steps</button>
+                </div>
+            </div>
+            
+            <table class="component-table">
+                <thead>
+                    <tr>
+                        <th>Component ID</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+                <tbody id="local-table-body">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Comparison Section -->
+        <div id="comparison" class="content-section">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number both">4</div>
+                    <div class="stat-label">🔗 In Both</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number missing">28</div>
+                    <div class="stat-label">📋 Only Local</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number missing">96</div>
+                    <div class="stat-label">📊 Only GitHub</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">128</div>
+                    <div class="stat-label">🎯 Total Unique</div>
+                </div>
+            </div>
+            
+            <h3 style="color: var(--color-text-primary); margin: 24px 0 16px 0;">⚠️ Component Analysis</h3>
+            
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                <h4 style="color: #991b1b; margin-bottom: 12px;">📋 Missing from GitHub (28 components)</h4>
+                <div id="missing-from-github" style="font-size: 0.9rem; line-height: 1.6; color: #374151;"></div>
+            </div>
+            
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px;">
+                <h4 style="color: #166534; margin-bottom: 12px;">✅ Sync Opportunities</h4>
+                <p style="color: #374151; font-size: 0.9rem;">Create GitHub issues for the 28 missing components to achieve full synchronization between local structure and GitHub project management.</p>
+            </div>
+        </div>
+        
+        <!-- Chronological Timeline -->
+        <div id="chronological" class="content-section">
+            <h3 style="color: var(--color-text-primary); margin-bottom: 20px;">⏱️ Development Timeline (Most Recent First)</h3>
+            
+            <div class="timeline">
+                <div class="timeline-item current">
+                    <div class="timeline-date">Dec 2024</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">🔥 Current Active Work</div>
+                        <div class="timeline-description">Component Registry implementation and GitHub-Local sync analysis</div>
+                        <div class="timeline-components">
+                            <span class="timeline-component">US001</span>
+                            <span class="timeline-component">Registry</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Nov 2024</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">📊 Dashboard & Project Setup</div>
+                        <div class="timeline-description">GitHub Project creation, issue templates, validation workflows</div>
+                        <div class="timeline-components">
+                            <span class="timeline-component">Dashboard</span>
+                            <span class="timeline-component">GitHub Actions</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Oct 2024</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">🔧 Technical Implementation Documentation</div>
+                        <div class="timeline-description">Phoenix context mapping, authentication system, job posting implementation</div>
+                        <div class="timeline-components">
+                            <span class="timeline-component">T_S001_AUTH001</span>
+                            <span class="timeline-component">T_S003_JOBS001</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Sep 2024</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">🎨 UX/UI Component Design</div>
+                        <div class="timeline-description">User flow mapping, dashboard mockups, component library</div>
+                        <div class="timeline-components">
+                            <span class="timeline-component">UX001</span>
+                            <span class="timeline-component">M001</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Aug 2024</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">📖 USE Scenario Framework</div>
+                        <div class="timeline-description">Complete S001 scenario definition with 18 user stories and story steps</div>
+                        <div class="timeline-components">
+                            <span class="timeline-component">B_S001</span>
+                            <span class="timeline-component">US001-018</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="filter-controls">
-            <div class="filter-section">
-                <input type="text" id="search-input" placeholder="Search components by ID, title, or description..." class="search-input">
-                <select id="domain-filter" class="filter-select">
-                    <option value="">All Domains</option>
-                    <option value="business">Business Logic</option>
-                    <option value="ux">UX/UI Design</option>
-                    <option value="technical">Technical</option>
-                </select>
-                <select id="status-filter" class="filter-select">
-                    <option value="">All Statuses</option>
-                    <option value="todo">Todo</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="done">Done</option>
-                </select>
-                <select id="type-filter" class="filter-select">
-                    <option value="">All Types</option>
-                    <option value="Scenario">Scenarios</option>
-                    <option value="User Story">User Stories</option>
-                    <option value="Story Step">Story Steps</option>
-                    <option value="Mockup">Mockups</option>
-                    <option value="User Flow">User Flows</option>
-                    <option value="UI Component">UI Components</option>
-                    <option value="Use Case">Use Cases</option>
-                    <option value="Feature">Features</option>
-                    <option value="Tech Component">Tech Components</option>
-                    <option value="Test Case">Test Cases</option>
-                </select>
-                <button onclick="clearFilters()" class="clear-btn">Clear All</button>
-            </div>
+        <!-- Sitemap Tree -->
+        <div id="sitemap" class="content-section">
+            <h3 style="color: var(--color-text-primary); margin-bottom: 20px;">🗺️ Platform Structure Tree</h3>
             
-            <div class="controls-section">
-                <button onclick="refreshRegistry()" class="control-btn">
-                    <span>🔄</span> Refresh
-                </button>
-                <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent" 
-                   target="_blank" class="control-btn">
-                    <span>📋</span> GitHub Issues
-                </a>
-                <a href="../dashboard/index.html" class="control-btn">
-                    <span>📊</span> Dashboard
-                </a>
-            </div>
-        </div>
-        
-        <div class="table-container">
-            <div class="table-header">
-                <h2 class="table-title">All Components</h2>
-                <span id="results-count" class="results-count">Loading...</span>
-            </div>
-            
-            <div class="table-wrapper">
-                <table class="component-table" id="component-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 120px;">Component ID</th>
-                            <th>Title</th>
-                            <th style="width: 120px;">Domain</th>
-                            <th style="width: 100px;">Type</th>
-                            <th style="width: 100px;">Status</th>
-                            <th style="width: 100px;">Updated</th>
-                            <th style="width: 80px;">Links</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <tr>
-                            <td colspan="7" class="loading-state">
-                                🔄 Loading components from GitHub...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Compare View -->
-        <div id="compare-container" class="compare-container">
-            <div class="compare-panel">
-                <div class="compare-header">
-                    📊 GitHub Issues
-                    <span id="github-count" style="background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; margin-left: auto;">0</span>
-                </div>
-                <div class="compare-content" id="github-components">
-                    <div style="padding: 20px; text-align: center; color: #666;">Loading GitHub components...</div>
-                </div>
-            </div>
-            
-            <div class="compare-panel">
-                <div class="compare-header">
-                    📋 Local Structure
-                    <span id="local-count" style="background: #ffc107; color: #000; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; margin-left: auto;">0</span>
-                </div>
-                <div class="compare-content" id="local-components">
-                    <div style="padding: 20px; text-align: center; color: #666;">Loading local components...</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mismatch Summary -->
-        <div id="mismatch-summary" class="compare-container" style="display: none; margin-top: 20px; grid-template-columns: 1fr;">
-            <div class="compare-panel">
-                <div class="compare-header">
-                    ⚠️ Component Analysis
-                </div>
-                <div class="compare-content" style="padding: 20px;">
-                    <div id="mismatch-details">Analysis will appear here...</div>
-                </div>
+            <div class="sitemap-tree">
+<span class="tree-epic">🏠 Bemeda Platform</span>
+├─── <span class="tree-epic">📖 B_S001: Cold Call to Placement Scenario</span>
+│    ├─── <span class="tree-story">🏥 B_S001_US001: Organisation User Story</span>
+│    │    ├─── <span class="tree-step">B_S001_US001_USS001: Receive initial sales call</span>
+│    │    ├─── <span class="tree-step">B_S001_US001_USS002: Listen to platform overview</span>
+│    │    ├─── <span class="tree-step">B_S001_US001_USS003: Express interest or concerns</span>
+│    │    ├─── <span class="tree-step">B_S001_US001_USS004: Discuss staffing needs</span>
+│    │    ├─── <span class="tree-step">B_S001_US001_USS005: Agree to job posting</span>
+│    │    ├─── <span class="tree-step">B_S001_US001_USS006: Review matched candidates</span>
+│    │    ├─── <span class="tree-step">B_S001_US001_USS007: Conduct interviews</span>
+│    │    └─── <span class="tree-step">B_S001_US001_USS008: Complete hiring process</span>
+│    │
+│    ├─── <span class="tree-story">👤 B_S001_US002: JobSeeker User Story</span>
+│    │    ├─── <span class="tree-step">B_S001_US002_USS001: Create professional profile</span>
+│    │    ├─── <span class="tree-step">B_S001_US002_USS002: Receive job notifications</span>
+│    │    ├─── <span class="tree-step">B_S001_US002_USS003: Review and apply to jobs</span>
+│    │    ├─── <span class="tree-step">B_S001_US002_USS004: Participate in interviews</span>
+│    │    ├─── <span class="tree-step">B_S001_US002_USS005: Receive job offers</span>
+│    │    └─── <span class="tree-step">B_S001_US002_USS006: Complete onboarding</span>
+│    │
+│    └─── <span class="tree-story">📞 B_S001_US003: Sales Team User Story</span>
+│         ├─── <span class="tree-step">B_S001_US003_USS001: Identify target healthcare organisations</span>
+│         ├─── <span class="tree-step">B_S001_US003_USS002: Make initial contact</span>
+│         ├─── <span class="tree-step">B_S001_US003_USS003: Present platform benefits</span>
+│         ├─── <span class="tree-step">B_S001_US003_USS004: Facilitate onboarding</span>
+│         ├─── <span class="tree-step">B_S001_US003_USS005: Monitor placement success</span>
+│         └─── <span class="tree-step">B_S001_US003_USS006: Follow-up opportunities</span>
+│
+├─── <span class="tree-ux">🎨 UX/UI Implementation</span>
+│    ├─── <span class="tree-ux">U_S001: Cold Call to Placement UX Scenario</span>
+│    ├─── <span class="tree-ux">U_S001_UX001: Organisation Dashboard Flow</span>
+│    ├─── <span class="tree-ux">U_S001_M001: Healthcare Organisation Dashboard</span>
+│    └─── <span class="tree-ux">U_S001_C001: Navigation Bar Component</span>
+│
+└─── <span class="tree-tech">⚙️ Technical Implementation</span>
+     ├─── <span class="tree-tech">T_S001: Technical Implementation for Cold Call to Placement</span>
+     ├─── <span class="tree-tech">T_S001_UC001: User Authentication and Registration</span>
+     ├─── <span class="tree-tech">T_S001_F001: User Registration Feature</span>
+     └─── <span class="tree-tech">T_S001_TC001: Authentication Service</span>
             </div>
         </div>
     </div>
-    
+
     <script>
-        // Local component structure - our expected components
-        const LOCAL_COMPONENTS = [
-            // Business Logic - B_S001
-            { id: 'B_S001', title: 'Cold Call to Placement', domain: 'business', type: 'Scenario' },
-            
-            // Organisation - B_S001_US001
-            { id: 'B_S001_US001', title: 'Organisation User Story', domain: 'business', type: 'User Story' },
-            { id: 'B_S001_US001_USS001', title: 'Receive initial sales call', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US001_USS002', title: 'Listen to platform overview', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US001_USS003', title: 'Express interest or concerns', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US001_USS004', title: 'Discuss staffing needs', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US001_USS005', title: 'Agree to job posting', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US001_USS006', title: 'Review matched candidates', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US001_USS007', title: 'Conduct interviews', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US001_USS008', title: 'Complete hiring process', domain: 'business', type: 'Story Step' },
-            
-            // JobSeeker - B_S001_US002
-            { id: 'B_S001_US002', title: 'JobSeeker User Story', domain: 'business', type: 'User Story' },
-            { id: 'B_S001_US002_USS001', title: 'Create professional profile', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US002_USS002', title: 'Receive job notifications', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US002_USS003', title: 'Review and apply to jobs', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US002_USS004', title: 'Participate in interviews', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US002_USS005', title: 'Receive job offers', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US002_USS006', title: 'Complete onboarding', domain: 'business', type: 'Story Step' },
-            
-            // Sales Team - B_S001_US003
-            { id: 'B_S001_US003', title: 'Sales Team User Story', domain: 'business', type: 'User Story' },
-            { id: 'B_S001_US003_USS001', title: 'Identify target healthcare organisations', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US003_USS002', title: 'Make initial contact', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US003_USS003', title: 'Present platform benefits', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US003_USS004', title: 'Facilitate onboarding', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US003_USS005', title: 'Monitor placement success', domain: 'business', type: 'Story Step' },
-            { id: 'B_S001_US003_USS006', title: 'Follow-up opportunities', domain: 'business', type: 'Story Step' },
-            
-            // UX/UI Components
-            { id: 'U_S001', title: 'Cold Call to Placement UX Scenario', domain: 'ux', type: 'UX Scenario' },
-            { id: 'U_S001_UX001', title: 'Organisation Dashboard Flow', domain: 'ux', type: 'User Flow' },
-            { id: 'U_S001_M001', title: 'Healthcare Organisation Dashboard', domain: 'ux', type: 'Mockup' },
-            { id: 'U_S001_C001', title: 'Navigation Bar Component', domain: 'ux', type: 'UI Component' },
-            
-            // Technical Components
-            { id: 'T_S001', title: 'Technical Implementation for Cold Call to Placement', domain: 'technical', type: 'Tech Scenario' },
-            { id: 'T_S001_UC001', title: 'User Authentication and Registration', domain: 'technical', type: 'Use Case' },
-            { id: 'T_S001_F001', title: 'User Registration Feature', domain: 'technical', type: 'Feature' },
-            { id: 'T_S001_TC001', title: 'Authentication Service', domain: 'technical', type: 'Tech Component' }
+        // Mock data for GitHub components (from your provided list)
+        const githubComponents = [
+            { id: 'B_C001', title: 'General Component C001', status: 'in progress', type: 'Business', updated: '2024-12-01' },
+            { id: 'B_C002', title: 'General Component C002', status: 'todo', type: 'Business', updated: '2024-12-01' },
+            { id: 'B_S001', title: 'Cold Call to Placement - Epic', status: 'todo', type: 'Business', updated: '2024-11-30' },
+            { id: 'B_S001_US001', title: 'Organisation User Story', status: 'todo', type: 'Business', updated: '2024-11-30' },
+            { id: 'US001', title: 'Organisation Receives Cold Call', status: 'in progress', type: 'Business', updated: '2024-12-01' },
+            { id: 'T_S001_AUTH001', title: 'Authentication System', status: 'done', type: 'Technical', updated: '2024-11-25' },
+            { id: 'U_S001_UX001', title: 'Cold Call Reception Flow', status: 'in progress', type: 'UX', updated: '2024-11-28' },
+            // Add more components as needed
         ];
-        
-        let currentView = 'github';
-        let githubComponents = [];
-        
-        function switchView(view) {
-            currentView = view;
+
+        // Mock data for local structure (from your provided list)
+        const localComponents = [
+            { id: 'B_S001', title: 'Cold Call to Placement', type: 'Scenario', source: 'local' },
+            { id: 'B_S001_US001', title: 'Organisation User Story', type: 'User Story', source: 'local' },
+            { id: 'B_S001_US001_USS001', title: 'Receive initial sales call', type: 'Story Step', source: 'local' },
+            { id: 'B_S001_US001_USS002', title: 'Listen to platform overview', type: 'Story Step', source: 'local' },
+            // Add more local components
+        ];
+
+        // Missing components (only in local)
+        const missingFromGitHub = [
+            'B_S001_US001_USS001: Receive initial sales call',
+            'B_S001_US001_USS002: Listen to platform overview',
+            'B_S001_US001_USS003: Express interest or concerns',
+            // Add all 28 missing components
+        ];
+
+        function switchTab(tabId, tabElement) {
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
             
-            // Update button states
-            document.querySelectorAll('.view-toggle-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(view + '-view-btn').classList.add('active');
+            // Remove active from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            // Show/hide appropriate containers
-            const tableContainer = document.querySelector('.table-container');
-            const filterControls = document.querySelector('.filter-controls');
-            const compareContainer = document.getElementById('compare-container');
-            const mismatchSummary = document.getElementById('mismatch-summary');
+            // Show selected section and activate tab
+            document.getElementById(tabId).classList.add('active');
+            tabElement.classList.add('active');
             
-            if (view === 'github') {
-                tableContainer.style.display = 'block';
-                filterControls.style.display = 'block';
-                compareContainer.classList.remove('active');
-                mismatchSummary.style.display = 'none';
-            } else if (view === 'local') {
-                tableContainer.style.display = 'none';
-                filterControls.style.display = 'none';
-                compareContainer.classList.add('active');
-                mismatchSummary.style.display = 'none';
-                renderLocalComponents();
-            } else if (view === 'compare') {
-                tableContainer.style.display = 'none';
-                filterControls.style.display = 'none';
-                compareContainer.classList.add('active');
-                mismatchSummary.style.display = 'block';
-                renderComparison();
+            // Load data for the selected tab
+            if (tabId === 'github-data') {
+                loadGitHubData();
+            } else if (tabId === 'local-structure') {
+                loadLocalData();
+            } else if (tabId === 'comparison') {
+                loadComparisonData();
             }
         }
-        
-        function renderLocalComponents() {
-            const localContainer = document.getElementById('local-components');
-            document.getElementById('local-count').textContent = LOCAL_COMPONENTS.length;
-            
-            const html = LOCAL_COMPONENTS.map(comp => `
-                <div class="component-item">
-                    <div>
-                        <span class="component-id">${comp.id}</span>
-                        <span class="component-title">${comp.title}</span>
-                    </div>
-                    <span class="component-status local">${comp.type}</span>
-                </div>
+
+        function loadGitHubData() {
+            const tbody = document.getElementById('github-table-body');
+            tbody.innerHTML = githubComponents.map(component => `
+                <tr>
+                    <td><span class="component-id">${component.id}</span></td>
+                    <td>${component.title}</td>
+                    <td><span class="status-badge status-${component.status.replace(' ', '-')}">${component.status}</span></td>
+                    <td>${component.type}</td>
+                    <td>${component.updated}</td>
+                </tr>
             `).join('');
-            
-            localContainer.innerHTML = html;
         }
-        
-        function renderGithubComponents() {
-            const githubContainer = document.getElementById('github-components');
-            document.getElementById('github-count').textContent = githubComponents.length;
-            
-            if (githubComponents.length === 0) {
-                githubContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">No GitHub components found</div>';
-                return;
-            }
-            
-            const html = githubComponents.map(comp => `
-                <div class="component-item">
-                    <div>
-                        <span class="component-id">${comp.componentId || comp.id}</span>
-                        <span class="component-title">${comp.title}</span>
-                    </div>
-                    <span class="component-status github">${comp.status || 'unknown'}</span>
-                </div>
+
+        function loadLocalData() {
+            const tbody = document.getElementById('local-table-body');
+            tbody.innerHTML = localComponents.map(component => `
+                <tr>
+                    <td><span class="component-id">${component.id}</span></td>
+                    <td>${component.title}</td>
+                    <td>${component.type}</td>
+                    <td><span class="source-badge source-${component.source}">${component.source}</span></td>
+                </tr>
             `).join('');
-            
-            githubContainer.innerHTML = html;
         }
-        
-        function renderComparison() {
-            renderLocalComponents();
-            renderGithubComponents();
-            analyzeComponents();
+
+        function loadComparisonData() {
+            const missingDiv = document.getElementById('missing-from-github');
+            missingDiv.innerHTML = missingFromGitHub.map(item => `• ${item}`).join('<br>');
         }
-        
-        function analyzeComponents() {
-            const localIds = LOCAL_COMPONENTS.map(c => c.id);
-            const githubIds = githubComponents.map(c => c.componentId || c.id);
+
+        function filterGitHub(type) {
+            // Update active filter button
+            event.target.parentElement.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
             
-            const onlyLocal = LOCAL_COMPONENTS.filter(c => !githubIds.includes(c.id));
-            const onlyGithub = githubComponents.filter(c => !localIds.includes(c.componentId || c.id));
-            const inBoth = LOCAL_COMPONENTS.filter(c => githubIds.includes(c.id));
-            
-            const mismatchDetails = document.getElementById('mismatch-details');
-            mismatchDetails.innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
-                    <div style="text-align: center; padding: 16px; background: #e8f5e8; border-radius: 8px;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: #28a745;">${inBoth.length}</div>
-                        <div style="font-size: 0.9rem; color: #666;">In Both</div>
-                    </div>
-                    <div style="text-align: center; padding: 16px; background: #fff3cd; border-radius: 8px;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: #856404;">${onlyLocal.length}</div>
-                        <div style="font-size: 0.9rem; color: #666;">Only Local</div>
-                    </div>
-                    <div style="text-align: center; padding: 16px; background: #f8d7da; border-radius: 8px;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: #721c24;">${onlyGithub.length}</div>
-                        <div style="font-size: 0.9rem; color: #666;">Only GitHub</div>
-                    </div>
-                </div>
-                
-                ${onlyLocal.length > 0 ? `
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #856404; margin-bottom: 8px;">📋 Missing from GitHub (${onlyLocal.length})</h4>
-                    <div style="background: #fff3cd; border-radius: 6px; padding: 12px; font-size: 0.85rem;">
-                        ${onlyLocal.map(c => `<div>• ${c.id}: ${c.title}</div>`).join('')}
-                    </div>
-                </div>
-                ` : ''}
-                
-                ${onlyGithub.length > 0 ? `
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #721c24; margin-bottom: 8px;">📊 Extra in GitHub (${onlyGithub.length})</h4>
-                    <div style="background: #f8d7da; border-radius: 6px; padding: 12px; font-size: 0.85rem;">
-                        ${onlyGithub.map(c => `<div>• ${c.componentId || c.id}: ${c.title}</div>`).join('')}
-                    </div>
-                </div>
-                ` : ''}
-                
-                ${inBoth.length > 0 ? `
-                <div>
-                    <h4 style="color: #28a745; margin-bottom: 8px;">✅ Synchronized (${inBoth.length})</h4>
-                    <div style="background: #e8f5e8; border-radius: 6px; padding: 12px; font-size: 0.85rem;">
-                        ${inBoth.slice(0, 5).map(c => `<div>• ${c.id}: ${c.title}</div>`).join('')}
-                        ${inBoth.length > 5 ? `<div style="margin-top: 8px; font-style: italic;">... and ${inBoth.length - 5} more</div>` : ''}
-                    </div>
-                </div>
-                ` : ''}
-            `;
+            // Filter table rows (implement filtering logic)
+            console.log('Filtering GitHub data by:', type);
         }
-        
-        // Enhanced registry table integration
-        window.updateComparisonData = function(components) {
-            githubComponents = components;
-            if (currentView === 'compare') {
-                renderComparison();
-            }
-        };
+
+        function filterLocal(type) {
+            // Update active filter button
+            event.target.parentElement.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter table rows (implement filtering logic)
+            console.log('Filtering local data by:', type);
+        }
+
+        // Initialize with GitHub data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGitHubData();
+        });
     </script>
-    <script src="../assets/js/registry-table.js"></script>
 </body>
 </html>

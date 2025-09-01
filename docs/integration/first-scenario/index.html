@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your First USE Scenario - Interactive Workshop</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation */
+        .nav-breadcrumb {
+            margin-bottom: 20px;
+            color: var(--color-text-secondary);
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--color-bg-primary);
+            border-radius: 2px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-success) 100%);
+            width: 33.3%; /* 2 of 6 sections */
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+            border-radius: 16px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        /* Workshop Steps */
+        .workshop-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .workshop-sidebar {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            height: fit-content;
+            border: 1px solid var(--color-border);
+            position: sticky;
+            top: 20px;
+        }
+        
+        .workshop-steps {
+            list-style: none;
+        }
+        
+        .workshop-step {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: color 0.2s ease;
+        }
+        
+        .workshop-step:last-child {
+            border-bottom: none;
+        }
+        
+        .workshop-step.active {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        .workshop-step.completed {
+            color: var(--color-success);
+        }
+        
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .step-number.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .step-number.completed {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .step-number.completed::before {
+            content: "✓";
+        }
+        
+        .workshop-content {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid var(--color-border);
+            min-height: 600px;
+        }
+        
+        /* Step Content */
+        .step-content {
+            display: none;
+        }
+        
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-content h2 {
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .step-content h3 {
+            margin: 24px 0 16px 0;
+            color: var(--color-text-primary);
+        }
+        
+        .step-content p {
+            margin-bottom: 16px;
+            color: var(--color-text-secondary);
+        }
+        
+        /* Interactive Forms */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--color-bg-secondary);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Actor Selection */
+        .actor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .actor-card {
+            padding: 20px;
+            background: var(--color-accent);
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .actor-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        
+        .actor-card.selected {
+            border-color: var(--color-primary);
+            background: var(--color-primary-light);
+        }
+        
+        .actor-card .actor-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        
+        .actor-card h5 {
+            margin-bottom: 4px;
+            color: var(--color-text-primary);
+        }
+        
+        .actor-card p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+        
+        /* Scenario Preview */
+        .scenario-preview {
+            background: var(--color-bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            border: 1px solid var(--color-border);
+        }
+        
+        .scenario-preview .keyword {
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+        
+        .scenario-preview .actor {
+            color: var(--color-secondary);
+            font-weight: bold;
+        }
+        
+        .scenario-preview .placeholder {
+            color: var(--color-text-secondary);
+            font-style: italic;
+            background: var(--color-accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+        
+        .btn-secondary {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--color-accent);
+        }
+        
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: var(--color-success-dark);
+        }
+        
+        /* Tips and Warnings */
+        .tip-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .tip-box .tip-icon {
+            color: #f59e0b;
+            margin-right: 8px;
+        }
+        
+        .warning-box {
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .warning-box .warning-icon {
+            color: #ef4444;
+            margin-right: 8px;
+        }
+        
+        /* Examples */
+        .example-list {
+            background: var(--color-accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        
+        .example-list h5 {
+            margin-bottom: 12px;
+            color: var(--color-text-primary);
+        }
+        
+        .example-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .example-list li {
+            padding: 4px 0;
+            color: var(--color-text-secondary);
+        }
+        
+        .example-list li:before {
+            content: "💡";
+            margin-right: 8px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .workshop-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .workshop-sidebar {
+                position: static;
+            }
+            
+            .actor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-breadcrumb">
+            <a href="../../index.html">← Main</a> / 
+            <a href="../index.html">USE Learning</a> / 
+            <strong>Your First Scenario</strong>
+        </nav>
+        
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <!-- Header -->
+        <header class="header">
+            <h1>✍️ Your First Scenario</h1>
+            <div class="subtitle">Interactive Workshop - Build a USE Scenario Step by Step</div>
+        </header>
+        
+        <!-- Workshop Container -->
+        <div class="workshop-container">
+            <!-- Sidebar -->
+            <div class="workshop-sidebar">
+                <h4 style="margin-bottom: 16px; color: var(--color-text-primary);">Workshop Steps</h4>
+                <ul class="workshop-steps">
+                    <li class="workshop-step active" onclick="showStep(1)">
+                        <span class="step-number active">1</span>
+                        <span>Choose Your Domain</span>
+                    </li>
+                    <li class="workshop-step" onclick="showStep(2)">
+                        <span class="step-number">2</span>
+                        <span>Identify Actors</span>
+                    </li>
+                    <li class="workshop-step" onclick="showStep(3)">
+                        <span class="step-number">3</span>
+                        <span>Define the Goal</span>
+                    </li>
+                    <li class="workshop-step" onclick="showStep(4)">
+                        <span class="step-number">4</span>
+                        <span>Write Scenario Steps</span>
+                    </li>
+                    <li class="workshop-step" onclick="showStep(5)">
+                        <span class="step-number">5</span>
+                        <span>Add Success Criteria</span>
+                    </li>
+                    <li class="workshop-step" onclick="showStep(6)">
+                        <span class="step-number">6</span>
+                        <span>Review & Validate</span>
+                    </li>
+                </ul>
+                
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-border);">
+                    <small style="color: var(--color-text-secondary);">
+                        💡 Your scenario will be automatically saved as you progress
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="workshop-content">
+                <!-- Step 1: Choose Domain -->
+                <div class="step-content active" id="step-1">
+                    <h2>🎯 Step 1: Choose Your Domain</h2>
+                    <p>Let's start by choosing what type of application or system you want to create a scenario for. This will help us provide relevant examples and guidance.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Select your domain or enter a custom one:</label>
+                        <select class="form-select" id="domain-select" onchange="updateDomain()">
+                            <option value="">-- Select a domain --</option>
+                            <option value="healthcare-recruitment">Healthcare Recruitment Platform</option>
+                            <option value="e-commerce">E-commerce Platform</option>
+                            <option value="saas-crm">SaaS CRM System</option>
+                            <option value="mobile-banking">Mobile Banking App</option>
+                            <option value="learning-platform">Online Learning Platform</option>
+                            <option value="custom">Custom Domain</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="custom-domain" style="display: none;">
+                        <label class="form-label">Describe your domain:</label>
+                        <input type="text" class="form-input" id="custom-domain-input" placeholder="e.g., Food delivery app, Property management system, etc.">
+                    </div>
+                    
+                    <div id="domain-description" style="display: none;">
+                        <h3>About This Domain</h3>
+                        <p id="domain-info"></p>
+                        
+                        <div class="example-list">
+                            <h5>Common scenarios in this domain:</h5>
+                            <ul id="domain-examples"></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <span class="tip-icon">💡</span>
+                        <strong>Tip:</strong> Choose the domain that's closest to your actual project. If none match exactly, pick the most similar one - you can always adapt the scenario later.
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="showStep(1)" disabled>← Previous</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step1-next" disabled>Next: Identify Actors →</button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Identify Actors -->
+                <div class="step-content" id="step-2">
+                    <h2>👥 Step 2: Identify Your Actors</h2>
+                    <p>Now let's identify the key actors in your scenario. Remember, actors are the entities (people, systems, or interfaces) that participate in your scenario.</p>
+                    
+                    <h3>Select Your Primary Actors</h3>
+                    <p>Choose 2-4 actors that will be involved in your scenario:</p>
+                    
+                    <div class="actor-grid" id="actor-selection">
+                        <!-- Actors will be populated based on domain selection -->
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 24px;">
+                        <label class="form-label">Add custom actor (optional):</label>
+                        <input type="text" class="form-input" id="custom-actor" placeholder="e.g., Payment Gateway, Notification Service, etc.">
+                        <button class="btn btn-secondary" onclick="addCustomActor()" style="margin-top: 8px;">Add Actor</button>
+                    </div>
+                    
+                    <div id="selected-actors" style="display: none; margin-top: 24px;">
+                        <h4>Selected Actors:</h4>
+                        <div id="actor-list"></div>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <span class="tip-icon">💡</span>
+                        <strong>Tip:</strong> Focus on the main actors for your first scenario. You can always add more in advanced scenarios. Think: "Who or what needs to do something for this scenario to succeed?"
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="showStep(1)">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step2-next" disabled>Next: Define Goal →</button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Define Goal -->
+                <div class="step-content" id="step-3">
+                    <h2>🎯 Step 3: Define Your Scenario Goal</h2>
+                    <p>Every good scenario starts with a clear goal. What business value are you trying to achieve? What should happen by the end of this scenario?</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Scenario Title:</label>
+                        <input type="text" class="form-input" id="scenario-title" placeholder="e.g., Customer Places First Order">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Scenario Goal (What business value does this create?):</label>
+                        <textarea class="form-textarea" id="scenario-goal" placeholder="e.g., A new customer successfully places their first order and receives confirmation, creating a positive first experience and establishing trust in the platform..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Primary Actor (Who initiates this scenario?):</label>
+                        <select class="form-select" id="primary-actor">
+                            <option value="">-- Select primary actor --</option>
+                            <!-- Will be populated from selected actors -->
+                        </select>
+                    </div>
+                    
+                    <div class="example-list">
+                        <h5>Good scenario goals are:</h5>
+                        <ul>
+                            <li>Focused on business value ("Customer completes purchase")</li>
+                            <li>Specific and measurable ("Order is confirmed within 5 seconds")</li>
+                            <li>Achievable in one workflow ("From product selection to payment")</li>
+                            <li>Clear about who benefits ("Customer gains confidence, business gains revenue")</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="showStep(2)">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step3-next" disabled>Next: Write Steps →</button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Write Scenario Steps -->
+                <div class="step-content" id="step-4">
+                    <h2>📝 Step 4: Write Your Scenario Steps</h2>
+                    <p>Now we'll write the actual scenario using the Given-When-Then format. This is where your scenario becomes executable and testable.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Given (Initial conditions - what's already true?):</label>
+                        <textarea class="form-textarea" id="given-steps" placeholder="e.g., Given a new customer visits our platform
+And they have not created an account yet
+And our payment system is operational"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">When (Actions - what happens?):</label>
+                        <textarea class="form-textarea" id="when-steps" placeholder="e.g., When they browse our product catalog
+And select a product they want to purchase
+And click 'Add to Cart'
+And proceed to checkout"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Then (Expected outcomes - what should result?):</label>
+                        <textarea class="form-textarea" id="then-steps" placeholder="e.g., Then they should be prompted to create an account
+And the account creation should be simple and fast
+And their order should be processed successfully
+And they should receive confirmation via email"></textarea>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <span class="warning-icon">⚠️</span>
+                        <strong>Remember:</strong> Each line should be specific and testable. Avoid vague terms like "user is happy" - instead use measurable criteria like "user receives confirmation email within 30 seconds."
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="showStep(3)">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step4-next" disabled>Next: Success Criteria →</button>
+                    </div>
+                </div>
+                
+                <!-- Step 5: Add Success Criteria -->
+                <div class="step-content" id="step-5">
+                    <h2>✅ Step 5: Define Success Criteria</h2>
+                    <p>Let's add specific, measurable success criteria that will help determine if your scenario is working correctly.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Performance Criteria:</label>
+                        <textarea class="form-textarea" id="performance-criteria" placeholder="e.g., Page load time < 2 seconds
+Order processing time < 30 seconds
+Email confirmation delivered within 1 minute"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Quality Criteria:</label>
+                        <textarea class="form-textarea" id="quality-criteria" placeholder="e.g., Zero data loss during order processing
+99.9% uptime for payment processing
+All form validations work correctly"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">User Experience Criteria:</label>
+                        <textarea class="form-textarea" id="ux-criteria" placeholder="e.g., User can complete order in < 5 clicks
+Error messages are clear and actionable
+Mobile experience is fully functional"></textarea>
+                    </div>
+                    
+                    <div class="tip-box">
+                        <span class="tip-icon">💡</span>
+                        <strong>Tip:</strong> Success criteria should be SMART: Specific, Measurable, Achievable, Relevant, and Time-bound. These will become your automated tests.
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="showStep(4)">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step5-next" disabled>Next: Review →</button>
+                    </div>
+                </div>
+                
+                <!-- Step 6: Review & Validate -->
+                <div class="step-content" id="step-6">
+                    <h2>🔍 Step 6: Review Your Scenario</h2>
+                    <p>Congratulations! You've created your first USE scenario. Let's review it and see how it looks in the standard format.</p>
+                    
+                    <h3>Your Complete Scenario</h3>
+                    <div class="scenario-preview" id="final-scenario">
+                        <!-- Scenario will be generated here -->
+                    </div>
+                    
+                    <h3>Validation Checklist</h3>
+                    <div style="background: var(--color-accent); padding: 20px; border-radius: 8px; margin: 16px 0;">
+                        <div id="validation-checklist">
+                            <!-- Checklist items will be populated -->
+                        </div>
+                    </div>
+                    
+                    <h3>Next Steps</h3>
+                    <p>Now that you have your scenario, you can:</p>
+                    <ul style="margin: 16px 0; padding-left: 24px;">
+                        <li>Copy it to your project documentation</li>
+                        <li>Create a GitHub issue using our templates</li>
+                        <li>Share it with your team for feedback</li>
+                        <li>Use it as a template for similar scenarios</li>
+                    </ul>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="showStep(5)">← Previous</button>
+                        <button class="btn btn-success" onclick="downloadScenario()">📄 Download Scenario</button>
+                        <button class="btn btn-primary" onclick="createGitHubIssue()">🐙 Create GitHub Issue</button>
+                    </div>
+                    
+                    <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--color-border);">
+                        <h4>What's Next?</h4>
+                        <p>Ready to take your USE skills to the next level?</p>
+                        <div class="button-group">
+                            <a href="../advanced-patterns/index.html" class="btn btn-primary">Learn Advanced Patterns</a>
+                            <a href="../examples/index.html" class="btn btn-secondary">Explore More Examples</a>
+                            <a href="../team-collaboration/index.html" class="btn btn-secondary">Setup Team Workflow</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Workshop state management
+        let currentStep = 1;
+        let workshopData = {
+            domain: '',
+            selectedActors: [],
+            title: '',
+            goal: '',
+            primaryActor: '',
+            givenSteps: '',
+            whenSteps: '',
+            thenSteps: '',
+            performanceCriteria: '',
+            qualityCriteria: '',
+            uxCriteria: ''
+        };
+
+        // Domain data
+        const domainData = {
+            'healthcare-recruitment': {
+                name: 'Healthcare Recruitment Platform',
+                description: 'Platforms that connect healthcare professionals with healthcare organizations, managing the entire recruitment lifecycle.',
+                examples: [
+                    'Healthcare professional creates profile',
+                    'Hospital posts job opening',
+                    'Candidate applies for position',
+                    'Interview scheduling and feedback',
+                    'Onboarding and placement tracking'
+                ],
+                actors: [
+                    { id: 'healthcare-org', name: 'Healthcare Organisation', icon: '🏥', desc: 'Hospital or clinic seeking staff' },
+                    { id: 'job-seeker', name: 'Healthcare Professional', icon: '👨‍⚕️', desc: 'Nurse, doctor, or medical professional' },
+                    { id: 'sales-team', name: 'Sales Team', icon: '📞', desc: 'Platform sales representatives' },
+                    { id: 'crm-system', name: 'CRM System', icon: '💼', desc: 'Customer relationship management' },
+                    { id: 'matching-engine', name: 'Matching Engine', icon: '🎯', desc: 'AI-powered candidate matching' },
+                    { id: 'notification-service', name: 'Notification Service', icon: '📧', desc: 'Email and SMS notifications' }
+                ]
+            },
+            'e-commerce': {
+                name: 'E-commerce Platform',
+                description: 'Online shopping platforms that enable customers to browse, purchase, and receive products.',
+                examples: [
+                    'Customer browses product catalog',
+                    'Add products to shopping cart',
+                    'Checkout and payment processing',
+                    'Order fulfillment and shipping',
+                    'Customer support and returns'
+                ],
+                actors: [
+                    { id: 'customer', name: 'Customer', icon: '👤', desc: 'Person shopping for products' },
+                    { id: 'merchant', name: 'Merchant', icon: '🏪', desc: 'Seller managing products' },
+                    { id: 'payment-gateway', name: 'Payment Gateway', icon: '💳', desc: 'Processes payments securely' },
+                    { id: 'inventory-system', name: 'Inventory System', icon: '📦', desc: 'Manages product stock' },
+                    { id: 'shipping-service', name: 'Shipping Service', icon: '🚚', desc: 'Handles delivery logistics' },
+                    { id: 'recommendation-engine', name: 'Recommendation Engine', icon: '🎯', desc: 'Suggests relevant products' }
+                ]
+            }
+        };
+
+        function updateDomain() {
+            const select = document.getElementById('domain-select');
+            const customDiv = document.getElementById('custom-domain');
+            const descDiv = document.getElementById('domain-description');
+            const nextBtn = document.getElementById('step1-next');
+            
+            if (select.value === 'custom') {
+                customDiv.style.display = 'block';
+                descDiv.style.display = 'none';
+                nextBtn.disabled = false;
+            } else if (select.value) {
+                customDiv.style.display = 'none';
+                descDiv.style.display = 'block';
+                
+                const domain = domainData[select.value];
+                document.getElementById('domain-info').textContent = domain.description;
+                
+                const examplesList = document.getElementById('domain-examples');
+                examplesList.innerHTML = domain.examples.map(ex => `<li>${ex}</li>`).join('');
+                
+                workshopData.domain = select.value;
+                nextBtn.disabled = false;
+            } else {
+                customDiv.style.display = 'none';
+                descDiv.style.display = 'none';
+                nextBtn.disabled = true;
+            }
+        }
+
+        function showStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show target step
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+            
+            // Update sidebar
+            document.querySelectorAll('.workshop-step').forEach((el, index) => {
+                el.classList.remove('active');
+                const stepNum = el.querySelector('.step-number');
+                stepNum.classList.remove('active');
+                
+                if (index + 1 === stepNumber) {
+                    el.classList.add('active');
+                    stepNum.classList.add('active');
+                } else if (index + 1 < stepNumber) {
+                    el.classList.add('completed');
+                    stepNum.classList.add('completed');
+                } else {
+                    el.classList.remove('completed');
+                    stepNum.classList.remove('completed');
+                }
+            });
+            
+            currentStep = stepNumber;
+            
+            // Populate step-specific content
+            if (stepNumber === 2) {
+                populateActors();
+            } else if (stepNumber === 3) {
+                populatePrimaryActors();
+            } else if (stepNumber === 6) {
+                generateFinalScenario();
+            }
+        }
+
+        function populateActors() {
+            const grid = document.getElementById('actor-selection');
+            const domain = workshopData.domain;
+            
+            if (domainData[domain]) {
+                const actors = domainData[domain].actors;
+                grid.innerHTML = actors.map(actor => `
+                    <div class="actor-card" data-actor-id="${actor.id}" onclick="selectActor('${actor.id}')">
+                        <div class="actor-icon">${actor.icon}</div>
+                        <h5>${actor.name}</h5>
+                        <p>${actor.desc}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function selectActor(actorId) {
+            const card = document.querySelector(`[data-actor-id="${actorId}"]`);
+            const domain = domainData[workshopData.domain];
+            const actor = domain.actors.find(a => a.id === actorId);
+            
+            if (card.classList.contains('selected')) {
+                card.classList.remove('selected');
+                workshopData.selectedActors = workshopData.selectedActors.filter(a => a.id !== actorId);
+            } else {
+                if (workshopData.selectedActors.length < 4) {
+                    card.classList.add('selected');
+                    workshopData.selectedActors.push(actor);
+                }
+            }
+            
+            updateSelectedActors();
+        }
+
+        function updateSelectedActors() {
+            const selectedDiv = document.getElementById('selected-actors');
+            const actorList = document.getElementById('actor-list');
+            const nextBtn = document.getElementById('step2-next');
+            
+            if (workshopData.selectedActors.length > 0) {
+                selectedDiv.style.display = 'block';
+                actorList.innerHTML = workshopData.selectedActors.map(actor => 
+                    `<span style="display: inline-block; margin: 4px; padding: 8px 12px; background: var(--color-primary); color: white; border-radius: 16px; font-size: 0.9rem;">${actor.icon} ${actor.name}</span>`
+                ).join('');
+                nextBtn.disabled = false;
+            } else {
+                selectedDiv.style.display = 'none';
+                nextBtn.disabled = true;
+            }
+        }
+
+        function populatePrimaryActors() {
+            const select = document.getElementById('primary-actor');
+            select.innerHTML = '<option value="">-- Select primary actor --</option>' +
+                workshopData.selectedActors.map(actor => 
+                    `<option value="${actor.id}">${actor.name}</option>`
+                ).join('');
+        }
+
+        function generateFinalScenario() {
+            const scenario = `<span class="keyword">Feature:</span> ${workshopData.title || 'Your Scenario Title'}
+
+<span class="keyword">Scenario:</span> ${workshopData.title || 'Your Scenario Title'}
+  <span class="keyword">Given</span> ${workshopData.givenSteps || 'your initial conditions'}
+  <span class="keyword">When</span> ${workshopData.whenSteps || 'your actions'}
+  <span class="keyword">Then</span> ${workshopData.thenSteps || 'your expected outcomes'}
+
+<span class="keyword">Performance Criteria:</span>
+  ${workshopData.performanceCriteria || 'your performance requirements'}
+
+<span class="keyword">Quality Criteria:</span>
+  ${workshopData.qualityCriteria || 'your quality requirements'}
+
+<span class="keyword">UX Criteria:</span>
+  ${workshopData.uxCriteria || 'your user experience requirements'}`;
+
+            document.getElementById('final-scenario').innerHTML = scenario;
+            
+            // Generate validation checklist
+            const checklist = document.getElementById('validation-checklist');
+            const checks = [
+                { text: 'Scenario has a clear, specific title', valid: !!workshopData.title },
+                { text: 'Primary actor is identified', valid: !!workshopData.primaryActor },
+                { text: 'Given conditions are specific and testable', valid: !!workshopData.givenSteps },
+                { text: 'When actions are clear and actionable', valid: !!workshopData.whenSteps },
+                { text: 'Then outcomes are measurable', valid: !!workshopData.thenSteps },
+                { text: 'Success criteria are defined', valid: !!(workshopData.performanceCriteria || workshopData.qualityCriteria || workshopData.uxCriteria) }
+            ];
+
+            checklist.innerHTML = checks.map(check => `
+                <div style="margin: 8px 0; display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${check.valid ? 'var(--color-success)' : 'var(--color-warning)'};">
+                        ${check.valid ? '✅' : '⚠️'}
+                    </span>
+                    <span style="color: var(--color-text-primary);">${check.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function nextStep() {
+            // Validate current step before proceeding
+            if (currentStep === 1) {
+                workshopData.domain = document.getElementById('domain-select').value || 'custom';
+            } else if (currentStep === 3) {
+                workshopData.title = document.getElementById('scenario-title').value;
+                workshopData.goal = document.getElementById('scenario-goal').value;
+                workshopData.primaryActor = document.getElementById('primary-actor').value;
+            } else if (currentStep === 4) {
+                workshopData.givenSteps = document.getElementById('given-steps').value;
+                workshopData.whenSteps = document.getElementById('when-steps').value;
+                workshopData.thenSteps = document.getElementById('then-steps').value;
+            } else if (currentStep === 5) {
+                workshopData.performanceCriteria = document.getElementById('performance-criteria').value;
+                workshopData.qualityCriteria = document.getElementById('quality-criteria').value;
+                workshopData.uxCriteria = document.getElementById('ux-criteria').value;
+            }
+            
+            if (currentStep < 6) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        // Enable next buttons when content is added
+        function enableNextButton(stepNumber) {
+            const btn = document.getElementById(`step${stepNumber}-next`);
+            if (btn) btn.disabled = false;
+        }
+
+        // Add event listeners for form inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            // Step 3 validation
+            ['scenario-title', 'scenario-goal', 'primary-actor'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        const title = document.getElementById('scenario-title').value;
+                        const goal = document.getElementById('scenario-goal').value;
+                        const actor = document.getElementById('primary-actor').value;
+                        document.getElementById('step3-next').disabled = !(title && goal && actor);
+                    });
+                }
+            });
+
+            // Step 4 validation
+            ['given-steps', 'when-steps', 'then-steps'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        const given = document.getElementById('given-steps').value;
+                        const when = document.getElementById('when-steps').value;
+                        const then = document.getElementById('then-steps').value;
+                        document.getElementById('step4-next').disabled = !(given && when && then);
+                    });
+                }
+            });
+
+            // Step 5 validation (at least one criterion)
+            ['performance-criteria', 'quality-criteria', 'ux-criteria'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        const perf = document.getElementById('performance-criteria').value;
+                        const qual = document.getElementById('quality-criteria').value;
+                        const ux = document.getElementById('ux-criteria').value;
+                        document.getElementById('step5-next').disabled = !(perf || qual || ux);
+                    });
+                }
+            });
+        });
+
+        function downloadScenario() {
+            const scenarioText = `# USE Scenario: ${workshopData.title}
+
+## Domain
+${workshopData.domain}
+
+## Goal
+${workshopData.goal}
+
+## Actors
+${workshopData.selectedActors.map(a => `- ${a.name}: ${a.desc}`).join('\n')}
+
+## Scenario
+Feature: ${workshopData.title}
+
+Scenario: ${workshopData.title}
+  Given ${workshopData.givenSteps}
+  When ${workshopData.whenSteps}
+  Then ${workshopData.thenSteps}
+
+## Success Criteria
+
+### Performance
+${workshopData.performanceCriteria}
+
+### Quality
+${workshopData.qualityCriteria}
+
+### User Experience
+${workshopData.uxCriteria}
+
+---
+Generated with USE (Unified Scenario Engineering)
+`;
+
+            const blob = new Blob([scenarioText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${workshopData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_scenario.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function createGitHubIssue() {
+            const issueTitle = `[USE Scenario] ${workshopData.title}`;
+            const issueBody = encodeURIComponent(`## Scenario: ${workshopData.title}
+
+**Domain:** ${workshopData.domain}
+**Primary Actor:** ${workshopData.primaryActor}
+
+### Business Goal
+${workshopData.goal}
+
+### Actors
+${workshopData.selectedActors.map(a => `- ${a.name}: ${a.desc}`).join('\n')}
+
+### Scenario Steps
+
+**Given**
+${workshopData.givenSteps}
+
+**When**
+${workshopData.whenSteps}
+
+**Then**
+${workshopData.thenSteps}
+
+### Success Criteria
+
+#### Performance
+${workshopData.performanceCriteria}
+
+#### Quality
+${workshopData.qualityCriteria}
+
+#### User Experience
+${workshopData.uxCriteria}
+
+---
+*Generated with USE (Unified Scenario Engineering)*
+`);
+
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues/new?title=${encodeURIComponent(issueTitle)}&body=${issueBody}&labels=use-scenario,needs-review`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>

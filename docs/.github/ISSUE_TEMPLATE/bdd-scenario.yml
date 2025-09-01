@@ -1,0 +1,271 @@
+name: 🎭 BDD Scenario (B_S/T_S/U_S)
+description: Create a new BDD scenario with executable Gherkin steps and actor definitions
+title: "[SCENARIO_TYPE]: [SCENARIO_TITLE]"
+labels: ["bdd-scenario", "needs-validation"]
+projects: ["3Stones-io/12"]
+body:
+  - type: dropdown
+    id: scenario_type
+    attributes:
+      label: "🎯 Scenario Type"
+      description: "Select the type of scenario you're creating"
+      options:
+        - "B_S (Business Scenario) - Human actors delivering business value"
+        - "T_S (Technical Scenario) - System components interacting"  
+        - "U_S (UX Scenario) - Interface actors and user experience"
+        - "T_F (Foundational Component) - Platform-wide technical component"
+    validations:
+      required: true
+
+  - type: input
+    id: scenario_id
+    attributes:
+      label: "🏷️ Scenario ID"
+      description: "Unique identifier (e.g., B_S001, T_S001, U_S001)"
+      placeholder: "B_S001"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: parallel_scenarios
+    attributes:
+      label: "🔗 Parallel Scenarios"
+      description: "Check which parallel scenarios this scenario relates to"
+      options:
+        - label: "Has corresponding Technical Scenario (T_S)"
+        - label: "Has corresponding UX Scenario (U_S)"  
+        - label: "Has corresponding Business Scenario (B_S)"
+        - label: "Inherits from parent scenario"
+
+  - type: textarea
+    id: primary_actors
+    attributes:
+      label: "🎭 Primary Actors"
+      description: "List the main actors involved in this scenario"
+      placeholder: |
+        **Human Actors:**
+        - 🏥 Healthcare Organisation (Service Buyer)
+        - 👩‍⚕️ Job Seeker (Service Provider)
+        - 📞 Sales Team (Platform Facilitator)
+        
+        **System Actors:**
+        - 🔐 Auth System (T_F001)
+        - 🗄️ Database (T_F002)
+        - 📧 Email Service (T_F007)
+        
+        **Interface Actors:**
+        - 💻 Desktop User
+        - 📱 Mobile User
+        - ♿ Accessibility Tools
+    validations:
+      required: true
+
+  - type: textarea
+    id: executable_gherkin
+    attributes:
+      label: "🧪 Executable BDD Scenario"
+      description: "Write your scenario in Gherkin format with checkboxes for each step"
+      placeholder: |
+        ## Feature: B_S001 Cold Call to Candidate Placement
+        In order to connect qualified healthcare professionals with healthcare organizations
+        As a Healthcare Recruitment Platform
+        We need to facilitate complete placement workflows from initial contact to successful hiring
+
+        ### Background (Prerequisites):
+        - [ ] **Platform Operational** *(Automated: Health check passes)*
+        - [ ] **Test Data Seeded** *(Automated: DB fixtures loaded)*
+        - [ ] **Actors Available** *(Automated: Services online)*
+          - [ ] 🏥 Healthcare Organisation (prospect status) 
+          - [ ] 📞 Sales Team (authenticated)
+          - [ ] ⚙️ CRM System (online)
+
+        ### Scenario: B_S001_US001 Organisation Receives Cold Call
+        
+        **Given Section:**
+        - [ ] **Given** a Healthcare Organisation exists as a qualified prospect
+          - *Test Reference: `test_healthcare_org_exists()`*
+          - *Expected Result: Organisation record in database with status="prospect"*
+        - [ ] **And** the Sales Team has researched their staffing needs
+          - *Test Reference: `test_sales_team_prepared()`*
+          - *Expected Result: Research data populated in CRM*
+
+        **When Section:**
+        - [ ] **When** the Sales Team calls the Healthcare Organisation
+          - *Test Reference: `test_sales_team_makes_call()`*
+          - *Expected Result: Call interaction logged with timestamp*
+
+        **Then Section:**
+        - [ ] **Then** the Healthcare Organisation should understand our value proposition
+          - *Test Reference: `test_value_prop_understood()`*
+          - *Expected Result: Understanding level >= 8/10 in call assessment*
+        - [ ] **And** they should express interest in our services
+          - *Test Reference: `test_interest_expressed()`*
+          - *Expected Result: Interest flag = true in interaction record*
+        - [ ] **And** they should agree to schedule a detailed discussion
+          - *Test Reference: `test_follow_up_scheduled()`*
+          - *Expected Result: Follow-up task created in CRM*
+
+        ### Parallel Scenario Execution:
+        - [ ] **T_S001_US001** CRM logging executed successfully
+          - *Automated Check: CRM API returns success*
+        - [ ] **U_S001_US001** Sales dashboard updated
+          - *Automated Check: Dashboard shows new interaction*
+
+        ### Acceptance Criteria Checklist:
+        - [ ] All Given-When-Then steps execute successfully
+        - [ ] Parallel scenarios complete without errors
+        - [ ] Integration tests pass for all actor interactions
+        - [ ] Performance criteria met (< 2 second response time)
+        - [ ] Error scenarios handled gracefully
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "✅ Detailed Acceptance Criteria"
+      description: "Specific, measurable criteria for scenario completion"
+      placeholder: |
+        ### Business Acceptance:
+        - [ ] Stakeholder demo approved by Product Owner
+        - [ ] User feedback score >= 4.5/5
+        - [ ] Business KPIs improved (define specific metrics)
+
+        ### Technical Acceptance:
+        - [ ] All integration tests passing
+        - [ ] Code coverage >= 85%
+        - [ ] Security scan passed
+        - [ ] Performance benchmarks met
+
+        ### UX Acceptance:
+        - [ ] Accessibility audit passed (WCAG 2.1 AA)
+        - [ ] Mobile responsiveness verified
+        - [ ] Cross-browser compatibility tested
+
+        ### Definition of Done:
+        - [ ] Code reviewed and approved
+        - [ ] Documentation updated
+        - [ ] Deployed to staging environment
+        - [ ] Smoke tests passed in production-like environment
+    validations:
+      required: true
+
+  - type: input
+    id: parent_scenario
+    attributes:
+      label: "👨‍👩‍👧‍👦 Parent/Inheritance Scenario"
+      description: "If this inherits from another scenario, specify the parent ID"
+      placeholder: "B_S001 (if this is B_S002 inheriting 80% from B_S001)"
+
+  - type: input
+    id: inheritance_percentage
+    attributes:
+      label: "📊 Inheritance Percentage"
+      description: "What percentage does this scenario inherit? (0-100)"
+      placeholder: "80"
+
+  - type: dropdown
+    id: priority_level
+    attributes:
+      label: "🎯 Priority Level"
+      options:
+        - "🔴 Critical - Must Have"
+        - "🟠 High - Should Have"
+        - "🟡 Medium - Could Have"
+        - "⚪ Low - Won't Have This Release"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk_assessment
+    attributes:
+      label: "⚠️ Risk Assessment"
+      description: "Technical and business risk level"
+      options:
+        - "🟢 Low Risk - Well understood, standard implementation"
+        - "🟡 Medium Risk - Some unknowns, moderate complexity"
+        - "🟠 High Risk - Significant unknowns, high complexity"  
+        - "🔴 Critical Risk - Major unknowns, potential blockers"
+
+  - type: textarea
+    id: linked_scenarios
+    attributes:
+      label: "🔗 Linked Scenarios & Dependencies"
+      description: "Reference related scenarios and their relationships"
+      placeholder: |
+        ### Parallel Scenarios:
+        - T_S001: Technical implementation (must execute in parallel)
+        - U_S001: UX implementation (must execute in parallel)
+
+        ### Dependencies:
+        - Depends on: T_F001 (Auth System) being operational
+        - Depends on: T_F002 (Database) being available
+        - Blocks: B_S002 (can't start until B_S001 completes)
+
+        ### Cross-References:
+        - Related to Issue #123: User Authentication Requirements
+        - Implements Epic #456: Cold Call Workflow
+        - Addresses Bug #789: CRM Integration Issues
+
+  - type: textarea
+    id: test_automation_plan
+    attributes:
+      label: "🤖 Test Automation Plan"
+      description: "How will this scenario be automated and validated?"
+      placeholder: |
+        ### Step Definition Files:
+        - `features/steps/business_steps.py` - Business scenario steps
+        - `features/steps/technical_steps.py` - Technical integration steps
+        - `features/steps/ux_steps.py` - UI interaction steps
+
+        ### Test Data Requirements:
+        - Healthcare Organisation test fixture
+        - Sales Team user account
+        - CRM system mock/sandbox
+
+        ### Automation Tools:
+        - **BDD Framework**: Behave (Python) + Cucumber (JavaScript)
+        - **API Testing**: Requests + pytest
+        - **UI Testing**: Playwright + pytest-playwright
+        - **Integration**: Phoenix ExUnit for Elixir backend
+
+        ### CI/CD Integration:
+        - Tests run on: Pull Request, Issue Update, Scheduled Daily
+        - Results update: Issue checkboxes automatically
+        - Notifications: Slack alerts for failures
+
+  - type: textarea
+    id: mockups_wireframes
+    attributes:
+      label: "🎨 Mockups & Wireframes (for UX scenarios)"
+      description: "Links to design assets, screenshots, or embedded images"
+      placeholder: |
+        ### Design Assets:
+        - Figma Link: [Design System Components](https://figma.com/...)
+        - Screenshots: ![Mobile Flow](https://github.com/.../mobile-flow.png)
+        - Wireframes: See attached files
+
+        ### UI Components Used:
+        - Navigation Header (U_F001)
+        - Form Components (U_F002) 
+        - Mobile-specific layouts (U_S_Mobile)
+
+  - type: checkboxes
+    id: implementation_checklist
+    attributes:
+      label: "🚧 Implementation Tracking"
+      description: "Track the implementation progress"
+      options:
+        - label: "📋 Requirements gathered and validated"
+        - label: "🎨 UX/UI designs completed and approved"
+        - label: "🏗️ Technical architecture designed"
+        - label: "👨‍💻 Development started"
+        - label: "🧪 Unit tests written and passing"
+        - label: "🔗 Integration tests written and passing"  
+        - label: "🎭 BDD tests written and passing"
+        - label: "📱 Cross-device testing completed"
+        - label: "🔍 Code review completed"
+        - label: "🚀 Deployed to staging environment"
+        - label: "✅ User acceptance testing completed"
+        - label: "🎯 Ready for production deployment"

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🎭 BDD + Actor Scenario System Documentation
+    url: https://3stones-io.github.io/bemeda_personal/integration/
+    about: Complete guide to our BDD + Actor scenario framework
+  - name: 💬 Requirements Discussion
+    url: https://github.com/3Stones-io/bemeda_personal/discussions
+    about: Discuss requirements before creating formal scenarios
+  - name: 📊 Project Dashboard  
+    url: https://github.com/orgs/3Stones-io/projects/12
+    about: View all scenarios in project management interface

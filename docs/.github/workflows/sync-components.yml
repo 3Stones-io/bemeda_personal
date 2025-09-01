@@ -99,3 +99,4 @@ jobs:
           git add .
           git commit -m "🤖 Auto-sync from GitHub issues (${{ steps.fetch-issues.outputs.result }} components)" || exit 0
           git push
+

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Collaboration with USE - GitHub-First Implementation</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation */
+        .nav-breadcrumb {
+            margin-bottom: 20px;
+            color: var(--color-text-secondary);
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--color-bg-primary);
+            border-radius: 2px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-success) 100%);
+            width: 66.6%; /* 4 of 6 sections */
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 16px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .header .description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Section */
+        .section {
+            background: var(--color-bg-primary);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid var(--color-border);
+        }
+        
+        .section h2 {
+            color: var(--color-primary);
+            margin-bottom: 24px;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section h3 {
+            color: var(--color-text-primary);
+            margin: 32px 0 16px 0;
+            font-size: 1.4rem;
+        }
+        
+        .section p {
+            margin-bottom: 16px;
+            color: var(--color-text-secondary);
+        }
+        
+        /* GitHub Integration Flow */
+        .github-flow {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .flow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .flow-step {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid var(--color-border);
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .flow-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flow-step-number {
+            position: absolute;
+            top: -12px;
+            left: 16px;
+            background: var(--color-primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        
+        .flow-step h5 {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            color: var(--color-text-primary);
+        }
+        
+        .flow-step p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+        
+        /* Command Examples */
+        .command-example {
+            background: #1f2937;
+            color: #f3f4f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .command-example .command {
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .command-example .comment {
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        .command-example .output {
+            color: #60a5fa;
+        }
+        
+        /* GitHub Templates */
+        .template-example {
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            border: 1px solid var(--color-border);
+        }
+        
+        .template-example .yaml-key {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        .template-example .yaml-string {
+            color: #16a34a;
+        }
+        
+        .template-example .yaml-comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        /* Role Cards */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .role-card {
+            background: var(--color-accent);
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid var(--color-border);
+            transition: all 0.3s ease;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--role-color);
+        }
+        
+        .role-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .role-icon {
+            font-size: 2.5rem;
+            background: var(--role-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .role-card.product-owner {
+            --role-color: #3b82f6;
+        }
+        
+        .role-card.tech-lead {
+            --role-color: #10b981;
+        }
+        
+        .role-card.ux-designer {
+            --role-color: #f59e0b;
+        }
+        
+        .role-card h4 {
+            color: var(--color-text-primary);
+            font-size: 1.2rem;
+        }
+        
+        .role-card p {
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .role-responsibilities {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .role-responsibilities li {
+            padding: 4px 0;
+            color: var(--color-text-secondary);
+            position: relative;
+            padding-left: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .role-responsibilities li:before {
+            content: "✓";
+            color: var(--role-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* Scripts Documentation */
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .script-card {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--color-border);
+            border-left: 4px solid var(--script-color);
+        }
+        
+        .script-card.setup {
+            --script-color: #3b82f6;
+        }
+        
+        .script-card.automation {
+            --script-color: #10b981;
+        }
+        
+        .script-card.sync {
+            --script-color: #f59e0b;
+        }
+        
+        .script-card.validation {
+            --script-color: #ef4444;
+        }
+        
+        .script-card h4 {
+            color: var(--script-color);
+            margin-bottom: 12px;
+        }
+        
+        .script-card .script-path {
+            background: var(--color-accent);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        
+        /* Workflow Diagram */
+        .workflow-diagram {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+            text-align: center;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        .workflow-box {
+            background: white;
+            border: 2px solid #d97706;
+            border-radius: 8px;
+            padding: 16px 20px;
+            min-width: 140px;
+            position: relative;
+        }
+        
+        .workflow-box.business {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .workflow-box.technical {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .workflow-box.ux {
+            background: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+        
+        .workflow-arrow {
+            font-size: 1.5rem;
+            color: #d97706;
+        }
+        
+        .workflow-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .workflow-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        /* Best Practices */
+        .best-practice {
+            background: #f0fdf4;
+            border-left: 4px solid #16a34a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .best-practice h5 {
+            color: #15803d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .best-practice p {
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        /* Warning Box */
+        .warning-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .warning-box h5 {
+            color: #dc2626;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .warning-box p {
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px 0;
+            border-top: 1px solid var(--color-border);
+            margin-top: 60px;
+        }
+        
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-prev {
+            background: var(--color-bg-primary);
+            color: var(--color-text-secondary);
+            border: 2px solid var(--color-border);
+        }
+        
+        .nav-next {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+        
+        .nav-next:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .flow-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .role-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .scripts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-steps {
+                flex-direction: column;
+            }
+            
+            .workflow-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-breadcrumb">
+            <a href="../../index.html">← Main</a> / 
+            <a href="../index.html">USE Learning</a> / 
+            <strong>Team Collaboration</strong>
+        </nav>
+        
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <!-- Header -->
+        <header class="header">
+            <h1>👥 Team Collaboration</h1>
+            <div class="subtitle">GitHub-First USE Implementation</div>
+            <p class="description">Master the practical details of implementing USE with your team using GitHub Issues, automation scripts, and cross-functional workflows.</p>
+        </header>
+        
+        <!-- GitHub-First Architecture -->
+        <section class="section">
+            <h2>🐙 GitHub-First Architecture Overview</h2>
+            <p>USE is built on the principle that <strong>GitHub Issues are your database</strong>. Every scenario, every actor, every piece of requirements lives in GitHub Issues with structured metadata, making them searchable, trackable, and automatically processable.</p>
+            
+            <div class="github-flow">
+                <h4 style="margin-bottom: 24px; color: var(--color-text-primary);">Complete GitHub Integration Flow</h4>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="flow-step-number">1</div>
+                        <h5>Create USE Scenario</h5>
+                        <p>Business stakeholder creates GitHub Issue using enforced template with all required fields</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">2</div>
+                        <h5>Auto-Validation</h5>
+                        <p>GitHub Actions validate Gherkin syntax, check actor consistency, and add appropriate labels</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">3</div>
+                        <h5>Generate Registry</h5>
+                        <p>Script generates MASTER-REGISTRY.json from all component issues for system-wide tracking</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">4</div>
+                        <h5>Update Documentation</h5>
+                        <p>Automated scripts regenerate documentation pages, sitemaps, and navigation from registry</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">5</div>
+                        <h5>Deploy to Pages</h5>
+                        <p>GitHub Pages automatically builds and deploys updated documentation with live scenario data</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">6</div>
+                        <h5>Team Collaboration</h5>
+                        <p>Tech and UX teams comment, reference parallel scenarios, and track implementation progress</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Why GitHub Issues Work as a Database</h3>
+            <div class="best-practice">
+                <h5>✅ GitHub Issues Advantages</h5>
+                <p><strong>Searchable:</strong> Full-text search across all scenarios • <strong>Trackable:</strong> Built-in history and change tracking • <strong>Collaborative:</strong> Comments, assignments, and notifications • <strong>Automated:</strong> API access for scripts and integrations • <strong>Free:</strong> No additional database costs or complexity</p>
+            </div>
+        </section>
+        
+        <!-- GitHub Issue Templates Explained -->
+        <section class="section">
+            <h2>📝 GitHub Issue Templates Deep Dive</h2>
+            <p>The enforced issue template is the heart of the system. It ensures every scenario has the right structure and metadata for automation to work correctly.</p>
+            
+            <h3>Main Component Template Structure</h3>
+            <div class="template-example">
+<span class="yaml-comment"># .github/ISSUE_TEMPLATE/component-definition.yml</span>
+<span class="yaml-key">name:</span> <span class="yaml-string">🎭 BDD Scenario (B_S/T_S/U_S)</span>
+<span class="yaml-key">description:</span> <span class="yaml-string">Create a new BDD scenario with executable Gherkin steps</span>
+<span class="yaml-key">title:</span> <span class="yaml-string">"[COMPONENT_ID] Component Title"</span>
+<span class="yaml-key">labels:</span> [<span class="yaml-string">"component", "needs-review"</span>]
+
+<span class="yaml-key">body:</span>
+  - <span class="yaml-key">type:</span> dropdown
+    <span class="yaml-key">id:</span> component_type
+    <span class="yaml-key">attributes:</span>
+      <span class="yaml-key">label:</span> <span class="yaml-string">"Component Type"</span>
+      <span class="yaml-key">options:</span>
+        - <span class="yaml-string">"Business Scenario (B_S)"</span>
+        - <span class="yaml-string">"Technical Scenario (T_S)"</span>
+        - <span class="yaml-string">"UX/UI Scenario (U_S)"</span>
+        - <span class="yaml-string">"Technical Foundation (T_F)"</span>
+    <span class="yaml-key">validations:</span>
+      <span class="yaml-key">required:</span> true
+
+  - <span class="yaml-key">type:</span> input
+    <span class="yaml-key">id:</span> component_id
+    <span class="yaml-key">attributes:</span>
+      <span class="yaml-key">label:</span> <span class="yaml-string">"Component ID"</span>
+      <span class="yaml-key">placeholder:</span> <span class="yaml-string">"e.g., B_S001_US001, T_S001_US001"</span>
+    <span class="yaml-key">validations:</span>
+      <span class="yaml-key">required:</span> true
+
+  - <span class="yaml-key">type:</span> textarea
+    <span class="yaml-key">id:</span> gherkin_scenario
+    <span class="yaml-key">attributes:</span>
+      <span class="yaml-key">label:</span> <span class="yaml-string">"🧪 Gherkin Scenario"</span>
+      <span class="yaml-key">description:</span> <span class="yaml-string">"Write your scenario in Given-When-Then format"</span>
+      <span class="yaml-key">placeholder:</span> <span class="yaml-string">"Scenario: Your scenario title
+Given initial conditions
+When actions happen  
+Then expected outcomes"</span>
+    <span class="yaml-key">validations:</span>
+      <span class="yaml-key">required:</span> true
+            </div>
+            
+            <h3>How Templates Enforce Quality</h3>
+            <div class="role-grid">
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-icon" style="background: #dc2626;">⚡</div>
+                        <div>
+                            <h4>Required Fields</h4>
+                        </div>
+                    </div>
+                    <p>Templates make essential fields mandatory, preventing incomplete scenarios.</p>
+                    <ul class="role-responsibilities">
+                        <li>Component ID cannot be empty</li>
+                        <li>Component Type must be selected</li>
+                        <li>Gherkin scenario is required</li>
+                        <li>Actor information is mandatory</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-icon" style="background: #7c3aed;">🏷️</div>
+                        <div>
+                            <h4>Auto-Labeling</h4>
+                        </div>
+                    </div>
+                    <p>Labels are automatically applied based on template selections for easy filtering.</p>
+                    <ul class="role-responsibilities">
+                        <li>Scenario type labels (B_S, T_S, U_S)</li>
+                        <li>Priority labels (high, medium, low)</li>
+                        <li>Status labels (planning, in-progress, completed)</li>
+                        <li>Actor labels (healthcare-org, job-seeker)</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-icon" style="background: #16a34a;">✅</div>
+                        <div>
+                            <h4>Validation Rules</h4>
+                        </div>
+                    </div>
+                    <p>GitHub Actions validate the content and provide feedback for improvements.</p>
+                    <ul class="role-responsibilities">
+                        <li>Gherkin syntax validation</li>
+                        <li>Actor consistency checking</li>
+                        <li>ID format validation</li>
+                        <li>Parallel scenario references</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Scripts and Automation -->
+        <section class="section">
+            <h2>⚙️ Scripts and Automation Deep Dive</h2>
+            <p>Understanding what each script does is crucial for maintaining and extending the system. Here's the complete breakdown of the automation pipeline.</p>
+            
+            <h3>Core Scripts Overview</h3>
+            <div class="scripts-grid">
+                <div class="script-card setup">
+                    <h4>🔧 Project Setup Script</h4>
+                    <div class="script-path">/.github/scripts/setup-advanced-project.sh</div>
+                    <p>Initializes a new repository with all USE components including GitHub CLI setup, custom fields creation, and automation workflows.</p>
+                    <div class="command-example">
+<span class="command">chmod +x .github/scripts/setup-advanced-project.sh</span>
+<span class="command">./github/scripts/setup-advanced-project.sh</span>
+
+<span class="comment"># What it does:</span>
+<span class="output">• Authenticates GitHub CLI</span>
+<span class="output">• Creates GitHub Project with custom fields</span> 
+<span class="output">• Sets up issue labels (26 labels)</span>
+<span class="output">• Configures automation workflows</span>
+<span class="output">• Creates initial documentation structure</span>
+                    </div>
+                </div>
+                
+                <div class="script-card automation">
+                    <h4>🤖 Scenario Automation Workflow</h4>
+                    <div class="script-path">/.github/workflows/bdd-scenario-automation.yml</div>
+                    <p>Triggered whenever a GitHub Issue is created or updated. Handles validation, labeling, and cross-referencing.</p>
+                    <div class="command-example">
+<span class="comment"># Workflow triggers on:</span>
+<span class="output">on:</span>
+<span class="output">  issues:</span>
+<span class="output">    types: [opened, edited, closed, reopened]</span>
+
+<span class="comment"># Key actions:</span>
+<span class="output">• Parse issue content for Gherkin validation</span>
+<span class="output">• Add appropriate labels based on content</span>
+<span class="output">• Check for parallel scenario references</span>
+<span class="output">• Update custom fields in GitHub Project</span>
+<span class="output">• Post validation comments</span>
+                    </div>
+                </div>
+                
+                <div class="script-card sync">
+                    <h4>🔄 Component Registry Generator</h4>
+                    <div class="script-path">/scripts/generate-component-map.js</div>
+                    <p>Scans all GitHub Issues with 'component' label and generates the master registry that powers the documentation site.</p>
+                    <div class="command-example">
+<span class="command">node scripts/generate-component-map.js</span>
+
+<span class="comment"># Process:</span>
+<span class="output">• Fetches all issues with "component" label</span>
+<span class="output">• Parses issue metadata and content</span>
+<span class="output">• Generates MASTER-REGISTRY.json</span>
+<span class="output">• Updates component counts and statistics</span>
+<span class="output">• Triggers documentation regeneration</span>
+                    </div>
+                </div>
+                
+                <div class="script-card validation">
+                    <h4>✅ Documentation Update Script</h4>
+                    <div class="script-path">/scripts/update-documentation.js</div>
+                    <p>Regenerates all documentation pages, navigation, and sitemaps based on the current component registry.</p>
+                    <div class="command-example">
+<span class="command">node scripts/update-documentation.js</span>
+
+<span class="comment"># Updates:</span>
+<span class="output">• Regenerates index pages for each scenario type</span>
+<span class="output">• Updates sitemap with current components</span>
+<span class="output">• Rebuilds navigation menus</span>
+<span class="output">• Creates cross-reference links</span>
+<span class="output">• Updates component counts and metrics</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Manual Operations for Advanced Users</h3>
+            <div class="command-example">
+<span class="comment"># Check GitHub CLI authentication</span>
+<span class="command">gh auth status</span>
+
+<span class="comment"># List all component issues</span>
+<span class="command">gh issue list --label "component" --limit 20</span>
+
+<span class="comment"># Create new scenario using template</span>
+<span class="command">gh issue create --template component-definition.yml</span>
+
+<span class="comment"># Check automation workflow runs</span>
+<span class="command">gh run list --workflow="bdd-scenario-automation.yml"</span>
+
+<span class="comment"># View specific workflow run logs</span>
+<span class="command">gh run view [RUN_ID] --log</span>
+
+<span class="comment"># Manually trigger component map generation</span>
+<span class="command">gh workflow run "Update Component Registry"</span>
+
+<span class="comment"># Check project custom fields</span>
+<span class="command">gh api graphql --paginate --field query='query { organization(login: "3Stones-io") { projectV2(number: 12) { fields(first: 20) { nodes { ... on ProjectV2Field { name } ... on ProjectV2SingleSelectField { name options { name } } } } } } }'</span>
+            </div>
+        </section>
+        
+        <!-- Cross-Functional Team Workflow -->
+        <section class="section">
+            <h2>🎯 Cross-Functional Team Workflow</h2>
+            <p>Here's how different team roles interact with the USE system and collaborate effectively on scenarios.</p>
+            
+            <div class="workflow-diagram">
+                <h4 style="margin-bottom: 24px; color: var(--color-text-primary);">Team Collaboration Workflow</h4>
+                <div class="workflow-steps">
+                    <div class="workflow-box business">
+                        <div class="workflow-title">Product Owner</div>
+                        <div class="workflow-desc">Creates B_S scenarios</div>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    <div class="workflow-box technical">
+                        <div class="workflow-title">Tech Lead</div>
+                        <div class="workflow-desc">Creates T_S scenarios</div>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    <div class="workflow-box ux">
+                        <div class="workflow-title">UX Designer</div>
+                        <div class="workflow-desc">Creates U_S scenarios</div>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    <div class="workflow-box">
+                        <div class="workflow-title">Implementation</div>
+                        <div class="workflow-desc">Parallel execution</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Role-Specific Workflows</h3>
+            <div class="role-grid">
+                <div class="role-card product-owner">
+                    <div class="role-header">
+                        <div class="role-icon">💼</div>
+                        <div>
+                            <h4>Product Owner / Business Stakeholder</h4>
+                        </div>
+                    </div>
+                    <p>Focuses on business scenarios (B_S) that deliver value to users and the organization.</p>
+                    <ul class="role-responsibilities">
+                        <li>Create B_S scenarios using GitHub template</li>
+                        <li>Define success criteria and business metrics</li>
+                        <li>Reference parallel T_S and U_S scenarios</li>
+                        <li>Review and approve implementation progress</li>
+                        <li>Use GitHub Project boards for prioritization</li>
+                        <li>Comment on technical feasibility discussions</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card tech-lead">
+                    <div class="role-header">
+                        <div class="role-icon">⚙️</div>
+                        <div>
+                            <h4>Tech Lead / Developer</h4>
+                        </div>
+                    </div>
+                    <p>Creates technical scenarios (T_S) that implement the infrastructure needed for business scenarios.</p>
+                    <ul class="role-responsibilities">
+                        <li>Create T_S scenarios for technical implementation</li>
+                        <li>Reference parent B_S scenarios for context</li>
+                        <li>Define API contracts and data structures</li>
+                        <li>Set up automated BDD tests using step definitions</li>
+                        <li>Update scenario status as implementation progresses</li>
+                        <li>Provide technical feasibility feedback on B_S scenarios</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card ux-designer">
+                    <div class="role-header">
+                        <div class="role-icon">🎨</div>
+                        <div>
+                            <h4>UX Designer</h4>
+                        </div>
+                    </div>
+                    <p>Creates UX scenarios (U_S) that define how users interact with the system through interfaces.</p>
+                    <ul class="role-responsibilities">
+                        <li>Create U_S scenarios for user interface flows</li>
+                        <li>Define accessibility and responsive design requirements</li>
+                        <li>Reference both B_S and T_S scenarios for context</li>
+                        <li>Specify interaction patterns and visual feedback</li>
+                        <li>Create wireframes and prototypes linked to scenarios</li>
+                        <li>Validate UX scenarios with user testing</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Practical Collaboration Examples</h3>
+            
+            <h4>Example 1: Creating a New Feature</h4>
+            <div class="command-example">
+<span class="comment"># 1. Product Owner creates business scenario</span>
+<span class="command">gh issue create --template component-definition.yml</span>
+<span class="output">→ Creates B_S002_US001: Customer Reviews Product</span>
+
+<span class="comment"># 2. Tech Lead references it in technical scenario</span>
+<span class="command">gh issue create --template component-definition.yml</span>
+<span class="output">→ Creates T_S002_US001: Review Storage and API</span>
+<span class="output">→ References B_S002_US001 in parallel scenarios table</span>
+
+<span class="comment"># 3. UX Designer creates interface scenario</span>
+<span class="command">gh issue create --template component-definition.yml</span>
+<span class="output">→ Creates U_S002_US001: Review Submission Interface</span>
+<span class="output">→ References both B_S002_US001 and T_S002_US001</span>
+
+<span class="comment"># 4. Everyone tracks progress through GitHub Project</span>
+<span class="command">gh project view 12</span>
+<span class="output">→ See all three scenarios in appropriate columns</span>
+            </div>
+            
+            <h4>Example 2: Handling Cross-Team Questions</h4>
+            <div class="template-example">
+<span class="yaml-comment"># In B_S002_US001 GitHub Issue:</span>
+<span class="yaml-string">@tech-lead</span> Question about the review data structure:
+- Should we store ratings as integers (1-5) or floats (1.0-5.0)?
+- Do we need to store IP addresses for spam prevention?
+- What's the max length for review text?
+
+<span class="yaml-comment"># Tech Lead responds in T_S002_US001:</span>
+<span class="yaml-string">@product-owner</span> Based on <span class="yaml-string">#42</span> (B_S002_US001):
+- Using integers 1-5 for simplicity
+- Storing hashed IP for spam detection (GDPR compliant)
+- Max 2000 chars for review text
+- See updated API spec in T_S002_US001 description
+
+<span class="yaml-comment"># UX Designer adds in U_S002_US001:</span>
+<span class="yaml-string">@both</span> Based on the 2000 char limit:
+- Need character counter in UI
+- Progressive disclosure for longer reviews
+- Mobile-friendly rating input (large touch targets)
+- See wireframe link in U_S002_US001
+            </div>
+            
+            <div class="best-practice">
+                <h5>✅ Cross-Team Communication Best Practice</h5>
+                <p><strong>Always use @mentions and issue references (#42)</strong> when discussing scenarios across issues. This creates a permanent, searchable record of decisions and keeps all related scenarios linked.</p>
+            </div>
+        </section>
+        
+        <!-- GitHub Project Management -->
+        <section class="section">
+            <h2>📋 GitHub Project Management Integration</h2>
+            <p>The GitHub Project (https://github.com/orgs/3Stones-io/projects/12) serves as your main dashboard for tracking all USE scenarios across the entire team.</p>
+            
+            <h3>Custom Fields Setup</h3>
+            <div class="template-example">
+<span class="comment"># Custom fields automatically populated from issue templates:</span>
+
+<span class="yaml-key">Scenario Type:</span> <span class="yaml-string">"B_S (Business)" | "T_S (Technical)" | "U_S (UX/UI)"</span>
+<span class="yaml-key">BDD Status:</span> <span class="yaml-string">"📝 Gherkin Only" | "🟡 Partial Tests" | "🟢 All Tests Passing"</span>
+<span class="yaml-key">Actor Complexity:</span> <span class="yaml-string">"Single Actor" | "Multi-Actor" | "Cross-System"</span>
+<span class="yaml-key">Priority Level:</span> <span class="yaml-string">"🔴 Critical" | "🟠 High" | "🟡 Medium" | "🟢 Low"</span>
+<span class="yaml-key">Business Value:</span> <span class="yaml-string">"Must Have" | "Should Have" | "Could Have" | "Won't Have"</span>
+<span class="yaml-key">Execution Status:</span> <span class="yaml-string">"Ready" | "In Progress" | "Blocked" | "Completed"</span>
+<span class="yaml-key">Test Coverage:</span> <span class="yaml-string">0-100% (percentage)</span>
+<span class="yaml-key">Inheritance %:</span> <span class="yaml-string">0-100% (how much inherits from parent)</span>
+<span class="yaml-key">Risk Assessment:</span> <span class="yaml-string">"Low" | "Medium" | "High" | "Critical"</span>
+            </div>
+            
+            <h3>Recommended Project Views</h3>
+            <div class="scripts-grid">
+                <div class="script-card setup">
+                    <h4>📊 Stakeholder Overview</h4>
+                    <p>Business-focused view showing only B_S scenarios with progress and business value.</p>
+                    <div class="command-example">
+<span class="output">Filters: Scenario Type = "B_S (Business)"</span>
+<span class="output">Group by: Business Value</span>
+<span class="output">Sort by: Priority Level (High to Low)</span>
+<span class="output">Fields: Title, Execution Status, BDD Status, Assignee</span>
+                    </div>
+                </div>
+                
+                <div class="script-card automation">
+                    <h4>⚙️ Technical Dashboard</h4>
+                    <p>Developer-focused view showing T_S scenarios with test coverage and technical complexity.</p>
+                    <div class="command-example">
+<span class="output">Filters: Scenario Type = "T_S (Technical)"</span>
+<span class="output">Group by: Actor Complexity</span>
+<span class="output">Sort by: Test Coverage (Low to High)</span>
+<span class="output">Fields: Title, BDD Status, Test Coverage, Risk Assessment</span>
+                    </div>
+                </div>
+                
+                <div class="script-card sync">
+                    <h4>🎨 UX Design Board</h4>
+                    <p>Designer-focused view showing U_S scenarios with interface complexity and dependencies.</p>
+                    <div class="command-example">
+<span class="output">Filters: Scenario Type = "U_S (UX/UI)"</span>
+<span class="output">Group by: Execution Status</span>
+<span class="output">Sort by: Priority Level</span>
+<span class="output">Fields: Title, Actor Complexity, Dependencies, Assignee</span>
+                    </div>
+                </div>
+                
+                <div class="script-card validation">
+                    <h4>🔄 Cross-Scenario Dependencies</h4>
+                    <p>Shows parallel scenario relationships and helps identify bottlenecks.</p>
+                    <div class="command-example">
+<span class="output">Filters: Has parallel scenarios</span>
+<span class="output">Group by: Parent Scenario ID</span>
+<span class="output">Sort by: Execution Status</span>
+<span class="output">Fields: Scenario Type, BDD Status, Parallel Scenarios</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Troubleshooting and Maintenance -->
+        <section class="section">
+            <h2>🔧 Troubleshooting and Maintenance</h2>
+            <p>Common issues you'll encounter and how to resolve them quickly.</p>
+            
+            <h3>Common Issues and Solutions</h3>
+            
+            <h4>Issue: Automation Workflow Not Triggering</h4>
+            <div class="command-example">
+<span class="comment"># Check workflow status</span>
+<span class="command">gh workflow list</span>
+<span class="command">gh workflow view "BDD Scenario Automation"</span>
+
+<span class="comment"># Check recent runs</span>
+<span class="command">gh run list --workflow="bdd-scenario-automation.yml" --limit 5</span>
+
+<span class="comment"># View detailed logs</span>
+<span class="command">gh run view [RUN_ID] --log</span>
+
+<span class="output">Common causes:</span>
+<span class="output">• Workflow permissions not set correctly</span>
+<span class="output">• Issue doesn't have required labels</span>
+<span class="output">• Template format changed without updating workflow</span>
+            </div>
+            
+            <h4>Issue: Component Registry Not Updating</h4>
+            <div class="command-example">
+<span class="comment"># Manually trigger registry generation</span>
+<span class="command">node scripts/generate-component-map.js</span>
+
+<span class="comment"># Check if GitHub CLI is authenticated</span>
+<span class="command">gh auth status</span>
+
+<span class="comment"># Verify component issues have correct labels</span>
+<span class="command">gh issue list --label "component" --state all</span>
+
+<span class="output">Troubleshooting steps:</span>
+<span class="output">• Ensure GitHub CLI token has repo and project permissions</span>
+<span class="output">• Check that issues have "component" label</span>
+<span class="output">• Verify MASTER-REGISTRY.json is writable</span>
+            </div>
+            
+            <h4>Issue: Parallel Scenarios Not Linking Correctly</h4>
+            <div class="warning-box">
+                <h5>⚠️ Parallel Scenario Reference Format</h5>
+                <p>Make sure parallel scenarios are referenced exactly as: <code>| T_S001_US001 | Technical | Expected result |</code> in a table format within the Gherkin scenario. The automation looks for this specific pattern.</p>
+            </div>
+            
+            <h3>Regular Maintenance Tasks</h3>
+            <div class="command-example">
+<span class="comment"># Weekly: Clean up stale branches and update registry</span>
+<span class="command">git branch -d $(git branch --merged | grep -v main | xargs -n 1)</span>
+<span class="command">node scripts/generate-component-map.js</span>
+<span class="command">node scripts/update-documentation.js</span>
+
+<span class="comment"># Monthly: Audit component quality</span>
+<span class="command">gh issue list --label "needs-fixes"</span>
+<span class="command">gh issue list --label "component" --search "no:assignee"</span>
+
+<span class="comment"># Quarterly: Review and archive completed scenarios</span>
+<span class="command">gh issue list --label "component" --state closed --limit 50</span>
+            </div>
+        </section>
+        
+        <!-- Navigation -->
+        <nav class="nav-buttons">
+            <a href="../advanced-patterns/index.html" class="nav-button nav-prev">
+                ← Previous: Advanced Patterns
+            </a>
+            
+            <div style="text-align: center; color: var(--color-text-secondary);">
+                Lesson 4 of 6: Team Collaboration
+            </div>
+            
+            <a href="../technical-integration/index.html" class="nav-button nav-next">
+                Next: Technical Integration →
+            </a>
+        </nav>
+    </div>
+</body>
+</html>

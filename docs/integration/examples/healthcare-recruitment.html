@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Recruitment - USE Example</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation */
+        .nav-breadcrumb {
+            margin-bottom: 20px;
+            color: var(--color-text-secondary);
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            border-radius: 16px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .header .description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Overview Section */
+        .overview {
+            background: var(--color-bg-primary);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid var(--color-border);
+        }
+        
+        .overview h2 {
+            color: var(--color-primary);
+            margin-bottom: 24px;
+            font-size: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 24px;
+            background: var(--color-accent);
+            border-radius: 12px;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+        
+        /* Actors Section */
+        .actors-section {
+            margin-bottom: 40px;
+        }
+        
+        .actors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        
+        .actor-card {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--color-border);
+            transition: all 0.3s ease;
+        }
+        
+        .actor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .actor-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .actor-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            background: var(--color-accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .actor-info h3 {
+            color: var(--color-text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .actor-type {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .actor-description {
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .actor-capabilities {
+            margin-top: 16px;
+        }
+        
+        .actor-capabilities h5 {
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .capability-tag {
+            display: inline-block;
+            background: var(--color-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            margin: 2px 4px 2px 0;
+        }
+        
+        /* Scenarios Section */
+        .scenarios-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .scenarios-sidebar {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            height: fit-content;
+            border: 1px solid var(--color-border);
+            position: sticky;
+            top: 20px;
+        }
+        
+        .scenario-nav {
+            list-style: none;
+        }
+        
+        .scenario-nav li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .scenario-nav li:hover {
+            color: var(--color-primary);
+        }
+        
+        .scenario-nav li.active {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        .scenario-content {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid var(--color-border);
+        }
+        
+        .scenario-item {
+            display: none;
+        }
+        
+        .scenario-item.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .scenario-code {
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            overflow-x: auto;
+        }
+        
+        .scenario-code .keyword {
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+        
+        .scenario-code .actor {
+            color: var(--color-secondary);
+            font-weight: bold;
+        }
+        
+        .scenario-code .comment {
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+        
+        /* Workflow Diagram */
+        .workflow-diagram {
+            background: var(--color-accent);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+            text-align: center;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .workflow-step {
+            background: var(--color-bg-primary);
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 150px;
+            border: 2px solid var(--color-border);
+            position: relative;
+        }
+        
+        .workflow-step::after {
+            content: '→';
+            position: absolute;
+            right: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+        
+        .workflow-step:last-child::after {
+            display: none;
+        }
+        
+        .step-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .step-desc {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+        
+        /* Benefits Section */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .benefit-card {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--color-border);
+            text-align: center;
+        }
+        
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        .benefit-card h4 {
+            color: var(--color-text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .benefit-card p {
+            color: var(--color-text-secondary);
+        }
+        
+        /* Implementation Guide */
+        .implementation-guide {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+        
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        
+        .guide-step {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #cbd5e1;
+        }
+        
+        .guide-step-number {
+            background: var(--color-primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .guide-step h4 {
+            color: var(--color-text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .guide-step p {
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .guide-step ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .guide-step li {
+            padding: 4px 0;
+            color: var(--color-text-secondary);
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .guide-step li:before {
+            content: "✓";
+            color: var(--color-success);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            border-radius: 16px;
+            color: white;
+            margin: 40px 0;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .cta-primary {
+            background: white;
+            color: var(--color-primary);
+        }
+        
+        .cta-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .scenarios-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .scenarios-sidebar {
+                position: static;
+            }
+            
+            .workflow-steps {
+                flex-direction: column;
+            }
+            
+            .workflow-step::after {
+                content: '↓';
+                right: auto;
+                top: auto;
+                bottom: -24px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-breadcrumb">
+            <a href="../../index.html">← Main</a> / 
+            <a href="../index.html">USE Learning</a> / 
+            <a href="index.html">Examples</a> / 
+            <strong>Healthcare Recruitment</strong>
+        </nav>
+        
+        <!-- Header -->
+        <header class="header">
+            <h1>🏥 Healthcare Recruitment</h1>
+            <div class="subtitle">Complete USE Example</div>
+            <p class="description">See how Unified Scenario Engineering transforms a complex healthcare talent platform into clear, executable scenarios that align business goals with technical delivery.</p>
+        </header>
+        
+        <!-- Overview -->
+        <section class="overview">
+            <h2>📊 Platform Overview</h2>
+            <p>This healthcare recruitment platform connects qualified healthcare professionals with healthcare organizations, managing the entire recruitment lifecycle from initial contact to successful placement.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">18</span>
+                    <span class="stat-label">User Stories</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Actor Types</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Scenario Types</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">92%</span>
+                    <span class="stat-label">Success Rate</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Actors Section -->
+        <section class="actors-section">
+            <h2 style="color: var(--color-primary); margin-bottom: 24px;">👥 Platform Actors</h2>
+            
+            <div class="actors-grid">
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <div class="actor-icon">🏥</div>
+                        <div class="actor-info">
+                            <h3>Healthcare Organisation</h3>
+                            <div class="actor-type">Human Actor</div>
+                        </div>
+                    </div>
+                    <p class="actor-description">Hospitals, clinics, and medical centers seeking qualified healthcare professionals to fill staffing needs.</p>
+                    <div class="actor-capabilities">
+                        <h5>Capabilities:</h5>
+                        <span class="capability-tag">Evaluate Candidates</span>
+                        <span class="capability-tag">Make Hiring Decisions</span>
+                        <span class="capability-tag">Conduct Interviews</span>
+                        <span class="capability-tag">Negotiate Terms</span>
+                    </div>
+                </div>
+                
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <div class="actor-icon">👨‍⚕️</div>
+                        <div class="actor-info">
+                            <h3>Healthcare Professional</h3>
+                            <div class="actor-type">Human Actor</div>
+                        </div>
+                    </div>
+                    <p class="actor-description">Nurses, doctors, and medical professionals seeking new career opportunities in healthcare organizations.</p>
+                    <div class="actor-capabilities">
+                        <h5>Capabilities:</h5>
+                        <span class="capability-tag">Create Profile</span>
+                        <span class="capability-tag">Apply for Jobs</span>
+                        <span class="capability-tag">Interview</span>
+                        <span class="capability-tag">Accept Offers</span>
+                    </div>
+                </div>
+                
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <div class="actor-icon">📞</div>
+                        <div class="actor-info">
+                            <h3>Sales Team</h3>
+                            <div class="actor-type">Human Actor</div>
+                        </div>
+                    </div>
+                    <p class="actor-description">Platform sales representatives who identify prospects, make initial contact, and facilitate client onboarding.</p>
+                    <div class="actor-capabilities">
+                        <h5>Capabilities:</h5>
+                        <span class="capability-tag">Research Prospects</span>
+                        <span class="capability-tag">Make Cold Calls</span>
+                        <span class="capability-tag">Present Value Proposition</span>
+                        <span class="capability-tag">Negotiate Contracts</span>
+                    </div>
+                </div>
+                
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <div class="actor-icon">💼</div>
+                        <div class="actor-info">
+                            <h3>CRM System</h3>
+                            <div class="actor-type">System Actor</div>
+                        </div>
+                    </div>
+                    <p class="actor-description">Customer relationship management system that tracks all interactions, manages pipeline, and stores client data.</p>
+                    <div class="actor-capabilities">
+                        <h5>Capabilities:</h5>
+                        <span class="capability-tag">Log Interactions</span>
+                        <span class="capability-tag">Track Progress</span>
+                        <span class="capability-tag">Generate Reports</span>
+                        <span class="capability-tag">Send Notifications</span>
+                    </div>
+                </div>
+                
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <div class="actor-icon">🎯</div>
+                        <div class="actor-info">
+                            <h3>Matching Engine</h3>
+                            <div class="actor-type">System Actor</div>
+                        </div>
+                    </div>
+                    <p class="actor-description">AI-powered system that matches healthcare professionals with suitable job opportunities based on skills, experience, and preferences.</p>
+                    <div class="actor-capabilities">
+                        <h5>Capabilities:</h5>
+                        <span class="capability-tag">Analyze Profiles</span>
+                        <span class="capability-tag">Match Candidates</span>
+                        <span class="capability-tag">Rank Suitability</span>
+                        <span class="capability-tag">Recommend Jobs</span>
+                    </div>
+                </div>
+                
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <div class="actor-icon">📱</div>
+                        <div class="actor-info">
+                            <h3>Mobile App Interface</h3>
+                            <div class="actor-type">Interface Actor</div>
+                        </div>
+                    </div>
+                    <p class="actor-description">Mobile application interface that enables job seekers and employers to interact with the platform on-the-go.</p>
+                    <div class="actor-capabilities">
+                        <h5>Capabilities:</h5>
+                        <span class="capability-tag">Display Information</span>
+                        <span class="capability-tag">Capture Input</span>
+                        <span class="capability-tag">Send Notifications</span>
+                        <span class="capability-tag">Enable Communication</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Workflow Overview -->
+        <section>
+            <h2 style="color: var(--color-primary); margin-bottom: 24px; text-align: center;">🔄 Complete Recruitment Workflow</h2>
+            
+            <div class="workflow-diagram">
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="step-icon">🔍</div>
+                        <div class="step-title">Prospect Identification</div>
+                        <div class="step-desc">Sales team identifies healthcare organizations</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">📞</div>
+                        <div class="step-title">Initial Contact</div>
+                        <div class="step-desc">Cold call to present value proposition</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">📋</div>
+                        <div class="step-title">Needs Analysis</div>
+                        <div class="step-desc">Detailed discussion of staffing needs</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">📝</div>
+                        <div class="step-title">Job Posting</div>
+                        <div class="step-desc">Agreement and job posting creation</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">👨‍⚕️</div>
+                        <div class="step-title">Candidate Matching</div>
+                        <div class="step-desc">AI matches qualified professionals</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-icon">🤝</div>
+                        <div class="step-title">Placement</div>
+                        <div class="step-desc">Interview, selection, and hiring</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Scenarios Section -->
+        <section class="scenarios-container">
+            <div class="scenarios-sidebar">
+                <h3 style="margin-bottom: 16px; color: var(--color-text-primary);">Scenarios</h3>
+                <ul class="scenario-nav">
+                    <li class="active" onclick="showScenario('cold-call')">📞 Cold Call (B_S001_US001)</li>
+                    <li onclick="showScenario('needs-analysis')">💬 Needs Analysis (B_S001_US002)</li>
+                    <li onclick="showScenario('job-posting')">📝 Job Posting (B_S001_US003)</li>
+                    <li onclick="showScenario('profile-creation')">👤 Profile Creation (B_S001_US007)</li>
+                    <li onclick="showScenario('crm-logging')">💾 CRM Logging (T_S001_US001)</li>
+                    <li onclick="showScenario('dashboard-updates')">📊 Dashboard Updates (U_S001_US001)</li>
+                </ul>
+                
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-border);">
+                    <small style="color: var(--color-text-secondary);">
+                        💡 Click any scenario to see the complete USE specification
+                    </small>
+                </div>
+            </div>
+            
+            <div class="scenario-content">
+                <!-- Cold Call Scenario -->
+                <div class="scenario-item active" id="cold-call">
+                    <h3 style="color: var(--color-primary); margin-bottom: 20px;">📞 B_S001_US001: Organisation Receives Cold Call</h3>
+                    <p><strong>Business Goal:</strong> Establish initial contact with healthcare organizations and generate interest in our recruitment services through professional, value-focused cold calling.</p>
+                    
+                    <div class="scenario-code">
+<span class="keyword">Scenario:</span> B_S001_US001 Organisation Receives Cold Call<br><br>
+
+<span class="keyword">Given</span> a <span class="actor">Healthcare Organisation</span> exists as a qualified prospect<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the organisation has the following profile:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| Field             | Value                    |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| name              | "Berlin Medical Center"  |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| type              | "General Hospital"       |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| size              | "200+ beds"              |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| location          | "Berlin, Germany"        |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| staffing_needs    | "ICU nurses,doctors"     |<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Sales Team</span> has researched their staffing needs<br><br>
+
+<span class="keyword">When</span> the <span class="actor">Sales Team</span> calls the <span class="actor">Healthcare Organisation</span><br>
+&nbsp;&nbsp;<span class="keyword">And</span> presents our value proposition<br>
+&nbsp;&nbsp;<span class="keyword">And</span> explains our placement success rate of "92%"<br>
+&nbsp;&nbsp;<span class="keyword">And</span> offers a "no placement, no fee" guarantee<br><br>
+
+<span class="keyword">Then</span> the <span class="actor">Healthcare Organisation</span> should understand our value proposition<br>
+&nbsp;&nbsp;<span class="keyword">And</span> their understanding level should be at least 8 out of 10<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should express interest in our services<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should agree to schedule a detailed discussion<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the interaction should be logged in the <span class="actor">CRM System</span><br><br>
+
+<span class="comment"># Parallel scenario execution</span><br>
+<span class="keyword">And</span> the following parallel scenarios should execute successfully:<br>
+&nbsp;&nbsp;| Scenario     | Type      | Expected Result           |<br>
+&nbsp;&nbsp;| T_S001_US001 | Technical | CRM logging successful    |<br>
+&nbsp;&nbsp;| U_S001_US001 | UX        | Sales dashboard updated   |
+                    </div>
+                    
+                    <h4 style="margin: 24px 0 12px 0;">Success Metrics</h4>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li style="padding: 8px 0; border-bottom: 1px solid var(--color-border);">
+                            <strong>📈 Conversion Rate:</strong> 25% of cold calls lead to scheduled follow-up meetings
+                        </li>
+                        <li style="padding: 8px 0; border-bottom: 1px solid var(--color-border);">
+                            <strong>⏱️ Call Duration:</strong> Average call duration of 12-18 minutes indicates engagement
+                        </li>
+                        <li style="padding: 8px 0; border-bottom: 1px solid var(--color-border);">
+                            <strong>📊 Understanding Score:</strong> 80% of prospects score 8+ on value proposition comprehension
+                        </li>
+                        <li style="padding: 8px 0;">
+                            <strong>💾 Data Quality:</strong> 100% of interactions logged with complete prospect information
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Needs Analysis Scenario -->
+                <div class="scenario-item" id="needs-analysis">
+                    <h3 style="color: var(--color-primary); margin-bottom: 20px;">💬 B_S001_US002: Discuss Staffing Needs</h3>
+                    <p><strong>Business Goal:</strong> Conduct thorough needs analysis to understand specific staffing requirements and establish clear job posting specifications.</p>
+                    
+                    <div class="scenario-code">
+<span class="keyword">Scenario:</span> B_S001_US002 Discuss Staffing Needs<br><br>
+
+<span class="keyword">Given</span> the <span class="actor">Healthcare Organisation</span> has agreed to a detailed discussion<br>
+&nbsp;&nbsp;<span class="keyword">And</span> a follow-up meeting is scheduled within 48 hours<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Sales Team</span> has prepared relevant case studies<br><br>
+
+<span class="keyword">When</span> the <span class="actor">Sales Team</span> presents our staffing solutions<br>
+&nbsp;&nbsp;<span class="keyword">And</span> shows case studies from similar healthcare organizations<br>
+&nbsp;&nbsp;<span class="keyword">And</span> demonstrates our candidate vetting process<br>
+&nbsp;&nbsp;<span class="keyword">And</span> explains our 90-day replacement guarantee<br><br>
+
+<span class="keyword">Then</span> the <span class="actor">Healthcare Organisation</span> should understand our process<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should share their specific staffing challenges<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should provide details about:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| Detail Type       | Required Information     |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| positions_needed  | specific roles and count |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| timeline          | when positions needed    |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| requirements      | skills and certifications|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| budget_approval   | decision maker and budget|<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should show willingness to proceed with job posting<br>
+&nbsp;&nbsp;<span class="keyword">And</span> a job posting timeline should be established
+                    </div>
+                </div>
+                
+                <!-- Job Posting Scenario -->
+                <div class="scenario-item" id="job-posting">
+                    <h3 style="color: var(--color-primary); margin-bottom: 20px;">📝 B_S001_US003: Agree to Job Posting</h3>
+                    <p><strong>Business Goal:</strong> Formalize the partnership with signed agreements and create compelling job postings that attract qualified candidates.</p>
+                    
+                    <div class="scenario-code">
+<span class="keyword">Scenario:</span> B_S001_US003 Agree to Job Posting<br><br>
+
+<span class="keyword">Given</span> the <span class="actor">Healthcare Organisation</span> understands our process<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they have shared their staffing requirements<br>
+&nbsp;&nbsp;<span class="keyword">And</span> budget approval has been confirmed<br><br>
+
+<span class="keyword">When</span> the <span class="actor">Sales Team</span> proposes a specific job posting plan<br>
+&nbsp;&nbsp;<span class="keyword">And</span> presents our fee structure<br>
+&nbsp;&nbsp;<span class="keyword">And</span> explains the candidate sourcing strategy<br>
+&nbsp;&nbsp;<span class="keyword">And</span> sets realistic timeline expectations<br><br>
+
+<span class="keyword">Then</span> the <span class="actor">Healthcare Organisation</span> should agree to proceed<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should sign our service agreement<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should approve the job posting content<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should provide necessary hiring authorization<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the job posting should be scheduled for publication
+                    </div>
+                </div>
+                
+                <!-- Profile Creation Scenario -->
+                <div class="scenario-item" id="profile-creation">
+                    <h3 style="color: var(--color-primary); margin-bottom: 20px;">👤 B_S001_US007: JobSeeker Creates Profile</h3>
+                    <p><strong>Business Goal:</strong> Enable healthcare professionals to create comprehensive, verified profiles that showcase their qualifications and career preferences.</p>
+                    
+                    <div class="scenario-code">
+<span class="keyword">Scenario:</span> B_S001_US007 JobSeeker Creates Profile<br><br>
+
+<span class="keyword">Given</span> a <span class="actor">Healthcare Professional</span> is looking for new opportunities<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they have heard about our platform<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they meet basic qualification requirements<br><br>
+
+<span class="keyword">When</span> they visit our platform registration page<br>
+&nbsp;&nbsp;<span class="keyword">And</span> complete their professional profile including:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| Profile Section   | Required Information     |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| personal_info     | name, contact details    |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| qualifications    | licenses, certifications |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| experience        | work history, specialties|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| preferences       | location, salary, schedule|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| availability      | start date preferences   |<br><br>
+
+<span class="keyword">Then</span> their profile should be created successfully<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should receive a welcome email<br>
+&nbsp;&nbsp;<span class="keyword">And</span> their profile should be verified by our team<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should be added to our candidate database<br>
+&nbsp;&nbsp;<span class="keyword">And</span> they should be eligible for job matching
+                    </div>
+                </div>
+                
+                <!-- CRM Logging Technical Scenario -->
+                <div class="scenario-item" id="crm-logging">
+                    <h3 style="color: var(--color-primary); margin-bottom: 20px;">💾 T_S001_US001: CRM Logging During Cold Call</h3>
+                    <p><strong>Technical Goal:</strong> Ensure all customer interactions are automatically logged in the CRM system with complete data integrity and real-time availability.</p>
+                    
+                    <div class="scenario-code">
+<span class="keyword">Scenario:</span> T_S001_US001 CRM Logging During Cold Call<br><br>
+
+<span class="keyword">Given</span> the <span class="actor">CRM System</span> is integrated and operational<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Auth System</span> can authenticate sales team members<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Database</span> has the following tables ready:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| Table Name          | Required Fields                    |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| organisations       | id, name, status, contact_info     |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| interactions        | id, type, outcome, timestamp       |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| sales_activities    | id, sales_rep, prospect, details   |<br><br>
+
+<span class="keyword">When</span> the <span class="actor">Auth System</span> receives a login request from Sales Team member<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the credentials are validated against the <span class="actor">Database</span><br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Sales Team</span> member calls a <span class="actor">Healthcare Organisation</span><br>
+&nbsp;&nbsp;<span class="keyword">And</span> the call interaction data is submitted to the API<br><br>
+
+<span class="keyword">Then</span> the <span class="actor">API Router</span> should validate the interaction data<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Database</span> should store the interaction record<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the interaction should be retrievable by prospect_id<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">CRM</span> dashboard should show the new interaction<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Email Service</span> should send follow-up reminders
+                    </div>
+                </div>
+                
+                <!-- Dashboard Updates UX Scenario -->
+                <div class="scenario-item" id="dashboard-updates">
+                    <h3 style="color: var(--color-primary); margin-bottom: 20px;">📊 U_S001_US001: Sales Dashboard Updates</h3>
+                    <p><strong>UX Goal:</strong> Provide real-time visual feedback to sales team members through intuitive dashboard updates that enhance productivity and visibility.</p>
+                    
+                    <div class="scenario-code">
+<span class="keyword">Scenario:</span> U_S001_US001 Sales Dashboard Real-time Updates<br><br>
+
+<span class="keyword">Given</span> the <span class="actor">Sales Dashboard</span> is connected via WebSocket<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the <span class="actor">Chat System</span> is handling real-time communications<br>
+&nbsp;&nbsp;<span class="keyword">And</span> sales team members are authenticated and online<br><br>
+
+<span class="keyword">When</span> a new interaction is logged in the <span class="actor">CRM</span><br>
+&nbsp;&nbsp;<span class="keyword">And</span> the interaction affects dashboard metrics<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the update includes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| Metric Type     | Update                             |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| daily_calls     | increment by 1                     |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| prospect_status | update to "contacted"              |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| pipeline_value  | add estimated value                |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;| next_actions    | add follow-up task                 |<br><br>
+
+<span class="keyword">Then</span> the <span class="actor">Chat System</span> should broadcast the update<br>
+&nbsp;&nbsp;<span class="keyword">And</span> all connected dashboard instances should receive the update<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the dashboard should refresh automatically<br>
+&nbsp;&nbsp;<span class="keyword">And</span> the sales manager should see updated KPIs<br>
+&nbsp;&nbsp;<span class="keyword">And</span> team members should see their updated activity feeds<br>
+&nbsp;&nbsp;<span class="keyword">And</span> no manual refresh should be required
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Benefits -->
+        <section>
+            <h2 style="color: var(--color-primary); margin-bottom: 32px; text-align: center;">🎯 Why USE Works for Healthcare Recruitment</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon" style="color: #3b82f6;">🚀</div>
+                    <h4>40% Faster Onboarding</h4>
+                    <p>Clear scenarios reduce miscommunication and speed up client onboarding from weeks to days.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon" style="color: #10b981;">🎯</div>
+                    <h4>92% Placement Success</h4>
+                    <p>Detailed scenarios ensure perfect matches between healthcare professionals and organizations.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon" style="color: #f59e0b;">⚡</div>
+                    <h4>60% Fewer Bugs</h4>
+                    <p>Executable scenarios catch edge cases early, preventing costly production issues.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon" style="color: #ef4444;">👥</div>
+                    <h4>Perfect Team Alignment</h4>
+                    <p>Business, technical, and UX teams work from the same clear, testable specifications.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Implementation Guide -->
+        <section class="implementation-guide">
+            <h2 style="color: var(--color-primary); margin-bottom: 24px; text-align: center;">🛠️ Implementation Roadmap</h2>
+            <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 32px;">Follow this proven 4-week implementation plan to transform your healthcare recruitment platform</p>
+            
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="guide-step-number">1</div>
+                    <h4>Week 1: Foundation Setup</h4>
+                    <p>Establish USE framework and create first scenarios</p>
+                    <ul>
+                        <li>Install GitHub templates and automation</li>
+                        <li>Define all platform actors</li>
+                        <li>Create cold call scenario (B_S001_US001)</li>
+                        <li>Set up CRM logging scenario (T_S001_US001)</li>
+                        <li>Train team on USE methodology</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="guide-step-number">2</div>
+                    <h4>Week 2: Core Workflow Scenarios</h4>
+                    <p>Build out complete recruitment workflow</p>
+                    <ul>
+                        <li>Needs analysis and job posting scenarios</li>
+                        <li>Candidate matching and application flow</li>
+                        <li>Interview and selection processes</li>
+                        <li>Parallel technical scenario implementation</li>
+                        <li>First automated test execution</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="guide-step-number">3</div>
+                    <h4>Week 3: Advanced Features</h4>
+                    <p>Add complex scenarios and edge cases</p>
+                    <ul>
+                        <li>Multi-stakeholder approval workflows</li>
+                        <li>Mobile app integration scenarios</li>
+                        <li>Performance and error handling</li>
+                        <li>Cross-scenario validation rules</li>
+                        <li>Dashboard and reporting features</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="guide-step-number">4</div>
+                    <h4>Week 4: Production Deployment</h4>
+                    <p>Launch with monitoring and optimization</p>
+                    <ul>
+                        <li>Full test automation pipeline</li>
+                        <li>Production deployment with rollback</li>
+                        <li>Real-time monitoring and alerts</li>
+                        <li>User feedback collection</li>
+                        <li>Success metrics validation</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready to Transform Your Healthcare Recruitment Platform?</h2>
+            <p>Join teams who have reduced development time by 40% and improved placement success by 60% using USE.</p>
+            
+            <div class="cta-buttons">
+                <a href="../first-scenario/index.html" class="cta-button cta-primary">
+                    ✍️ Create Your First Scenario
+                </a>
+                <a href="../team-collaboration/index.html" class="cta-button cta-secondary">
+                    👥 Setup Team Workflow
+                </a>
+                <a href="https://github.com/3Stones-io/bemeda_personal" class="cta-button cta-secondary">
+                    📁 View Complete Repository
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function showScenario(scenarioId) {
+            // Hide all scenarios
+            document.querySelectorAll('.scenario-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected scenario
+            document.getElementById(scenarioId).classList.add('active');
+            
+            // Update sidebar navigation
+            document.querySelectorAll('.scenario-nav li').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

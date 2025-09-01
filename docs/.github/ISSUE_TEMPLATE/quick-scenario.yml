@@ -1,0 +1,43 @@
+name: ⚡ Quick BDD Scenario
+description: Create a simple BDD scenario quickly
+title: "[TYPE]: [TITLE]"
+labels: ["bdd-scenario", "quick-create"]
+body:
+  - type: dropdown
+    id: quick_type
+    attributes:
+      label: "Scenario Type"
+      options: ["B_S", "T_S", "U_S", "T_F"]
+    validations:
+      required: true
+
+  - type: input
+    id: quick_id
+    attributes:
+      label: "ID (e.g., 001)"
+      placeholder: "001"
+    validations:
+      required: true
+
+  - type: textarea
+    id: quick_actors
+    attributes:
+      label: "Primary Actors (one per line)"
+      placeholder: |
+        🏥 Healthcare Organisation
+        📞 Sales Team
+        ⚙️ CRM System
+    validations:
+      required: true
+
+  - type: textarea
+    id: quick_scenario
+    attributes:
+      label: "Scenario Steps (checkbox format)"
+      placeholder: |
+        - [ ] **Given** initial conditions
+        - [ ] **When** action occurs  
+        - [ ] **Then** expected result
+      render: markdown
+    validations:
+      required: true

@@ -37,3 +37,4 @@ function updateSitemap(registry) {
 }
 
 updateDocumentation();
+

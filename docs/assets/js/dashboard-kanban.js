@@ -17,9 +17,9 @@ class DashboardKanban {
         };
         
         this.domains = {
-            business: { prefix: 'B_', components: [], githubFilter: 'label%3A%22domain%3Ascenarios%22+label%3A%22component%22' },
-            ux: { prefix: 'U_', components: [], githubFilter: 'label%3A%22domain%3Aux-ui%22+label%3A%22component%22' },
-            technical: { prefix: 'T_', components: [], githubFilter: 'label%3A%22domain%3Atechnical%22+label%3A%22component%22' }
+            business: { prefix: 'US', components: [], githubFilter: 'label%3A%22business%22+label%3A%22component%22' },
+            ux: { prefix: 'UX', components: [], githubFilter: 'label%3A%22ux%22+label%3A%22component%22' },
+            technical: { prefix: 'T_S', components: [], githubFilter: 'label%3A%22existing-component%22+OR+label%3A%22missing-component%22' }
         };
     }
 
@@ -78,15 +78,18 @@ class DashboardKanban {
     }
 
     parseIssue(issue) {
-        // Handle format like "B_S001_US001_USS001 - Receive initial sales call"
-        const componentMatch = issue.title.match(/^([A-Z_]+\d+(?:_[A-Z]+\d+)*)\s*[-:]\s*(.+)/);
-        const componentId = componentMatch ? componentMatch[1] : issue.title.split(/[-:]/)[0] || issue.title;
+        // Handle modern formats like "US001 - Organisation Receives Cold Call" or "T_S001_AUTH001 - Authentication System"
+        const componentMatch = issue.title.match(/^([A-Z_]+\d+(?:_[A-Z_]+\d+)*)\s*[-:]\s*(.+)/);
+        let componentId = componentMatch ? componentMatch[1] : issue.title.split(/[-:]/)[0] || issue.title;
         const componentTitle = componentMatch ? componentMatch[2] : issue.title;
+        
+        // Clean up component ID for consistency
+        componentId = componentId.trim();
         
         return {
             id: issue.id,
             number: issue.number,
-            componentId: componentId.trim(),
+            componentId: componentId,
             title: componentTitle.trim(),
             description: issue.body ? issue.body.split('\n')[0].substring(0, 100) + '...' : '',
             status: this.getStatusFromLabels(issue.labels),
@@ -110,53 +113,81 @@ class DashboardKanban {
     }
 
     getMockComponents(prefix) {
-        if (prefix === 'B_') {
+        if (prefix === 'US') {
             return [
+                // No Status (4 items)
                 {
                     id: 1, number: 334, componentId: 'B_S001', 
-                    title: 'Cold Call to Placement',
+                    title: 'Cold Call to Placement - Epic',
                     status: 'todo', url: 'https://github.com/3Stones-io/bemeda_personal/issues/334', updated: '2024-01-15'
                 },
                 {
                     id: 2, number: 335, componentId: 'B_S001_US001', 
-                    title: 'Organisation Receives Cold Call',
-                    status: 'in-progress', url: 'https://github.com/3Stones-io/bemeda_personal/issues/335', updated: '2024-01-14'
+                    title: 'Organisation User Story',
+                    status: 'todo', url: 'https://github.com/3Stones-io/bemeda_personal/issues/335', updated: '2024-01-14'
                 },
                 {
-                    id: 3, number: 336, componentId: 'B_S001_US001_USS001', 
-                    title: 'Organisation Receives Cold Call Step',
+                    id: 3, number: 336, componentId: 'B_S001_US002', 
+                    title: 'JobSeeker User Story',
                     status: 'todo', url: 'https://github.com/3Stones-io/bemeda_personal/issues/336', updated: '2024-01-13'
                 },
                 {
-                    id: 4, number: 4, componentId: 'B_S001_US001_USS002', 
-                    title: 'Listen to platform overview',
-                    status: 'in-progress', url: '#', updated: '2024-01-12'
-                }
-            ];
-        } else if (prefix === 'U_') {
-            return [
+                    id: 4, number: 337, componentId: 'B_S001_US003', 
+                    title: 'Sales Team User Story',
+                    status: 'todo', url: 'https://github.com/3Stones-io/bemeda_personal/issues/337', updated: '2024-01-12'
+                },
+                // In Progress (1 item)
                 {
-                    id: 5, number: 337, componentId: 'U_S001', 
-                    title: 'Cold Call to Placement - UX Scenario',
-                    status: 'todo', url: 'https://github.com/3Stones-io/bemeda_personal/issues/337', updated: '2024-01-15'
+                    id: 5, number: 338, componentId: 'US001', 
+                    title: 'Organisation Receives Cold Call',
+                    status: 'in-progress', url: 'https://github.com/3Stones-io/bemeda_personal/issues/338', updated: '2024-01-11'
+                },
+                // Done (5 items)
+                {
+                    id: 6, number: 339, componentId: 'STEP001', 
+                    title: 'Listen to Platform Overview',
+                    status: 'done', url: 'https://github.com/3Stones-io/bemeda_personal/issues/339', updated: '2024-01-10'
                 },
                 {
-                    id: 6, number: 339, componentId: 'U_S001_M001', 
-                    title: 'Healthcare Organisation Dashboard',
-                    status: 'in-progress', url: 'https://github.com/3Stones-io/bemeda_personal/issues/339', updated: '2024-01-14'
-                }
-            ];
-        } else if (prefix === 'T_') {
-            return [
-                {
-                    id: 7, number: 341, componentId: 'T_S001', 
-                    title: 'Technical Implementation for Cold Call to Placement',
-                    status: 'in-progress', url: 'https://github.com/3Stones-io/bemeda_personal/issues/341', updated: '2024-01-15'
+                    id: 7, number: 340, componentId: 'STEP002', 
+                    title: 'Express Interest or Concerns',
+                    status: 'done', url: 'https://github.com/3Stones-io/bemeda_personal/issues/340', updated: '2024-01-09'
                 },
                 {
-                    id: 8, number: 342, componentId: 'T_S001_UC001', 
-                    title: 'User Authentication and Registration',
-                    status: 'todo', url: 'https://github.com/3Stones-io/bemeda_personal/issues/342', updated: '2024-01-13'
+                    id: 8, number: 341, componentId: 'STEP003', 
+                    title: 'Discuss Specific Staffing Needs',
+                    status: 'done', url: 'https://github.com/3Stones-io/bemeda_personal/issues/341', updated: '2024-01-08'
+                }
+            ];
+        } else if (prefix === 'UX') {
+            return [
+                {
+                    id: 9, number: 342, componentId: 'UX_JOURNEY001', 
+                    title: 'JobSeeker Journey: Profile to Placement',
+                    status: 'done', url: 'https://github.com/3Stones-io/bemeda_personal/issues/342', updated: '2024-01-07'
+                },
+                {
+                    id: 10, number: 343, componentId: 'UX_JOURNEY002', 
+                    title: 'Sales Team Journey: Lead to Placement Success',
+                    status: 'done', url: 'https://github.com/3Stones-io/bemeda_personal/issues/343', updated: '2024-01-06'
+                }
+            ];
+        } else if (prefix === 'T_S') {
+            return [
+                {
+                    id: 11, number: 361, componentId: 'T_S001_AUTH001', 
+                    title: 'Authentication System',
+                    status: 'done', url: 'https://github.com/3Stones-io/bemeda_personal/issues/361', updated: '2024-01-15'
+                },
+                {
+                    id: 12, number: 363, componentId: 'T_S003_JOBS001', 
+                    title: 'Job Posting System',
+                    status: 'done', url: 'https://github.com/3Stones-io/bemeda_personal/issues/363', updated: '2024-01-14'
+                },
+                {
+                    id: 13, number: 367, componentId: 'T_S011_INTV001', 
+                    title: 'Interview Scheduling System',
+                    status: 'todo', url: 'https://github.com/3Stones-io/bemeda_personal/issues/367', updated: '2024-01-13'
                 }
             ];
         }
@@ -209,7 +240,7 @@ class DashboardKanban {
                         }
                         ${hasMore ? `
                             <div class="more-link">
-                                <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=${domain.githubFilter}" target="_blank">
+                                <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3A${domainKey === 'business' ? 'scenarios' : domainKey === 'ux' ? 'ux-ui' : 'technical'}%22+label%3A%22component%22" target="_blank">
                                     +${components.length - this.config.maxCards} more →
                                 </a>
                             </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical - Bemeda Platform</title>
+    <title>Technical Scenarios (T_S) - Bemeda Platform</title>
     <link rel="stylesheet" href="../assets/css/color-system.css">
     <style>
         body {
@@ -207,14 +207,14 @@
         </a>
         
         <div class="header">
-            <h1>⚙️ Technical</h1>
-            <p>Technical architecture and implementation components across all scenarios</p>
+            <h1>⚙️ Technical Scenarios (T_S)</h1>
+            <p>System interactions where components are actors, including dependencies, testing, and infrastructure</p>
         </div>
 
         <!-- Scenario Cards Grid -->
         <div class="scenarios-grid">
             <!-- Scenario S001 Technical Card -->
-            <a href="../integration/templates/T_S001-template.html" class="scenario-card">
+            <a href="S001/index.html" class="scenario-card">
                 <div class="scenario-header">
                     <div class="scenario-id">T_S001</div>
                     <h2 class="scenario-title">Cold Call to Placement - Tech</h2>
@@ -239,7 +239,7 @@
             </a>
             
             <!-- Additional Scenarios Placeholder -->
-            <a href="../integration/templates/T_S002-template.html" class="scenario-card coming-soon">
+            <a href="#" class="scenario-card coming-soon">
                 <div class="scenario-header">
                     <div class="scenario-id" style="background: #f5f5f5; color: #999;">T_S002</div>
                     <h2 class="scenario-title" style="color: #666;">Temporary Staffing - Tech</h2>
@@ -251,7 +251,7 @@
                 </div>
             </a>
             
-            <a href="../integration/templates/T_S003-template.html" class="scenario-card coming-soon">
+            <a href="#" class="scenario-card coming-soon">
                 <div class="scenario-header">
                     <div class="scenario-id" style="background: #f5f5f5; color: #999;">T_S003</div>
                     <h2 class="scenario-title" style="color: #666;">Recurring Placements - Tech</h2>
@@ -262,6 +262,62 @@
                     🚧 Coming Soon - Enterprise-level technical optimizations
                 </div>
             </a>
+        </div>
+        
+        <!-- Platform Infrastructure Section -->
+        <div style="margin-top: 60px;">
+            <div class="header" style="margin-bottom: 30px;">
+                <h2 style="font-size: 2rem; color: var(--color-text-primary); margin-bottom: 12px;">🏗️ Technical Platform Infrastructure</h2>
+                <p style="font-size: 1rem;">Core technical infrastructure and services shared across all scenarios</p>
+            </div>
+            
+            <div class="scenarios-grid">
+                <div class="scenario-card" style="border: 2px dashed var(--domain-color); background: var(--domain-color-lighter);">
+                    <div class="scenario-header">
+                        <div class="scenario-id" style="background: var(--domain-color);">TECH_PLATFORM</div>
+                        <h3 class="scenario-title">Phoenix Infrastructure</h3>
+                    </div>
+                    <p class="scenario-description">
+                        Authentication systems, database architecture, API services, deployment infrastructure, and Phoenix contexts that power all healthcare recruitment scenarios.
+                    </p>
+                    
+                    <div class="component-tags">
+                        <span class="component-tag">💧 Phoenix 1.7.19</span>
+                        <span class="component-tag">🔐 Authentication</span>
+                        <span class="component-tag">🗄️ PostgreSQL</span>
+                        <span class="component-tag">📡 APIs</span>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 6px; border-left: 3px solid var(--domain-color);">
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary);">
+                            <strong>Status:</strong> 6 Phoenix contexts implemented (AUTH001, JOBS001, etc.) documented in S001 technical specs. 80% foundation complete.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-card" style="border: 2px dashed #795548; background: #efebe9;">
+                    <div class="scenario-header">
+                        <div class="scenario-id" style="background: #795548; color: white;">TEST_PLATFORM</div>
+                        <h3 class="scenario-title">Testing & QA Infrastructure</h3>
+                    </div>
+                    <p class="scenario-description">
+                        Comprehensive testing strategy including end-to-end tests, unit test coverage, integration testing, and quality assurance processes for all platform components.
+                    </p>
+                    
+                    <div class="component-tags">
+                        <span class="component-tag" style="background: #d7ccc8; color: #3e2723;">🧪 97 Test Files</span>
+                        <span class="component-tag" style="background: #d7ccc8; color: #3e2723;">🔧 ExMachina</span>
+                        <span class="component-tag" style="background: #d7ccc8; color: #3e2723;">🔗 Integration</span>
+                        <span class="component-tag" style="background: #d7ccc8; color: #3e2723;">📊 BDD</span>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 6px; border-left: 3px solid #795548;">
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary);">
+                            <strong>Status:</strong> BDD framework with Python step definitions, Elixir integration tests, and Phoenix test suite complete. Cross-scenario validation ready.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
     </div>

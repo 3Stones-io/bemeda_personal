@@ -1,0 +1,320 @@
+name: 🎭 BDD Scenario Automation
+on:
+  issues:
+    types: [opened, edited, closed, reopened]
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours for health checks
+
+jobs:
+  process-bdd-scenario:
+    if: contains(github.event.issue.labels.*.name, 'bdd-scenario')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      projects: write
+    
+    steps:
+      - name: 📋 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install Dependencies
+        run: |
+          pip install requests python-dotenv pyyaml
+
+      - name: 🏷️ Auto-Label Scenario
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+          import requests
+          import json
+          
+          # GitHub API setup
+          token = os.getenv('GITHUB_TOKEN')
+          repo = "${{ github.repository }}"
+          issue_number = ${{ github.event.issue.number }}
+          
+          headers = {
+              'Authorization': f'token {token}',
+              'Accept': 'application/vnd.github.v3+json'
+          }
+          
+          # Get issue content
+          issue_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}"
+          issue_response = requests.get(issue_url, headers=headers)
+          issue_data = issue_response.json()
+          
+          issue_body = issue_data.get('body', '')
+          issue_title = issue_data.get('title', '')
+          
+          # Extract scenario type from issue body
+          scenario_type = ""
+          if 'B_S (Business Scenario)' in issue_body:
+              scenario_type = "B_S"
+          elif 'T_S (Technical Scenario)' in issue_body:
+              scenario_type = "T_S"
+          elif 'U_S (UX Scenario)' in issue_body:
+              scenario_type = "U_S"
+          elif 'T_F (Foundational Component)' in issue_body:
+              scenario_type = "T_F"
+          
+          # Extract scenario ID
+          scenario_id_match = re.search(r'([BTU]_[SF]\d{3})', issue_body + issue_title)
+          scenario_id = scenario_id_match.group(1) if scenario_id_match else ""
+          
+          # Extract actors from issue body
+          actors = []
+          actor_section = re.search(r'\*\*Human Actors:\*\*(.*?)\*\*System Actors:\*\*(.*?)\*\*Interface Actors:\*\*(.*?)(?:\n\n|\Z)', issue_body, re.DOTALL)
+          
+          if actor_section:
+              human_actors = re.findall(r'- (.+)', actor_section.group(1))
+              system_actors = re.findall(r'- (.+)', actor_section.group(2))
+              interface_actors = re.findall(r'- (.+)', actor_section.group(3))
+              actors = human_actors + system_actors + interface_actors
+          
+          # Determine priority from issue body
+          priority = "medium"
+          if "🔴 Critical - Must Have" in issue_body:
+              priority = "critical"
+          elif "🟠 High - Should Have" in issue_body:
+              priority = "high"
+          elif "⚪ Low - Won't Have" in issue_body:
+              priority = "low"
+          
+          # Create labels to add
+          labels_to_add = ["bdd-scenario"]
+          
+          if scenario_type:
+              labels_to_add.append(f"type:{scenario_type.lower()}")
+          
+          if scenario_id:
+              labels_to_add.append(f"scenario:{scenario_id.lower()}")
+              
+          labels_to_add.append(f"priority:{priority}")
+          
+          # Add actor-based labels (limit to avoid too many labels)
+          main_actors = ["healthcare-org", "job-seeker", "sales-team", "auth-system", "database", "email-service"]
+          for actor in main_actors:
+              if any(actor.replace('-', ' ').lower() in a.lower() for a in actors):
+                  labels_to_add.append(f"actor:{actor}")
+          
+          # Apply labels
+          labels_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/labels"
+          labels_data = {"labels": labels_to_add}
+          
+          response = requests.post(labels_url, headers=headers, json=labels_data)
+          
+          if response.status_code == 200:
+              print(f"✅ Successfully added labels: {', '.join(labels_to_add)}")
+          else:
+              print(f"❌ Failed to add labels: {response.status_code}")
+              print(response.text)
+          EOF
+
+      - name: 🧪 Validate Gherkin Syntax
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+          import requests
+          import json
+          
+          # GitHub API setup  
+          token = os.getenv('GITHUB_TOKEN')
+          repo = "${{ github.repository }}"
+          issue_number = ${{ github.event.issue.number }}
+          
+          headers = {
+              'Authorization': f'token {token}',
+              'Accept': 'application/vnd.github.v3+json'
+          }
+          
+          # Get issue content
+          issue_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}"
+          issue_response = requests.get(issue_url, headers=headers)
+          issue_data = issue_response.json()
+          
+          issue_body = issue_data.get('body', '')
+          
+          # Extract Gherkin content
+          gherkin_match = re.search(r'### Scenario:.*?(?=###|$)', issue_body, re.DOTALL)
+          
+          validation_results = []
+          
+          if gherkin_match:
+              gherkin_content = gherkin_match.group(0)
+              
+              # Basic Gherkin validation
+              has_given = 'Given' in gherkin_content
+              has_when = 'When' in gherkin_content  
+              has_then = 'Then' in gherkin_content
+              
+              if has_given and has_when and has_then:
+                  validation_results.append("✅ **Gherkin Structure**: Valid Given-When-Then format")
+              else:
+                  missing = []
+                  if not has_given: missing.append("Given")
+                  if not has_when: missing.append("When")
+                  if not has_then: missing.append("Then")
+                  validation_results.append(f"❌ **Gherkin Structure**: Missing {', '.join(missing)} section(s)")
+              
+              # Check for checkboxes
+              checkboxes = len(re.findall(r'- \[ \]', gherkin_content))
+              if checkboxes > 0:
+                  validation_results.append(f"✅ **Executable Steps**: {checkboxes} checkbox steps found")
+              else:
+                  validation_results.append("❌ **Executable Steps**: No checkbox steps found (add - [ ] for each step)")
+              
+              # Check for test references
+              test_refs = len(re.findall(r'\*Test Reference:', gherkin_content))
+              if test_refs > 0:
+                  validation_results.append(f"✅ **Test Integration**: {test_refs} test references found")
+              else:
+                  validation_results.append("⚠️ **Test Integration**: Consider adding test references for automation")
+          else:
+              validation_results.append("❌ **Gherkin Content**: No Gherkin scenario found in issue body")
+          
+          # Post validation comment
+          comment_body = f"""## 🧪 BDD Scenario Validation Results
+          
+          {chr(10).join(validation_results)}
+          
+          ---
+          
+          ### 💡 Quick Tips for Better BDD Scenarios:
+          - ✅ Use checkboxes `- [ ]` for each Given-When-Then step
+          - 🔗 Add test references: `*Test Reference: test_function_name()*`  
+          - 🎭 Specify clear actors in each step
+          - 🔄 Reference parallel scenarios if applicable
+          - 📊 Include measurable acceptance criteria
+          
+          ### 🚀 Next Steps:
+          1. Address any validation issues above
+          2. Create step definitions in `features/steps/` directory
+          3. Write integration tests for each scenario step
+          4. Set up automated test execution
+          
+          *This validation runs automatically when the issue is created or updated.*
+          """
+          
+          comments_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
+          comment_data = {"body": comment_body}
+          
+          response = requests.post(comments_url, headers=headers, json=comment_data)
+          
+          if response.status_code == 201:
+              print("✅ Posted validation comment successfully")
+          else:
+              print(f"❌ Failed to post comment: {response.status_code}")
+          EOF
+
+      - name: 🔗 Check Cross-References
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+          import requests
+          import json
+          
+          # GitHub API setup
+          token = os.getenv('GITHUB_TOKEN')
+          repo = "${{ github.repository }}"
+          issue_number = ${{ github.event.issue.number }}
+          
+          headers = {
+              'Authorization': f'token {token}',
+              'Accept': 'application/vnd.github.v3+json'
+          }
+          
+          # Get issue content
+          issue_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}"
+          issue_response = requests.get(issue_url, headers=headers)
+          issue_data = issue_response.json()
+          
+          issue_body = issue_data.get('body', '')
+          
+          # Extract parallel scenario references
+          parallel_refs = re.findall(r'([BTU]_S\d{3}_[A-Z]{2}\d{3})', issue_body)
+          
+          cross_ref_results = []
+          
+          if parallel_refs:
+              cross_ref_results.append(f"🔗 **Parallel Scenarios Found**: {', '.join(parallel_refs)}")
+              
+              # TODO: In a real implementation, validate that these scenarios exist
+              # For now, just acknowledge them
+              cross_ref_results.append("⚠️ **Validation**: Cross-reference validation will be implemented in next iteration")
+          else:
+              cross_ref_results.append("ℹ️ **Parallel Scenarios**: None specified (this may be intentional for foundational components)")
+          
+          # Extract dependency references
+          dep_refs = re.findall(r'Depends on: ([BTU]_F\d{3})', issue_body)
+          if dep_refs:
+              cross_ref_results.append(f"🔗 **Dependencies Found**: {', '.join(dep_refs)}")
+          
+          if cross_ref_results:
+              comment_body = f"""## 🔗 Cross-Reference Analysis
+              
+              {chr(10).join(cross_ref_results)}
+              
+              *Cross-reference validation helps ensure scenario relationships are properly maintained.*
+              """
+              
+              comments_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
+              comment_data = {"body": comment_body}
+              
+              requests.post(comments_url, headers=headers, json=comment_data)
+          EOF
+
+      - name: 📊 Update Project Fields
+        if: github.event.action == 'opened'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🚧 Project field updates will be implemented in next iteration"
+          echo "This will automatically set custom fields based on issue content"
+
+  health-check:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: read
+      contents: read
+    
+    steps:
+      - name: 🏥 BDD System Health Check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🏥 Running BDD System Health Check..."
+          
+          # Get all BDD scenario issues
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/issues?labels=bdd-scenario&state=all" \
+               > scenarios.json
+          
+          # Basic health metrics
+          total_scenarios=$(jq length scenarios.json)
+          open_scenarios=$(jq '[.[] | select(.state == "open")] | length' scenarios.json)
+          
+          echo "📊 BDD System Health:"
+          echo "   • Total Scenarios: $total_scenarios"
+          echo "   • Open Scenarios: $open_scenarios"
+          echo "   • Health Status: $([ $total_scenarios -gt 0 ] && echo "✅ Active" || echo "⚠️ No scenarios found")"
+          
+          # TODO: Add more sophisticated health checks in future iterations

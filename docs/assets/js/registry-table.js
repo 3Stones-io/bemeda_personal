@@ -103,16 +103,15 @@ class RegistryTable {
     }
 
     parseIssue(issue) {
-        // Extract component ID from title
-        const componentMatch = issue.title.match(/^([A-Z]_[A-Z_]+\d+):\s*(.+)/) || 
-                              issue.title.match(/^([A-Z]+\d{3})[-:\s]*(.+)/);
+        // Extract component ID from title - updated for hybrid structure
+        const hybridMatch = issue.title.match(/^(B_S\d+(?:_US\d+)?|[A-Z]+_PLATFORM):\s*(.+)/);
         
-        const componentId = componentMatch ? componentMatch[1] : 
+        const componentId = hybridMatch ? hybridMatch[1] : 
                            issue.title.split(':')[0] || 
                            issue.title.split(' ')[0] || 
                            'UNKNOWN';
         
-        const componentTitle = componentMatch ? componentMatch[2] : issue.title;
+        const componentTitle = hybridMatch ? hybridMatch[2] : issue.title;
         
         return {
             id: issue.id,
@@ -156,12 +155,19 @@ class RegistryTable {
 
     getDomainFromId(componentId) {
         if (componentId.startsWith('B_')) return 'business';
-        if (componentId.startsWith('U_')) return 'ux';
-        if (componentId.startsWith('T_')) return 'technical';
+        if (componentId.startsWith('UX_')) return 'ux';
+        if (componentId.startsWith('TECH_')) return 'technical';
+        if (componentId.startsWith('TEST_')) return 'testing';
         return 'other';
     }
 
     getTypeFromId(componentId) {
+        // Hybrid structure type mapping
+        if (componentId === 'B_S001') return 'Epic';
+        if (componentId.startsWith('B_S001_US')) return 'User Story';
+        if (componentId.endsWith('_PLATFORM')) return 'Platform Epic';
+        
+        // Legacy type mapping for backward compatibility
         const typeMap = {
             'B_S': 'Scenario',
             'B_US': 'User Story', 
@@ -319,6 +325,7 @@ class RegistryTable {
             'business': 'Business',
             'ux': 'UX/UI',
             'technical': 'Technical',
+            'testing': 'Testing',
             'other': 'Other'
         };
         return labels[domain] || domain;

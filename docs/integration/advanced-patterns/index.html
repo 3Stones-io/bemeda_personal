@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced USE Patterns - Master Scenario Engineering</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation */
+        .nav-breadcrumb {
+            margin-bottom: 20px;
+            color: var(--color-text-secondary);
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--color-bg-primary);
+            border-radius: 2px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-success) 100%);
+            width: 50%; /* 3 of 6 sections */
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #1e40af 0%, #059669 100%);
+            border-radius: 16px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .header .description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Section */
+        .section {
+            background: var(--color-bg-primary);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid var(--color-border);
+        }
+        
+        .section h2 {
+            color: var(--color-primary);
+            margin-bottom: 24px;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section h3 {
+            color: var(--color-text-primary);
+            margin: 32px 0 16px 0;
+            font-size: 1.4rem;
+        }
+        
+        .section p {
+            margin-bottom: 16px;
+            color: var(--color-text-secondary);
+        }
+        
+        /* Pattern Cards */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .pattern-card {
+            background: var(--color-accent);
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid var(--color-border);
+            transition: all 0.3s ease;
+        }
+        
+        .pattern-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-primary);
+        }
+        
+        .pattern-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .pattern-icon {
+            font-size: 2rem;
+            background: var(--color-primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pattern-card h4 {
+            color: var(--color-text-primary);
+            font-size: 1.2rem;
+        }
+        
+        .pattern-card p {
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .pattern-features {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .pattern-features li {
+            padding: 4px 0;
+            color: var(--color-text-secondary);
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .pattern-features li:before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+            color: var(--color-primary);
+        }
+        
+        /* Code Examples */
+        .code-example {
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            border: 1px solid var(--color-border);
+        }
+        
+        .code-example .keyword {
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+        
+        .code-example .actor {
+            color: var(--color-secondary);
+            font-weight: bold;
+        }
+        
+        .code-example .comment {
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+        
+        .code-example .inherit {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #92400e;
+        }
+        
+        /* Comparison Tables */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: var(--color-bg-primary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comparison-table th {
+            background: var(--color-primary);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:hover {
+            background: var(--color-accent);
+        }
+        
+        /* Architecture Diagrams */
+        .architecture-diagram {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+            text-align: center;
+        }
+        
+        .diagram-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        .diagram-box {
+            background: white;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            min-width: 120px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .diagram-box:hover {
+            border-color: var(--color-primary);
+            transform: scale(1.05);
+        }
+        
+        .diagram-box.primary {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        .diagram-box.parallel {
+            background: var(--color-success);
+            color: white;
+            border-color: var(--color-success);
+        }
+        
+        .diagram-arrow {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+        
+        .diagram-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .diagram-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        /* Best Practices */
+        .best-practice {
+            background: var(--color-success-light);
+            border-left: 4px solid var(--color-success);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .best-practice h5 {
+            color: var(--color-success-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .best-practice p {
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        /* Warning Box */
+        .warning-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .warning-box h5 {
+            color: #dc2626;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .warning-box p {
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px 0;
+            border-top: 1px solid var(--color-border);
+            margin-top: 60px;
+        }
+        
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-prev {
+            background: var(--color-bg-primary);
+            color: var(--color-text-secondary);
+            border: 2px solid var(--color-border);
+        }
+        
+        .nav-next {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+        
+        .nav-next:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .pattern-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .diagram-flow {
+                flex-direction: column;
+            }
+            
+            .diagram-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-breadcrumb">
+            <a href="../../index.html">← Main</a> / 
+            <a href="../index.html">USE Learning</a> / 
+            <strong>Advanced Patterns</strong>
+        </nav>
+        
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <!-- Header -->
+        <header class="header">
+            <h1>🚀 Advanced USE Patterns</h1>
+            <div class="subtitle">Master Complex Scenario Engineering</div>
+            <p class="description">Discover advanced patterns that enable scalable, maintainable, and powerful scenario architectures for enterprise-grade applications.</p>
+        </header>
+        
+        <!-- Parallel Scenario Execution -->
+        <section class="section">
+            <h2>🔄 Parallel Scenario Execution</h2>
+            <p>The most powerful feature of USE is the ability to execute Business (B_S), Technical (T_S), and UX (U_S) scenarios in parallel, ensuring complete system validation.</p>
+            
+            <h3>How Parallel Execution Works</h3>
+            <p>When a business scenario runs, it automatically triggers corresponding technical and UX scenarios that must succeed for the overall workflow to be considered complete.</p>
+            
+            <div class="architecture-diagram">
+                <h4 style="margin-bottom: 24px; color: var(--color-text-primary);">Parallel Execution Architecture</h4>
+                <div class="diagram-flow">
+                    <div class="diagram-box primary">
+                        <div class="diagram-title">B_S001_US001</div>
+                        <div class="diagram-desc">Cold Call Business Logic</div>
+                    </div>
+                    <div class="diagram-arrow">⚡</div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="diagram-box parallel">
+                            <div class="diagram-title">T_S001_US001</div>
+                            <div class="diagram-desc">CRM Logging</div>
+                        </div>
+                        <div class="diagram-box parallel">
+                            <div class="diagram-title">U_S001_US001</div>
+                            <div class="diagram-desc">Dashboard Update</div>
+                        </div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-box">
+                        <div class="diagram-title">Success</div>
+                        <div class="diagram-desc">All scenarios pass</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-example">
+<span class="keyword">Scenario:</span> B_S001_US001 Organisation Receives Cold Call<br>
+<span class="keyword">Given</span> a <span class="actor">Healthcare Organisation</span> exists as a qualified prospect<br>
+<span class="keyword">When</span> the <span class="actor">Sales Team</span> calls the <span class="actor">Healthcare Organisation</span><br>
+<span class="keyword">Then</span> the <span class="actor">Healthcare Organisation</span> should understand our value proposition<br>
+<span class="keyword">And</span> the interaction should be logged in the <span class="actor">CRM System</span><br>
+<br>
+<span class="comment"># Parallel scenarios execute automatically</span><br>
+<span class="keyword">And</span> the following parallel scenarios should execute successfully:<br>
+&nbsp;&nbsp;| Scenario     | Type      | Expected Result           |<br>
+&nbsp;&nbsp;| T_S001_US001 | Technical | CRM logging successful    |<br>
+&nbsp;&nbsp;| U_S001_US001 | UX        | Sales dashboard updated   |
+            </div>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">⚙️</div>
+                        <h4>Technical Validation</h4>
+                    </div>
+                    <p>Technical scenarios ensure all system components work correctly behind the scenes.</p>
+                    <ul class="pattern-features">
+                        <li>Database transactions succeed</li>
+                        <li>API calls complete successfully</li>
+                        <li>Error handling works properly</li>
+                        <li>Performance requirements are met</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🎨</div>
+                        <h4>UX Validation</h4>
+                    </div>
+                    <p>UX scenarios verify that user interfaces respond correctly and provide good experiences.</p>
+                    <ul class="pattern-features">
+                        <li>UI updates reflect data changes</li>
+                        <li>Responsive design works on all devices</li>
+                        <li>Accessibility requirements are met</li>
+                        <li>Loading states provide good feedback</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🔗</div>
+                        <h4>Synchronization</h4>
+                    </div>
+                    <p>All scenarios must complete successfully for the overall workflow to pass.</p>
+                    <ul class="pattern-features">
+                        <li>Real-time status synchronization</li>
+                        <li>Failure in any scenario fails the whole</li>
+                        <li>Detailed logging of all executions</li>
+                        <li>Retry mechanisms for transient failures</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="best-practice">
+                <h5>✅ Best Practice: Balanced Parallel Scenarios</h5>
+                <p>Keep parallel scenarios focused and lightweight. Each should test a specific aspect (technical, UX) without duplicating business logic. Aim for 2-4 parallel scenarios maximum per business scenario.</p>
+            </div>
+        </section>
+        
+        <!-- Scenario Inheritance -->
+        <section class="section">
+            <h2>🧬 Scenario Inheritance and Reusability</h2>
+            <p>USE scenarios support inheritance, allowing you to build variations of existing scenarios without duplicating effort. This is particularly powerful for handling similar workflows across different contexts.</p>
+            
+            <h3>Inheritance Patterns</h3>
+            
+            <div class="code-example">
+<span class="comment"># Base Scenario: S001 - Full Placement Process</span><br>
+<span class="keyword">Scenario:</span> S001 Complete Placement Workflow<br>
+<span class="keyword">Given</span> all platform systems are operational<br>
+<span class="keyword">When</span> a complete placement workflow executes<br>
+<span class="keyword">Then</span> a healthcare professional should be successfully placed<br>
+<br>
+<span class="comment"># Inherited Scenario: S002 - Temporary Staffing (80% inheritance)</span><br>
+<span class="keyword">Scenario:</span> S002 Temporary Staffing Workflow<br>
+<span class="inherit">Inherits: 80% from S001</span><br>
+<span class="keyword">Given</span> <span class="inherit">[inherited from S001]</span><br>
+<span class="keyword">And</span> the position is marked as "temporary"<br>
+<span class="keyword">When</span> <span class="inherit">[inherited from S001]</span><br>
+<span class="keyword">And</span> the contract duration is specified<br>
+<span class="keyword">Then</span> <span class="inherit">[inherited from S001]</span><br>
+<span class="keyword">And</span> an end date should be clearly defined
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Inheritance Level</th>
+                        <th>Use Case</th>
+                        <th>Example</th>
+                        <th>Benefits</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>90-95%</strong></td>
+                        <td>Minor variations</td>
+                        <td>Different user roles accessing same feature</td>
+                        <td>Maximum code reuse, minimal maintenance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>70-85%</strong></td>
+                        <td>Workflow variations</td>
+                        <td>Temporary vs permanent staffing</td>
+                        <td>Balanced reuse with necessary customization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>50-65%</strong></td>
+                        <td>Related but distinct processes</td>
+                        <td>Different industries using same platform</td>
+                        <td>Shared core logic with industry-specific steps</td>
+                    </tr>
+                    <tr>
+                        <td><strong>< 50%</strong></td>
+                        <td>Consider separate scenario</td>
+                        <td>Completely different business processes</td>
+                        <td>Cleaner separation, easier maintenance</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Template Scenarios for Reusability</h3>
+            <p>Create foundational template scenarios that serve as blueprints for common patterns across your application.</p>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🧩</div>
+                        <h4>T_F (Technical Foundation)</h4>
+                    </div>
+                    <p>Reusable technical building blocks that multiple scenarios can inherit from.</p>
+                    <ul class="pattern-features">
+                        <li>T_F001: Authentication Flow</li>
+                        <li>T_F002: Database Operations</li>
+                        <li>T_F003: API Request/Response</li>
+                        <li>T_F004: Email Notifications</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🎨</div>
+                        <h4>U_F (UX Foundation)</h4>
+                    </div>
+                    <p>Common UX patterns that ensure consistent user experiences.</p>
+                    <ul class="pattern-features">
+                        <li>U_F001: Form Validation</li>
+                        <li>U_F002: Loading States</li>
+                        <li>U_F003: Error Handling</li>
+                        <li>U_F004: Navigation Patterns</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">💼</div>
+                        <h4>B_F (Business Foundation)</h4>
+                    </div>
+                    <p>Core business logic patterns that appear across multiple workflows.</p>
+                    <ul class="pattern-features">
+                        <li>B_F001: User Onboarding</li>
+                        <li>B_F002: Payment Processing</li>
+                        <li>B_F003: Approval Workflows</li>
+                        <li>B_F004: Reporting Generation</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <h5>⚠️ Inheritance Anti-Pattern</h5>
+                <p>Avoid deep inheritance chains (more than 2-3 levels). They become difficult to understand and maintain. Instead, use composition by combining multiple foundational scenarios.</p>
+            </div>
+        </section>
+        
+        <!-- Cross-System Actor Interactions -->
+        <section class="section">
+            <h2>🌐 Cross-System Actor Interactions</h2>
+            <p>Advanced USE patterns handle complex interactions between multiple systems, external APIs, and third-party services where each system acts as an autonomous actor.</p>
+            
+            <h3>Multi-System Orchestration</h3>
+            <p>When scenarios involve multiple independent systems, each system becomes an actor with its own capabilities and constraints.</p>
+            
+            <div class="code-example">
+<span class="keyword">Scenario:</span> Multi-System Payment Processing<br>
+<span class="keyword">Given</span> the <span class="actor">Payment Gateway</span> is operational<br>
+<span class="keyword">And</span> the <span class="actor">Fraud Detection System</span> is online<br>
+<span class="keyword">And</span> the <span class="actor">Banking API</span> is responsive<br>
+<span class="keyword">And</span> the <span class="actor">Email Service</span> can send notifications<br>
+<br>
+<span class="keyword">When</span> a <span class="actor">Customer</span> submits a payment<br>
+<span class="keyword">Then</span> the <span class="actor">Payment Gateway</span> should validate card details<br>
+<span class="keyword">And</span> the <span class="actor">Fraud Detection System</span> should analyze for suspicious activity<br>
+<span class="keyword">And</span> the <span class="actor">Banking API</span> should process the transaction<br>
+<span class="keyword">And</span> the <span class="actor">Email Service</span> should send confirmation<br>
+<br>
+<span class="comment"># Each actor has independent failure modes</span><br>
+<span class="keyword">But</span> if any actor fails, the transaction should be safely rolled back
+            </div>
+            
+            <div class="architecture-diagram">
+                <h4 style="margin-bottom: 24px; color: var(--color-text-primary);">Cross-System Actor Network</h4>
+                <div class="diagram-flow">
+                    <div class="diagram-box">
+                        <div class="diagram-title">Customer</div>
+                        <div class="diagram-desc">Human Actor</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-box primary">
+                        <div class="diagram-title">Our Platform</div>
+                        <div class="diagram-desc">Orchestrator</div>
+                    </div>
+                    <div class="diagram-arrow">⚡</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="diagram-box">
+                            <div class="diagram-title">Payment API</div>
+                            <div class="diagram-desc">External</div>
+                        </div>
+                        <div class="diagram-box">
+                            <div class="diagram-title">Email Service</div>
+                            <div class="diagram-desc">External</div>
+                        </div>
+                        <div class="diagram-box">
+                            <div class="diagram-title">Fraud Detection</div>
+                            <div class="diagram-desc">External</div>
+                        </div>
+                        <div class="diagram-box">
+                            <div class="diagram-title">Banking System</div>
+                            <div class="diagram-desc">External</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Actor Capability Mapping</h3>
+            <p>Define clear capabilities for each system actor to understand dependencies and failure modes.</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Actor Type</th>
+                        <th>Capabilities</th>
+                        <th>Dependencies</th>
+                        <th>Failure Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Payment Gateway</strong></td>
+                        <td>Validate cards, process payments, handle refunds</td>
+                        <td>Banking APIs, compliance systems</td>
+                        <td>Transaction fails, customer notification required</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fraud Detection</strong></td>
+                        <td>Analyze patterns, score risk, block suspicious activity</td>
+                        <td>Machine learning models, historical data</td>
+                        <td>Payment may be flagged or delayed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email Service</strong></td>
+                        <td>Send confirmations, track delivery, manage templates</td>
+                        <td>SMTP servers, template storage</td>
+                        <td>Customer doesn't receive confirmation (non-critical)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>User Database</strong></td>
+                        <td>Store profiles, authenticate users, manage permissions</td>
+                        <td>Database cluster, backup systems</td>
+                        <td>Critical failure - scenario cannot proceed</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="best-practice">
+                <h5>✅ Best Practice: Circuit Breaker Pattern</h5>
+                <p>Implement circuit breakers for external system actors. When an external system fails repeatedly, scenarios should gracefully degrade rather than continuously retry and fail.</p>
+            </div>
+        </section>
+        
+        <!-- Error Handling and Edge Cases -->
+        <section class="section">
+            <h2>🛡️ Advanced Error Handling and Edge Cases</h2>
+            <p>Mature USE implementations handle edge cases and errors gracefully, ensuring system resilience and clear failure communication.</p>
+            
+            <h3>Error Scenario Patterns</h3>
+            
+            <div class="code-example">
+<span class="keyword">Scenario:</span> Payment Processing with Network Timeout<br>
+<span class="keyword">Given</span> the <span class="actor">Payment Gateway</span> has intermittent connectivity<br>
+<span class="keyword">When</span> a <span class="actor">Customer</span> submits a payment<br>
+<span class="keyword">And</span> the <span class="actor">Payment Gateway</span> times out after 30 seconds<br>
+<span class="keyword">Then</span> the system should retry the payment once<br>
+<span class="keyword">And</span> if the retry fails, show a "please try again" message<br>
+<span class="keyword">And</span> log the failure for monitoring<br>
+<span class="keyword">And</span> not charge the customer<br>
+<br>
+<span class="comment"># Parallel error handling scenarios</span><br>
+<span class="keyword">And</span> the following error recovery should execute:<br>
+&nbsp;&nbsp;| Recovery Action | Expected Result |<br>
+&nbsp;&nbsp;| Log to monitoring | Alert sent to operations team |<br>
+&nbsp;&nbsp;| Cache payment data | Available for retry within 1 hour |<br>
+&nbsp;&nbsp;| Update UI status | Clear error message shown |
+            </div>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🔄</div>
+                        <h4>Retry Patterns</h4>
+                    </div>
+                    <p>Define intelligent retry strategies for different types of failures.</p>
+                    <ul class="pattern-features">
+                        <li>Exponential backoff for rate limits</li>
+                        <li>Immediate retry for network timeouts</li>
+                        <li>No retry for validation errors</li>
+                        <li>Circuit breaker for repeated failures</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🎭</div>
+                        <h4>Graceful Degradation</h4>
+                    </div>
+                    <p>When non-critical actors fail, scenarios continue with reduced functionality.</p>
+                    <ul class="pattern-features">
+                        <li>Email failure doesn't block core workflow</li>
+                        <li>Analytics failure doesn't affect user experience</li>
+                        <li>Cache miss falls back to database</li>
+                        <li>Third-party service uses default behavior</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">📊</div>
+                        <h4>Error Observability</h4>
+                    </div>
+                    <p>Comprehensive error tracking and alerting for all failure modes.</p>
+                    <ul class="pattern-features">
+                        <li>Structured logging with correlation IDs</li>
+                        <li>Real-time alerts for critical failures</li>
+                        <li>Error rate monitoring per actor</li>
+                        <li>Performance metrics for each scenario</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Edge Case Discovery Process</h3>
+            <p>Systematically discover and handle edge cases using actor-based analysis.</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Edge Case Category</th>
+                        <th>Discovery Method</th>
+                        <th>Example</th>
+                        <th>Scenario Pattern</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Actor Unavailable</strong></td>
+                        <td>Dependency analysis</td>
+                        <td>Payment gateway down during purchase</td>
+                        <td>Alternative payment methods offered</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Boundary</strong></td>
+                        <td>Input validation testing</td>
+                        <td>User submits 10,000 character name</td>
+                        <td>Input validation with clear error messages</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Timing Issues</strong></td>
+                        <td>Concurrent execution analysis</td>
+                        <td>Two users book the same appointment slot</td>
+                        <td>Optimistic locking with retry mechanism</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resource Exhaustion</strong></td>
+                        <td>Load testing scenarios</td>
+                        <td>Database connection pool exhausted</td>
+                        <td>Graceful degradation with queue mechanism</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Performance and Scalability -->
+        <section class="section">
+            <h2>⚡ Performance and Scalability Patterns</h2>
+            <p>Advanced USE scenarios include performance requirements and scalability considerations as first-class concerns.</p>
+            
+            <h3>Performance-Aware Scenarios</h3>
+            
+            <div class="code-example">
+<span class="keyword">Scenario:</span> High-Volume Job Application Processing<br>
+<span class="keyword">Given</span> the system handles 1000+ applications per hour<br>
+<span class="keyword">And</span> the <span class="actor">Matching Engine</span> processes candidates efficiently<br>
+<span class="keyword">When</span> 500 <span class="actor">Job Seekers</span> apply simultaneously<br>
+<span class="keyword">Then</span> all applications should be processed within 30 seconds<br>
+<span class="keyword">And</span> the system should maintain < 200ms response times<br>
+<span class="keyword">And</span> no applications should be lost<br>
+<span class="keyword">And</span> the <span class="actor">Database</span> should not exceed 80% CPU usage<br>
+<br>
+<span class="comment"># Performance monitoring scenarios</span><br>
+<span class="keyword">And</span> the following performance metrics should be maintained:<br>
+&nbsp;&nbsp;| Metric | Target | Alert Threshold |<br>
+&nbsp;&nbsp;| Response time | < 200ms | > 500ms |<br>
+&nbsp;&nbsp;| Throughput | 1000 req/min | < 500 req/min |<br>
+&nbsp;&nbsp;| Error rate | < 0.1% | > 1% |<br>
+&nbsp;&nbsp;| Database CPU | < 80% | > 90% |
+            </div>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">📈</div>
+                        <h4>Load Testing Scenarios</h4>
+                    </div>
+                    <p>Define scenarios that test system behavior under various load conditions.</p>
+                    <ul class="pattern-features">
+                        <li>Normal load (expected daily traffic)</li>
+                        <li>Peak load (holiday or event traffic)</li>
+                        <li>Stress load (system breaking point)</li>
+                        <li>Spike load (sudden traffic increase)</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🔧</div>
+                        <h4>Optimization Scenarios</h4>
+                    </div>
+                    <p>Scenarios that verify performance optimizations work correctly.</p>
+                    <ul class="pattern-features">
+                        <li>Caching reduces database queries</li>
+                        <li>CDN serves static assets faster</li>
+                        <li>Database indexes improve query speed</li>
+                        <li>Background jobs don't block user requests</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <div class="pattern-header">
+                        <div class="pattern-icon">🚨</div>
+                        <h4>Degradation Scenarios</h4>
+                    </div>
+                    <p>Define how systems behave when performance targets cannot be met.</p>
+                    <ul class="pattern-features">
+                        <li>Rate limiting kicks in at high load</li>
+                        <li>Non-essential features disabled under stress</li>
+                        <li>Queue systems handle burst traffic</li>
+                        <li>Auto-scaling activates additional resources</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="best-practice">
+                <h5>✅ Best Practice: SLA-Driven Scenarios</h5>
+                <p>Write scenarios that directly validate your service level agreements (SLAs). If you promise 99.9% uptime and < 200ms response times, create scenarios that continuously validate these commitments.</p>
+            </div>
+        </section>
+        
+        <!-- Advanced Testing Strategies -->
+        <section class="section">
+            <h2>🧪 Advanced Testing Integration</h2>
+            <p>USE scenarios become the foundation for comprehensive testing strategies, from unit tests to end-to-end validation.</p>
+            
+            <h3>Multi-Level Testing Architecture</h3>
+            
+            <div class="architecture-diagram">
+                <h4 style="margin-bottom: 24px; color: var(--color-text-primary);">Testing Pyramid with USE Scenarios</h4>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                    <div class="diagram-box primary" style="width: 200px;">
+                        <div class="diagram-title">E2E Tests</div>
+                        <div class="diagram-desc">Complete USE scenarios</div>
+                    </div>
+                    <div class="diagram-box" style="width: 300px;">
+                        <div class="diagram-title">Integration Tests</div>
+                        <div class="diagram-desc">Actor interaction validation</div>
+                    </div>
+                    <div class="diagram-box" style="width: 400px;">
+                        <div class="diagram-title">Unit Tests</div>
+                        <div class="diagram-desc">Individual actor capabilities</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-example">
+<span class="comment"># Scenario-driven test generation</span><br>
+<span class="keyword">Feature:</span> Cold Call Integration Testing<br>
+<br>
+<span class="comment"># End-to-End Level</span><br>
+<span class="keyword">@e2e @business_critical</span><br>
+<span class="keyword">Scenario:</span> Complete cold call workflow<br>
+&nbsp;&nbsp;<span class="comment"># Full business scenario with all actors</span><br>
+<br>
+<span class="comment"># Integration Level</span><br>
+<span class="keyword">@integration @crm_api</span><br>
+<span class="keyword">Scenario:</span> CRM logging integration<br>
+&nbsp;&nbsp;<span class="comment"># Tests T_S001_US001 in isolation</span><br>
+<br>
+<span class="comment"># Unit Level</span><br>
+<span class="keyword">@unit @sales_team</span><br>
+<span class="keyword">Scenario:</span> Sales team authentication<br>
+&nbsp;&nbsp;<span class="comment"># Tests individual actor capabilities</span>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Test Level</th>
+                        <th>Scenario Scope</th>
+                        <th>Execution Speed</th>
+                        <th>Maintenance Effort</th>
+                        <th>Confidence Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Unit</strong></td>
+                        <td>Single actor capabilities</td>
+                        <td>Very Fast (< 1s)</td>
+                        <td>Low</td>
+                        <td>Low-Medium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Integration</strong></td>
+                        <td>Actor interactions</td>
+                        <td>Fast (1-10s)</td>
+                        <td>Medium</td>
+                        <td>Medium-High</td>
+                    </tr>
+                    <tr>
+                        <td><strong>End-to-End</strong></td>
+                        <td>Complete USE scenarios</td>
+                        <td>Slow (30s-5min)</td>
+                        <td>High</td>
+                        <td>Very High</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="warning-box">
+                <h5>⚠️ Testing Anti-Pattern</h5>
+                <p>Don't create tests that are completely separate from your USE scenarios. Tests should validate that scenarios work correctly, not implement different logic. Keep tests and scenarios aligned to avoid maintenance overhead.</p>
+            </div>
+        </section>
+        
+        <!-- Navigation -->
+        <nav class="nav-buttons">
+            <a href="../first-scenario/index.html" class="nav-button nav-prev">
+                ← Previous: Your First Scenario
+            </a>
+            
+            <div style="text-align: center; color: var(--color-text-secondary);">
+                Lesson 3 of 6: Advanced Patterns
+            </div>
+            
+            <a href="../team-collaboration/index.html" class="nav-button nav-next">
+                Next: Team Collaboration →
+            </a>
+        </nav>
+    </div>
+</body>
+</html>
