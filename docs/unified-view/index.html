@@ -551,7 +551,7 @@
                         <div class="timeline-title">🔧 Technical Implementation Documentation</div>
                         <div class="timeline-description">Phoenix context mapping, authentication system, job posting implementation</div>
                         <div class="timeline-components">
-                            <span class="timeline-component">T_S001_AUTH001</span>
+                            <span class="timeline-component">T26: Authentication Context</span>
                             <span class="timeline-component">T_S003_JOBS001</span>
                         </div>
                     </div>
@@ -575,7 +575,7 @@
                         <div class="timeline-title">📖 USE Scenario Framework</div>
                         <div class="timeline-description">Complete S001 scenario definition with 18 user stories and story steps</div>
                         <div class="timeline-components">
-                            <span class="timeline-component">B_S001</span>
+                            <span class="timeline-component">S1-S19</span>
                             <span class="timeline-component">US001-018</span>
                         </div>
                     </div>
@@ -589,44 +589,43 @@
             
             <div class="sitemap-tree">
 <span class="tree-epic">🏠 Bemeda Platform</span>
-├─── <span class="tree-epic">📖 B_S001: Cold Call to Placement Scenario</span>
-│    ├─── <span class="tree-story">🏥 B_S001_US001: Organisation User Story</span>
-│    │    ├─── <span class="tree-step">B_S001_US001_USS001: Receive initial sales call</span>
-│    │    ├─── <span class="tree-step">B_S001_US001_USS002: Listen to platform overview</span>
-│    │    ├─── <span class="tree-step">B_S001_US001_USS003: Express interest or concerns</span>
-│    │    ├─── <span class="tree-step">B_S001_US001_USS004: Discuss staffing needs</span>
-│    │    ├─── <span class="tree-step">B_S001_US001_USS005: Agree to job posting</span>
-│    │    ├─── <span class="tree-step">B_S001_US001_USS006: Review matched candidates</span>
-│    │    ├─── <span class="tree-step">B_S001_US001_USS007: Conduct interviews</span>
-│    │    └─── <span class="tree-step">B_S001_US001_USS008: Complete hiring process</span>
+├─── <span class="tree-epic">📖 Scenario1: Cold Call to Placement</span>
+│    ├─── <span class="tree-story">🏥 A1: Healthcare Organisation (S1-S8)</span>
+│    │    ├─── <span class="tree-step">S1: Receive Bemeda sales call</span>
+│    │    ├─── <span class="tree-step">S2: Listen to platform overview</span>
+│    │    ├─── <span class="tree-step">S3: Discuss staffing needs</span>
+│    │    ├─── <span class="tree-step">S4: Define job requirements</span>
+│    │    ├─── <span class="tree-step">S5: Publish job posting</span>
+│    │    ├─── <span class="tree-step">S6: Review matched candidates</span>
+│    │    ├─── <span class="tree-step">S7: Conduct interviews</span>
+│    │    └─── <span class="tree-step">S8: Make hiring decision</span>
 │    │
-│    ├─── <span class="tree-story">👤 B_S001_US002: JobSeeker User Story</span>
-│    │    ├─── <span class="tree-step">B_S001_US002_USS001: Create professional profile</span>
-│    │    ├─── <span class="tree-step">B_S001_US002_USS002: Receive job notifications</span>
-│    │    ├─── <span class="tree-step">B_S001_US002_USS003: Review and apply to jobs</span>
-│    │    ├─── <span class="tree-step">B_S001_US002_USS004: Participate in interviews</span>
-│    │    ├─── <span class="tree-step">B_S001_US002_USS005: Receive job offers</span>
-│    │    └─── <span class="tree-step">B_S001_US002_USS006: Complete onboarding</span>
+│    ├─── <span class="tree-story">🔍 A2: JobSeeker (S9-S14)</span>
+│    │    ├─── <span class="tree-step">S9: Create professional profile</span>
+│    │    ├─── <span class="tree-step">S10: Receive job notification</span>
+│    │    ├─── <span class="tree-step">S11: Review job details</span>
+│    │    ├─── <span class="tree-step">S12: Submit application</span>
+│    │    ├─── <span class="tree-step">S13: Participate in interview</span>
+│    │    └─── <span class="tree-step">S14: Accept offer & onboard</span>
 │    │
-│    └─── <span class="tree-story">📞 B_S001_US003: Sales Team User Story</span>
-│         ├─── <span class="tree-step">B_S001_US003_USS001: Identify target healthcare organisations</span>
-│         ├─── <span class="tree-step">B_S001_US003_USS002: Make initial contact</span>
-│         ├─── <span class="tree-step">B_S001_US003_USS003: Present platform benefits</span>
-│         ├─── <span class="tree-step">B_S001_US003_USS004: Facilitate onboarding</span>
-│         ├─── <span class="tree-step">B_S001_US003_USS005: Monitor placement success</span>
-│         └─── <span class="tree-step">B_S001_US003_USS006: Follow-up opportunities</span>
+│    └─── <span class="tree-story">📞 A3: Sales Team (S15-S19)</span>
+│         ├─── <span class="tree-step">S15: Identify target healthcare organisations</span>
+│         ├─── <span class="tree-step">S16: Make initial contact</span>
+│         ├─── <span class="tree-step">S17: Present platform benefits</span>
+│         ├─── <span class="tree-step">S18: Facilitate onboarding</span>
+│         └─── <span class="tree-step">S19: Monitor placement success & follow-up</span>
 │
-├─── <span class="tree-ux">🎨 UX/UI Implementation</span>
-│    ├─── <span class="tree-ux">U_S001: Cold Call to Placement UX Scenario</span>
-│    ├─── <span class="tree-ux">U_S001_UX001: Organisation Dashboard Flow</span>
-│    ├─── <span class="tree-ux">U_S001_M001: Healthcare Organisation Dashboard</span>
-│    └─── <span class="tree-ux">U_S001_C001: Navigation Bar Component</span>
+├─── <span class="tree-ux">🎨 UX/UI Components</span>
+│    ├─── <span class="tree-ux">U1-U30: UX Components by Step</span>
+│    ├─── <span class="tree-ux">Mockups & Design (Desktop/Mobile)</span>
+│    ├─── <span class="tree-ux">User Flows & Wireframes</span>
+│    └─── <span class="tree-ux">UI Component Library</span>
 │
-└─── <span class="tree-tech">⚙️ Technical Implementation</span>
-     ├─── <span class="tree-tech">T_S001: Technical Implementation for Cold Call to Placement</span>
-     ├─── <span class="tree-tech">T_S001_UC001: User Authentication and Registration</span>
-     ├─── <span class="tree-tech">T_S001_F001: User Registration Feature</span>
-     └─── <span class="tree-tech">T_S001_TC001: Authentication Service</span>
+└─── <span class="tree-tech">⚙️ Technical Components</span>
+     ├─── <span class="tree-tech">T1-T32: Technical Components by Step</span>
+     ├─── <span class="tree-tech">APIs & Backend Services</span>
+     ├─── <span class="tree-tech">Database & Storage</span>
+     └─── <span class="tree-tech">Tests & Infrastructure</span>
             </div>
         </div>
     </div>

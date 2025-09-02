@@ -3,300 +3,946 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UX Scenarios (U_S) - Bemeda Platform</title>
+    <title>UX Components (U1-UN) - Bemeda Platform</title>
     <link rel="stylesheet" href="../assets/css/color-system.css">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--color-text-primary);
-            background: var(--color-bg-secondary);
-            margin: 0;
-            padding: 0;
-            --domain-color: var(--color-ux);
-            --domain-color-dark: var(--color-ux-dark);
-            --domain-color-light: var(--color-ux-light);
-            --domain-color-lighter: var(--color-ux-lighter);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--color-text-primary); background: var(--color-bg-secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .topbar a.learn-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .menu { display: flex; gap: 12px; }
+        .menu a { text-decoration: none; color: var(--color-text-secondary); padding: 8px 12px; border-radius: 8px; background: var(--color-bg-primary); border: 1px solid var(--color-border-light); }
+        .menu a.active { color: var(--color-primary); border-color: var(--color-primary); background: #eff6ff; font-weight: 600; }
+        .header { text-align: center; margin-bottom: 24px; padding: 24px 0 8px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+        .section { background: var(--color-bg-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--color-border); margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: var(--color-bg-tertiary); border: 1px solid var(--color-border-light); border-radius: 10px; padding: 16px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-right: 6px; }
+        .u { background: var(--color-ux); color: white; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: #0066cc; text-decoration: none; margin-bottom: 32px; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
         
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0 20px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--color-text-primary);
-            margin-bottom: 8px;
-            letter-spacing: -1px;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            color: var(--color-text-secondary);
-        }
-
-        .scenarios-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .scenario-card {
-            background: white;
+        /* Step-based UX Blocks */
+        .step-block {
+            background: var(--color-bg-primary);
             border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid rgba(196,33,107,0.1);
-            border-top: 3px solid var(--domain-color);
-            transition: all 0.2s ease;
-            position: relative;
+            border: 1px solid var(--color-border);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .step-header {
+            padding: 16px 20px;
             cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .scenario-card:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            border-color: var(--domain-color);
-        }
-
-        .scenario-card.coming-soon {
-            opacity: 0.6;
-            border-top-color: #ccc;
-        }
-
-        .scenario-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .scenario-id {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--domain-color);
-            background: var(--domain-color-lighter);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: 'Monaco', monospace;
-            white-space: nowrap;
-        }
-
-        .scenario-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 0;
-            line-height: 1.3;
-        }
-
-        .scenario-description {
-            color: #666;
-            margin: 8px 0 16px 0;
-            line-height: 1.4;
-            font-size: 0.95rem;
-        }
-
-        .scenario-meta {
+            user-select: none;
+            border-bottom: 1px solid var(--color-border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            transition: background-color 0.2s;
         }
-
-        .scenario-stats {
+        
+        .step-header:hover {
+            background: var(--color-bg-hover);
+        }
+        
+        .step-title {
             display: flex;
-            gap: 16px;
-            font-size: 0.8rem;
-        }
-
-        .stat-item {
-            color: #666;
-        }
-
-        .stat-value {
-            font-weight: 600;
-            color: var(--domain-color);
-        }
-
-        .scenario-progress {
-            font-size: 0.8rem;
-            color: #28a745;
-            font-weight: 500;
-        }
-
-        .component-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .component-tag {
-            background: var(--domain-color-lighter);
-            color: var(--domain-color-dark);
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        .action-button {
-            padding: 8px 16px;
-            background: var(--domain-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: inline-block;
-            transition: background 0.2s;
-        }
-
-        .action-button:hover {
-            background: var(--domain-color-dark);
-        }
-
-        .action-button.secondary {
-            background: #f0f0f0;
-            color: #666;
-        }
-
-
-        .back-link {
-            display: inline-flex;
             align-items: center;
-            gap: 8px;
-            color: #0066cc;
-            text-decoration: none;
-            margin-bottom: 32px;
-            font-weight: 500;
+            gap: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
         }
         
-        .back-link:hover {
-            text-decoration: underline;
+        .step-toggle {
+            font-size: 1rem;
+            transition: transform 0.2s;
         }
         
-        @media (max-width: 768px) {
-            .stats-grid {
+        .step-toggle.expanded {
+            transform: rotate(90deg);
+        }
+        
+        .step-content {
+            display: none;
+            padding: 0;
+        }
+        
+        .step-content.expanded {
+            display: block;
+        }
+        
+        /* Three column layout for UX types */
+        .ux-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+        
+        @media (max-width: 1200px) {
+            .ux-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .action-links {
-                flex-direction: column;
-            }
+        }
+        
+        .ux-section {
+            padding: 20px;
+            border-right: 1px solid var(--color-border-light);
+        }
+        
+        .ux-section:last-child {
+            border-right: none;
+        }
+        
+        .ux-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .ux-icon {
+            font-size: 1.3rem;
+        }
+        
+        .ux-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        .ux-components {
+            display: grid;
+            gap: 6px;
+        }
+        
+        .ux-component {
+            background: var(--color-bg-tertiary);
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid var(--color-border-light);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .ux-component:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-ux);
+            transform: translateX(2px);
+        }
+        
+        .ux-id {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--color-ux);
+            background: var(--color-bg-secondary);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Monaco', monospace;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        
+        .ux-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .ux-status {
+            display: flex;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+        
+        .status-tag {
+            padding: 2px 6px;
+            font-size: 0.6rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .status-tag.github {
+            background: var(--color-bg-hover);
+            color: var(--color-text-secondary);
+        }
+        
+        .status-tag.complete {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-tag.missing {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-tag.progress {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .status-tag:hover {
+            opacity: 0.8;
+        }
+        
+        /* Actor grouping */
+        .actor-group {
+            margin-bottom: 24px;
+        }
+        
+        .actor-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: var(--color-bg-tertiary);
+            border-radius: 8px;
+        }
+        
+        .actor-icon {
+            font-size: 1.5rem;
+        }
+        
+        .actor-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        /* Replication Tracking Table */
+        .tracking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--color-bg-primary);
+        }
+        
+        .tracking-table th,
+        .tracking-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border-light);
+            font-size: 0.9rem;
+        }
+        
+        .tracking-table th {
+            background: var(--color-bg-tertiary);
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .duplicate-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .duplicate-indicator.unique {
+            background: #10b981;
+        }
+        
+        .duplicate-indicator.duplicate {
+            background: #ef4444;
+        }
+        
+        .duplicate-indicator.similar {
+            background: #f59e0b;
         }
     </style>
+    <script>
+        function toggleStep(stepId) {
+            const content = document.getElementById(stepId + '-content');
+            const toggle = document.getElementById(stepId + '-toggle');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                toggle.classList.add('expanded');
+            }
+        }
+        
+        function openGitHub(componentId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            let searchQuery = `is:issue label:component ${componentId} in:title`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            console.log('GitHub search for UX component:', componentId, searchQuery);
+            window.open(url, '_blank');
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <a href="../index.html" class="back-link">
-            ← Back to Home
-        </a>
-        
-        <div class="header">
-            <h1>🎨 UX Scenarios (U_S)</h1>
-            <p>User experience journeys where UX actors interact with the system through designed interfaces</p>
+        <div class="topbar">
+            <a class="back-link" href="../index.html">← Back to Home</a>
+            <nav class="menu">
+                <a href="../index.html">Home</a>
+                <a href="../scenarios/index.html">Scenarios</a>
+                <a href="index.html" class="active">UX</a>
+                <a href="../technical/index.html">Technical</a>
+            </nav>
         </div>
 
-        <!-- Scenario Cards Grid -->
-        <div class="scenarios-grid">
-            <!-- Scenario S001 UX Card -->
-            <a href="S001/index.html" class="scenario-card">
-                <div class="scenario-header">
-                    <div class="scenario-id">U_S001</div>
-                    <h2 class="scenario-title">Cold Call to Placement - UX</h2>
-                </div>
-                <p class="scenario-description">User experience flows, mockups, and interface components supporting the complete recruitment workflow.</p>
-                
-                <div class="scenario-meta">
-                    <div class="scenario-stats">
-                        <span class="stat-item">Flows: <span class="stat-value">9</span></span>
-                        <span class="stat-item">Mockups: <span class="stat-value">8</span></span>
-                    </div>
-                    <div class="scenario-progress">60% Complete</div>
-                </div>
-                
-                <div class="component-tags">
-                    <span class="component-tag">🔄 User Flows</span>
-                    <span class="component-tag">📱 Mockups</span>
-                    <span class="component-tag">🧩 Components</span>
-                </div>
-                
-                <span class="action-button" onclick="event.preventDefault(); event.stopPropagation(); window.open('https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+U_S001', '_blank');">🔗 GitHub</span>
-            </a>
-            
-            <!-- Additional Scenarios Placeholder -->
-            <a href="#" class="scenario-card coming-soon">
-                <div class="scenario-header">
-                    <div class="scenario-id" style="background: #f5f5f5; color: #999;">U_S002</div>
-                    <h2 class="scenario-title" style="color: #666;">Temporary Staffing - UX</h2>
-                </div>
-                <p class="scenario-description" style="color: #999;">User experience flows for short-term staffing and emergency placements.</p>
-                
-                <div style="text-align: center; padding: 16px; color: #999; font-style: italic; font-size: 0.9rem;">
-                    🚧 Coming Soon - Inherits 80% UX patterns from S001
-                </div>
-            </a>
-            
-            <a href="#" class="scenario-card coming-soon">
-                <div class="scenario-header">
-                    <div class="scenario-id" style="background: #f5f5f5; color: #999;">U_S003</div>
-                    <h2 class="scenario-title" style="color: #666;">Recurring Placements - UX</h2>
-                </div>
-                <p class="scenario-description" style="color: #999;">User experience optimization for repeat client relationships and bulk placements.</p>
-                
-                <div style="text-align: center; padding: 16px; color: #999; font-style: italic; font-size: 0.9rem;">
-                    🚧 Coming Soon - Advanced UX patterns for power users
-                </div>
-            </a>
+        <div class="header">
+            <h1>🎨 UX Components (U1-UN)</h1>
+            <p>UX components organized by business steps - mockups, flows, and design elements supporting each scenario step.</p>
         </div>
-        
-        <!-- Shared Platform Components Section -->
-        <div style="margin-top: 60px;">
-            <div class="header" style="margin-bottom: 30px;">
-                <h2 style="font-size: 2rem; color: var(--color-text-primary); margin-bottom: 12px;">🧩 Shared UX Platform Components</h2>
-                <p style="font-size: 1rem;">Reusable design system components and patterns used across all scenarios</p>
+
+        <!-- A1: Healthcare Organisation Steps (S1-S8) -->
+        <div class="actor-group">
+            <div class="actor-header">
+                <span class="actor-icon">🏥</span>
+                <h2 class="actor-title">A1: Healthcare Organisation (S1-S8)</h2>
             </div>
-            
-            <div class="scenarios-grid">
-                <div class="scenario-card" style="border: 2px dashed var(--domain-color); background: var(--domain-color-lighter);">
-                    <div class="scenario-header">
-                        <div class="scenario-id" style="background: var(--domain-color);">UX_PLATFORM</div>
-                        <h3 class="scenario-title">Design System & Components</h3>
-                    </div>
-                    <p class="scenario-description">
-                        Navigation bars, authentication forms, shared layouts, button libraries, and consistent styling patterns used across all healthcare recruitment scenarios.
-                    </p>
-                    
-                    <div class="component-tags">
-                        <span class="component-tag">🧭 Navigation</span>
-                        <span class="component-tag">🔐 Auth Forms</span>
-                        <span class="component-tag">📐 Layouts</span>
-                        <span class="component-tag">🎨 Style Guide</span>
-                    </div>
-                    
-                    <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 6px; border-left: 3px solid var(--domain-color);">
-                        <div style="font-size: 0.9rem; color: var(--color-text-secondary);">
-                            <strong>Integrated into scenarios:</strong> Rather than separate platform section, shared components are embedded within S001 UX flows and referenced across other scenarios.
+
+            <!-- S1: Receive Bemeda sales call -->
+            <div class="step-block" id="s1">
+                <div class="step-header" onclick="toggleStep('s1')">
+                    <h3 class="step-title">
+                        <span class="badge u">S1</span>
+                        Receive Bemeda sales call
+                    </h3>
+                    <span class="step-toggle" id="s1-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s1-content">
+                    <div class="ux-grid">
+                        <!-- Mockups & Design -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🎨</span>
+                                <h4 class="ux-title">Mockups & Design</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U1</div>
+                                    <div class="ux-text">Call Reception Dashboard</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag complete">✅ Complete</span>
+                                        <button class="status-tag github" onclick="openGitHub('U1', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U2</div>
+                                    <div class="ux-text">Contact Management Interface</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag progress">🚧 Design</span>
+                                        <button class="status-tag github" onclick="openGitHub('U2', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- User Flows -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🔄</span>
+                                <h4 class="ux-title">User Flows</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U3</div>
+                                    <div class="ux-text">Call Reception Flow</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag complete">✅ Wireframe</span>
+                                        <button class="status-tag github" onclick="openGitHub('U3', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U4</div>
+                                    <div class="ux-text">Contact Capture Process</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U4', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- UI Components -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🧩</span>
+                                <h4 class="ux-title">UI Components</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U5</div>
+                                    <div class="ux-text">Call Alert Component</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U5', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U6</div>
+                                    <div class="ux-text">Contact Form Fields</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag progress">🚧 Partial</span>
+                                        <button class="status-tag github" onclick="openGitHub('U6', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- S2: Listen to platform overview -->
+            <div class="step-block" id="s2">
+                <div class="step-header" onclick="toggleStep('s2')">
+                    <h3 class="step-title">
+                        <span class="badge u">S2</span>
+                        Listen to platform overview
+                    </h3>
+                    <span class="step-toggle" id="s2-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s2-content">
+                    <div class="ux-grid">
+                        <!-- Mockups & Design -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🎨</span>
+                                <h4 class="ux-title">Mockups & Design</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U7</div>
+                                    <div class="ux-text">Platform Demo Interface</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag progress">🚧 Mockup</span>
+                                        <button class="status-tag github" onclick="openGitHub('U7', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U8</div>
+                                    <div class="ux-text">Demo Content Layout</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U8', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- User Flows -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🔄</span>
+                                <h4 class="ux-title">User Flows</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U9</div>
+                                    <div class="ux-text">Demo Presentation Flow</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U9', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U10</div>
+                                    <div class="ux-text">Engagement Tracking Flow</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U10', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- UI Components -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🧩</span>
+                                <h4 class="ux-title">UI Components</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U11</div>
+                                    <div class="ux-text">Video Player Component</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U11', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U12</div>
+                                    <div class="ux-text">Progress Indicator</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U12', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S3: Discuss staffing needs -->
+            <div class="step-block" id="s3">
+                <div class="step-header" onclick="toggleStep('s3')">
+                    <h3 class="step-title">
+                        <span class="badge u">S3</span>
+                        Discuss staffing needs
+                    </h3>
+                    <span class="step-toggle" id="s3-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s3-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S3 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S4: Define job requirements -->
+            <div class="step-block" id="s4">
+                <div class="step-header" onclick="toggleStep('s4')">
+                    <h3 class="step-title">
+                        <span class="badge u">S4</span>
+                        Define job requirements
+                    </h3>
+                    <span class="step-toggle" id="s4-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s4-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S4 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S5: Publish job posting -->
+            <div class="step-block" id="s5">
+                <div class="step-header" onclick="toggleStep('s5')">
+                    <h3 class="step-title">
+                        <span class="badge u">S5</span>
+                        Publish job posting
+                    </h3>
+                    <span class="step-toggle" id="s5-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s5-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S5 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S6: Review matched candidates -->
+            <div class="step-block" id="s6">
+                <div class="step-header" onclick="toggleStep('s6')">
+                    <h3 class="step-title">
+                        <span class="badge u">S6</span>
+                        Review matched candidates
+                    </h3>
+                    <span class="step-toggle" id="s6-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s6-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S6 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S7: Conduct interviews -->
+            <div class="step-block" id="s7">
+                <div class="step-header" onclick="toggleStep('s7')">
+                    <h3 class="step-title">
+                        <span class="badge u">S7</span>
+                        Conduct interviews
+                    </h3>
+                    <span class="step-toggle" id="s7-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s7-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S7 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S8: Make hiring decision -->
+            <div class="step-block" id="s8">
+                <div class="step-header" onclick="toggleStep('s8')">
+                    <h3 class="step-title">
+                        <span class="badge u">S8</span>
+                        Make hiring decision
+                    </h3>
+                    <span class="step-toggle" id="s8-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s8-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S8 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        
+
+        <!-- A2: JobSeeker Steps (S9-S14) -->
+        <div class="actor-group">
+            <div class="actor-header">
+                <span class="actor-icon">🔍</span>
+                <h2 class="actor-title">A2: JobSeeker (S9-S14)</h2>
+            </div>
+
+            <!-- S9: Create professional profile -->
+            <div class="step-block" id="s9">
+                <div class="step-header" onclick="toggleStep('s9')">
+                    <h3 class="step-title">
+                        <span class="badge u">S9</span>
+                        Create professional profile
+                    </h3>
+                    <span class="step-toggle" id="s9-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s9-content">
+                    <div class="ux-grid">
+                        <!-- Mockups & Design -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🎨</span>
+                                <h4 class="ux-title">Mockups & Design</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U25</div>
+                                    <div class="ux-text">Profile Creation Interface</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U25', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U26</div>
+                                    <div class="ux-text">Profile Photo Upload UI</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag progress">🚧 Design</span>
+                                        <button class="status-tag github" onclick="openGitHub('U26', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- User Flows -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🔄</span>
+                                <h4 class="ux-title">User Flows</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U27</div>
+                                    <div class="ux-text">Profile Onboarding Flow</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U27', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U28</div>
+                                    <div class="ux-text">Skills Assessment Flow</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U28', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- UI Components -->
+                        <div class="ux-section">
+                            <div class="ux-header">
+                                <span class="ux-icon">🧩</span>
+                                <h4 class="ux-title">UI Components</h4>
+                            </div>
+                            <div class="ux-components">
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U29</div>
+                                    <div class="ux-text">Form Field Components</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag progress">🚧 Partial</span>
+                                        <button class="status-tag github" onclick="openGitHub('U29', event);">GitHub</button>
+                                    </div>
+                                </a>
+                                <a href="#" class="ux-component">
+                                    <div class="ux-id">U30</div>
+                                    <div class="ux-text">File Upload Component</div>
+                                    <div class="ux-status">
+                                        <span class="status-tag missing">❌ Missing</span>
+                                        <button class="status-tag github" onclick="openGitHub('U30', event);">GitHub</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S10: Receive job notification -->
+            <div class="step-block" id="s10">
+                <div class="step-header" onclick="toggleStep('s10')">
+                    <h3 class="step-title">
+                        <span class="badge u">S10</span>
+                        Receive job notification
+                    </h3>
+                    <span class="step-toggle" id="s10-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s10-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S10 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S11-S14: Placeholder blocks -->
+            <div class="step-block" id="s11">
+                <div class="step-header" onclick="toggleStep('s11')">
+                    <h3 class="step-title">
+                        <span class="badge u">S11</span>
+                        Review job details
+                    </h3>
+                    <span class="step-toggle" id="s11-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s11-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S11 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="s12">
+                <div class="step-header" onclick="toggleStep('s12')">
+                    <h3 class="step-title">
+                        <span class="badge u">S12</span>
+                        Submit application
+                    </h3>
+                    <span class="step-toggle" id="s12-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s12-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S12 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="s13">
+                <div class="step-header" onclick="toggleStep('s13')">
+                    <h3 class="step-title">
+                        <span class="badge u">S13</span>
+                        Participate in interview
+                    </h3>
+                    <span class="step-toggle" id="s13-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s13-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S13 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="s14">
+                <div class="step-header" onclick="toggleStep('s14')">
+                    <h3 class="step-title">
+                        <span class="badge u">S14</span>
+                        Accept offer & onboard
+                    </h3>
+                    <span class="step-toggle" id="s14-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s14-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S14 UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A3: Sales Team Steps (S15-S19) -->
+        <div class="actor-group">
+            <div class="actor-header">
+                <span class="actor-icon">📞</span>
+                <h2 class="actor-title">A3: Sales Team (S15-S19)</h2>
+            </div>
+
+            <!-- S15-S19: Sales Team Steps -->
+            <div class="step-block" id="s15">
+                <div class="step-header" onclick="toggleStep('s15')">
+                    <h3 class="step-title">
+                        <span class="badge u">S15</span>
+                        Identify target healthcare organisations
+                    </h3>
+                    <span class="step-toggle" id="s15-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s15-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S15 CRM and lead identification UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="s16">
+                <div class="step-header" onclick="toggleStep('s16')">
+                    <h3 class="step-title">
+                        <span class="badge u">S16</span>
+                        Make initial contact
+                    </h3>
+                    <span class="step-toggle" id="s16-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s16-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S16 contact management UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="s17">
+                <div class="step-header" onclick="toggleStep('s17')">
+                    <h3 class="step-title">
+                        <span class="badge u">S17</span>
+                        Present platform benefits
+                    </h3>
+                    <span class="step-toggle" id="s17-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s17-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S17 presentation and demo UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="s18">
+                <div class="step-header" onclick="toggleStep('s18')">
+                    <h3 class="step-title">
+                        <span class="badge u">S18</span>
+                        Facilitate onboarding
+                    </h3>
+                    <span class="step-toggle" id="s18-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s18-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S18 onboarding facilitation UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-block" id="s19">
+                <div class="step-header" onclick="toggleStep('s19')">
+                    <h3 class="step-title">
+                        <span class="badge u">S19</span>
+                        Monitor placement success & follow-up
+                    </h3>
+                    <span class="step-toggle" id="s19-toggle">▶</span>
+                </div>
+                <div class="step-content" id="s19-content">
+                    <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+                        <p>S19 analytics and monitoring UX components would be added here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- UX Component Replication Tracking Table -->
+        <section class="section">
+            <h2 style="margin-bottom: 12px;">🔍 UX Component Replication Tracking</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 20px;">GitHub integration tracking for duplicate and similar UX components across steps</p>
+            
+            <table class="tracking-table">
+                <thead>
+                    <tr>
+                        <th>Component ID</th>
+                        <th>Component Name</th>
+                        <th>Step</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Replication</th>
+                        <th>Similar Components</th>
+                        <th>GitHub Issues</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="ux-id">U1</span></td>
+                        <td>Call Reception Dashboard</td>
+                        <td>S1</td>
+                        <td>🎨 Mockup</td>
+                        <td><span class="status-tag complete">✅ Complete</span></td>
+                        <td><span class="duplicate-indicator unique"></span>Unique</td>
+                        <td>U7 (similar dashboard layout)</td>
+                        <td><a href="#" onclick="openGitHub('U1', event)">View Issues</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ux-id">U25</span></td>
+                        <td>Profile Creation Interface</td>
+                        <td>S9</td>
+                        <td>🎨 Mockup</td>
+                        <td><span class="status-tag missing">❌ Missing</span></td>
+                        <td><span class="duplicate-indicator similar"></span>Similar</td>
+                        <td>U2 (form pattern), U29 (form fields)</td>
+                        <td><a href="#" onclick="openGitHub('U25', event)">View Issues</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ux-id">U3</span></td>
+                        <td>Call Reception Flow</td>
+                        <td>S1</td>
+                        <td>🔄 Flow</td>
+                        <td><span class="status-tag complete">✅ Wireframe</span></td>
+                        <td><span class="duplicate-indicator unique"></span>Unique</td>
+                        <td>U27 (onboarding pattern)</td>
+                        <td><a href="#" onclick="openGitHub('U3', event)">View Issues</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="ux-id">U29</span></td>
+                        <td>Form Field Components</td>
+                        <td>S9</td>
+                        <td>🧩 Component</td>
+                        <td><span class="status-tag progress">🚧 Partial</span></td>
+                        <td><span class="duplicate-indicator duplicate"></span>Duplicate</td>
+                        <td>U6 (contact form fields) - consolidate</td>
+                        <td><a href="#" onclick="openGitHub('U29', event)">View Issues</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 16px; padding: 16px; background: var(--color-bg-tertiary); border-radius: 8px;">
+                <h4 style="margin-bottom: 8px;">UX Component Structure & GitHub Integration:</h4>
+                <ul style="font-size: 0.9rem; color: var(--color-text-secondary); margin: 0; padding-left: 20px;">
+                    <li><strong>📱 Responsive by default</strong>: Every component works on desktop, tablet, and mobile</li>
+                    <li><strong>☑️ GitHub checkboxes</strong>: Track device completion (✅ Desktop ✅ Tablet ✅ Mobile)</li>
+                    <li><strong>🟢 Unique</strong>: No similar components found</li>
+                    <li><strong>🟡 Similar</strong>: Components share patterns, layouts, or functionality</li>
+                    <li><strong>🔴 Duplicate</strong>: Exact duplicates requiring consolidation (e.g., form fields)</li>
+                    <li>GitHub search: <code>is:issue label:component [component-id] OR [similar-components]</code></li>
+                </ul>
+                
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-border-light);">
+                    <h4 style="margin-bottom: 8px;">UX Component Categories:</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.85rem;">
+                        <div><strong>🎨 Mockups & Design:</strong> Visual designs, layouts, prototypes</div>
+                        <div><strong>🔄 User Flows:</strong> Process flows, user journeys, wireframes</div>
+                        <div><strong>🧩 UI Components:</strong> Reusable elements, form fields, buttons</div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </body>
 </html>
