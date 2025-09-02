@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S17: Present Platform Benefits - Step Details</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <script src="../../assets/js/github-api-service.js"></script>
+    <script src="../../assets/js/dynamic-step-loader.js"></script>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            color: var(--color-text-primary); 
+            background: var(--color-bg-secondary); 
+            line-height: 1.6;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .back-link { 
+            display: inline-flex; align-items: center; gap: 8px; 
+            color: #0066cc; text-decoration: none; margin-bottom: 32px; font-weight: 500; 
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        .step-header {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid #dc2626; /* Sales Team red */
+        }
+        
+        .step-badge {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        .step-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .step-meta {
+            display: flex;
+            gap: 16px;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-text-primary);
+        }
+        
+        .github-integration {
+            background: linear-gradient(135deg, #0969da, #1f2937);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .github-content {
+            font-style: italic;
+            color: #e2e8f0;
+        }
+        
+        .component-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .component-link {
+            background: var(--color-bg-tertiary);
+            padding: 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .component-link:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        
+        .component-link.ux { border-left: 4px solid var(--color-ux); }
+        .component-link.tech { border-left: 4px solid var(--color-tech); }
+        
+        .component-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .component-description {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .benefit-card {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 1px solid #fecaca;
+            padding: 20px;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .benefit-icon {
+            background: #dc2626;
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+        
+        .benefit-card h4 {
+            color: #b91c1c;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .benefit-card p {
+            color: #7f1d1d;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        
+        .benefit-metrics {
+            background: #fee2e2;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #991b1b;
+            font-weight: 600;
+        }
+        
+        .demo-flow {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .demo-flow h4 {
+            color: #15803d;
+            margin-bottom: 16px;
+        }
+        
+        .flow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .flow-step {
+            background: #dcfce7;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            background: #16a34a;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .flow-step h5 {
+            color: #166534;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .flow-step p {
+            color: #15803d;
+            font-size: 0.8rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Scenarios</a>
+        
+        <div class="step-header">
+            <div class="step-badge">S17</div>
+            <h1 class="step-title">Present Platform Benefits</h1>
+            <div class="step-meta">
+                <span>👤 Actor: A3 - Sales Team</span>
+                <span>📝 Type: Sales Presentation</span>
+                <span>⏱️ Duration: 45-60 minutes</span>
+            </div>
+        </div>
+        
+        <!-- GitHub Integration Section -->
+        <div class="github-integration">
+            <h2 style="margin-top: 0;">🔗 GitHub Issue Integration</h2>
+            <div class="github-content">
+                <p>📝 <strong>Loading GitHub issue content and comments...</strong></p>
+                <p>This section will dynamically load:</p>
+                <ul>
+                    <li>Presentation templates and slide decks</li>
+                    <li>ROI calculation tools and case studies</li>
+                    <li>Demo environment and live platform access</li>
+                    <li>Competitive positioning and differentiation</li>
+                </ul>
+                <p><em>Implementation: GitHub API integration to fetch issue #[ID] content dynamically</em></p>
+            </div>
+        </div>
+        
+        <!-- Step Description -->
+        <div class="content-section">
+            <h2 class="section-title">📋 Step Description</h2>
+            <p>Sales team delivers a comprehensive presentation of Bemeda's platform benefits, demonstrating value through real-world examples, ROI calculations, and live platform demonstrations.</p>
+            
+            <h3>Key Activities:</h3>
+            <ul>
+                <li>Conduct discovery to understand specific pain points</li>
+                <li>Present platform capabilities and benefits</li>
+                <li>Demonstrate live platform functionality</li>
+                <li>Share relevant case studies and success stories</li>
+                <li>Calculate potential ROI for the organization</li>
+                <li>Address questions and objections</li>
+                <li>Outline next steps and implementation timeline</li>
+            </ul>
+        </div>
+        
+        <!-- Platform Benefits -->
+        <div class="content-section">
+            <h2 class="section-title">🚀 Key Platform Benefits</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h4>Cost Reduction</h4>
+                    <p>Reduce recruitment costs by eliminating expensive staffing agencies and travel nurses</p>
+                    <div class="benefit-metrics">Average savings: 30-50% vs. traditional methods</div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h4>Faster Hiring</h4>
+                    <p>AI-powered matching reduces time-to-fill from weeks to days</p>
+                    <div class="benefit-metrics">Average reduction: 65% faster placement</div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h4>Better Quality Matches</h4>
+                    <p>Advanced screening and verification ensures qualified candidates</p>
+                    <div class="benefit-metrics">95% qualification accuracy rate</div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">📈</div>
+                    <h4>Improved Retention</h4>
+                    <p>Cultural fit matching reduces turnover and improves job satisfaction</p>
+                    <div class="benefit-metrics">40% improvement in 1-year retention</div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔧</div>
+                    <h4>Easy Integration</h4>
+                    <p>Seamless integration with existing HRIS and workflow systems</p>
+                    <div class="benefit-metrics">Implementation in 2-4 weeks</div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h4>Data-Driven Insights</h4>
+                    <p>Comprehensive analytics and reporting on recruitment performance</p>
+                    <div class="benefit-metrics">Real-time dashboards and KPI tracking</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Demo Flow -->
+        <div class="content-section">
+            <h2 class="section-title">🖥️ Platform Demonstration Flow</h2>
+            <div class="demo-flow">
+                <h4>Interactive Demo Sequence (30 minutes)</h4>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-number">1</div>
+                        <h5>Job Posting</h5>
+                        <p>Show easy job creation and requirements setup</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">2</div>
+                        <h5>AI Matching</h5>
+                        <p>Demonstrate intelligent candidate matching</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">3</div>
+                        <h5>Candidate Review</h5>
+                        <p>Walk through profile evaluation interface</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">4</div>
+                        <h5>Interview Management</h5>
+                        <p>Show scheduling and coordination tools</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">5</div>
+                        <h5>Analytics Dashboard</h5>
+                        <p>Review reporting and performance metrics</p>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">6</div>
+                        <h5>Integration Options</h5>
+                        <p>Explain HRIS and system integrations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ROI Calculator -->
+        <div class="content-section">
+            <h2 class="section-title">📊 ROI Calculation Example</h2>
+            <div style="background: #fffbeb; border: 1px solid #fed7aa; padding: 20px; border-radius: 8px;">
+                <h4 style="color: #9a3412; margin-bottom: 16px;">Sample ROI for 300-bed Hospital</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                    <div style="background: #fef3c7; padding: 12px; border-radius: 6px;">
+                        <strong style="color: #92400e;">Current Annual Costs:</strong><br>
+                        • Staffing agency fees: $2.4M<br>
+                        • Travel nurse premiums: $800K<br>
+                        • Internal recruitment: $300K<br>
+                        <strong>Total: $3.5M</strong>
+                    </div>
+                    <div style="background: #d1fae5; padding: 12px; border-radius: 6px;">
+                        <strong style="color: #065f46;">With Bemeda Platform:</strong><br>
+                        • Platform subscription: $120K<br>
+                        • Reduced agency usage: $1.2M<br>
+                        • Efficiency gains: $200K<br>
+                        <strong>Total: $1.52M</strong>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 16px; padding: 12px; background: #10b981; color: white; border-radius: 6px; font-weight: 600;">
+                    <strong>Net Annual Savings: $1.98M (56% cost reduction)</strong>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Components -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Related Components</h2>
+            <div class="component-links">
+                <a href="../../uxui/index.html#s17" class="component-link ux">
+                    <div class="component-title">🎨 UX Components</div>
+                    <div class="component-description">U52-U54: Presentation tools, demo environment, ROI calculator</div>
+                </a>
+                
+                <a href="../../technical/index.html#s17" class="component-link tech">
+                    <div class="component-title">⚙️ Technical Components</div>
+                    <div class="component-description">T52-T54: Demo platform, analytics dashboard, integration APIs</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Acceptance Criteria -->
+        <div class="content-section">
+            <h2 class="section-title">✅ Acceptance Criteria</h2>
+            <ul>
+                <li>✅ Comprehensive platform benefits presented</li>
+                <li>✅ Live demo conducted successfully</li>
+                <li>✅ Relevant case studies shared</li>
+                <li>✅ ROI calculation completed for prospect</li>
+                <li>🔲 All questions and objections addressed</li>
+                <li>🔲 Next steps clearly defined</li>
+                <li>🔲 Implementation timeline provided</li>
+                <li>🔲 Proposal or trial offer discussed</li>
+            </ul>
+        </div>
+        
+        <!-- Implementation Notes -->
+        <div class="content-section">
+            <h2 class="section-title">🔧 Implementation Notes</h2>
+            <p><strong>Presentation Customization:</strong></p>
+            <ul>
+                <li>Tailored case studies from similar organizations</li>
+                <li>Industry-specific pain points and solutions</li>
+                <li>Custom ROI calculations based on prospect data</li>
+                <li>Relevant integration examples</li>
+            </ul>
+            
+            <p><strong>Demo Environment Requirements:</strong></p>
+            <ul>
+                <li>Sandbox environment with realistic data</li>
+                <li>Healthcare-specific job postings and candidates</li>
+                <li>Full functionality demonstration capability</li>
+                <li>Mobile-responsive interface for all participants</li>
+            </ul>
+            
+            <p><strong>Success Metrics:</strong></p>
+            <ul>
+                <li>Demo completion rate (target: 90%+)</li>
+                <li>Engagement level during presentation</li>
+                <li>Questions asked and objections raised</li>
+                <li>Next meeting booking rate (target: 60%+)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

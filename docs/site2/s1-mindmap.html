@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site2 - S1 Mindmap</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--color-text-primary); background: var(--color-bg-secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .topbar a.learn-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .menu { display: flex; gap: 12px; }
+        .menu a { text-decoration: none; color: var(--color-text-secondary); padding: 8px 12px; border-radius: 8px; background: var(--color-bg-primary); border: 1px solid var(--color-border-light); }
+        .header { text-align: center; margin-bottom: 24px; padding: 24px 0 8px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+        .card { background: var(--color-bg-primary); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-medium); border: 1px solid var(--color-border-light); }
+        .mindmap-wrap { overflow-x: auto; padding: 12px; }
+        .legend { margin-top: 12px; color: var(--color-text-secondary); font-size: 0.9rem; }
+        .links { margin-top: 16px; text-align: center; }
+        .links a { color: var(--color-link); text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a class="learn-link" href="../integration/index.html">↗ Learn the system we USE</a>
+            <nav class="menu">
+                <a href="index.html">Home</a>
+                <a href="plan.html">Plan</a>
+                <a href="do.html">Do</a>
+            </nav>
+        </div>
+
+        <div class="header">
+            <h1>S1 Mindmap</h1>
+            <p>Actors (A1, A2, …) with steps (S1_Ax_n) and related UX/Tech components.</p>
+        </div>
+
+        <div class="card">
+            <div class="mindmap-wrap">
+                <div class="mermaid" id="mindmap">mindmap
+  S1
+                </div>
+            </div>
+            <div class="legend">
+                UX components are prefixed with UX/C/M. Technical with F/TC/T.
+            </div>
+            <div class="links">
+                <a href="scenarios2.html">← Back to aligned view</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        (function(){
+            mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' });
+
+            Promise.all([
+                fetch('../registry/components.json').then(function(r){ return r.json(); }),
+                fetch('../../scenarios/S001/index.html').then(function(r){ return r.text(); })
+            ]).then(function(results){
+                var data = results[0];
+                var htmlText = results[1];
+
+                // Parse actor -> US id & alias (A1, A2, ...) and steps
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlText, 'text/html');
+                var actorAliasByUs = {}; var actorOrder = []; var aliasCounter = 1;
+                var stepsByUs = {};
+                doc.querySelectorAll('.participant-section').forEach(function(section){
+                    var titleEl = section.querySelector('.participant-title');
+                    if (!titleEl) return;
+                    var m = titleEl.textContent.match(/\((B_S001_US\d{3})\)/);
+                    if (!m) return;
+                    var us = m[1].split('_').slice(-1)[0]; // US001
+                    if (!actorAliasByUs[us]) { actorAliasByUs[us] = 'A' + (aliasCounter++); actorOrder.push(us); }
+                    var steps = [];
+                    section.querySelectorAll('.process-step').forEach(function(step){
+                        var id = step.querySelector('.step-id');
+                        var txt = step.querySelector('.step-text');
+                        if (id && txt) {
+                            var sid = id.textContent.trim().split('_').slice(-1)[0].replace('USS','');
+                            sid = sid.replace(/^0+/, '') || '0';
+                            steps.push({ id: sid, title: txt.textContent.trim() });
+                        }
+                    });
+                    stepsByUs[us] = steps;
+                });
+
+                // Build related UX/Tech lookups per US
+                function byId(obj){ var m={}; if (!obj) return m; Object.values(obj).forEach(function(x){ m[x.id]=x; }); return m; }
+                var uiFlows = byId(data.ui_flows);
+                var uiComponents = byId(data.ui_components);
+                var mockups = byId(data.mockups);
+                var features = byId(data.features);
+                var tests = byId(data.test_cases);
+
+                var stories = (data.user_stories ? Object.values(data.user_stories) : [])
+                    .filter(function(x){ return x.scenario === 'S001'; })
+                    .sort(function(a,b){ return (a.id||'').localeCompare(b.id||''); });
+
+                // Assemble Mermaid mindmap
+                var lines = ['mindmap', '  S1'];
+                stories.forEach(function(us){
+                    var alias = actorAliasByUs[us.id] || us.id;
+                    var actorLabel = (us.participant ? (alias + ' - ' + us.participant) : alias);
+                    lines.push('  ' + actorLabel);
+                    var steps = stepsByUs[us.id] || [];
+                    steps.forEach(function(s){
+                        var stepLabel = 'S1_' + alias + '_' + s.id;
+                        lines.push('    ' + stepLabel + ' - ' + s.title);
+
+                        // Related UX/Tech from US.related
+                        var rel = us.related || {};
+                        (rel.ui_flows || []).forEach(function(id){ if (uiFlows[id]) lines.push('      UX ' + id + ' - ' + uiFlows[id].title); });
+                        (rel.ui_components || []).forEach(function(id){ if (uiComponents[id]) lines.push('      C ' + id + ' - ' + uiComponents[id].title); });
+                        (rel.mockups || []).forEach(function(id){ if (mockups[id]) lines.push('      M ' + id + ' - ' + mockups[id].title); });
+                        (rel.features || []).forEach(function(id){ if (features[id]) lines.push('      F ' + id + ' - ' + features[id].title); });
+                        (rel.test_cases || []).forEach(function(id){ if (tests[id]) lines.push('      T ' + id + ' - ' + tests[id].title); });
+                        // Include technical components (TC)
+                        if (data.tech_components) {
+                            (rel.tech_components || []).forEach(function(id){ var tc = data.tech_components[id]; if (tc) lines.push('      TC ' + id + ' - ' + tc.title); });
+                        }
+                    });
+                });
+
+                var mm = document.getElementById('mindmap');
+                mm.textContent = lines.join('\n');
+                mermaid.init(undefined, mm);
+            }).catch(function(){
+                var mm = document.getElementById('mindmap');
+                mm.textContent = 'mindmap\n  S1\n  A1 - Organisation\n    S1_A1_1 - Receive call\n      UX UX001 - Sales call flow\n      F F001 - User Data Collection';
+                mermaid.init(undefined, mm);
+            });
+        })();
+    </script>
+</body>
+</html>
+

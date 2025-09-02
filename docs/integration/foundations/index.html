@@ -407,24 +407,24 @@
                 </div>
             </div>
             
-            <h3>2. Three Scenario Types</h3>
-            <p>We organize scenarios into three complementary types that work together:</p>
+            <h3>2. Step-Centric Component Organization</h3>
+            <p>We organize work around <strong>Business Scenarios</strong> (S1-S19) supported by UX and Technical components:</p>
             
             <div class="benefits-grid">
                 <div class="benefit-card">
-                    <div class="benefit-icon" style="color: #3b82f6;">💼</div>
-                    <h5>Business Scenarios (B_S)</h5>
-                    <p>End-to-end business workflows focused on value delivery</p>
+                    <div class="benefit-icon" style="color: #3b82f6;">🎯</div>
+                    <h5>Business Scenarios (S1-S19)</h5>
+                    <p>Primary end-to-end workflows that deliver business value to actors</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon" style="color: #ec4899;">🎨</div>
+                    <h5>UX Components (U1-UN)</h5>
+                    <p>User interface elements that support individual business steps</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon" style="color: #10b981;">⚙️</div>
-                    <h5>Technical Scenarios (T_S)</h5>
-                    <p>Behind-the-scenes technical processes that enable the business</p>
-                </div>
-                <div class="benefit-card">
-                    <div class="benefit-icon" style="color: #f59e0b;">🎨</div>
-                    <h5>UX/UI Scenarios (U_S)</h5>
-                    <p>User interface interactions and experience flows</p>
+                    <h5>Technical Components (T1-TN)</h5>
+                    <p>Backend APIs and systems that enable business step functionality</p>
                 </div>
             </div>
             
@@ -457,18 +457,19 @@
 <span class="keyword">And</span> they should express interest in our services<br>
 <span class="keyword">And</span> the interaction should be logged in the <span class="actor">CRM System</span><br>
 <br>
-# <strong>Parallel scenarios that execute simultaneously:</strong><br>
-<span class="keyword">And</span> the following parallel scenarios should execute successfully:<br>
-&nbsp;&nbsp;| Scenario     | Type      | Expected Result        |<br>
-&nbsp;&nbsp;| T_S001_US001 | Technical | CRM logging successful |<br>
-&nbsp;&nbsp;| U_S001_US001 | UX        | Sales dashboard updated|
+# <strong>Parallel components that support this step:</strong><br>
+<span class="keyword">And</span> the following components should execute successfully:<br>
+&nbsp;&nbsp;| Component | Type      | Expected Result        |<br>
+&nbsp;&nbsp;| U1        | UX        | Dashboard shows call   |<br>
+&nbsp;&nbsp;| T1        | Technical | CRM logging successful |<br>
+&nbsp;&nbsp;| U25       | UX        | Form fields validated  |
             </div>
             
             <p><strong>Notice what this scenario tells us:</strong></p>
             <ul style="margin: 16px 0; padding-left: 24px;">
                 <li>🎯 <strong>Clear Success Criteria:</strong> "understanding level should be at least 8 out of 10"</li>
                 <li>👥 <strong>Specific Actors:</strong> Healthcare Organisation, Sales Team, CRM System</li>
-                <li>🔄 <strong>Parallel Execution:</strong> Technical and UX scenarios run alongside</li>
+                <li>🔗 <strong>Component Dependencies:</strong> U1 (dashboard), T1 (API), U25 (forms) support this step</li>
                 <li>✅ <strong>Measurable Outcomes:</strong> We can actually test if this works</li>
             </ul>
         </section>
@@ -537,7 +538,7 @@
                 <ul style="list-style-type: none; padding-left: 0;">
                     <li>✅ What USE is and why it solves real development problems</li>
                     <li>✅ The three types of actors (Human, System, Interface)</li>
-                    <li>✅ The three types of scenarios (Business, Technical, UX)</li>
+                    <li>✅ Step-centric organization: Business Scenarios (S1-S19) supported by UX/Tech components</li>
                     <li>✅ How scenarios become executable specifications</li>
                     <li>✅ Why this approach leads to better software and happier teams</li>
                 </ul>

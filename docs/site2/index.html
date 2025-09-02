@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site2 - Home</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Top Bar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .topbar a.learn-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Menu */
+        .menu {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .menu a {
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: var(--color-bg-primary);
+            border: 1px solid var(--color-border-light);
+        }
+        
+        .menu a.active {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            background: #eff6ff;
+            font-weight: 600;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 24px 0 8px;
+        }
+        
+        .header h1 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+        }
+        
+        /* Workflow layout (reused) */
+        .workflow-section { margin-top: 16px; }
+        .workflow-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 36px; align-items: center; }
+        .workflow-row:nth-child(odd) .workflow-card { order: 1; }
+        .workflow-row:nth-child(odd) .workflow-content { order: 2; }
+        .workflow-row:nth-child(even) .workflow-card { order: 2; }
+        .workflow-row:nth-child(even) .workflow-content { order: 1; }
+        
+        .workflow-card { background: var(--color-bg-primary); border-radius: 16px; padding: 28px; box-shadow: var(--shadow-medium); text-decoration: none; color: inherit; display: block; border: 2px solid transparent; position: relative; overflow: hidden; cursor: pointer; }
+        .workflow-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--card-color) 0%, var(--card-color-light) 100%); transform: translateY(-4px); transition: transform 0.3s ease; }
+        .workflow-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-heavy); border-color: var(--card-color); }
+        .workflow-card:hover::before { transform: translateY(0); }
+        
+        .card-business { --card-color: var(--color-business-dark); --card-color-light: var(--color-business); }
+        .card-ux { --card-color: var(--color-ux-dark); --card-color-light: var(--color-ux); }
+        .card-technical { --card-color: var(--color-tech-dark); --card-color-light: var(--color-tech); }
+        
+        .card-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .card-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-light) 100%); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; }
+        .card-badge { background: var(--card-color); color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px; }
+        .card-title { font-size: 1.5rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 10px; }
+        .card-description { color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 16px; font-size: 0.95rem; }
+        
+        .split-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+        .split-col { background: var(--color-bg-tertiary); border: 1px solid var(--color-border-light); border-radius: 8px; padding: 12px; }
+        .split-col h4 { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; color: var(--color-text-primary); margin-bottom: 8px; }
+        .component-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .component-tag { padding: 4px 8px; background: var(--color-bg-hover); border-radius: 4px; font-size: 0.8rem; color: var(--color-text-secondary); }
+        
+        .card-stats { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--color-border-light); }
+        .card-count { font-size: 0.9rem; color: var(--color-text-tertiary); font-weight: 500; }
+        .card-arrow { color: var(--card-color); font-size: 1.2rem; transition: transform 0.2s ease; }
+        .workflow-card:hover .card-arrow { transform: translateX(4px); }
+        
+        .workflow-content { padding: 0 20px; }
+        .content-title { font-size: 1.6rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 10px; }
+        .content-description { font-size: 1.02rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 12px; }
+        
+        @media (max-width: 768px) {
+            .workflow-row { grid-template-columns: 1fr; gap: 20px; }
+            .workflow-row:nth-child(odd) .workflow-card, .workflow-row:nth-child(even) .workflow-card { order: 1; }
+            .workflow-row:nth-child(odd) .workflow-content, .workflow-row:nth-child(even) .workflow-content { order: 2; }
+            .split-columns { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script>
+        function setActiveMenu() {
+            var path = location.pathname.split('/').pop();
+            document.querySelectorAll('.menu a').forEach(function(a){
+                if ((path === '' && a.getAttribute('href').endsWith('index.html')) || a.getAttribute('href').endsWith(path)) {
+                    a.classList.add('active');
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', setActiveMenu);
+    </script>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a class="learn-link" href="../integration/index.html">↗ Learn the system we USE</a>
+            <nav class="menu">
+                <a href="index.html" class="active">Home</a>
+                <a href="plan.html">Plan</a>
+                <a href="do.html">Do</a>
+            </nav>
+        </div>
+
+        <div class="header">
+            <h1>Site2 — Unified Plan/Do View</h1>
+            <p>Alternate navigation with 3 simple entries: Home · Plan · Do</p>
+        </div>
+
+        <div class="workflow-section">
+            <!-- Scenarios Card -->
+            <div class="workflow-row">
+                <a href="scenarios.html" class="workflow-card card-business">
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                        <span class="card-badge">Scenarios</span>
+                    </div>
+                    <h3 class="card-title">Scenarios split by B / U / T</h3>
+                    <p class="card-description">Explore business (B_S), UX (U_S), and technical (T_S) scenarios side-by-side.</p>
+                    <div class="split-columns">
+                        <div class="split-col">
+                            <h4>💼 B</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">B_S001 Cold Call</span>
+                                <span class="component-tag">B_S002 Temp Staffing</span>
+                                <span class="component-tag">B_S003 Recurring</span>
+                            </div>
+                        </div>
+                        <div class="split-col">
+                            <h4>🎨 U</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">U_S001 Sales Dashboard</span>
+                                <span class="component-tag">U_S002 Temp UX</span>
+                                <span class="component-tag">U_Platform Design</span>
+                            </div>
+                        </div>
+                        <div class="split-col">
+                            <h4>⚙️ T</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">T_S001 CRM Logging</span>
+                                <span class="component-tag">T_S004 Auth Flow</span>
+                                <span class="component-tag">T_F001-015 Foundational</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-stats">
+                        <span class="card-count">Parallel B · U · T views</span>
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                <div class="workflow-content">
+                    <div class="content-title">Scenarios</div>
+                    <div class="content-description">Complete workflows showing how business goals map to UX and technical execution, kept in sync.</div>
+                    <ul class="content-features">
+                        <li>Scenario inheritance and alignment</li>
+                        <li>Clickable examples and specs</li>
+                        <li>Direct links to learning path</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Actors Card -->
+            <div class="workflow-row">
+                <a href="actors.html" class="workflow-card card-ux">
+                    <div class="card-header">
+                        <div class="card-icon">👥</div>
+                        <span class="card-badge">Actors</span>
+                    </div>
+                    <h3 class="card-title">Actors split by B / U / T</h3>
+                    <p class="card-description">Showcase all human, interface, and system actors from the healthcare example.</p>
+                    <div class="split-columns">
+                        <div class="split-col">
+                            <h4>💼 B</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">Healthcare Organisation</span>
+                                <span class="component-tag">Healthcare Professional</span>
+                                <span class="component-tag">Sales Team</span>
+                            </div>
+                        </div>
+                        <div class="split-col">
+                            <h4>🎨 U</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">Mobile App Interface</span>
+                                <span class="component-tag">Sales Dashboard</span>
+                            </div>
+                        </div>
+                        <div class="split-col">
+                            <h4>⚙️ T</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">CRM System</span>
+                                <span class="component-tag">Matching Engine</span>
+                                <span class="component-tag">Auth · DB · Email</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-stats">
+                        <span class="card-count">From healthcare-recruitment example</span>
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                <div class="workflow-content">
+                    <div class="content-title">Actors</div>
+                    <div class="content-description">Business actors, UX interfaces, and technical systems collaborating across scenarios.</div>
+                    <ul class="content-features">
+                        <li>Human, Interface, and System roles</li>
+                        <li>Clear capabilities and responsibilities</li>
+                        <li>Traceability into scenarios</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Components Card -->
+            <div class="workflow-row">
+                <a href="components.html" class="workflow-card card-technical">
+                    <div class="card-header">
+                        <div class="card-icon">🧩</div>
+                        <span class="card-badge">Components</span>
+                    </div>
+                    <h3 class="card-title">Components split by B / U / T</h3>
+                    <p class="card-description">Browse the building blocks: user stories, UI, features, and tech components.</p>
+                    <div class="split-columns">
+                        <div class="split-col">
+                            <h4>💼 B</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">User Stories (US001..)</span>
+                                <span class="component-tag">Use Cases (UC001..)</span>
+                            </div>
+                        </div>
+                        <div class="split-col">
+                            <h4>🎨 U</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">UI Flows (UX001..)</span>
+                                <span class="component-tag">UI Components (C001..)</span>
+                                <span class="component-tag">Mockups (M001..)</span>
+                            </div>
+                        </div>
+                        <div class="split-col">
+                            <h4>⚙️ T</h4>
+                            <div class="component-tags">
+                                <span class="component-tag">Features (F001..)</span>
+                                <span class="component-tag">Tech Components (TC001..)</span>
+                                <span class="component-tag">Tests (T001..)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-stats">
+                        <span class="card-count">Unified component registry</span>
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                <div class="workflow-content">
+                    <div class="content-title">Components</div>
+                    <div class="content-description">Everything is a component, linked across domains and scenarios for full traceability.</div>
+                    <ul class="content-features">
+                        <li>Consistent naming and IDs</li>
+                        <li>Cross-linked relationships</li>
+                        <li>Lightweight docs, GitHub-first</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site2 - Do</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--color-text-primary); background: var(--color-bg-secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .topbar a.learn-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .menu { display: flex; gap: 12px; }
+        .menu a { text-decoration: none; color: var(--color-text-secondary); padding: 8px 12px; border-radius: 8px; background: var(--color-bg-primary); border: 1px solid var(--color-border-light); }
+        .menu a.active { color: var(--color-primary); border-color: var(--color-primary); background: #eff6ff; font-weight: 600; }
+        .header { text-align: center; margin-bottom: 24px; padding: 24px 0 8px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card { background: var(--color-bg-primary); border: 1px solid var(--color-border); border-radius: 12px; padding: 20px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+        .list { list-style: none; padding-left: 0; margin-top: 8px; }
+        .list li { padding: 6px 0; color: var(--color-text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a class="learn-link" href="../integration/index.html">↗ Learn the system we USE</a>
+            <nav class="menu">
+                <a href="index.html">Home</a>
+                <a href="plan.html">Plan</a>
+                <a href="do.html" class="active">Do</a>
+            </nav>
+        </div>
+
+        <div class="header">
+            <h1>Do</h1>
+            <p>Execute scenarios and components, link out to examples and dashboards.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Examples</h3>
+                <ul class="list">
+                    <li><a href="../integration/examples/healthcare-recruitment.html">Healthcare Recruitment Example</a></li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Dashboards</h3>
+                <ul class="list">
+                    <li><a href="../dashboard/index.html">Project Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Registries</h3>
+                <ul class="list">
+                    <li><a href="../registry/index.html">Component Registry</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+

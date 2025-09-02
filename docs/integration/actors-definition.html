@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actor Definitions - Bemeda Platform</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Actor Type Sections */
+        .actor-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--color-border-light);
+        }
+        
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .human-icon { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+        .system-icon { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .section-subtitle {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* Actor Cards */
+        .actors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        
+        .actor-card {
+            background: var(--color-bg-tertiary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--color-border-light);
+            transition: all 0.2s ease;
+        }
+        
+        .actor-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border-color: var(--color-primary);
+        }
+        
+        .actor-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .actor-id {
+            background: var(--color-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        .actor-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            line-height: 1.3;
+        }
+        
+        .actor-description {
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .actor-details {
+            border-top: 1px solid var(--color-border-light);
+            padding-top: 16px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-text-primary);
+            min-width: 80px;
+        }
+        
+        .detail-value {
+            color: var(--color-text-secondary);
+            flex: 1;
+        }
+        
+        .steps-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        
+        .step-tag {
+            background: var(--color-accent);
+            color: var(--color-primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Visual Actor Map */
+        .actor-map {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .map-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 24px;
+        }
+        
+        /* Mermaid diagram container */
+        .mermaid {
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">
+            ← Back to Home
+        </a>
+        
+        <div class="header">
+            <h1>🎭 Actor Definitions</h1>
+            <p>All actors in the Bemeda Platform scenarios - both human and system actors</p>
+        </div>
+        
+        <!-- Visual Actor Map -->
+        <div class="actor-map">
+            <h2 class="map-title">Actor Interaction Map</h2>
+            <div class="mermaid">
+graph TB
+    subgraph "Human Actors"
+        A1[A1: Healthcare Organisation]
+        A2[A2: Sales Team]
+        A7[A7: JobSeeker]
+    end
+    
+    subgraph "System Actors"
+        A3[A3: Authentication System]
+        A4[A4: Database]
+        A5[A5: Desktop User]
+        A6[A6: Accessibility Tool]
+    end
+    
+    A2 -->|S1: Initiates Call| A1
+    A1 -->|S2: Discusses Needs| A2
+    A1 -->|S3: Posts Job| A4
+    
+    A7 -->|S7: Creates Profile| A3
+    A7 -->|S8: Receives Notification| A4
+    A7 -->|S9: Applies for Job| A4
+    
+    A5 -->|Renders UI| A1
+    A5 -->|Renders UI| A2
+    A5 -->|Renders UI| A7
+    
+    A6 -->|Validates| A5
+    A3 -->|Authenticates| A1
+    A3 -->|Authenticates| A2
+    A3 -->|Authenticates| A7
+    
+    style A1 fill:#ffe0b2,stroke:#e65100,stroke-width:2px
+    style A2 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style A7 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style A3 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style A4 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style A5 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style A6 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+            <script>
+                mermaid.initialize({ startOnLoad: true, theme: 'default' });
+            </script>
+        </div>
+        
+        <!-- Human Actors Section -->
+        <div class="actor-section">
+            <div class="section-header">
+                <div class="section-icon human-icon">👥</div>
+                <div>
+                    <h2 class="section-title">Human Actors</h2>
+                    <p class="section-subtitle">Real people who interact with the platform to achieve business goals</p>
+                </div>
+            </div>
+            
+            <div class="actors-grid">
+                <!-- A1: Healthcare Organisation -->
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <span class="actor-id">A1</span>
+                        <h3 class="actor-name">Healthcare Organisation</h3>
+                    </div>
+                    <p class="actor-description">
+                        Healthcare facilities (hospitals, clinics, care homes) seeking qualified healthcare professionals for permanent or temporary positions.
+                    </p>
+                    <div class="actor-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Primary Steps:</span>
+                            <span class="detail-value">
+                                <div class="steps-list">
+                                    <span class="step-tag">S2</span>
+                                    <span class="step-tag">S3</span>
+                                    <span class="step-tag">S4</span>
+                                    <span class="step-tag">S5</span>
+                                    <span class="step-tag">S6</span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Goals:</span>
+                            <span class="detail-value">Find and hire qualified healthcare professionals quickly and efficiently</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Pain Points:</span>
+                            <span class="detail-value">Staff shortages, urgent needs, quality candidate matching</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- A2: Sales Team -->
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <span class="actor-id">A2</span>
+                        <h3 class="actor-name">Sales Team</h3>
+                    </div>
+                    <p class="actor-description">
+                        Bemeda's sales representatives who identify healthcare organisations with staffing needs and facilitate platform adoption.
+                    </p>
+                    <div class="actor-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Primary Steps:</span>
+                            <span class="detail-value">
+                                <div class="steps-list">
+                                    <span class="step-tag">S1</span>
+                                    <span class="step-tag">S13</span>
+                                    <span class="step-tag">S14</span>
+                                    <span class="step-tag">S15</span>
+                                    <span class="step-tag">S16</span>
+                                    <span class="step-tag">S17</span>
+                                    <span class="step-tag">S18</span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Goals:</span>
+                            <span class="detail-value">Convert leads into active platform users, maintain client relationships</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Tools:</span>
+                            <span class="detail-value">CRM system, call scripts, platform demos, success metrics</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- A7: JobSeeker -->
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <span class="actor-id">A7</span>
+                        <h3 class="actor-name">JobSeeker</h3>
+                    </div>
+                    <p class="actor-description">
+                        Healthcare professionals (nurses, doctors, specialists) looking for job opportunities that match their skills and preferences.
+                    </p>
+                    <div class="actor-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Primary Steps:</span>
+                            <span class="detail-value">
+                                <div class="steps-list">
+                                    <span class="step-tag">S7</span>
+                                    <span class="step-tag">S8</span>
+                                    <span class="step-tag">S9</span>
+                                    <span class="step-tag">S10</span>
+                                    <span class="step-tag">S11</span>
+                                    <span class="step-tag">S12</span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Goals:</span>
+                            <span class="detail-value">Find suitable job opportunities, streamlined application process</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Preferences:</span>
+                            <span class="detail-value">Location, shift patterns, specialization, salary expectations</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Actors Section -->
+        <div class="actor-section">
+            <div class="section-header">
+                <div class="section-icon system-icon">⚙️</div>
+                <div>
+                    <h2 class="section-title">System Actors</h2>
+                    <p class="section-subtitle">Technical components that participate in scenario execution</p>
+                </div>
+            </div>
+            
+            <div class="actors-grid">
+                <!-- A3: Authentication System -->
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <span class="actor-id" style="background: #388e3c;">A3</span>
+                        <h3 class="actor-name">Authentication System</h3>
+                    </div>
+                    <p class="actor-description">
+                        Core security component handling user authentication, authorization, and session management for all platform users.
+                    </p>
+                    <div class="actor-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Used in:</span>
+                            <span class="detail-value">
+                                <div class="steps-list">
+                                    <span class="step-tag">T_S1_API</span>
+                                    <span class="step-tag">T_S3_API</span>
+                                    <span class="step-tag">T_S3_TEST</span>
+                                    <span class="step-tag">T_S7_AUTH</span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Technology:</span>
+                            <span class="detail-value">Phoenix Auth, JWT tokens, dual user types (employer/job_seeker)</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Foundation:</span>
+                            <span class="detail-value">F1 - Shared across all scenarios</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- A4: Database -->
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <span class="actor-id" style="background: #388e3c;">A4</span>
+                        <h3 class="actor-name">Database</h3>
+                    </div>
+                    <p class="actor-description">
+                        PostgreSQL database storing all platform data including user profiles, job postings, applications, and system state.
+                    </p>
+                    <div class="actor-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Used in:</span>
+                            <span class="detail-value">
+                                <div class="steps-list">
+                                    <span class="step-tag">T_S2_DB</span>
+                                    <span class="step-tag">T_S3_DB</span>
+                                    <span class="step-tag">T_S7_DATA</span>
+                                    <span class="step-tag">T_S9_DB</span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Technology:</span>
+                            <span class="detail-value">PostgreSQL 14+, Ecto ORM, migrations, indexes</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Foundation:</span>
+                            <span class="detail-value">F2 - Core data persistence layer</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- A5: Desktop User -->
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <span class="actor-id" style="background: #388e3c;">A5</span>
+                        <h3 class="actor-name">Desktop User</h3>
+                    </div>
+                    <p class="actor-description">
+                        Browser environment representing desktop users interacting with the platform UI through standard web browsers.
+                    </p>
+                    <div class="actor-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Used in:</span>
+                            <span class="detail-value">
+                                <div class="steps-list">
+                                    <span class="step-tag">U_S1_WIRE</span>
+                                    <span class="step-tag">U_S2_WIRE</span>
+                                    <span class="step-tag">U_S3_WIRE</span>
+                                    <span class="step-tag">All _INTERACT</span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Requirements:</span>
+                            <span class="detail-value">Modern browsers (Chrome, Firefox, Safari, Edge), 1280px+ viewport</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">UX Focus:</span>
+                            <span class="detail-value">Full-featured interface, keyboard navigation, multi-column layouts</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- A6: Accessibility Tool -->
+                <div class="actor-card">
+                    <div class="actor-header">
+                        <span class="actor-id" style="background: #388e3c;">A6</span>
+                        <h3 class="actor-name">Accessibility Tool</h3>
+                    </div>
+                    <p class="actor-description">
+                        Automated and manual accessibility testing tools ensuring WCAG 2.1 AA compliance across all user interfaces.
+                    </p>
+                    <div class="actor-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Used in:</span>
+                            <span class="detail-value">
+                                <div class="steps-list">
+                                    <span class="step-tag">U_S2_ACCESS</span>
+                                    <span class="step-tag">U_S3_ACCESS</span>
+                                    <span class="step-tag">All UX validation</span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Tools:</span>
+                            <span class="detail-value">axe DevTools, WAVE, screen readers (NVDA, JAWS), keyboard testing</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Standards:</span>
+                            <span class="detail-value">WCAG 2.1 AA, ARIA best practices, semantic HTML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actor Usage Matrix -->
+        <div class="actor-section">
+            <h2 style="text-align: center; margin-bottom: 24px;">Actor Participation Matrix</h2>
+            <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 24px;">
+                Shows which actors are involved in each step of Scenario1
+            </p>
+            
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--color-bg-tertiary);">
+                        <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--color-border-medium);">Step</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid var(--color-border-medium);">Primary Actor</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid var(--color-border-medium);">UX Actors</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid var(--color-border-medium);">Tech Actors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid var(--color-border-light);">S1: Initiate cold call</td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #7b1fa2;">A2</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A5</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A3</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid var(--color-border-light);">S2: Discuss needs</td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id">A1</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A5</span> <span class="actor-id" style="background: #388e3c;">A6</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A4</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid var(--color-border-light);">S3: Post job</td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id">A1</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A5</span> <span class="actor-id" style="background: #388e3c;">A6</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A3</span> <span class="actor-id" style="background: #388e3c;">A4</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid var(--color-border-light);">S7: Create profile</td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #1976d2;">A7</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A5</span></td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--color-border-light);"><span class="actor-id" style="background: #388e3c;">A3</span> <span class="actor-id" style="background: #388e3c;">A4</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

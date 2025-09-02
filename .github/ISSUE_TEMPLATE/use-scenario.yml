@@ -1,0 +1,290 @@
+name: 🎭 USE Scenario (B_S/T_S/U_S)
+description: Create a new USE scenario with executable Given-When-Then steps and actor definitions
+title: "[USE_ID] USE Scenario Title"
+labels: ["use-scenario", "component", "needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎯 USE Scenario Definition Template
+        
+        Create executable USE (Unified Scenario Engineering) scenarios with clear actor interactions.
+        **Built on BDD foundation with business-friendly language.**
+        
+        USE scenarios use Given-When-Then format but focus on:
+        - **Actors**: Who is involved (Business, Technical, UX)
+        - **Scenarios**: What happens between actors  
+        - **Domains**: B_S (Business), T_S (Technical), U_S (UX)
+
+  - type: dropdown
+    id: scenario_domain
+    attributes:
+      label: "USE Scenario Domain *"
+      description: "Which USE domain does this scenario belong to?"
+      options:
+        - "Business Scenario (B_S) - Human actors achieving business value"
+        - "Technical Scenario (T_S) - System components interacting"  
+        - "UX Scenario (U_S) - User interface and experience interactions"
+        - "Technical Foundation (T_F) - Core infrastructure components"
+    validations:
+      required: true
+
+  - type: input
+    id: scenario_id
+    attributes:
+      label: "USE Scenario ID *"
+      description: "Follow USE naming convention"
+      placeholder: "B_S001_US001, T_S001_API001, U_S001_UX001, T_F001"
+    validations:
+      required: true
+
+  - type: input
+    id: scenario_title
+    attributes:
+      label: "Scenario Title *"
+      description: "Clear, action-oriented title describing what happens"
+      placeholder: "Organisation Receives Cold Call, Authentication System Setup, Mobile Navigation Flow"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: primary_actor
+    attributes:
+      label: "Primary Actor *"
+      description: "Who/what is the main actor in this scenario?"
+      options:
+        # Business Actors (Human)
+        - "🏥 Healthcare Organisation"
+        - "👩‍⚕️ Job Seeker"
+        - "📞 Sales Team"
+        - "👨‍💼 Platform Admin"
+        # Technical Actors (System)
+        - "🔐 Authentication System"
+        - "🗄️ Database"
+        - "📧 Email System"
+        - "🔗 API Gateway"
+        - "📱 Mobile App"
+        - "🌐 Web Platform"
+        # UX Actors (Interface)
+        - "💻 Desktop User"
+        - "📱 Mobile User"
+        - "♿ Accessibility Tools"
+        - "🎨 Design System"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scenario_location
+    attributes:
+      label: "Execution Location"
+      description: "Where does this scenario primarily execute?"
+      options:
+        - "Web Platform"
+        - "Mobile App"
+        - "API Layer"
+        - "Database"
+        - "External Systems"
+        - "User Interface"
+        - "Background Process"
+      default: 0
+
+  - type: textarea
+    id: executable_scenario
+    attributes:
+      label: "🧪 Executable USE Scenario *"
+      description: "Write your scenario using Given-When-Then format with clear actor interactions"
+      placeholder: |
+        Scenario: Organisation Receives Cold Call
+          Given a Healthcare Organisation exists as a qualified prospect
+          And the organisation is not currently using Bemeda services
+          When the Sales Team calls the Healthcare Organisation
+          And the Sales Team presents the platform benefits
+          Then the Healthcare Organisation should understand our value proposition
+          And the Healthcare Organisation should be interested in learning more
+          And a follow-up meeting should be scheduled
+          
+        Background:
+          Given the Bemeda platform is operational
+          And the CRM system contains prospect data
+      value: |
+        Scenario: [Your scenario title]
+          Given [initial conditions with actors]
+          When [actions happen between actors]
+          Then [expected outcomes for actors]
+    validations:
+      required: true
+
+  - type: textarea
+    id: actors_and_goals
+    attributes:
+      label: "🎭 Actors & Their Goals"
+      description: "Define all actors involved and what they want to achieve"
+      placeholder: |
+        ## Primary Actor: 🏥 Healthcare Organisation
+        - **Goal**: Find reliable healthcare staffing solutions
+        - **Motivation**: Reduce recruitment time and costs
+        - **Success Criteria**: Quality candidates provided quickly
+        
+        ## Secondary Actor: 📞 Sales Team  
+        - **Goal**: Convert prospect to customer
+        - **Motivation**: Meet sales targets
+        - **Success Criteria**: Meeting scheduled, interest demonstrated
+      value: |
+        ## Primary Actor: [Actor emoji and name]
+        - **Goal**: [What they want to achieve]
+        - **Motivation**: [Why they want it]
+        - **Success Criteria**: [How success is measured]
+        
+        ## Secondary Actors:
+        [List other actors involved]
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority"
+      description: "Implementation priority for this USE scenario"
+      options:
+        - "high"
+        - "medium" 
+        - "low"
+      default: 1
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: "Status"
+      description: "Current status of this USE scenario"
+      options:
+        - "planning"
+        - "in-progress"
+        - "review"
+        - "completed"
+        - "blocked"
+      default: 0
+
+  - type: input
+    id: sprint
+    attributes:
+      label: "Sprint/Iteration"
+      description: "Which sprint or iteration is this planned for?"
+      placeholder: "Sprint 1, Sprint 2, Backlog"
+
+  - type: textarea
+    id: parallel_scenarios
+    attributes:
+      label: "🔄 Parallel Scenarios"
+      description: "List scenarios that run in parallel with this one"
+      placeholder: |
+        ## Triggers These Scenarios:
+        - T_S001_AUTH001: Authentication flow setup
+        - U_S001_UX001: Cold call interface design
+        
+        ## Triggered By:
+        - B_S001_PREP001: Lead qualification process
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "✅ Acceptance Criteria"
+      description: "Specific criteria that must be met for this scenario to be considered complete"
+      placeholder: |
+        - [ ] All actors achieve their defined goals
+        - [ ] Scenario executes without errors
+        - [ ] Edge cases and error handling implemented
+        - [ ] Integration with parallel scenarios working
+        - [ ] Performance meets requirements
+        - [ ] Tests written and passing
+      value: |
+        - [ ] All actors achieve their defined goals
+        - [ ] Scenario executes without errors
+        - [ ] Edge cases and error handling implemented
+        - [ ] Integration with parallel scenarios working
+        - [ ] Tests written and passing
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: "🔗 Dependencies"
+      description: "Other scenarios or components this depends on"
+      placeholder: |
+        ## Must Have (Blockers):
+        - T_F001: Authentication System
+        - T_F002: Database Schema
+        
+        ## Nice to Have:
+        - U_S001: User interface ready
+
+  - type: textarea
+    id: tags_and_metadata
+    attributes:
+      label: "🏷️ Tags & Metadata"
+      description: "Tags for organization and discovery"
+      placeholder: |
+        **Tags**: business-critical, user-onboarding, sales-process, mobile-first
+        **Risk Level**: Low/Medium/High
+        **Complexity**: Simple/Medium/Complex
+        **Estimated Effort**: 1-3 days
+      value: |
+        **Tags**: 
+        **Risk Level**: 
+        **Complexity**: 
+        **Estimated Effort**:
+
+  - type: input
+    id: related_documentation
+    attributes:
+      label: "📚 Related Documentation"
+      description: "Links to related documentation, designs, or specifications"
+      placeholder: "https://3stones-io.github.io/bemeda_personal/scenarios/S001/US001.html"
+
+  - type: textarea
+    id: scenario_metadata_json
+    attributes:
+      label: "📋 USE Scenario Metadata (Auto-generated) *"
+      description: "This JSON will be automatically generated. Do not edit manually - our GitHub Actions will populate this."
+      value: |
+        ```json
+        {
+          "use_id": "",
+          "domain": "",
+          "title": "",
+          "primary_actor": "",
+          "location": "",
+          "priority": "",
+          "status": "",
+          "sprint": "",
+          "tags": [],
+          "executable_scenario": "",
+          "actors": [],
+          "parallel_scenarios": [],
+          "dependencies": [],
+          "acceptance_criteria": [],
+          "created_date": "",
+          "last_updated": "",
+          "implementation_notes": ""
+        }
+        ```
+      render: json
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: validation_checklist
+    attributes:
+      label: "🔍 Validation Checklist"
+      description: "Please confirm before submitting your USE scenario:"
+      options:
+        - label: "I have followed the USE naming convention (B_S001_US001, T_S001, etc.)"
+          required: true
+        - label: "I have clearly defined all actors and their goals"
+          required: true
+        - label: "My scenario uses proper Given-When-Then format"
+          required: true
+        - label: "I have selected the correct USE domain (B_S/T_S/U_S/T_F)"
+          required: true
+        - label: "I understand this will be automatically processed and deployed"
+          required: true
+        - label: "I have provided all required fields marked with *"
+          required: true

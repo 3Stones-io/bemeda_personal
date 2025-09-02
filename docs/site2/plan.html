@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site2 - Plan</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--color-text-primary); background: var(--color-bg-secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .topbar a.learn-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .menu { display: flex; gap: 12px; }
+        .menu a { text-decoration: none; color: var(--color-text-secondary); padding: 8px 12px; border-radius: 8px; background: var(--color-bg-primary); border: 1px solid var(--color-border-light); }
+        .menu a.active { color: var(--color-primary); border-color: var(--color-primary); background: #eff6ff; font-weight: 600; }
+        .header { text-align: center; margin-bottom: 24px; padding: 24px 0 8px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+        .section { background: var(--color-bg-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--color-border); margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: var(--color-bg-tertiary); border: 1px solid var(--color-border-light); border-radius: 10px; padding: 16px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-right: 6px; }
+        .b { background: var(--color-business); color: white; }
+        .u { background: var(--color-ux); color: white; }
+        .t { background: var(--color-tech); color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a class="learn-link" href="../integration/index.html">↗ Learn the system we USE</a>
+            <nav class="menu">
+                <a href="index.html">Home</a>
+                <a href="plan.html" class="active">Plan</a>
+                <a href="do.html">Do</a>
+            </nav>
+        </div>
+
+        <div class="header">
+            <h1>Plan</h1>
+            <p>Plan scenarios, actors, and components in B / U / T groupings.</p>
+        </div>
+
+        <section class="section">
+            <h2 style="margin-bottom: 12px;">Scenarios</h2>
+            <div class="grid">
+                <div class="card"><span class="badge b">B</span><h3>Business Scenarios</h3><p>B_S001, B_S002, B_S003</p></div>
+                <div class="card"><span class="badge u">U</span><h3>UX Scenarios</h3><p>U_S001, U_S002, U_Platform</p></div>
+                <div class="card"><span class="badge t">T</span><h3>Technical Scenarios</h3><p>T_S001, T_S004, T_F001-015</p></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 style="margin-bottom: 12px;">Actors</h2>
+            <div class="grid">
+                <div class="card"><span class="badge b">B</span><h3>Business Actors</h3><p>Healthcare Org, Professional, Sales Team</p></div>
+                <div class="card"><span class="badge u">U</span><h3>UX Actors</h3><p>Mobile App, Sales Dashboard</p></div>
+                <div class="card"><span class="badge t">T</span><h3>Technical Actors</h3><p>CRM, Matching Engine, Auth, DB, Email</p></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 style="margin-bottom: 12px;">Components</h2>
+            <div class="grid">
+                <div class="card"><span class="badge b">B</span><h3>Business Components</h3><p>User Stories (US..), Use Cases (UC..)</p></div>
+                <div class="card"><span class="badge u">U</span><h3>UX Components</h3><p>UI Flows (UX..), UI Components (C..), Mockups (M..)</p></div>
+                <div class="card"><span class="badge t">T</span><h3>Technical Components</h3><p>Features (F..), Tech Components (TC..), Tests (T..)</p></div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+
+

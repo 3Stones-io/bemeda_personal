@@ -1,14 +1,14 @@
 blank_issues_enabled: true
 contact_links:
-  - name: 📖 Documentation
-    url: https://spitexbemeda.github.io/Bemeda-Personal-Page/docs/
-    about: View the complete Bemeda Platform documentation
-  - name: 🐙 GitHub Integration Guide
-    url: https://spitexbemeda.github.io/Bemeda-Personal-Page/docs/github/
-    about: Learn about the GitHub integration and collaboration workflow
-  - name: 🔍 Component Registry
-    url: https://spitexbemeda.github.io/Bemeda-Personal-Page/docs/registry/
-    about: Search and discover platform components
-  - name: 📊 Unified View
-    url: https://spitexbemeda.github.io/Bemeda-Personal-Page/docs/unified-view/
-    about: View project progress and analytics across all domains
+  - name: 🎯 USE Learning Path
+    url: https://3stones-io.github.io/bemeda_personal/integration/
+    about: Complete learning guide for Unified Scenario Engineering (USE)
+  - name: 📊 LATCH Component Organization
+    url: https://3stones-io.github.io/bemeda_personal/unified-view/
+    about: Organize USE scenarios using Location, Alphabet, Time, Category, Hierarchy
+  - name: 📖 USE Documentation
+    url: https://3stones-io.github.io/bemeda_personal/
+    about: View the complete USE-enabled Bemeda Platform documentation
+  - name: 🔧 Technical Integration
+    url: https://3stones-io.github.io/bemeda_personal/integration/technical-integration/
+    about: Setup GitHub-first USE scenario automation and testing

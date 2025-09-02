@@ -1,89 +1,94 @@
-name: 🧩 Component Definition
-description: Define a new platform component (User Story, Technical Component, UI Component, etc.)
-title: "[COMPONENT] [ID] - [Title]"
-labels: ["component"]
+name: 🧩 USE Component Definition
+description: Define a new USE platform component with clear actor interactions and domain classification
+title: "[USE_ID] USE Component Title"
+labels: ["component", "use-component"]
 assignees: []
 
 body:
   - type: markdown
     attributes:
       value: |
-        ## 📋 Component Definition Template
+        ## 📋 USE Component Definition Template
         
-        This template ensures your component is properly indexed and managed by our automated systems.
-        **All fields marked with * are required for proper indexing.**
+        **USE (Unified Scenario Engineering)** extends BDD with business-friendly language.
+        This template ensures your USE component is properly indexed and managed.
+        **All fields marked with * are required for automated processing.**
+        
+        💡 **USE vs BDD**: We use USE terminology (Scenarios, Actors, Domains) but implement with proven BDD tools.
 
   - type: input
     id: component_id
     attributes:
-      label: "Component ID *"
-      description: "Unique identifier following our naming convention"
-      placeholder: "US001, TC001, UI001, F001, etc."
+      label: "USE Component ID *"
+      description: "Unique identifier following USE naming convention"
+      placeholder: "B_S001_US001, T_S001_API001, U_S001_UX001, T_F001"
     validations:
       required: true
 
   - type: dropdown
     id: component_type
     attributes:
-      label: "Component Type *"
-      description: "Select the type of component you're creating"
+      label: "USE Component Type *"
+      description: "Select the USE component type"
       options:
-        - user-story
-        - technical-component  
-        - ui-component
-        - feature
-        - test-case
-        - use-case
-        - api-endpoint
-        - database-schema
+        - "Business User Story (B_S_US)"
+        - "Technical API Component (T_S_API)"
+        - "UX Interface Component (U_S_UX)"
+        - "Technical Foundation (T_F)"
+        - "Business Process (B_S)"
+        - "Technical Service (T_S)"
+        - "UX Design Pattern (U_S)"
+        - "Testing Scenario (TEST)"
     validations:
       required: true
 
   - type: dropdown
     id: domain
     attributes:
-      label: "Domain *"
-      description: "Which domain does this component belong to?"
+      label: "USE Domain *"
+      description: "Which USE domain does this component belong to?"
       options:
-        - scenarios
-        - technical
-        - ux-ui
-        - testing
-        - platform-infrastructure
+        - "Business (B_S) - Human actor scenarios"
+        - "Technical (T_S) - System component interactions"
+        - "UX (U_S) - User interface and experience"
+        - "Foundation (T_F) - Core infrastructure"
+        - "Testing (TEST) - Quality assurance scenarios"
     validations:
       required: true
 
   - type: dropdown
     id: participant
     attributes:
-      label: "Primary Participant"
-      description: "Who is the main actor for this component?"
+      label: "Primary Actor"
+      description: "Who/what is the main USE actor for this component?"
       options:
-        - Organisation
-        - JobSeeker
-        - Sales Team
-        - System
-        - Admin
-        - Developer
-        - External Service
+        - "🏥 Healthcare Organisation"
+        - "👩‍⚕️ Job Seeker"
+        - "📞 Sales Team"
+        - "🔐 Authentication System"
+        - "🗄️ Database"
+        - "📧 Email System"
+        - "💻 Desktop User"
+        - "📱 Mobile User"
+        - "🎨 Design System"
     validations:
       required: false
 
   - type: input
     id: title
     attributes:
-      label: "Component Title *"
-      description: "Clear, descriptive title for the component"
-      placeholder: "Organisation Receives Cold Call"
+      label: "USE Component Title *"
+      description: "Clear, action-oriented title describing actor interaction"
+      placeholder: "Organisation Receives Cold Call, Authentication System Setup, Mobile Navigation Flow"
     validations:
       required: true
 
   - type: textarea
     id: description
     attributes:
-      label: "Description *"
-      description: "Brief description of what this component does"
-      placeholder: "Organisation receives cold call from Bemeda sales representative and discusses initial staffing needs..."
+      label: "USE Component Description *"
+      description: "Brief description focusing on actor interactions and value delivered"
+      placeholder: "Healthcare Organisation receives initial contact from Bemeda sales team, leading to staffing needs discussion and potential platform onboarding..."
     validations:
       required: true
 
@@ -114,25 +119,29 @@ body:
   - type: textarea
     id: acceptance_criteria
     attributes:
-      label: "Acceptance Criteria"
-      description: "List the criteria that must be met for this component to be considered complete"
+      label: "USE Acceptance Criteria"
+      description: "Criteria focusing on actor goal achievement and scenario success"
       placeholder: |
-        - [ ] Component implemented according to specifications
-        - [ ] Unit tests written and passing
-        - [ ] Documentation updated
-        - [ ] Peer review completed
+        - [ ] All actors achieve their defined goals
+        - [ ] Scenario executes successfully end-to-end
+        - [ ] Error handling and edge cases implemented
+        - [ ] Integration with parallel scenarios working
+        - [ ] USE scenario tests written and passing
+        - [ ] Documentation updated with actor interactions
       value: |
-        - [ ] Component implemented according to specifications
-        - [ ] Unit tests written and passing
-        - [ ] Documentation updated
-        - [ ] Peer review completed
+        - [ ] All actors achieve their defined goals
+        - [ ] Scenario executes successfully end-to-end
+        - [ ] Error handling and edge cases implemented
+        - [ ] Integration with parallel scenarios working
+        - [ ] USE scenario tests written and passing
+        - [ ] Documentation updated with actor interactions
 
   - type: textarea
     id: related_components
     attributes:
-      label: "Related Components"
-      description: "List any components this depends on or relates to"
-      placeholder: "US001, TC002, UI003"
+      label: "Related USE Components"
+      description: "List USE components this depends on or triggers"
+      placeholder: "B_S001_US001, T_S001_AUTH001, U_S001_UX001"
 
   - type: input
     id: figma_url
@@ -151,25 +160,30 @@ body:
   - type: textarea
     id: metadata_json
     attributes:
-      label: "Component Metadata (Auto-generated) *"
-      description: "This JSON will be automatically generated based on your inputs above. Do not edit manually."
+      label: "USE Component Metadata (Auto-generated) *"
+      description: "This JSON will be automatically generated by GitHub Actions. Do not edit manually."
       value: |
         ```json
         {
-          "id": "",
-          "type": "",
+          "use_id": "",
+          "component_type": "",
           "title": "",
           "description": "",
-          "domain": "",
-          "participant": "",
+          "use_domain": "",
+          "primary_actor": "",
           "priority": "",
           "status": "",
           "related_components": [],
+          "parallel_scenarios": [],
+          "actor_goals": [],
           "urls": {
             "figma": "",
             "spec": ""
           },
-          "acceptance_criteria": []
+          "acceptance_criteria": [],
+          "tags": [],
+          "created_date": "",
+          "last_updated": ""
         }
         ```
       render: json
@@ -182,11 +196,13 @@ body:
       label: "Validation Checklist"
       description: "Please confirm the following before submitting:"
       options:
-        - label: "I have followed the component naming convention (US001, TC001, etc.)"
+        - label: "I have followed the USE naming convention (B_S001_US001, T_S001, etc.)"
           required: true
-        - label: "I have selected the correct component type and domain"
+        - label: "I have selected the correct USE component type and domain"
           required: true
-        - label: "I understand this will be automatically indexed and deployed"
+        - label: "I have clearly identified the primary actor and their goals"
+          required: true
+        - label: "I understand this will be automatically processed by USE workflows"
           required: true
         - label: "I have provided all required information marked with *"
           required: true

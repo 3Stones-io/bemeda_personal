@@ -163,8 +163,8 @@ class RegistryTable {
 
     getTypeFromId(componentId) {
         // Hybrid structure type mapping
-        if (componentId === 'B_S001') return 'Epic';
-        if (componentId.startsWith('B_S001_US')) return 'User Story';
+        if (componentId.match(/^S[0-9]+$/)) return 'Step';
+        if (componentId.match(/^US[0-9]+$/)) return 'User Story';
         if (componentId.endsWith('_PLATFORM')) return 'Platform Epic';
         
         // Legacy type mapping for backward compatibility
@@ -192,7 +192,7 @@ class RegistryTable {
     getMockComponents() {
         return [
             {
-                id: 1, number: 1, componentId: 'B_S001',
+                id: 1, number: 1, componentId: 'S1',
                 title: 'Cold Call to Candidate Placement',
                 description: 'Complete recruitment workflow from initial sales contact through candidate placement',
                 status: 'in-progress', domain: 'business', type: 'Scenario',

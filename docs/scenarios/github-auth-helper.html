@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Authentication Helper</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            color: var(--color-text-primary); 
+            background: var(--color-bg-secondary); 
+            line-height: 1.6;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .auth-card {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--color-primary);
+        }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .warning { border-left-color: #ffc107; background: #fff3cd; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .input-group {
+            margin: 16px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: 'Monaco', monospace;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 4px 8px 4px 0;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn.secondary { background: #6c757d; }
+        .btn.success { background: #28a745; }
+        .btn.danger { background: #dc3545; }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-ok { background: #28a745; }
+        .status-warning { background: #ffc107; }
+        .status-error { background: #dc3545; }
+    </style>
+    <script src="../assets/js/github-api-service.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 GitHub Authentication Helper</h1>
+        <p>Set up GitHub API access for dynamic content loading in step pages.</p>
+        
+        <!-- Status Card -->
+        <div class="auth-card" id="statusCard">
+            <h2>📊 Current Status</h2>
+            <div id="statusContent">
+                <p>🔄 Checking GitHub API status...</p>
+            </div>
+        </div>
+        
+        <!-- Authentication Options -->
+        <div class="auth-card">
+            <h2>🚀 Quick Setup Options</h2>
+            
+            <h3>Option 1: No Authentication (Recommended for Testing)</h3>
+            <p>GitHub allows 60 requests per hour without authentication. This is perfect for testing the dynamic content loading.</p>
+            <button class="btn" onclick="usePublicAccess()">✅ Use Public Access (No Token Required)</button>
+            
+            <h3>Option 2: Personal Access Token (For Full Features)</h3>
+            <p>Create a GitHub Personal Access Token for higher rate limits and private repository access.</p>
+            
+            <div class="input-group">
+                <label for="tokenInput">GitHub Personal Access Token:</label>
+                <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                <small style="color: var(--color-text-secondary);">
+                    <a href="https://github.com/settings/tokens/new?scopes=repo&description=Bemeda%20Platform%20Documentation" target="_blank">
+                        📝 Create new token on GitHub
+                    </a> (select 'repo' scope)
+                </small>
+            </div>
+            <button class="btn" onclick="setToken()">🔑 Set Token</button>
+            <button class="btn secondary" onclick="testToken()">🧪 Test Token</button>
+        </div>
+        
+        <!-- Rate Limit Info -->
+        <div class="auth-card" id="rateLimitCard">
+            <h2>📈 API Rate Limit Status</h2>
+            <div id="rateLimitContent">
+                <p>Loading rate limit information...</p>
+            </div>
+        </div>
+        
+        <!-- Test Section -->
+        <div class="auth-card">
+            <h2>🧪 Test Dynamic Loading</h2>
+            <p>Test the GitHub API integration with our existing step issues:</p>
+            <div style="margin: 16px 0;">
+                <button class="btn" onclick="testStepData('S1')">Test S1 (Issue #371)</button>
+                <button class="btn secondary" onclick="clearToken()">🗑️ Clear Token</button>
+            </div>
+            <div id="testResults"></div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="auth-card">
+            <h2>📖 How It Works</h2>
+            <ol>
+                <li><strong>Public Access:</strong> Works immediately, 60 requests/hour limit</li>
+                <li><strong>Token Access:</strong> 5000 requests/hour, access to private repos</li>
+                <li><strong>Dynamic Loading:</strong> Step pages automatically load GitHub issue content</li>
+                <li><strong>Auto-Refresh:</strong> Content updates every minute automatically</li>
+                <li><strong>Real-time Sync:</strong> Comments and issue updates appear live</li>
+            </ol>
+            
+            <h3>🔗 Step Page Links</h3>
+            <div style="margin: 12px 0;">
+                <a href="steps/S1.html" class="btn">📄 S1 Step Page</a>
+                <a href="steps/S5.html" class="btn">📄 S5 Step Page</a>
+                <a href="steps/S9.html" class="btn">📄 S9 Step Page</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authStatus = null;
+
+        async function initializeAuthHelper() {
+            await updateStatus();
+            await updateRateLimit();
+        }
+
+        async function updateStatus() {
+            const statusCard = document.getElementById('statusCard');
+            const statusContent = document.getElementById('statusContent');
+            
+            try {
+                authStatus = await window.githubAPI.initialize();
+                
+                if (authStatus.authenticated) {
+                    statusCard.className = 'auth-card success';
+                    statusContent.innerHTML = `
+                        <p><span class="status-indicator status-ok"></span><strong>✅ Authenticated</strong></p>
+                        <p>Connected as: <strong>${authStatus.user.login}</strong></p>
+                        <p>API access: <strong>5000 requests/hour</strong></p>
+                    `;
+                } else if (authStatus.rateLimited) {
+                    statusCard.className = 'auth-card warning';
+                    statusContent.innerHTML = `
+                        <p><span class="status-indicator status-warning"></span><strong>⚠️ Public Access</strong></p>
+                        <p>Rate limit: <strong>60 requests/hour</strong></p>
+                        <p>Status: <strong>Working for testing</strong></p>
+                    `;
+                } else {
+                    statusCard.className = 'auth-card error';
+                    statusContent.innerHTML = `
+                        <p><span class="status-indicator status-error"></span><strong>❌ Error</strong></p>
+                        <p>Error: ${authStatus.error || 'Unknown error'}</p>
+                    `;
+                }
+            } catch (error) {
+                statusCard.className = 'auth-card error';
+                statusContent.innerHTML = `
+                    <p><span class="status-indicator status-error"></span><strong>❌ Failed to initialize</strong></p>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        async function updateRateLimit() {
+            const rateLimitContent = document.getElementById('rateLimitContent');
+            
+            try {
+                const rateLimit = await window.githubAPI.getRateLimit();
+                
+                if (rateLimit) {
+                    const remaining = rateLimit.rate.remaining;
+                    const total = rateLimit.rate.limit;
+                    const resetTime = new Date(rateLimit.rate.reset * 1000).toLocaleTimeString();
+                    const percentage = Math.round((remaining / total) * 100);
+                    
+                    rateLimitContent.innerHTML = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 12px; background: var(--color-bg-tertiary); border-radius: 6px;">
+                                <div style="font-size: 1.5em; font-weight: bold; color: var(--color-primary);">${remaining}</div>
+                                <div style="font-size: 0.8em; color: var(--color-text-secondary);">Remaining</div>
+                            </div>
+                            <div style="text-align: center; padding: 12px; background: var(--color-bg-tertiary); border-radius: 6px;">
+                                <div style="font-size: 1.5em; font-weight: bold; color: var(--color-primary);">${total}</div>
+                                <div style="font-size: 0.8em; color: var(--color-text-secondary);">Total/Hour</div>
+                            </div>
+                            <div style="text-align: center; padding: 12px; background: var(--color-bg-tertiary); border-radius: 6px;">
+                                <div style="font-size: 1.5em; font-weight: bold; color: var(--color-primary);">${percentage}%</div>
+                                <div style="font-size: 0.8em; color: var(--color-text-secondary);">Available</div>
+                            </div>
+                            <div style="text-align: center; padding: 12px; background: var(--color-bg-tertiary); border-radius: 6px;">
+                                <div style="font-size: 1em; font-weight: bold; color: var(--color-primary);">${resetTime}</div>
+                                <div style="font-size: 0.8em; color: var(--color-text-secondary);">Reset Time</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    rateLimitContent.innerHTML = '<p>Unable to fetch rate limit information.</p>';
+                }
+            } catch (error) {
+                rateLimitContent.innerHTML = `<p>Error fetching rate limit: ${error.message}</p>`;
+            }
+        }
+
+        async function usePublicAccess() {
+            window.githubAPI.clearAuth();
+            await updateStatus();
+            await updateRateLimit();
+            alert('✅ Public access enabled! You can now test dynamic content loading with 60 requests/hour.');
+        }
+
+        async function setToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            
+            if (!token) {
+                alert('Please enter a GitHub token');
+                return;
+            }
+            
+            if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+                alert('Invalid token format. GitHub tokens start with "ghp_" or "github_pat_"');
+                return;
+            }
+            
+            window.githubAPI.setToken(token);
+            await updateStatus();
+            await updateRateLimit();
+            
+            if (authStatus && authStatus.authenticated) {
+                alert(`✅ Token set successfully! Connected as ${authStatus.user.login}`);
+                document.getElementById('tokenInput').value = '';
+            }
+        }
+
+        async function testToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            
+            if (!token) {
+                alert('Please enter a token to test');
+                return;
+            }
+            
+            // Temporarily test the token
+            const originalToken = window.githubAPI.token;
+            window.githubAPI.setToken(token);
+            
+            try {
+                const result = await window.githubAPI.initialize();
+                if (result.authenticated) {
+                    alert(`✅ Token is valid! Connected as ${result.user.login}`);
+                } else {
+                    alert('❌ Token is invalid or expired');
+                }
+            } catch (error) {
+                alert(`❌ Token test failed: ${error.message}`);
+            }
+            
+            // Restore original token
+            if (originalToken) {
+                window.githubAPI.setToken(originalToken);
+            } else {
+                window.githubAPI.clearAuth();
+            }
+        }
+
+        function clearToken() {
+            window.githubAPI.clearAuth();
+            updateStatus();
+            updateRateLimit();
+            alert('🗑️ Token cleared. Using public access.');
+        }
+
+        async function testStepData(stepId) {
+            const testResults = document.getElementById('testResults');
+            testResults.innerHTML = '<p>🔄 Testing step data loading...</p>';
+            
+            try {
+                const data = await window.githubAPI.getStepData(stepId);
+                
+                if (data.error) {
+                    testResults.innerHTML = `
+                        <div class="code-block">
+                        ❌ Error: ${data.error}
+                        Message: ${data.message}
+                        </div>
+                    `;
+                } else {
+                    testResults.innerHTML = `
+                        <div class="code-block">
+                        ✅ Success! Loaded data for ${stepId}
+                        
+                        Issue: ${data.issue.title}
+                        Number: #${data.issue.number}
+                        State: ${data.issue.state}
+                        Comments: ${data.comments.length}
+                        Cross-references: ${data.crossReferences.length}
+                        Last updated: ${data.lastUpdated}
+                        </div>
+                        <p style="margin-top: 12px;">
+                        <a href="steps/${stepId}.html" class="btn">📄 View ${stepId} Step Page</a>
+                        </p>
+                    `;
+                }
+            } catch (error) {
+                testResults.innerHTML = `
+                    <div class="code-block">
+                    ❌ Test failed: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeAuthHelper);
+    </script>
+</body>
+</html>

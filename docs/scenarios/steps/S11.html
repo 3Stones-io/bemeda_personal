@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S11: Review Job Details - Step Details</title>
+    <link rel="stylesheet" href="../../assets/css/color-system.css">
+    <script src="../../assets/js/github-api-service.js"></script>
+    <script src="../../assets/js/dynamic-step-loader.js"></script>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            color: var(--color-text-primary); 
+            background: var(--color-bg-secondary); 
+            line-height: 1.6;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .back-link { 
+            display: inline-flex; align-items: center; gap: 8px; 
+            color: #0066cc; text-decoration: none; margin-bottom: 32px; font-weight: 500; 
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        .step-header {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid #1976d2; /* JobSeeker blue */
+        }
+        
+        .step-badge {
+            background: #1976d2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        .step-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .step-meta {
+            display: flex;
+            gap: 16px;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-text-primary);
+        }
+        
+        .github-integration {
+            background: linear-gradient(135deg, #0969da, #1f2937);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .github-content {
+            font-style: italic;
+            color: #e2e8f0;
+        }
+        
+        .component-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .component-link {
+            background: var(--color-bg-tertiary);
+            padding: 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .component-link:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        
+        .component-link.ux { border-left: 4px solid var(--color-ux); }
+        .component-link.tech { border-left: 4px solid var(--color-tech); }
+        
+        .component-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .component-description {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .job-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .detail-section {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .detail-section h4 {
+            color: #374151;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .detail-label {
+            color: #6b7280;
+        }
+        
+        .detail-value {
+            color: #111827;
+            font-weight: 500;
+        }
+        
+        .match-indicator {
+            display: inline-block;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Scenarios</a>
+        
+        <div class="step-header">
+            <div class="step-badge">S11</div>
+            <h1 class="step-title">Review Job Details</h1>
+            <div class="step-meta">
+                <span>👤 Actor: A2 - JobSeeker</span>
+                <span>📝 Type: Information Review</span>
+                <span>⏱️ Duration: ~10 minutes</span>
+            </div>
+        </div>
+        
+        <!-- GitHub Integration Section -->
+        <div class="github-integration">
+            <h2 style="margin-top: 0;">🔗 GitHub Issue Integration</h2>
+            <div class="github-content">
+                <p>📝 <strong>Loading GitHub issue content and comments...</strong></p>
+                <p>This section will dynamically load:</p>
+                <ul>
+                    <li>Job detail page specifications</li>
+                    <li>Information architecture and layout</li>
+                    <li>Match highlighting algorithms</li>
+                    <li>User interaction tracking requirements</li>
+                </ul>
+                <p><em>Implementation: GitHub API integration to fetch issue #[ID] content dynamically</em></p>
+            </div>
+        </div>
+        
+        <!-- Step Description -->
+        <div class="content-section">
+            <h2 class="section-title">📋 Step Description</h2>
+            <p>JobSeeker clicks through from the notification to review the complete job posting details, evaluating fit based on requirements, compensation, location, and other factors.</p>
+            
+            <h3>Key Activities:</h3>
+            <ul>
+                <li>Access full job posting from notification link</li>
+                <li>Review position requirements and qualifications</li>
+                <li>Examine compensation and benefits package</li>
+                <li>Check location and commute requirements</li>
+                <li>Understand schedule and shift expectations</li>
+                <li>Read about facility and team culture</li>
+                <li>Compare against personal preferences</li>
+            </ul>
+        </div>
+        
+        <!-- Job Details Sections -->
+        <div class="content-section">
+            <h2 class="section-title">📊 Job Details Display</h2>
+            <div class="job-details-grid">
+                <div class="detail-section">
+                    <h4>🏥 Position Overview</h4>
+                    <div class="detail-item">
+                        <span class="detail-label">Title:</span>
+                        <span class="detail-value">Registered Nurse - ICU</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Department:</span>
+                        <span class="detail-value">Critical Care</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Employment:</span>
+                        <span class="detail-value">Full-time</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Start Date:</span>
+                        <span class="detail-value">ASAP <span class="match-indicator">Matches</span></span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>💰 Compensation</h4>
+                    <div class="detail-item">
+                        <span class="detail-label">Base Rate:</span>
+                        <span class="detail-value">$38-45/hr <span class="match-indicator">In range</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Shift Diff:</span>
+                        <span class="detail-value">+15% nights</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Sign-on:</span>
+                        <span class="detail-value">$5,000</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Benefits:</span>
+                        <span class="detail-value">Full package</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>📍 Location & Schedule</h4>
+                    <div class="detail-item">
+                        <span class="detail-label">Facility:</span>
+                        <span class="detail-value">Memorial Hospital</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Distance:</span>
+                        <span class="detail-value">12 miles <span class="match-indicator">In range</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Schedule:</span>
+                        <span class="detail-value">3x12 nights</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Weekend:</span>
+                        <span class="detail-value">Every other</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>📋 Requirements</h4>
+                    <div class="detail-item">
+                        <span class="detail-label">License:</span>
+                        <span class="detail-value">RN - Active <span class="match-indicator">✓</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Experience:</span>
+                        <span class="detail-value">2+ years ICU <span class="match-indicator">✓</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Certs:</span>
+                        <span class="detail-value">BLS, ACLS <span class="match-indicator">✓</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Skills:</span>
+                        <span class="detail-value">Ventilator mgmt</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Components -->
+        <div class="content-section">
+            <h2 class="section-title">🔗 Related Components</h2>
+            <div class="component-links">
+                <a href="../../uxui/index.html#s11" class="component-link ux">
+                    <div class="component-title">🎨 UX Components</div>
+                    <div class="component-description">U34-U36: Job detail page, match highlighting, action buttons</div>
+                </a>
+                
+                <a href="../../technical/index.html#s11" class="component-link tech">
+                    <div class="component-title">⚙️ Technical Components</div>
+                    <div class="component-description">T34-T36: Job detail API, view tracking, comparison engine</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Acceptance Criteria -->
+        <div class="content-section">
+            <h2 class="section-title">✅ Acceptance Criteria</h2>
+            <ul>
+                <li>✅ Complete job details displayed clearly</li>
+                <li>✅ Match points highlighted visually</li>
+                <li>✅ All sections load without errors</li>
+                <li>✅ Mobile-responsive layout</li>
+                <li>🔲 Save job functionality working</li>
+                <li>🔲 Share job option available</li>
+                <li>🔲 Similar jobs suggested</li>
+                <li>🔲 View tracking recorded</li>
+            </ul>
+        </div>
+        
+        <!-- Implementation Notes -->
+        <div class="content-section">
+            <h2 class="section-title">🔧 Implementation Notes</h2>
+            <p><strong>UI/UX Considerations:</strong></p>
+            <ul>
+                <li>Progressive disclosure of detailed information</li>
+                <li>Visual indicators for profile matches</li>
+                <li>Sticky apply button for easy access</li>
+                <li>Comparison tool for multiple opportunities</li>
+            </ul>
+            
+            <p><strong>Analytics Tracking:</strong></p>
+            <ul>
+                <li>Time spent on job detail page</li>
+                <li>Sections viewed and interaction depth</li>
+                <li>Apply button clicks vs. abandonment</li>
+                <li>Save/share actions for engagement metrics</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

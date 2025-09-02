@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site2 - Scenarios 2</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--color-text-primary); background: var(--color-bg-secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .topbar a.learn-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .menu { display: flex; gap: 12px; }
+        .menu a { text-decoration: none; color: var(--color-text-secondary); padding: 8px 12px; border-radius: 8px; background: var(--color-bg-primary); border: 1px solid var(--color-border-light); }
+        .header { text-align: center; margin-bottom: 24px; padding: 24px 0 8px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+        .section { background: var(--color-bg-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--color-border); margin-bottom: 20px; }
+        .scenario-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; }
+        .grid-head, .grid-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; align-items: start; }
+        .grid-head div { font-weight: 700; color: var(--color-text-secondary); padding-bottom: 6px; border-bottom: 1px solid var(--color-border-light); }
+        .cell { padding: 6px 0; min-height: 24px; }
+        .cell a { color: var(--color-link); text-decoration: none; font-weight: 500; }
+        .cell a:hover { text-decoration: underline; }
+        .cell .id { font-weight: 700; color: var(--color-text-primary); display: inline-block; margin-right: 6px; }
+        .cell .title { color: var(--color-text-secondary); display: inline; }
+        .empty { }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a class="learn-link" href="../integration/index.html">↗ Learn the system we USE</a>
+            <nav class="menu">
+                <a href="index.html">Home</a>
+                <a href="plan.html">Plan</a>
+                <a href="do.html">Do</a>
+            </nav>
+        </div>
+
+        <div class="header">
+            <h1>Scenarios (Aligned B / U / T)</h1>
+            <p>Per-scenario rows align Business user stories with corresponding UX and Technical items.</p>
+        </div>
+
+        <!-- S1 Block -->
+        <section class="section" id="scenario-S001">
+            <div class="scenario-title">S1</div>
+            <div id="scenario-S001-content"></div>
+        </section>
+
+        <!-- Additional scenarios could be added similarly by ID if needed -->
+    </div>
+
+    <script>
+        (function(){
+            function createCell(content){
+                var div = document.createElement('div');
+                div.className = 'cell';
+                if (!content) { div.classList.add('empty'); return div; }
+                var a = document.createElement('a');
+                a.href = buildGithubUrl(content.componentId || content.id);
+                a.target = '_blank';
+                var id = document.createElement('span'); id.className = 'id'; id.textContent = content.displayId || content.id || '';
+                var title = document.createElement('span'); title.className = 'title'; title.textContent = content.title || '';
+                a.appendChild(id); a.appendChild(title);
+                div.appendChild(a);
+                return div;
+            }
+
+            function buildGithubUrl(componentId){
+                var q = 'is:issue label:component ' + (componentId || '');
+                return 'https://github.com/3Stones-io/bemeda_personal/issues?q=' + encodeURIComponent(q + ' in:title');
+            }
+
+            function chunkAlignedRows(bItems, uItems, tItems){
+                var rows = [];
+                var maxLen = Math.max(bItems.length, uItems.length, tItems.length);
+                for (var i=0; i<maxLen; i++){
+                    rows.push([
+                        bItems[i] || null,
+                        uItems[i] || null,
+                        tItems[i] || null
+                    ]);
+                }
+                return rows;
+            }
+
+            function appendRows(container, rows){
+                rows.forEach(function(row){
+                    var grid = document.createElement('div');
+                    grid.className = 'grid-row';
+                    grid.appendChild(createCell(row[0]));
+                    grid.appendChild(createCell(row[1]));
+                    grid.appendChild(createCell(row[2]));
+                    container.appendChild(grid);
+                });
+            }
+
+            function isS001(it){ return it && (it.scenario === 'S001'); }
+
+            Promise.all([
+                fetch('../registry/components.json').then(function(r){ return r.json(); }),
+                fetch('../../scenarios/S001/index.html').then(function(r){ return r.text(); })
+            ]).then(function(results){
+                var data = results[0];
+                var htmlText = results[1];
+
+                // Build map of USS steps by US id by parsing S001 page
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlText, 'text/html');
+                var stepMap = {}; // { 'US001': [ {id,title}, ... ] }
+                var actorAliasByUs = {}; // US001 -> A1, US002 -> A2, ...
+                var actorCounter = 1;
+                doc.querySelectorAll('.participant-section').forEach(function(section){
+                    var titleEl = section.querySelector('.participant-title');
+                    if (!titleEl) return;
+                    var m = titleEl.textContent.match(/\((B_S001_US\d{3})\)/);
+                    if (!m) return;
+                    var usId = m[1].split('_').slice(-1)[0]; // US001
+                    if (!actorAliasByUs[usId]) {
+                        actorAliasByUs[usId] = 'A' + (actorCounter++);
+                    }
+                    var steps = [];
+                    section.querySelectorAll('.process-step').forEach(function(step){
+                        var id = step.querySelector('.step-id');
+                        var txt = step.querySelector('.step-text');
+                        if (id && txt) {
+                            var sid = id.textContent.trim().split('_').slice(-1)[0]; // USS###
+                            steps.push({ id: sid, title: txt.textContent.trim() });
+                        }
+                    });
+                    stepMap[usId] = steps;
+                });
+
+                // Index registries by id for titles
+                function byId(obj){ var m={}; if (!obj) return m; Object.values(obj).forEach(function(x){ m[x.id]=x; }); return m; }
+                var uiFlows = byId(data.ui_flows);
+                var uiComponents = byId(data.ui_components);
+                var mockups = byId(data.mockups);
+                var features = byId(data.features);
+                var tests = byId(data.test_cases);
+
+                var container = document.getElementById('scenario-S001-content');
+
+                var stories = (data.user_stories ? Object.values(data.user_stories) : [])
+                    .filter(isS001)
+                    .sort(function(a,b){ return (a.id||'').localeCompare(b.id||''); });
+
+                stories.forEach(function(us){
+                    // Build B items from parsed USS steps
+                    var bItems = [];
+                    var steps = stepMap[us.id] || [];
+                    if (steps.length) {
+                        steps.forEach(function(s){
+                            var fullId = 'B_S001_' + us.id + '_' + s.id;
+                            var stepNum = (s.id.replace('USS','').replace(/^0+/, '')) || '0';
+                            var display = (actorAliasByUs[us.id] || us.id) + '_' + stepNum;
+                            bItems.push({ id: us.id + '_' + s.id, title: s.title, displayId: display, componentId: fullId });
+                        });
+                    } else {
+                        var fullId2 = 'B_S001_' + us.id;
+                        var display2 = (actorAliasByUs[us.id] || us.id);
+                        bItems.push({ id: us.id, title: us.title, displayId: display2, componentId: fullId2 });
+                    }
+
+                    // Build UX items from related
+                    var uItems = [];
+                    var rel = us.related || {};
+                    (rel.ui_flows || []).forEach(function(id){ if (uiFlows[id]) uItems.push({ id: id, title: uiFlows[id].title, componentId: id }); });
+                    (rel.ui_components || []).forEach(function(id){ if (uiComponents[id]) uItems.push({ id: id, title: uiComponents[id].title, componentId: id }); });
+                    (rel.mockups || []).forEach(function(id){ if (mockups[id]) uItems.push({ id: id, title: mockups[id].title, componentId: id }); });
+
+                    // Build Tech items from related
+                    var tItems = [];
+                    (rel.features || []).forEach(function(id){ if (features[id]) tItems.push({ id: id, title: features[id].title, componentId: id }); });
+                    (rel.test_cases || []).forEach(function(id){ if (tests[id]) tItems.push({ id: id, title: tests[id].title, componentId: id }); });
+
+                    // Render block for this US
+                    var title = document.createElement('div');
+                    title.className = 'scenario-title';
+                    var alias = actorAliasByUs[us.id] || us.id;
+                    title.textContent = alias + ': ' + us.title + (us.participant ? ' — ' + us.participant : '');
+                    container.appendChild(title);
+
+                    var head = document.createElement('div');
+                    head.className = 'grid-head';
+                    head.innerHTML = '<div>💼 Business (USS Steps)</div><div>🎨 UX</div><div>⚙️ Technical</div>';
+                    container.appendChild(head);
+
+                    var rowsHost = document.createElement('div');
+                    container.appendChild(rowsHost);
+
+                    var rows = chunkAlignedRows(bItems, uItems, tItems);
+                    appendRows(rowsHost, rows);
+                });
+            }).catch(function(){
+                var container = document.getElementById('scenario-S001-content');
+                var title = document.createElement('div');
+                title.className = 'scenario-title';
+                title.textContent = 'A1: Receives cold call — Organisation';
+                container.appendChild(title);
+                var head = document.createElement('div');
+                head.className = 'grid-head';
+                head.innerHTML = '<div>💼 Business (USS Steps)</div><div>🎨 UX</div><div>⚙️ Technical</div>';
+                container.appendChild(head);
+                var rowsHost = document.createElement('div');
+                container.appendChild(rowsHost);
+                var rows = chunkAlignedRows(
+                    [{id:'US001_USS001', title:'Receive call', displayId:'A1_001', componentId:'B_S001_US001_USS001'}],
+                    [{id:'UX001', title:'Sales call flow', componentId:'UX001'}],
+                    [{id:'F001', title:'User Data Collection', componentId:'F001'}]
+                );
+                appendRows(rowsHost, rows);
+            });
+        })();
+    </script>
+</body>
+</html>
+

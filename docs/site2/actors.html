@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site2 - Actors</title>
+    <link rel="stylesheet" href="../assets/css/color-system.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--color-text-primary); background: var(--color-bg-secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .topbar a.learn-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .menu { display: flex; gap: 12px; }
+        .menu a { text-decoration: none; color: var(--color-text-secondary); padding: 8px 12px; border-radius: 8px; background: var(--color-bg-primary); border: 1px solid var(--color-border-light); }
+        .menu a.active { color: var(--color-primary); border-color: var(--color-primary); background: #eff6ff; font-weight: 600; }
+        .header { text-align: center; margin-bottom: 24px; padding: 24px 0 8px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+        .section { background: var(--color-bg-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--color-border); margin-bottom: 20px; }
+        .columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .col { background: var(--color-bg-tertiary); border: 1px solid var(--color-border-light); border-radius: 10px; padding: 16px; }
+        .col h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .list { list-style: none; padding-left: 0; }
+        .list li { padding: 6px 0; color: var(--color-text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a class="learn-link" href="../integration/index.html">↗ Learn the system we USE</a>
+            <nav class="menu">
+                <a href="index.html">Home</a>
+                <a href="plan.html">Plan</a>
+                <a href="do.html">Do</a>
+            </nav>
+        </div>
+
+        <div class="header">
+            <h1>Actors</h1>
+            <p>Grouped by Business, UX, and Technical roles from the healthcare example.</p>
+        </div>
+
+        <section class="section">
+            <div class="columns">
+                <div class="col">
+                    <h3>💼 Business (B)</h3>
+                    <ul class="list">
+                        <li>Healthcare Organisation</li>
+                        <li>Healthcare Professional</li>
+                        <li>Sales Team</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3>🎨 UX (U)</h3>
+                    <ul class="list">
+                        <li>Mobile App Interface</li>
+                        <li>Sales Dashboard</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3>⚙️ Technical (T)</h3>
+                    <ul class="list">
+                        <li>CRM System</li>
+                        <li>Matching Engine</li>
+                        <li>Auth System</li>
+                        <li>Database</li>
+                        <li>Email Service</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+
+

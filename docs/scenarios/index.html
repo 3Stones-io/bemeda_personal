@@ -3,267 +3,607 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scenarios - Bemeda Platform</title>
+    <title>Scenarios (S1-S19) - Bemeda Platform</title>
     <link rel="stylesheet" href="../assets/css/color-system.css">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--color-text-primary);
-            background: var(--color-bg-secondary);
-            margin: 0;
-            padding: 0;
-            --domain-color: var(--color-business);
-            --domain-color-dark: var(--color-business-dark);
-            --domain-color-light: var(--color-business-light);
-            --domain-color-lighter: var(--color-business-lighter);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--color-text-primary); background: var(--color-bg-secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .topbar a.learn-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .menu { display: flex; gap: 12px; }
+        .menu a { text-decoration: none; color: var(--color-text-secondary); padding: 8px 12px; border-radius: 8px; background: var(--color-bg-primary); border: 1px solid var(--color-border-light); }
+        .menu a.active { color: var(--color-primary); border-color: var(--color-primary); background: #eff6ff; font-weight: 600; }
+        .header { text-align: center; margin-bottom: 24px; padding: 24px 0 8px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+        .section { background: var(--color-bg-primary); border-radius: 12px; padding: 24px; border: 1px solid var(--color-border); margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: var(--color-bg-tertiary); border: 1px solid var(--color-border-light); border-radius: 10px; padding: 16px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-right: 6px; }
+        .s { background: var(--color-business); color: white; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: #0066cc; text-decoration: none; margin-bottom: 32px; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
         
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #0066cc;
-            text-decoration: none;
-            margin-bottom: 32px;
-            font-weight: 500;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0 20px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--color-text-primary);
-            margin-bottom: 8px;
-            letter-spacing: -1px;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            color: var(--color-text-secondary);
-        }
-
-        .scenarios-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .scenario-card {
-            background: white;
+        /* Collapsible Scenario Blocks */
+        .scenario-block {
+            background: var(--color-bg-primary);
             border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,102,204,0.1);
-            border-top: 3px solid var(--domain-color);
-            transition: all 0.2s ease;
-            position: relative;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
+            border: 1px solid var(--color-border);
+            margin-bottom: 20px;
+            overflow: hidden;
         }
-
-        .scenario-card:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            border-color: var(--domain-color);
-        }
-
-        .scenario-card.coming-soon {
-            opacity: 0.6;
-            border-top-color: #ccc;
-        }
-
+        
         .scenario-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .scenario-id {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--domain-color);
-            background: var(--domain-color-lighter);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: 'Monaco', monospace;
-            white-space: nowrap;
-        }
-
-        .scenario-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 0;
-            line-height: 1.3;
-        }
-
-        .scenario-description {
-            color: #666;
-            margin: 8px 0 16px 0;
-            line-height: 1.4;
-            font-size: 0.95rem;
-        }
-
-        .scenario-meta {
+            padding: 20px 24px;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid var(--color-border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            transition: background-color 0.2s;
         }
-
-        .scenario-stats {
+        
+        .scenario-header:hover {
+            background: var(--color-bg-hover);
+        }
+        
+        .scenario-title {
             display: flex;
-            gap: 16px;
-            font-size: 0.8rem;
-        }
-
-        .stat-item {
-            color: #666;
-        }
-
-        .stat-value {
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
             font-weight: 600;
-            color: var(--domain-color);
+            margin: 0;
         }
-
-        .scenario-progress {
-            font-size: 0.8rem;
-            color: #28a745;
-            font-weight: 500;
+        
+        .scenario-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
         }
-
-        .participant-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
+        
+        .scenario-toggle.expanded {
+            transform: rotate(90deg);
         }
-
-        .participant-tag {
-            background: var(--domain-color-lighter);
-            color: var(--domain-color-dark);
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 500;
+        
+        .scenario-content {
+            display: none;
+            padding: 0;
         }
-
-        .action-button {
-            padding: 8px 16px;
-            background: var(--domain-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: inline-block;
-            transition: background 0.2s;
+        
+        .scenario-content.expanded {
+            display: block;
         }
-
-        .action-button:hover {
-            background: var(--domain-color-dark);
+        
+        /* Three column layout for participants */
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
         }
-
-        .action-button.secondary {
-            background: #f0f0f0;
-            color: #666;
-        }
-
-
-        @media (max-width: 768px) {
-            .stats-grid {
+        
+        @media (max-width: 1200px) {
+            .participants-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .action-links {
-                flex-direction: column;
-            }
+        }
+        
+        .participant-section {
+            padding: 24px;
+            border-right: 1px solid var(--color-border-light);
+        }
+        
+        .participant-section:last-child {
+            border-right: none;
+        }
+        
+        .participant-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .participant-icon {
+            font-size: 1.5rem;
+        }
+        
+        .participant-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        .process-steps {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .process-step {
+            background: var(--color-bg-tertiary);
+            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid var(--color-border-light);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .process-step:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-link);
+            transform: translateX(2px);
+        }
+        
+        .step-id {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-business);
+            background: var(--color-bg-secondary);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        
+        .step-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 6px;
+        }
+        
+        .step-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+        
+        .step-button {
+            padding: 3px 8px;
+            font-size: 0.7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .step-button.ux {
+            background: var(--color-ux-light);
+            color: var(--color-ux-dark);
+        }
+        
+        .step-button.tech {
+            background: var(--color-tech-light);
+            color: var(--color-tech-dark);
+        }
+        
+        .step-button.github {
+            background: var(--color-bg-hover);
+            color: var(--color-text-secondary);
+        }
+        
+        .step-button.details {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .step-button:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+        
+        /* Make entire step card clickable but allow button clicks */
+        .process-step {
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        
+        .process-step:hover {
+            background: var(--color-bg-hover);
+            transform: translateY(-1px);
         }
     </style>
+    <script>
+        function toggleScenario(scenarioId) {
+            const content = document.getElementById(scenarioId + '-content');
+            const toggle = document.getElementById(scenarioId + '-toggle');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                toggle.classList.add('expanded');
+            }
+        }
+        
+        function openGitHub(componentId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Search for step issues and related components using our actual label system
+            let searchQuery = `is:issue ${componentId}`;
+            
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            console.log('GitHub search for step:', componentId, searchQuery);
+            window.open(url, '_blank');
+        }
+        
+        function openUX(stepId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Navigate to UX page with anchor to specific step
+            window.location.href = `../uxui/index.html#${stepId.toLowerCase()}`;
+        }
+        
+        function openTech(stepId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Navigate to Technical page with anchor to specific step
+            window.location.href = `../technical/index.html#${stepId.toLowerCase()}`;
+        }
+        
+        function openStepDetails(stepId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Navigate to individual step page (will create these as placeholders)
+            window.location.href = `steps/${stepId}.html`;
+        }
+        
+        // Handle clicking on step card (not on buttons)
+        function handleStepClick(stepId, event) {
+            // Only handle if click wasn't on a button
+            if (!event.target.classList.contains('step-button')) {
+                openStepDetails(stepId, event);
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <a href="../index.html" class="back-link">
-            ← Back to Home
-        </a>
-        
+        <div class="topbar">
+            <a class="back-link" href="../index.html">← Back to Home</a>
+            <nav class="menu">
+                <a href="../index.html">Home</a>
+                <a href="index.html" class="active">Scenarios</a>
+                <a href="../uxui/index.html">UX</a>
+                <a href="../technical/index.html">Technical</a>
+            </nav>
+        </div>
+
         <div class="header">
-            <h1>📋 Scenarios</h1>
-            <p>Business Logic - Complete business scenarios from user stories through implementation</p>
+            <h1>💼 Scenarios (S1-S19)</h1>
+            <p>Executable business steps organized by scenarios and actor ownership with simple numbering.</p>
         </div>
-        
-        <!-- Scenario Cards Grid -->
-        <div class="scenarios-grid">
-            <!-- Scenario S001 Card -->
-            <a href="S001/index.html" class="scenario-card">
-                <div class="scenario-header">
-                    <div class="scenario-id">B_S001</div>
-                    <h2 class="scenario-title">Cold Call to Candidate Placement</h2>
-                </div>
-                <p class="scenario-description">Complete recruitment workflow from initial sales contact through successful candidate placement and ongoing relationship management.</p>
-                
-                <div class="scenario-meta">
-                    <div class="scenario-stats">
-                        <span class="stat-item">Stories: <span class="stat-value">3</span></span>
-                        <span class="stat-item">Steps: <span class="stat-value">9</span></span>
+
+        <!-- Scenario1: Cold Call to Placement -->
+        <div class="scenario-block">
+            <div class="scenario-header" onclick="toggleScenario('scenario1')">
+                <h2 class="scenario-title">
+                    <span class="badge s">S1-S19</span>
+                    Scenario1: Cold Call to Placement
+                </h2>
+                <span class="scenario-toggle" id="scenario1-toggle">▶</span>
+            </div>
+            <div class="scenario-content" id="scenario1-content">
+                <!-- Three Participants Side by Side -->
+                <div class="participants-grid">
+                    <!-- A1: Healthcare Organisation -->
+                    <div class="participant-section">
+                        <div class="participant-header">
+                            <span class="participant-icon">🏥</span>
+                            <h3 class="participant-title">A1: Healthcare Organisation (S1-S8)</h3>
+                        </div>
+                    
+                        <div class="process-steps">
+                            <div class="process-step" onclick="handleStepClick('S1', event)">
+                                <div class="step-id">S1</div>
+                                <div class="step-text">Receive Bemeda sales call</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S1', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S1', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S1', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S1', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S2', event)">
+                                <div class="step-id">S2</div>
+                                <div class="step-text">Listen to platform overview</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S2', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S2', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S2', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S2', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S3', event)">
+                                <div class="step-id">S3</div>
+                                <div class="step-text">Discuss staffing needs</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S3', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S3', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S3', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S3', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S4', event)">
+                                <div class="step-id">S4</div>
+                                <div class="step-text">Define job requirements</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S4', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S4', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S4', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S4', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S5', event)">
+                                <div class="step-id">S5</div>
+                                <div class="step-text">Publish job posting</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S5', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S5', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S5', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S5', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S6', event)">
+                                <div class="step-id">S6</div>
+                                <div class="step-text">Review matched candidates</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S6', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S6', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S6', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S6', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S7', event)">
+                                <div class="step-id">S7</div>
+                                <div class="step-text">Conduct interviews</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S7', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S7', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S7', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S7', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S8', event)">
+                                <div class="step-id">S8</div>
+                                <div class="step-text">Make hiring decision</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S8', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S8', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S8', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S8', event);">Details</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="scenario-progress">75% Complete</div>
-                </div>
-                
-                <div class="participant-tags">
-                    <span class="participant-tag">🏥 Organisation</span>
-                    <span class="participant-tag">🔍 JobSeeker</span>
-                    <span class="participant-tag">📞 Sales Team</span>
-                </div>
-                
-                <span class="action-button" onclick="event.preventDefault(); event.stopPropagation(); window.open('https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aissue+label%3Acomponent+B_S001', '_blank');">🔗 GitHub</span>
-            </a>
-            
-            <!-- Additional Scenarios Placeholder -->
-            <a href="#" class="scenario-card coming-soon">
-                <div class="scenario-header">
-                    <div class="scenario-id" style="background: #f5f5f5; color: #999;">B_S002</div>
-                    <h2 class="scenario-title" style="color: #666;">Temporary Staffing Solutions</h2>
-                </div>
-                <p class="scenario-description" style="color: #999;">Short-term staffing solutions for healthcare emergencies and seasonal demands.</p>
-                
-                <div style="text-align: center; padding: 16px; color: #999; font-style: italic; font-size: 0.9rem;">
-                    🚧 Coming Soon - Inherits 80% from S001
-                </div>
-            </a>
-            
-            <a href="#" class="scenario-card coming-soon">
-                <div class="scenario-header">
-                    <div class="scenario-id" style="background: #f5f5f5; color: #999;">B_S003</div>
-                    <h2 class="scenario-title" style="color: #666;">Recurring Placements</h2>
-                </div>
-                <p class="scenario-description" style="color: #999;">Long-term partnership management with repeat client relationships.</p>
-                
-                <div style="text-align: center; padding: 16px; color: #999; font-style: italic; font-size: 0.9rem;">
-                    🚧 Coming Soon - Inherits 95% from S001+S002
-                </div>
-            </a>
+                    
+                    <!-- A2: JobSeeker -->
+                    <div class="participant-section">
+                        <div class="participant-header">
+                            <span class="participant-icon">🔍</span>
+                            <h3 class="participant-title">A2: JobSeeker (S9-S14)</h3>
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="process-step" onclick="handleStepClick('S9', event)">
+                                <div class="step-id">S9</div>
+                                <div class="step-text">Create professional profile</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S9', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S9', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S9', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S9', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S10', event)">
+                                <div class="step-id">S10</div>
+                                <div class="step-text">Receive job notification</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S10', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S10', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S10', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S10', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S11', event)">
+                                <div class="step-id">S11</div>
+                                <div class="step-text">Review job details</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S11', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S11', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S11', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S11', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S12', event)">
+                                <div class="step-id">S12</div>
+                                <div class="step-text">Submit application</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S12', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S12', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S12', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S12', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S13', event)">
+                                <div class="step-id">S13</div>
+                                <div class="step-text">Participate in interview</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S13', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S13', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S13', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S13', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S14', event)">
+                                <div class="step-id">S14</div>
+                                <div class="step-text">Accept offer & onboard</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S14', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S14', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S14', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S14', event);">Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- A3: Sales Team -->
+                    <div class="participant-section">
+                        <div class="participant-header">
+                            <span class="participant-icon">📞</span>
+                            <h3 class="participant-title">A3: Sales Team (S15-S19)</h3>
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="process-step" onclick="handleStepClick('S15', event)">
+                                <div class="step-id">S15</div>
+                                <div class="step-text">Identify target healthcare organisations</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S15', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S15', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S15', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S15', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S16', event)">
+                                <div class="step-id">S16</div>
+                                <div class="step-text">Make initial contact</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S16', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S16', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S16', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S16', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S17', event)">
+                                <div class="step-id">S17</div>
+                                <div class="step-text">Present platform benefits</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S17', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S17', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S17', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S17', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S18', event)">
+                                <div class="step-id">S18</div>
+                                <div class="step-text">Facilitate onboarding</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S18', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S18', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S18', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S18', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S19', event)">
+                                <div class="step-id">S19</div>
+                                <div class="step-text">Monitor placement success & follow-up</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S19', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S19', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S19', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S19', event);">Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End participants-grid -->
+            </div>
         </div>
-        
+
+        <!-- Scenario2: Coming Soon -->
+        <div class="scenario-block">
+            <div class="scenario-header" onclick="toggleScenario('scenario2')">
+                <h2 class="scenario-title">
+                    <span class="badge s">S20-S39</span>
+                    Scenario2: Temporary Staffing
+                </h2>
+                <span class="scenario-toggle" id="scenario2-toggle">▶</span>
+            </div>
+            <div class="scenario-content" id="scenario2-content">
+                <div style="padding: 32px; text-align: center; color: var(--color-text-secondary);">
+                    <p style="font-size: 1.1rem; margin-bottom: 16px;">🚧 Coming Soon</p>
+                    <p>Short-term placements and emergency staffing workflows. Inherits 80% foundation from Scenario1.</p>
+                    <div style="margin-top: 20px;">
+                        <span class="badge s">S20-S25</span> Healthcare Org Emergency Steps<br>
+                        <span class="badge s">S26-S31</span> JobSeeker Temporary Profile Steps<br>
+                        <span class="badge s">S32-S39</span> Sales Team Fast-Track Steps
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Component Registry -->
+        <section class="section">
+            <h2 style="margin-bottom: 12px;">🔍 Detailed Component Registry</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 20px;">Complete registry of scenario steps with actor ownership and implementation status</p>
+            <div class="grid">
+                <div class="card">
+                    <span class="badge s">S1-S8</span>
+                    <h3>🏥 A1: Healthcare Organisation</h3>
+                    <p>Organisation workflow from call reception through hiring completion</p>
+                    <div style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-secondary);">
+                        ✅ Auth + Companies + Jobs contexts implemented
+                    </div>
+                </div>
+                <div class="card">
+                    <span class="badge s">S9-S14</span>
+                    <h3>🔍 A2: JobSeeker</h3>
+                    <p>JobSeeker journey from profile creation through offer acceptance and onboarding</p>
+                    <div style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-secondary);">
+                        ❌ Missing Profile System & Mobile UX
+                    </div>
+                </div>
+                <div class="card">
+                    <span class="badge s">S15-S19</span>
+                    <h3>📞 A3: Sales Team</h3>
+                    <p>Sales team workflow from lead identification through placement monitoring</p>
+                    <div style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-secondary);">
+                        ❌ Missing CRM System & Analytics
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </body>
 </html>
