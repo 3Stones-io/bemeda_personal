@@ -1,176 +1,184 @@
-<section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
-  <div class="company-hero grid gap-y-2 border-b border-gray-200 pb-8">
-    <div class={"flex items-center #{grid_gap_small()}"}>
-      <div class="w-20 h-14 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
-        <img
-          :if={@company.media_asset}
-          src={SharedHelpers.get_presigned_url(@company.media_asset.upload_id)}
-          alt={@company.name}
-          class="w-full h-full object-cover"
-        />
-        <div :if={!@company.media_asset} class="text-2xl font-bold text-gray-500">
-          {String.first(@company.name)}
+<Layouts.app flash={@flash} socket={@socket}>
+  <section class="px-4  w-full py-2 lg:max-w-[1000px] lg:mx-auto">
+    <div class="company-hero grid gap-y-2 border-b border-gray-200 pb-8">
+      <div class={"flex items-center #{grid_gap_small()}"}>
+        <div class="w-20 h-14 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+          <img
+            :if={@company.media_asset}
+            src={SharedHelpers.get_presigned_url(@company.media_asset.upload_id)}
+            alt={@company.name}
+            class="w-full h-full object-cover"
+          />
+          <div :if={!@company.media_asset} class="text-2xl font-bold text-gray-500">
+            {String.first(@company.name)}
+          </div>
+        </div>
+        <div>
+          <.heading class="mb-4">{@company.name}</.heading>
+          <.live_component
+            class="mb-2"
+            current_user={@current_user}
+            display_class="mb-2"
+            entity_id={@company.id}
+            entity_name={@company.name}
+            entity_type="Company"
+            id={"rating-component-header-#{@company.id}"}
+            module={RatingComponent}
+            rater_id={if @current_user, do: @current_user.id}
+            rater_type={if @current_user, do: "User"}
+          />
         </div>
       </div>
-      <div>
-        <.heading class="mb-4">{@company.name}</.heading>
-        <.live_component
-          class="mb-2"
-          current_user={@current_user}
-          display_class="mb-2"
-          entity_id={@company.id}
-          entity_name={@company.name}
-          entity_type="Company"
-          id={"rating-component-header-#{@company.id}"}
-          module={RatingComponent}
-          rater_id={if @current_user, do: @current_user.id}
-          rater_type={if @current_user, do: "User"}
-        />
+
+      <div :if={@company.industry} class="flex items-center text-gray-700">
+        <.icon name="hero-building-office" class="h-5 w-5 mr-3 text-gray-500" />
+        <span>{@company.industry}</span>
       </div>
-    </div>
+      <div :if={@company.size} class="flex items-center text-gray-700 mobile-size">
+        <.icon name="hero-user-group" class="h-5 w-5 mr-3 text-gray-500" />
+        <span>{@company.size}</span>
+      </div>
+      <div :if={@company.location} class="flex items-center text-gray-700 mobile-location">
+        <.icon name="hero-map-pin" class="h-5 w-5 mr-3 text-gray-500" />
+        <span>{@company.location}</span>
+      </div>
 
-    <div :if={@company.industry} class="flex items-center text-gray-700">
-      <.icon name="hero-building-office" class="h-5 w-5 mr-3 text-gray-500" />
-      <span>{@company.industry}</span>
-    </div>
-    <div :if={@company.size} class="flex items-center text-gray-700 mobile-size">
-      <.icon name="hero-user-group" class="h-5 w-5 mr-3 text-gray-500" />
-      <span>{@company.size}</span>
-    </div>
-    <div :if={@company.location} class="flex items-center text-gray-700 mobile-location">
-      <.icon name="hero-map-pin" class="h-5 w-5 mr-3 text-gray-500" />
-      <span>{@company.location}</span>
-    </div>
-
-    <.card variant="default" class="mt-4 company-stats">
-      <div class={"flex justify-between #{grid_gap_small()}"}>
-        <div class={"flex flex-col #{list_spacing()}"}>
-          <.caption class="mb-1">{dgettext("jobs", "Open Jobs")}</.caption>
-          <.text variant="body-lg" class="font-bold">{@job_count}</.text>
+      <.card variant="default" class="mt-4 company-stats">
+        <div class={"flex justify-between #{grid_gap_small()}"}>
+          <div class={"flex flex-col #{list_spacing()}"}>
+            <.caption class="mb-1">{dgettext("jobs", "Open Jobs")}</.caption>
+            <.text variant="body-lg" class="font-bold">{@job_count}</.text>
+          </div>
+          <div class={"flex flex-col #{list_spacing()}"}>
+            <.caption class="mb-1">{dgettext("companies", "Industry")}</.caption>
+            <.text variant="body-lg" class="font-bold">
+              {String.slice(@company.industry || dgettext("companies", "Tech"), 0, 10)}
+            </.text>
+          </div>
         </div>
-        <div class={"flex flex-col #{list_spacing()}"}>
-          <.caption class="mb-1">{dgettext("companies", "Industry")}</.caption>
-          <.text variant="body-lg" class="font-bold">
-            {String.slice(@company.industry || dgettext("companies", "Tech"), 0, 10)}
-          </.text>
-        </div>
-      </div>
-    </.card>
+      </.card>
 
-    <div class="flex items-center gap-4 mt-4">
-      <.button variant="primary" navigate={~p"/companies/#{@company.id}/jobs"}>
-        {dgettext("jobs", "View All Jobs")}
-      </.button>
-      <.button
-        :if={@company.website_url}
-        variant="secondary"
-        href={@company.website_url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {dgettext("companies", "Visit Website")}
-      </.button>
-    </div>
-  </div>
-
-  <div class="about-company py-4">
-    <div class="description py-4">
-      <.section_heading class="mb-3">
-        {dgettext("companies", "About %{company}", company: @company.name)}
-      </.section_heading>
-      <div :if={@company.description} class="md-to-html">
-        {SharedHelpers.to_html(@company.description)}
-      </div>
-      <.text :if={!@company.description} class="text-gray-500">
-        {dgettext("companies", "No company description available.")}
-      </.text>
-    </div>
-
-    <.card variant="flat" class="company-info">
-      <h2 class="text-sm font-semibold text-gray-400 mb-2">
-        {dgettext("companies", "About %{company}", company: @company.name)}
-      </h2>
-      <div :if={@company.website_url} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold">{dgettext("companies", "Website")}</h4>
-        <a
+      <div class="flex items-center gap-4 mt-4">
+        <.button variant="primary" navigate={~p"/companies/#{@company.id}/jobs"}>
+          {dgettext("jobs", "View All Jobs")}
+        </.button>
+        <.button
+          :if={@company.website_url}
+          variant="secondary"
           href={@company.website_url}
           target="_blank"
           rel="noopener noreferrer"
-          class="text-indigo-600 hover:text-indigo-900 text-sm"
         >
-          {String.replace(@company.website_url, ~r{^https?://(www\.)?}, "")}
-        </a>
-      </div>
-      <div :if={@company.industry} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("companies", "Industry")}</h4>
-        <.small_text>{@company.industry}</.small_text>
-      </div>
-      <div :if={@company.size} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">
-          {dgettext("companies", "Company Size")}
-        </h4>
-        <.small_text>{@company.size}</.small_text>
-      </div>
-      <div :if={@company.location} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("companies", "Location")}</h4>
-        <.small_text>{@company.location}</.small_text>
-      </div>
-
-      <div :if={@job_count} class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("jobs", "Open Positions")}</h4>
-        <.small_text>{@job_count}</.small_text>
-      </div>
-
-      <div class="mb-2">
-        <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("general", "Rating")}</h4>
-        <.live_component
-          current_user={@current_user}
-          entity_id={@company.id}
-          entity_name={@company.name}
-          entity_type="Company"
-          id={"rating-component-sidebar-#{@company.id}"}
-          module={RatingComponent}
-          rater_id={if @current_user, do: @current_user.id}
-          rater_type={if @current_user, do: "User"}
-        />
-      </div>
-    </.card>
-  </div>
-
-  <div class="jobs">
-    <div class="flex items-center justify-between mb-4">
-      <.section_heading>{dgettext("jobs", "Recent Jobs")}</.section_heading>
-      <.link
-        :if={@job_count > 0}
-        navigate={~p"/companies/#{@company.id}/jobs"}
-        class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center"
-      >
-        {dgettext("jobs", "View all jobs")}
-        <.icon name="hero-chevron-right" class="h-4 w-4 ml-1" />
-      </.link>
-    </div>
-
-    <div id="recent-jobs" phx-update="stream">
-      <.text
-        id="empty-jobs"
-        class="hidden bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500 only:block"
-      >
-        {dgettext("jobs", "No open positions at this time")}
-      </.text>
-
-      <div
-        :for={{job_id, job} <- @streams.job_postings}
-        class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200 rounded-md"
-        id={job_id}
-        role="list"
-      >
-        <JobsComponents.job_posting_card
-          id={"card-#{job_id}"}
-          job={job}
-          job_view={:job}
-          show_company_name={false}
-        />
+          {dgettext("companies", "Visit Website")}
+        </.button>
       </div>
     </div>
-  </div>
-</section>
+
+    <div class="about-company py-4">
+      <div class="description py-4">
+        <.section_heading class="mb-3">
+          {dgettext("companies", "About %{company}", company: @company.name)}
+        </.section_heading>
+        <div :if={@company.description} class="md-to-html">
+          {SharedHelpers.to_html(@company.description)}
+        </div>
+        <.text :if={!@company.description} class="text-gray-500">
+          {dgettext("companies", "No company description available.")}
+        </.text>
+      </div>
+
+      <.card variant="flat" class="company-info">
+        <h2 class="text-sm font-semibold text-gray-400 mb-2">
+          {dgettext("companies", "About %{company}", company: @company.name)}
+        </h2>
+        <div :if={@company.website_url} class="mb-2">
+          <h4 class="uppercase text-xs font-semibold">{dgettext("companies", "Website")}</h4>
+          <a
+            href={@company.website_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-indigo-600 hover:text-indigo-900 text-sm"
+          >
+            {String.replace(@company.website_url, ~r{^https?://(www\.)?}, "")}
+          </a>
+        </div>
+        <div :if={@company.industry} class="mb-2">
+          <h4 class="uppercase text-xs font-semibold mb-1">
+            {dgettext("companies", "Industry")}
+          </h4>
+          <.small_text>{@company.industry}</.small_text>
+        </div>
+        <div :if={@company.size} class="mb-2">
+          <h4 class="uppercase text-xs font-semibold mb-1">
+            {dgettext("companies", "Company Size")}
+          </h4>
+          <.small_text>{@company.size}</.small_text>
+        </div>
+        <div :if={@company.location} class="mb-2">
+          <h4 class="uppercase text-xs font-semibold mb-1">
+            {dgettext("companies", "Location")}
+          </h4>
+          <.small_text>{@company.location}</.small_text>
+        </div>
+
+        <div :if={@job_count} class="mb-2">
+          <h4 class="uppercase text-xs font-semibold mb-1">
+            {dgettext("jobs", "Open Positions")}
+          </h4>
+          <.small_text>{@job_count}</.small_text>
+        </div>
+
+        <div class="mb-2">
+          <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("general", "Rating")}</h4>
+          <.live_component
+            current_user={@current_user}
+            entity_id={@company.id}
+            entity_name={@company.name}
+            entity_type="Company"
+            id={"rating-component-sidebar-#{@company.id}"}
+            module={RatingComponent}
+            rater_id={if @current_user, do: @current_user.id}
+            rater_type={if @current_user, do: "User"}
+          />
+        </div>
+      </.card>
+    </div>
+
+    <div class="jobs">
+      <div class="flex items-center justify-between mb-4">
+        <.section_heading>{dgettext("jobs", "Recent Jobs")}</.section_heading>
+        <.link
+          :if={@job_count > 0}
+          navigate={~p"/companies/#{@company.id}/jobs"}
+          class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center"
+        >
+          {dgettext("jobs", "View all jobs")}
+          <.icon name="hero-chevron-right" class="h-4 w-4 ml-1" />
+        </.link>
+      </div>
+
+      <div id="recent-jobs" phx-update="stream">
+        <.text
+          id="empty-jobs"
+          class="hidden bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500 only:block"
+        >
+          {dgettext("jobs", "No open positions at this time")}
+        </.text>
+
+        <div
+          :for={{job_id, job} <- @streams.job_postings}
+          class="odd:bg-gray-100 even:bg-gray-50/50 hover:bg-gray-200 rounded-md"
+          id={job_id}
+          role="list"
+        >
+          <JobsComponents.job_posting_card
+            id={"card-#{job_id}"}
+            job={job}
+            job_view={:job}
+            show_company_name={false}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layouts.app>

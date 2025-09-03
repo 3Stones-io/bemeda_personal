@@ -1,75 +1,77 @@
-<div
-  :if={@not_found}
-  class={"min-h-screen flex items-center justify-center bg-gray-50 #{section_spacing_large()} #{container_padding()}"}
->
-  <div class={"max-w-md w-full text-center #{content_spacing()}"}>
-    <div>
-      <.heading level="h1" class="text-9xl font-extrabold text-gray-400">404</.heading>
-      <.heading class="mt-6">
-        {dgettext("resumes", "Resume Not Found")}
-      </.heading>
-      <.small_text class="mt-2">
-        {dgettext(
-          "resumes",
-          "The resume you're looking for doesn't exist or is not available for public viewing."
-        )}
-      </.small_text>
-    </div>
-    <div class={page_header_spacing()}>
-      <.button href={~p"/"}>
-        <.icon name="hero-home" class="h-5 w-5 mr-2" /> {dgettext(
-          "navigation",
-          "Return to Home"
-        )}
-      </.button>
+<Layouts.app flash={@flash} socket={@socket}>
+  <div
+    :if={@not_found}
+    class={"min-h-screen flex items-center justify-center bg-gray-50 #{section_spacing_large()} #{container_padding()}"}
+  >
+    <div class={"max-w-md w-full text-center #{content_spacing()}"}>
+      <div>
+        <.heading level="h1" class="text-9xl font-extrabold text-gray-400">404</.heading>
+        <.heading class="mt-6">
+          {dgettext("resumes", "Resume Not Found")}
+        </.heading>
+        <.small_text class="mt-2">
+          {dgettext(
+            "resumes",
+            "The resume you're looking for doesn't exist or is not available for public viewing."
+          )}
+        </.small_text>
+      </div>
+      <div class={page_header_spacing()}>
+        <.button href={~p"/"}>
+          <.icon name="hero-home" class="h-5 w-5 mr-2" /> {dgettext(
+            "navigation",
+            "Return to Home"
+          )}
+        </.button>
+      </div>
     </div>
   </div>
-</div>
 
-<div :if={!@not_found} class="container mx-auto px-4 py-8 max-w-4xl">
-  <.resume_profile resume={@resume} title={dgettext("resumes", "Resume")} user={@resume.user} />
-  
+  <div :if={!@not_found} class="container mx-auto px-4 py-8 max-w-4xl">
+    <.resume_profile resume={@resume} title={dgettext("resumes", "Resume")} user={@resume.user} />
+    
 <!-- Education Section -->
-  <.resume_section
-    id="educations"
-    title={dgettext("resumes", "Education")}
-    items={@streams.educations}
-    empty_state_message={dgettext("resumes", "No education entries available.")}
-  >
-    <:resume_item :let={education}>
-      <.resume_item
-        delete_event="delete-education"
-        edit_path={~p"/resume/education/#{education.id}/edit"}
-        id={"education-#{education.id}"}
-        item={education}
-        subtitle={
-          if(education.field_of_study,
-            do: "#{education.degree} #{dgettext("resumes", "in")} #{education.field_of_study}",
-            else: education.degree
-          )
-        }
-        title={education.institution}
-      />
-    </:resume_item>
-  </.resume_section>
-  
+    <.resume_section
+      id="educations"
+      title={dgettext("resumes", "Education")}
+      items={@streams.educations}
+      empty_state_message={dgettext("resumes", "No education entries available.")}
+    >
+      <:resume_item :let={education}>
+        <.resume_item
+          delete_event="delete-education"
+          edit_path={~p"/resume/education/#{education.id}/edit"}
+          id={"education-#{education.id}"}
+          item={education}
+          subtitle={
+            if(education.field_of_study,
+              do: "#{education.degree} #{dgettext("resumes", "in")} #{education.field_of_study}",
+              else: education.degree
+            )
+          }
+          title={education.institution}
+        />
+      </:resume_item>
+    </.resume_section>
+    
 <!-- Work Experience Section -->
-  <.resume_section
-    id="work_experiences"
-    title={dgettext("resumes", "Work Experience")}
-    items={@streams.work_experiences}
-    empty_state_message={dgettext("resumes", "No work experience entries available.")}
-  >
-    <:resume_item :let={work_experience}>
-      <.resume_item
-        id={"work-experience-#{work_experience.id}"}
-        item={work_experience}
-        title={work_experience.title}
-        subtitle={work_experience.company_name}
-        extra_info={work_experience.location}
-        edit_path={~p"/resume/work-experience/#{work_experience.id}/edit"}
-        delete_event="delete-work-experience"
-      />
-    </:resume_item>
-  </.resume_section>
-</div>
+    <.resume_section
+      id="work_experiences"
+      title={dgettext("resumes", "Work Experience")}
+      items={@streams.work_experiences}
+      empty_state_message={dgettext("resumes", "No work experience entries available.")}
+    >
+      <:resume_item :let={work_experience}>
+        <.resume_item
+          id={"work-experience-#{work_experience.id}"}
+          item={work_experience}
+          title={work_experience.title}
+          subtitle={work_experience.company_name}
+          extra_info={work_experience.location}
+          edit_path={~p"/resume/work-experience/#{work_experience.id}/edit"}
+          delete_event="delete-work-experience"
+        />
+      </:resume_item>
+    </.resume_section>
+  </div>
+</Layouts.app>

@@ -1,41 +1,43 @@
-<div class={"max-w-7xl mx-auto #{container_padding()} #{section_spacing()}"}>
-  <JobsComponents.job_detail_header job={@job_posting} back_link={~p"/jobs"} />
+<Layouts.app flash={@flash} socket={@socket}>
+  <div class={"max-w-7xl mx-auto #{container_padding()} #{section_spacing()}"}>
+    <JobsComponents.job_detail_header job={@job_posting} back_link={~p"/jobs"} />
 
-  <div class={"grid grid-cols-1 lg:grid-cols-3 #{grid_gap()}"}>
-    <div class="lg:col-span-2">
-      <.card variant="elevated">
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold text-gray-900">
-            {dgettext("jobs", "Job Description")}
-          </h2>
-          <div class="flex justify-between gap-x-2">
-            <.button navigate={~p"/company/jobs/#{@job_posting.id}/edit"}>
-              {dgettext("jobs", "Edit Job")}
-            </.button>
+    <div class={"grid grid-cols-1 lg:grid-cols-3 #{grid_gap()}"}>
+      <div class="lg:col-span-2">
+        <.card variant="elevated">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-gray-900">
+              {dgettext("jobs", "Job Description")}
+            </h2>
+            <div class="flex justify-between gap-x-2">
+              <.button navigate={~p"/company/jobs/#{@job_posting.id}/edit"}>
+                {dgettext("jobs", "Edit Job")}
+              </.button>
 
-            <.button navigate={~p"/company/applicants/#{@job_posting.id}"}>
-              {dgettext("jobs", "View Applicants")}
-            </.button>
+              <.button navigate={~p"/company/applicants/#{@job_posting.id}"}>
+                {dgettext("jobs", "View Applicants")}
+              </.button>
+            </div>
           </div>
-        </div>
 
-        <SharedComponents.video_player media_asset={@job_posting.media_asset} />
+          <SharedComponents.video_player media_asset={@job_posting.media_asset} />
 
-        <div class={"border-t border-gray-200 #{card_padding()} prose max-w-none md-to-html"}>
-          {SharedHelpers.to_html(@job_posting.description)}
-        </div>
-      </.card>
-    </div>
+          <div class={"border-t border-gray-200 #{card_padding()} prose max-w-none md-to-html"}>
+            {SharedHelpers.to_html(@job_posting.description)}
+          </div>
+        </.card>
+      </div>
 
-    <div>
-      <.card variant="elevated">
-        <.section_heading>{dgettext("jobs", "Job Details")}</.section_heading>
-        <div class={"border-t border-gray-200 #{card_padding()} mt-4"}>
-          <JobsComponents.job_details job={@job_posting} />
-        </div>
-      </.card>
+      <div>
+        <.card variant="elevated">
+          <.section_heading>{dgettext("jobs", "Job Details")}</.section_heading>
+          <div class={"border-t border-gray-200 #{card_padding()} mt-4"}>
+            <JobsComponents.job_details job={@job_posting} />
+          </div>
+        </.card>
 
-      <JobsComponents.company_details_card company={@job_posting.company} />
+        <JobsComponents.company_details_card company={@job_posting.company} />
+      </div>
     </div>
   </div>
-</div>
+</Layouts.app>

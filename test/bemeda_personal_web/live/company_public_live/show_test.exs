@@ -232,7 +232,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
       assert has_element?(view, "form")
       assert has_element?(view, "h3", "Rate #{company.name}")
       assert has_element?(view, "label", "Score")
-      assert has_element?(view, "input[type=radio][name=score][value=5]")
+      assert has_element?(view, "input[name=\"score\"][value=\"5\"]")
     end
 
     test "user submits valid rating and sees success message", %{

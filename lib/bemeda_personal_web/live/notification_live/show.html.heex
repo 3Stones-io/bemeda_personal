@@ -1,32 +1,34 @@
-<div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
-  <.back navigate={~p"/notifications"}>
-    {dgettext("notifications", "Back to notifications")}
-  </.back>
+<Layouts.app flash={@flash} socket={@socket}>
+  <div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
+    <.back navigate={~p"/notifications"}>
+      {dgettext("notifications", "Back to notifications")}
+    </.back>
 
-  <h1 class="text-2xl font-bold mb-6 truncate">{@notification.subject}</h1>
+    <h1 class="text-2xl font-bold mb-6 truncate">{@notification.subject}</h1>
 
-  <.card_with_sections variant="default">
-    <:header>
-      <div class="flex justify-between">
-        <div>
-          <.small_text class="font-medium text-gray-900">
-            {dgettext("notifications", "From")}: {(@notification.sender &&
-                                                     @notification.sender.email) ||
-              dgettext("notifications", "System")}
-          </.small_text>
-          <.small_text>
-            {dgettext("notifications", "To")}: {@notification.recipient.email}
-          </.small_text>
+    <.card_with_sections variant="default">
+      <:header>
+        <div class="flex justify-between">
+          <div>
+            <.small_text class="font-medium text-gray-900">
+              {dgettext("notifications", "From")}: {(@notification.sender &&
+                                                       @notification.sender.email) ||
+                dgettext("notifications", "System")}
+            </.small_text>
+            <.small_text>
+              {dgettext("notifications", "To")}: {@notification.recipient.email}
+            </.small_text>
+          </div>
+          <.caption>
+            {format_date(@notification.inserted_at)}
+          </.caption>
         </div>
-        <.caption>
-          {format_date(@notification.inserted_at)}
-        </.caption>
-      </div>
-    </:header>
-    <:body>
-      <div class="overflow-auto">
-        {raw(@notification.html_body)}
-      </div>
-    </:body>
-  </.card_with_sections>
-</div>
+      </:header>
+      <:body>
+        <div class="overflow-auto">
+          {raw(@notification.html_body)}
+        </div>
+      </:body>
+    </.card_with_sections>
+  </div>
+</Layouts.app>

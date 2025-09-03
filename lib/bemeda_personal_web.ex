@@ -39,8 +39,7 @@ defmodule BemedaPersonalWeb do
   def controller do
     quote do
       use Phoenix.Controller,
-        formats: [:html, :json],
-        layouts: [html: BemedaPersonalWeb.Layouts]
+        formats: [:html, :json]
 
       use Gettext, backend: BemedaPersonalWeb.Gettext
 
@@ -52,8 +51,7 @@ defmodule BemedaPersonalWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {BemedaPersonalWeb.Layouts, :app}
+      use Phoenix.LiveView
 
       unquote(html_helpers())
     end
@@ -92,6 +90,7 @@ defmodule BemedaPersonalWeb do
       use BemedaPersonalWeb.Components
 
       # Shortcut for generating JS commands
+      alias BemedaPersonalWeb.Layouts
       alias Phoenix.LiveView.JS
 
       alias BemedaPersonalWeb.I18n
