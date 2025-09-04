@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S1 Debug Test</title>
+    <link rel="stylesheet" href="assets/css/color-system.css">
+    <script src="assets/js/github-api-service.js"></script>
+    <script src="assets/js/step-issue-mapping.js"></script>
+    <script src="assets/js/github-fallback-data.js"></script>
+    <style>
+        body { padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .debug { background: #f3f4f6; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .github-integration { background: linear-gradient(135deg, #0969da, #1f2937); color: white; padding: 20px; border-radius: 12px; margin: 20px 0; }
+        .github-content { font-style: italic; color: #e2e8f0; }
+    </style>
+</head>
+<body>
+    <h1>S1: Receive Bemeda Sales Call - Debug Test</h1>
+    
+    <div class="debug">
+        <h3>Debug Information</h3>
+        <div id="debug-info">Loading debug info...</div>
+    </div>
+    
+    <div class="github-integration">
+        <h2>🔗 GitHub Issue Integration</h2>
+        <div class="github-content" id="github-content">
+            <p>📝 <strong>Initializing GitHub integration...</strong></p>
+        </div>
+    </div>
+    
+    <script>
+        // Debug function to show what's available
+        function showDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            const info = {
+                'API Service Available': !!window.githubAPI,
+                'Step Mapping Available': !!window.stepIssueMapping,
+                'Fallback Data Available': !!window.githubFallbackData,
+                'S1 Mapping': window.stepIssueMapping ? window.stepIssueMapping['S1'] : 'Not found',
+                'S1 Fallback': window.getFallbackStepData ? window.getFallbackStepData('S1') : 'Not found'
+            };
+            
+            debugDiv.innerHTML = '<pre>' + JSON.stringify(info, null, 2) + '</pre>';
+        }
+        
+        // Test loading S1 data
+        async function testS1Load() {
+            const contentDiv = document.getElementById('github-content');
+            
+            try {
+                contentDiv.innerHTML = '<p>🔄 Loading S1 data...</p>';
+                
+                // Initialize API service
+                await window.githubAPI.initialize();
+                
+                // Get step data
+                const data = await window.githubAPI.getStepData('S1');
+                
+                if (data.error) {
+                    contentDiv.innerHTML = `
+                        <div style="background: rgba(239, 68, 68, 0.2); padding: 10px; border-radius: 6px;">
+                            <p><strong>❌ Error: ${data.message}</strong></p>
+                        </div>
+                    `;
+                } else {
+                    const issue = data.issue;
+                    contentDiv.innerHTML = `
+                        <div style="background: rgba(34, 197, 94, 0.2); padding: 10px; border-radius: 6px;">
+                            <p><strong>✅ Success! Issue #${issue.number}</strong></p>
+                            <p><strong>Title:</strong> ${issue.title}</p>
+                            <p><strong>State:</strong> ${issue.state}</p>
+                            <p><strong>Data Source:</strong> ${data.dataSource || 'unknown'}</p>
+                            <p><strong>Last Updated:</strong> ${data.lastUpdated}</p>
+                            <a href="${issue.html_url}" target="_blank" style="color: #e2e8f0;">📝 View on GitHub →</a>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 10px; margin-top: 10px; border-radius: 6px;">
+                            <h4>Issue Body Preview:</h4>
+                            <div style="font-size: 0.9em; max-height: 200px; overflow-y: auto;">
+                                ${issue.body ? issue.body.substring(0, 500) + '...' : 'No body content'}
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div style="background: rgba(239, 68, 68, 0.2); padding: 10px; border-radius: 6px;">
+                        <p><strong>💥 Exception: ${error.message}</strong></p>
+                        <pre style="font-size: 0.8em; margin-top: 10px;">${error.stack}</pre>
+                    </div>
+                `;
+            }
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                showDebugInfo();
+                testS1Load();
+            }, 500); // Small delay to ensure all scripts are loaded
+        });
+    </script>
+</body>
+</html>

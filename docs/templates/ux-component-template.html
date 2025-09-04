@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[U#] Component Title - Bemeda Platform</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <style>
+        /* CSS Magic for UX Components ✨ */
+        :root {
+            --ux-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            --hover-gradient: linear-gradient(135deg, #f472b6 0%, #a78bfa 100%);
+            --implementation-progress: 0%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fdf4ff;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* UX Component Header */
+        .component-header {
+            background: var(--ux-gradient);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .component-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="10" height="10" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: 10px 10px;
+        }
+
+        .component-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Visual Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border: 1px solid #f0e6ff;
+        }
+
+        .mockup-container {
+            background: #f7fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mockup-placeholder {
+            color: #a0aec0;
+        }
+
+        /* Implementation Status */
+        .implementation-tracker {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #f0e6ff;
+        }
+
+        .implementation-bar {
+            background: #f0e6ff;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .implementation-progress {
+            height: 100%;
+            background: var(--ux-gradient);
+            width: var(--implementation-progress);
+            transition: width 1s ease;
+            position: relative;
+        }
+
+        .implementation-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: stripes 1s linear infinite;
+        }
+
+        @keyframes stripes {
+            from { transform: translateX(0); }
+            to { transform: translateX(20px); }
+        }
+
+
+        /* GitHub Integration */
+        .github-integration {
+            background: #24292e;
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .step-usage-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .step-tag {
+            background: #58a6ff;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .step-tag:hover {
+            background: #79b8ff;
+            transform: translateY(-2px);
+        }
+
+        /* Comments Section */
+        .discussion-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #f0e6ff;
+        }
+
+
+        /* Interaction States */
+        .states-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .state-box {
+            padding: 2rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .state-default {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .state-hover {
+            background: #fdf4ff;
+            color: #ec4899;
+        }
+
+        .state-active {
+            background: var(--ux-gradient);
+            color: white;
+        }
+
+        .state-disabled {
+            background: #e5e7eb;
+            color: #9ca3af;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <a href="../index.html" class="back-link">← Home</a>
+            <a href="../integration/index.html" class="back-link">← Integration</a>
+            <a href="../uxui/index.html" class="back-link">← UX/UI</a>
+        </nav>
+
+        <header class="component-header">
+            <div class="component-badge">U# • UX_COMPONENT</div>
+            <h1>Component Title</h1>
+            <p>Beautiful, functional UI component for the Bemeda platform</p>
+        </header>
+
+        <!-- Visual Preview -->
+        <section class="preview-section">
+            <h2>🎨 Visual Preview</h2>
+            <div class="mockup-container" id="mockupContainer">
+                <div class="mockup-placeholder" id="mockupPlaceholder">
+                    <div class="element-icon">🖼️</div>
+                    <p>Loading visual assets from GitHub...</p>
+                    <p style="font-size: 0.875rem; margin-top: 1rem;">Assets sync from issues, repo files, and Figma links</p>
+                </div>
+            </div>
+            
+            <!-- Asset Sources -->
+            <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; justify-content: center;">
+                <button onclick="loadFromGitHubIssue()" style="background: #24292e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                    📋 Load from Issue
+                </button>
+                <button onclick="loadFromRepository()" style="background: #0969da; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                    📁 Load from Repo
+                </button>
+                <button onclick="loadFromFigma()" style="background: #f24e1e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                    🎨 Load from Figma
+                </button>
+            </div>
+            
+            <!-- GitHub Sync Status -->
+            <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 1rem; margin-top: 1.5rem;">
+                <h4 style="color: #0c4a6e; margin-top: 0;">📊 Visual Asset Sync</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                    <div>
+                        <strong>GitHub Issues:</strong><br/>
+                        <span style="color: #059669;">✓ Images attached to issue #124</span>
+                    </div>
+                    <div>
+                        <strong>Repository:</strong><br/>
+                        <span style="color: #059669;">✓ /assets/mockups/U25/ (3 files)</span>
+                    </div>
+                    <div>
+                        <strong>Figma:</strong><br/>
+                        <span style="color: #d97706;">⏳ Link detected in issue metadata</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Progress -->
+        <section class="implementation-tracker">
+            <h2>📊 Implementation Progress</h2>
+            <div class="implementation-bar">
+                <div class="implementation-progress" id="implementationProgress"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                <span id="progressText">0% Complete</span>
+                <span style="color: #64748b;">Updated 2 hours ago</span>
+            </div>
+            
+            <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 1rem; margin-top: 1.5rem;">
+                <p style="margin: 0; color: #0c4a6e; font-size: 0.9rem;">
+                    <strong>💡 Tip:</strong> This progress is calculated from GitHub issue checkboxes. 
+                    Update task completion in the linked GitHub issue to see real-time progress here!
+                </p>
+            </div>
+        </section>
+
+
+        <!-- Interaction States -->
+        <section class="content-section">
+            <h2>🎯 Interaction States</h2>
+            <div class="states-container">
+                <div class="state-box state-default">Default</div>
+                <div class="state-box state-hover">Hover</div>
+                <div class="state-box state-active">Active</div>
+                <div class="state-box state-disabled">Disabled</div>
+            </div>
+        </section>
+
+        <!-- GitHub Integration -->
+        <section class="github-integration">
+            <h2>🐙 GitHub Integration</h2>
+            <p style="margin-bottom: 1rem;">This component is used in the following steps:</p>
+            <div class="step-usage-list">
+                <a href="#" class="step-tag">S1</a>
+                <a href="#" class="step-tag">S5</a>
+                <a href="#" class="step-tag">S9</a>
+                <a href="#" class="step-tag">S12</a>
+            </div>
+            <div style="margin-top: 2rem;">
+                <a href="#" id="githubIssueLink" style="color: #58a6ff; text-decoration: none;">
+                    View GitHub Issue #124 →
+                </a>
+            </div>
+        </section>
+
+        <!-- Discussion -->
+        <section class="discussion-section">
+            <h2>💬 Design Discussion</h2>
+            <div id="commentsContainer">
+                <p style="text-align: center; color: #64748b;">Loading discussions from GitHub...</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Configuration
+        const GITHUB_API = 'https://api.github.com';
+        const REPO_OWNER = '3Stones-io';
+        const REPO_NAME = 'bemeda_personal';
+        const COMPONENT_ID = 'U25'; // This should be dynamic
+        const ISSUE_NUMBER = 124; // This should be dynamic
+        
+        // Visual asset loading functions
+        async function loadFromGitHubIssue() {
+            try {
+                // Simulate loading from GitHub issue
+                const mockImages = [
+                    'https://via.placeholder.com/600x400/ec4899/white?text=GitHub+Issue+Mockup',
+                    'https://via.placeholder.com/600x400/8b5cf6/white?text=Design+Iteration+2'
+                ];
+                
+                displayMockup(mockImages[0], 'Loaded from GitHub Issue #' + ISSUE_NUMBER);
+            } catch (error) {
+                console.error('Failed to load from GitHub issue:', error);
+            }
+        }
+        
+        async function loadFromRepository() {
+            try {
+                // Simulate loading from repository
+                const mockupUrl = 'https://via.placeholder.com/600x400/10b981/white?text=Repository+Asset';
+                displayMockup(mockupUrl, 'Loaded from /assets/mockups/' + COMPONENT_ID + '/');
+            } catch (error) {
+                console.error('Failed to load from repository:', error);
+            }
+        }
+        
+        async function loadFromFigma() {
+            try {
+                // Simulate Figma integration
+                const figmaUrl = 'https://via.placeholder.com/600x400/f24e1e/white?text=Figma+Design';
+                displayMockup(figmaUrl, 'Loaded from Figma via GitHub metadata');
+            } catch (error) {
+                console.error('Failed to load from Figma:', error);
+            }
+        }
+        
+        function displayMockup(imageUrl, source) {
+            const container = document.getElementById('mockupContainer');
+            container.innerHTML = `
+                <img src="${imageUrl}" 
+                     alt="Component mockup" 
+                     style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <p style="margin-top: 1rem; color: #64748b; font-size: 0.875rem; text-align: center;">
+                    ${source}
+                </p>
+                <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
+                    <button onclick="zoomImage()" style="background: #ec4899; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.875rem;">
+                        🔍 Zoom
+                    </button>
+                    <button onclick="downloadImage()" style="background: #8b5cf6; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.875rem;">
+                        💾 Download
+                    </button>
+                    <button onclick="compareVersions()" style="background: #06b6d4; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.875rem;">
+                        📊 Compare
+                    </button>
+                </div>
+            `;
+        }
+        
+        function zoomImage() {
+            // Implementation for image zoom
+            alert('Zoom functionality would open image in lightbox');
+        }
+        
+        function downloadImage() {
+            // Implementation for image download
+            alert('Download functionality would save image locally');
+        }
+        
+        function compareVersions() {
+            // Implementation for version comparison
+            alert('Compare functionality would show version differences');
+        }
+        
+        // Real GitHub API integration (commented out for demo)
+        /*
+        async function loadVisualAssetsFromGitHub() {
+            try {
+                // Load issue data
+                const issueResponse = await fetch(`${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}`);
+                const issue = await issueResponse.json();
+                
+                // Extract images from issue body and comments
+                const imageRegex = /!\[.*?\]\((https:\/\/.*?\.(?:png|jpg|jpeg|gif|svg))\)/gi;
+                const images = [...issue.body.matchAll(imageRegex)];
+                
+                if (images.length > 0) {
+                    displayMockup(images[0][1], `Loaded from GitHub Issue #${ISSUE_NUMBER}`);
+                    return;
+                }
+                
+                // Try loading from repository
+                const repoResponse = await fetch(`${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/assets/mockups/${COMPONENT_ID}`);
+                const files = await repoResponse.json();
+                
+                const mockupFiles = files.filter(file => 
+                    file.name.match(/\.(png|jpg|jpeg|gif|svg)$/i)
+                );
+                
+                if (mockupFiles.length > 0) {
+                    displayMockup(mockupFiles[0].download_url, `Loaded from repository: ${mockupFiles[0].path}`);
+                    return;
+                }
+                
+                // Try extracting Figma links
+                const figmaRegex = /https:\/\/www\.figma\.com\/file\/[A-Za-z0-9]+/g;
+                const figmaLinks = issue.body.match(figmaRegex);
+                
+                if (figmaLinks && figmaLinks.length > 0) {
+                    // Would need Figma API integration
+                    displayMockup('figma-generated-image-url', 'Loaded from Figma');
+                }
+                
+            } catch (error) {
+                console.error('Error loading visual assets:', error);
+            }
+        }
+        */
+
+        // Simulate implementation progress
+        function updateProgress(percentage) {
+            document.documentElement.style.setProperty('--implementation-progress', `${percentage}%`);
+            document.getElementById('implementationProgress').style.width = `${percentage}%`;
+            document.getElementById('progressText').textContent = `${percentage}% Complete`;
+        }
+
+        // Initialize with simulated data
+        window.addEventListener('DOMContentLoaded', () => {
+            updateProgress(75);
+            
+            // Auto-load first available asset
+            setTimeout(() => {
+                loadFromGitHubIssue();
+            }, 1500);
+            
+            // Simulate loading comments
+            setTimeout(() => {
+                document.getElementById('commentsContainer').innerHTML = `
+                    <div style="border-bottom: 1px solid #f0e6ff; padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <strong>designer-jane</strong> <span style="color: #64748b;">• 2 days ago</span>
+                        <p style="margin-top: 0.5rem;">Updated the color scheme to match brand guidelines. The hover states now use the secondary gradient.</p>
+                    </div>
+                    <div>
+                        <strong>dev-john</strong> <span style="color: #64748b;">• 1 day ago</span>
+                        <p style="margin-top: 0.5rem;">Implementation is 75% complete. Still need to add keyboard navigation support.</p>
+                    </div>
+                `;
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

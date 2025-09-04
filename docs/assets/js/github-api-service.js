@@ -96,28 +96,52 @@ class GitHubAPIService {
     async findStepIssue(stepId) {
         const cacheKey = `step-${stepId}`;
         return this.getCachedData(cacheKey, async () => {
-            // Search for issues with step label and title containing stepId
-            const searchQuery = `repo:${this.owner}/${this.repo} is:issue label:step:${stepId} in:title`;
-            const response = await this.makeRequest(`/search/issues?q=${encodeURIComponent(searchQuery)}&sort=updated&order=desc`);
-            
-            if (!response.ok) {
-                throw new Error(`API request failed: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            // If no results with exact label, try searching by title
-            if (data.total_count === 0) {
-                const titleSearchQuery = `repo:${this.owner}/${this.repo} is:issue "${stepId}:" in:title`;
-                const titleResponse = await this.makeRequest(`/search/issues?q=${encodeURIComponent(titleSearchQuery)}&sort=updated&order=desc`);
-                
-                if (titleResponse.ok) {
-                    const titleData = await titleResponse.json();
-                    return titleData.items.length > 0 ? titleData.items[0] : null;
+            // First check if we have a known issue number in the mapping
+            if (window.stepIssueMapping && window.stepIssueMapping[stepId]) {
+                const mapping = window.stepIssueMapping[stepId];
+                if (mapping.issueNumber) {
+                    try {
+                        const response = await this.makeRequest(`/repos/${this.owner}/${this.repo}/issues/${mapping.issueNumber}`);
+                        if (response.ok) {
+                            return await response.json();
+                        }
+                    } catch (error) {
+                        console.warn(`Failed to fetch issue #${mapping.issueNumber}:`, error);
+                    }
                 }
             }
             
-            return data.items.length > 0 ? data.items[0] : null;
+            // Try multiple search strategies
+            const searchStrategies = [
+                // Strategy 1: Look for step label
+                `repo:${this.owner}/${this.repo} is:issue label:step:${stepId}`,
+                // Strategy 2: Look for exact title match
+                `repo:${this.owner}/${this.repo} is:issue "${stepId}:" in:title`,
+                // Strategy 3: Look for step ID anywhere in title
+                `repo:${this.owner}/${this.repo} is:issue ${stepId} in:title`
+            ];
+            
+            for (const searchQuery of searchStrategies) {
+                try {
+                    const response = await this.makeRequest(`/search/issues?q=${encodeURIComponent(searchQuery)}&sort=updated&order=desc`);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.total_count > 0) {
+                            // Filter to find best match
+                            const exactMatch = data.items.find(item => 
+                                item.title.startsWith(`${stepId}:`) || 
+                                item.labels.some(label => label.name === `step:${stepId}`)
+                            );
+                            return exactMatch || data.items[0];
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Search strategy failed: ${searchQuery}`, error);
+                }
+            }
+            
+            return null;
         });
     }
 
@@ -174,9 +198,43 @@ class GitHubAPIService {
         try {
             console.log(`Fetching data for step: ${stepId}`);
             
-            // Get main step issue
+            // First try fallback data if available (avoids CORS issues)
+            if (window.getFallbackStepData) {
+                const fallbackData = window.getFallbackStepData(stepId);
+                if (fallbackData) {
+                    console.log(`Using fallback data for ${stepId}`);
+                    return fallbackData;
+                }
+            }
+            
+            // Try to get main step issue from API
             const issue = await this.findStepIssue(stepId);
             if (!issue) {
+                // If no issue found via API, check if we have mapping info
+                if (window.stepIssueMapping && window.stepIssueMapping[stepId]) {
+                    const mapping = window.stepIssueMapping[stepId];
+                    if (mapping.issueNumber) {
+                        return {
+                            stepId,
+                            issue: {
+                                number: mapping.issueNumber,
+                                title: `${stepId}: ${mapping.title}`,
+                                state: 'open',
+                                html_url: `https://github.com/3Stones-io/bemeda_personal/issues/${mapping.issueNumber}`,
+                                created_at: new Date().toISOString(),
+                                updated_at: new Date().toISOString(),
+                                body: `Step description for ${stepId}: ${mapping.title}`,
+                                labels: [{ name: `step:${stepId}`, color: '1976d2' }],
+                                user: { login: 'system', avatar_url: '' }
+                            },
+                            comments: [],
+                            crossReferences: [],
+                            lastUpdated: new Date().toISOString(),
+                            dataSource: 'mapping'
+                        };
+                    }
+                }
+                
                 return {
                     error: 'Issue not found',
                     stepId,
@@ -195,14 +253,26 @@ class GitHubAPIService {
                 issue,
                 comments,
                 crossReferences: crossRefs,
-                lastUpdated: new Date().toISOString()
+                lastUpdated: new Date().toISOString(),
+                dataSource: 'api'
             };
         } catch (error) {
             console.error(`Error fetching step data for ${stepId}:`, error);
+            
+            // Try fallback data on API error
+            if (window.getFallbackStepData) {
+                const fallbackData = window.getFallbackStepData(stepId);
+                if (fallbackData) {
+                    console.log(`Using fallback data for ${stepId} due to API error`);
+                    fallbackData.dataSource = 'fallback-error';
+                    return fallbackData;
+                }
+            }
+            
             return {
                 error: error.message,
                 stepId,
-                message: 'Failed to load GitHub data. Please check your connection and try again.'
+                message: 'Failed to load GitHub data. Using cached/fallback data if available.'
             };
         }
     }

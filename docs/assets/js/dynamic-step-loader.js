@@ -42,17 +42,30 @@ class DynamicStepLoader {
         
         this.isLoading = true;
         this.showLoadingState();
+        
+        console.log(`[DynamicStepLoader] Starting to load data for step: ${this.stepId}`);
 
         try {
+            // Check if dependencies are loaded
+            console.log('[DynamicStepLoader] Dependencies check:', {
+                githubAPI: !!window.githubAPI,
+                stepMapping: !!window.stepIssueMapping,
+                fallbackData: !!window.githubFallbackData,
+                getFallbackFn: !!window.getFallbackStepData
+            });
+            
             const data = await window.githubAPI.getStepData(this.stepId);
+            console.log(`[DynamicStepLoader] Received data for ${this.stepId}:`, data);
             
             if (data.error) {
+                console.warn(`[DynamicStepLoader] Error for ${this.stepId}:`, data.error, data.message);
                 this.showError(data.message || data.error);
             } else {
+                console.log(`[DynamicStepLoader] Successfully loaded data for ${this.stepId} from ${data.dataSource}`);
                 this.renderStepData(data);
             }
         } catch (error) {
-            console.error('Error loading step data:', error);
+            console.error('[DynamicStepLoader] Exception loading step data:', error);
             this.showError('Failed to load step data from GitHub');
         } finally {
             this.isLoading = false;
@@ -96,28 +109,62 @@ class DynamicStepLoader {
         if (githubSection) {
             const content = githubSection.querySelector('.github-content');
             if (content) {
+                // Get step info from mapping
+                const stepInfo = window.getStepIssueInfo ? window.getStepIssueInfo(this.stepId) : null;
+                
                 content.innerHTML = `
-                    <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 6px; padding: 12px; margin: 10px 0;">
-                        <p><strong>⚠️ Unable to load live GitHub content</strong></p>
-                        <p style="font-size: 0.9em; margin: 8px 0 0;">${message}</p>
-                        <button onclick="stepLoader.loadStepData()" style="margin-top: 8px; padding: 4px 8px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; cursor: pointer;">
-                            🔄 Retry
-                        </button>
+                    <div style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 6px; padding: 12px; margin: 10px 0;">
+                        <p><strong>📋 GitHub Issue Pending</strong></p>
+                        <p style="font-size: 0.9em; margin: 8px 0;">${message}</p>
+                        ${stepInfo ? `
+                            <p style="font-size: 0.9em; margin: 8px 0;">Expected issue title: "${this.stepId}: ${stepInfo.title}"</p>
+                        ` : ''}
+                        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button onclick="stepLoader.loadStepData()" style="padding: 4px 12px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; cursor: pointer;">
+                                🔄 Retry
+                            </button>
+                            <a href="https://github.com/3Stones-io/bemeda_personal/issues/new?labels=step:${this.stepId}&title=${encodeURIComponent(this.stepId + ': ' + (stepInfo ? stepInfo.title : 'Step Title'))}" 
+                               target="_blank" 
+                               style="padding: 4px 12px; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 4px; color: white; text-decoration: none; display: inline-block;">
+                                ➕ Create Issue
+                            </a>
+                        </div>
                     </div>
-                    <p><em>Step page will continue to work with placeholder content.</em></p>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 6px; padding: 12px; margin: 12px 0;">
+                        <p style="margin: 0 0 8px;"><strong>📝 Placeholder Content:</strong></p>
+                        <p style="font-size: 0.9em; margin: 4px 0;">This step is part of the ${this.getActorName()} journey in the Bemeda platform.</p>
+                        <p style="font-size: 0.9em; margin: 4px 0;">The GitHub issue for this step will contain:</p>
+                        <ul style="font-size: 0.85em; margin: 8px 0; padding-left: 20px;">
+                            <li>Detailed step description and requirements</li>
+                            <li>Acceptance criteria and test cases</li>
+                            <li>Links to related UX and Technical components</li>
+                            <li>Discussion and implementation notes</li>
+                        </ul>
+                    </div>
                 `;
             }
         }
+    }
+    
+    /**
+     * Get actor name based on step ID
+     */
+    getActorName() {
+        const stepNum = parseInt(this.stepId.substring(1));
+        if (stepNum >= 1 && stepNum <= 8) return 'Healthcare Organisation';
+        if (stepNum >= 9 && stepNum <= 14) return 'JobSeeker';
+        if (stepNum >= 15 && stepNum <= 19) return 'Sales Team';
+        return 'Platform';
     }
 
     /**
      * Render step data from GitHub
      */
     renderStepData(data) {
-        const { issue, comments, crossReferences, lastUpdated } = data;
+        const { issue, comments, crossReferences, lastUpdated, dataSource } = data;
         
         // Update GitHub integration section
-        this.renderGitHubSection(issue, comments, crossReferences, lastUpdated);
+        this.renderGitHubSection(issue, comments, crossReferences, lastUpdated, dataSource);
         
         // Update step metadata if needed
         this.updateStepMetadata(issue);
@@ -132,7 +179,7 @@ class DynamicStepLoader {
     /**
      * Render the main GitHub integration section
      */
-    renderGitHubSection(issue, comments, crossReferences, lastUpdated) {
+    renderGitHubSection(issue, comments, crossReferences, lastUpdated, dataSource = 'api') {
         const githubSection = document.querySelector('.github-integration');
         if (!githubSection) return;
 
@@ -142,6 +189,13 @@ class DynamicStepLoader {
         const lastUpdateTime = new Date(lastUpdated).toLocaleString();
         const commentsCount = comments.length;
         const crossRefCount = crossReferences.length;
+        
+        const dataSourceBadge = {
+            'api': '🟢 Live API',
+            'fallback': '🔵 Cached Data',
+            'fallback-error': '🟡 Offline Mode',
+            'mapping': '📋 Placeholder'
+        }[dataSource] || '📡 Unknown';
 
         content.innerHTML = `
             <div style="display: flex; justify-content: between; align-items: flex-start; gap: 20px; margin-bottom: 16px;">
@@ -158,6 +212,7 @@ class DynamicStepLoader {
                     </div>
                 </div>
                 <div style="text-align: right; font-size: 0.85em; color: #94a3b8;">
+                    ${dataSourceBadge}<br/>
                     Last sync: ${lastUpdateTime}
                     <br/>
                     <button onclick="stepLoader.loadStepData()" style="margin-top: 4px; padding: 2px 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: #e2e8f0; cursor: pointer; font-size: 0.8em;">
@@ -344,6 +399,15 @@ class DynamicStepLoader {
 
 // Create global instance and auto-initialize
 window.stepLoader = new DynamicStepLoader();
+
+// Load step mapping and fallback data scripts first
+const mappingScript = document.createElement('script');
+mappingScript.src = '../../assets/js/step-issue-mapping.js';
+document.head.appendChild(mappingScript);
+
+const fallbackScript = document.createElement('script');
+fallbackScript.src = '../../assets/js/github-fallback-data.js';
+document.head.appendChild(fallbackScript);
 
 // Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {

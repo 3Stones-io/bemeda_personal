@@ -1,0 +1,55 @@
+name: Add Issues to Bemeda Platform Project
+
+on:
+  issues:
+    types:
+      - opened
+      - labeled
+
+jobs:
+  add-to-project:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add to Bemeda Platform Project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          # Get project URL from organization projects page
+          project-url: https://github.com/orgs/3Stones-io/projects/12
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Only add issues with our component labels
+          labeled: step, component:ux, component:tech
+          label-operator: OR
+      
+      - name: Set Component Type Field
+        if: success()
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/orgs/3Stones-io/projects/12
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          item-id: ${{ github.event.issue.node_id }}
+          # Set component type based on labels
+          field-keys: Component Type
+          field-values: |
+            ${{
+              contains(github.event.issue.labels.*.name, 'step') && 'User Story' ||
+              contains(github.event.issue.labels.*.name, 'component:ux') && 'UX/UI Design' ||
+              contains(github.event.issue.labels.*.name, 'component:tech') && 'Technical Spec' ||
+              'Feature'
+            }}
+      
+      - name: Set Domain Field
+        if: success()
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/orgs/3Stones-io/projects/12
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          item-id: ${{ github.event.issue.node_id }}
+          field-keys: Domain
+          field-values: |
+            ${{
+              contains(github.event.issue.labels.*.name, 'step') && 'Scenarios' ||
+              contains(github.event.issue.labels.*.name, 'component:ux') && 'UX/UI' ||
+              contains(github.event.issue.labels.*.name, 'component:tech') && 'Technical' ||
+              'Platform Infrastructure'
+            }}

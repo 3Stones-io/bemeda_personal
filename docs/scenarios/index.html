@@ -132,6 +132,39 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            position: relative;
+        }
+        
+        /* Status Indicator */
+        .status-indicator {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+        }
+        
+        .status-indicator.todo {
+            background: #6b7280; /* Gray */
+        }
+        
+        .status-indicator.in-progress {
+            background: #3b82f6; /* Blue */
+        }
+        
+        .status-indicator.review {
+            background: #f59e0b; /* Amber */
+        }
+        
+        .status-indicator.done {
+            background: #10b981; /* Green */
+        }
+        
+        .status-indicator.blocked {
+            background: #ef4444; /* Red */
         }
         
         .process-step:hover {
@@ -247,8 +280,10 @@
                 event.stopPropagation();
             }
             
-            // Navigate to UX page with anchor to specific step
-            window.location.href = `../uxui/index.html#${stepId.toLowerCase()}`;
+            // Search for UX components that support this step
+            const searchQuery = `is:issue label:component:ux label:supports:${stepId}`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            window.open(url, '_blank');
         }
         
         function openTech(stepId, event) {
@@ -257,8 +292,10 @@
                 event.stopPropagation();
             }
             
-            // Navigate to Technical page with anchor to specific step
-            window.location.href = `../technical/index.html#${stepId.toLowerCase()}`;
+            // Search for technical components that support this step
+            const searchQuery = `is:issue label:component:tech label:supports:${stepId}`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            window.open(url, '_blank');
         }
         
         function openStepDetails(stepId, event) {
@@ -267,8 +304,8 @@
                 event.stopPropagation();
             }
             
-            // Navigate to individual step page (will create these as placeholders)
-            window.location.href = `steps/${stepId}.html`;
+            // Open GitHub issue for this step
+            openGitHub(stepId, event);
         }
         
         // Handle clicking on step card (not on buttons)
@@ -278,6 +315,49 @@
                 openStepDetails(stepId, event);
             }
         }
+        
+        // Sample status data (in production, this would come from GitHub API)
+        const stepStatuses = {
+            'S1': 'done',
+            'S2': 'done',
+            'S3': 'in-progress',
+            'S4': 'in-progress',
+            'S5': 'review',
+            'S6': 'todo',
+            'S7': 'todo',
+            'S8': 'todo',
+            'S9': 'done',
+            'S10': 'done',
+            'S11': 'in-progress',
+            'S12': 'todo',
+            'S13': 'todo',
+            'S14': 'todo',
+            'S15': 'done',
+            'S16': 'done',
+            'S17': 'in-progress',
+            'S18': 'todo',
+            'S19': 'todo'
+        };
+        
+        // Update all status indicators
+        function updateAllStatuses() {
+            // Add status indicator to each step
+            document.querySelectorAll('.process-step').forEach(stepEl => {
+                const stepIdEl = stepEl.querySelector('.step-id');
+                if (stepIdEl) {
+                    const stepId = stepIdEl.textContent.trim();
+                    if (stepStatuses[stepId] && !stepEl.querySelector('.status-indicator')) {
+                        const statusDiv = document.createElement('div');
+                        statusDiv.className = 'status-indicator ' + stepStatuses[stepId];
+                        statusDiv.title = 'Status: ' + stepStatuses[stepId].replace('-', ' ');
+                        stepEl.appendChild(statusDiv);
+                    }
+                }
+            });
+        }
+        
+        // Initialize statuses on page load
+        document.addEventListener('DOMContentLoaded', updateAllStatuses);
     </script>
 </head>
 <body>

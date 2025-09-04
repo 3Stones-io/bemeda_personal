@@ -3,32 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Dashboard - Bemeda Platform</title>
+    <title>📊 Project Dashboard - USE Platform</title>
     <link rel="stylesheet" href="../assets/css/color-system.css">
-    <link rel="stylesheet" href="../assets/css/simple-kanban.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--color-text-primary);
-            background: var(--color-bg-secondary);
-            margin: 0;
-            padding: 0;
+            background-color: var(--color-bg-secondary);
         }
-        
+
         .container {
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
-        /* Compact Header */
+
+        /* Header matching main site */
         .header {
             text-align: center;
             margin-bottom: 40px;
             padding: 30px 0 20px;
         }
-        
+
         .header h1 {
             font-size: 2.5rem;
             font-weight: 700;
@@ -36,330 +39,601 @@
             margin-bottom: 8px;
             letter-spacing: -1px;
         }
-        
+
         .header p {
             font-size: 1.1rem;
             color: var(--color-text-secondary);
         }
-        
-        .dashboard-nav {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 40px;
-            background: var(--color-bg-primary);
-            padding: 12px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-light);
-        }
-        
-        .nav-tab {
-            padding: 8px 20px;
-            background: var(--color-bg-tertiary);
-            border: none;
-            border-radius: 8px;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        
-        .nav-tab:hover {
-            background: var(--color-bg-hover);
-            color: var(--color-text-primary);
-        }
-        
-        .nav-tab.active {
-            background: var(--color-business);
-            color: white;
-        }
-        
-        .nav-tab.business.active { background: var(--color-business); }
-        .nav-tab.ux.active { background: var(--color-ux); }
-        .nav-tab.technical.active { background: var(--color-tech); }
-        
+
+        /* Kanban sections */
         .kanban-section {
             display: none;
             background: var(--color-bg-primary);
             border-radius: 16px;
-            padding: 24px;
+            padding: 28px;
             box-shadow: var(--shadow-medium);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            border: 2px solid transparent;
         }
-        
+
         .kanban-section.active {
             display: block;
+            animation: slideIn 0.3s ease-out;
         }
-        
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .section-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .domain-icon {
-            font-size: 1.8rem;
-        }
-        
-        .section-controls {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .control-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: var(--color-bg-tertiary);
-            border: 1px solid var(--color-border-light);
-            border-radius: 6px;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        
-        .control-btn:hover {
-            background: var(--color-bg-hover);
-            border-color: var(--color-border-medium);
-            color: var(--color-text-primary);
-        }
-        
-        /* Compact Kanban for Dashboard */
-        .compact-kanban {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        
-        .compact-column {
-            background: var(--color-bg-tertiary);
-            border-radius: 10px;
-            padding: 16px;
-        }
-        
-        .compact-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
             border-bottom: 2px solid var(--color-border-light);
         }
-        
-        .compact-header h4 {
-            margin: 0;
-            font-size: 1rem;
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             color: var(--color-text-primary);
         }
-        
-        .compact-count {
-            background: var(--color-bg-hover);
-            color: var(--color-text-secondary);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
+
+        .domain-icon {
+            font-size: 2.2rem;
         }
-        
-        .compact-cards {
+
+        .section-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border-light);
+            border-radius: 8px;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: var(--color-bg-primary);
+            border-color: var(--color-link);
+            color: var(--color-link);
+            transform: translateX(4px);
+        }
+
+        /* Kanban Board */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .kanban-column {
+            background: var(--color-bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--color-border-light);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .column-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .column-count {
+            background: var(--color-link);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .cards-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 1rem;
+            min-height: 100px;
         }
-        
-        .compact-card {
+
+        /* Component cards matching sub-index style */
+        .process-step {
             background: var(--color-bg-primary);
-            border-radius: 6px;
+            border: 1px solid var(--color-border-light);
+            border-radius: 8px;
             padding: 12px;
-            box-shadow: var(--shadow-light);
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
         }
-        
-        .compact-card:hover {
-            box-shadow: var(--shadow-medium);
+
+        .process-step:hover {
+            background: var(--color-bg-hover);
             transform: translateY(-1px);
+            border-color: var(--color-link);
         }
-        
-        .compact-card.business { border-left-color: var(--color-business); }
-        .compact-card.ux { border-left-color: var(--color-ux); }
-        .compact-card.technical { border-left-color: var(--color-tech); }
-        
-        .card-id {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--color-text-secondary);
-            margin-bottom: 4px;
+
+        .step-id {
             font-family: 'Monaco', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: inline-block;
+            margin-bottom: 6px;
         }
-        
-        .card-title {
+
+        .step-text {
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--color-text-primary);
             margin-bottom: 6px;
-            line-height: 1.2;
         }
-        
-        .more-link {
-            text-align: center;
-            margin-top: 12px;
+
+        .step-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
         }
-        
-        .more-link a {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--color-link);
-            text-decoration: none;
-            font-size: 0.85rem;
+
+        .step-button {
+            padding: 3px 8px;
+            font-size: 0.7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
             font-weight: 500;
         }
-        
-        .more-link a:hover {
-            color: var(--color-link-hover);
+
+        .step-button.ux {
+            background: var(--color-ux-light);
+            color: var(--color-ux-dark);
         }
-        
-        @media (max-width: 1200px) {
-            .compact-kanban {
+
+        .step-button.tech {
+            background: var(--color-tech-light);
+            color: var(--color-tech-dark);
+        }
+
+        .step-button.github {
+            background: var(--color-bg-hover);
+            color: var(--color-text-secondary);
+        }
+
+        .step-button.details {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .step-button:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        /* Badge styles */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .s { background: var(--color-business); color: white; }
+        .u { background: var(--color-ux); color: white; }
+        .t { background: var(--color-tech); color: white; }
+
+        /* Navigation matching main site style */
+        .domain-nav {
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .nav-tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--color-bg-tertiary);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: var(--color-bg-primary);
+            border-color: var(--color-link);
+            color: var(--color-link);
+            transform: translateX(4px);
+        }
+
+        .nav-tab.active {
+            border: 2px solid var(--color-primary);
+            background: #eff6ff;
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .nav-tab.scenarios.active {
+            border-color: var(--color-business-dark);
+            background: #eff6ff;
+            color: var(--color-business-dark);
+        }
+
+        .nav-tab.ux.active {
+            border-color: var(--color-ux-dark);
+            background: #fce7f3;
+            color: var(--color-ux-dark);
+        }
+
+        .nav-tab.technical.active {
+            border-color: var(--color-tech-dark);
+            background: #d1fae5;
+            color: var(--color-tech-dark);
+        }
+
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .domain-nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .kanban-board {
                 grid-template-columns: 1fr;
             }
             
-            .dashboard-nav {
+            .section-controls {
                 flex-wrap: wrap;
+                gap: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Compact Header -->
+        <!-- Header matching main site -->
         <div class="header">
             <h1>📊 Project Dashboard</h1>
-            <p>Real-time kanban views across all domains with GitHub integration</p>
+            <p>Real-time overview of your USE components with live GitHub integration</p>
+            <div style="margin-top: 20px;">
+                <a href="https://github.com/orgs/3Stones-io/projects/12" target="_blank" 
+                   style="display: inline-flex; align-items: center; gap: 8px; background: var(--color-primary); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.2s;">
+                    <span>🐙</span> View Full Project on GitHub
+                </a>
+            </div>
         </div>
-        
-        <!-- Quick Links Navigation -->
-        <nav class="dashboard-nav">
-            <a href="#business" class="nav-tab business active" onclick="switchDomain('business', this)">
-                📋 Business Logic
-            </a>
-            <a href="#ux" class="nav-tab ux" onclick="switchDomain('ux', this)">
-                🎨 UX/UI Design  
-            </a>
-            <a href="#technical" class="nav-tab technical" onclick="switchDomain('technical', this)">
-                ⚙️ Technical
-            </a>
-            <a href="../index.html" class="nav-tab">
-                ← Back
+
+
+        <!-- Navigation matching main site quick links -->
+        <nav class="domain-nav">
+            <button class="nav-tab scenarios active" onclick="switchDomain('scenarios', this)">
+                <span class="quick-link-icon">📋</span> Scenario Steps (S1-S∞)
+            </button>
+            <button class="nav-tab ux" onclick="switchDomain('ux', this)">
+                <span class="quick-link-icon">🎨</span> UX Components (U1-U∞)
+            </button>
+            <button class="nav-tab technical" onclick="switchDomain('technical', this)">
+                <span class="quick-link-icon">⚙️</span> Technical (T1-T∞)
+            </button>
+            <a href="../index.html" class="nav-tab" style="border: 2px solid var(--color-primary); background: #eff6ff; color: var(--color-primary); font-weight: 600;">
+                <span class="quick-link-icon">←</span> Back to Home
             </a>
         </nav>
-        
-        <!-- Business Logic Kanban -->
-        <div id="business-kanban" class="kanban-section active" data-prefix="US">
+
+        <!-- Scenario Steps Dashboard -->
+        <section id="scenarios-kanban" class="kanban-section active">
             <div class="section-header">
                 <h2 class="section-title">
                     <span class="domain-icon">📋</span>
-                    Business Logic Components
+                    Scenario Steps
                 </h2>
                 <div class="section-controls">
-                    <button onclick="refreshDomain('business')" class="control-btn">
+                    <button onclick="refreshDomain('scenarios')" class="control-btn">
                         <span>🔄</span> Refresh
                     </button>
-                    <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3Ascenarios%22+label%3A%22component%22" 
+                    <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aopen+is%3Aissue+S" 
                        target="_blank" class="control-btn">
-                        <span>📊</span> GitHub Project
+                        <span>🐙</span> GitHub Issues
+                    </a>
+                    <a href="../scenarios/index.html" class="control-btn">
+                        <span>📋</span> Full View
                     </a>
                 </div>
             </div>
-            <div id="business-board" class="compact-kanban">
+            <div id="scenarios-board" class="kanban-board">
                 <!-- Will be populated by JavaScript -->
-                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--color-text-secondary);">
-                    Loading business components...
-                </div>
             </div>
-        </div>
-        
-        <!-- UX/UI Design Kanban -->
-        <div id="ux-kanban" class="kanban-section" data-prefix="UX">
+        </section>
+
+        <!-- UX Components Dashboard -->
+        <section id="ux-kanban" class="kanban-section">
             <div class="section-header">
                 <h2 class="section-title">
                     <span class="domain-icon">🎨</span>
-                    UX/UI Design Components
+                    UX Components
                 </h2>
                 <div class="section-controls">
                     <button onclick="refreshDomain('ux')" class="control-btn">
                         <span>🔄</span> Refresh
                     </button>
-                    <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3Aux-ui%22+label%3A%22component%22" 
+                    <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aopen+label%3Acomponent%3Aux" 
                        target="_blank" class="control-btn">
-                        <span>📊</span> GitHub Project
+                        <span>🐙</span> GitHub Issues
+                    </a>
+                    <a href="../uxui/index.html" class="control-btn">
+                        <span>🎨</span> Full View
                     </a>
                 </div>
             </div>
-            <div id="ux-board" class="compact-kanban">
+            <div id="ux-board" class="kanban-board">
                 <!-- Will be populated by JavaScript -->
-                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--color-text-secondary);">
-                    Loading UX components...
-                </div>
             </div>
-        </div>
-        
-        <!-- Technical Implementation Kanban -->
-        <div id="technical-kanban" class="kanban-section" data-prefix="T_S">
+        </section>
+
+        <!-- Technical Components Dashboard -->
+        <section id="technical-kanban" class="kanban-section">
             <div class="section-header">
                 <h2 class="section-title">
                     <span class="domain-icon">⚙️</span>
-                    Technical Implementation Components
+                    Technical Components
                 </h2>
                 <div class="section-controls">
                     <button onclick="refreshDomain('technical')" class="control-btn">
                         <span>🔄</span> Refresh
                     </button>
-                    <a href="https://github.com/orgs/3Stones-io/projects/12/views/2?filterQuery=label%3A%22domain%3Atechnical%22+label%3A%22component%22" 
+                    <a href="https://github.com/3Stones-io/bemeda_personal/issues?q=is%3Aopen+label%3Acomponent%3Atech" 
                        target="_blank" class="control-btn">
-                        <span>📊</span> GitHub Project
+                        <span>🐙</span> GitHub Issues
+                    </a>
+                    <a href="../technical/index.html" class="control-btn">
+                        <span>⚙️</span> Full View
                     </a>
                 </div>
             </div>
-            <div id="technical-board" class="compact-kanban">
+            <div id="technical-board" class="kanban-board">
                 <!-- Will be populated by JavaScript -->
-                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--color-text-secondary);">
-                    Loading technical components...
-                </div>
             </div>
-        </div>
+        </section>
     </div>
-    
-    <script src="../assets/js/dashboard-kanban.js?v=3"></script>
+
     <script>
+        // Sample data matching sub-index structure
+        const sampleData = {
+            scenarios: {
+                todo: [
+                    { id: 'S3', title: 'Express initial interest', actor: '🏥 Organisation' },
+                    { id: 'S4', title: 'Ask detailed questions', actor: '🏥 Organisation' }
+                ],
+                progress: [
+                    { id: 'S2', title: 'Listen to platform overview', actor: '🏥 Organisation' },
+                    { id: 'S5', title: 'Request demo access', actor: '🏥 Organisation' }
+                ],
+                review: [
+                    { id: 'S6', title: 'Evaluate platform features', actor: '🏥 Organisation' }
+                ],
+                done: [
+                    { id: 'S1', title: 'Receive sales call', actor: '🏥 Organisation' }
+                ]
+            },
+            ux: {
+                todo: [
+                    { id: 'U4', title: 'Questions form design', type: 'mockup' },
+                    { id: 'U5', title: 'Demo access flow', type: 'flow' }
+                ],
+                progress: [
+                    { id: 'U2', title: 'Platform overview screen', type: 'mockup' },
+                    { id: 'U3', title: 'Interest capture form', type: 'wireframe' }
+                ],
+                review: [
+                    { id: 'U6', title: 'Evaluation dashboard', type: 'mockup' }
+                ],
+                done: [
+                    { id: 'U1', title: 'Call reception screen', type: 'mockup' }
+                ]
+            },
+            technical: {
+                todo: [
+                    { id: 'T4', title: 'Questions API endpoint', type: 'api' },
+                    { id: 'T5', title: 'Demo provisioning service', type: 'service' }
+                ],
+                progress: [
+                    { id: 'T2', title: 'Platform data API', type: 'api' },
+                    { id: 'T3', title: 'Interest tracking system', type: 'database' }
+                ],
+                review: [
+                    { id: 'T6', title: 'Analytics service', type: 'service' }
+                ],
+                done: [
+                    { id: 'T1', title: 'Call logging system', type: 'api' }
+                ]
+            }
+        };
+
+        // Initialize dashboard
+        function initDashboard() {
+            loadDomain('scenarios');
+        }
+
+        // Switch domain view
         function switchDomain(domain, element) {
-            // Update nav tabs
+            // Update navigation
             document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
             element.classList.add('active');
             
-            // Update kanban sections
+            // Update sections
             document.querySelectorAll('.kanban-section').forEach(section => section.classList.remove('active'));
             document.getElementById(domain + '-kanban').classList.add('active');
+            
+            loadDomain(domain);
         }
-        
-        function refreshDomain(domain) {
-            if (window.dashboardKanban) {
-                window.dashboardKanban.refreshDomain(domain);
+
+        // Load domain data
+        function loadDomain(domain) {
+            const boardElement = document.getElementById(domain + '-board');
+            const data = sampleData[domain] || {};
+            
+            boardElement.innerHTML = `
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-title">📋 To Do</div>
+                        <div class="column-count">${(data.todo || []).length}</div>
+                    </div>
+                    <div class="cards-container">
+                        ${(data.todo || []).map(item => createCard(item, domain)).join('')}
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-title">🔄 In Progress</div>
+                        <div class="column-count">${(data.progress || []).length}</div>
+                    </div>
+                    <div class="cards-container">
+                        ${(data.progress || []).map(item => createCard(item, domain)).join('')}
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-title">👀 Review</div>
+                        <div class="column-count">${(data.review || []).length}</div>
+                    </div>
+                    <div class="cards-container">
+                        ${(data.review || []).map(item => createCard(item, domain)).join('')}
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-title">✅ Done</div>
+                        <div class="column-count">${(data.done || []).length}</div>
+                    </div>
+                    <div class="cards-container">
+                        ${(data.done || []).map(item => createCard(item, domain)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create component card matching sub-index style
+        function createCard(item, domain) {
+            const badgeClass = domain === 'scenarios' ? 's' : (domain === 'ux' ? 'u' : 't');
+            const badgeText = domain === 'scenarios' ? item.id : item.id;
+            const subtitle = domain === 'scenarios' ? item.actor : 
+                           domain === 'ux' ? item.type : item.type;
+            
+            const buttons = domain === 'scenarios' ? `
+                <button class="step-button ux" onclick="openUX('${item.id}', event)" title="Related UX Components">UX</button>
+                <button class="step-button tech" onclick="openTech('${item.id}', event)" title="Related Technical Components">Tech</button>
+                <button class="step-button github" onclick="openGitHub('${item.id}', event)" title="View on GitHub">GitHub</button>
+            ` : `
+                <button class="step-button github" onclick="openGitHub('${item.id}', event)" title="View on GitHub">GitHub</button>
+            `;
+
+            return `
+                <div class="process-step" onclick="openGitHub('${item.id}', event)">
+                    <div class="step-id"><span class="badge ${badgeClass}">${badgeText}</span></div>
+                    <div class="step-text">${item.title}</div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-bottom: 8px;">${subtitle}</div>
+                    <div class="step-actions">
+                        ${buttons}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Action functions - all redirect to GitHub
+        function openDetails(id, domain, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
             }
+            openGitHub(id, event);
         }
+
+        function openGitHub(componentId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const searchQuery = `is:issue ${componentId}`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            window.open(url, '_blank');
+        }
+
+        function openUX(stepId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            // Search for UX components that support this step
+            const searchQuery = `is:issue label:component:ux label:supports:${stepId}`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            window.open(url, '_blank');
+        }
+
+        function openTech(stepId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            // Search for technical components that support this step
+            const searchQuery = `is:issue label:component:tech label:supports:${stepId}`;
+            const url = `https://github.com/3Stones-io/bemeda_personal/issues?q=${encodeURIComponent(searchQuery)}`;
+            window.open(url, '_blank');
+        }
+
+        function refreshDomain(domain) {
+            const boardElement = document.getElementById(domain + '-board');
+            boardElement.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Refreshing...</div>';
+            
+            setTimeout(() => {
+                loadDomain(domain);
+            }, 1000);
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>
 </html>

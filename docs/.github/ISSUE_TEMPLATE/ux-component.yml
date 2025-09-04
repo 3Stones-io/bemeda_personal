@@ -1,0 +1,55 @@
+name: "🎨 UX Component (U)"
+description: "Define a UX/UI component"
+title: "[U#] "
+labels: ["component:ux", "domain:ux-ui", "status:todo"]
+body:
+  - type: input
+    id: component_id
+    attributes:
+      label: Component ID
+      description: "U1-U99"
+      placeholder: "U1"
+    validations:
+      required: true
+  
+  - type: input
+    id: title
+    attributes:
+      label: Component Title
+      placeholder: "Job posting form"
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: type
+    attributes:
+      label: Component Type
+      options:
+        - Form
+        - List/Table
+        - Dashboard
+        - Navigation
+        - Modal/Dialog
+        - Card/Widget
+    validations:
+      required: true
+  
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "What does this component do?"
+      placeholder: "Form for healthcare organisations to post job openings..."
+    validations:
+      required: true
+  
+  - type: textarea
+    id: fields_elements
+    attributes:
+      label: Key Fields/Elements
+      description: "List main UI elements"
+      placeholder: |
+        - Job title input
+        - Department dropdown
+        - Salary range
+        - Submit button

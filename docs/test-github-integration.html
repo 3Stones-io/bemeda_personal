@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test GitHub Integration</title>
+    <link rel="stylesheet" href="assets/css/color-system.css">
+    <script src="assets/js/github-api-service.js"></script>
+    <script src="assets/js/step-issue-mapping.js"></script>
+    <script src="assets/js/github-fallback-data.js"></script>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .result {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+        }
+        .success { border-color: #10b981; background: #d1fae5; }
+        .error { border-color: #ef4444; background: #fee2e2; }
+        .info { border-color: #3b82f6; background: #dbeafe; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>GitHub Integration Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Authentication Status</h2>
+        <button onclick="checkAuth()">Check Authentication</button>
+        <button onclick="setToken()">Set GitHub Token</button>
+        <div id="auth-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Step Issue Mapping</h2>
+        <button onclick="showMapping()">Show All Step Mappings</button>
+        <div id="mapping-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Step Loading</h2>
+        <select id="step-select">
+            <option value="">Select a step...</option>
+            <option value="S1">S1: Receive Bemeda sales call</option>
+            <option value="S2">S2: Listen to platform overview</option>
+            <option value="S3">S3: Discuss staffing needs</option>
+            <option value="S4">S4: Define job requirements</option>
+            <option value="S5">S5: Publish job posting</option>
+            <option value="S6">S6: Review matched candidates</option>
+            <option value="S7">S7: Conduct interviews</option>
+            <option value="S8">S8: Make hiring decision</option>
+            <option value="S9">S9: Create professional profile</option>
+            <option value="S10">S10: Receive job notification</option>
+            <option value="S11">S11: Review job details</option>
+            <option value="S12">S12: Submit application</option>
+            <option value="S13">S13: Participate in interview</option>
+            <option value="S14">S14: Accept offer & onboard</option>
+            <option value="S15">S15: Identify target healthcare organisations</option>
+            <option value="S16">S16: Make initial contact</option>
+            <option value="S17">S17: Present platform benefits</option>
+            <option value="S18">S18: Facilitate onboarding</option>
+            <option value="S19">S19: Monitor placement & metrics</option>
+        </select>
+        <button onclick="testStepLoad()">Load Step Data</button>
+        <div id="step-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Rate Limit Status</h2>
+        <button onclick="checkRateLimit()">Check Rate Limit</button>
+        <div id="rate-result" class="result"></div>
+    </div>
+
+    <script>
+        async function checkAuth() {
+            const result = document.getElementById('auth-result');
+            result.textContent = 'Checking authentication...';
+            result.className = 'result info';
+            
+            try {
+                const authStatus = await window.githubAPI.initialize();
+                if (authStatus.authenticated) {
+                    result.textContent = `✅ Authenticated as: ${authStatus.user.login}\nToken stored in localStorage`;
+                    result.className = 'result success';
+                } else {
+                    result.textContent = `⚠️ Not authenticated - Using public API (rate limited)\n${authStatus.error || 'No token found'}`;
+                    result.className = 'result error';
+                }
+            } catch (error) {
+                result.textContent = `❌ Error: ${error.message}`;
+                result.className = 'result error';
+            }
+        }
+        
+        function setToken() {
+            const token = prompt('Enter your GitHub Personal Access Token:');
+            if (token) {
+                window.githubAPI.setToken(token);
+                checkAuth();
+            }
+        }
+        
+        function showMapping() {
+            const result = document.getElementById('mapping-result');
+            result.textContent = JSON.stringify(window.stepIssueMapping, null, 2);
+            result.className = 'result info';
+        }
+        
+        async function testStepLoad() {
+            const stepId = document.getElementById('step-select').value;
+            const result = document.getElementById('step-result');
+            
+            if (!stepId) {
+                result.textContent = 'Please select a step';
+                result.className = 'result error';
+                return;
+            }
+            
+            result.textContent = `Loading data for ${stepId}...`;
+            result.className = 'result info';
+            
+            try {
+                const data = await window.githubAPI.getStepData(stepId);
+                
+                if (data.error) {
+                    result.textContent = `⚠️ ${data.message || data.error}\n\nStep ID: ${data.stepId}`;
+                    result.className = 'result error';
+                } else {
+                    const summary = {
+                        stepId: data.stepId,
+                        issue: {
+                            number: data.issue.number,
+                            title: data.issue.title,
+                            state: data.issue.state,
+                            url: data.issue.html_url,
+                            labels: data.issue.labels.map(l => l.name),
+                            created: data.issue.created_at,
+                            updated: data.issue.updated_at
+                        },
+                        comments: data.comments.length,
+                        crossReferences: data.crossReferences.length,
+                        lastUpdated: data.lastUpdated
+                    };
+                    
+                    result.textContent = `✅ Successfully loaded data for ${stepId}\n\n${JSON.stringify(summary, null, 2)}`;
+                    result.className = 'result success';
+                }
+            } catch (error) {
+                result.textContent = `❌ Error: ${error.message}`;
+                result.className = 'result error';
+            }
+        }
+        
+        async function checkRateLimit() {
+            const result = document.getElementById('rate-result');
+            result.textContent = 'Checking rate limit...';
+            result.className = 'result info';
+            
+            try {
+                const rateLimit = await window.githubAPI.getRateLimit();
+                if (rateLimit) {
+                    const core = rateLimit.rate;
+                    const resetTime = new Date(core.reset * 1000).toLocaleString();
+                    result.textContent = `API Rate Limit:\n- Limit: ${core.limit}\n- Remaining: ${core.remaining}\n- Used: ${core.used}\n- Resets at: ${resetTime}`;
+                    result.className = core.remaining > 10 ? 'result success' : 'result error';
+                } else {
+                    result.textContent = 'Unable to fetch rate limit';
+                    result.className = 'result error';
+                }
+            } catch (error) {
+                result.textContent = `❌ Error: ${error.message}`;
+                result.className = 'result error';
+            }
+        }
+        
+        // Auto-check auth on load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

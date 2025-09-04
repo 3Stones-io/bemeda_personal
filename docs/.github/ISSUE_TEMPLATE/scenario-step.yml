@@ -1,0 +1,51 @@
+name: "📋 Scenario Step (S)"
+description: "Define a scenario step"
+title: "[S#] "
+labels: ["step", "domain:scenarios", "status:todo"]
+body:
+  - type: input
+    id: step_id
+    attributes:
+      label: Step ID
+      description: "S1-S99"
+      placeholder: "S1"
+    validations:
+      required: true
+  
+  - type: input
+    id: title
+    attributes:
+      label: Step Title
+      placeholder: "Receive sales call"
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: actor
+    attributes:
+      label: Primary Actor
+      options:
+        - Organisation
+        - JobSeeker
+        - Sales Team
+    validations:
+      required: true
+  
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "What happens in this step?"
+      placeholder: "Organisation receives cold call from Bemeda sales team..."
+    validations:
+      required: true
+  
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: "When is this step complete?"
+      placeholder: |
+        - Call is answered
+        - Initial interest is gauged
+        - Next step is scheduled

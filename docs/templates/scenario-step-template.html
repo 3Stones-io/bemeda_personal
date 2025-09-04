@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[S#] Step Title - Bemeda Platform</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <style>
+        /* CSS Magic ✨ */
+        :root {
+            --completion-rate: 0%;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #f7fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Animated Header */
+        .step-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .step-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .step-id {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Completion Progress */
+        .completion-indicator {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 10px;
+            margin: 2rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .completion-bar {
+            height: 100%;
+            background: var(--success-gradient);
+            width: var(--completion-rate);
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .completion-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+        }
+
+        .completion-text {
+            text-align: center;
+            font-weight: 600;
+            color: #4a5568;
+            margin-top: 0.5rem;
+        }
+
+        /* Meta Cards */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .meta-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meta-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .meta-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .content-section:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        /* GitHub Integration */
+        .github-section {
+            background: #24292e;
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .github-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .github-stat {
+            text-align: center;
+        }
+
+        .github-stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #58a6ff;
+        }
+
+        .github-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .comment {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+        }
+
+        .comment-meta {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .comment-date {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .comment-body {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Related Links */
+        .related-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .related-link {
+            display: block;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .related-link:hover {
+            background: white;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .step-header {
+                padding: 2rem 1rem;
+            }
+            
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <a href="../index.html" class="back-link">← Home</a>
+            <a href="../integration/index.html" class="back-link">← Integration</a>
+            <a href="../scenarios/index.html" class="back-link">← Scenarios</a>
+        </nav>
+
+        <header class="step-header">
+            <div class="step-id">S# • STEP_NUMBER</div>
+            <h1>Step Title Goes Here</h1>
+            <p>Brief description of what happens in this step</p>
+        </header>
+
+        <!-- Completion Progress -->
+        <div class="completion-section">
+            <div class="completion-indicator">
+                <div class="completion-bar" id="completionBar"></div>
+            </div>
+            <div class="completion-text" id="completionText">Loading completion status...</div>
+        </div>
+
+        <!-- GitHub Features Info -->
+        <div style="background: #e6f7ff; border: 1px solid #1890ff; border-radius: 8px; padding: 1.5rem; margin: 2rem 0;">
+            <h3 style="color: #1890ff; margin-top: 0;">📊 GitHub Completion Tracking</h3>
+            <p style="margin-bottom: 1rem;">GitHub provides several ways to track completion:</p>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                <li><strong>Task Lists:</strong> Use checkboxes in issues <code>- [ ] Task</code> to track progress</li>
+                <li><strong>Milestones:</strong> Group issues and track overall percentage</li>
+                <li><strong>Projects:</strong> Kanban boards with automated progress tracking</li>
+                <li><strong>Labels:</strong> Use status labels (todo, in-progress, done)</li>
+            </ul>
+            <p style="margin-bottom: 0; margin-top: 1rem; font-style: italic;">
+                The completion bar above can be connected to any of these GitHub features!
+            </p>
+        </div>
+
+        <!-- Meta Information -->
+        <div class="meta-grid">
+            <div class="meta-card">
+                <h3>👤 Actor</h3>
+                <p><strong>Primary:</strong> Organisation/JobSeeker/Sales</p>
+                <p><strong>Role:</strong> Decision Maker</p>
+            </div>
+            
+            <div class="meta-card">
+                <h3>⏱️ Timeline</h3>
+                <p><strong>Duration:</strong> 15-30 minutes</p>
+                <p><strong>Dependencies:</strong> Previous step</p>
+            </div>
+            
+            <div class="meta-card">
+                <h3>🎯 Status</h3>
+                <p><strong>Current:</strong> In Progress</p>
+                <p><strong>Blockers:</strong> None</p>
+            </div>
+        </div>
+
+        <!-- GitHub Integration -->
+        <div class="github-section">
+            <h2>🐙 GitHub Integration</h2>
+            <div class="github-stats">
+                <div class="github-stat">
+                    <div class="github-stat-number" id="issueNumber">#123</div>
+                    <div class="github-stat-label">Issue Number</div>
+                </div>
+                <div class="github-stat">
+                    <div class="github-stat-number" id="commentCount">0</div>
+                    <div class="github-stat-label">Comments</div>
+                </div>
+                <div class="github-stat">
+                    <div class="github-stat-number" id="linkedComponents">0</div>
+                    <div class="github-stat-label">Linked Components</div>
+                </div>
+            </div>
+            <a href="#" id="githubLink" class="github-link" style="color: #58a6ff; text-decoration: none;">
+                View on GitHub →
+            </a>
+        </div>
+
+        <main>
+            <section class="content-section">
+                <h2>📝 Description</h2>
+                <p>Detailed description of what happens in this step...</p>
+                <p>This is where the main content about the step would go, explaining the context, actions, and outcomes.</p>
+            </section>
+
+            <section class="content-section">
+                <h2>✅ Acceptance Criteria</h2>
+                <ul id="acceptanceCriteria">
+                    <li>First criterion</li>
+                    <li>Second criterion</li>
+                    <li>Third criterion</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🔗 Related Components</h2>
+                <div class="related-links">
+                    <a href="#" class="related-link">
+                        <strong>← Previous:</strong> S# - Previous Step
+                    </a>
+                    <a href="#" class="related-link">
+                        <strong>→ Next:</strong> S# - Next Step
+                    </a>
+                    <a href="#" class="related-link">
+                        <strong>🎨 UX:</strong> U# - Related UI
+                    </a>
+                    <a href="#" class="related-link">
+                        <strong>⚙️ Tech:</strong> T# - Related API
+                    </a>
+                </div>
+            </section>
+
+            <!-- GitHub Comments -->
+            <section class="comments-section">
+                <h2>💬 Discussion</h2>
+                <div id="commentsContainer" class="comments">
+                    <div class="loading">Loading comments...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Configuration
+        const GITHUB_API = 'https://api.github.com';
+        const REPO_OWNER = '3Stones-io';
+        const REPO_NAME = 'bemeda_personal';
+        const ISSUE_NUMBER = 123; // This should be set dynamically based on the step
+        
+        // Simulated data for demo (replace with actual GitHub API calls)
+        const simulatedData = {
+            completion: 65,
+            comments: [
+                {
+                    author: 'team-member',
+                    date: '2024-01-15',
+                    body: 'Initial implementation completed. Ready for review.'
+                },
+                {
+                    author: 'ux-designer',
+                    date: '2024-01-16',
+                    body: 'UI components are ready. See U25 for the dashboard design.'
+                }
+            ],
+            linkedComponents: 4
+        };
+
+        // Initialize completion progress
+        function updateCompletion(percentage) {
+            document.documentElement.style.setProperty('--completion-rate', `${percentage}%`);
+            document.getElementById('completionText').textContent = `${percentage}% Complete`;
+            
+            const bar = document.getElementById('completionBar');
+            bar.style.width = `${percentage}%`;
+        }
+
+        // Load GitHub comments
+        async function loadComments() {
+            // In production, this would fetch from GitHub API:
+            // const response = await fetch(`${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}/comments`);
+            // const comments = await response.json();
+            
+            const comments = simulatedData.comments;
+            const container = document.getElementById('commentsContainer');
+            
+            if (comments.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #718096;">No comments yet. Be the first to contribute!</p>';
+                return;
+            }
+            
+            container.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <div class="comment-avatar"></div>
+                        <div class="comment-meta">
+                            <div class="comment-author">${comment.author}</div>
+                            <div class="comment-date">${comment.date}</div>
+                        </div>
+                    </div>
+                    <div class="comment-body">${comment.body}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update GitHub stats
+        function updateGitHubStats() {
+            document.getElementById('commentCount').textContent = simulatedData.comments.length;
+            document.getElementById('linkedComponents').textContent = simulatedData.linkedComponents;
+            document.getElementById('githubLink').href = `https://github.com/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}`;
+        }
+
+        // Calculate completion from checkboxes (in real implementation)
+        function calculateCompletion() {
+            // This would check GitHub issue checkboxes
+            // For now, use simulated data
+            return simulatedData.completion;
+        }
+
+        // Initialize page
+        window.addEventListener('DOMContentLoaded', () => {
+            const completion = calculateCompletion();
+            updateCompletion(completion);
+            updateGitHubStats();
+            loadComments();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+name: "⚙️ Technical Component (T)"
+description: "Define a technical component"
+title: "[T#] "
+labels: ["component:tech", "domain:technical", "status:todo"]
+body:
+  - type: input
+    id: component_id
+    attributes:
+      label: Component ID
+      description: "T1-T99"
+      placeholder: "T1"
+    validations:
+      required: true
+  
+  - type: input
+    id: title
+    attributes:
+      label: Component Title
+      placeholder: "Job matching algorithm"
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: type
+    attributes:
+      label: Component Type
+      options:
+        - API Endpoint
+        - Database Schema
+        - Service/Module
+        - Background Job
+        - Integration
+        - Algorithm
+    validations:
+      required: true
+  
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "What does this component do?"
+      placeholder: "Matches job seekers to positions based on skills and requirements..."
+    validations:
+      required: true
+  
+  - type: textarea
+    id: interface
+    attributes:
+      label: Interface/Contract
+      description: "Key inputs/outputs or API"
+      placeholder: |
+        Input: job_id, candidate_filters
+        Output: [{candidate_id, match_score}]
+        Endpoint: POST /api/matches

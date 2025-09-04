@@ -52,10 +52,15 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11.10.1/dist/mermaid.min.js"></script>
     <script>
         (function(){
-            mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' });
+            mermaid.initialize({ 
+                startOnLoad: false, 
+                securityLevel: 'loose',
+                theme: 'default',
+                flowchart: { useMaxWidth: true }
+            });
 
             Promise.all([
                 fetch('../registry/components.json').then(function(r){ return r.json(); }),
@@ -101,41 +106,425 @@
                     .filter(function(x){ return x.scenario === 'S001'; })
                     .sort(function(a,b){ return (a.id||'').localeCompare(b.id||''); });
 
-                // Assemble Mermaid mindmap
-                var lines = ['mindmap', '  S1'];
+                // Assemble Mermaid mindmap with proper syntax for v11.10.1
+                var lines = ['mindmap', '  root((S1))'];
                 stories.forEach(function(us){
                     var alias = actorAliasByUs[us.id] || us.id;
                     var actorLabel = (us.participant ? (alias + ' - ' + us.participant) : alias);
-                    lines.push('  ' + actorLabel);
+                    lines.push('    ' + actorLabel);
                     var steps = stepsByUs[us.id] || [];
                     steps.forEach(function(s){
                         var stepLabel = 'S1_' + alias + '_' + s.id;
-                        lines.push('    ' + stepLabel + ' - ' + s.title);
+                        // Escape special characters in titles for Mermaid
+                        var safeTitle = s.title.replace(/[^\w\s-]/g, '').substring(0, 30);
+                        lines.push('      ' + stepLabel + ' : ' + safeTitle);
 
                         // Related UX/Tech from US.related
                         var rel = us.related || {};
-                        (rel.ui_flows || []).forEach(function(id){ if (uiFlows[id]) lines.push('      UX ' + id + ' - ' + uiFlows[id].title); });
-                        (rel.ui_components || []).forEach(function(id){ if (uiComponents[id]) lines.push('      C ' + id + ' - ' + uiComponents[id].title); });
-                        (rel.mockups || []).forEach(function(id){ if (mockups[id]) lines.push('      M ' + id + ' - ' + mockups[id].title); });
-                        (rel.features || []).forEach(function(id){ if (features[id]) lines.push('      F ' + id + ' - ' + features[id].title); });
-                        (rel.test_cases || []).forEach(function(id){ if (tests[id]) lines.push('      T ' + id + ' - ' + tests[id].title); });
+                        (rel.ui_flows || []).forEach(function(id){ 
+                            if (uiFlows[id]) {
+                                var safeUxTitle = uiFlows[id].title.replace(/[^\w\s-]/g, '').substring(0, 25);
+                                lines.push('        UX' + id + ' : ' + safeUxTitle); 
+                            }
+                        });
+                        (rel.ui_components || []).forEach(function(id){ 
+                            if (uiComponents[id]) {
+                                var safeCompTitle = uiComponents[id].title.replace(/[^\w\s-]/g, '').substring(0, 25);
+                                lines.push('        C' + id + ' : ' + safeCompTitle); 
+                            }
+                        });
+                        (rel.mockups || []).forEach(function(id){ 
+                            if (mockups[id]) {
+                                var safeMockTitle = mockups[id].title.replace(/[^\w\s-]/g, '').substring(0, 25);
+                                lines.push('        M' + id + ' : ' + safeMockTitle); 
+                            }
+                        });
+                        (rel.features || []).forEach(function(id){ 
+                            if (features[id]) {
+                                var safeFeatureTitle = features[id].title.replace(/[^\w\s-]/g, '').substring(0, 25);
+                                lines.push('        F' + id + ' : ' + safeFeatureTitle); 
+                            }
+                        });
+                        (rel.test_cases || []).forEach(function(id){ 
+                            if (tests[id]) {
+                                var safeTestTitle = tests[id].title.replace(/[^\w\s-]/g, '').substring(0, 25);
+                                lines.push('        T' + id + ' : ' + safeTestTitle); 
+                            }
+                        });
                         // Include technical components (TC)
                         if (data.tech_components) {
-                            (rel.tech_components || []).forEach(function(id){ var tc = data.tech_components[id]; if (tc) lines.push('      TC ' + id + ' - ' + tc.title); });
+                            (rel.tech_components || []).forEach(function(id){ 
+                                var tc = data.tech_components[id]; 
+                                if (tc) {
+                                    var safeTcTitle = tc.title.replace(/[^\w\s-]/g, '').substring(0, 25);
+                                    lines.push('        TC' + id + ' : ' + safeTcTitle); 
+                                }
+                            });
                         }
                     });
                 });
 
                 var mm = document.getElementById('mindmap');
                 mm.textContent = lines.join('\n');
-                mermaid.init(undefined, mm);
-            }).catch(function(){
+                
+                // Use try-catch for better error handling
+                try {
+                    mermaid.init(undefined, mm);
+                } catch (error) {
+                    console.error('Mermaid error:', error);
+                    // Fallback to simple text display
+                    mm.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">' +
+                        '<h3>Mindmap Data</h3>' +
+                        '<pre style="text-align: left; background: var(--color-bg-secondary); padding: 16px; border-radius: 8px; overflow-x: auto;">' +
+                        lines.join('\n') + '</pre></div>';
+                }
+            }).catch(function(error){
+                console.error('Data fetch error:', error);
                 var mm = document.getElementById('mindmap');
-                mm.textContent = 'mindmap\n  S1\n  A1 - Organisation\n    S1_A1_1 - Receive call\n      UX UX001 - Sales call flow\n      F F001 - User Data Collection';
-                mermaid.init(undefined, mm);
+                // Fallback mindmap with proper syntax for v11.10.1
+                var fallbackText = 'mindmap\n  root((S1))\n    A1 : Organisation\n      S1_A1_1 : Receive call\n        UX001 : Sales call flow\n        F001 : User Data Collection';
+                mm.textContent = fallbackText;
+                
+                try {
+                    mermaid.init(undefined, mm);
+                } catch (mermaidError) {
+                    console.error('Mermaid fallback error:', mermaidError);
+                    mm.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">' +
+                        '<h3>Mindmap Data</h3>' +
+                        '<pre style="text-align: left; background: var(--color-bg-secondary); padding: 16px; border-radius: 8px; overflow-x: auto;">' +
+                        fallbackText + '</pre></div>';
+                }
             });
         })();
     </script>
+
+        <!-- USE vs BDD Comparison Table -->
+        <section style="background: var(--color-bg-primary); border-radius: 16px; padding: 32px; margin-bottom: 40px; border-left: 4px solid #8b5cf6;">
+            <h2 style="color: #8b5cf6; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                🔄 USE vs BDD: Comprehensive Comparison & Learning Opportunities
+            </h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 24px; font-size: 1.05rem; line-height: 1.7;">
+                Understanding the relationship between your USE system and traditional BDD helps identify areas for enhancement and learning opportunities.
+            </p>
+            
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white;">
+                            <th style="padding: 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Aspect</th>
+                            <th style="padding: 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #e5e7eb;">USE System</th>
+                            <th style="padding: 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Traditional BDD</th>
+                            <th style="padding: 16px; text-align: left; font-weight: 600; border-bottom: 2px solid #e5e7eb;">What USE Can Learn from BDD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Core Philosophy -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">🎯 Core Philosophy</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>Step-Centric Architecture</strong><br/>
+                                Focuses on individual executable steps (S1-S19) owned by actors (A1-A7) across business, technical, and UX domains
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>Behavior-Driven Development</strong><br/>
+                                Focuses on behavior specification through user stories and acceptance criteria using Given-When-Then format
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Behavior Specification</strong><br/>
+                                • Adopt more formal Gherkin syntax for step definitions<br/>
+                                • Implement stronger acceptance criteria validation<br/>
+                                • Add behavior-driven testing frameworks
+                            </td>
+                        </tr>
+                        
+                        <!-- Structure & Organization -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">🏗️ Structure & Organization</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>GitHub-First Flat Structure</strong><br/>
+                                • Flat issue hierarchy with smart labeling<br/>
+                                • Step-based organization (S1-S19)<br/>
+                                • Actor ownership model (A1-A7)<br/>
+                                • Cross-domain component linking
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>Feature-Based Hierarchy</strong><br/>
+                                • Feature files with scenarios<br/>
+                                • Background and step definitions<br/>
+                                • Step reuse and parameterization<br/>
+                                • Organized by business capabilities
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Organization</strong><br/>
+                                • Implement feature file organization<br/>
+                                • Add step parameterization capabilities<br/>
+                                • Create reusable step libraries<br/>
+                                • Implement scenario outlines for variations
+                            </td>
+                        </tr>
+                        
+                        <!-- Syntax & Format -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">📝 Syntax & Format</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>Business-Friendly Language</strong><br/>
+                                • Custom step terminology (S1, S2, etc.)<br/>
+                                • Actor-focused descriptions<br/>
+                                • GitHub issue-based documentation<br/>
+                                • Component cross-referencing
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>Standardized Gherkin</strong><br/>
+                                • Given-When-Then format<br/>
+                                • And/But keywords for additional steps<br/>
+                                • Scenario outlines with examples<br/>
+                                • Background for common setup
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Standard Compliance</strong><br/>
+                                • Adopt full Gherkin syntax<br/>
+                                • Implement scenario outlines<br/>
+                                • Add background sections<br/>
+                                • Use standard BDD keywords consistently
+                            </td>
+                        </tr>
+                        
+                        <!-- Testing & Execution -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">🧪 Testing & Execution</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>GitHub Integration Testing</strong><br/>
+                                • GitHub Actions for automation<br/>
+                                • Issue-based progress tracking<br/>
+                                • Component status validation<br/>
+                                • Real-time content synchronization
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>BDD Framework Testing</strong><br/>
+                                • Behave, Cucumber, SpecFlow<br/>
+                                • Step definition implementations<br/>
+                                • Test data management<br/>
+                                • Reporting and analytics
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Testing</strong><br/>
+                                • Implement full BDD test frameworks<br/>
+                                • Add comprehensive test reporting<br/>
+                                • Create test data factories<br/>
+                                • Implement parallel test execution
+                            </td>
+                        </tr>
+                        
+                        <!-- Documentation -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">📚 Documentation</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>Living GitHub Documentation</strong><br/>
+                                • Real-time issue updates<br/>
+                                • Component cross-references<br/>
+                                • Progress visualization<br/>
+                                • Stakeholder collaboration
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>Living Documentation</strong><br/>
+                                • Auto-generated from tests<br/>
+                                • Always in sync with code<br/>
+                                • Business-readable format<br/>
+                                • Version-controlled scenarios
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Documentation</strong><br/>
+                                • Generate docs from test execution<br/>
+                                • Implement version control for scenarios<br/>
+                                • Add business-readable reports<br/>
+                                • Create documentation templates
+                            </td>
+                        </tr>
+                        
+                        <!-- Collaboration -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">👥 Collaboration</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>GitHub-Native Collaboration</strong><br/>
+                                • Issue discussions and comments<br/>
+                                • Project board management<br/>
+                                • Label-based organization<br/>
+                                • Real-time notifications
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>Three Amigos Approach</strong><br/>
+                                • Business, Development, Testing<br/>
+                                • Shared scenario ownership<br/>
+                                • Collaborative refinement<br/>
+                                • Regular review sessions
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Collaboration</strong><br/>
+                                • Implement Three Amigos meetings<br/>
+                                • Add collaborative scenario refinement<br/>
+                                • Create shared ownership models<br/>
+                                • Establish regular review cycles
+                            </td>
+                        </tr>
+                        
+                        <!-- Automation -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">🤖 Automation</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>GitHub Actions Automation</strong><br/>
+                                • Issue status updates<br/>
+                                • Component validation<br/>
+                                • Cross-reference checking<br/>
+                                • Progress tracking
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>CI/CD Integration</strong><br/>
+                                • Automated test execution<br/>
+                                • Build pipeline integration<br/>
+                                • Deployment validation<br/>
+                                • Quality gate enforcement
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Automation</strong><br/>
+                                • Integrate with CI/CD pipelines<br/>
+                                • Add quality gates<br/>
+                                • Implement automated reporting<br/>
+                                • Create deployment validation
+                            </td>
+                        </tr>
+                        
+                        <!-- Scalability -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">📈 Scalability</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>Component-Based Scaling</strong><br/>
+                                • Reusable UX/Tech components<br/>
+                                • Cross-scenario component sharing<br/>
+                                • Modular step architecture<br/>
+                                • Actor-based organization
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>Pattern-Based Scaling</strong><br/>
+                                • Step definition libraries<br/>
+                                • Scenario templates<br/>
+                                • Test data factories<br/>
+                                • Reusable background setups
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Scalability</strong><br/>
+                                • Create step definition libraries<br/>
+                                • Implement scenario templates<br/>
+                                • Add test data factories<br/>
+                                • Build reusable patterns
+                            </td>
+                        </tr>
+                        
+                        <!-- Tools & Ecosystem -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">🛠️ Tools & Ecosystem</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>GitHub-First Tooling</strong><br/>
+                                • GitHub Issues & Projects<br/>
+                                • GitHub Actions<br/>
+                                • GitHub API integration<br/>
+                                • Custom step pages
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>BDD Framework Ecosystem</strong><br/>
+                                • Cucumber, Behave, SpecFlow<br/>
+                                • Test runners and reporters<br/>
+                                • IDE integrations<br/>
+                                • CI/CD plugins
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Tooling</strong><br/>
+                                • Integrate BDD frameworks<br/>
+                                • Add IDE support<br/>
+                                • Implement test runners<br/>
+                                • Create custom reporters
+                            </td>
+                        </tr>
+                        
+                        <!-- Learning & Adoption -->
+                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                            <td style="padding: 16px; font-weight: 600; background: #f8fafc; color: #374151;">🎓 Learning & Adoption</td>
+                            <td style="padding: 16px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+                                <strong>USE-Specific Learning</strong><br/>
+                                • Step-centric thinking<br/>
+                                • Actor ownership model<br/>
+                                • GitHub integration patterns<br/>
+                                • Component linking strategies
+                            </td>
+                            <td style="padding: 16px; background: #fef3c7; border-left: 3px solid #f59e0b;">
+                                <strong>Industry Standard BDD</strong><br/>
+                                • Extensive community resources<br/>
+                                • Proven methodologies<br/>
+                                • Training programs<br/>
+                                • Best practice guides
+                            </td>
+                            <td style="padding: 16px; background: #ecfdf5; border-left: 3px solid #10b981;">
+                                <strong>Enhanced Learning</strong><br/>
+                                • Leverage BDD community resources<br/>
+                                • Adopt proven methodologies<br/>
+                                • Implement industry best practices<br/>
+                                • Create hybrid learning paths
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Key Learning Opportunities -->
+            <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 20px; margin-top: 24px;">
+                <h3 style="color: #92400e; margin-bottom: 16px;">🎯 Key Learning Opportunities from BDD</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                        <h4 style="color: #1e40af; margin-bottom: 12px;">📝 Enhanced Gherkin Implementation</h4>
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.6;">
+                            <strong>Current State:</strong> Custom step terminology (S1, S2)<br/>
+                            <strong>BDD Learning:</strong> Full Gherkin syntax with Given-When-Then<br/>
+                            <strong>Benefit:</strong> Industry standard compliance and better tooling support
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <h4 style="color: #7c3aed; margin-bottom: 12px;">🧪 Comprehensive Testing Framework</h4>
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.6;">
+                            <strong>Current State:</strong> GitHub Actions for validation<br/>
+                            <strong>BDD Learning:</strong> Full BDD test frameworks (Behave, Cucumber)<br/>
+                            <strong>Benefit:</strong> Better test execution, reporting, and CI/CD integration
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <h4 style="color: #059669; margin-bottom: 12px;">👥 Three Amigos Collaboration</h4>
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.6;">
+                            <strong>Current State:</strong> GitHub-based collaboration<br/>
+                            <strong>BDD Learning:</strong> Structured stakeholder collaboration<br/>
+                            <strong>Benefit:</strong> Better business alignment and requirement validation
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <h4 style="color: #d97706; margin-bottom: 12px;">📚 Living Documentation</h4>
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.6;">
+                            <strong>Current State:</strong> GitHub issue-based documentation<br/>
+                            <strong>BDD Learning:</strong> Auto-generated living documentation<br/>
+                            <strong>Benefit:</strong> Always up-to-date specifications and better stakeholder communication
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: #92400e; color: white; padding: 16px; border-radius: 8px; margin-top: 20px;">
+                    <div style="font-size: 1rem; font-weight: 500; text-align: center;">
+                        💡 <strong>Strategic Recommendation:</strong> USE provides an excellent foundation with its step-centric approach and GitHub integration. 
+                        By incorporating BDD best practices, you can create a hybrid system that combines the best of both worlds: 
+                        USE's innovative architecture with BDD's proven methodologies and industry standards.
+                    </div>
+                </div>
+            </div>
+        </section>
 </body>
 </html>
 
