@@ -10,5 +10,44 @@ defmodule BemedaPersonalWeb.Layouts do
   """
   use BemedaPersonalWeb, :html
 
+  @type assigns :: Phoenix.LiveView.Socket.assigns()
+  @type rendered :: Phoenix.LiveView.Rendered.t()
+
   embed_templates "layouts/*"
+
+  @doc """
+  Renders your app layout.
+
+  This function is typically invoked from every template,
+  and it often contains your application menu, sidebar,
+  or similar.
+
+  ## Examples
+
+      <Layouts.app flash={@flash}>
+        <h1>Content</h1>
+      </Layouts.app>
+
+  """
+  attr :flash, :map, required: true, doc: "the map of flash messages"
+  attr :socket, :any, required: true, doc: "the socket for the live view"
+
+  slot :inner_block, required: true
+
+  @spec app(assigns()) :: rendered()
+  def app(assigns) do
+    ~H"""
+    {live_render(
+      @socket,
+      BemedaPersonalWeb.NavigationLive,
+      id: "navigation",
+      sticky: true
+    )}
+
+    <main class="pt-8 pb-16">
+      <.flash_group flash={@flash} />
+      {render_slot(@inner_block)}
+    </main>
+    """
+  end
 end

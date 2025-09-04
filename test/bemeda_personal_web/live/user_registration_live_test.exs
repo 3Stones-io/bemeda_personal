@@ -204,11 +204,11 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       step1_attributes = Map.take(valid_attributes, [:email, :first_name, :last_name, :password])
 
       lv
-      |> form("#registration_form", user: step1_attributes)
+      |> form("#registration_form", %{user: step1_attributes})
       |> render_submit()
 
       step2_attributes = Map.drop(valid_attributes, [:first_name, :last_name])
-      form = form(lv, "#registration_form", user: step2_attributes)
+      form = form(lv, "#registration_form", %{user: step2_attributes})
       render_submit(form)
 
       conn = follow_trigger_action(form, conn)
@@ -231,11 +231,11 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       step1_attributes = Map.take(valid_attributes, [:email, :first_name, :last_name, :password])
 
       lv
-      |> form("#registration_form", user: step1_attributes)
+      |> form("#registration_form", %{user: step1_attributes})
       |> render_submit()
 
       step2_attributes = Map.drop(valid_attributes, [:first_name, :last_name])
-      form = form(lv, "#registration_form", user: step2_attributes)
+      form = form(lv, "#registration_form", %{user: step2_attributes})
       render_submit(form)
 
       conn = follow_trigger_action(form, conn)
@@ -340,7 +340,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
 
       {:ok, _login_live, login_html} =
         lv
-        |> element(~s|a:fl-contains("Sign in")|)
+        |> element("a", "Sign in")
         |> render_click()
         |> follow_redirect(conn, ~p"/users/log_in")
 

@@ -1,19 +1,21 @@
-<section class="min-h-[100vh] w-[100%]">
-  <div class="px-4 py-2 lg:py-8 lg:max-w-[1000px] lg:mx-auto">
-    <.heading>{dgettext("jobs", "Job Postings")}</.heading>
+<Layouts.app flash={@flash} socket={@socket}>
+  <section class="min-h-[100vh] w-[100%]">
+    <div class="px-4 py-2 lg:py-8 lg:max-w-[1000px] lg:mx-auto">
+      <.heading>{dgettext("jobs", "Job Postings")}</.heading>
 
-    <.subtitle class="mt-2 mb-8">
-      {dgettext("jobs", "Find your next career opportunity")}
-    </.subtitle>
+      <.subtitle class="mt-2 mb-8">
+        {dgettext("jobs", "Find your next career opportunity")}
+      </.subtitle>
 
-    <.live_component
-      module={JobListComponent}
-      id="job-post-list"
-      empty_state_message={dgettext("jobs", "Please check back later for new opportunities.")}
-      filter_params={@filter_params}
-      job_view={:job}
-      show_actions={false}
-      show_company_name={true}
-    />
-  </div>
-</section>
+      <.live_component
+        module={JobListComponent}
+        id="job-post-list"
+        empty_state_message={dgettext("jobs", "Please check back later for new opportunities.")}
+        filter_params={@filter_params}
+        job_view={:job}
+        show_actions={false}
+        show_company_name={true}
+      />
+    </div>
+  </section>
+</Layouts.app>

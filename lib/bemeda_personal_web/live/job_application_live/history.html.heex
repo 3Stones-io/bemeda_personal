@@ -1,80 +1,82 @@
-<div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
-  <.back navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@job_application.id}"}>
-    {dgettext("jobs", "Back to application")}
-  </.back>
+<Layouts.app flash={@flash} socket={@socket}>
+  <div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
+    <.back navigate={~p"/jobs/#{@job_posting.id}/job_applications/#{@job_application.id}"}>
+      {dgettext("jobs", "Back to application")}
+    </.back>
 
-  <.heading class="mb-4">{dgettext("jobs", "Application History")}</.heading>
+    <.heading class="mb-4">{dgettext("jobs", "Application History")}</.heading>
 
-  <.small_text class="mb-6">
-    <span>
-      {dgettext("jobs", "View the timeline of your application status changes for the")}
-    </span>
-    <span class="font-bold">{@job_posting.title}</span>
-    <span>{dgettext("jobs", "position at")}</span>
-    <span class="font-bold">{@job_posting.company.name}</span>
-  </.small_text>
+    <.small_text class="mb-6">
+      <span>
+        {dgettext("jobs", "View the timeline of your application status changes for the")}
+      </span>
+      <span class="font-bold">{@job_posting.title}</span>
+      <span>{dgettext("jobs", "position at")}</span>
+      <span class="font-bold">{@job_posting.company.name}</span>
+    </.small_text>
 
-  <.card variant="elevated">
-    <.section_heading class="mb-4">{dgettext("jobs", "Application Timeline")}</.section_heading>
+    <.card variant="elevated">
+      <.section_heading class="mb-4">{dgettext("jobs", "Application Timeline")}</.section_heading>
 
-    <div class="relative">
-      <div class="absolute h-full w-0.5 bg-gray-200 left-2.5"></div>
-      <div :for={transition <- @transitions} class="relative pl-10 pb-8">
-        <div
-          :if={transition.to_state != @job_application.state}
-          class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center"
-        >
+      <div class="relative">
+        <div class="absolute h-full w-0.5 bg-gray-200 left-2.5"></div>
+        <div :for={transition <- @transitions} class="relative pl-10 pb-8">
+          <div
+            :if={transition.to_state != @job_application.state}
+            class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center"
+          >
+            <.icon name="hero-check" class="h-3 w-3" />
+          </div>
+
+          <div
+            :if={transition.to_state == @job_application.state}
+            class="bg-purple-500 absolute left-0 top-1.5 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center"
+          >
+            <.icon name="hero-minus" class="h-3 w-3" />
+          </div>
+
+          <.subsection_heading>
+            {I18n.translate_status(transition.to_state)}
+          </.subsection_heading>
+
+          <.caption>{DateUtils.format_datetime(transition.inserted_at)}</.caption>
+
+          <div
+            :if={transition.notes && @current_user.id != @job_application.user_id}
+            class="mt-2 p-3 bg-gray-50 rounded-md"
+          >
+            <.small_text>{transition.notes}</.small_text>
+          </div>
+
+          <.small_text class="mt-2">
+            {dgettext("jobs", "Updated by")}: {transition.transitioned_by.email}
+          </.small_text>
+        </div>
+      </div>
+      <div class="relative pl-10 pb-8">
+        <div class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center">
           <.icon name="hero-check" class="h-3 w-3" />
         </div>
 
-        <div
-          :if={transition.to_state == @job_application.state}
-          class="bg-purple-500 absolute left-0 top-1.5 w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center"
-        >
-          <.icon name="hero-minus" class="h-3 w-3" />
-        </div>
-
-        <.subsection_heading>
-          {I18n.translate_status(transition.to_state)}
-        </.subsection_heading>
-
-        <.caption>{DateUtils.format_datetime(transition.inserted_at)}</.caption>
-
-        <div
-          :if={transition.notes && @current_user.id != @job_application.user_id}
-          class="mt-2 p-3 bg-gray-50 rounded-md"
-        >
-          <.small_text>{transition.notes}</.small_text>
-        </div>
-
+        <.subsection_heading>{dgettext("jobs", "Application Created")}</.subsection_heading>
+        <.caption>
+          {DateUtils.format_datetime(@job_application.inserted_at)}
+        </.caption>
         <.small_text class="mt-2">
-          {dgettext("jobs", "Updated by")}: {transition.transitioned_by.email}
+          {if @current_user.id == @job_application.user_id do
+            dgettext("jobs", "You applied for the %{position} position at %{company}.",
+              position: String.downcase(@job_posting.title),
+              company: @job_posting.company.name
+            )
+          else
+            dgettext("jobs", "%{applicant} applied for the %{position} position at %{company}.",
+              applicant: "#{@job_application.user.first_name} #{@job_application.user.last_name}",
+              position: String.downcase(@job_posting.title),
+              company: @job_posting.company.name
+            )
+          end}
         </.small_text>
       </div>
-    </div>
-    <div class="relative pl-10 pb-8">
-      <div class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center">
-        <.icon name="hero-check" class="h-3 w-3" />
-      </div>
-
-      <.subsection_heading>{dgettext("jobs", "Application Created")}</.subsection_heading>
-      <.caption>
-        {DateUtils.format_datetime(@job_application.inserted_at)}
-      </.caption>
-      <.small_text class="mt-2">
-        {if @current_user.id == @job_application.user_id do
-          dgettext("jobs", "You applied for the %{position} position at %{company}.",
-            position: String.downcase(@job_posting.title),
-            company: @job_posting.company.name
-          )
-        else
-          dgettext("jobs", "%{applicant} applied for the %{position} position at %{company}.",
-            applicant: "#{@job_application.user.first_name} #{@job_application.user.last_name}",
-            position: String.downcase(@job_posting.title),
-            company: @job_posting.company.name
-          )
-        end}
-      </.small_text>
-    </div>
-  </.card>
-</div>
+    </.card>
+  </div>
+</Layouts.app>

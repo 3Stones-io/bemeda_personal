@@ -1,97 +1,99 @@
-<div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
-  <h1 class={"text-2xl font-bold #{page_header_spacing()}"}>
-    {dgettext("notifications", "Notifications")}
-  </h1>
-
-  <div
-    id="notifications"
-    phx-update="stream"
-    phx-viewport-top={!@end_of_timeline? && JS.push("prev_page")}
-    phx-viewport-bottom={!@end_of_timeline? && JS.push("next_page")}
-    phx-page-loading
-  >
-    <div class={"#{card_padding()} text-center hidden only:block"} id="empty-job-postings">
-      <.text class="text-gray-500">
-        {dgettext("notifications", "No notifications available at the moment.")}
-      </.text>
-    </div>
+<Layouts.app flash={@flash} socket={@socket}>
+  <div class={"container mx-auto #{container_padding()} #{section_spacing()}"}>
+    <h1 class={"text-2xl font-bold #{page_header_spacing()}"}>
+      {dgettext("notifications", "Notifications")}
+    </h1>
 
     <div
-      :for={{notification_id, notification} <- @streams.notifications}
-      class={[
-        notification.is_read && "bg-gray-50 border-b border-gray-200",
-        !notification.is_read && "bg-white border-b border-gray-200 shadow-sm",
-        "#{card_padding()}"
-      ]}
-      id={notification_id}
-      role="list"
+      id="notifications"
+      phx-update="stream"
+      phx-viewport-top={!@end_of_timeline? && JS.push("prev_page")}
+      phx-viewport-bottom={!@end_of_timeline? && JS.push("next_page")}
+      phx-page-loading
     >
-      <div class="flex items-center space-x-2">
-        <div class="flex-grow min-w-0">
-          <div class="flex items-center">
-            <div :if={!notification.is_read} class="mr-3 flex-shrink-0">
-              <div class="h-3 w-3 bg-green-500 rounded-full"></div>
-            </div>
-            <.link
-              navigate={~p"/notifications/#{notification.id}"}
-              class="block focus:outline-none w-full"
-            >
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div class={"#{card_padding()} text-center hidden only:block"} id="empty-job-postings">
+        <.text class="text-gray-500">
+          {dgettext("notifications", "No notifications available at the moment.")}
+        </.text>
+      </div>
+
+      <div
+        :for={{notification_id, notification} <- @streams.notifications}
+        class={[
+          notification.is_read && "bg-gray-50 border-b border-gray-200",
+          !notification.is_read && "bg-white border-b border-gray-200 shadow-sm",
+          "#{card_padding()}"
+        ]}
+        id={notification_id}
+        role="list"
+      >
+        <div class="flex items-center space-x-2">
+          <div class="flex-grow min-w-0">
+            <div class="flex items-center">
+              <div :if={!notification.is_read} class="mr-3 flex-shrink-0">
+                <div class="h-3 w-3 bg-green-500 rounded-full"></div>
+              </div>
+              <.link
+                navigate={~p"/notifications/#{notification.id}"}
+                class="block focus:outline-none w-full"
+              >
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                  <.text
+                    variant="body-sm"
+                    class={[
+                      "font-medium truncate",
+                      !notification.is_read && "text-gray-900 font-bold",
+                      notification.is_read && "text-gray-600"
+                    ]}
+                  >
+                    {String.replace(notification.subject, "BemedaPersonal | ", "")}
+                  </.text>
+                  <.text variant="body-sm" class="text-gray-500">
+                    {DateUtils.format_emails_date(notification.inserted_at)}
+                  </.text>
+                </div>
                 <.text
                   variant="body-sm"
                   class={[
-                    "font-medium truncate",
-                    !notification.is_read && "text-gray-900 font-bold",
-                    notification.is_read && "text-gray-600"
+                    "mt-1 truncate",
+                    !notification.is_read && "text-gray-800",
+                    notification.is_read && "text-gray-500"
                   ]}
                 >
-                  {String.replace(notification.subject, "BemedaPersonal | ", "")}
+                  {format_notification_body(notification.body)}
                 </.text>
-                <.text variant="body-sm" class="text-gray-500">
-                  {DateUtils.format_emails_date(notification.inserted_at)}
-                </.text>
-              </div>
-              <.text
-                variant="body-sm"
-                class={[
-                  "mt-1 truncate",
-                  !notification.is_read && "text-gray-800",
-                  notification.is_read && "text-gray-500"
-                ]}
-              >
-                {format_notification_body(notification.body)}
-              </.text>
-            </.link>
+              </.link>
+            </div>
           </div>
-        </div>
-        <div class="flex-shrink-0">
-          <.button
-            phx-click={JS.push("toggle_read_status", value: %{id: notification.id})}
-            variant="primary-light"
-            size="sm"
-            class={[
-              "p-1 rounded-full",
-              !notification.is_read && "text-green-500 hover:text-green-700",
-              notification.is_read && "text-gray-400 hover:text-gray-600"
-            ]}
-            aria-label={
-              if notification.is_read,
-                do: dgettext("notifications", "Mark as unread"),
-                else: dgettext("notifications", "Mark as read")
-            }
-            title={
-              if notification.is_read,
-                do: dgettext("notifications", "Click to mark as unread"),
-                else: dgettext("notifications", "Click to mark as read")
-            }
-          >
-            <.icon
-              name={if notification.is_read, do: "hero-envelope", else: "hero-envelope-open"}
-              class="h-5 w-5"
-            />
-          </.button>
+          <div class="flex-shrink-0">
+            <.button
+              phx-click={JS.push("toggle_read_status", value: %{id: notification.id})}
+              variant="primary-light"
+              size="sm"
+              class={[
+                "p-1 rounded-full",
+                !notification.is_read && "text-green-500 hover:text-green-700",
+                notification.is_read && "text-gray-400 hover:text-gray-600"
+              ]}
+              aria-label={
+                if notification.is_read,
+                  do: dgettext("notifications", "Mark as unread"),
+                  else: dgettext("notifications", "Mark as read")
+              }
+              title={
+                if notification.is_read,
+                  do: dgettext("notifications", "Click to mark as unread"),
+                  else: dgettext("notifications", "Click to mark as read")
+              }
+            >
+              <.icon
+                name={if notification.is_read, do: "hero-envelope", else: "hero-envelope-open"}
+                class="h-5 w-5"
+              />
+            </.button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</Layouts.app>

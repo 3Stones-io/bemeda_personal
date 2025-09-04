@@ -11,6 +11,8 @@ defmodule BemedaPersonal.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: phoenix_deps() ++ optimum_deps() ++ app_deps(),
+      compilers: [:phoenix_live_view] ++ Mix.compilers(),
+      listeners: [Phoenix.CodeReloader],
       gettext: [write_reference_line_numbers: false],
 
       # CI
@@ -66,6 +68,7 @@ defmodule BemedaPersonal.MixProject do
   # Specifies your project dependencies.
   #
   # Type `mix help deps` for examples and options.
+  # TODO: Update phoenix_storybook once the new version is released
   defp app_deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
@@ -76,7 +79,7 @@ defmodule BemedaPersonal.MixProject do
       {:multipart, "~> 0.4"},
       {:number, "~> 1.0"},
       {:oban, "~> 2.19"},
-      {:phoenix_storybook, "~> 0.6.0"},
+      {:phoenix_storybook, github: "kagure-nyakio/phoenix_storybook", override: true},
       {:plug, "~> 1.17"},
       {:req, "~> 0.5"}
     ]
@@ -102,14 +105,14 @@ defmodule BemedaPersonal.MixProject do
 
   defp phoenix_deps do
     [
-      {:phoenix, "~> 1.7.19"},
+      {:phoenix, "~> 1.8.1"},
       {:phoenix_ecto, "~> 4.5"},
-      {:ecto_sql, "~> 3.10"},
+      {:ecto_sql, "~> 3.13"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.0.0"},
-      {:floki, ">= 0.30.0", only: :test},
+      {:phoenix_live_view, "~> 1.1.0"},
+      {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix_test, "~> 0.4", only: :test, runtime: false},
       {:phoenix_test_playwright, "~> 0.7", only: :test, runtime: false},
       {:phoenix_live_dashboard, "~> 0.8.3"},
@@ -129,7 +132,7 @@ defmodule BemedaPersonal.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
-      {:dns_cluster, "~> 0.1.1"},
+      {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"}
     ]
   end

@@ -36,7 +36,7 @@ defmodule BemedaPersonal.QueryBuilder do
       ...>   },
       ...>   default_alias: :job_posting
       ...> }
-      ...> 
+      ...>
       ...> QueryBuilder.apply_filters(JobPosting, %{title: "Engineer"}, config)
       #Ecto.Query<...>
 
