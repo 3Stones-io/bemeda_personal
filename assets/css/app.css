@@ -1,4 +1,13 @@
-@import 'tailwindcss';
+/* See the Tailwind configuration guide for advanced usage
+   https://tailwindcss.com/docs/configuration */
+@import 'tailwindcss' source(none);
+@source "../css";
+@source "../js";
+@source "../../lib/test_web";
+
+/* A Tailwind plugin that makes "hero-#{ICON}" classes available.
+   The heroicons installation itself is managed by your mix.exs */
+@plugin "../vendor/heroicons";
 
 /* Utility classes */
 .line-clamp-3 {
