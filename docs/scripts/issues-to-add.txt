@@ -1,0 +1,39 @@
+# Issues to add to Bemeda Platform project
+
+## Technical Components (T1-T13)
+373  # T1: Contact Capture API
+401  # T2: Platform data API
+402  # T3: Interest tracking system
+403  # T4: Questions API endpoint
+404  # T5: Demo provisioning service
+405  # T6: Analytics service
+406  # T7: Candidate matching engine
+407  # T8: Interview scheduling system
+408  # T10: Profile creation service
+409  # T11: Job notification engine
+410  # T13: Application submission system
+
+## Scenario Steps (S1-S19)
+371  # S1: Receive Bemeda sales call
+377  # S2: Listen to platform overview
+378  # S9: Create professional profile
+376  # S8: Make hiring decision
+383  # S3: Discuss staffing needs
+384  # S4: Define job requirements
+385  # S5: Publish job posting
+386  # S6: Review matched candidates
+387  # S7: Conduct interviews
+388  # S10: Receive job notification
+389  # S11: Review job details
+390  # S12: Submit application
+391  # S13: Participate in interview
+392  # S17: Present platform benefits
+393  # S18: Facilitate onboarding
+394  # S19: Monitor placement success
+398  # S14: Accept offer & onboard
+399  # S15: Identify target healthcare organisations
+400  # S16: Make initial contact
+
+## UX Components
+372  # U1: Call Reception Dashboard
+374  # U25: Form Fields Component (Shared)

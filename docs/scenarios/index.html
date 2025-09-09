@@ -326,17 +326,20 @@
             'S6': 'todo',
             'S7': 'todo',
             'S8': 'todo',
-            'S9': 'done',
+            'S9': 'todo',
             'S10': 'done',
             'S11': 'in-progress',
             'S12': 'todo',
             'S13': 'todo',
             'S14': 'todo',
-            'S15': 'done',
+            'S15': 'todo',
             'S16': 'done',
-            'S17': 'in-progress',
-            'S18': 'todo',
-            'S19': 'todo'
+            'S17': 'done',
+            'S18': 'in-progress',
+            'S19': 'todo',
+            'S20': 'todo',
+            'S21': 'todo',
+            'S22': 'todo'
         };
         
         // Update all status indicators
@@ -373,7 +376,7 @@
         </div>
 
         <div class="header">
-            <h1>💼 Scenarios (S1-S19)</h1>
+            <h1>💼 Scenarios (S1-S22)</h1>
             <p>Executable business steps organized by scenarios and actor ownership with simple numbering.</p>
         </div>
 
@@ -381,7 +384,7 @@
         <div class="scenario-block">
             <div class="scenario-header" onclick="toggleScenario('scenario1')">
                 <h2 class="scenario-title">
-                    <span class="badge s">S1-S19</span>
+                    <span class="badge s">S1-S22</span>
                     Scenario1: Cold Call to Placement
                 </h2>
                 <span class="scenario-toggle" id="scenario1-toggle">▶</span>
@@ -401,7 +404,6 @@
                                 <div class="step-id">S1</div>
                                 <div class="step-text">Receive Bemeda sales call</div>
                                 <div class="step-actions">
-                                    <button class="step-button ux" onclick="openUX('S1', event);">UX</button>
                                     <button class="step-button tech" onclick="openTech('S1', event);">Tech</button>
                                     <button class="step-button github" onclick="openGitHub('S1', event);">GitHub</button>
                                     <button class="step-button details" onclick="openStepDetails('S1', event);">Details</button>
@@ -454,7 +456,7 @@
                             
                             <div class="process-step" onclick="handleStepClick('S6', event)">
                                 <div class="step-id">S6</div>
-                                <div class="step-text">Review matched candidates</div>
+                                <div class="step-text">Get proposals per email</div>
                                 <div class="step-actions">
                                     <button class="step-button ux" onclick="openUX('S6', event);">UX</button>
                                     <button class="step-button tech" onclick="openTech('S6', event);">Tech</button>
@@ -465,6 +467,17 @@
                             
                             <div class="process-step" onclick="handleStepClick('S7', event)">
                                 <div class="step-id">S7</div>
+                                <div class="step-text">Review matched candidates</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S6', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S6', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S6', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S6', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S8', event)">
+                                <div class="step-id">S8</div>
                                 <div class="step-text">Conduct interviews</div>
                                 <div class="step-actions">
                                     <button class="step-button ux" onclick="openUX('S7', event);">UX</button>
@@ -474,9 +487,31 @@
                                 </div>
                             </div>
                             
-                            <div class="process-step" onclick="handleStepClick('S8', event)">
-                                <div class="step-id">S8</div>
+                            <div class="process-step" onclick="handleStepClick('S9', event)">
+                                <div class="step-id">S9</div>
                                 <div class="step-text">Make hiring decision</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S9', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S9', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S9', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S9', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S21', event)">
+                                <div class="step-id">S21</div>
+                                <div class="step-text">Confirm decision email</div>
+                                <div class="step-actions">
+                                    <button class="step-button ux" onclick="openUX('S21', event);">UX</button>
+                                    <button class="step-button tech" onclick="openTech('S21', event);">Tech</button>
+                                    <button class="step-button github" onclick="openGitHub('S21', event);">GitHub</button>
+                                    <button class="step-button details" onclick="openStepDetails('S21', event);">Details</button>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step" onclick="handleStepClick('S22', event)">
+                                <div class="step-id">S22</div>
+                                <div class="step-text">Receive a bill</div>
                                 <div class="step-actions">
                                     <button class="step-button ux" onclick="openUX('S8', event);">UX</button>
                                     <button class="step-button tech" onclick="openTech('S8', event);">Tech</button>
@@ -659,15 +694,15 @@
             <p style="color: var(--color-text-secondary); margin-bottom: 20px;">Complete registry of scenario steps with actor ownership and implementation status</p>
             <div class="grid">
                 <div class="card">
-                    <span class="badge s">S1-S8</span>
+                    <span class="badge s">S1-S9,S21-S22</span>
                     <h3>🏥 A1: Healthcare Organisation</h3>
-                    <p>Organisation workflow from call reception through hiring completion</p>
+                    <p>Organisation workflow from call reception through billing completion</p>
                     <div style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-secondary);">
                         ✅ Auth + Companies + Jobs contexts implemented
                     </div>
                 </div>
                 <div class="card">
-                    <span class="badge s">S9-S14</span>
+                    <span class="badge s">S10-S15</span>
                     <h3>🔍 A2: JobSeeker</h3>
                     <p>JobSeeker journey from profile creation through offer acceptance and onboarding</p>
                     <div style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-secondary);">
@@ -675,7 +710,7 @@
                     </div>
                 </div>
                 <div class="card">
-                    <span class="badge s">S15-S19</span>
+                    <span class="badge s">S16-S20</span>
                     <h3>📞 A3: Sales Team</h3>
                     <p>Sales team workflow from lead identification through placement monitoring</p>
                     <div style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-secondary);">

@@ -920,6 +920,122 @@ Related steps: #128 #129</code>
             </div>
         </section>
         
+        <!-- Future Considerations -->
+        <section class="template-showcase" style="background: #fef3c7; border-left: 4px solid #f59e0b;">
+            <h2 style="margin-bottom: 20px;">🔮 Future Considerations</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 30px;">
+                Want automatic project integration for new issues? Here's the safe approach:
+            </p>
+            
+            <div style="background: white; padding: 24px; border-radius: 8px; border: 1px solid var(--color-border);">
+                <h3 style="color: var(--color-text-primary); margin-bottom: 16px;">Option 3: GitHub Actions Integration</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Once you've discussed with the dev team, you could:
+                </p>
+                
+                <ol style="margin-left: 20px; color: var(--color-text-secondary); line-height: 2;">
+                    <li><strong>Add the workflow to a new branch</strong> - Create a feature branch for the GitHub Actions workflow</li>
+                    <li><strong>Create a PR for review</strong> - Let the development team review the changes</li>
+                    <li><strong>Let devs ensure it won't conflict</strong> - They can verify it doesn't interfere with existing workflows</li>
+                </ol>
+                
+                <div style="background: #e0f2fe; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-top: 20px;">
+                    <p style="margin: 0; color: #0c4a6e;">
+                        <strong>What the workflow does:</strong> The GitHub Actions workflow we created would simply watch for new issues and add them to the project - it wouldn't interfere with build/deploy workflows. But your caution is absolutely the right approach! 🛡️
+                    </p>
+                </div>
+                
+                <p style="margin-top: 20px; color: var(--color-text-secondary);">
+                    <strong>Meanwhile:</strong> The manual scripts in <code>/docs/scripts/</code> work perfectly for adding issues to the project without any risk to existing workflows.
+                </p>
+            </div>
+        </section>
+        
+        <!-- USE vs BDD Comparison -->
+        <section class="template-showcase" style="background: #f0f9ff; border-left: 4px solid #0ea5e9;">
+            <h2 style="margin-bottom: 20px;">🔄 USE vs BDD: Key Comparison Areas</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 30px;">
+                Understanding how USE relates to traditional Behavior-Driven Development
+            </p>
+            
+            <div class="component-grid" style="gap: 16px;">
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--color-border);">
+                    <h4 style="color: var(--color-text-primary); margin-bottom: 12px;">🎯 Core Philosophy</h4>
+                    <ul style="list-style: none; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <li style="padding: 4px 0;"><strong>USE:</strong> Step-centric architecture with actor ownership</li>
+                        <li style="padding: 4px 0;"><strong>BDD:</strong> Behavior-driven development with Given-When-Then</li>
+                        <li style="padding: 4px 0;"><strong>Learning:</strong> Enhanced behavior specification and acceptance criteria</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--color-border);">
+                    <h4 style="color: var(--color-text-primary); margin-bottom: 12px;">🏗️ Structure & Organization</h4>
+                    <ul style="list-style: none; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <li style="padding: 4px 0;"><strong>USE:</strong> GitHub-first flat structure with smart labeling</li>
+                        <li style="padding: 4px 0;"><strong>BDD:</strong> Feature-based hierarchy with scenarios</li>
+                        <li style="padding: 4px 0;"><strong>Learning:</strong> Feature file organization and step parameterization</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--color-border);">
+                    <h4 style="color: var(--color-text-primary); margin-bottom: 12px;">📝 Syntax & Format</h4>
+                    <ul style="list-style: none; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <li style="padding: 4px 0;"><strong>USE:</strong> Custom step terminology (S1, S2) and business-friendly language</li>
+                        <li style="padding: 4px 0;"><strong>BDD:</strong> Standardized Gherkin syntax</li>
+                        <li style="padding: 4px 0;"><strong>Learning:</strong> Full Gherkin compliance and scenario outlines</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--color-border);">
+                    <h4 style="color: var(--color-text-primary); margin-bottom: 12px;">🧪 Testing & Execution</h4>
+                    <ul style="list-style: none; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <li style="padding: 4px 0;"><strong>USE:</strong> GitHub Actions for automation and validation</li>
+                        <li style="padding: 4px 0;"><strong>BDD:</strong> Full BDD frameworks (Behave, Cucumber, SpecFlow)</li>
+                        <li style="padding: 4px 0;"><strong>Learning:</strong> Comprehensive test frameworks and reporting</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--color-border);">
+                    <h4 style="color: var(--color-text-primary); margin-bottom: 12px;">📚 Documentation</h4>
+                    <ul style="list-style: none; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <li style="padding: 4px 0;"><strong>USE:</strong> Living GitHub documentation with real-time updates</li>
+                        <li style="padding: 4px 0;"><strong>BDD:</strong> Auto-generated living documentation from tests</li>
+                        <li style="padding: 4px 0;"><strong>Learning:</strong> Test-driven documentation generation</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--color-border);">
+                    <h4 style="color: var(--color-text-primary); margin-bottom: 12px;">👥 Collaboration</h4>
+                    <ul style="list-style: none; padding: 0; color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <li style="padding: 4px 0;"><strong>USE:</strong> GitHub-native collaboration tools</li>
+                        <li style="padding: 4px 0;"><strong>BDD:</strong> Three Amigos approach (Business, Development, Testing)</li>
+                        <li style="padding: 4px 0;"><strong>Learning:</strong> Structured stakeholder collaboration models</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin-top: 24px;">
+                <h3 style="color: var(--color-text-primary); margin-bottom: 16px;">🎯 Key Learning Opportunities from BDD:</h3>
+                <ul style="margin-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                    <li><strong>Enhanced Gherkin Implementation</strong> - Adopt full Given-When-Then syntax</li>
+                    <li><strong>Comprehensive Testing Framework</strong> - Integrate BDD test frameworks</li>
+                    <li><strong>Three Amigos Collaboration</strong> - Implement structured stakeholder meetings</li>
+                    <li><strong>Living Documentation</strong> - Generate docs from test execution</li>
+                </ul>
+                
+                <div style="background: #d1fae5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-top: 20px;">
+                    <h4 style="margin: 0 0 8px 0; color: #065f46;">💡 Strategic Recommendation:</h4>
+                    <p style="margin: 0; color: #065f46;">
+                        Your USE system provides an excellent foundation with its innovative step-centric approach and GitHub integration. By incorporating BDD best practices, you can create a hybrid system that combines:
+                    </p>
+                    <ul style="margin: 8px 0 0 20px; color: #065f46;">
+                        <li><strong>USE's strengths:</strong> Step-centric architecture, actor ownership, GitHub integration</li>
+                        <li><strong>BDD's proven methods:</strong> Industry standards, comprehensive testing, stakeholder collaboration</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
         <!-- Call to Action -->
         <section class="cta-section">
             <h2>🚀 Ready to Get Started?</h2>
