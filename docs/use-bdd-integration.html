@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USE + BDD Integration Proposal</title>
+    <link rel="stylesheet" href="assets/css/color-system.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            padding: 48px 32px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+        .section {
+            background: var(--color-bg-primary);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-medium);
+        }
+        .phase-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border-light);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .workflow-diagram {
+            background: #f8fafc;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        th {
+            background: var(--color-bg-secondary);
+            font-weight: 600;
+        }
+        .actor-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #8b5cf6;
+            color: white;
+            border-radius: 16px;
+            font-size: 0.875rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.875rem;
+        }
+        .status-ready { background: #10b981; color: white; }
+        .status-pending { background: #f59e0b; color: white; }
+        .status-draft { background: #6b7280; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 USE + BDD Integration Proposal</h1>
+            <p>Transform BemedaPersonal Platform Features into Executable BDD Tests</p>
+        </div>
+
+        <!-- Executive Summary -->
+        <section class="section">
+            <h2>📋 Executive Summary</h2>
+            <p>This proposal outlines a GitHub-first approach to automatically generate Cucumber BDD tests from your USE (Unified Scenario Engineering) methodology, creating a seamless bridge between business scenarios and technical implementation.</p>
+            
+            <div class="workflow-diagram">
+                <strong>USE Steps (GitHub Issues)</strong> → <strong>GitHub Actions</strong> → <strong>BDD Tests (Cucumber)</strong> → <strong>Executable Specs</strong>
+            </div>
+        </section>
+
+        <!-- Key Innovation -->
+        <section class="section">
+            <h2>💡 Key Innovation</h2>
+            <div class="phase-card">
+                <h3>What We're Building</h3>
+                <ul>
+                    <li>✅ <strong>Automatic BDD Generation</strong>: GitHub Actions transforms USE steps into Cucumber tests</li>
+                    <li>✅ <strong>Business-Friendly</strong>: USE steps remain readable and non-technical</li>
+                    <li>✅ <strong>Technical Power</strong>: Full BDD test suite with Elixir step definitions</li>
+                    <li>✅ <strong>Complete Traceability</strong>: From scenarios → steps → tests → code</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Actor Mapping -->
+        <section class="section">
+            <h2>👥 BemedaPersonal Actor Mapping</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>USE Actor</th>
+                        <th>BemedaPersonal Role</th>
+                        <th>Key Features</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="actor-badge">A1</span> Organisation</td>
+                        <td>Employer/Hiring Manager</td>
+                        <td>Job posting, candidate management, digital offers</td>
+                    </tr>
+                    <tr>
+                        <td><span class="actor-badge">A2</span> JobSeeker</td>
+                        <td>Healthcare Professional</td>
+                        <td>Profile creation, job search, applications</td>
+                    </tr>
+                    <tr>
+                        <td><span class="actor-badge">A3</span> Admin</td>
+                        <td>Platform Administrator</td>
+                        <td>User management, system configuration</td>
+                    </tr>
+                    <tr>
+                        <td><span class="actor-badge">A4</span> HR Manager</td>
+                        <td>HR Department Staff</td>
+                        <td>Contract management, onboarding</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Implementation Phases -->
+        <section class="section">
+            <h2>📅 Implementation Phases</h2>
+            
+            <div class="phase-card">
+                <h3>Phase 1: USE Step Mapping (Week 1)</h3>
+                <p>Map BemedaPersonal features to USE steps with this structure:</p>
+                <pre><code># Example: S1_A2_2 - Search for Healthcare Positions
+
+Actor: A2 (JobSeeker)
+Technical Components:
+  - TC001: Search API endpoint
+  - TC002: Filter processing service
+  - TC003: Location-based search
+UX Components:
+  - UX001: Search interface
+  - UX002: Filter sidebar
+BDD Scenarios:
+  - Search by specialty
+  - Filter by location
+  - Sort by salary</code></pre>
+            </div>
+
+            <div class="phase-card">
+                <h3>Phase 2: GitHub Actions Automation (Week 2)</h3>
+                <p>Create workflow that detects <span class="status-badge status-ready">bdd-ready</span> labeled issues and generates:</p>
+                <ul>
+                    <li>Cucumber feature files from USE steps</li>
+                    <li>Elixir step definition templates</li>
+                    <li>Pull requests with generated tests</li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <h3>Phase 3: Feature Implementation (Week 3)</h3>
+                <p>Transform core BemedaPersonal features:</p>
+                <ul>
+                    <li><strong>Job Discovery</strong>: 27 healthcare professions, advanced filtering</li>
+                    <li><strong>Application Flow</strong>: One-click apply, video applications, tracking</li>
+                    <li><strong>Digital Contracts</strong>: Templates, e-signatures, automated workflows</li>
+                    <li><strong>Communication</strong>: Real-time messaging, multi-language support</li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <h3>Phase 4: Testing & Refinement (Week 4)</h3>
+                <p>Complete the integration with:</p>
+                <ul>
+                    <li>BDD test execution in CI/CD pipeline</li>
+                    <li>Coverage dashboard and reporting</li>
+                    <li>Developer documentation and training</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Example Transformation -->
+        <section class="section">
+            <h2>🔄 Example Transformation</h2>
+            
+            <div class="phase-card">
+                <h3>USE Step (GitHub Issue)</h3>
+                <pre><code>Step ID: S1_A2_2
+Title: Search for Healthcare Positions
+Actor: JobSeeker (A2)
+Description: Healthcare professional searches for relevant job opportunities
+
+Gherkin Scenarios:
+  Scenario: Search by medical specialty
+    Given I am a registered nurse
+    When I search for "nurse" positions
+    Then I should see relevant nursing jobs</code></pre>
+            </div>
+
+            <div class="phase-card">
+                <h3>Generated Cucumber Feature</h3>
+                <pre><code>Feature: S1_A2_2 - Healthcare Professional Job Search
+  As a Healthcare Professional
+  I want to search for relevant positions
+  So that I can find suitable job opportunities
+
+  Background:
+    Given I am logged in as a Healthcare Professional
+    And I am on the job search page
+
+  @smoke @job-search
+  Scenario: Search by medical specialty
+    When I select "Registered Nurse" from specialty filter
+    And I click "Search"
+    Then I should see jobs for registered nurses
+    And each job should match my specialty
+
+  @job-search @filtering
+  Scenario: Filter by location
+    Given there are jobs in multiple locations
+    When I set location to "Zurich"
+    And I set distance to "25 km"
+    Then I should only see jobs within 25km of Zurich</code></pre>
+            </div>
+        </section>
+
+        <!-- Workflow -->
+        <section class="section">
+            <h2>⚙️ Developer Workflow</h2>
+            <ol>
+                <li><strong>Product Owner</strong> creates USE step in GitHub issue</li>
+                <li><strong>Developer</strong> adds technical components and Gherkin scenarios</li>
+                <li><strong>GitHub Actions</strong> automatically generates BDD tests</li>
+                <li><strong>Developer</strong> implements step definitions</li>
+                <li><strong>CI/CD</strong> runs tests on every commit</li>
+            </ol>
+            
+            <div class="workflow-diagram">
+                <img src="https://mermaid.ink/img/pako:eNqNkk1vwyAMhv-K5XMzNW3Srj1NmrTLpB122mUXhBxwGhQCBpymVdX_PkjapB_aYU7Yft7XfmWMD5BoiRhnOVewzEAqBJ9IlaJrRgq5RMfO6D56QxrLJFOVvjuFqVKlSDnUUpS5gJeXl0k0nkzH4cV1OJhfDAbzl2gync7uZrP7x-gpiuZPz_N2C5FKZS2plCsutSSXzbYaO5G01aiqNHIJNZjcXbGCF4rmqFCWCa1gZfGiKnFrnLQFb_mDFrJCOtciMxqhCq10CXllpKqERMZQmnJRUdoaLzjS0nxLJ5JKXgJhvEJo-I_jqOTLQtBKyJLqI2YLwi5J6JCw1-uQxP0-CXu90D31Tm2sVHRdA-2Wy0CL7MBIJbeGbQ2tbQNON_XNbsO2Bvdvo7QJDRptRUr3rQbWA7_2Nx2w65BPR_eGnW-L1cCfLRjjIqcYVzJNs8oybI0LaVLM9H-pMf5mrIaJxjgPvKDn-cHI9wcjP_BD5w_HA48ER0E4GoX-yA2CYDjyAvdvRIKT68D1_bDn-77bC1030PsDv6kPzupJuQ" alt="Workflow Diagram" style="max-width: 100%;">
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <section class="section">
+            <h2>🚀 Next Steps</h2>
+            <ol>
+                <li>
+                    <strong>Create Playground Repository</strong>
+                    <pre><code>gh repo create bemeda-bdd-playground --public</code></pre>
+                </li>
+                <li><strong>Set up GitHub Actions workflow</strong></li>
+                <li><strong>Create first USE step issues</strong></li>
+                <li><strong>Test the generation process</strong></li>
+                <li><strong>Iterate based on feedback</strong></li>
+            </ol>
+        </section>
+
+        <!-- Summary -->
+        <section class="section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+            <h2>🎯 Summary</h2>
+            <p style="font-size: 1.1rem;">
+                This integration creates a powerful bridge between your business-focused USE methodology and technical BDD testing. 
+                By using GitHub Actions to automatically transform USE steps into executable tests, you ensure that your 
+                documentation stays in sync with implementation while maintaining the simplicity and clarity of your USE system.
+            </p>
+            <p style="margin-top: 20px;">
+                <strong>Key Benefits:</strong> Single source of truth in GitHub • Automatic test generation • 
+                Business-friendly language • Full technical implementation • Complete traceability
+            </p>
+        </section>
+
+        <div style="text-align: center; padding: 32px; color: var(--color-text-secondary);">
+            <p>View the full proposal: <a href="USE-BDD-Integration-Proposal.md" style="color: var(--color-link);">Markdown Version</a></p>
+        </div>
+    </div>
+</body>
+</html>
