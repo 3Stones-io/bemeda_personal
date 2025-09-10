@@ -1,9 +1,315 @@
 /* See the Tailwind configuration guide for advanced usage
    https://tailwindcss.com/docs/configuration */
-@import 'tailwindcss' source(none);
+
+@import 'tailwindcss';
+
 @source "../css";
 @source "../js";
 @source "../../lib/bemeda_personal_web";
+
+/* Add variants based on LiveView classes */
+@custom-variant phx-click-loading (.phx-click-loading&, .phx-click-loading &);
+@custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
+@custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
+
+/* Use the data attribute for dark mode  */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* Make LiveView wrapper divs transparent for layout */
+[data-phx-session],
+[data-phx-teleported-src] {
+  display: contents;
+}
+
+/* Theme configuration using CSS custom properties */
+@theme {
+  /* Custom color palettes from Figma design system */
+
+  /* Primary Brand Color - Violet */
+  --color-violet-50: #f2edf7;
+  --color-violet-100: #d6c8e5;
+  --color-violet-200: #c2aed8;
+  --color-violet-300: #a788c7;
+  --color-violet-400: #9571bc;
+  --color-violet-500: #7b4eab;
+  --color-violet-600: #70479c;
+  --color-violet-700: #573779;
+  --color-violet-800: #442b5e;
+  --color-violet-900: #342148;
+  --color-violet-950: #291936;
+
+  /* Gray palette */
+  --color-gray-50: #f5f5f5;
+  --color-gray-100: #e0e0e0;
+  --color-gray-200: #c6c6c6;
+  --color-gray-300: #a8a8a8;
+  --color-gray-400: #8d8d8d;
+  --color-gray-500: #717171;
+  --color-gray-600: #5e5e5e;
+  --color-gray-700: #4a4a4a;
+  --color-gray-800: #383838;
+  --color-gray-900: #262626;
+  --color-gray-950: #1a1a1a;
+
+  /* Warning - Orange */
+  --color-warning-50: #fff3e0;
+  --color-warning-100: #ffe0b2;
+  --color-warning-200: #ffcc80;
+  --color-warning-300: #ffb74d;
+  --color-warning-400: #ffa726;
+  --color-warning-500: #ff9800;
+  --color-warning-600: #fb8c00;
+  --color-warning-700: #f57c00;
+  --color-warning-800: #ef6c00;
+  --color-warning-900: #e65100;
+  --color-warning-950: #bf360c;
+
+  /* Red - Error */
+  --color-red-50: #ffebee;
+  --color-red-100: #ffcdd2;
+  --color-red-200: #ef9a9a;
+  --color-red-300: #e57373;
+  --color-red-400: #ef5350;
+  --color-red-500: #f44336;
+  --color-red-600: #e53935;
+  --color-red-700: #d32f2f;
+  --color-red-800: #c62828;
+  --color-red-900: #b71c1c;
+  --color-red-950: #7f0000;
+
+  /* Green - Success */
+  --color-green-50: #e8f5e9;
+  --color-green-100: #c8e6c9;
+  --color-green-200: #a5d6a7;
+  --color-green-300: #81c784;
+  --color-green-400: #66bb6a;
+  --color-green-500: #4caf50;
+  --color-green-600: #77bb3c;
+  --color-green-700: #388e3c;
+  --color-green-800: #2e7d32;
+  --color-green-900: #1b5e20;
+  --color-green-950: #0d3e10;
+
+  /* Blue */
+  --color-blue-50: #e3f2fd;
+  --color-blue-100: #bbdefb;
+  --color-blue-200: #90caf9;
+  --color-blue-300: #64b5f6;
+  --color-blue-400: #42a5f5;
+  --color-blue-500: #2196f3;
+  --color-blue-600: #1e88e5;
+  --color-blue-700: #1976d2;
+  --color-blue-800: #1565c0;
+  --color-blue-900: #0d47a1;
+  --color-blue-950: #0a3d8f;
+
+  /* Semantic color mappings */
+  --color-primary-50: var(--color-violet-50);
+  --color-primary-100: var(--color-violet-100);
+  --color-primary-200: var(--color-violet-200);
+  --color-primary-300: var(--color-violet-300);
+  --color-primary-400: var(--color-violet-400);
+  --color-primary-500: var(--color-violet-500);
+  --color-primary-600: var(--color-violet-600);
+  --color-primary-700: var(--color-violet-700);
+  --color-primary-800: var(--color-violet-800);
+  --color-primary-900: var(--color-violet-900);
+  --color-primary-950: var(--color-violet-950);
+
+  --color-secondary-50: var(--color-gray-50);
+  --color-secondary-100: var(--color-gray-100);
+  --color-secondary-200: var(--color-gray-200);
+  --color-secondary-300: var(--color-gray-300);
+  --color-secondary-400: var(--color-gray-400);
+  --color-secondary-500: var(--color-gray-500);
+  --color-secondary-600: var(--color-gray-600);
+  --color-secondary-700: var(--color-gray-700);
+  --color-secondary-800: var(--color-gray-800);
+  --color-secondary-900: var(--color-gray-900);
+  --color-secondary-950: var(--color-gray-950);
+
+  --color-error-50: var(--color-red-50);
+  --color-error-100: var(--color-red-100);
+  --color-error-200: var(--color-red-200);
+  --color-error-300: var(--color-red-300);
+  --color-error-400: var(--color-red-400);
+  --color-error-500: var(--color-red-500);
+  --color-error-600: var(--color-red-600);
+  --color-error-700: var(--color-red-700);
+  --color-error-800: var(--color-red-800);
+  --color-error-900: var(--color-red-900);
+  --color-error-950: var(--color-red-950);
+
+  --color-success-50: var(--color-green-50);
+  --color-success-100: var(--color-green-100);
+  --color-success-200: var(--color-green-200);
+  --color-success-300: var(--color-green-300);
+  --color-success-400: var(--color-green-400);
+  --color-success-500: var(--color-green-500);
+  --color-success-600: var(--color-green-600);
+  --color-success-700: var(--color-green-700);
+  --color-success-800: var(--color-green-800);
+  --color-success-900: var(--color-green-900);
+  --color-success-950: var(--color-green-950);
+
+  --color-info-50: var(--color-blue-50);
+  --color-info-100: var(--color-blue-100);
+  --color-info-200: var(--color-blue-200);
+  --color-info-300: var(--color-blue-300);
+  --color-info-400: var(--color-blue-400);
+  --color-info-500: var(--color-blue-500);
+  --color-info-600: var(--color-blue-600);
+  --color-info-700: var(--color-blue-700);
+  --color-info-800: var(--color-blue-800);
+  --color-info-900: var(--color-blue-900);
+  --color-info-950: var(--color-blue-950);
+
+  /* Surface/Background colors */
+  --color-background-primary: #ffffff;
+  --color-background-dark: #0e0e12;
+  --color-surface: #ffffff;
+  --color-surface-primary: #ffffff;
+  --color-surface-secondary: #f9f9f9;
+  --color-surface-tertiary: #f2f2f2;
+  --color-surface-dark: #1c1c1e;
+
+  /* Basic colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Strokes and borders */
+  --color-strokes: #e0e6ed;
+
+  /* Special background colors */
+  --color-blue-background: #f2f1fd;
+  --color-profile-avatar: #f2edf7;
+
+  /* Icon colors */
+  --color-icon-primary: #1f1f1f;
+  --color-icon-secondary: #555555;
+  --color-icon-tertiary: #717171;
+
+  /* Typography colors */
+  --color-purple: #7b4eab;
+
+  /* Descriptive colors */
+  --color-peach-50: #ffcc99;
+  --color-pine-100: #bbdefb;
+  --color-light-blue-300: #00bcd4;
+
+  /* Font Family */
+  --font-family-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* 4-point grid spacing system from Figma */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-xxl: 4rem;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-13: 52px;
+  --spacing-14: 56px;
+  --spacing-15: 60px;
+  --spacing-16: 64px;
+  --spacing-17: 68px;
+  --spacing-18: 72px;
+  --spacing-19: 76px;
+  --spacing-20: 80px;
+
+  /* Typography scale from Figma Material Design */
+  --font-size-h1: 96px;
+  --line-height-h1: 131px;
+  --font-weight-h1: 300;
+
+  --font-size-h2: 60px;
+  --line-height-h2: 82px;
+  --font-weight-h2: 300;
+
+  --font-size-h3: 48px;
+  --line-height-h3: 65px;
+  --font-weight-h3: 400;
+
+  --font-size-h4: 34px;
+  --line-height-h4: 46px;
+  --font-weight-h4: 400;
+
+  --font-size-h5: 24px;
+  --line-height-h5: 33px;
+  --font-weight-h5: 400;
+
+  --font-size-h6: 20px;
+  --line-height-h6: 27px;
+  --font-weight-h6: 400;
+
+  --font-size-subtitle-1: 16px;
+  --line-height-subtitle-1: 28px;
+  --font-weight-subtitle-1: 400;
+
+  --font-size-subtitle-2: 14px;
+  --line-height-subtitle-2: 22px;
+  --font-weight-subtitle-2: 400;
+
+  --font-size-body-1: 16px;
+  --line-height-body-1: 28px;
+  --font-weight-body-1: 400;
+
+  --font-size-body-2: 15px;
+  --line-height-body-2: 20px;
+  --font-weight-body-2: 400;
+
+  --font-size-caption: 12px;
+  --line-height-caption: 16px;
+  --font-weight-caption: 400;
+
+  --font-size-body-lg: 1.125rem;
+  --line-height-body-lg: 1.75;
+
+  --font-size-body: 1rem;
+  --line-height-body: 1.75;
+
+  --font-size-body-sm: 0.875rem;
+  --line-height-body-sm: 1.5;
+
+  /* Border radius tokens from Figma design system */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;
+  --radius: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  --radius-button: 8px;
+  --radius-input: 4px;
+  --radius-card: 12px;
+  --radius-modal: 16px;
+
+  /* Box shadows from Figma design system */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --shadow-dropdown: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
 
 /* A Tailwind plugin that makes "hero-#{ICON}" classes available.
    The heroicons installation itself is managed by your mix.exs */

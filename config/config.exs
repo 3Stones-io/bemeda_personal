@@ -46,7 +46,6 @@ config :tailwind,
   version: "4.1.7",
   bemeda_personal: [
     args: ~w(
-      --config=tailwind.config.js
       --input=css/app.css
       --output=../priv/static/assets/app.css
     ),
