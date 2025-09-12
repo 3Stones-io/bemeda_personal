@@ -63,7 +63,9 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       )
 
       assert_email_sent(
-        to: [{admin_user.first_name <> " " <> admin_user.last_name, admin_user.email}]
+        to: [
+          {admin_user.profile.first_name <> " " <> admin_user.profile.last_name, admin_user.email}
+        ]
       )
 
       emails_list = Emails.list_email_communications()
@@ -146,7 +148,9 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       )
 
       assert_email_sent(
-        to: [{admin_user.first_name <> " " <> admin_user.last_name, admin_user.email}],
+        to: [
+          {admin_user.profile.first_name <> " " <> admin_user.profile.last_name, admin_user.email}
+        ],
         subject: ~r/Job Application Status Update/
       )
 
@@ -223,7 +227,9 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
                })
 
       assert_email_sent(
-        to: [{admin_user.first_name <> " " <> admin_user.last_name, admin_user.email}],
+        to: [
+          {admin_user.profile.first_name <> " " <> admin_user.profile.last_name, admin_user.email}
+        ],
         subject: ~r/New Message/
       )
 

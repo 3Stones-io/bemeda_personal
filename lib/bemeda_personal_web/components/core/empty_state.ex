@@ -36,7 +36,7 @@ defmodule BemedaPersonalWeb.Components.Core.EmptyState do
         {@title}
       </h3>
 
-      <p :if={@description} class="text-gray-600 mb-8 max-w-sm">
+      <p :if={@description} class="text-gray-600 mb-8 max-w-[24rem]">
         {@description}
       </p>
 

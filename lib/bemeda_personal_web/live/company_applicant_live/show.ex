@@ -11,12 +11,17 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   on_mount {RatingHooks, :default}
 
   @impl Phoenix.LiveView
+  def mount(_params, _session, socket) do
+    {:ok, socket}
+  end
+
+  @impl Phoenix.LiveView
   def handle_params(%{"id" => applicant_id}, _url, socket) do
     company = socket.assigns.company
     application = JobApplications.get_job_application!(applicant_id)
     job_posting = application.job_posting
     resume = Resumes.get_user_resume(application.user)
-    full_name = "#{application.user.first_name} #{application.user.last_name}"
+    full_name = "#{application.user.profile.first_name} #{application.user.profile.last_name}"
     tags_form_fields = %{"tags" => ""}
 
     if connected?(socket) do

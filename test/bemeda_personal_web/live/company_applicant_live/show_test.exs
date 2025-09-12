@@ -78,7 +78,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
         |> log_in_user(company_user)
         |> live(~p"/company/applicant/#{application.id}")
 
-      applicant_name = "#{application.user.first_name} #{application.user.last_name}"
+      applicant_name =
+        "#{application.user.profile.first_name} #{application.user.profile.last_name}"
 
       assert html =~ applicant_name
       assert html =~ job.title
@@ -95,7 +96,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
         |> log_in_user(company_user)
         |> live(~p"/company/applicant/#{application.id}")
 
-      applicant_name = "#{application.user.first_name} #{application.user.last_name}"
+      applicant_name =
+        "#{application.user.profile.first_name} #{application.user.profile.last_name}"
+
       assert html =~ applicant_name
       assert html =~ "View Resume"
     end

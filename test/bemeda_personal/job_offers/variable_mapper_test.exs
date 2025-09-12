@@ -12,13 +12,20 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
     test "populates all expected variables from job application" do
       user =
         user_fixture(%{
-          city: "Zurich",
-          first_name: "Alice",
-          gender: :female,
-          last_name: "Smith",
-          locale: :en,
-          street: "Main St",
+          profile: %{
+            first_name: "Alice",
+            last_name: "Smith",
+            gender: :female,
+          },
+          address: %{
+            city: "Zurich",
+            street: "Main St",
           zip_code: "8000"
+          },
+
+
+          locale: :en,
+
         })
 
       company =
@@ -54,7 +61,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
       assert variables["Recruiter_Email"] == company.admin_user.email
 
       assert variables["Recruiter_Name"] ==
-               "#{company.admin_user.first_name} #{company.admin_user.last_name}"
+               "#{company.admin_user.profile.first_name} #{company.admin_user.profile.last_name}"
 
       # Job posting variables
       assert variables["Contract_Type"] == "Permanent Position"

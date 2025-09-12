@@ -202,7 +202,7 @@ defmodule BemedaPersonal.FeatureHelpers do
 
     session
     |> set_locale_to_english()
-    |> visit(~p"/users/register/job_seeker")
+    |> visit(~p"/users/register")
     |> fill_job_seeker_step1(email)
     |> submit_step1()
     |> fill_job_seeker_step2()

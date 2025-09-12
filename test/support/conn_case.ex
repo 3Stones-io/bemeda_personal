@@ -17,8 +17,6 @@ defmodule BemedaPersonalWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
-  alias BemedaPersonal.Accounts
-
   @type conn :: Plug.Conn.t()
   @type context :: map()
 
@@ -53,9 +51,16 @@ defmodule BemedaPersonalWeb.ConnCase do
   test context.
   """
   @spec register_and_log_in_user(context()) :: context()
-  def register_and_log_in_user(%{conn: conn}) do
-    user = BemedaPersonal.AccountsFixtures.user_fixture(confirmed: true)
-    %{conn: log_in_user(conn, user), user: user}
+  def register_and_log_in_user(%{conn: conn} = context) do
+    user = BemedaPersonal.AccountsFixtures.user_fixture()
+    scope = BemedaPersonal.Accounts.Scope.for_user(user)
+
+    opts =
+      context
+      |> Map.take([:token_authenticated_at])
+      |> Enum.into([])
+
+    %{conn: log_in_user(conn, user, opts), user: user, scope: scope}
   end
 
   @doc """
@@ -63,12 +68,19 @@ defmodule BemedaPersonalWeb.ConnCase do
 
   It returns an updated `conn`.
   """
-  @spec log_in_user(conn(), Accounts.User.t()) :: conn()
-  def log_in_user(conn, user) do
+  def log_in_user(conn, user, opts \\ []) do
     token = BemedaPersonal.Accounts.generate_user_session_token(user)
+
+    maybe_set_token_authenticated_at(token, opts[:token_authenticated_at])
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
+  end
+
+  defp maybe_set_token_authenticated_at(_token, nil), do: nil
+
+  defp maybe_set_token_authenticated_at(token, authenticated_at) do
+    BemedaPersonal.AccountsFixtures.override_token_authenticated_at(token, authenticated_at)
   end
 end

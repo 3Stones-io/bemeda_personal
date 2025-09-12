@@ -170,7 +170,7 @@
       <ChatComponents.chat_container
         :for={{dom_id, message} <- @streams.messages}
         id={dom_id}
-        current_user={@current_user}
+        current_user={@current_scope.user}
         is_employer?={@is_employer?}
         job_application={@job_application}
         message={message}
@@ -189,7 +189,7 @@
         module={OfferDetailsComponent}
         id="offer-details-component"
         job_application={@job_application}
-        current_user={@current_user}
+        current_user={@current_scope.user}
       />
     </.modal>
 

@@ -28,13 +28,20 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
               type="text"
               label={dgettext("companies", "Company Name")}
               required
+              input_class="border p-3"
             />
-            <.input field={f[:industry]} type="text" label={dgettext("companies", "Industry")} />
+            <.input
+              field={f[:industry]}
+              type="text"
+              label={dgettext("companies", "Industry")}
+              input_class="border p-3"
+            />
             <.input
               field={f[:description]}
               type="textarea"
               label={dgettext("companies", "Company Description")}
               rows="4"
+              input_class="border p-3"
             />
           </div>
         </.section>
@@ -43,19 +50,26 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
 
         <.section title={dgettext("companies", "Contact & Details")} class="mb-8">
           <div class="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
-            <.input field={f[:location]} type="text" label={dgettext("companies", "Location")} />
+            <.input
+              field={f[:location]}
+              type="text"
+              label={dgettext("companies", "Location")}
+              input_class="border p-3"
+            />
             <.input field={f[:size]} type="text" label={dgettext("companies", "Company Size")} />
             <.input
               field={f[:website_url]}
               type="url"
               label={dgettext("companies", "Website URL")}
               class="sm:col-span-2"
+              input_class="border p-3"
             />
             <.input
               field={f[:phone_number]}
               type="tel"
               label={dgettext("companies", "Phone")}
               placeholder="+41 23 4736 4735"
+              input_class="border p-3"
             />
             <.input
               field={f[:organization_type]}
@@ -71,6 +85,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
                 {dgettext("companies", "Home Care Service"), "Home Care Service"},
                 {dgettext("companies", "Other"), "Other"}
               ]}
+              input_class="border p-3"
             />
             <.input
               field={f[:hospital_affiliation]}
@@ -78,6 +93,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
               label={dgettext("companies", "Hospital name")}
               placeholder={dgettext("companies", "e.g., University Hospital Zürich")}
               class="sm:col-span-2"
+              input_class="border p-3"
             />
           </div>
         </.section>
@@ -91,9 +107,20 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
               type="text"
               label={dgettext("companies", "Address")}
               class="sm:col-span-2"
+              input_class="border p-3"
             />
-            <.input field={f[:city]} type="text" label={dgettext("companies", "City")} />
-            <.input field={f[:postal_code]} type="text" label={dgettext("companies", "Postal code")} />
+            <.input
+              field={f[:city]}
+              type="text"
+              label={dgettext("companies", "City")}
+              input_class="border p-3"
+            />
+            <.input
+              field={f[:postal_code]}
+              type="text"
+              label={dgettext("companies", "Postal code")}
+              input_class="border p-3"
+            />
           </div>
         </.section>
 

@@ -28,7 +28,7 @@
         module={BemedaPersonalWeb.Components.Company.FormComponent}
         action={@live_action}
         company={@company}
-        current_user={@current_user}
+        current_user={@current_scope.user}
         id={@company.id || :new}
         return_to={~p"/company"}
       />
@@ -58,7 +58,7 @@
           <.text variant="body-sm" class="mt-1 text-gray-500">{@company.industry}</.text>
           <.live_component
             can_rate?={false}
-            current_user={@current_user}
+            current_user={@current_scope.user}
             entity_id={@company.id}
             entity_name={@company.name}
             entity_type="Company"
@@ -337,7 +337,7 @@
           >
             <BemedaPersonalWeb.Components.Job.JobsComponents.applicant_card
               applicant={application}
-              current_user={@current_user}
+              current_user={@current_scope.user}
               id={"applicant-card-#{application.id}"}
               job={application.job_posting}
               show_job={true}

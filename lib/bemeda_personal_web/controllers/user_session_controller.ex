@@ -2,82 +2,76 @@ defmodule BemedaPersonalWeb.UserSessionController do
   use BemedaPersonalWeb, :controller
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonalWeb.UserAuth
 
-  @type conn :: Plug.Conn.t()
-  @type params :: map()
-
-  @spec create(conn(), params()) :: conn()
-  def create(conn, %{"_action" => "registered"} = params) do
-    create(conn, params, &account_created_message/0)
+  def create(conn, %{"_action" => "confirmed"} = params) do
+    create(conn, params, "User confirmed successfully.")
   end
 
-  def create(conn, %{"_action" => "password_updated"} = params) do
-    conn
-    |> put_session(:user_return_to, ~p"/users/settings/password")
-    |> create(params, &password_updated_message/0)
-  end
-
+  # flash msg for profillers or not
   def create(conn, params) do
-    create(conn, params, &welcome_back_message/0)
+    create(conn, params, "Welcome back!")
   end
 
-  defp welcome_back_message, do: dgettext("auth", "Welcome back!")
-  defp account_created_message, do: dgettext("auth", "Account created successfully!")
-  defp password_updated_message, do: dgettext("auth", "Password updated successfully!")
+  # magic link login
+  # ~TODO: take care of flash messages shown(profile filled, confirmation, logged in)
+  defp create(conn, %{"token" => token} = params, _info) do
+    with %User{} = user <- Accounts.get_user_by_magic_link_token(token),
+         {:ok, {user, tokens_to_disconnect}} <- Accounts.login_user_by_magic_link(token) do
+      UserAuth.disconnect_sessions(tokens_to_disconnect)
 
-  defp create(conn, %{"user" => user_params}, message_func) do
-    %{"email" => email, "password" => password} = user_params
-
-    case Accounts.get_user_by_email_and_password(email, password) do
-      nil ->
-        # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
+      UserAuth.log_in_user(conn, user, %{"user" => params})
+    else
+      _error ->
         conn
-        |> put_flash(:error, dgettext("auth", "Invalid email or password"))
-        |> put_flash(:email, String.slice(email, 0, 160))
+        |> put_flash(:error, "The link is invalid or it has expired.")
         |> redirect(to: ~p"/users/log_in")
-
-      %Accounts.User{confirmed_at: nil} ->
-        handle_unconfirmed_user(conn)
-
-      user ->
-        user_locale = Atom.to_string(user.locale)
-        Gettext.put_locale(BemedaPersonalWeb.Gettext, user_locale)
-
-        translated_message = message_func.()
-
-        conn
-        |> put_session(:locale, user_locale)
-        |> put_flash(:info, translated_message)
-        |> UserAuth.log_in_user(user, user_params)
     end
   end
 
-  defp handle_unconfirmed_user(%{params: %{"_action" => "registered"}} = conn) do
-    conn
-    |> put_flash(
-      :warning,
-      dgettext(
-        "auth",
-        "Please check your email and click the confirmation link to complete your registration."
-      )
-    )
-    |> redirect(to: ~p"/users/log_in")
+  # email + password login
+  defp create(conn, %{"user" => user_params}, info) do
+    %{"email" => email, "password" => password} = user_params
+
+    if user = Accounts.get_user_by_email_and_password(email, password) do
+      conn
+      |> put_flash(:info, info)
+      |> user_return_to(user)
+      |> UserAuth.log_in_user(user, user_params)
+    else
+      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
+      conn
+      |> put_flash(:error, "Invalid email or password")
+      |> put_flash(:email, String.slice(email, 0, 160))
+      |> redirect(to: ~p"/users/log_in")
+    end
   end
 
-  defp handle_unconfirmed_user(conn) do
-    conn
-    |> put_flash(
-      :error,
-      dgettext("auth", "You must confirm your email address before logging in.")
-    )
-    |> redirect(to: ~p"/users/log_in")
+  defp user_return_to(conn, user) do
+    if user.profile do
+      put_session(conn, :user_return_to, ~p"/")
+    else
+      put_session(conn, :user_return_to, ~p"/users/profile")
+    end
   end
 
-  @spec delete(conn(), params()) :: conn()
+  def update_password(conn, %{"user" => user_params} = params) do
+    user = conn.assigns.current_scope.user
+    true = Accounts.sudo_mode?(user)
+    {:ok, {_user, expired_tokens}} = Accounts.update_user_password(user, user_params)
+
+    # disconnect all existing LiveViews with old sessions
+    UserAuth.disconnect_sessions(expired_tokens)
+
+    conn
+    |> put_session(:user_return_to, ~p"/users/settings")
+    |> create(params, "Password updated successfully!")
+  end
+
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, dgettext("auth", "Logged out successfully."))
+    |> put_flash(:info, "Logged out successfully.")
     |> UserAuth.log_out_user()
   end
 end

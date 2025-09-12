@@ -82,7 +82,7 @@ defmodule BemedaPersonalWeb.Components.Core.NavigationDrawer do
   end
 
   attr :current_user, :map, required: true
-
+  # use email/name
   defp drawer_user_profile(assigns) do
     ~H"""
     <div class="px-4 py-3">
@@ -95,9 +95,10 @@ defmodule BemedaPersonalWeb.Components.Core.NavigationDrawer do
               class="w-full h-full"
             />
           </div>
-          <div>
+
+          <div :if={@current_user.profile}>
             <.text class="text-gray-700 font-medium">
-              {[@current_user.first_name, @current_user.last_name]
+              {[@current_user.profile.first_name, @current_user.profile.last_name]
               |> Enum.filter(& &1)
               |> Enum.join(" ")
               |> String.trim()}

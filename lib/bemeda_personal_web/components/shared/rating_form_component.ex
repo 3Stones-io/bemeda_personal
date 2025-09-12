@@ -54,7 +54,7 @@ defmodule BemedaPersonalWeb.Components.Shared.RatingFormComponent do
           <.button
             type="button"
             phx-click={@on_cancel}
-            class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+            class="border border-gray-300 text-gray-700 hover:bg-gray-50"
           >
             Cancel
           </.button>

@@ -10,6 +10,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   alias BemedaPersonal.Accounts.EmailTemplates.EmployerJobApplicationStatusEmail
   alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationReceivedEmail
   alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationStatusEmail
+  alias BemedaPersonal.Accounts.EmailTemplates.MagicLinkEmail
   alias BemedaPersonal.Accounts.EmailTemplates.NewMessageEmail
   alias BemedaPersonal.Accounts.EmailTemplates.ResetPasswordEmail
   alias BemedaPersonal.Accounts.EmailTemplates.UpdateEmailInstructions
@@ -46,9 +47,19 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   }
 
   defp deliver(%User{} = recipient, subject, html_body, text_body) do
+    recipient_name =
+      if recipient.profile do
+        "#{recipient.profile.first_name} #{recipient.profile.last_name}" |> String.trim()
+      else
+        ""
+      end
+
+    recipient_tuple =
+      if recipient_name == "", do: {"", recipient.email}, else: {recipient_name, recipient.email}
+
     email =
       new()
-      |> to({"#{recipient.first_name} #{recipient.last_name}", recipient.email})
+      |> to(recipient_tuple)
       |> from(@from)
       |> subject(subject)
       |> text_body(text_body)
@@ -63,19 +74,46 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     end
   end
 
-  @spec deliver_confirmation_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
-  def deliver_confirmation_instructions(user, url) do
+  @spec deliver_login_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
+  def deliver_login_instructions(user, url) do
+    case user do
+      %User{confirmed_at: nil} -> deliver_confirmation_instructions(user, url)
+      _other -> deliver_magic_link_instructions(user, url)
+    end
+  end
+
+  defp deliver_magic_link_instructions(user, url) do
     put_locale(user)
-    user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
-      ConfirmationEmail.render(
-        url: url,
-        user_name: user_name
-      )
+      MagicLinkEmail.render(url: url)
 
     text_body = """
-    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
+    #{dgettext("emails", "Hello,")}
+
+    #{dgettext("emails", "You can log into your account by visiting the URL below:")}
+
+    #{url}
+
+    #{dgettext("emails", "If you didn't create an account with us, please ignore this email.")}
+    """
+
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Login Link"),
+      html_body,
+      text_body
+    )
+  end
+
+  defp deliver_confirmation_instructions(user, url) do
+    put_locale(user)
+
+    html_body =
+      ConfirmationEmail.render(url: url)
+
+    text_body = """
+    #{dgettext("emails", "Hello,")}
 
     #{dgettext("emails", "Thank you for joining BemedaPersonal. We're excited to have you on board!")}
 
@@ -98,7 +136,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
           {:ok, email()} | {:error, any()}
   def deliver_reset_password_instructions(user, url) do
     put_locale(user)
-    user_name = "#{user.first_name} #{user.last_name}"
+    user_name = "#{user.profile.first_name} #{user.profile.last_name}"
 
     html_body =
       ResetPasswordEmail.render(
@@ -129,7 +167,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @spec deliver_update_email_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
   def deliver_update_email_instructions(user, url) do
     put_locale(user)
-    user_name = "#{user.first_name} #{user.last_name}"
+    user_name = "#{user.profile.first_name} #{user.profile.last_name}"
 
     html_body =
       UpdateEmailInstructions.render(
@@ -160,8 +198,8 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @spec deliver_new_message(recipient(), message(), url()) :: {:ok, email()} | {:error, any()}
   def deliver_new_message(recipient, message, url) do
     put_locale(recipient)
-    user_name = "#{recipient.first_name} #{recipient.last_name}"
-    sender_name = "#{message.sender.first_name} #{message.sender.last_name}"
+    user_name = "#{recipient.profile.first_name} #{recipient.profile.last_name}"
+    sender_name = "#{message.sender.profile.first_name} #{message.sender.profile.last_name}"
 
     html_body =
       NewMessageEmail.render(
@@ -194,7 +232,10 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
           {:ok, email} | {:error, any()}
   def deliver_user_job_application_received(job_application, url) do
     put_locale(job_application.user)
-    user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
+
+    user_name =
+      "#{job_application.user.profile.first_name} #{job_application.user.profile.last_name}"
+
     job_title = job_application.job_posting.title
     company_name = job_application.job_posting.company.name
 
@@ -230,7 +271,10 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
           {:ok, email} | {:error, any()}
   def deliver_user_job_application_status(job_application, url) do
     put_locale(job_application.user)
-    user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
+
+    user_name =
+      "#{job_application.user.profile.first_name} #{job_application.user.profile.last_name}"
+
     job_title = job_application.job_posting.title
     new_status = job_application.state
     readable_status = Map.get(@status_messages, new_status, @default_status_message)
@@ -278,8 +322,11 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   def deliver_employer_job_application_received(job_application, url) do
     put_locale(job_application.job_posting.company.admin_user)
     admin_user = job_application.job_posting.company.admin_user
-    employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
-    applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
+    employer_name = "#{admin_user.profile.first_name} #{admin_user.profile.last_name}"
+
+    applicant_name =
+      "#{job_application.user.profile.first_name} #{job_application.user.profile.last_name}"
+
     job_title = job_application.job_posting.title
 
     html_body =
@@ -315,8 +362,11 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   def deliver_employer_job_application_status(job_application, url) do
     put_locale(job_application.job_posting.company.admin_user)
     admin_user = job_application.job_posting.company.admin_user
-    employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
-    applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
+    employer_name = "#{admin_user.profile.first_name} #{admin_user.profile.last_name}"
+
+    applicant_name =
+      "#{job_application.user.profile.first_name} #{job_application.user.profile.last_name}"
+
     job_title = job_application.job_posting.title
     new_status = job_application.state
     readable_status = Map.get(@status_messages, new_status, @default_status_message)

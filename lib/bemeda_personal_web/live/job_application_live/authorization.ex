@@ -17,7 +17,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Authorization do
   @spec authorize_job_application_access(socket(), map()) ::
           :ok | {:error, {String.t(), String.t()}}
   def authorize_job_application_access(socket, job_application) do
-    current_user = socket.assigns.current_user
+    current_user = socket.assigns.current_scope.user
     job_posting = job_application.job_posting
     job_seeker_user_id = job_application.user_id
     company_admin_user_id = job_posting.company.admin_user_id

@@ -87,7 +87,10 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       assert html =~ "Applicants"
       assert html =~ company.name
-      assert html =~ "#{application.user.first_name} #{application.user.last_name}"
+
+      assert html =~
+               "#{application.user.profile.first_name} #{application.user.profile.last_name}"
+
       assert html =~ application.job_posting.title
     end
 
@@ -99,7 +102,9 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       conn = log_in_user(conn, user)
 
       assert {:ok, view, html} = live(conn, ~p"/company/applicants")
-      assert html =~ "#{application.user.first_name} #{application.user.last_name}"
+
+      assert html =~
+               "#{application.user.profile.first_name} #{application.user.profile.last_name}"
 
       assert {:error, {:live_redirect, %{to: path}}} =
                view
@@ -158,8 +163,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       filtered_html = render(view)
 
-      assert filtered_html =~ application1.user.first_name
-      assert filtered_html =~ application2.user.first_name
+      assert filtered_html =~ application1.user.profile.first_name
+      assert filtered_html =~ application2.user.profile.first_name
       refute filtered_html =~ application3.id
 
       view
@@ -174,7 +179,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       refute filtered_html2 =~ application1.id
       refute filtered_html2 =~ application2.id
-      assert filtered_html2 =~ application3.user.first_name
+      assert filtered_html2 =~ application3.user.profile.first_name
     end
 
     test "filters applicants by date range through form submission", %{
@@ -376,8 +381,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
 
       assert html =~ "Applicants"
       assert html =~ job.title
-      assert html =~ "#{application.user.first_name} #{application.user.last_name}"
-      refute html =~ "#{job_application_2.user.first_name} #{job_application_2.user.last_name}"
+
+      assert html =~
+               "#{application.user.profile.first_name} #{application.user.profile.last_name}"
+
+      refute html =~
+               "#{job_application_2.user.profile.first_name} #{job_application_2.user.profile.last_name}"
     end
 
     test "filters job-specific applicants by name through form", %{

@@ -66,7 +66,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.ChatComponents do
   def chat_contact_name(%{is_employer?: true} = assigns) do
     ~H"""
     <span>
-      {"#{@job_application.user.first_name} #{@job_application.user.last_name}"}
+      {"#{@job_application.user.profile.first_name} #{@job_application.user.profile.last_name}"}
     </span>
     """
   end
@@ -465,7 +465,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.ChatComponents do
         <div class="flex-1 min-w-0">
           <h3 class="text-sm font-medium text-gray-900 truncate">
             {if @message.user,
-              do: "#{@message.user.first_name} #{@message.user.last_name}",
+              do: "#{@message.user.profile.first_name} #{@message.user.profile.last_name}",
               else: "Resume"}
           </h3>
           <p class="text-xs text-gray-500">

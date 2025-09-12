@@ -1,0 +1,16 @@
+<mj-body>
+  <mj-section padding="0">
+    <mj-column width="100%">
+      <mj-text align="left" font-size="16px" font-family="Inter, Arial, sans-serif" color="#374151" padding="0 0 16px 0">
+        <%= dgettext("emails", "Hello,") %>
+      </mj-text>
+      <mj-text align="left" font-size="16px" font-family="Inter, Arial, sans-serif" color="#374151" padding="0 0 32px 0" line-height="24px">
+        <%= dgettext("emails", "You can log into your account by visiting the URL below:") %>
+      </mj-text>
+      <%= render_dynamic_component CtaButtonComponent, %{cta_text: dgettext("emails", "Log in"), cta_url: @url} %>
+      <mj-text align="center" font-size="14px" font-family="Inter, Arial, sans-serif" color="#6b7280" padding="32px 0 0 0" line-height="20px">
+        <%= dgettext("emails", "If you have not created this account with us, Please ignore this email.") %>
+      </mj-text>
+    </mj-column>
+  </mj-section>
+</mj-body>

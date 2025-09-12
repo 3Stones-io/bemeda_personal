@@ -823,8 +823,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert html =~ "Complete Offer Details"
       assert html =~ "Fill in the employment terms for"
-      assert html =~ job_application.user.first_name
-      assert html =~ job_application.user.last_name
+      assert html =~ job_application.user.profile.first_name
+      assert html =~ job_application.user.profile.last_name
       assert html =~ "Auto-populated Information"
       assert html =~ "Employment Terms"
       assert html =~ "Start Date"
@@ -965,8 +965,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       {view, html} = setup_offer_modal_view(conn, employer, job_application)
 
       assert html =~ "Complete Offer Details"
-      assert html =~ job_application.user.first_name
-      assert html =~ job_application.user.last_name
+      assert html =~ job_application.user.profile.first_name
+      assert html =~ job_application.user.profile.last_name
       assert html =~ job_application.job_posting.title
 
       view

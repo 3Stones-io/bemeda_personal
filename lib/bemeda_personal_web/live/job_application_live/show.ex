@@ -46,7 +46,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
   def handle_event("send-message", %{"message" => message_params}, socket) do
     case Chat.create_message(
-           socket.assigns.current_user,
+           socket.assigns.current_scope.user,
            socket.assigns.job_application,
            message_params
          ) do
@@ -71,7 +71,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
     {:ok, message} =
       Chat.create_message_with_media(
-        socket.assigns.current_user,
+        socket.assigns.current_scope.user,
         socket.assigns.job_application,
         %{
           "media_data" => %{
@@ -118,7 +118,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     update_job_application_status(
       to_state,
       job_application,
-      socket.assigns.current_user,
+      socket.assigns.current_scope.user,
       transition_attrs,
       socket
     )
@@ -129,7 +129,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
 
     case DigitalSignatures.create_signing_session(
            job_application,
-           socket.assigns.current_user,
+           socket.assigns.current_scope.user,
            self()
          ) do
       {:ok, %{session_id: session_id, signing_url: signing_url}} ->
@@ -423,7 +423,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   defp assign_available_statuses(socket, job_application) do
     available_statuses =
       SharedHelpers.get_available_statuses(
-        socket.assigns.current_user,
+        socket.assigns.current_scope.user,
         job_application
       )
 
@@ -506,7 +506,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       Endpoint.subscribe("job_application:user:#{job_application.user_id}")
     end
 
-    is_employer = socket.assigns.current_user.id == job_posting.company.admin_user_id
+    is_employer = socket.assigns.current_scope.user.id == job_posting.company.admin_user_id
 
     socket
     |> assign(:is_employer?, is_employer)

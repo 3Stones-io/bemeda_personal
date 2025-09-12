@@ -127,7 +127,7 @@ defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
         Mock.create_signing_session(
           "test pdf content",
           "contract.pdf",
-          [%{email: user.email, name: "#{user.first_name} #{user.last_name}"}],
+          [%{email: user.email, name: "#{user.profile.first_name} #{user.profile.last_name}"}],
           %{job_application_id: job_application.id}
         )
 
@@ -169,7 +169,7 @@ defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
         Mock.create_signing_session(
           "test pdf content",
           "contract.pdf",
-          [%{email: user.email, name: "#{user.first_name} #{user.last_name}"}],
+          [%{email: user.email, name: "#{user.profile.first_name} #{user.profile.last_name}"}],
           %{job_application_id: job_application.id}
         )
 
@@ -215,7 +215,7 @@ defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
         Mock.create_signing_session(
           "test pdf content",
           "contract.pdf",
-          [%{email: user.email, name: "#{user.first_name} #{user.last_name}"}],
+          [%{email: user.email, name: "#{user.profile.first_name} #{user.profile.last_name}"}],
           %{job_application_id: job_application.id}
         )
 

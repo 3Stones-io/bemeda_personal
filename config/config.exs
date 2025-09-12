@@ -7,6 +7,19 @@
 # General application configuration
 import Config
 
+config :bemeda_personal, :scopes,
+  user: [
+    default: true,
+    module: BemedaPersonal.Accounts.Scope,
+    assign_key: :current_scope,
+    access_path: [:user, :id],
+    schema_key: :user_id,
+    schema_type: :binary_id,
+    schema_table: :users,
+    test_data_fixture: BemedaPersonal.AccountsFixtures,
+    test_setup_helper: :register_and_log_in_user
+  ]
+
 config :bemeda_personal,
   ecto_repos: [BemedaPersonal.Repo],
   generators: [timestamp_type: :utc_datetime, binary_id: true]

@@ -684,7 +684,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
           <div class="flex items-center gap-3">
             <h3 class="text-lg font-medium text-gray-900">
               <.link navigate={~p"/company/applicant/#{@applicant.id}"} id={@id}>
-                {"#{@applicant.user.first_name} #{@applicant.user.last_name}"}
+                {"#{@applicant.user.profile.first_name} #{@applicant.user.profile.last_name}"}
               </.link>
             </h3>
 
@@ -786,7 +786,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
           <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Full name")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              {"#{@application.user.first_name} #{@application.user.last_name}"}
+              {"#{@application.user.profile.first_name} #{@application.user.profile.last_name}"}
             </dd>
           </div>
           <div class="px-4 py-5 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -801,7 +801,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
               <.live_component
                 current_user={@current_user}
                 entity_id={@application.user.id}
-                entity_name={"#{@application.user.first_name} #{@application.user.last_name}"}
+                entity_name={"#{@application.user.profile.first_name} #{@application.user.profile.last_name}"}
                 entity_type="User"
                 id={"rating-display-applicant-#{@application.user.id}"}
                 module={RatingComponent}

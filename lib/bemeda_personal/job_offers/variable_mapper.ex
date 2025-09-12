@@ -33,7 +33,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
       "Client_Company" => company.name,
       "Employer_Country" => company.location || "",
       "Recruiter_Email" => company.admin_user.email,
-      "Recruiter_Name" => "#{company.admin_user.first_name} #{company.admin_user.last_name}"
+      "Recruiter_Name" => company.name
     }
   end
 
@@ -49,7 +49,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
 
   defp map_job_seeker_variables(user) do
     title =
-      case user.gender do
+      case Map.get(user.profile, :gender) do
         :male ->
           I18n.translate_title("male")
 
@@ -61,14 +61,14 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
       end
 
     %{
-      "Candidate_Full_Name" => "#{user.first_name} #{user.last_name}",
-      "City" => user.city || "",
-      "First_Name" => user.first_name,
-      "Last_Name" => user.last_name,
+      "Candidate_Full_Name" => "#{user.profile.first_name} #{user.profile.last_name}",
+      "City" => user.address.city || "",
+      "First_Name" => user.profile.first_name,
+      "Last_Name" => user.profile.last_name,
       "Salutation" => title,
-      "Street" => user.street || "",
+      "Street" => user.address.street || "",
       "Title" => title,
-      "ZipCode" => user.zip_code || ""
+      "ZipCode" => user.address.zip_code || ""
     }
   end
 
@@ -86,7 +86,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
   defp map_system_variables(user) do
     current_date = Date.utc_today()
     serial_number = "JO-#{current_date.year}-#{:rand.uniform(999_999)}"
-    formatted_date = format_date_for_contract(current_date, user.city)
+    formatted_date = format_date_for_contract(current_date, user.address.city)
 
     %{
       "Date" => Date.to_string(current_date),

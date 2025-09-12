@@ -43,7 +43,7 @@ defmodule BemedaPersonalWeb.JobLive.Show do
     socket
     |> assign(:page_title, "Apply to #{socket.assigns.job_posting.title}")
     |> assign(:job_application, %JobApplication{})
-    |> assign(:resume, Resumes.get_user_resume(socket.assigns.current_user))
+    |> assign(:resume, Resumes.get_user_resume(socket.assigns.current_scope.user))
     |> assign(:show_modal, true)
   end
 end

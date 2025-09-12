@@ -550,3 +550,22 @@ input[type='date'].unsupported {
 .nested-multi-select-input-container .nested-input {
   grid-area: nested-input;
 }
+
+.wrap-collapsible {
+  display: grid;
+  grid-template-columns: .45em .10em 1em 1fr;
+  grid-template-areas: "label label label label"
+                       "... divider ... form";
+}
+
+.wrap-collapsible > label {
+  grid-area: label;
+}
+
+.wrap-collapsible > .divider {
+  grid-area: divider;
+}
+
+.wrap-collapsible > .collapsible-content {
+  grid-area: form;
+}

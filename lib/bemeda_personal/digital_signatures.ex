@@ -101,7 +101,7 @@ defmodule BemedaPersonal.DigitalSignatures do
     signers = [
       %{
         email: user.email,
-        name: "#{user.first_name} #{user.last_name}",
+        name: "#{user.profile.first_name} #{user.profile.last_name}",
         role: "Employee"
       }
     ]

@@ -152,7 +152,7 @@ defmodule BemedaPersonalWeb.Components.Document.DocumentTemplateComponent do
     case Documents.generate_pdf(
            socket.assigns.message.id,
            variables,
-           socket.assigns.current_user,
+           socket.assigns.current_scope.user,
            socket.assigns.job_application
          ) do
       {:ok, %Chat.Message{media_asset: %{upload_id: upload_id}}} ->

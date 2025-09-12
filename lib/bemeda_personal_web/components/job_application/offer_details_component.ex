@@ -26,7 +26,8 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
         </div>
         <:subtitle>
           {dgettext("jobs", "Fill in the employment terms for %{name}",
-            name: "#{@job_application.user.first_name} #{@job_application.user.last_name}"
+            name:
+              "#{@job_application.user.profile.first_name} #{@job_application.user.profile.last_name}"
           )}
         </:subtitle>
       </.header>
