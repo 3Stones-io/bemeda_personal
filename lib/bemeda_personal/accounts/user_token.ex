@@ -17,10 +17,10 @@ defmodule BemedaPersonal.Accounts.UserToken do
   @hash_algorithm :sha256
   @rand_size 32
 
-  # It is very important to keep the reset password token expiry short,
+  # It is very important to keep the magic link token expiry short,
   # since someone with access to the email may take over the account.
+  @magic_link_validity_in_minutes 15
   @reset_password_validity_in_days 1
-  @confirm_validity_in_days 7
   @change_email_validity_in_days 7
   @session_validity_in_days 60
 
@@ -30,6 +30,7 @@ defmodule BemedaPersonal.Accounts.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
+    field :authenticated_at, :utc_datetime
     belongs_to :user, BemedaPersonal.Accounts.User
 
     timestamps(type: :utc_datetime, updated_at: false)
@@ -57,7 +58,8 @@ defmodule BemedaPersonal.Accounts.UserToken do
   @spec build_session_token(user()) :: {token(), t()}
   def build_session_token(user) do
     token = :crypto.strong_rand_bytes(@rand_size)
-    {token, %UserToken{token: token, context: "session", user_id: user.id}}
+    dt = user.authenticated_at || DateTime.utc_now(:second)
+    {token, %UserToken{token: token, context: "session", user_id: user.id, authenticated_at: dt}}
   end
 
   @doc """
@@ -74,7 +76,7 @@ defmodule BemedaPersonal.Accounts.UserToken do
       from token in by_token_and_context_query(token, "session"),
         join: user in assoc(token, :user),
         where: token.inserted_at > ago(@session_validity_in_days, "day"),
-        select: user
+        select: {%{user | authenticated_at: token.authenticated_at}, token.inserted_at}
 
     {:ok, query}
   end
@@ -113,6 +115,35 @@ defmodule BemedaPersonal.Accounts.UserToken do
   @doc """
   Checks if the token is valid and returns its underlying lookup query.
 
+  If found, the query returns a tuple of the form `{user, token}`.
+
+  The given token is valid if it matches its hashed counterpart in the
+  database. This function also checks if the token is being used within
+  15 minutes. The context of a magic link token is always "login".
+  """
+  @spec verify_magic_link_token_query(token()) :: {:ok, query()} | :error
+  def verify_magic_link_token_query(token) do
+    case Base.url_decode64(token, padding: false) do
+      {:ok, decoded_token} ->
+        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+
+        query =
+          from token in by_token_and_context_query(hashed_token, "login"),
+            join: user in assoc(token, :user),
+            where: token.inserted_at > ago(^@magic_link_validity_in_minutes, "minute"),
+            where: token.sent_to == user.email,
+            select: {user, token}
+
+        {:ok, query}
+
+      :error ->
+        :error
+    end
+  end
+
+  @doc """
+  Checks if the token is valid and returns its underlying lookup query.
+
   The query returns the user found by the token, if any.
 
   The given token is valid if it matches its hashed counterpart in the
@@ -143,7 +174,6 @@ defmodule BemedaPersonal.Accounts.UserToken do
     end
   end
 
-  defp days_for_context("confirm"), do: @confirm_validity_in_days
   defp days_for_context("reset_password"), do: @reset_password_validity_in_days
 
   @doc """

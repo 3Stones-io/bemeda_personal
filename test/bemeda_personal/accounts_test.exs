@@ -24,12 +24,15 @@ defmodule BemedaPersonal.AccountsTest do
     end
 
     test "does not return the user if the password is not valid" do
-      user = user_fixture()
+      user_fixture = user_fixture()
+      user = set_password(user_fixture)
+
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
     test "returns the user if the email and password are valid" do
-      %{id: id} = user = user_fixture()
+      user_fixture = user_fixture()
+      %{id: id} = user = set_password(user_fixture)
 
       assert %User{id: ^id} =
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
@@ -44,48 +47,44 @@ defmodule BemedaPersonal.AccountsTest do
     end
 
     test "returns the user with the given id" do
-      %{id: id} = user = user_fixture()
+      %{id: id} = user_fixture = user_fixture()
+      user = set_password(user_fixture)
       assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
   end
 
   describe "register_user/1" do
-    test "requires email and password to be set" do
+    test "requires email to be set" do
       {:error, changeset} = Accounts.register_user(%{})
 
       assert %{
-               password: ["can't be blank"],
                email: ["can't be blank"]
              } = errors_on(changeset)
     end
 
-    test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
+    test "validates email when given" do
+      {:error, changeset} = Accounts.register_user(%{email: "not valid"})
 
-      assert %{
-               email: ["must have the @ sign and no spaces"],
-               password: ["should be at least 12 character(s)"]
-             } = errors_on(changeset)
+      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
     end
 
-    test "validates maximum values for email and password for security" do
-      too_long = String.duplicate("db", 100)
-      {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
+    test "validates maximum values for email for security" do
+      too_long = String.duplicate("db", 190)
+      {:error, changeset} = Accounts.register_user(%{email: too_long})
       assert "should be at most 160 character(s)" in errors_on(changeset).email
-      assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "validates email uniqueness" do
       %{email: email} = user_fixture()
-      {:error, changeset} = Accounts.register_user(%{email: email})
-      assert "has already been taken" in errors_on(changeset).email
+      {:error, changeset_1} = Accounts.register_user(%{email: email})
+      assert "has already been taken" in errors_on(changeset_1).email
 
       # Now try with the upper cased email too, to check that email case is ignored.
       {:error, changeset_2} = Accounts.register_user(%{email: String.upcase(email)})
       assert "has already been taken" in errors_on(changeset_2).email
     end
 
-    test "registers users with a hashed password" do
+    test "registers users without password" do
       email = unique_user_email()
 
       {:ok, user} =
@@ -94,101 +93,35 @@ defmodule BemedaPersonal.AccountsTest do
         |> Accounts.register_user()
 
       assert user.email == email
-      assert is_binary(user.hashed_password)
+      assert is_nil(user.hashed_password)
       assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
     end
   end
 
-  describe "change_user_registration/2" do
-    test "returns a changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
+  describe "sudo_mode?/2" do
+    test "validates the authenticated_at time" do
+      now = DateTime.utc_now()
 
-      assert changeset.required == [
-               :medical_role,
-               :department,
-               :city,
-               :country,
-               :street,
-               :zip_code,
-               :first_name,
-               :last_name,
-               :password,
-               :email
-             ]
-    end
+      assert Accounts.sudo_mode?(%User{authenticated_at: DateTime.utc_now()})
+      assert Accounts.sudo_mode?(%User{authenticated_at: DateTime.add(now, -19, :minute)})
+      refute Accounts.sudo_mode?(%User{authenticated_at: DateTime.add(now, -21, :minute)})
 
-    test "allows fields to be set" do
-      email = unique_user_email()
-      password = valid_user_password()
+      # minute override
+      refute Accounts.sudo_mode?(
+               %User{authenticated_at: DateTime.add(now, -11, :minute)},
+               -10
+             )
 
-      changeset =
-        Accounts.change_user_registration(
-          %User{},
-          valid_user_attributes(email: email, password: password)
-        )
-
-      assert changeset.valid?
-      assert get_change(changeset, :email) == email
-      assert get_change(changeset, :password) == password
-      assert is_nil(get_change(changeset, :hashed_password))
+      # not authenticated
+      refute Accounts.sudo_mode?(%User{})
     end
   end
 
-  describe "change_user_email/2" do
+  describe "change_user_email/3" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})
       assert changeset.required == [:email]
-    end
-  end
-
-  describe "apply_user_email/3" do
-    setup do
-      %{user: user_fixture()}
-    end
-
-    test "requires email to change", %{user: user} do
-      {:error, changeset} = Accounts.apply_user_email(user, valid_user_password(), %{})
-      assert %{email: ["did not change"]} = errors_on(changeset)
-    end
-
-    test "validates email", %{user: user} do
-      {:error, changeset} =
-        Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
-
-      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
-    end
-
-    test "validates maximum value for email for security", %{user: user} do
-      too_long = String.duplicate("db", 100)
-
-      {:error, changeset} =
-        Accounts.apply_user_email(user, valid_user_password(), %{email: too_long})
-
-      assert "should be at most 160 character(s)" in errors_on(changeset).email
-    end
-
-    test "validates email uniqueness", %{user: user} do
-      %{email: email} = user_fixture()
-      password = valid_user_password()
-
-      {:error, changeset} = Accounts.apply_user_email(user, password, %{email: email})
-
-      assert "has already been taken" in errors_on(changeset).email
-    end
-
-    test "validates current password", %{user: user} do
-      {:error, changeset} =
-        Accounts.apply_user_email(user, "invalid", %{email: unique_user_email()})
-
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
-    end
-
-    test "applies the email without persisting it", %{user: user} do
-      email = unique_user_email()
-      {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
-      assert user.email == email
-      assert Accounts.get_user!(user.id).email != email
     end
   end
 
@@ -198,13 +131,13 @@ defmodule BemedaPersonal.AccountsTest do
     end
 
     test "sends token through notification", %{user: user} do
-      token =
+      token_1 =
         extract_user_token(fn url ->
           Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
         end)
 
-      {:ok, decoded_token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, decoded_token))
+      {:ok, token} = Base.url_decode64(token_1, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
@@ -213,7 +146,7 @@ defmodule BemedaPersonal.AccountsTest do
 
   describe "update_user_email/2" do
     setup do
-      user = user_fixture()
+      user = unconfirmed_user_fixture()
       email = unique_user_email()
 
       token =
@@ -225,36 +158,41 @@ defmodule BemedaPersonal.AccountsTest do
     end
 
     test "updates the email with a valid token", %{user: user, token: token, email: email} do
-      assert Accounts.update_user_email(user, token) == :ok
+      assert {:ok, %{email: ^email}} = Accounts.update_user_email(user, token)
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
       assert changed_user.email == email
-      assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email with invalid token", %{user: user} do
-      assert Accounts.update_user_email(user, "oops") == :error
+      assert Accounts.update_user_email(user, "oops") ==
+               {:error, :transaction_aborted}
+
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email if user email changed", %{user: user, token: token} do
-      assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) == :error
+      assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) ==
+               {:error, :transaction_aborted}
+
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Accounts.update_user_email(user, token) == :error
+
+      assert Accounts.update_user_email(user, token) ==
+               {:error, :transaction_aborted}
+
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
   end
 
-  describe "change_user_password/2" do
+  describe "change_user_password/3" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{})
       assert changeset.required == [:password]
@@ -262,9 +200,13 @@ defmodule BemedaPersonal.AccountsTest do
 
     test "allows fields to be set" do
       changeset =
-        Accounts.change_user_password(%User{}, %{
-          "password" => "new valid password"
-        })
+        Accounts.change_user_password(
+          %User{},
+          %{
+            "password" => "new valid password"
+          },
+          hash_password: false
+        )
 
       assert changeset.valid?
       assert get_change(changeset, :password) == "new valid password"
@@ -272,14 +214,14 @@ defmodule BemedaPersonal.AccountsTest do
     end
   end
 
-  describe "update_user_password/3" do
+  describe "update_user_password/2" do
     setup do
       %{user: user_fixture()}
     end
 
     test "validates password", %{user: user} do
       {:error, changeset} =
-        Accounts.update_user_password(user, valid_user_password(), %{
+        Accounts.update_user_password(user, %{
           password: "not valid",
           password_confirmation: "another"
         })
@@ -294,24 +236,18 @@ defmodule BemedaPersonal.AccountsTest do
       too_long = String.duplicate("db", 100)
 
       {:error, changeset} =
-        Accounts.update_user_password(user, valid_user_password(), %{password: too_long})
+        Accounts.update_user_password(user, %{password: too_long})
 
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
-    test "validates current password", %{user: user} do
-      {:error, changeset} =
-        Accounts.update_user_password(user, "invalid", %{password: valid_user_password()})
-
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
-    end
-
     test "updates the password", %{user: user} do
-      {:ok, user} =
-        Accounts.update_user_password(user, valid_user_password(), %{
+      {:ok, {user, expired_tokens}} =
+        Accounts.update_user_password(user, %{
           password: "new valid password"
         })
 
+      assert expired_tokens == []
       assert is_nil(user.password)
       assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
     end
@@ -319,8 +255,8 @@ defmodule BemedaPersonal.AccountsTest do
     test "deletes all tokens for the given user", %{user: user} do
       _token = Accounts.generate_user_session_token(user)
 
-      {:ok, _user} =
-        Accounts.update_user_password(user, valid_user_password(), %{
+      {:ok, {_user, _expired_tokens}} =
+        Accounts.update_user_password(user, %{
           password: "new valid password"
         })
 
@@ -328,11 +264,141 @@ defmodule BemedaPersonal.AccountsTest do
     end
   end
 
-  describe "change_user_personal_info/2" do
-    test "returns a user changeset for personal info" do
+  describe "generate_user_session_token/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "generates a token", %{user: user} do
+      token = Accounts.generate_user_session_token(user)
+      assert user_token = Repo.get_by(UserToken, token: token)
+      assert user_token.context == "session"
+      assert user_token.authenticated_at != nil
+
+      # Creating the same token for another user should fail
+      assert_raise Ecto.ConstraintError, fn ->
+        Repo.insert!(%UserToken{
+          token: user_token.token,
+          user_id: user_fixture().id,
+          context: "session"
+        })
+      end
+    end
+
+    test "duplicates the authenticated_at of given user in new token", %{user: user} do
+      now = DateTime.utc_now(:second)
+      user = %{user | authenticated_at: DateTime.add(now, -3600)}
+      token = Accounts.generate_user_session_token(user)
+      assert user_token = Repo.get_by(UserToken, token: token)
+      assert user_token.authenticated_at == user.authenticated_at
+      assert DateTime.compare(user_token.inserted_at, user.authenticated_at) == :gt
+    end
+  end
+
+  describe "get_user_by_session_token/1" do
+    setup do
       user = user_fixture()
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_personal_info(user, %{})
-      assert changeset.data == user
+      token = Accounts.generate_user_session_token(user)
+      %{user: user, token: token}
+    end
+
+    test "returns user by token", %{user: user, token: token} do
+      assert {session_user, token_inserted_at} = Accounts.get_user_by_session_token(token)
+      assert session_user.id == user.id
+      assert session_user.authenticated_at != nil
+      assert token_inserted_at != nil
+    end
+
+    test "does not return user for invalid token" do
+      refute Accounts.get_user_by_session_token("oops")
+    end
+
+    test "does not return user for expired token", %{token: token} do
+      dt = ~N[2020-01-01 00:00:00]
+      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: dt, authenticated_at: dt])
+      refute Accounts.get_user_by_session_token(token)
+    end
+  end
+
+  describe "get_user_by_magic_link_token/1" do
+    setup do
+      user = user_fixture()
+      {encoded_token, _hashed_token} = generate_user_magic_link_token(user)
+      %{user: user, token: encoded_token}
+    end
+
+    test "returns user by token", %{user: user, token: token} do
+      assert session_user = Accounts.get_user_by_magic_link_token(token)
+      assert session_user.id == user.id
+    end
+
+    test "does not return user for invalid token" do
+      refute Accounts.get_user_by_magic_link_token("oops")
+    end
+
+    test "does not return user for expired token", %{token: token} do
+      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      refute Accounts.get_user_by_magic_link_token(token)
+    end
+  end
+
+  describe "login_user_by_magic_link/1" do
+    test "confirms user and expires tokens" do
+      user = unconfirmed_user_fixture()
+      refute user.confirmed_at
+      {encoded_token, hashed_token} = generate_user_magic_link_token(user)
+
+      assert {:ok, {user, [%{token: ^hashed_token}]}} =
+               Accounts.login_user_by_magic_link(encoded_token)
+
+      assert user.confirmed_at
+    end
+
+    test "returns user and (deleted) token for confirmed user" do
+      user = user_fixture()
+      assert user.confirmed_at
+      {encoded_token, _hashed_token} = generate_user_magic_link_token(user)
+      assert {:ok, {^user, []}} = Accounts.login_user_by_magic_link(encoded_token)
+      # one time use only
+      assert {:error, :not_found} = Accounts.login_user_by_magic_link(encoded_token)
+    end
+
+    test "raises when unconfirmed user has password set" do
+      user = unconfirmed_user_fixture()
+      {1, nil} = Repo.update_all(User, set: [hashed_password: "hashed"])
+      {encoded_token, _hashed_token} = generate_user_magic_link_token(user)
+
+      assert_raise RuntimeError, ~r/magic link log in is not allowed/, fn ->
+        Accounts.login_user_by_magic_link(encoded_token)
+      end
+    end
+  end
+
+  describe "delete_user_session_token/1" do
+    test "deletes the token" do
+      user = user_fixture()
+      token = Accounts.generate_user_session_token(user)
+      assert Accounts.delete_user_session_token(token) == :ok
+      refute Accounts.get_user_by_session_token(token)
+    end
+  end
+
+  describe "deliver_login_instructions/2" do
+    setup do
+      %{user: unconfirmed_user_fixture()}
+    end
+
+    test "sends token through notification", %{user: user} do
+      token_1 =
+        extract_user_token(fn url ->
+          Accounts.deliver_login_instructions(user, url)
+        end)
+
+      {:ok, token} = Base.url_decode64(token_1, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      assert user_token.user_id == user.id
+      assert user_token.sent_to == user.email
+      assert user_token.context == "login"
     end
   end
 
@@ -347,7 +413,9 @@ defmodule BemedaPersonal.AccountsTest do
         gender: :female,
         last_name: "Smith",
         street: "456 Oak St",
-        zip_code: "54321"
+        zip_code: "54321",
+        department: "Emergency Department",
+        medical_role: "Certified Emergency Nursing Specialist (NDS HF)"
       }
 
       assert {:ok, updated_user} = Accounts.update_user_personal_info(user, update_attrs)
@@ -363,196 +431,6 @@ defmodule BemedaPersonal.AccountsTest do
     test "returns error changeset with invalid data" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user_personal_info(user, %{city: ""})
-    end
-  end
-
-  describe "generate_user_session_token/1" do
-    setup do
-      %{user: user_fixture()}
-    end
-
-    test "generates a token", %{user: user} do
-      token = Accounts.generate_user_session_token(user)
-      assert user_token = Repo.get_by(UserToken, token: token)
-      assert user_token.context == "session"
-
-      # Creating the same token for another user should fail
-      assert_raise Ecto.ConstraintError, fn ->
-        Repo.insert!(%UserToken{
-          token: user_token.token,
-          user_id: user_fixture().id,
-          context: "session"
-        })
-      end
-    end
-  end
-
-  describe "get_user_by_session_token/1" do
-    setup do
-      user = user_fixture()
-      token = Accounts.generate_user_session_token(user)
-      %{user: user, token: token}
-    end
-
-    test "returns user by token", %{user: user, token: token} do
-      assert session_user = Accounts.get_user_by_session_token(token)
-      assert session_user.id == user.id
-    end
-
-    test "does not return user for invalid token" do
-      refute Accounts.get_user_by_session_token("oops")
-    end
-
-    test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Accounts.get_user_by_session_token(token)
-    end
-  end
-
-  describe "delete_user_session_token/1" do
-    test "deletes the token" do
-      user = user_fixture()
-      token = Accounts.generate_user_session_token(user)
-      assert Accounts.delete_user_session_token(token) == :ok
-      refute Accounts.get_user_by_session_token(token)
-    end
-  end
-
-  describe "deliver_user_confirmation_instructions/2" do
-    setup do
-      %{user: user_fixture()}
-    end
-
-    test "sends token through notification", %{user: user} do
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_confirmation_instructions(user, url)
-        end)
-
-      {:ok, decoded_token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, decoded_token))
-      assert user_token.user_id == user.id
-      assert user_token.sent_to == user.email
-      assert user_token.context == "confirm"
-    end
-  end
-
-  describe "confirm_user/1" do
-    setup do
-      user = user_fixture()
-
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_confirmation_instructions(user, url)
-        end)
-
-      %{user: user, token: token}
-    end
-
-    test "confirms the email with a valid token", %{user: user, token: token} do
-      assert {:ok, confirmed_user} = Accounts.confirm_user(token)
-      assert confirmed_user.confirmed_at
-      assert confirmed_user.confirmed_at != user.confirmed_at
-      assert Repo.get!(User, user.id).confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
-    end
-
-    test "does not confirm with invalid token", %{user: user} do
-      assert Accounts.confirm_user("oops") == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
-    end
-
-    test "does not confirm email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Accounts.confirm_user(token) == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
-    end
-  end
-
-  describe "deliver_user_reset_password_instructions/2" do
-    setup do
-      %{user: user_fixture()}
-    end
-
-    test "sends token through notification", %{user: user} do
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_reset_password_instructions(user, url)
-        end)
-
-      {:ok, decoded_token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, decoded_token))
-      assert user_token.user_id == user.id
-      assert user_token.sent_to == user.email
-      assert user_token.context == "reset_password"
-    end
-  end
-
-  describe "get_user_by_reset_password_token/1" do
-    setup do
-      user = user_fixture()
-
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_reset_password_instructions(user, url)
-        end)
-
-      %{user: user, token: token}
-    end
-
-    test "returns the user with valid token", %{user: %{id: id}, token: token} do
-      assert %User{id: ^id} = Accounts.get_user_by_reset_password_token(token)
-      assert Repo.get_by(UserToken, user_id: id)
-    end
-
-    test "does not return the user with invalid token", %{user: user} do
-      refute Accounts.get_user_by_reset_password_token("oops")
-      assert Repo.get_by(UserToken, user_id: user.id)
-    end
-
-    test "does not return the user if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Accounts.get_user_by_reset_password_token(token)
-      assert Repo.get_by(UserToken, user_id: user.id)
-    end
-  end
-
-  describe "reset_user_password/2" do
-    setup do
-      %{user: user_fixture()}
-    end
-
-    test "validates password", %{user: user} do
-      {:error, changeset} =
-        Accounts.reset_user_password(user, %{
-          password: "not valid",
-          password_confirmation: "another"
-        })
-
-      assert %{
-               password: ["should be at least 12 character(s)"],
-               password_confirmation: ["does not match password"]
-             } = errors_on(changeset)
-    end
-
-    test "validates maximum values for password for security", %{user: user} do
-      too_long = String.duplicate("db", 100)
-      {:error, changeset} = Accounts.reset_user_password(user, %{password: too_long})
-      assert "should be at most 72 character(s)" in errors_on(changeset).password
-    end
-
-    test "updates the password", %{user: user} do
-      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password"})
-      assert is_nil(updated_user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
-    end
-
-    test "deletes all tokens for the given user", %{user: user} do
-      _token = Accounts.generate_user_session_token(user)
-      {:ok, _user} = Accounts.reset_user_password(user, %{password: "new valid password"})
-      refute Repo.get_by(UserToken, user_id: user.id)
     end
   end
 
@@ -578,6 +456,146 @@ defmodule BemedaPersonal.AccountsTest do
     test "new users have default locale" do
       user = user_fixture()
       assert user.locale == :en
+    end
+  end
+
+  describe "change_user_personal_info/2" do
+    test "returns a user changeset for job seeker personal info" do
+      user = user_fixture()
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_personal_info(user, %{})
+      assert changeset.data == user
+    end
+
+    test "returns a user changeset for employer personal info" do
+      user = user_fixture(%{user_type: :employer})
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_personal_info(user, %{})
+      assert changeset.data == user
+    end
+
+    test "validates required job seeker fields" do
+      user = user_fixture()
+
+      changeset =
+        Accounts.change_user_personal_info(user, %{
+          first_name: "",
+          last_name: "",
+          medical_role: nil,
+          department: nil
+        })
+
+      assert %{
+               first_name: ["can't be blank"],
+               last_name: ["can't be blank"],
+               medical_role: ["can't be blank"],
+               department: ["can't be blank"]
+             } = errors_on(changeset)
+    end
+
+    test "validates required employer fields" do
+      user = user_fixture(%{user_type: :employer})
+
+      changeset =
+        Accounts.change_user_personal_info(user, %{
+          first_name: "",
+          last_name: ""
+        })
+
+      assert %{
+               first_name: ["can't be blank"],
+               last_name: ["can't be blank"]
+             } = errors_on(changeset)
+    end
+
+    test "validates address fields for job seeker" do
+      user = user_fixture()
+
+      changeset =
+        Accounts.change_user_personal_info(user, %{
+          city: "",
+          country: "",
+          street: "",
+          zip_code: ""
+        })
+
+      assert %{
+               city: ["can't be blank"],
+               country: ["can't be blank"],
+               street: ["can't be blank"],
+               zip_code: ["can't be blank"]
+             } = errors_on(changeset)
+    end
+
+    test "validates address fields for employer" do
+      user = user_fixture(%{user_type: :employer})
+
+      changeset =
+        Accounts.change_user_personal_info(user, %{
+          city: "",
+          country: "",
+          street: "",
+          zip_code: ""
+        })
+
+      assert %{
+               city: ["can't be blank"],
+               country: ["can't be blank"],
+               street: ["can't be blank"],
+               zip_code: ["can't be blank"]
+             } = errors_on(changeset)
+    end
+
+    test "validates field lengths for job seeker" do
+      user = user_fixture()
+      long_name = String.duplicate("a", 256)
+      long_phone = String.duplicate("1", 21)
+
+      changeset =
+        Accounts.change_user_personal_info(user, %{
+          first_name: long_name,
+          last_name: long_name,
+          phone: long_phone
+        })
+
+      errors = errors_on(changeset)
+      assert "should be at most 255 character(s)" in errors.first_name
+      assert "should be at most 255 character(s)" in errors.last_name
+      assert "should be at most 20 character(s)" in errors.phone
+    end
+
+    test "validates field lengths for employer" do
+      user = user_fixture(%{user_type: :employer})
+      long_name = String.duplicate("a", 256)
+      long_phone = String.duplicate("1", 21)
+
+      changeset =
+        Accounts.change_user_personal_info(user, %{
+          first_name: long_name,
+          last_name: long_name,
+          phone: long_phone
+        })
+
+      errors = errors_on(changeset)
+      assert "should be at most 255 character(s)" in errors.first_name
+      assert "should be at most 255 character(s)" in errors.last_name
+      assert "should be at most 20 character(s)" in errors.phone
+    end
+
+    test "does not require medical_role or department for employer" do
+      user = user_fixture(%{user_type: :employer})
+
+      changeset =
+        Accounts.change_user_personal_info(user, %{
+          first_name: "John",
+          last_name: "Doe",
+          city: "Berlin",
+          country: "Germany",
+          street: "Main St 1",
+          zip_code: "10115"
+        })
+
+      assert changeset.valid?
+      refute Keyword.has_key?(changeset.errors, :medical_role)
+      refute Keyword.has_key?(changeset.errors, :department)
     end
   end
 

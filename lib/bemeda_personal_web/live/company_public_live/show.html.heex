@@ -17,15 +17,15 @@
           <.heading class="mb-4">{@company.name}</.heading>
           <.live_component
             class="mb-2"
-            current_user={@current_user}
+            current_user={@current_scope && @current_scope.user}
             display_class="mb-2"
             entity_id={@company.id}
             entity_name={@company.name}
             entity_type="Company"
             id={"rating-component-header-#{@company.id}"}
             module={RatingComponent}
-            rater_id={if @current_user, do: @current_user.id}
-            rater_type={if @current_user, do: "User"}
+            rater_id={if @current_scope && @current_scope.user, do: @current_scope.user.id}
+            rater_type={if @current_scope && @current_scope.user, do: "User"}
           />
         </div>
       </div>
@@ -131,14 +131,14 @@
         <div class="mb-2">
           <h4 class="uppercase text-xs font-semibold mb-1">{dgettext("general", "Rating")}</h4>
           <.live_component
-            current_user={@current_user}
+            current_user={@current_scope && @current_scope.user}
             entity_id={@company.id}
             entity_name={@company.name}
             entity_type="Company"
             id={"rating-component-sidebar-#{@company.id}"}
             module={RatingComponent}
-            rater_id={if @current_user, do: @current_user.id}
-            rater_type={if @current_user, do: "User"}
+            rater_id={if @current_scope && @current_scope.user, do: @current_scope.user.id}
+            rater_type={if @current_scope && @current_scope.user, do: "User"}
           />
         </div>
       </.card>

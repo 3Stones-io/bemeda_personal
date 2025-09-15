@@ -133,7 +133,6 @@ defmodule BemedaPersonalWeb.UserTypeRoutingTest do
     test "unauthenticated users can access registration and login routes", %{conn: conn} do
       {:ok, _view, _html} = live(conn, ~p"/users/register")
       {:ok, _view, _html} = live(conn, ~p"/users/log_in")
-      {:ok, _view, _html} = live(conn, ~p"/users/reset_password")
     end
 
     test "authenticated users are redirected from registration routes", %{conn: conn} do
@@ -142,14 +141,6 @@ defmodule BemedaPersonalWeb.UserTypeRoutingTest do
 
       assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/users/register")
       assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/users/log_in")
-    end
-
-    test "users can access registration with specific user type", %{conn: conn} do
-      {:ok, _view, employer_html} = live(conn, ~p"/users/register/employer")
-      assert employer_html =~ "Register"
-
-      {:ok, _view, job_seeker_html} = live(conn, ~p"/users/register/job_seeker")
-      assert job_seeker_html =~ "Register"
     end
   end
 
@@ -185,15 +176,6 @@ defmodule BemedaPersonalWeb.UserTypeRoutingTest do
       resume = resume_fixture(user)
 
       {:ok, _view, _html} = live(conn, ~p"/resumes/#{resume.id}")
-    end
-
-    test "users can access user confirmation routes", %{conn: conn} do
-      {:ok, _view, _html} = live(conn, ~p"/users/confirm")
-    end
-
-    test "locale controller is accessible", %{conn: conn} do
-      conn = get(conn, ~p"/locale/de")
-      assert redirected_to(conn) == "/"
     end
   end
 end

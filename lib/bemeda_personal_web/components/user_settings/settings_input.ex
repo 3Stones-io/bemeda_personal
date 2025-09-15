@@ -18,7 +18,7 @@ defmodule BemedaPersonalWeb.Components.UserSettings.SettingsInput do
   attr :placeholder, :string, default: nil
   attr :required, :boolean, default: false
   attr :rows, :string, default: nil
-  attr :rest, :global, include: ~w(phx-debounce disabled readonly)
+  attr :rest, :global, include: ~w(phx-debounce disabled readonly autocomplete)
 
   @spec settings_input(assigns()) :: rendered()
   def settings_input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do

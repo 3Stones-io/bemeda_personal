@@ -37,7 +37,7 @@
 
     <.live_component
       module={JobApplicationsListComponent}
-      current_user={@current_user}
+      current_user={@current_scope.user}
       filter_params={@filter_params}
       id="job-applications-list"
       job_posting={@job_posting}

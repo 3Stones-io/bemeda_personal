@@ -12,7 +12,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_user
+    current_user = socket.assigns.current_scope.user
     resume = Resumes.get_or_create_resume_by_user(current_user)
 
     socket =

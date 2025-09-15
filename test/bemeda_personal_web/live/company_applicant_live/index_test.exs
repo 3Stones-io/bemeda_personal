@@ -196,9 +196,15 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       |> render_submit()
 
       first_filter_html = render(view)
+      lazy_html = LazyHTML.from_fragment(first_filter_html)
 
-      assert first_filter_html =~ applicant.first_name
-      refute first_filter_html =~ second_applicant.first_name
+      applicants_section =
+        lazy_html
+        |> LazyHTML.query("#job-applications-list")
+        |> LazyHTML.to_html()
+
+      assert applicants_section =~ "#{applicant.first_name} #{applicant.last_name}"
+      refute applicants_section =~ "#{second_applicant.first_name} #{second_applicant.last_name}"
 
       view
       |> form("#job_application_filter_form", %{
@@ -209,9 +215,17 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       |> render_submit()
 
       second_filter_html = render(view)
+      lazy_html_2 = LazyHTML.from_fragment(second_filter_html)
 
-      refute second_filter_html =~ applicant.first_name
-      assert second_filter_html =~ second_applicant.first_name
+      applicants_section_2 =
+        lazy_html_2
+        |> LazyHTML.query("#job-applications-list")
+        |> LazyHTML.to_html()
+
+      refute applicants_section_2 =~ "#{applicant.first_name} #{applicant.last_name}"
+
+      assert applicants_section_2 =~
+               "#{second_applicant.first_name} #{second_applicant.last_name}"
     end
 
     test "clear filters button works", %{

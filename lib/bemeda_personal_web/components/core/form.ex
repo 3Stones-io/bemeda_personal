@@ -203,7 +203,7 @@ defmodule BemedaPersonalWeb.Components.Core.Form do
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded-lg text-secondary-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
+          "border mt-2 block w-full rounded-lg text-secondary-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
           @input_class,
           @errors == [] && "border-secondary-300 focus:border-primary-400",
           @errors != [] && "border-danger-400 focus:border-danger-400"
@@ -288,7 +288,7 @@ defmodule BemedaPersonalWeb.Components.Core.Form do
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-lg text-secondary-900 focus:ring-0 sm:text-sm sm:leading-6",
+          "mt-2 block w-full rounded-lg text-secondary-900 focus:ring-0 sm:text-sm sm:leading-6 border p-3",
           @input_class,
           @errors == [] && "border-secondary-300 focus:border-primary-400",
           @errors != [] && "border-danger-400 focus:border-danger-400"

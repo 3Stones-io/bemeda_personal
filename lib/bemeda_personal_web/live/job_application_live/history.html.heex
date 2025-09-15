@@ -42,7 +42,7 @@
           <.caption>{DateUtils.format_datetime(transition.inserted_at)}</.caption>
 
           <div
-            :if={transition.notes && @current_user.id != @job_application.user_id}
+            :if={transition.notes && @current_scope.user.id != @job_application.user_id}
             class="mt-2 p-3 bg-gray-50 rounded-md"
           >
             <.small_text>{transition.notes}</.small_text>
@@ -63,7 +63,7 @@
           {DateUtils.format_datetime(@job_application.inserted_at)}
         </.caption>
         <.small_text class="mt-2">
-          {if @current_user.id == @job_application.user_id do
+          {if @current_scope.user.id == @job_application.user_id do
             dgettext("jobs", "You applied for the %{position} position at %{company}.",
               position: String.downcase(@job_posting.title),
               company: @job_posting.company.name

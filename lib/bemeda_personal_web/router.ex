@@ -14,7 +14,7 @@ defmodule BemedaPersonalWeb.Router do
     plug :put_root_layout, html: {BemedaPersonalWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_user
+    plug :fetch_current_scope_for_user
     plug Locale
   end
 
@@ -30,7 +30,7 @@ defmodule BemedaPersonalWeb.Router do
 
   # PUBLIC ROUTES (no authentication required)
   scope "/", BemedaPersonalWeb do
-    pipe_through [:browser, :assign_current_user]
+    pipe_through [:browser, :assign_current_scope]
 
     get "/", PageController, :home
 
@@ -41,7 +41,7 @@ defmodule BemedaPersonalWeb.Router do
             if(Application.compile_env(:bemeda_personal, :sql_sandbox),
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
-            {BemedaPersonalWeb.UserAuth, :mount_current_user},
+            {BemedaPersonalWeb.UserAuth, :assign_current_scope},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1
@@ -55,7 +55,7 @@ defmodule BemedaPersonalWeb.Router do
 
   # UNAUTHENTICATED ROUTES (redirect if already logged in)
   scope "/", BemedaPersonalWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :assign_current_scope]
 
     live_session :redirect_if_user_is_authenticated,
       on_mount:
@@ -65,18 +65,37 @@ defmodule BemedaPersonalWeb.Router do
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
             {BemedaPersonalWeb.UserAuth, :redirect_if_user_is_authenticated},
+            {BemedaPersonalWeb.UserAuth, :assign_current_scope},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1
         ) do
-      live "/users/register", UserRegistrationLive, :new
-      live "/users/register/:type", UserRegistrationLive, :register
-      live "/users/log_in", UserLoginLive, :new
-      live "/users/reset_password", UserForgotPasswordLive, :new
-      live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      live "/users/register", UserLive.Registration, :new
+      live "/users/log_in", UserLive.Login, :new
     end
 
     post "/users/log_in", UserSessionController, :create
+    get "/users/log_in/:token", UserSessionController, :create
+  end
+
+  # USER PROFILE
+  scope "/", BemedaPersonalWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :user_profile,
+      on_mount:
+        Enum.filter(
+          [
+            if(Application.compile_env(:bemeda_personal, :sql_sandbox),
+              do: {BemedaPersonalWeb.LiveAcceptance, :default}
+            ),
+            {BemedaPersonalWeb.UserAuth, :require_authenticated},
+            {BemedaPersonalWeb.LiveHelpers, :assign_locale}
+          ],
+          & &1
+        ) do
+      live "/users/profile", UserLive.Profile, :new
+    end
   end
 
   # JOB SEEKER ONLY ROUTES
@@ -84,7 +103,8 @@ defmodule BemedaPersonalWeb.Router do
     pipe_through [
       :browser,
       :require_authenticated_user,
-      :require_job_seeker_user_type
+      :require_job_seeker_user_type,
+      :require_complete_profile
     ]
 
     live_session :job_seeker_routes,
@@ -94,8 +114,9 @@ defmodule BemedaPersonalWeb.Router do
             if(Application.compile_env(:bemeda_personal, :sql_sandbox),
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
-            {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+            {BemedaPersonalWeb.UserAuth, :require_authenticated},
             {BemedaPersonalWeb.UserAuth, :require_job_seeker_user_type},
+            {BemedaPersonalWeb.UserAuth, :require_complete_profile},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1
@@ -122,7 +143,8 @@ defmodule BemedaPersonalWeb.Router do
     pipe_through [
       :browser,
       :require_authenticated_user,
-      :require_employer_user_type
+      :require_employer_user_type,
+      :require_complete_profile
     ]
 
     # Company creation/management routes (no company required)
@@ -133,8 +155,9 @@ defmodule BemedaPersonalWeb.Router do
             if(Application.compile_env(:bemeda_personal, :sql_sandbox),
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
-            {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+            {BemedaPersonalWeb.UserAuth, :require_authenticated},
             {BemedaPersonalWeb.UserAuth, :require_employer_user_type},
+            {BemedaPersonalWeb.UserAuth, :require_complete_profile},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1
@@ -152,9 +175,10 @@ defmodule BemedaPersonalWeb.Router do
             if(Application.compile_env(:bemeda_personal, :sql_sandbox),
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
-            {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+            {BemedaPersonalWeb.UserAuth, :require_authenticated},
             {BemedaPersonalWeb.UserAuth, :require_employer_user_type},
             {BemedaPersonalWeb.UserAuth, :require_user_company},
+            {BemedaPersonalWeb.UserAuth, :require_complete_profile},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1
@@ -174,7 +198,7 @@ defmodule BemedaPersonalWeb.Router do
 
   # SHARED AUTHENTICATED ROUTES (both user types)
   scope "/", BemedaPersonalWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :require_complete_profile]
 
     live_session :shared_authenticated_routes,
       on_mount:
@@ -183,7 +207,8 @@ defmodule BemedaPersonalWeb.Router do
             if(Application.compile_env(:bemeda_personal, :sql_sandbox),
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
-            {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+            {BemedaPersonalWeb.UserAuth, :require_authenticated},
+            {BemedaPersonalWeb.UserAuth, :require_complete_profile},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1
@@ -197,6 +222,8 @@ defmodule BemedaPersonalWeb.Router do
       live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
       live "/jobs/:job_id/job_applications/:id/history", JobApplicationLive.History, :show
     end
+
+    post "/users/update_password", UserSessionController, :update_password
   end
 
   # UTILITY ROUTES (no authentication required)
@@ -205,22 +232,6 @@ defmodule BemedaPersonalWeb.Router do
 
     get "/locale/:locale", LocaleController, :set
     delete "/users/log_out", UserSessionController, :delete
-
-    live_session :current_user,
-      on_mount:
-        Enum.filter(
-          [
-            if(Application.compile_env(:bemeda_personal, :sql_sandbox),
-              do: {BemedaPersonalWeb.LiveAcceptance, :default}
-            ),
-            {BemedaPersonalWeb.UserAuth, :mount_current_user},
-            {BemedaPersonalWeb.LiveHelpers, :assign_locale}
-          ],
-          & &1
-        ) do
-      live "/users/confirm/:token", UserConfirmationLive, :edit
-      live "/users/confirm", UserConfirmationInstructionsLive, :new
-    end
 
     # Public resume route
     live "/resumes/:id", Resume.IndexLive, :show

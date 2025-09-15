@@ -130,7 +130,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   end
 
   defp process_company_rating(socket, score, comment, entity_type, entity_id) do
-    current_user = socket.assigns.current_user
+    current_user = socket.assigns.current_scope.user
     company = socket.assigns.company
 
     attrs = %{
@@ -184,9 +184,12 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     end
   end
 
-  defp authorize(%{assigns: %{current_user: %Accounts.User{}}}), do: :ok
+  defp authorize(%{assigns: %{current_scope: %{user: %Accounts.User{}}}}), do: :ok
 
-  defp authorize(%{assigns: %{current_user: nil}}),
+  defp authorize(%{assigns: %{current_scope: %{user: nil}}}),
+    do: {:error, dgettext("auth", "You must be logged in to rate.")}
+
+  defp authorize(%{assigns: %{current_scope: nil}}),
     do: {:error, dgettext("auth", "You must be logged in to rate.")}
 
   defp rate_company(current_user, company, attrs) do
@@ -203,7 +206,7 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   end
 
   defp can_rate?(socket) do
-    if socket.assigns.current_user do
+    if socket.assigns.current_scope.user do
       true
     else
       {:error, dgettext("auth", "You need to be logged in to rate")}

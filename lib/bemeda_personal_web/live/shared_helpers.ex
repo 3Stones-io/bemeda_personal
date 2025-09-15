@@ -69,12 +69,12 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   end
 
   defp assign_current_user_application(socket) do
-    if socket.assigns.current_user do
+    if socket.assigns[:current_scope] && socket.assigns[:current_scope].user do
       assign(
         socket,
         :application,
         JobApplications.get_user_job_application(
-          socket.assigns.current_user,
+          socket.assigns.current_scope.user,
           socket.assigns.job_posting
         )
       )

@@ -23,7 +23,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_user
+    current_user = socket.assigns.current_scope.user
     company = Companies.get_company_by_user(current_user)
 
     if connected?(socket) do

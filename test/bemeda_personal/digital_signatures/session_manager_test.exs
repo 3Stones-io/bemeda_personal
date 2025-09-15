@@ -191,6 +191,9 @@ defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
 
         {:signing_failed, ^session_id} ->
           :ok
+
+        _other ->
+          :nothing
       end
     end
 

@@ -10,12 +10,18 @@ defmodule BemedaPersonalWeb.Features.TestRegistrationHelperTest do
   @moduletag :feature
 
   describe "registration helpers" do
-    test "register_job_seeker helper works", %{conn: conn} do
+    test "registration page loads with account type selection", %{conn: conn} do
       conn
-      |> register_job_seeker()
-      # Should be on home page after registration
-      # Or whatever text is on home page
-      |> assert_has("*", text: "BemedaPersonal")
+      |> PhoenixTest.Playwright.clear_cookies()
+      # Explicitly log out any existing user first
+      |> visit(~p"/users/log_out")
+      |> visit(~p"/users/register")
+      |> assert_path("/users/register")
+      |> assert_has("main")
+      # Should see both account type options
+      |> assert_has("*", text: "Join as a job seeker or employer")
+      |> assert_has("*", text: "Employer")
+      |> assert_has("*", text: "Medical Personnel")
     end
   end
 end

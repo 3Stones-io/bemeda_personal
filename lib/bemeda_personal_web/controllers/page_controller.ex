@@ -1,12 +1,14 @@
 defmodule BemedaPersonalWeb.PageController do
   use BemedaPersonalWeb, :controller
 
+  alias BemedaPersonalWeb.UserAuth
+
   @type conn :: Plug.Conn.t()
   @type params :: map()
 
   @spec home(conn(), params()) :: conn()
   def home(conn, _params) do
-    case conn.assigns[:current_user] do
+    case UserAuth.get_user(conn) do
       %{user_type: :employer} ->
         redirect(conn, to: ~p"/company")
 

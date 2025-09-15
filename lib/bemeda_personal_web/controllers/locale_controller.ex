@@ -11,13 +11,19 @@ defmodule BemedaPersonalWeb.LocaleController do
     validated_locale =
       if locale in Locale.supported_locales(), do: locale, else: Locale.default_locale()
 
-    if current_user = conn.assigns[:current_user] do
+    if current_user = get_user(conn) do
       Accounts.update_user_locale(current_user, %{locale: validated_locale})
     end
 
     conn
     |> put_session(:locale, validated_locale)
     |> redirect(to: get_referer_or_default(conn))
+  end
+
+  defp get_user(conn) do
+    if conn.assigns[:current_scope] && conn.assigns[:current_scope].user do
+      conn.assigns[:current_scope].user
+    end
   end
 
   defp get_referer_or_default(conn) do

@@ -39,7 +39,7 @@ defmodule BemedaPersonalWeb.Components.Core.Button do
   attr :patch, :string, default: nil
   attr :href, :string, default: nil
 
-  attr :rest, :global, include: ~w(phx-click phx-value-id phx-target form)
+  attr :rest, :global, include: ~w(phx-click phx-value-id phx-target form value name)
 
   slot :inner_block, required: true
 

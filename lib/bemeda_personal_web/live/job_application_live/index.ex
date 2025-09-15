@@ -14,7 +14,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_user
+    current_user = socket.assigns.current_scope.user
 
     if connected?(socket) do
       Endpoint.subscribe("job_application:user:#{current_user.id}")
@@ -72,7 +72,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   end
 
   defp update_counts(socket) do
-    user_id = socket.assigns.current_user.id
+    user_id = socket.assigns.current_scope.user.id
     applied_count = JobApplications.count_user_applications(user_id)
     assign(socket, :applied_count, applied_count)
   end

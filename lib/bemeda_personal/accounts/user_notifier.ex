@@ -10,6 +10,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   alias BemedaPersonal.Accounts.EmailTemplates.EmployerJobApplicationStatusEmail
   alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationReceivedEmail
   alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationStatusEmail
+  alias BemedaPersonal.Accounts.EmailTemplates.MagicLinkEmail
   alias BemedaPersonal.Accounts.EmailTemplates.NewMessageEmail
   alias BemedaPersonal.Accounts.EmailTemplates.ResetPasswordEmail
   alias BemedaPersonal.Accounts.EmailTemplates.UpdateEmailInstructions
@@ -46,9 +47,16 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   }
 
   defp deliver(%User{} = recipient, subject, html_body, text_body) do
+    to =
+      if recipient.first_name && recipient.last_name do
+        {"#{recipient.first_name} #{recipient.last_name}", recipient.email}
+      else
+        recipient.email
+      end
+
     email =
       new()
-      |> to({"#{recipient.first_name} #{recipient.last_name}", recipient.email})
+      |> to(to)
       |> from(@from)
       |> subject(subject)
       |> text_body(text_body)
@@ -63,19 +71,43 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     end
   end
 
-  @spec deliver_confirmation_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
-  def deliver_confirmation_instructions(user, url) do
+  @spec deliver_login_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
+  def deliver_login_instructions(user, url) do
+    case user do
+      %User{confirmed_at: nil} -> deliver_confirmation_instructions(user, url)
+      _other -> deliver_magic_link_instructions(user, url)
+    end
+  end
+
+  defp deliver_magic_link_instructions(user, url) do
     put_locale(user)
-    user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
-      ConfirmationEmail.render(
-        url: url,
-        user_name: user_name
-      )
+      MagicLinkEmail.render(url: url)
 
     text_body = """
-    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
+    #{dgettext("emails", "Hello,")}
+    #{dgettext("emails", "You can log into your account by visiting the URL below:")}
+    #{url}
+    #{dgettext("emails", "If you didn't create an account with us, please ignore this email.")}
+    """
+
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Login Link"),
+      html_body,
+      text_body
+    )
+  end
+
+  defp deliver_confirmation_instructions(user, url) do
+    put_locale(user)
+
+    html_body =
+      ConfirmationEmail.render(url: url)
+
+    text_body = """
+    #{dgettext("emails", "Hello,")}
 
     #{dgettext("emails", "Thank you for joining BemedaPersonal. We're excited to have you on board!")}
 

@@ -17,6 +17,7 @@ defmodule BemedaPersonal.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
+    field :authenticated_at, :utc_datetime, virtual: true
     field :city, :string
     field :confirmed_at, :utc_datetime
     field :country, :string
@@ -42,115 +43,21 @@ defmodule BemedaPersonal.Accounts.User do
   end
 
   @doc """
-  A user changeset for registration.
+  A user changeset for registering or changing the email.
 
-  It is important to validate the length of both email and password.
-  Otherwise databases may truncate the email without warnings, which
-  could lead to unpredictable or insecure behaviour. Long passwords may
-  also be very expensive to hash for certain algorithms.
+  It requires the email to change otherwise an error is added.
 
   ## Options
 
-    * `:hash_password` - Hashes the password so it can be stored securely
-      in the database and ensures the password field is cleared to prevent
-      leaks in the logs. If password hashing is not needed and clearing the
-      password field is not desired (like when using this changeset for
-      validations on a LiveView form), this option can be set to `false`.
-      Defaults to `true`.
-
-    * `:validate_email` - Validates the uniqueness of the email, in case
-      you don't want to validate the uniqueness of the email (like when
-      using this changeset for validations on a LiveView form before
-      submitting the form), this option can be set to `false`.
+    * `:validate_unique` - Set to false if you don't want to validate the
+      uniqueness of the email, useful when displaying live validations.
       Defaults to `true`.
   """
-  @spec registration_changeset(t() | changeset(), attrs(), opts()) :: changeset()
-  def registration_changeset(user, attrs, opts \\ []) do
+  @spec email_changeset(t() | changeset(), attrs(), opts()) :: changeset()
+  def email_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [
-      :city,
-      :country,
-      :department,
-      :email,
-      :first_name,
-      :gender,
-      :last_name,
-      :locale,
-      :medical_role,
-      :password,
-      :street,
-      :user_type,
-      :zip_code
-    ])
+    |> cast(attrs, [:email, :locale, :user_type])
     |> validate_email(opts)
-    |> validate_password(opts)
-    |> validate_name()
-    |> validate_personal_info()
-    |> validate_job_seeker_fields()
-  end
-
-  @doc """
-  A user changeset for Step 1 of registration (basic information).
-
-  This changeset validates only the fields relevant to Step 1:
-  - email, first_name, last_name, password
-
-  ## Options
-
-    * `:hash_password` - Hashes the password so it can be stored securely
-      in the database and ensures the password field is cleared to prevent
-      leaks in the logs. If password hashing is not needed and clearing the
-      password field is not desired (like when using this changeset for
-      validations on a LiveView form), this option can be set to `false`.
-      Defaults to `true`.
-
-    * `:validate_email` - Validates the uniqueness of the email, in case
-      you don't want to validate the uniqueness of the email (like when
-      using this changeset for validations on a LiveView form before
-      submitting the form), this option can be set to `false`.
-      Defaults to `true`.
-  """
-  @spec registration_step1_changeset(t() | changeset(), attrs(), opts()) :: changeset()
-  def registration_step1_changeset(user, attrs, opts \\ []) do
-    user
-    |> cast(attrs, [:email, :first_name, :last_name, :password, :date_of_birth, :phone])
-    |> validate_email(opts)
-    |> validate_password(opts)
-    |> validate_name()
-  end
-
-  @doc """
-  A user changeset for Step 2 of registration (personal information).
-
-  This changeset validates only the fields relevant to Step 2:
-  - gender, street, zip_code, city, country
-  - For job seekers: medical_role, department
-
-  For final form submission validation, it also casts Step 1 fields
-  to ensure complete validation when displaying errors.
-  """
-  @spec registration_step2_changeset(t() | changeset(), attrs(), opts()) :: changeset()
-  def registration_step2_changeset(user, attrs, opts \\ []) do
-    user
-    |> cast(attrs, [
-      :city,
-      :country,
-      :department,
-      :email,
-      :first_name,
-      :gender,
-      :last_name,
-      :medical_role,
-      :password,
-      :street,
-      :user_type,
-      :zip_code
-    ])
-    |> validate_email(opts)
-    |> validate_name()
-    |> validate_password(opts)
-    |> validate_personal_info()
-    |> validate_job_seeker_fields()
   end
 
   defp validate_email(changeset, opts) do
@@ -163,6 +70,48 @@ defmodule BemedaPersonal.Accounts.User do
     |> maybe_validate_unique_email(opts)
   end
 
+  defp maybe_validate_unique_email(changeset, opts) do
+    if Keyword.get(opts, :validate_email, true) do
+      changeset
+      |> unsafe_validate_unique(:email, BemedaPersonal.Repo)
+      |> unique_constraint(:email)
+      |> validate_email_changed()
+    else
+      changeset
+    end
+  end
+
+  defp validate_email_changed(changeset) do
+    if get_field(changeset, :email) && get_change(changeset, :email) == nil do
+      add_error(changeset, :email, "did not change")
+    else
+      changeset
+    end
+  end
+
+  @doc """
+  A user changeset for changing the password.
+
+  It is important to validate the length of the password, as long passwords may
+  be very expensive to hash for certain algorithms.
+
+  ## Options
+
+    * `:hash_password` - Hashes the password so it can be stored securely
+      in the database and ensures the password field is cleared to prevent
+      leaks in the logs. If password hashing is not needed and clearing the
+      password field is not desired (like when using this changeset for
+      validations on a LiveView form), this option can be set to `false`.
+      Defaults to `true`.
+  """
+  @spec password_changeset(t() | changeset(), attrs(), opts()) :: changeset()
+  def password_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:password])
+    |> validate_confirmation(:password, message: "does not match password")
+    |> validate_password(opts)
+  end
+
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
@@ -172,32 +121,6 @@ defmodule BemedaPersonal.Accounts.User do
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
     # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
     |> maybe_hash_password(opts)
-  end
-
-  defp validate_name(changeset) do
-    changeset
-    |> validate_required([:first_name, :last_name])
-    |> validate_length(:first_name, min: 1, max: 255)
-    |> validate_length(:last_name, min: 1, max: 255)
-  end
-
-  defp validate_personal_info(changeset) do
-    changeset
-    |> validate_required([:city, :country, :street, :zip_code])
-    |> validate_length(:city, min: 1, max: 100)
-    |> validate_length(:country, min: 1, max: 100)
-    |> validate_length(:street, min: 1, max: 255)
-    |> validate_length(:zip_code, min: 1, max: 20)
-  end
-
-  defp validate_job_seeker_fields(changeset) do
-    user_type = get_field(changeset, :user_type)
-
-    if user_type == :job_seeker do
-      validate_required(changeset, [:medical_role, :department])
-    else
-      changeset
-    end
   end
 
   defp maybe_hash_password(changeset, opts) do
@@ -215,88 +138,6 @@ defmodule BemedaPersonal.Accounts.User do
     else
       changeset
     end
-  end
-
-  defp maybe_validate_unique_email(changeset, opts) do
-    if Keyword.get(opts, :validate_email, true) do
-      changeset
-      |> unsafe_validate_unique(:email, BemedaPersonal.Repo)
-      |> unique_constraint(:email)
-    else
-      changeset
-    end
-  end
-
-  @doc """
-  A user changeset for changing the email.
-
-  It requires the email to change otherwise an error is added.
-  """
-  @spec email_changeset(t() | changeset(), attrs(), opts()) :: changeset()
-  def email_changeset(user, attrs, opts \\ []) do
-    changeset =
-      user
-      |> cast(attrs, [:email])
-      |> validate_email(opts)
-
-    case changeset do
-      %{changes: %{email: _email}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :email, dgettext("auth", "did not change"))
-    end
-  end
-
-  @doc """
-  A user changeset for changing the password.
-
-  ## Options
-
-    * `:hash_password` - Hashes the password so it can be stored securely
-      in the database and ensures the password field is cleared to prevent
-      leaks in the logs. If password hashing is not needed and clearing the
-      password field is not desired (like when using this changeset for
-      validations on a LiveView form), this option can be set to `false`.
-      Defaults to `true`.
-  """
-  @spec password_changeset(t() | changeset(), attrs(), opts()) :: changeset()
-  def password_changeset(user, attrs, opts \\ []) do
-    user
-    |> cast(attrs, [:password])
-    |> validate_confirmation(:password,
-      message: dgettext("auth", "does not match password")
-    )
-    |> validate_password(opts)
-  end
-
-  @doc """
-  A user changeset for updating the locale preference.
-  """
-  @spec locale_changeset(t() | changeset(), attrs()) :: changeset()
-  def locale_changeset(user, attrs) do
-    user
-    |> cast(attrs, [:locale])
-    |> validate_required([:locale])
-  end
-
-  @doc """
-  A user changeset for updating personal info fields.
-  """
-  @spec personal_info_changeset(t() | changeset(), attrs()) :: changeset()
-  def personal_info_changeset(user, attrs) do
-    user
-    |> cast(attrs, [
-      :city,
-      :country,
-      :first_name,
-      :gender,
-      :last_name,
-      :street,
-      :locale,
-      :zip_code
-    ])
-    |> validate_required([:first_name, :last_name])
-    |> validate_length(:first_name, min: 1, max: 160)
-    |> validate_length(:last_name, min: 1, max: 160)
-    |> validate_personal_info()
   end
 
   @doc """
@@ -326,6 +167,68 @@ defmodule BemedaPersonal.Accounts.User do
   end
 
   @doc """
+  A user changeset for updating the locale preference.
+  """
+  @spec locale_changeset(t() | changeset(), attrs()) :: changeset()
+  def locale_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:locale])
+    |> validate_required([:locale])
+  end
+
+  @doc """
+  Changeset for validating job seeker profile completeness.
+  """
+  @spec job_seeker_profile_changeset(t(), attrs()) :: changeset()
+  def job_seeker_profile_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :city,
+      :country,
+      :department,
+      :email,
+      :first_name,
+      :gender,
+      :last_name,
+      :locale,
+      :medical_role,
+      :street,
+      :user_type,
+      :zip_code
+    ])
+    |> validate_name()
+    |> validate_user_address()
+    |> validate_job_seeker_fields()
+  end
+
+  @doc """
+  Changeset for validating employer profile completeness.
+  """
+  @spec employer_profile_changeset(t(), attrs()) :: changeset()
+  def employer_profile_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :city,
+      :country,
+      :first_name,
+      :gender,
+      :last_name,
+      :street,
+      :locale,
+      :zip_code
+    ])
+    |> validate_name()
+    |> validate_user_address()
+  end
+
+  defp validate_name(changeset) do
+    changeset
+    |> validate_required([:first_name, :last_name])
+    |> validate_length(:first_name, min: 1, max: 255)
+    |> validate_length(:last_name, min: 1, max: 255)
+  end
+
+  @doc """
   Validates the current password otherwise adds an error to the changeset.
   """
   @spec validate_current_password(changeset(), password()) :: changeset()
@@ -352,4 +255,70 @@ defmodule BemedaPersonal.Accounts.User do
   @spec employer?(t()) :: boolean()
   def employer?(%__MODULE__{user_type: :employer}), do: true
   def employer?(_user), do: false
+
+  defp validate_user_address(changeset) do
+    changeset
+    |> validate_required([:city, :country, :street, :zip_code])
+    |> validate_length(:city, min: 1, max: 100)
+    |> validate_length(:country, min: 1, max: 100)
+    |> validate_length(:street, min: 1, max: 255)
+    |> validate_length(:zip_code, min: 1, max: 20)
+  end
+
+  @doc """
+  A user changeset for job seeker personal info fields.
+  """
+  @spec job_seeker_personal_info_changeset(t() | changeset(), attrs()) :: changeset()
+  def job_seeker_personal_info_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :city,
+      :country,
+      :department,
+      :first_name,
+      :gender,
+      :last_name,
+      :medical_role,
+      :street,
+      :zip_code,
+      :phone,
+      :date_of_birth
+    ])
+    |> validate_name()
+    |> validate_user_address()
+    |> validate_required([:medical_role, :department])
+    |> validate_length(:phone, min: 1, max: 20)
+  end
+
+  @doc """
+  A user changeset for employer personal info fields.
+  """
+  @spec employer_personal_info_changeset(t() | changeset(), attrs()) :: changeset()
+  def employer_personal_info_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :city,
+      :country,
+      :first_name,
+      :gender,
+      :last_name,
+      :street,
+      :zip_code,
+      :phone,
+      :date_of_birth
+    ])
+    |> validate_name()
+    |> validate_user_address()
+    |> validate_length(:phone, min: 1, max: 20)
+  end
+
+  defp validate_job_seeker_fields(changeset) do
+    user_type = get_field(changeset, :user_type)
+
+    if user_type == :job_seeker do
+      validate_required(changeset, [:medical_role, :department])
+    else
+      changeset
+    end
+  end
 end

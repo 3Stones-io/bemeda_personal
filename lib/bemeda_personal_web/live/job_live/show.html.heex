@@ -138,7 +138,8 @@
       <div
         :if={
           !@application &&
-            !(@current_user && @job_posting.company.admin_user_id == @current_user.id)
+            !(@current_scope && @current_scope.user &&
+                @job_posting.company.admin_user_id == @current_scope.user.id)
         }
         class="p-6 pt-0"
       >
@@ -197,7 +198,7 @@
         job_application={@job_application}
         job_posting={@job_posting}
         resume={@resume}
-        current_user={@current_user}
+        current_user={@current_scope.user}
         patch={~p"/jobs/#{@job_posting.id}"}
       />
     </div>

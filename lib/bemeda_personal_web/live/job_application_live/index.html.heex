@@ -18,7 +18,7 @@
       :if={@applied_count > 0}
       module={JobApplicationsListComponent}
       id="job-applications-list"
-      current_user={@current_user}
+      current_user={@current_scope.user}
       filter_params={@filter_params}
       list_type={:applicant}
     />
@@ -38,7 +38,7 @@
         job_posting={@job_posting}
         patch={~p"/job_applications"}
         resume={@resume}
-        current_user={@current_user}
+        current_user={@current_scope.user}
       />
     </.modal>
   </div>

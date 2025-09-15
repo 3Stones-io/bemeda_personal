@@ -8,7 +8,7 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     filters = %{
-      recipient_id: socket.assigns.current_user.id
+      recipient_id: socket.assigns.current_scope.user.id
     }
 
     {:ok,
@@ -28,7 +28,7 @@ defmodule BemedaPersonalWeb.NotificationLive.Index do
     case Emails.update_email_communication(notification, %{is_read: new_status}) do
       {:ok, updated_notification} ->
         Endpoint.broadcast(
-          "users:#{socket.assigns.current_user.id}:notifications_count",
+          "users:#{socket.assigns.current_scope.user.id}:notifications_count",
           "update_unread_count",
           %{}
         )

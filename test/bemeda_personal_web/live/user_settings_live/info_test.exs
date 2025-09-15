@@ -170,7 +170,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive.InfoTest do
       # After submission - show ALL errors
       lv
       |> form("#email_form", %{
-        "current_password" => "",
         "user" => %{"email" => "invalid"}
       })
       |> render_submit()
@@ -180,8 +179,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive.InfoTest do
 
       # email error
       assert submit_result =~ "must have the @ sign"
-      # current_password error now visible
-      assert submit_result =~ "is not valid"
     end
 
     test "personal info form shows progressive then complete validation", %{conn: conn} do
@@ -252,8 +249,6 @@ defmodule BemedaPersonalWeb.UserSettingsLive.InfoTest do
       assert submit_result =~ "should be at least 12 character"
       # confirmation error
       assert submit_result =~ "does not match password"
-      # current_password error now visible
-      assert submit_result =~ "is not valid"
     end
   end
 

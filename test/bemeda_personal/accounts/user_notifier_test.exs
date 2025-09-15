@@ -6,7 +6,6 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
-  import Swoosh.TestAssertions
 
   alias BemedaPersonal.Accounts.UserNotifier
   alias BemedaPersonal.Repo
@@ -15,7 +14,12 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     admin_user =
       user_fixture(%{first_name: "Admin", last_name: "User", email: "admin@example.com"})
 
-    user = user_fixture(%{first_name: "John", last_name: "Doe", email: "john@example.com"})
+    user =
+      user_fixture(%{first_name: "John", last_name: "Doe", email: "john@example.com"})
+
+    unconfirmed_user =
+      unconfirmed_user_fixture(%{first_name: "Jane", last_name: "Doe", email: "jane@example.com"})
+
     company = company_fixture(admin_user)
     job_posting = job_posting_fixture(company, %{title: "Software Engineer"})
 
@@ -28,49 +32,54 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       admin_user: admin_user,
       job_application: job_application,
       job_posting: job_posting,
-      user: user
+      user: user,
+      unconfirmed_user: unconfirmed_user
     }
   end
 
-  describe "deliver_confirmation_instructions/2" do
-    test "delivers confirmation email with proper content", %{user: user} do
-      UserNotifier.deliver_confirmation_instructions(user, "CONFIRMATION_URL")
+  describe "deliver_login_instructions/2" do
+    test "delivers confirmation email for unconfirmed user", %{unconfirmed_user: user} do
+      {:ok, email} = UserNotifier.deliver_login_instructions(user, "LOGIN_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Welcome - Confirm Your Account",
-        to: [{"John Doe", "john@example.com"}],
-        html_body: ~r/<a href="CONFIRMATION_URL"/,
-        text_body: ~r/CONFIRMATION_URL/
-      )
+      assert email.subject == "BemedaPersonal | Welcome - Confirm Your Account"
+      assert email.to == [{"", "jane@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "LOGIN_URL"
+      assert email.text_body =~ "LOGIN_URL"
+    end
+
+    test "delivers magic link email for confirmed user", %{user: user} do
+      {:ok, email} = UserNotifier.deliver_login_instructions(user, "LOGIN_URL")
+
+      assert email.subject == "BemedaPersonal | Login Link"
+      assert email.to == [{"John Doe", "john@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "LOGIN_URL"
+      assert email.text_body =~ "LOGIN_URL"
     end
   end
 
   describe "deliver_reset_password_instructions/2" do
     test "delivers password reset email with proper content", %{user: user} do
-      UserNotifier.deliver_reset_password_instructions(user, "PASSWORD_RESET_URL")
+      {:ok, email} = UserNotifier.deliver_reset_password_instructions(user, "PASSWORD_RESET_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Password Reset Request",
-        to: [{"John Doe", "john@example.com"}],
-        html_body: ~r/<a href="PASSWORD_RESET_URL"/,
-        text_body: ~r/PASSWORD_RESET_URL/
-      )
+      assert email.subject == "BemedaPersonal | Password Reset Request"
+      assert email.to == [{"John Doe", "john@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "PASSWORD_RESET_URL"
+      assert email.text_body =~ "PASSWORD_RESET_URL"
     end
   end
 
   describe "deliver_update_email_instructions/2" do
     test "delivers email update instructions with proper content", %{user: user} do
-      UserNotifier.deliver_update_email_instructions(user, "EMAIL_UPDATE_URL")
+      {:ok, email} = UserNotifier.deliver_update_email_instructions(user, "EMAIL_UPDATE_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Email Address Update Request",
-        to: [{"John Doe", "john@example.com"}],
-        html_body: ~r/<a href="EMAIL_UPDATE_URL"/,
-        text_body: ~r/EMAIL_UPDATE_URL/
-      )
+      assert email.subject == "BemedaPersonal | Email Address Update Request"
+      assert email.to == [{"John Doe", "john@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "EMAIL_UPDATE_URL"
+      assert email.text_body =~ "EMAIL_UPDATE_URL"
     end
   end
 
@@ -84,16 +93,14 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
       message = message_fixture(sender, job_application)
 
-      UserNotifier.deliver_new_message(user, message, "MESSAGE_URL")
+      {:ok, email} = UserNotifier.deliver_new_message(user, message, "MESSAGE_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | New Message from Sender Name",
-        to: [{"John Doe", "john@example.com"}],
-        html_body: ~r/<a href="MESSAGE_URL"/,
-        text_body: ~r/MESSAGE_URL/,
-        text_body: ~r/Sender Name/
-      )
+      assert email.subject == "BemedaPersonal | New Message from Sender Name"
+      assert email.to == [{"John Doe", "john@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "MESSAGE_URL"
+      assert email.text_body =~ "MESSAGE_URL"
+      assert email.text_body =~ "Sender Name"
     end
   end
 
@@ -101,17 +108,16 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application received notification to applicant with proper content", %{
       job_application: job_application
     } do
-      UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
+      {:ok, email} =
+        UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Job Application Received - Software Engineer",
-        to: [{"John Doe", "john@example.com"}],
-        html_body: ~r/<a href="APPLICATION_URL"/,
-        text_body: ~r/APPLICATION_URL/,
-        text_body: ~r/Software Engineer/,
-        text_body: ~r/We've received your application/
-      )
+      assert email.subject == "BemedaPersonal | Job Application Received - Software Engineer"
+      assert email.to == [{"John Doe", "john@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "Software Engineer"
+      assert email.text_body =~ "We've received your application"
     end
   end
 
@@ -119,17 +125,18 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application status update to applicant with proper content", %{
       job_application: job_application
     } do
-      UserNotifier.deliver_user_job_application_status(job_application, "APPLICATION_URL")
+      {:ok, email} =
+        UserNotifier.deliver_user_job_application_status(job_application, "APPLICATION_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Job Application Status Update - Job Offer Extended",
-        to: [{"John Doe", "john@example.com"}],
-        html_body: ~r/<a href="APPLICATION_URL"/,
-        text_body: ~r/APPLICATION_URL/,
-        text_body: ~r/Software Engineer/,
-        text_body: ~r/Good news! We've extended an offer to you./
-      )
+      assert email.subject ==
+               "BemedaPersonal | Job Application Status Update - Job Offer Extended"
+
+      assert email.to == [{"John Doe", "john@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "Software Engineer"
+      assert email.text_body =~ "Good news! We've extended an offer to you."
     end
   end
 
@@ -137,17 +144,16 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application received notification to employer with proper content", %{
       job_application: job_application
     } do
-      UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
+      {:ok, email} =
+        UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | New Job Application Received - Software Engineer",
-        to: [{"Admin User", "admin@example.com"}],
-        html_body: ~r/<a href="APPLICATION_URL"/,
-        text_body: ~r/APPLICATION_URL/,
-        text_body: ~r/Software Engineer/,
-        text_body: ~r/You've received a new application/
-      )
+      assert email.subject == "BemedaPersonal | New Job Application Received - Software Engineer"
+      assert email.to == [{"Admin User", "admin@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "Software Engineer"
+      assert email.text_body =~ "You've received a new application"
     end
   end
 
@@ -155,63 +161,99 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application status update to employer with proper content", %{
       job_application: job_application
     } do
-      UserNotifier.deliver_employer_job_application_status(job_application, "APPLICATION_URL")
+      {:ok, email} =
+        UserNotifier.deliver_employer_job_application_status(job_application, "APPLICATION_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Job Application Status Update - Job Offer Extended",
-        to: [{"Admin User", "admin@example.com"}],
-        html_body: ~r/<a href="APPLICATION_URL"/,
-        text_body: ~r/APPLICATION_URL/,
-        text_body: ~r/Software Engineer/,
-        text_body: ~r/You've extended an offer to this candidate./
-      )
+      assert email.subject ==
+               "BemedaPersonal | Job Application Status Update - Job Offer Extended"
+
+      assert email.to == [{"Admin User", "admin@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.html_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "APPLICATION_URL"
+      assert email.text_body =~ "Software Engineer"
+      assert email.text_body =~ "You've extended an offer to this candidate."
     end
   end
 
   describe "email translations" do
-    test "delivers confirmation email in German when user locale is :de" do
+    test "delivers login instructions in German for unconfirmed user" do
       german_user =
-        user_fixture(%{
+        unconfirmed_user_fixture(%{
           first_name: "Hans",
           last_name: "Mueller",
           email: "hans@example.com",
           locale: :de
         })
 
-      UserNotifier.deliver_confirmation_instructions(german_user, "CONFIRMATION_URL")
+      {:ok, email} = UserNotifier.deliver_login_instructions(german_user, "LOGIN_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Willkommen - Bestätigen Sie Ihr Konto",
-        to: [{"Hans Mueller", "hans@example.com"}],
-        text_body: ~r/Hallo Hans Mueller,/,
-        text_body: ~r/CONFIRMATION_URL/
-      )
+      assert email.subject == "BemedaPersonal | Willkommen - Bestätigen Sie Ihr Konto"
+      assert email.to == [{"", "hans@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ "Hallo,"
+      assert email.text_body =~ "LOGIN_URL"
     end
 
-    test "delivers confirmation email in French when user locale is :fr" do
+    test "delivers login instructions in French for unconfirmed user" do
       french_user =
-        user_fixture(%{
+        unconfirmed_user_fixture(%{
           first_name: "Pierre",
           last_name: "Dupont",
           email: "pierre@example.com",
           locale: :fr
         })
 
-      UserNotifier.deliver_confirmation_instructions(french_user, "CONFIRMATION_URL")
+      {:ok, email} = UserNotifier.deliver_login_instructions(french_user, "LOGIN_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Bienvenue - Confirmez Votre Compte",
-        to: [{"Pierre Dupont", "pierre@example.com"}],
-        text_body: ~r/Bonjour Pierre Dupont,/,
-        text_body: ~r/CONFIRMATION_URL/
-      )
+      assert email.subject == "BemedaPersonal | Bienvenue - Confirmez Votre Compte"
+      assert email.to == [{"", "pierre@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ "Bonjour,"
+      assert email.text_body =~ "LOGIN_URL"
     end
 
-    test "delivers confirmation email in Italian when user locale is :it" do
+    test "delivers login instructions in French for confirmed user" do
+      french_user =
+        unconfirmed_user_fixture(%{
+          first_name: "Pierre",
+          last_name: "Dupont",
+          email: "pierre@example.com",
+          locale: :fr
+        })
+
+      # Manually confirm the user
+      confirmed_user = %{french_user | confirmed_at: DateTime.utc_now()}
+
+      {:ok, email} = UserNotifier.deliver_login_instructions(confirmed_user, "LOGIN_URL")
+
+      assert email.subject == "BemedaPersonal | Lien de Connexion"
+      assert email.to == [{"", "pierre@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ "Bonjour,"
+      assert email.text_body =~ "LOGIN_URL"
+    end
+
+    test "delivers login instructions in Italian for unconfirmed user" do
       italian_user =
+        unconfirmed_user_fixture(%{
+          first_name: "Marco",
+          last_name: "Rossi",
+          email: "marco@example.com",
+          locale: :it
+        })
+
+      {:ok, email} = UserNotifier.deliver_login_instructions(italian_user, "LOGIN_URL")
+
+      assert email.subject == "BemedaPersonal | Benvenuto - Conferma il tuo account"
+      assert email.to == [{"", "marco@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ "Ciao,"
+      assert email.text_body =~ "LOGIN_URL"
+    end
+
+    test "delivers login instructions in Italian for confirmed user" do
+      user =
         user_fixture(%{
           first_name: "Marco",
           last_name: "Rossi",
@@ -219,15 +261,13 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           locale: :it
         })
 
-      UserNotifier.deliver_confirmation_instructions(italian_user, "CONFIRMATION_URL")
+      {:ok, email} = UserNotifier.deliver_login_instructions(user, "LOGIN_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Benvenuto - Conferma il tuo account",
-        to: [{"Marco Rossi", "marco@example.com"}],
-        text_body: ~r/Ciao Marco Rossi,/,
-        text_body: ~r/CONFIRMATION_URL/
-      )
+      assert email.subject == "BemedaPersonal | Link di Accesso"
+      assert email.to == [{"Marco Rossi", "marco@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ ~r/Se non hai creato un account con noi, ignora questa email./
+      assert email.text_body =~ "LOGIN_URL"
     end
 
     test "delivers password reset email in German when user locale is :de" do
@@ -239,15 +279,13 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           locale: :de
         })
 
-      UserNotifier.deliver_reset_password_instructions(german_user, "RESET_URL")
+      {:ok, email} = UserNotifier.deliver_reset_password_instructions(german_user, "RESET_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Passwort-Zurücksetzung angefordert",
-        to: [{"Anna Schmidt", "anna@example.com"}],
-        text_body: ~r/Hallo Anna Schmidt,/,
-        text_body: ~r/RESET_URL/
-      )
+      assert email.subject == "BemedaPersonal | Passwort-Zurücksetzung angefordert"
+      assert email.to == [{"Anna Schmidt", "anna@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ "Hallo Anna Schmidt,"
+      assert email.text_body =~ "RESET_URL"
     end
 
     test "delivers new message notification in French when recipient locale is :fr" do
@@ -281,15 +319,13 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
       message = message_fixture(sender, job_application)
 
-      UserNotifier.deliver_new_message(french_user, message, "MESSAGE_URL")
+      {:ok, email} = UserNotifier.deliver_new_message(french_user, message, "MESSAGE_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Nouveau Message de Jean Durand",
-        to: [{"Marie Martin", "marie@example.com"}],
-        text_body: ~r/Bonjour Marie Martin,/,
-        text_body: ~r/MESSAGE_URL/
-      )
+      assert email.subject == "BemedaPersonal | Nouveau Message de Jean Durand"
+      assert email.to == [{"Marie Martin", "marie@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ ~r/Bonjour Marie Martin,/
+      assert email.text_body =~ ~r/MESSAGE_URL/
     end
 
     test "delivers job application received email in Italian when user locale is :it" do
@@ -314,15 +350,14 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       job_application =
         job_application_fixture(italian_user, job_posting, %{state: "pending"})
 
-      UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
+      {:ok, email} =
+        UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: ~r/BemedaPersonal \| Candidatura ricevuta - Sviluppatore Software/,
-        to: [{"Giulia Bianchi", "giulia@example.com"}],
-        text_body: ~r/Ciao Giulia Bianchi,/,
-        text_body: ~r/APPLICATION_URL/
-      )
+      assert email.subject =~ ~r/BemedaPersonal \| Candidatura ricevuta - Sviluppatore Software/
+      assert email.to == [{"Giulia Bianchi", "giulia@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ ~r/Ciao Giulia Bianchi,/
+      assert email.text_body =~ ~r/APPLICATION_URL/
     end
 
     test "employer receives emails in their locale when different from applicant" do
@@ -350,15 +385,14 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         |> job_application_fixture(job_posting, %{state: "pending"})
         |> Repo.preload(job_posting: [company: :admin_user])
 
-      UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
+      {:ok, email} =
+        UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: ~r/BemedaPersonal \| Neue Bewerbung erhalten - Software Engineer/,
-        to: [{"Klaus Weber", "klaus@example.com"}],
-        text_body: ~r/Hallo Klaus Weber,/,
-        text_body: ~r/APPLICATION_URL/
-      )
+      assert email.subject =~ ~r/BemedaPersonal \| Neue Bewerbung erhalten - Software Engineer/
+      assert email.to == [{"Klaus Weber", "klaus@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ ~r/Hallo Klaus Weber,/
+      assert email.text_body =~ ~r/APPLICATION_URL/
     end
 
     test "employer receives status update emails in their locale" do
@@ -386,15 +420,14 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         |> job_application_fixture(job_posting, %{state: "offer_extended"})
         |> Repo.preload(job_posting: [company: :admin_user])
 
-      UserNotifier.deliver_employer_job_application_status(job_application, "STATUS_URL")
+      {:ok, email} =
+        UserNotifier.deliver_employer_job_application_status(job_application, "STATUS_URL")
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: ~r/BemedaPersonal \| Job Application Status Update/,
-        to: [{"Sarah Johnson", "sarah@example.com"}],
-        text_body: ~r/Hi Sarah Johnson,/,
-        text_body: ~r/STATUS_URL/
-      )
+      assert email.subject =~ ~r/BemedaPersonal \| Job Application Status Update/
+      assert email.to == [{"Sarah Johnson", "sarah@example.com"}]
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.text_body =~ ~r/Hi Sarah Johnson,/
+      assert email.text_body =~ ~r/STATUS_URL/
     end
   end
 end

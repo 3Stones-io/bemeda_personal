@@ -19,11 +19,11 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
   @impl Phoenix.LiveView
   def mount(%{"token" => token}, _session, socket) do
     socket =
-      case Accounts.update_user_email(socket.assigns.current_user, token) do
-        :ok ->
+      case Accounts.update_user_email(socket.assigns.current_scope.user, token) do
+        {:ok, _user} ->
           put_flash(socket, :info, dgettext("auth", "Email changed successfully."))
 
-        :error ->
+        {:error, _changeset} ->
           put_flash(
             socket,
             :error,
@@ -31,12 +31,12 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
           )
       end
 
-    {:ok, push_navigate(socket, to: ~p"/users/settings/info")}
+    {:ok, push_navigate(socket, to: ~p"/users/settings")}
   end
 
   def mount(_params, _session, socket) do
-    user = socket.assigns.current_user
-    email_changeset = Accounts.change_user_email(user)
+    user = socket.assigns.current_scope.user
+    email_changeset = Accounts.change_user_email(user, %{}, validate_unique: false)
     personal_info_changeset = Accounts.change_user_personal_info(user)
     company = Companies.get_company_by_user(user)
 
@@ -112,7 +112,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
             <div>
               <.text class="font-medium text-gray-700 mb-2">{dgettext("auth", "Name")}</.text>
               <.text class="text-gray-500">
-                {[@current_user.first_name, @current_user.last_name]
+                {[@current_scope.user.first_name, @current_scope.user.last_name]
                 |> Enum.filter(& &1)
                 |> Enum.join(" ")
                 |> String.trim()}
@@ -123,7 +123,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
               <.text class="font-medium text-gray-700 mb-2">
                 {dgettext("auth", "Work Email Address")}
               </.text>
-              <.text class="text-gray-500">{@current_user.email}</.text>
+              <.text class="text-gray-500">{@current_scope.user.email}</.text>
             </div>
           </div>
 
@@ -169,7 +169,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
                 placeholder="Zürich"
               />
 
-              <%= if @current_user.user_type == :job_seeker do %>
+              <%= if @current_scope.user.user_type == :job_seeker do %>
                 <div class="mb-4">
                   <label for="medical_role" class="block text-[14px] font-normal text-gray-700 mb-1">
                     {dgettext("auth", "Medical role")}
@@ -251,30 +251,9 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
                 type="email"
                 label={dgettext("auth", "Email")}
                 placeholder="thiery.baumann@novacare.ba"
+                autocomplete="username"
                 required
               />
-              <div class="mb-4">
-                <label
-                  for="current_password_for_email"
-                  class="block text-[14px] font-normal text-gray-700 mb-1"
-                >
-                  {dgettext("auth", "Current password")}*
-                </label>
-                <input
-                  name="current_password"
-                  id="current_password_for_email"
-                  type="password"
-                  value={@email_form_current_password}
-                  placeholder="Enter current password"
-                  required
-                  class="w-full h-10 px-0 py-2 text-[16px] bg-transparent border-0 border-b focus:outline-none focus:ring-0 rounded-none text-gray-700 placeholder-gray-300 border-gray-200 focus:border-primary-500"
-                />
-                <%= if @email_form[:current_password] && @email_form[:current_password].errors != [] do %>
-                  <p class="text-sm text-red-600 mt-1">
-                    {translate_error(hd(@email_form[:current_password].errors))}
-                  </p>
-                <% end %>
-              </div>
 
               <:actions>
                 <div class="flex gap-3">
@@ -295,7 +274,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
         </.card>
 
         <.card
-          :if={@current_user.user_type == :employer && @company}
+          :if={@current_scope.user.user_type == :employer && @company}
           variant="default"
           padding="large"
           class="mb-6"
@@ -510,7 +489,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
         </.card>
 
         <.card
-          :if={@current_user.user_type == :job_seeker}
+          :if={@current_scope.user.user_type == :job_seeker}
           variant="default"
           padding="large"
           class="mb-6"
@@ -527,10 +506,10 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
             <.live_component
               can_rate?={false}
               class="mb-2"
-              current_user={@current_user}
-              entity_id={@current_user.id}
+              current_user={@current_scope.user}
+              entity_id={@current_scope.user.id}
               entity_type="User"
-              id={"rating-display-user-settings-#{@current_user.id}"}
+              id={"rating-display-user-settings-#{@current_scope.user.id}"}
               module={RatingComponent}
             />
           </div>
@@ -573,82 +552,43 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
   end
 
   def handle_event("validate_email", params, socket) do
-    # Handle both formats - current_password at root or under user
-    {password, user_params} =
-      case params do
-        %{"current_password" => pwd, "user" => user} ->
-          {pwd, user}
+    %{"user" => user_params} = params
 
-        %{"user" => %{"current_password" => pwd} = user} ->
-          {pwd, Map.delete(user, "current_password")}
-
-        %{"user" => user} ->
-          {"", user}
-      end
-
-    email_changeset =
-      socket.assigns.current_user
-      |> Accounts.change_user_email(user_params)
+    email_form =
+      socket.assigns.current_scope.user
+      |> Accounts.change_user_email(user_params, validate_unique: false)
       |> Map.put(:action, :validate)
+      |> to_form()
 
-    # Only validate current_password if the form was submitted (not just changed)
-    final_changeset =
-      if params["_target"] == ["user", "email"] do
-        # Just changing email, don't validate password yet
-        email_changeset
-      else
-        # Form submission or password field changed - validate password
-        if password == "" do
-          Ecto.Changeset.add_error(
-            email_changeset,
-            :current_password,
-            dgettext("auth", "can't be blank")
-          )
-        else
-          email_changeset
-        end
-      end
-
-    email_form = to_form(final_changeset)
-    {:noreply, assign(socket, email_form: email_form, email_form_current_password: password)}
+    {:noreply, assign(socket, email_form: email_form)}
   end
 
   def handle_event("update_email", params, socket) do
-    %{"current_password" => password, "user" => user_params} = params
-    user = socket.assigns.current_user
+    %{"user" => user_params} = params
+    user = socket.assigns.current_scope.user
+    # true = Accounts.sudo_mode?(user)
 
-    case Accounts.apply_user_email(user, password, user_params) do
-      {:ok, applied_user} ->
+    case Accounts.change_user_email(user, user_params) do
+      %{valid?: true} = changeset ->
+        changeset = Ecto.Changeset.apply_action!(changeset, :insert)
+
         Accounts.deliver_user_update_email_instructions(
-          applied_user,
+          changeset,
           user.email,
           &url(~p"/users/settings/confirm_email/#{&1}")
         )
 
-        info =
-          dgettext(
-            "auth",
-            "A link to confirm your email change has been sent to the new address."
-          )
+        info = "A link to confirm your email change has been sent to the new address."
+        {:noreply, put_flash(socket, :info, info)}
 
-        {:noreply,
-         socket
-         |> put_flash(:info, info)
-         |> assign(email_form_current_password: nil)}
-
-      {:error, changeset} ->
-        # Keep the current_password value when there's an error
-        {:noreply,
-         assign(socket,
-           email_form: to_form(Map.put(changeset, :action, :insert)),
-           email_form_current_password: password
-         )}
+      changeset ->
+        {:noreply, assign(socket, :email_form, to_form(changeset, action: :insert))}
     end
   end
 
   def handle_event("validate_personal_info", %{"user" => user_params}, socket) do
     personal_info_form =
-      socket.assigns.current_user
+      socket.assigns.current_scope.user
       |> Accounts.change_user_personal_info(user_params)
       |> Map.put(:action, :validate)
       |> to_form()
@@ -657,7 +597,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
   end
 
   def handle_event("update_personal_info", %{"user" => user_params}, socket) do
-    user = socket.assigns.current_user
+    user = socket.assigns.current_scope.user
 
     case Accounts.update_user_personal_info(user, user_params) do
       {:ok, updated_user} ->
@@ -703,6 +643,14 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
      socket
      |> assign(:company, payload.company)
      |> assign(:company_form, to_form(Companies.change_company(payload.company)))}
+  end
+
+  def handle_info(%Phoenix.Socket.Broadcast{event: "rating_updated"}, socket) do
+    send_update(RatingComponent,
+      id: "rating-display-user-settings-#{socket.assigns.current_scope.user.id}"
+    )
+
+    {:noreply, socket}
   end
 
   def handle_info(_message, socket) do

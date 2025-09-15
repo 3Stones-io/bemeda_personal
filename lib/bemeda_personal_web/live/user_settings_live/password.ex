@@ -9,8 +9,8 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Password do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    user = socket.assigns.current_user
-    password_changeset = Accounts.change_user_password(user)
+    user = socket.assigns.current_scope.user
+    password_changeset = Accounts.change_user_password(user, %{}, hash_password: false)
 
     socket =
       socket
@@ -47,7 +47,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Password do
           <.simple_form
             for={@password_form}
             id="password_form"
-            action={~p"/users/log_in?_action=password_updated"}
+            action={~p"/users/update_password"}
             method="post"
             phx-change="validate_password"
             phx-submit="update_password"
@@ -57,13 +57,14 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Password do
               name={@password_form[:email].name}
               type="hidden"
               id="hidden_user_email"
-              value={@current_user.email}
+              value={@current_scope.user.email}
             />
             <.settings_input
               field={@password_form[:password]}
               type="password"
               label={dgettext("auth", "New password")}
               placeholder="Enter new password"
+              autocomplete="new-password"
               required
             />
             <.settings_input
@@ -71,30 +72,9 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Password do
               type="password"
               label={dgettext("auth", "Confirm new password")}
               placeholder="Confirm new password"
+              autocomplete="new-password"
               required
             />
-            <div class="mb-4">
-              <label
-                for="current_password_for_password"
-                class="block text-[14px] font-normal text-gray-700 mb-1"
-              >
-                {dgettext("auth", "Current password")}*
-              </label>
-              <input
-                name="current_password"
-                id="current_password_for_password"
-                type="password"
-                value={@current_password}
-                placeholder="Enter current password"
-                required
-                class="w-full h-10 px-0 py-2 text-[16px] bg-transparent border-0 border-b focus:outline-none focus:ring-0 rounded-none text-gray-700 placeholder-gray-300 border-gray-200 focus:border-primary-500"
-              />
-              <%= if @password_form[:current_password] && @password_form[:current_password].errors != [] do %>
-                <p class="text-sm text-red-600 mt-1">
-                  {translate_error(hd(@password_form[:current_password].errors))}
-                </p>
-              <% end %>
-            </div>
             <:actions>
               <.button type="submit" phx-disable-with={dgettext("auth", "Changing...")}>
                 {dgettext("auth", "Change Password")}
@@ -109,32 +89,27 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Password do
 
   @impl Phoenix.LiveView
   def handle_event("validate_password", params, socket) do
-    %{"current_password" => password, "user" => user_params} = params
+    %{"user" => user_params} = params
 
     password_form =
-      socket.assigns.current_user
-      |> Accounts.change_user_password(user_params)
+      socket.assigns.current_scope.user
+      |> Accounts.change_user_password(user_params, hash_password: false)
       |> Map.put(:action, :validate)
       |> to_form()
 
-    {:noreply, assign(socket, password_form: password_form, current_password: password)}
+    {:noreply, assign(socket, password_form: password_form)}
   end
 
   def handle_event("update_password", params, socket) do
-    %{"current_password" => password, "user" => user_params} = params
-    user = socket.assigns.current_user
+    %{"user" => user_params} = params
+    user = socket.assigns.current_scope.user
 
-    case Accounts.update_user_password(user, password, user_params) do
-      {:ok, user} ->
-        password_form =
-          user
-          |> Accounts.change_user_password(user_params)
-          |> to_form()
+    case Accounts.change_user_password(user, user_params) do
+      %{valid?: true} = changeset ->
+        {:noreply, assign(socket, trigger_submit: true, password_form: to_form(changeset))}
 
-        {:noreply, assign(socket, trigger_submit: true, password_form: password_form)}
-
-      {:error, changeset} ->
-        {:noreply, assign(socket, password_form: to_form(Map.put(changeset, :action, :insert)))}
+      changeset ->
+        {:noreply, assign(socket, password_form: to_form(changeset, action: :insert))}
     end
   end
 end

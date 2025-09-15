@@ -202,119 +202,69 @@ defmodule BemedaPersonal.FeatureHelpers do
 
     session
     |> set_locale_to_english()
-    |> visit(~p"/users/register/job_seeker")
-    |> fill_job_seeker_step1(email)
-    |> submit_step1()
-    |> fill_job_seeker_step2()
-    |> submit_step2()
+    |> visit(~p"/users/register")
+    |> wait_for_element("body")
+    |> click_job_seeker_registration()
+    |> fill_registration_email(email)
+    |> submit_registration_form()
   end
 
-  # Private helper functions to reduce complexity
-  defp fill_job_seeker_step1(session, email) do
-    # Step 1: Fill basic information fields with proper waits
-    # Wait for the form to load first
-    Process.sleep(500)
-
+  # Private helper functions for new registration flow
+  defp click_job_seeker_registration(session) do
+    # Click on the link that contains the job seeker registration button
     session
-    |> wait_for_element("input[name='user[first_name]']")
+    |> wait_for_element("body")
     |> unwrap(fn %{frame_id: frame_id} ->
-      # Wait for form to be fully interactive
-      Process.sleep(50)
-
-      {:ok, _result} = Frame.fill(frame_id, "input[name='user[first_name]']", "Test")
-      Process.sleep(50)
-      {:ok, _result} = Frame.fill(frame_id, "input[name='user[last_name]']", "User")
-      Process.sleep(50)
-      {:ok, _result} = Frame.fill(frame_id, "input[name='user[email]']", email)
-      Process.sleep(50)
-      {:ok, _result} = Frame.fill(frame_id, "input[name='user[password]']", "securepassword123")
-      # Skip date_of_birth as it has validation issues - field is not required
-      Process.sleep(50)
-      {:ok, _result} = Frame.fill(frame_id, "input[name='user[city]']", "Zurich")
-      Process.sleep(50)
-      {:ok, _result} = Frame.fill(frame_id, "input[name='user[phone]']", "079 123 4567")
+      # Wait for the page to fully load
+      Process.sleep(500)
+      # Find all links and click the one that has a button with job seeker text
+      {:ok, _result} = Frame.click(frame_id, "a button:text-is('Sign up as medical personnel')")
       :ok
     end)
-  end
-
-  defp submit_step1(session) do
-    # Submit step 1 to move to step 2
-    session
-    |> wait_for_element("button[type='submit']")
-    |> unwrap(fn %{frame_id: frame_id} ->
-      # Wait before clicking to ensure form is ready
-      Process.sleep(100)
-      {:ok, _result} = Frame.click(frame_id, "button[type='submit']")
-      :ok
-    end)
-    # Wait longer for step 2 form - LiveView might need time to update
     |> wait_for_element("form")
   end
 
-  defp fill_job_seeker_step2(session) do
-    # Step 2: Fill medical role information using correct enum values from Enums module
-    # First wait for the page to transition to step 2
-    Process.sleep(500)
-
+  defp fill_registration_email(session, email) do
+    # Fill the email field in the registration form
     session
-    |> wait_for_element("select[name='user[medical_role]']")
-    |> unwrap(fn %{frame_id: frame_id} ->
-      # Wait for dropdown to be fully interactive before selecting options
-      Process.sleep(100)
-
-      # Use correct enum values that match the schema with improved error handling
-      {:ok, _result} =
-        Frame.select_option(frame_id, "select[name='user[medical_role]']", [
-          %{value: "Anesthesiologist"}
-        ])
-
-      # Wait between dropdown selections to allow LiveView to update
-      Process.sleep(50)
-
-      {:ok, _result} =
-        Frame.select_option(frame_id, "select[name='user[department]']", [
-          %{value: "Acute Care"}
-        ])
-
-      # Wait for form updates
-      Process.sleep(100)
-
-      {:ok, _result} =
-        Frame.select_option(frame_id, "select[name='user[gender]']", [
-          %{value: "male"}
-        ])
-
-      # Final wait before checking terms
-      Process.sleep(100)
-
-      {:ok, _result} = Frame.check(frame_id, "input[name='user[terms_accepted]']")
-      :ok
-    end)
+    |> wait_for_element("input[name='user[email]']")
+    |> fill_in("Email", with: email)
   end
 
-  defp submit_step2(session) do
-    # Submit step 2 to complete registration
+  defp submit_registration_form(session) do
+    # Submit the registration form
     session
     |> wait_for_element("button[type='submit']")
-    |> unwrap(fn %{frame_id: frame_id} ->
-      # Wait before final submission to ensure all form validation is complete
-      Process.sleep(50)
-      {:ok, _result} = Frame.click(frame_id, "button[type='submit']")
-      :ok
-    end)
-    # Wait longer for redirect after completion - registration might take time
+    |> click_button("Create an account")
     |> wait_for_element("body")
   end
 
   @spec register_employer(session(), keyword()) :: session()
-  def register_employer(session, _attrs \\ []) do
-    # Simplified approach: Just visit the employer registration page
-    # This tests the interface exists without complex authentication
+  def register_employer(session, attrs \\ []) do
+    email = attrs[:email] || "employer_#{System.unique_integer()}@example.com"
+
     session
     |> set_locale_to_english()
-    |> visit(~p"/users/register/employer")
-    |> assert_path("/users/register/employer")
-    |> assert_has("form")
+    |> visit(~p"/users/register")
+    |> wait_for_element("body")
+    |> click_employer_registration()
+    |> fill_registration_email(email)
+    |> submit_registration_form()
+  end
+
+  # Private helper for employer registration
+  defp click_employer_registration(session) do
+    # Click on "Sign up as employer" button
+    session
+    |> wait_for_element("body")
+    |> unwrap(fn %{frame_id: frame_id} ->
+      # Wait for the page to fully load, then click the button
+      Process.sleep(500)
+      # Try clicking the button element that contains the text
+      {:ok, _result} = Frame.click(frame_id, "button:has-text('Sign up as employer')")
+      :ok
+    end)
+    |> wait_for_element("form")
   end
 
   # Localization Helpers
