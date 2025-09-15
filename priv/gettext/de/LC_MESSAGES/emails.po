@@ -61,7 +61,6 @@ msgstr "BemedaPersonal | Willkommen - Bestätigen Sie Ihr Konto"
 msgid "Good news! We've extended an offer to you."
 msgstr "Gute Nachrichten! Wir haben Ihnen ein Angebot unterbreitet."
 
-#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
 #: lib/bemeda_personal/accounts/email_templates/employer_job_application_received_email.ex
 #: lib/bemeda_personal/accounts/email_templates/employer_job_application_status_email.ex
 #: lib/bemeda_personal/accounts/email_templates/job_application_received_email.ex
@@ -286,6 +285,7 @@ msgid "Confirm your email change"
 msgstr "Bestätigen Sie Ihre E-Mail-Änderung"
 
 #: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "If you have not created this account with us, Please ignore this email."
 msgstr "Falls Sie kein Konto bei uns erstellt haben, ignorieren Sie bitte diese E-Mail."
@@ -324,3 +324,26 @@ msgstr "Wir haben eine Anfrage zur Zurücksetzung des Passworts für Ihr BemedaP
 #, elixir-autogen, elixir-format, fuzzy
 msgid "We received a request to update the email address for your Bemeda Personal account. To confirm this change, please click the button below:"
 msgstr "Wir haben eine Anfrage zur Aktualisierung der E-Mail-Adresse für Ihr BemedaPersonal-Konto erhalten. Um diese Änderung zu bestätigen, klicken Sie bitte auf die Schaltfläche unten:"
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Login Link"
+msgstr "BemedaPersonal | Anmelde-Link"
+
+#: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Hello,"
+msgstr "Hallo,"
+
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr "Anmelden"
+
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You can log into your account by visiting the URL below:"
+msgstr "Sie können sich in Ihr Konto einloggen, indem Sie die folgende URL besuchen:"

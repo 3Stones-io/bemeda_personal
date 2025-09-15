@@ -11,11 +11,6 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
 
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
-msgid "A link to confirm your email change has been sent to the new address."
-msgstr "Un lien pour confirmer votre changement d'email a été envoyé à la nouvelle adresse."
-
 #: lib/bemeda_personal_web/live/user_settings_live/index.ex
 #: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
@@ -28,38 +23,12 @@ msgstr "Changer le mot de passe"
 msgid "Changing..."
 msgstr "Modification en cours..."
 
-#: lib/bemeda_personal_web/live/user_confirmation_live.ex
-#, elixir-autogen, elixir-format
-msgid "Confirm Account"
-msgstr "Confirmer le compte"
-
-#: lib/bemeda_personal_web/live/user_confirmation_live.ex
-#, elixir-autogen, elixir-format
-msgid "Confirm my account"
-msgstr "Confirmer mon compte"
-
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
 msgid "Confirm new password"
 msgstr "Confirmer le nouveau mot de passe"
 
-#: lib/bemeda_personal_web/live/user_confirmation_live.ex
-#, elixir-autogen, elixir-format
-msgid "Confirming..."
-msgstr "Confirmation en cours..."
-
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#: lib/bemeda_personal_web/live/user_settings_live/password.ex
-#, elixir-autogen, elixir-format
-msgid "Current password"
-msgstr "Mot de passe actuel"
-
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Don't have an account?"
-msgstr "Vous n'avez pas de compte ?"
-
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Email"
@@ -75,139 +44,30 @@ msgstr "Le lien de changement d'email est invalide ou a expiré."
 msgid "Email changed successfully."
 msgstr "Email modifié avec succès."
 
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Forgot your password?"
-msgstr "Mot de passe oublié ?"
-
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "How companies have rated your applications"
 msgstr "Comment les entreprises ont évalué vos candidatures"
-
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "If your email is in our system, you will receive instructions to reset your password shortly."
-msgstr "Si votre email est dans notre système, vous recevrez des instructions pour réinitialiser votre mot de passe sous peu."
 
 #: lib/bemeda_personal_web/controllers/user_session_controller.ex
 #, elixir-autogen, elixir-format
 msgid "Invalid email or password"
 msgstr "Email ou mot de passe invalide"
 
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Keep me logged in"
-msgstr "Rester connecté"
-
-#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
-#: lib/bemeda_personal_web/live/user_confirmation_live.ex
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Log in"
-msgstr "Se connecter"
-
 #: lib/bemeda_personal_web/controllers/user_session_controller.ex
 #, elixir-autogen, elixir-format
 msgid "Logged out successfully."
 msgstr "Déconnexion réussie."
 
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Logging in..."
-msgstr "Connexion en cours..."
-
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
 #: lib/bemeda_personal_web/live/user_settings_live/password.ex
 #, elixir-autogen, elixir-format
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
-#, elixir-autogen, elixir-format
-msgid "No confirmation instructions received?"
-msgstr "Aucune instruction de confirmation reçue ?"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Oops, something went wrong! Please check the errors below."
-msgstr "Oups, quelque chose s'est mal passé ! Veuillez vérifier les erreurs ci-dessous."
-
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Password"
-msgstr "Mot de passe"
-
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Password reset successfully."
-msgstr "Mot de passe réinitialisé avec succès."
-
-#: lib/bemeda_personal_web/live/user_confirmation_live.ex
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Register"
-msgstr "S'inscrire"
-
-#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
-#, elixir-autogen, elixir-format
-msgid "Resend confirmation instructions"
-msgstr "Renvoyer les instructions de confirmation"
-
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Reset Password"
-msgstr "Réinitialiser le mot de passe"
-
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Reset password link is invalid or it has expired."
-msgstr "Le lien de réinitialisation du mot de passe est invalide ou a expiré."
-
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Resetting..."
-msgstr "Réinitialisation en cours..."
-
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Send password reset instructions"
-msgstr "Envoyer les instructions de réinitialisation du mot de passe"
-
-#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Sending..."
-msgstr "Envoi en cours..."
-
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Sign up"
-msgstr "S'inscrire"
-
-#: lib/bemeda_personal_web/live/user_confirmation_live.ex
-#, elixir-autogen, elixir-format
-msgid "User confirmation link is invalid or it has expired."
-msgstr "Le lien de confirmation utilisateur est invalide ou a expiré."
-
-#: lib/bemeda_personal_web/live/user_confirmation_live.ex
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
 #, elixir-autogen, elixir-format
 msgid "User confirmed successfully."
 msgstr "Utilisateur confirmé avec succès."
-
-#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
-#, elixir-autogen, elixir-format
-msgid "We'll send a new confirmation link to your inbox"
-msgstr "Nous enverrons un nouveau lien de confirmation dans votre boîte de réception"
-
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "We'll send a password reset link to your inbox"
-msgstr "Nous enverrons un lien de réinitialisation du mot de passe dans votre boîte de réception"
 
 #: lib/bemeda_personal_web/live/hooks/rating_hooks.ex
 #, elixir-autogen, elixir-format
@@ -231,16 +91,6 @@ msgstr "Votre évaluation"
 
 #: lib/bemeda_personal/accounts/user.ex
 #, elixir-autogen, elixir-format
-msgid "did not change"
-msgstr "n'a pas changé"
-
-#: lib/bemeda_personal/accounts/user.ex
-#, elixir-autogen, elixir-format
-msgid "does not match password"
-msgstr "ne correspond pas au mot de passe"
-
-#: lib/bemeda_personal/accounts/user.ex
-#, elixir-autogen, elixir-format
 msgid "is not valid"
 msgstr "n'est pas valide"
 
@@ -254,7 +104,7 @@ msgstr "doit avoir le signe @ et aucun espace"
 msgid "Personal info updated successfully."
 msgstr "Informations personnelles mises à jour avec succès."
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Already have an account?"
 msgstr "Vous avez déjà un compte ?"
@@ -263,11 +113,6 @@ msgstr "Vous avez déjà un compte ?"
 #, elixir-autogen, elixir-format
 msgid "You must be an employer to access this page."
 msgstr "Vous devez être un employeur pour accéder à cette page."
-
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Account created successfully!"
-msgstr "Compte créé avec succès !"
 
 #: lib/bemeda_personal_web/controllers/user_session_controller.ex
 #, elixir-autogen, elixir-format
@@ -294,16 +139,6 @@ msgstr "Vous devez être connecté en tant que demandeur d'emploi pour accéder 
 msgid "You must be logged in as an employer to access this page."
 msgstr "Vous devez être connecté en tant qu'employeur pour accéder à cette page."
 
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "Please check your email and click the confirmation link to complete your registration."
-msgstr "Veuillez vérifier votre email et cliquer sur le lien de confirmation pour compléter votre inscription."
-
-#: lib/bemeda_personal_web/controllers/user_session_controller.ex
-#, elixir-autogen, elixir-format
-msgid "You must confirm your email address before logging in."
-msgstr "Vous devez confirmer votre adresse email avant de vous connecter."
-
 #: lib/bemeda_personal_web/live/job_application_live/authorization.ex
 #, elixir-autogen, elixir-format
 msgid "You can only access job applications for your company."
@@ -315,253 +150,75 @@ msgid "You can only access your own job applications."
 msgstr "Vous ne pouvez accéder qu'à vos propres candidatures."
 
 #: lib/bemeda_personal_web/live/job_application_live/authorization.ex
+#: lib/bemeda_personal_web/user_auth.ex
 #, elixir-autogen, elixir-format
 msgid "You must be logged in to access this page."
 msgstr "Vous devez être connecté pour accéder à cette page."
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid " and "
 msgstr " et "
 
-#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
-#, elixir-autogen, elixir-format
-msgid "Already confirmed?"
-msgstr "Déjà confirmé ?"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Create account"
-msgstr "Créer un compte"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Create an account as a medical"
-msgstr "Créer un compte en tant que personnel médical"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Date of Birth (MM/DD/YY)"
-msgstr "Date de naissance (JJ/MM/AA)"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Department*"
-msgstr "Département*"
-
-#: lib/bemeda_personal_web/live/user_confirmation_instructions_live.ex
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Email Address"
-msgstr "Adresse email"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Email Address*"
-msgstr "Adresse email*"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Employer"
 msgstr "Employeur"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Employer icon"
 msgstr "Icône employeur"
 
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Enter your new password below"
-msgstr "Entrez votre nouveau mot de passe ci-dessous"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Explore job opportunities, connect with top healthcare employers, and find the perfect role for you."
 msgstr "Découvrez des opportunités d'emploi, connectez-vous avec les meilleurs employeurs du secteur de la santé et trouvez le rôle parfait pour vous."
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "First Name*"
-msgstr "Prénom*"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Get connect with qualified"
-msgstr "Connectez-vous avec des"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Get connected with qualified health care professionals and streamline your hiring process effortlessly."
 msgstr "Connectez-vous avec des professionnels de santé qualifiés et simplifiez votre processus d'embauche sans effort."
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Go back"
-msgstr "Retour"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "I agree to the Bemeda Personal "
-msgstr "J'accepte les conditions de Bemeda Personal "
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Last Name*"
-msgstr "Nom*"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Location*"
-msgstr "Localisation*"
-
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format
-msgid "Log in to Bemeda Personal"
-msgstr "Connexion à Bemeda Personal"
-
-#: lib/bemeda_personal_web/live/user_login_live.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Login"
-msgstr "Se connecter"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Medical Personnel"
 msgstr "Personnel médical"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Medical Role*"
-msgstr "Rôle médical*"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Medical personnel icon"
 msgstr "Icône du personnel médical"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Next"
-msgstr "Suivant"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Password (9 or more characters)*"
-msgstr "Mot de passe (9 caractères ou plus)*"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Personal Information"
-msgstr "Informations personnelles"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Phone number"
-msgstr "Numéro de téléphone"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Privacy Policy"
 msgstr "Politique de confidentialité"
 
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Remember your password?"
-msgstr "Vous vous souvenez de votre mot de passe ?"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Sign in"
 msgstr "Se connecter"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Sign up as employer"
 msgstr "S'inscrire en tant qu'employeur"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Sign up as medical personnel"
 msgstr "S'inscrire - Personnel médical"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Terms of Service"
 msgstr "Conditions d'utilisation"
 
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Work Email Address*"
-msgstr "Adresse email professionnelle*"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Work Information"
-msgstr "Informations professionnelles"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "healthcare professionals"
-msgstr "professionnels de santé"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "personnel in just two steps"
-msgstr "personnel en seulement deux étapes"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "City"
-msgstr "Ville"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Country"
-msgstr "Pays"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Create your account"
-msgstr "Créer un compte"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Female"
-msgstr "Féminin"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Gender*"
-msgstr "Genre*"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
+#: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format
 msgid "Join as a job seeker or employer"
 msgstr "Rejoignez en tant que chercheur d'emploi ou employeur"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Male"
-msgstr "Masculin"
-
-#: lib/bemeda_personal_web/live/user_forgot_password_live.ex
-#: lib/bemeda_personal_web/live/user_reset_password_live.ex
-#, elixir-autogen, elixir-format
-msgid "Need to create an account?"
-msgstr "Besoin de créer un compte ?"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Street Address"
-msgstr "Adresse"
-
-#: lib/bemeda_personal_web/live/user_registration_live.ex
-#, elixir-autogen, elixir-format
-msgid "Zip Code"
-msgstr "Code postal"
 
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
@@ -575,11 +232,13 @@ msgstr "Informations du compte"
 msgid "Account settings"
 msgstr "Paramètres du compte"
 
+#: lib/bemeda_personal_web/live/user_live/profile.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "First Name"
 msgstr "Prénom*"
 
+#: lib/bemeda_personal_web/live/user_live/profile.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Last Name"
@@ -618,14 +277,10 @@ msgstr "La fonction de téléchargement d'avatar arrive bientôt."
 
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
-msgid "can't be blank"
-msgstr "ne peut pas être vide"
-
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
 msgid "Canton"
 msgstr "Canton"
 
+#: lib/bemeda_personal_web/live/user_live/profile.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Department"
@@ -636,7 +291,143 @@ msgstr "Département*"
 msgid "Medical role"
 msgstr "Rôle médical*"
 
+#: lib/bemeda_personal_web/live/user_live/profile.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Phone"
 msgstr "Numéro de téléphone"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "An email was sent to %{email}, please access it to confirm your account."
+msgstr "Un email a été envoyé à %{email}, veuillez y accéder pour confirmer votre compte."
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "By creating an account, you agree to our "
+msgstr "En créant un compte, vous acceptez nos "
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Create an account"
+msgstr "Créer un compte"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "Join as Employer"
+msgstr "Rejoindre en tant qu'Employeur"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "Join as Job Seeker"
+msgstr "Rejoindre en tant que Demandeur d'Emploi"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "Looking for great candidates?"
+msgstr "Vous cherchez d'excellents candidats ?"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "Looking for your next opportunity?"
+msgstr "Vous cherchez votre prochaine opportunité ?"
+
+#: lib/bemeda_personal_web/user_auth.ex
+#, elixir-autogen, elixir-format
+msgid "Please complete your profile to continue."
+msgstr "Veuillez compléter votre profil pour continuer."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "The link is invalid or it has expired."
+msgstr "Le lien est invalide ou a expiré."
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Address Information"
+msgstr "Informations d'Adresse"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "City"
+msgstr "Ville"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Complete Profile"
+msgstr "Compléter le Profil"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Country"
+msgstr "Pays"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Date of Birth"
+msgstr "Date de Naissance"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Don't have an account?"
+msgstr "Vous n'avez pas de compte ?"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Fill in your profile to continue"
+msgstr "Remplissez votre profil pour continuer"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Gender"
+msgstr "Genre"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions for logging in shortly."
+msgstr "Si votre email est dans notre système, vous recevrez bientôt les instructions de connexion."
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr "Se connecter"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Log in with email"
+msgstr "Se connecter avec l'email"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Medical Role"
+msgstr "Rôle médical*"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Profile"
+msgstr "Profil"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Sign up"
+msgstr "Se connecter"
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "Street Address"
+msgstr "Adresse"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "You need to reauthenticate to perform sensitive actions on your account."
+msgstr "Vous devez vous ré-authentifier pour effectuer des actions sensibles sur votre compte."
+
+#: lib/bemeda_personal_web/live/user_live/profile.ex
+#, elixir-autogen, elixir-format
+msgid "ZIP Code"
+msgstr "Code Postal"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "for an account now."
+msgstr "pour un compte maintenant."
