@@ -13,6 +13,28 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 
+  defp drain_existing_emails do
+    receive do
+      {:email, _email} -> drain_existing_emails()
+      %Broadcast{} -> drain_existing_emails()
+    after
+      10 -> :ok
+    end
+  end
+
+  defp assert_receive_email_message(timeout \\ 100) do
+    receive do
+      %Broadcast{} ->
+        assert_receive_email_message(timeout)
+
+      {:email, email} ->
+        email
+    after
+      timeout ->
+        flunk("No email message received within #{timeout}ms")
+    end
+  end
+
   setup do
     admin_user =
       user_fixture(%{first_name: "Admin", last_name: "User", email: "admin@example.com"})
@@ -41,7 +63,6 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
     }
   end
 
-  # TODO: Fix issues with assert_email_sent
   describe "perform/1 with job_application_received" do
     test "sends notification emails to applicant and employer and creates email history", %{
       admin_user: admin_user,
@@ -49,6 +70,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       company: company,
       job_application: job_application
     } do
+      drain_existing_emails()
       url = "http://localhost:4000/company/applicant/#{job_application.id}"
 
       assert :ok =
@@ -58,13 +80,27 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
                  "url" => url
                })
 
-      # assert_email_sent(
-      #   to: [{applicant.first_name <> " " <> applicant.last_name, applicant.email}]
-      # )
+      first_email = assert_receive_email_message()
+      second_email = assert_receive_email_message()
 
-      # assert_email_sent(
-      #   to: [{admin_user.first_name <> " " <> admin_user.last_name, admin_user.email}]
-      # )
+      emails = [first_email, second_email]
+
+      applicant_email =
+        Enum.find(emails, fn email ->
+          [{_name, email_addr}] = email.to
+          email_addr == applicant.email
+        end)
+
+      admin_email =
+        Enum.find(emails, fn email ->
+          [{_name, email_addr}] = email.to
+          email_addr == admin_user.email
+        end)
+
+      assert applicant_email
+      assert admin_email
+      assert admin_email.subject =~ ~r/Job Application Received/
+      assert applicant_email.subject =~ ~r/Job Application Received/
 
       emails_list = Emails.list_email_communications()
 
@@ -131,6 +167,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       company: company,
       job_application: job_application
     } do
+      drain_existing_emails()
       url = "http://localhost:4000/company/applicant/#{job_application.id}"
 
       assert :ok =
@@ -140,15 +177,27 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
                  "url" => url
                })
 
-      # assert_email_sent(
-      #   to: [{applicant.first_name <> " " <> applicant.last_name, applicant.email}],
-      #   subject: ~r/Job Application Status Update/
-      # )
+      first_email = assert_receive_email_message()
+      second_email = assert_receive_email_message()
 
-      # assert_email_sent(
-      #   to: [{admin_user.first_name <> " " <> admin_user.last_name, admin_user.email}],
-      #   subject: ~r/Job Application Status Update/
-      # )
+      emails = [first_email, second_email]
+
+      applicant_email =
+        Enum.find(emails, fn email ->
+          [{_name, email_addr}] = email.to
+          email_addr == applicant.email
+        end)
+
+      admin_email =
+        Enum.find(emails, fn email ->
+          [{_name, email_addr}] = email.to
+          email_addr == admin_user.email
+        end)
+
+      assert applicant_email
+      assert applicant_email.subject =~ ~r/Job Application Status Update/
+      assert admin_email
+      assert admin_email.subject =~ ~r/Job Application Status Update/
 
       emails_list = Emails.list_email_communications()
 
@@ -211,6 +260,8 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       admin_user: admin_user,
       message: message
     } do
+      drain_existing_emails()
+
       url =
         "http://localhost:4000/company/applicant/#{message.job_application_id}"
 
@@ -222,10 +273,10 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
                  "url" => url
                })
 
-      # assert_email_sent(
-      #   to: [{admin_user.first_name <> " " <> admin_user.last_name, admin_user.email}],
-      #   subject: ~r/New Message/
-      # )
+      admin_email = assert_receive_email_message()
+      [{_name, email_addr}] = admin_email.to
+      assert email_addr == admin_user.email
+      assert admin_email.subject =~ ~r/New Message/
 
       email_history_list = Emails.list_email_communications()
 

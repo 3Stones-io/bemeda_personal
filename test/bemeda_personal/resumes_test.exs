@@ -1,7 +1,7 @@
 defmodule BemedaPersonal.ResumesTest do
   use BemedaPersonal.DataCase, async: true
 
-  import BemedaPersonal.AccountsFixtures
+  import BemedaPersonal.AccountsFixtures, only: [user_scope_fixture: 0]
   import BemedaPersonal.ResumesFixtures
 
   alias BemedaPersonal.Resumes
@@ -9,57 +9,72 @@ defmodule BemedaPersonal.ResumesTest do
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonal.Resumes.WorkExperience
   alias BemedaPersonalWeb.Endpoint
-  alias Phoenix.Socket.Broadcast
+
+  # Helper function to receive PubSub messages while ignoring email messages
+  defp assert_receive_pubsub_message(timeout \\ 100) do
+    receive do
+      {:email, _email} ->
+        # Skip email messages and keep waiting for PubSub message
+        assert_receive_pubsub_message(timeout)
+
+      msg ->
+        # Return any non-email message (should be PubSub)
+        msg
+    after
+      timeout ->
+        flunk("No PubSub message received within #{timeout}ms")
+    end
+  end
 
   describe "get_or_create_resume_by_user/1" do
     test "returns existing resume" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
-      assert %Resume{id: id} = Resumes.get_or_create_resume_by_user(user)
+      assert %Resume{id: id} = Resumes.get_or_create_resume_by_user(scope)
       assert id == resume.id
     end
 
     test "creates resume if none exists" do
-      user = user_fixture()
+      scope = user_scope_fixture()
 
-      assert %Resume{} = resume = Resumes.get_or_create_resume_by_user(user)
-      assert resume.user_id == user.id
+      assert %Resume{} = resume = Resumes.get_or_create_resume_by_user(scope)
+      assert resume.user_id == scope.user.id
     end
 
     test "broadcasts resume update event" do
-      user = user_fixture()
+      scope = user_scope_fixture()
 
-      resume = Resumes.get_or_create_resume_by_user(user)
+      resume = Resumes.get_or_create_resume_by_user(scope)
 
-      topic = "resume"
+      new_scope = user_scope_fixture()
+      topic = "user:#{new_scope.user.id}:resumes"
       Endpoint.subscribe(topic)
 
-      new_user = user_fixture()
-      new_resume = Resumes.get_or_create_resume_by_user(new_user)
+      new_resume = Resumes.get_or_create_resume_by_user(new_scope)
 
-      assert_receive %Broadcast{
-        event: "resume_created",
-        topic: ^topic,
-        payload: %{resume: ^new_resume}
-      }
+      received_message = assert_receive_pubsub_message()
 
-      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+      assert received_message == {:created, new_resume}
 
-      assert_receive %Broadcast{
-        event: "resume_updated",
-        topic: ^topic,
-        payload: %{resume: ^updated_resume}
-      }
+      # Subscribe to the first scope's topic for the update broadcast
+      first_topic = "user:#{scope.user.id}:resumes"
+      Endpoint.subscribe(first_topic)
+
+      {:ok, updated_resume} =
+        Resumes.update_resume(scope, resume, %{headline: "Updated Headline"})
+
+      received_update_message = assert_receive_pubsub_message()
+      assert received_update_message == {:updated, updated_resume}
     end
   end
 
   describe "get_resume/1" do
     test "returns the resume with given id" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
-      fetched_resume = Resumes.get_resume(resume.id)
+      fetched_resume = Resumes.get_resume!(scope, resume.id)
       assert fetched_resume.id == resume.id
       assert fetched_resume.headline == resume.headline
 
@@ -69,73 +84,77 @@ defmodule BemedaPersonal.ResumesTest do
     end
 
     test "returns nil if resume doesn't exist" do
-      refute Resumes.get_resume(Ecto.UUID.generate())
+      scope = user_scope_fixture()
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Resumes.get_resume!(scope, Ecto.UUID.generate())
+      end
     end
   end
 
   describe "update_resume/2" do
     test "with valid data updates the resume" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
       update_attrs = %{headline: "Updated Headline", summary: "Updated Summary"}
 
-      assert {:ok, %Resume{} = updated_resume} = Resumes.update_resume(resume, update_attrs)
+      assert {:ok, %Resume{} = updated_resume} =
+               Resumes.update_resume(scope, resume, update_attrs)
+
       assert updated_resume.headline == "Updated Headline"
       assert updated_resume.summary == "Updated Summary"
     end
 
     test "with invalid data returns error changeset" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
-      {:ok, _updated_resume} = Resumes.update_resume(resume, %{headline: "New Headline"})
+      {:ok, _updated_resume} = Resumes.update_resume(scope, resume, %{headline: "New Headline"})
 
-      fetched_resume = Resumes.get_resume(resume.id)
+      fetched_resume = Resumes.get_resume!(scope, resume.id)
       assert fetched_resume.id == resume.id
       assert fetched_resume.headline == "New Headline"
     end
 
     test "broadcasts resume update event" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
-      topic = "resume"
+      topic = "user:#{scope.user.id}:resumes"
       Endpoint.subscribe(topic)
 
-      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+      {:ok, updated_resume} =
+        Resumes.update_resume(scope, resume, %{headline: "Updated Headline"})
 
-      assert_receive %Broadcast{
-        event: "resume_updated",
-        topic: ^topic,
-        payload: %{resume: ^updated_resume}
-      }
+      received_message = assert_receive_pubsub_message()
+      assert received_message == {:updated, updated_resume}
     end
   end
 
   describe "change_resume/1" do
     test "returns a resume changeset" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
-      assert %Ecto.Changeset{} = Resumes.change_resume(resume)
+      assert %Ecto.Changeset{} = Resumes.change_resume(scope, resume)
     end
 
     test "returns a resume changeset with changes applied" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
       assert %Ecto.Changeset{changes: %{headline: "New Headline"}} =
-               Resumes.change_resume(resume, %{headline: "New Headline"})
+               Resumes.change_resume(scope, resume, %{headline: "New Headline"})
     end
   end
 
   describe "list_educations/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      education = education_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      education = education_fixture(scope, resume)
 
-      %{user: user, resume: resume, education: education}
+      %{scope: scope, resume: resume, education: education}
     end
 
     test "returns all educations for a resume", %{resume: resume, education: education} do
@@ -148,12 +167,16 @@ defmodule BemedaPersonal.ResumesTest do
       end)
     end
 
-    test "orders by current and start_date", %{resume: resume, education: education} do
+    test "orders by current and start_date", %{scope: scope, resume: resume, education: education} do
       newer_education =
-        education_fixture(resume, %{start_date: ~D[2010-01-01], end_date: ~D[2014-01-01]})
+        education_fixture(scope, resume, %{start_date: ~D[2010-01-01], end_date: ~D[2014-01-01]})
 
       current_education =
-        education_fixture(resume, %{start_date: ~D[2020-01-01], end_date: nil, current: true})
+        education_fixture(scope, resume, %{
+          start_date: ~D[2020-01-01],
+          end_date: nil,
+          current: true
+        })
 
       educations = Resumes.list_educations(resume.id)
 
@@ -173,11 +196,11 @@ defmodule BemedaPersonal.ResumesTest do
     end
   end
 
-  describe "get_education!/1" do
+  describe "get_education/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      education = education_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      education = education_fixture(scope, resume)
 
       %{education: education}
     end
@@ -196,15 +219,53 @@ defmodule BemedaPersonal.ResumesTest do
     end
   end
 
-  describe "create_or_update_education/3" do
+  describe "get_education!/2" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      education = education_fixture(scope, resume)
 
-      %{resume: resume}
+      %{scope: scope, education: education}
     end
 
-    test "with valid data creates a education", %{resume: resume} do
+    test "returns the education with given id", %{scope: scope, education: education} do
+      fetched_education = Resumes.get_education!(scope, education.id)
+      assert fetched_education.id == education.id
+      assert fetched_education.institution == education.institution
+      assert fetched_education.degree == education.degree
+
+      assert Ecto.assoc_loaded?(fetched_education.resume)
+    end
+
+    test "raises if education doesn't exist" do
+      scope = user_scope_fixture()
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Resumes.get_education!(scope, Ecto.UUID.generate())
+      end
+    end
+
+    test "raises if education belongs to different user" do
+      scope = user_scope_fixture()
+      other_scope = user_scope_fixture()
+      other_resume = resume_fixture(other_scope)
+      other_education = education_fixture(other_scope, other_resume)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Resumes.get_education!(scope, other_education.id)
+      end
+    end
+  end
+
+  describe "create_or_update_education/3" do
+    setup do
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+
+      %{scope: scope, resume: resume}
+    end
+
+    test "with valid data creates a education", %{scope: scope, resume: resume} do
       attrs = %{
         institution: "University of Example",
         degree: "Bachelor of Science",
@@ -217,7 +278,7 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:ok, %Education{} = education} =
-               Resumes.create_or_update_education(%Education{}, resume, attrs)
+               Resumes.create_or_update_education(scope, %Education{}, resume, attrs)
 
       assert education.institution == attrs.institution
       assert education.degree == attrs.degree
@@ -228,25 +289,32 @@ defmodule BemedaPersonal.ResumesTest do
       assert education.description == attrs.description
     end
 
-    test "with valid data updates the education", %{resume: resume} do
-      education_fixture = education_fixture(resume)
+    test "with valid data updates the education", %{scope: scope, resume: resume} do
+      education_fixture = education_fixture(scope, resume)
       update_attrs = %{institution: "Updated University", degree: "Updated Degree"}
 
       education_with_resume = Repo.preload(education_fixture, :resume)
 
       assert {:ok, %Education{} = updated_education} =
-               Resumes.create_or_update_education(education_with_resume, resume, update_attrs)
+               Resumes.create_or_update_education(
+                 scope,
+                 education_with_resume,
+                 resume,
+                 update_attrs
+               )
 
       assert updated_education.institution == "Updated University"
       assert updated_education.degree == "Updated Degree"
     end
 
-    test "with invalid data returns error changeset", %{resume: resume} do
+    test "with invalid data returns error changeset", %{scope: scope, resume: resume} do
       assert {:error, %Ecto.Changeset{}} =
-               Resumes.create_or_update_education(%Education{}, resume, %{degree: "Some Degree"})
+               Resumes.create_or_update_education(scope, %Education{}, resume, %{
+                 degree: "Some Degree"
+               })
     end
 
-    test "validates end date after start date", %{resume: resume} do
+    test "validates end date after start date", %{scope: scope, resume: resume} do
       invalid_attrs = %{
         institution: "Test University",
         start_date: ~D[2020-01-01],
@@ -254,12 +322,12 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:error, changeset} =
-               Resumes.create_or_update_education(%Education{}, resume, invalid_attrs)
+               Resumes.create_or_update_education(scope, %Education{}, resume, invalid_attrs)
 
       assert "end date must be after or equal to start date" in errors_on(changeset).end_date
     end
 
-    test "validates current education has no end date", %{resume: resume} do
+    test "validates current education has no end date", %{scope: scope, resume: resume} do
       invalid_attrs = %{
         institution: "Test University",
         current: true,
@@ -267,12 +335,12 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:error, changeset} =
-               Resumes.create_or_update_education(%Education{}, resume, invalid_attrs)
+               Resumes.create_or_update_education(scope, %Education{}, resume, invalid_attrs)
 
       assert "end date must be blank for current education" in errors_on(changeset).end_date
     end
 
-    test "either current is set or an end date is set", %{resume: resume} do
+    test "either current is set or an end date is set", %{scope: scope, resume: resume} do
       base_attrs = %{
         institution: "Test University",
         degree: "Test Degree",
@@ -281,14 +349,14 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:error, changeset} =
-               Resumes.create_or_update_education(%Education{}, resume, base_attrs)
+               Resumes.create_or_update_education(scope, %Education{}, resume, base_attrs)
 
       assert "either mark as current or provide an end date" in errors_on(changeset).end_date
 
       current_attrs = Map.put(base_attrs, :current, true)
 
       assert {:ok, %Education{} = education} =
-               Resumes.create_or_update_education(%Education{}, resume, current_attrs)
+               Resumes.create_or_update_education(scope, %Education{}, resume, current_attrs)
 
       assert education.current == true
       assert education.end_date == nil
@@ -296,13 +364,13 @@ defmodule BemedaPersonal.ResumesTest do
       end_date_attrs = Map.put(base_attrs, :end_date, ~D[2024-01-01])
 
       assert {:ok, %Education{} = education} =
-               Resumes.create_or_update_education(%Education{}, resume, end_date_attrs)
+               Resumes.create_or_update_education(scope, %Education{}, resume, end_date_attrs)
 
       assert education.end_date == ~D[2024-01-01]
     end
 
-    test "broadcasts education update event", %{resume: resume} do
-      topic = "education:#{resume.id}"
+    test "broadcasts education update event", %{scope: scope, resume: resume} do
+      topic = "user:#{scope.user.id}:educations"
       Endpoint.subscribe(topic)
 
       attrs = %{
@@ -313,49 +381,49 @@ defmodule BemedaPersonal.ResumesTest do
         end_date: ~D[2019-05-31]
       }
 
-      {:ok, education} = Resumes.create_or_update_education(%Education{}, resume, attrs)
+      {:ok, education} = Resumes.create_or_update_education(scope, %Education{}, resume, attrs)
 
-      assert_receive %Broadcast{
-        event: "education_updated",
-        topic: ^topic,
-        payload: %{education: ^education}
-      }
+      received_message = assert_receive_pubsub_message()
+      assert received_message == {:created, education}
     end
   end
 
   describe "delete_education/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      education = education_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      education = education_fixture(scope, resume)
 
-      %{education: education, resume: resume}
+      %{scope: scope, education: education, resume: resume}
     end
 
-    test "deletes the education", %{education: education} do
-      assert {:ok, %Education{}} = Resumes.delete_education(education)
-      refute Resumes.get_education(education.id)
+    test "deletes the education", %{scope: scope, education: education} do
+      assert {:ok, %Education{}} = Resumes.delete_education(scope, education)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Resumes.get_education!(scope, education.id)
+      end
     end
 
-    test "broadcasts education delete event", %{education: education, resume: resume} do
-      topic = "education:#{resume.id}"
+    test "broadcasts education delete event", %{
+      scope: scope,
+      education: education
+    } do
+      topic = "user:#{scope.user.id}:educations"
       Endpoint.subscribe(topic)
 
-      {:ok, deleted_education} = Resumes.delete_education(education)
+      {:ok, deleted_education} = Resumes.delete_education(scope, education)
 
-      assert_receive %Broadcast{
-        event: "education_deleted",
-        topic: ^topic,
-        payload: %{education: ^deleted_education}
-      }
+      received_message = assert_receive_pubsub_message()
+      assert received_message == {:deleted, deleted_education}
     end
   end
 
   describe "change_education/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      education = education_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      education = education_fixture(scope, resume)
 
       %{education: education}
     end
@@ -367,9 +435,9 @@ defmodule BemedaPersonal.ResumesTest do
 
   describe "change_education/2" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      education = education_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      education = education_fixture(scope, resume)
 
       %{education: education}
     end
@@ -382,11 +450,11 @@ defmodule BemedaPersonal.ResumesTest do
 
   describe "list_work_experiences/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      work_experience = work_experience_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      work_experience = work_experience_fixture(scope, resume)
 
-      %{resume: resume, work_experience: work_experience}
+      %{scope: scope, resume: resume, work_experience: work_experience}
     end
 
     test "returns all work_experiences for a resume", %{
@@ -402,15 +470,19 @@ defmodule BemedaPersonal.ResumesTest do
       end)
     end
 
-    test "orders by current and start_date", %{resume: resume, work_experience: work_experience} do
+    test "orders by current and start_date", %{
+      scope: scope,
+      resume: resume,
+      work_experience: work_experience
+    } do
       current_work =
-        work_experience_fixture(resume, %{
+        work_experience_fixture(scope, resume, %{
           current: true,
           start_date: ~D[2010-01-01],
           end_date: nil
         })
 
-      newer_work = work_experience_fixture(resume, %{start_date: ~D[2020-01-01]})
+      newer_work = work_experience_fixture(scope, resume, %{start_date: ~D[2020-01-01]})
 
       work_experiences = Resumes.list_work_experiences(resume.id)
 
@@ -430,11 +502,11 @@ defmodule BemedaPersonal.ResumesTest do
     end
   end
 
-  describe "get_work_experience!/1" do
+  describe "get_work_experience/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      work_experience = work_experience_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      work_experience = work_experience_fixture(scope, resume)
 
       %{work_experience: work_experience}
     end
@@ -455,13 +527,13 @@ defmodule BemedaPersonal.ResumesTest do
 
   describe "create_or_update_work_experience/3" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
-      %{resume: resume}
+      %{scope: scope, resume: resume}
     end
 
-    test "with valid data creates a work_experience", %{resume: resume} do
+    test "with valid data creates a work_experience", %{scope: scope, resume: resume} do
       attrs = %{
         company_name: "Example Corp",
         title: "Software Engineer",
@@ -473,7 +545,7 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:ok, %WorkExperience{} = work_experience} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, attrs)
+               Resumes.create_or_update_work_experience(scope, %WorkExperience{}, resume, attrs)
 
       assert work_experience.company_name == attrs.company_name
       assert work_experience.title == attrs.title
@@ -483,14 +555,15 @@ defmodule BemedaPersonal.ResumesTest do
       assert work_experience.description == attrs.description
     end
 
-    test "with valid data updates the work_experience", %{resume: resume} do
-      work_experience_fixture = work_experience_fixture(resume)
+    test "with valid data updates the work_experience", %{scope: scope, resume: resume} do
+      work_experience_fixture = work_experience_fixture(scope, resume)
       update_attrs = %{company_name: "Updated Company", title: "Updated Title"}
 
       work_experience_with_resume = Repo.preload(work_experience_fixture, :resume)
 
       assert {:ok, %WorkExperience{} = updated_work_experience} =
                Resumes.create_or_update_work_experience(
+                 scope,
                  work_experience_with_resume,
                  resume,
                  update_attrs
@@ -500,12 +573,12 @@ defmodule BemedaPersonal.ResumesTest do
       assert updated_work_experience.title == "Updated Title"
     end
 
-    test "with invalid data returns error changeset", %{resume: resume} do
+    test "with invalid data returns error changeset", %{scope: scope, resume: resume} do
       assert {:error, %Ecto.Changeset{}} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, %{})
+               Resumes.create_or_update_work_experience(scope, %WorkExperience{}, resume, %{})
     end
 
-    test "validates end date after start date", %{resume: resume} do
+    test "validates end date after start date", %{scope: scope, resume: resume} do
       invalid_attrs = %{
         company_name: "Test Company",
         title: "Test Title",
@@ -514,12 +587,17 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:error, changeset} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, invalid_attrs)
+               Resumes.create_or_update_work_experience(
+                 scope,
+                 %WorkExperience{},
+                 resume,
+                 invalid_attrs
+               )
 
       assert "end date must be after or equal to start date" in errors_on(changeset).end_date
     end
 
-    test "validates current job has no end date", %{resume: resume} do
+    test "validates current job has no end date", %{scope: scope, resume: resume} do
       invalid_attrs = %{
         company_name: "Test Company",
         title: "Test Title",
@@ -529,12 +607,17 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:error, changeset} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, invalid_attrs)
+               Resumes.create_or_update_work_experience(
+                 scope,
+                 %WorkExperience{},
+                 resume,
+                 invalid_attrs
+               )
 
       assert "end date must be blank for current job" in errors_on(changeset).end_date
     end
 
-    test "either current is set or an end date is set", %{resume: resume} do
+    test "either current is set or an end date is set", %{scope: scope, resume: resume} do
       base_attrs = %{
         company_name: "Test Company",
         title: "Test Title",
@@ -542,14 +625,24 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       assert {:error, changeset} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, base_attrs)
+               Resumes.create_or_update_work_experience(
+                 scope,
+                 %WorkExperience{},
+                 resume,
+                 base_attrs
+               )
 
       assert "either mark as current or provide an end date" in errors_on(changeset).end_date
 
       current_attrs = Map.put(base_attrs, :current, true)
 
       assert {:ok, %WorkExperience{} = work_experience} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, current_attrs)
+               Resumes.create_or_update_work_experience(
+                 scope,
+                 %WorkExperience{},
+                 resume,
+                 current_attrs
+               )
 
       assert work_experience.current == true
       assert work_experience.end_date == nil
@@ -557,13 +650,18 @@ defmodule BemedaPersonal.ResumesTest do
       end_date_attrs = Map.put(base_attrs, :end_date, ~D[2024-01-01])
 
       assert {:ok, %WorkExperience{} = work_experience} =
-               Resumes.create_or_update_work_experience(%WorkExperience{}, resume, end_date_attrs)
+               Resumes.create_or_update_work_experience(
+                 scope,
+                 %WorkExperience{},
+                 resume,
+                 end_date_attrs
+               )
 
       assert work_experience.end_date == ~D[2024-01-01]
     end
 
-    test "broadcasts work experience update event", %{resume: resume} do
-      topic = "work_experience:#{resume.id}"
+    test "broadcasts work experience update event", %{scope: scope, resume: resume} do
+      topic = "user:#{scope.user.id}:work_experiences"
       Endpoint.subscribe(topic)
 
       attrs = %{
@@ -574,52 +672,46 @@ defmodule BemedaPersonal.ResumesTest do
       }
 
       {:ok, work_experience} =
-        Resumes.create_or_update_work_experience(%WorkExperience{}, resume, attrs)
+        Resumes.create_or_update_work_experience(scope, %WorkExperience{}, resume, attrs)
 
-      assert_receive %Broadcast{
-        event: "work_experience_updated",
-        topic: ^topic,
-        payload: %{work_experience: ^work_experience}
-      }
+      received_message = assert_receive_pubsub_message()
+      assert received_message == {:created, work_experience}
     end
   end
 
   describe "delete_work_experience/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      work_experience = work_experience_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      work_experience = work_experience_fixture(scope, resume)
 
-      %{work_experience: work_experience, resume: resume}
+      %{scope: scope, work_experience: work_experience, resume: resume}
     end
 
-    test "deletes the work_experience", %{work_experience: work_experience} do
-      assert {:ok, %WorkExperience{}} = Resumes.delete_work_experience(work_experience)
+    test "deletes the work_experience", %{scope: scope, work_experience: work_experience} do
+      assert {:ok, %WorkExperience{}} = Resumes.delete_work_experience(scope, work_experience)
       refute Resumes.get_work_experience(work_experience.id)
     end
 
     test "broadcasts work experience delete event", %{
-      work_experience: work_experience,
-      resume: resume
+      scope: scope,
+      work_experience: work_experience
     } do
-      topic = "work_experience:#{resume.id}"
+      topic = "user:#{scope.user.id}:work_experiences"
       Endpoint.subscribe(topic)
 
-      {:ok, deleted_work_experience} = Resumes.delete_work_experience(work_experience)
+      {:ok, deleted_work_experience} = Resumes.delete_work_experience(scope, work_experience)
 
-      assert_receive %Broadcast{
-        event: "work_experience_deleted",
-        topic: ^topic,
-        payload: %{work_experience: ^deleted_work_experience}
-      }
+      received_message = assert_receive_pubsub_message()
+      assert received_message == {:deleted, deleted_work_experience}
     end
   end
 
   describe "change_work_experience/1" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      work_experience = work_experience_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      work_experience = work_experience_fixture(scope, resume)
 
       %{work_experience: work_experience}
     end
@@ -631,9 +723,9 @@ defmodule BemedaPersonal.ResumesTest do
 
   describe "change_work_experience/2" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
-      work_experience = work_experience_fixture(resume)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
+      work_experience = work_experience_fixture(scope, resume)
 
       %{work_experience: work_experience}
     end
@@ -648,17 +740,17 @@ defmodule BemedaPersonal.ResumesTest do
 
   describe "get_user_resume/1" do
     test "returns the resume for a given user" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope)
 
-      fetched_resume = Resumes.get_user_resume(user)
+      fetched_resume = Resumes.get_user_resume(scope.user)
       assert fetched_resume.id == resume.id
-      assert fetched_resume.user_id == user.id
+      assert fetched_resume.user_id == scope.user.id
     end
 
     test "returns nil if user doesn't have a resume" do
-      user = user_fixture()
-      refute Resumes.get_user_resume(user)
+      scope = user_scope_fixture()
+      refute Resumes.get_user_resume(scope.user)
     end
   end
 end

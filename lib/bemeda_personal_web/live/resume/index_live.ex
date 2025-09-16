@@ -5,7 +5,6 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
 
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Resume.SharedHelpers
-  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -24,39 +23,54 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
-    id
-    |> Resumes.get_resume()
-    |> assign_resume(socket)
-    |> assign(:page_title, dgettext("resumes", "Resume"))
+    try do
+      resume = Resumes.get_resume!(nil, id)
+
+      resume
+      |> assign_resume(socket)
+      |> assign(:page_title, dgettext("resumes", "Resume"))
+    rescue
+      Ecto.NoResultsError ->
+        socket
+        |> assign(:not_found, true)
+        |> assign(:page_title, dgettext("resumes", "Resume Not Found"))
+    end
   end
 
-  defp assign_resume(%Resumes.Resume{is_public: true} = resume, socket),
-    do: SharedHelpers.setup_resume_data(socket, resume)
-
-  defp assign_resume(_resume, socket), do: assign(socket, :not_found, true)
+  defp assign_resume(%Resumes.Resume{} = resume, socket) do
+    SharedHelpers.setup_resume_data(socket, resume)
+  end
 
   @impl Phoenix.LiveView
-  def handle_info(%Broadcast{event: "resume_updated", payload: payload}, socket) do
-    if payload.resume.is_public do
-      {:noreply, assign(socket, :resume, payload.resume)}
+  def handle_info({:updated, %Resumes.Resume{} = resume}, socket) do
+    if resume.is_public do
+      {:noreply, assign(socket, :resume, resume)}
     else
       {:noreply, assign(socket, :not_found, true)}
     end
   end
 
-  def handle_info(%Broadcast{event: "education_updated", payload: payload}, socket) do
-    {:noreply, stream_insert(socket, :educations, payload.education)}
+  def handle_info({:created, %Resumes.Education{} = education}, socket) do
+    {:noreply, stream_insert(socket, :educations, education)}
   end
 
-  def handle_info(%Broadcast{event: "education_deleted", payload: payload}, socket) do
-    {:noreply, stream_delete(socket, :educations, payload.education)}
+  def handle_info({:updated, %Resumes.Education{} = education}, socket) do
+    {:noreply, stream_insert(socket, :educations, education)}
   end
 
-  def handle_info(%Broadcast{event: "work_experience_updated", payload: payload}, socket) do
-    {:noreply, stream_insert(socket, :work_experiences, payload.work_experience)}
+  def handle_info({:deleted, %Resumes.Education{} = education}, socket) do
+    {:noreply, stream_delete(socket, :educations, education)}
   end
 
-  def handle_info(%Broadcast{event: "work_experience_deleted", payload: payload}, socket) do
-    {:noreply, stream_delete(socket, :work_experiences, payload.work_experience)}
+  def handle_info({:created, %Resumes.WorkExperience{} = work_experience}, socket) do
+    {:noreply, stream_insert(socket, :work_experiences, work_experience)}
+  end
+
+  def handle_info({:updated, %Resumes.WorkExperience{} = work_experience}, socket) do
+    {:noreply, stream_insert(socket, :work_experiences, work_experience)}
+  end
+
+  def handle_info({:deleted, %Resumes.WorkExperience{} = work_experience}, socket) do
+    {:noreply, stream_delete(socket, :work_experiences, work_experience)}
   end
 end

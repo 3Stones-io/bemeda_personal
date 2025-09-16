@@ -62,7 +62,7 @@ defmodule BemedaPersonalWeb.Components.Shared.ResumeFormComponent do
         />
 
         <:actions>
-          <.button phx-disable-with={dgettext("resumes", "Saving...")}>
+          <.button phx-disable-with={dgettext("resumes", "Saving...")} type="submit">
             {dgettext("resumes", "Save Resume")}
           </.button>
         </:actions>
@@ -72,8 +72,8 @@ defmodule BemedaPersonalWeb.Components.Shared.ResumeFormComponent do
   end
 
   @impl Phoenix.LiveComponent
-  def update(%{resume: resume} = assigns, socket) do
-    changeset = Resumes.change_resume(resume)
+  def update(%{resume: resume, current_scope: current_scope} = assigns, socket) do
+    changeset = Resumes.change_resume(current_scope, resume)
 
     {:ok,
      socket
@@ -85,7 +85,7 @@ defmodule BemedaPersonalWeb.Components.Shared.ResumeFormComponent do
   def handle_event("validate", %{"resume" => resume_params}, socket) do
     changeset =
       socket.assigns.resume
-      |> Resumes.change_resume(resume_params)
+      |> then(&Resumes.change_resume(socket.assigns.current_scope, &1, resume_params))
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
@@ -97,7 +97,7 @@ defmodule BemedaPersonalWeb.Components.Shared.ResumeFormComponent do
   end
 
   defp save_resume(socket, :edit_resume, resume_params) do
-    case Resumes.update_resume(socket.assigns.resume, resume_params) do
+    case Resumes.update_resume(socket.assigns.current_scope, socket.assigns.resume, resume_params) do
       {:ok, _resume} ->
         {:noreply,
          socket

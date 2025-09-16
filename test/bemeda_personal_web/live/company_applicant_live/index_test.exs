@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications
   alias BemedaPersonalWeb.I18n
 
@@ -20,7 +21,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
       user_fixture(%{first_name: "John", last_name: "Doe", email: "applicant@example.com"})
 
     job_application = job_application_fixture(applicant_user, job)
-    resume = resume_fixture(applicant_user)
+    applicant_scope = Scope.for_user(applicant_user)
+    resume = resume_fixture(applicant_scope)
 
     second_applicant =
       user_fixture(%{first_name: "Jane", last_name: "Smith", email: "jane@example.com"})

@@ -4,7 +4,6 @@ defmodule BemedaPersonalWeb.Resume.SharedHelpers do
   """
 
   alias BemedaPersonal.Resumes
-  alias BemedaPersonalWeb.Endpoint
   alias Phoenix.LiveView
 
   @doc """
@@ -12,13 +11,14 @@ defmodule BemedaPersonalWeb.Resume.SharedHelpers do
   """
   @spec setup_resume_data(LiveView.Socket.t(), Resumes.Resume.t()) :: LiveView.Socket.t()
   def setup_resume_data(socket, resume) do
+    current_scope = Map.get(socket.assigns, :current_scope, nil)
     educations = Resumes.list_educations(resume.id)
     work_experiences = Resumes.list_work_experiences(resume.id)
 
-    if LiveView.connected?(socket) do
-      Endpoint.subscribe("resume:#{resume.id}")
-      Endpoint.subscribe("education:#{resume.id}")
-      Endpoint.subscribe("work_experience:#{resume.id}")
+    if LiveView.connected?(socket) and current_scope do
+      Resumes.subscribe_resumes(current_scope)
+      Resumes.subscribe_educations(current_scope)
+      Resumes.subscribe_work_experiences(current_scope)
     end
 
     socket

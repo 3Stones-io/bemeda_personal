@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Workers.EmailNotificationWorker
@@ -17,7 +18,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
     company = company_fixture(user_fixture(%{email: "company@example.com"}))
     job = job_posting_fixture(company)
     job_application = job_application_fixture(user, job)
-    resume = resume_fixture(user)
+    user_scope = Scope.for_user(user)
+    resume = resume_fixture(user_scope)
 
     conn = log_in_user(conn, user)
 
@@ -261,7 +263,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       company = company_fixture(user_fixture(%{email: "company@example.com"}))
       job = job_posting_fixture(company)
       job_application = job_application_fixture(user, job)
-      resume = resume_fixture(user)
+      user_scope = Scope.for_user(user)
+      resume = resume_fixture(user_scope)
 
       conn = log_in_user(build_conn(), user)
 

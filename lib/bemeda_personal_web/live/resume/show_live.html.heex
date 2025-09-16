@@ -41,12 +41,12 @@
     <.resume_profile
       resume={@resume}
       title={dgettext("resumes", "My Resume")}
-      email_fallback={@current_user.email}
+      email_fallback={@current_scope.user.email}
       headline_default={dgettext("resumes", "Add a professional headline")}
       summary_default={
         dgettext("resumes", "Add a summary of your professional experience and skills")
       }
-      user={@current_user}
+      user={@current_scope.user}
     >
       <:actions>
         <.link
@@ -139,6 +139,7 @@
         education={@education}
         work_experience={@work_experience}
         resume={@resume}
+        current_scope={@current_scope}
         return_to={~p"/resume"}
         action={@live_action}
         title={@page_title}

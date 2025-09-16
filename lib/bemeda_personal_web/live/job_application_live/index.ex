@@ -14,18 +14,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_scope.user
-
     if connected?(socket) do
-      Endpoint.subscribe("job_application:user:#{current_user.id}")
+      Endpoint.subscribe("job_application:user:#{socket.assigns.current_scope.user.id}")
     end
 
     {:ok,
      socket
      |> assign(:page_title, dgettext("jobs", "My Job Applications"))
-     |> assign(:resume, Resumes.get_user_resume(current_user))
+     |> assign(:resume, Resumes.get_user_resume(socket.assigns.current_scope.user))
      |> assign(:applied_count, 0)
-     |> assign(:filter_params, %{"user_id" => current_user.id})}
+     |> assign(:filter_params, %{"user_id" => socket.assigns.current_scope.user.id})}
   end
 
   @impl Phoenix.LiveView

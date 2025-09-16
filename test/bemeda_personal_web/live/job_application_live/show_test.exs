@@ -14,6 +14,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
   setup :verify_on_exit!
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Documents.MockProcessor
   alias BemedaPersonal.Documents.MockStorage
@@ -49,7 +50,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
             "I am excited to apply for this position and believe my skills are a perfect match."
         })
 
-      resume = resume_fixture(user)
+      user_scope = Scope.for_user(user)
+      resume = resume_fixture(user_scope)
 
       conn = log_in_user(conn, user)
 
@@ -154,7 +156,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job: job
     } do
       user = user_fixture()
-      resume_fixture(user, %{is_public: false})
+      user_scope = Scope.for_user(user)
+      resume_fixture(user_scope, %{is_public: false})
 
       job_application =
         job_application_fixture(user, job, %{

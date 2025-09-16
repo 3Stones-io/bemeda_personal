@@ -8,6 +8,7 @@ defmodule BemedaPersonal.ChatTest do
   import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.ResumesFixtures
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Resumes.Resume
   alias BemedaPersonalWeb.Endpoint
@@ -42,7 +43,8 @@ defmodule BemedaPersonal.ChatTest do
     test "includes user's public resume in the list when user has a public resume", %{
       job_application: job_application
     } do
-      resume_fixture(job_application.user, %{is_public: true})
+      user_scope = Scope.for_user(job_application.user)
+      resume_fixture(user_scope, %{is_public: true})
 
       result = Chat.list_messages(job_application)
 

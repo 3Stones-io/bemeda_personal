@@ -8,18 +8,15 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
   alias BemedaPersonalWeb.Components.Shared.ResumeFormComponent
   alias BemedaPersonalWeb.Components.Shared.WorkExperienceFormComponent
   alias BemedaPersonalWeb.Resume.SharedHelpers
-  alias Phoenix.Socket.Broadcast
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_scope.user
-    resume = Resumes.get_or_create_resume_by_user(current_user)
+    resume = Resumes.get_or_create_resume_by_user(socket.assigns.current_scope)
 
     socket =
       socket
       |> stream_configure(:educations, dom_id: &"education-#{&1.id}")
       |> stream_configure(:work_experiences, dom_id: &"work-experience-#{&1.id}")
-      |> assign(:current_user, current_user)
       |> assign(:education, %Resumes.Education{})
       |> assign(:form_component, nil)
       |> assign(:component_id, nil)
@@ -56,7 +53,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
   end
 
   defp apply_action(socket, :edit_education, %{"id" => id}) do
-    education = Resumes.get_education(id)
+    education = Resumes.get_education!(socket.assigns.current_scope, id)
 
     socket
     |> assign(:component_id, "education-form")
@@ -74,7 +71,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
   end
 
   defp apply_action(socket, :edit_work_experience, %{"id" => id}) do
-    work_experience = Resumes.get_work_experience!(id)
+    work_experience = Resumes.get_work_experience!(socket.assigns.current_scope, id)
 
     socket
     |> assign(:component_id, "work-experience-form")
@@ -85,37 +82,47 @@ defmodule BemedaPersonalWeb.Resume.ShowLive do
 
   @impl Phoenix.LiveView
   def handle_event("delete-education", %{"id" => id}, socket) do
-    education = Resumes.get_education(id)
-    {:ok, _education} = Resumes.delete_education(education)
+    education = Resumes.get_education!(socket.assigns.current_scope, id)
+    {:ok, _education} = Resumes.delete_education(socket.assigns.current_scope, education)
 
     {:noreply, put_flash(socket, :info, dgettext("resumes", "Education entry deleted"))}
   end
 
   def handle_event("delete-work-experience", %{"id" => id}, socket) do
-    work_experience = Resumes.get_work_experience(id)
-    {:ok, _work_experience} = Resumes.delete_work_experience(work_experience)
+    work_experience = Resumes.get_work_experience!(socket.assigns.current_scope, id)
+
+    {:ok, _work_experience} =
+      Resumes.delete_work_experience(socket.assigns.current_scope, work_experience)
 
     {:noreply, put_flash(socket, :info, dgettext("resumes", "Work experience entry deleted"))}
   end
 
   @impl Phoenix.LiveView
-  def handle_info(%Broadcast{event: "resume_updated", payload: payload}, socket) do
-    {:noreply, assign(socket, :resume, payload.resume)}
+  def handle_info({:updated, %Resumes.Resume{} = resume}, socket) do
+    {:noreply, assign(socket, :resume, resume)}
   end
 
-  def handle_info(%Broadcast{event: "education_updated", payload: payload}, socket) do
-    {:noreply, stream_insert(socket, :educations, payload.education)}
+  def handle_info({:created, %Resumes.Education{} = education}, socket) do
+    {:noreply, stream_insert(socket, :educations, education)}
   end
 
-  def handle_info(%Broadcast{event: "education_deleted", payload: payload}, socket) do
-    {:noreply, stream_delete(socket, :educations, payload.education)}
+  def handle_info({:updated, %Resumes.Education{} = education}, socket) do
+    {:noreply, stream_insert(socket, :educations, education)}
   end
 
-  def handle_info(%Broadcast{event: "work_experience_updated", payload: payload}, socket) do
-    {:noreply, stream_insert(socket, :work_experiences, payload.work_experience)}
+  def handle_info({:deleted, %Resumes.Education{} = education}, socket) do
+    {:noreply, stream_delete(socket, :educations, education)}
   end
 
-  def handle_info(%Broadcast{event: "work_experience_deleted", payload: payload}, socket) do
-    {:noreply, stream_delete(socket, :work_experiences, payload.work_experience)}
+  def handle_info({:created, %Resumes.WorkExperience{} = work_experience}, socket) do
+    {:noreply, stream_insert(socket, :work_experiences, work_experience)}
+  end
+
+  def handle_info({:updated, %Resumes.WorkExperience{} = work_experience}, socket) do
+    {:noreply, stream_insert(socket, :work_experiences, work_experience)}
+  end
+
+  def handle_info({:deleted, %Resumes.WorkExperience{} = work_experience}, socket) do
+    {:noreply, stream_delete(socket, :work_experiences, work_experience)}
   end
 end

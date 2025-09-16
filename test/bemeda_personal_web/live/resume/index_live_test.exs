@@ -5,12 +5,15 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
+
   describe "/resumes/:id" do
     test "displays resume with all sections", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
-      education = education_fixture(resume)
-      work_experience = work_experience_fixture(resume)
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
+      education = education_fixture(scope, resume)
+      work_experience = work_experience_fixture(scope, resume)
 
       {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
@@ -38,7 +41,8 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "displays resume with empty education and work experience sections", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
 
       {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
@@ -48,9 +52,10 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "handles missing optional fields gracefully", %{conn: conn} do
       user = user_fixture(confirmed: true)
+      scope = Scope.for_user(user)
 
       resume =
-        resume_fixture(user, %{
+        resume_fixture(scope, %{
           is_public: true,
           headline: nil,
           summary: nil,
@@ -78,7 +83,8 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "shows 404 when resume is not public", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: false})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: false})
 
       {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
@@ -91,18 +97,15 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
   describe "PubSub broadcast handling" do
     test "handles resume_updated broadcast when resume is public", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
 
       {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
 
       # Simulate a resume update broadcast
       updated_resume = %{resume | headline: "Updated Headline"}
-      payload = %{resume: updated_resume}
 
-      send(view.pid, %Phoenix.Socket.Broadcast{
-        event: "resume_updated",
-        payload: payload
-      })
+      send(view.pid, {:updated, updated_resume})
 
       # Verify the resume was updated in the view
       assert render(view) =~ "Updated Headline"
@@ -110,18 +113,15 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "handles resume_updated broadcast when resume becomes private", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
 
       {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
 
       # Simulate a resume update that makes it private
       private_resume = %{resume | is_public: false}
-      payload = %{resume: private_resume}
 
-      send(view.pid, %Phoenix.Socket.Broadcast{
-        event: "resume_updated",
-        payload: payload
-      })
+      send(view.pid, {:updated, private_resume})
 
       # Verify the view now shows 404
       assert render(view) =~ "404"
@@ -130,18 +130,15 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "handles education_updated broadcast", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
 
       {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
 
       # Simulate an education update broadcast
-      education = education_fixture(resume, %{institution: "Test University"})
-      payload = %{education: education}
+      education = education_fixture(scope, resume, %{institution: "Test University"})
 
-      send(view.pid, %Phoenix.Socket.Broadcast{
-        event: "education_updated",
-        payload: payload
-      })
+      send(view.pid, {:updated, education})
 
       # Verify the education appears in the view
       assert render(view) =~ "Test University"
@@ -149,8 +146,9 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "handles education_deleted broadcast", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
-      education = education_fixture(resume, %{institution: "Deleted University"})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
+      education = education_fixture(scope, resume, %{institution: "Deleted University"})
 
       {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
 
@@ -158,12 +156,7 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
       assert render(view) =~ "Deleted University"
 
       # Simulate an education deletion broadcast
-      payload = %{education: education}
-
-      send(view.pid, %Phoenix.Socket.Broadcast{
-        event: "education_deleted",
-        payload: payload
-      })
+      send(view.pid, {:deleted, education})
 
       # Verify the education is removed from the view
       refute render(view) =~ "Deleted University"
@@ -171,18 +164,15 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "handles work_experience_updated broadcast", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
 
       {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
 
       # Simulate a work experience update broadcast
-      work_experience = work_experience_fixture(resume, %{company_name: "Test Company"})
-      payload = %{work_experience: work_experience}
+      work_experience = work_experience_fixture(scope, resume, %{company_name: "Test Company"})
 
-      send(view.pid, %Phoenix.Socket.Broadcast{
-        event: "work_experience_updated",
-        payload: payload
-      })
+      send(view.pid, {:updated, work_experience})
 
       # Verify the work experience appears in the view
       assert render(view) =~ "Test Company"
@@ -190,8 +180,9 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
 
     test "handles work_experience_deleted broadcast", %{conn: conn} do
       user = user_fixture(confirmed: true)
-      resume = resume_fixture(user, %{is_public: true})
-      work_experience = work_experience_fixture(resume, %{company_name: "Deleted Company"})
+      scope = Scope.for_user(user)
+      resume = resume_fixture(scope, %{is_public: true})
+      work_experience = work_experience_fixture(scope, resume, %{company_name: "Deleted Company"})
 
       {:ok, view, _html} = live(conn, ~p"/resumes/#{resume.id}")
 
@@ -199,12 +190,7 @@ defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
       assert render(view) =~ "Deleted Company"
 
       # Simulate a work experience deletion broadcast
-      payload = %{work_experience: work_experience}
-
-      send(view.pid, %Phoenix.Socket.Broadcast{
-        event: "work_experience_deleted",
-        payload: payload
-      })
+      send(view.pid, {:deleted, work_experience})
 
       # Verify the work experience is removed from the view
       refute render(view) =~ "Deleted Company"

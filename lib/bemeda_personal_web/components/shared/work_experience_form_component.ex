@@ -71,7 +71,7 @@ defmodule BemedaPersonalWeb.Components.Shared.WorkExperienceFormComponent do
         />
 
         <:actions>
-          <.button phx-disable-with={dgettext("resumes", "Saving...")}>
+          <.button phx-disable-with={dgettext("resumes", "Saving...")} type="submit">
             {dgettext("resumes", "Save Work Experience")}
           </.button>
         </:actions>
@@ -112,6 +112,7 @@ defmodule BemedaPersonalWeb.Components.Shared.WorkExperienceFormComponent do
 
   defp save_work_experience(socket, work_experience_params) do
     case Resumes.create_or_update_work_experience(
+           socket.assigns.current_scope,
            socket.assigns.work_experience,
            socket.assigns.resume,
            work_experience_params

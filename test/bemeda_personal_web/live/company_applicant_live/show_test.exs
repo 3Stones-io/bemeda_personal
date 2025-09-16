@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
 
@@ -26,7 +27,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       )
 
     job_application = job_application_fixture(applicant_user, job)
-    resume = resume_fixture(applicant_user, %{is_public: true})
+    applicant_scope = Scope.for_user(applicant_user)
+    resume = resume_fixture(applicant_scope, %{is_public: true})
 
     %{
       applicant: applicant_user,

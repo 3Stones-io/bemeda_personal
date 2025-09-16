@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Resumes
 
@@ -12,12 +13,13 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
     context = if is_list(context), do: Map.new(context), else: context
 
     user = user_fixture(confirmed: true)
-    resume = resume_fixture(user)
+    scope = Scope.for_user(user)
+    resume = resume_fixture(scope)
     resume_with_user = Repo.preload(resume, :user)
 
     context_with_education =
       if context[:create_education] do
-        education = education_fixture(resume)
+        education = education_fixture(scope, resume)
 
         education_with_resume =
           Resumes.Education
@@ -31,7 +33,7 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
 
     context_with_work_experience =
       if context_with_education[:create_work_experience] do
-        work_experience = work_experience_fixture(resume)
+        work_experience = work_experience_fixture(scope, resume)
 
         work_experience_with_resume =
           Resumes.WorkExperience
@@ -100,7 +102,8 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
     end
 
     test "shows public link when resume is public", %{conn: conn, user: user, resume: resume} do
-      {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
+      scope = Scope.for_user(user)
+      {:ok, resume} = Resumes.update_resume(scope, resume, %{is_public: true})
 
       {:ok, _show_live, html} =
         conn
@@ -116,7 +119,8 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
       user: user,
       resume: resume
     } do
-      {:ok, _resume} = Resumes.update_resume(resume, %{is_public: false})
+      scope = Scope.for_user(user)
+      {:ok, _resume} = Resumes.update_resume(scope, resume, %{is_public: false})
 
       {:ok, _show_live, html} =
         conn
@@ -126,8 +130,9 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
       refute html =~ "Your resume is public"
     end
 
-    test "can view public resume", %{conn: conn, resume: resume} do
-      {:ok, resume} = Resumes.update_resume(resume, %{is_public: true})
+    test "can view public resume", %{conn: conn, resume: resume, user: user} do
+      scope = Scope.for_user(user)
+      {:ok, resume} = Resumes.update_resume(scope, resume, %{is_public: true})
 
       {:ok, _public_live, html} = live(conn, ~p"/resumes/#{resume.id}")
 
@@ -374,8 +379,9 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
 
     test "user can update an existing education entry", %{conn: conn, user: user} do
       # Create an education entry first
-      resume = Resumes.get_or_create_resume_by_user(user)
-      education = education_fixture(resume)
+      scope = Scope.for_user(user)
+      resume = Resumes.get_or_create_resume_by_user(scope)
+      education = education_fixture(scope, resume)
 
       # Navigate to the edit education form
       {:ok, show_live, _html} =
@@ -506,8 +512,9 @@ defmodule BemedaPersonalWeb.Resume.ShowLiveTest do
 
     test "user can update an existing work_experience record", %{conn: conn, user: user} do
       # Create a work experience entry first
-      resume = Resumes.get_or_create_resume_by_user(user)
-      work_experience = work_experience_fixture(resume)
+      scope = Scope.for_user(user)
+      resume = Resumes.get_or_create_resume_by_user(scope)
+      work_experience = work_experience_fixture(scope, resume)
 
       # Navigate to the edit work experience form
       {:ok, show_live, _html} =

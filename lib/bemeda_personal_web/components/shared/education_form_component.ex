@@ -68,7 +68,10 @@ defmodule BemedaPersonalWeb.Components.Shared.EducationFormComponent do
         />
 
         <:actions>
-          <.button phx-disable-with={dgettext("resumes", "Saving...")}>
+          <.button
+            phx-disable-with={dgettext("resumes", "Saving...")}
+            type="submit"
+          >
             {dgettext("resumes", "Save Education")}
           </.button>
         </:actions>
@@ -109,6 +112,7 @@ defmodule BemedaPersonalWeb.Components.Shared.EducationFormComponent do
 
   defp save_education(socket, education_params) do
     case Resumes.create_or_update_education(
+           socket.assigns.current_scope,
            socket.assigns.education,
            socket.assigns.resume,
            education_params

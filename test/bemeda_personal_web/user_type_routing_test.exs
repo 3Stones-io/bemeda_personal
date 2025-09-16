@@ -6,6 +6,8 @@ defmodule BemedaPersonalWeb.UserTypeRoutingTest do
   import BemedaPersonal.ResumesFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
+
   describe "job seeker routes access" do
     test "job seekers can access resume routes", %{conn: conn} do
       user = user_fixture(%{user_type: :job_seeker})
@@ -173,7 +175,8 @@ defmodule BemedaPersonalWeb.UserTypeRoutingTest do
   describe "utility routes" do
     test "users can access public resume route", %{conn: conn} do
       user = user_fixture()
-      resume = resume_fixture(user)
+      user_scope = Scope.for_user(user)
+      resume = resume_fixture(user_scope)
 
       {:ok, _view, _html} = live(conn, ~p"/resumes/#{resume.id}")
     end

@@ -4,6 +4,7 @@ defmodule BemedaPersonal.ResumesFixtures do
   entities via the `BemedaPersonal.Resumes` context.
   """
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Resumes
   alias BemedaPersonal.Resumes.Education
@@ -13,6 +14,7 @@ defmodule BemedaPersonal.ResumesFixtures do
   @type attrs :: map()
   @type education :: Education.t()
   @type resume :: Resume.t()
+  @type scope :: Scope.t()
   @type user :: User.t()
   @type work_experience :: WorkExperience.t()
 
@@ -34,14 +36,14 @@ defmodule BemedaPersonal.ResumesFixtures do
   @doc """
   Generate a resume for a user.
   """
-  @spec resume_fixture(user(), attrs()) :: resume()
-  def resume_fixture(%User{} = user, attrs \\ %{}) do
+  @spec resume_fixture(scope(), attrs()) :: resume()
+  def resume_fixture(scope, attrs \\ %{}) do
     attrs = valid_resume_attributes(attrs)
 
     {:ok, resume} =
-      user
+      scope
       |> Resumes.get_or_create_resume_by_user()
-      |> Resumes.update_resume(attrs)
+      |> then(fn resume -> Resumes.update_resume(scope, resume, attrs) end)
 
     resume
   end
@@ -67,12 +69,13 @@ defmodule BemedaPersonal.ResumesFixtures do
   @doc """
   Generate an education entry for a resume.
   """
-  @spec education_fixture(resume(), attrs()) :: education()
-  def education_fixture(%Resume{} = resume, attrs \\ %{}) do
+  @spec education_fixture(scope(), resume(), attrs()) :: education()
+  def education_fixture(scope, resume, attrs \\ %{}) do
     attrs = valid_education_attributes(attrs)
 
     {:ok, education} =
       Resumes.create_or_update_education(
+        scope,
         %Education{},
         resume,
         attrs
@@ -102,12 +105,13 @@ defmodule BemedaPersonal.ResumesFixtures do
   @doc """
   Generate a work experience entry for a resume.
   """
-  @spec work_experience_fixture(resume(), attrs()) :: work_experience()
-  def work_experience_fixture(%Resume{} = resume, attrs \\ %{}) do
+  @spec work_experience_fixture(scope(), resume(), attrs()) :: work_experience()
+  def work_experience_fixture(scope, resume, attrs \\ %{}) do
     attrs = valid_work_experience_attributes(attrs)
 
     {:ok, work_experience} =
       Resumes.create_or_update_work_experience(
+        scope,
         %WorkExperience{},
         resume,
         attrs
