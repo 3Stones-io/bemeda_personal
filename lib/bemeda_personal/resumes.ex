@@ -127,29 +127,27 @@ defmodule BemedaPersonal.Resumes do
   @doc """
   Gets a single resume.
 
-  Raises `Ecto.NoResultsError` if the Resume does not exist or doesn't belong to the user.
-
   ## Examples
 
       iex> get_resume!(scope, 123)
       %Resume{}
 
       iex> get_resume!(scope, 456)
-      ** (Ecto.NoResultsError)
+      nil
 
   """
-  @spec get_resume!(scope() | nil, resume_id()) :: resume()
-  def get_resume!(%Scope{} = scope, id) do
+  @spec get_resume(scope() | nil, resume_id()) :: resume() | nil
+  def get_resume(%Scope{} = scope, id) do
     Resume
     |> where([r], r.id == ^id and r.user_id == ^scope.user.id)
-    |> Repo.one!()
+    |> Repo.one()
     |> Repo.preload([:user, :educations, :work_experiences])
   end
 
-  def get_resume!(nil, id) do
+  def get_resume(nil, id) do
     Resume
     |> where([r], r.id == ^id and r.is_public == true)
-    |> Repo.one!()
+    |> Repo.one()
     |> Repo.preload([:user, :educations, :work_experiences])
   end
 

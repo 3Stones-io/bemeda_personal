@@ -74,7 +74,7 @@ defmodule BemedaPersonal.ResumesTest do
       scope = user_scope_fixture()
       resume = resume_fixture(scope)
 
-      fetched_resume = Resumes.get_resume!(scope, resume.id)
+      fetched_resume = Resumes.get_resume(scope, resume.id)
       assert fetched_resume.id == resume.id
       assert fetched_resume.headline == resume.headline
 
@@ -86,9 +86,7 @@ defmodule BemedaPersonal.ResumesTest do
     test "returns nil if resume doesn't exist" do
       scope = user_scope_fixture()
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Resumes.get_resume!(scope, Ecto.UUID.generate())
-      end
+      refute Resumes.get_resume(scope, Ecto.UUID.generate())
     end
   end
 
@@ -111,7 +109,7 @@ defmodule BemedaPersonal.ResumesTest do
 
       {:ok, _updated_resume} = Resumes.update_resume(scope, resume, %{headline: "New Headline"})
 
-      fetched_resume = Resumes.get_resume!(scope, resume.id)
+      fetched_resume = Resumes.get_resume(scope, resume.id)
       assert fetched_resume.id == resume.id
       assert fetched_resume.headline == "New Headline"
     end

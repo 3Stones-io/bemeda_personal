@@ -23,23 +23,18 @@ defmodule BemedaPersonalWeb.Resume.IndexLive do
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
-    try do
-      resume = Resumes.get_resume!(nil, id)
+    resume = Resumes.get_resume(nil, id)
 
-      resume
-      |> assign_resume(socket)
-      |> assign(:page_title, dgettext("resumes", "Resume"))
-    rescue
-      Ecto.NoResultsError ->
-        socket
-        |> assign(:not_found, true)
-        |> assign(:page_title, dgettext("resumes", "Resume Not Found"))
-    end
+    resume
+    |> assign_resume(socket)
+    |> assign(:page_title, dgettext("resumes", "Resume"))
   end
 
   defp assign_resume(%Resumes.Resume{} = resume, socket) do
     SharedHelpers.setup_resume_data(socket, resume)
   end
+
+  defp assign_resume(_resume, socket), do: assign(socket, :not_found, true)
 
   @impl Phoenix.LiveView
   def handle_info({:updated, %Resumes.Resume{} = resume}, socket) do
