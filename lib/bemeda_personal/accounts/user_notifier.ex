@@ -360,6 +360,77 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
+  @doc """
+  Deliver magic link authentication email
+  """
+  @spec deliver_magic_link(recipient(), url()) :: {:ok, email()} | {:error, any()}
+  def deliver_magic_link(user, url) do
+    html_body = """
+    <h2>Sign in to BemedaPersonal</h2>
+    <p>Hi #{user.email},</p>
+    <p>You requested a magic link to sign in. Click the button below to sign in:</p>
+    <p style="text-align: center; margin: 30px 0;">
+      <a href="#{url}" style="background-color: #7b4eab; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+        Sign In
+      </a>
+    </p>
+    <p>Or copy and paste this link: #{url}</p>
+    <p><strong>This link expires in 15 minutes and can only be used once.</strong></p>
+    <p>If you didn't request this link, please ignore this email.</p>
+    """
+
+    text_body = """
+    Sign in to BemedaPersonal
+
+    Hi #{user.email},
+
+    You requested a magic link to sign in. Visit the link below:
+
+    #{url}
+
+    This link expires in 15 minutes and can only be used once.
+
+    If you didn't request this link, please ignore this email.
+    """
+
+    deliver(user, "Sign in to BemedaPersonal", html_body, text_body)
+  end
+
+  @doc """
+  Deliver sudo mode verification email
+  """
+  @spec deliver_sudo_link(recipient(), String.t()) :: {:ok, email()} | {:error, term()}
+  def deliver_sudo_link(user, url) do
+    html_body = """
+    <h2>Verify sensitive action</h2>
+    <p>Hi #{user.email},</p>
+    <p>You're trying to perform a sensitive action that requires additional verification.</p>
+    <p style="text-align: center; margin: 30px 0;">
+      <a href="#{url}" style="background-color: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+        Verify Action
+      </a>
+    </p>
+    <p><strong>This link expires in 5 minutes and can only be used once.</strong></p>
+    <p>If you didn't request this, please secure your account immediately.</p>
+    """
+
+    text_body = """
+    Verify sensitive action
+
+    Hi #{user.email},
+
+    You're trying to perform a sensitive action that requires additional verification.
+
+    #{url}
+
+    This link expires in 5 minutes and can only be used once.
+
+    If you didn't request this, please secure your account immediately.
+    """
+
+    deliver(user, "Verify sensitive action - BemedaPersonal", html_body, text_body)
+  end
+
   defp put_locale(user) do
     user.locale
     |> Atom.to_string()

@@ -7,7 +7,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.History do
 
   @impl Phoenix.LiveView
   def handle_params(%{"id" => job_application_id}, _url, socket) do
-    job_application = JobApplications.get_job_application!(job_application_id)
+    # Use system scope to fetch job application first, then check authorization
+    job_application = JobApplications.get_job_application_by_id!(job_application_id)
 
     case Authorization.authorize_job_application_access(socket, job_application) do
       :ok ->

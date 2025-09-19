@@ -14,7 +14,7 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
 
   defp create_test_data(%{conn: conn}) do
     recipient = user_fixture(%{confirmed: true})
-    sender = user_fixture(%{email: "sender@example.com", confirmed: true})
+    sender = employer_user_fixture(%{email: "sender@example.com", confirmed: true})
     company = company_fixture(sender)
     job = job_posting_fixture(company)
     job_application = job_application_fixture(recipient, job)
@@ -154,7 +154,7 @@ defmodule BemedaPersonalWeb.NotificationLive.IndexTest do
   describe "pagination" do
     setup %{conn: conn} do
       recipient = user_fixture(%{confirmed: true})
-      sender = user_fixture(%{email: "sender@example.com", confirmed: true})
+      sender = employer_user_fixture(%{email: "sender@example.com", confirmed: true})
       company = company_fixture(sender)
       job = job_posting_fixture(company)
       job_application = job_application_fixture(recipient, job)

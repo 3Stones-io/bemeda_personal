@@ -5,6 +5,7 @@ defmodule BemedaPersonal.Emails do
 
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.Emails.EmailCommunication
@@ -18,6 +19,7 @@ defmodule BemedaPersonal.Emails do
   @type email_communication :: EmailCommunication.t()
   @type job_application :: JobApplication.t()
   @type recipient :: User.t()
+  @type scope :: Scope.t()
   @type sender :: User.t()
 
   @doc """
@@ -55,6 +57,68 @@ defmodule BemedaPersonal.Emails do
     |> Repo.preload([:company, :job_application, :recipient, :sender])
   end
 
+  @doc """
+  Returns the list of email communications with scope filtering.
+
+  Employers see communications for their company.
+  Job seekers see their own communications.
+
+  ## Examples
+
+      iex> list_email_communications(scope)
+      [%EmailCommunication{}, ...]
+
+      iex> list_email_communications(scope, %{newer_than: email_communication}, 20)
+      [%EmailCommunication{}, ...]
+
+      iex> list_email_communications(nil)
+      []
+
+  """
+  @spec list_email_communications(scope() | nil, map(), non_neg_integer()) :: [
+          email_communication()
+        ]
+  def list_email_communications(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        filters,
+        limit
+      ) do
+    base_filter = Map.put(filters, :company_id, company_id)
+
+    filter_query = fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_filter/2)
+    end
+
+    from(email_communication in EmailCommunication, as: :email_communication)
+    |> where(^filter_query.(base_filter))
+    |> order_by([e], asc: e.is_read, desc: e.inserted_at)
+    |> limit(^limit)
+    |> Repo.all()
+    |> Repo.preload([:company, :job_application, :recipient, :sender])
+  end
+
+  def list_email_communications(
+        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        filters,
+        limit
+      ) do
+    base_filter = Map.put(filters, :recipient_id, user_id)
+
+    filter_query = fn filters ->
+      Enum.reduce(filters, dynamic(true), &apply_filter/2)
+    end
+
+    from(email_communication in EmailCommunication, as: :email_communication)
+    |> where(^filter_query.(base_filter))
+    |> order_by([e], asc: e.is_read, desc: e.inserted_at)
+    |> limit(^limit)
+    |> Repo.all()
+    |> Repo.preload([:company, :job_application, :recipient, :sender])
+  end
+
+  def list_email_communications(%Scope{}, _filters, _limit), do: []
+  def list_email_communications(nil, _filters, _limit), do: []
+
   defp apply_filter({:recipient_id, recipient_id}, dynamic) do
     dynamic([email_communication: e], ^dynamic and e.recipient_id == ^recipient_id)
   end
@@ -80,7 +144,7 @@ defmodule BemedaPersonal.Emails do
   defp apply_filter(_other, dynamic), do: dynamic
 
   @doc """
-  Returns the count of unread email communications.
+  Returns the count of unread email communications (legacy function).
 
   ## Examples
 
@@ -89,12 +153,33 @@ defmodule BemedaPersonal.Emails do
 
   """
   @spec unread_email_communications_count(Ecto.UUID.t() | nil) :: non_neg_integer()
-  def unread_email_communications_count(recipient_id) do
+  def unread_email_communications_count(recipient_id)
+      when is_binary(recipient_id) or is_nil(recipient_id) do
     from(email_communication in EmailCommunication, as: :email_communication)
     |> where([e], e.is_read == false and e.recipient_id == ^recipient_id)
     |> select([e], count(e.id))
     |> Repo.one()
   end
+
+  @spec unread_email_communications_count(scope()) :: non_neg_integer()
+  def unread_email_communications_count(%Scope{
+        user: %User{user_type: :employer},
+        company: %Company{id: company_id}
+      }) do
+    from(email_communication in EmailCommunication, as: :email_communication)
+    |> where([e], e.is_read == false and e.company_id == ^company_id)
+    |> select([e], count(e.id))
+    |> Repo.one()
+  end
+
+  def unread_email_communications_count(%Scope{user: %User{user_type: :job_seeker, id: user_id}}) do
+    from(email_communication in EmailCommunication, as: :email_communication)
+    |> where([e], e.is_read == false and e.recipient_id == ^user_id)
+    |> select([e], count(e.id))
+    |> Repo.one()
+  end
+
+  def unread_email_communications_count(%Scope{}), do: 0
 
   @doc """
   Gets a single email_communication.
@@ -116,6 +201,51 @@ defmodule BemedaPersonal.Emails do
     |> Repo.get!(id)
     |> Repo.preload([:sender, :recipient])
   end
+
+  @doc """
+  Gets a single email communication with scope filtering.
+
+  Returns nil if not accessible to the scope or does not exist.
+
+  ## Examples
+
+      iex> get_email_communication(scope, "123")
+      %EmailCommunication{}
+
+      iex> get_email_communication(scope, "456")
+      nil
+
+  """
+  @spec get_email_communication(scope() | nil, communication_id()) :: email_communication() | nil
+  def get_email_communication(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        id
+      ) do
+    communication =
+      EmailCommunication
+      |> where([e], e.id == ^id and e.company_id == ^company_id)
+      |> Repo.one()
+
+    case communication do
+      nil -> nil
+      communication -> Repo.preload(communication, [:sender, :recipient])
+    end
+  end
+
+  def get_email_communication(%Scope{user: %User{user_type: :job_seeker, id: user_id}}, id) do
+    communication =
+      EmailCommunication
+      |> where([e], e.id == ^id and e.recipient_id == ^user_id)
+      |> Repo.one()
+
+    case communication do
+      nil -> nil
+      communication -> Repo.preload(communication, [:sender, :recipient])
+    end
+  end
+
+  def get_email_communication(%Scope{}, _id), do: nil
+  def get_email_communication(nil, _id), do: nil
 
   @doc """
   Creates a email_communication.
@@ -150,6 +280,85 @@ defmodule BemedaPersonal.Emails do
   end
 
   @doc """
+  Creates an email communication with scope verification.
+
+  ## Examples
+
+      iex> create_email_communication(scope, company, job_application, recipient, sender, %{
+      ...>   field: value
+      ...> })
+      {:ok, %EmailCommunication{}}
+
+      iex> create_email_communication(scope, company, job_application, recipient, sender, %{
+      ...>   field: bad_value
+      ...> })
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec create_email_communication(
+          scope() | nil,
+          company() | nil,
+          job_application() | nil,
+          recipient(),
+          sender() | nil,
+          attrs()
+        ) ::
+          {:ok, email_communication()} | {:error, changeset() | atom()}
+  def create_email_communication(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %Company{id: company_id} = company,
+        job_application,
+        recipient,
+        sender,
+        attrs
+      ) do
+    %EmailCommunication{}
+    |> EmailCommunication.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Ecto.Changeset.put_assoc(:job_application, job_application)
+    |> Ecto.Changeset.put_assoc(:recipient, recipient)
+    |> Ecto.Changeset.put_assoc(:sender, sender)
+    |> Repo.insert()
+  end
+
+  def create_email_communication(
+        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        company,
+        job_application,
+        %User{id: user_id} = recipient,
+        sender,
+        attrs
+      ) do
+    %EmailCommunication{}
+    |> EmailCommunication.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Ecto.Changeset.put_assoc(:job_application, job_application)
+    |> Ecto.Changeset.put_assoc(:recipient, recipient)
+    |> Ecto.Changeset.put_assoc(:sender, sender)
+    |> Repo.insert()
+  end
+
+  def create_email_communication(
+        %Scope{},
+        _company,
+        _job_application,
+        _recipient,
+        _sender,
+        _attrs
+      ),
+      do: {:error, :unauthorized}
+
+  def create_email_communication(
+        nil,
+        _company,
+        _job_application,
+        _recipient,
+        _sender,
+        _attrs
+      ),
+      do: {:error, :unauthorized}
+
+  @doc """
   Updates a email_communication.
   """
   @spec update_email_communication(email_communication(), attrs()) ::
@@ -161,12 +370,64 @@ defmodule BemedaPersonal.Emails do
   end
 
   @doc """
+  Updates an email communication with scope verification.
+  """
+  @spec update_email_communication(scope() | nil, email_communication(), attrs()) ::
+          {:ok, email_communication()} | {:error, changeset() | atom()}
+  def update_email_communication(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %EmailCommunication{company_id: company_id} = email_communication,
+        attrs
+      ) do
+    email_communication
+    |> EmailCommunication.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_email_communication(
+        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        %EmailCommunication{recipient_id: user_id} = email_communication,
+        attrs
+      ) do
+    email_communication
+    |> EmailCommunication.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_email_communication(%Scope{}, _email_communication, _attrs),
+    do: {:error, :unauthorized}
+
+  def update_email_communication(nil, _email_communication, _attrs), do: {:error, :unauthorized}
+
+  @doc """
   Deletes a email_communication.
   """
   @spec delete_email_communication(email_communication()) :: :ok | {:error, Ecto.Changeset.t()}
   def delete_email_communication(%EmailCommunication{} = email_communication) do
     Repo.delete(email_communication)
   end
+
+  @doc """
+  Deletes an email communication with scope verification.
+  """
+  @spec delete_email_communication(scope() | nil, email_communication()) ::
+          {:ok, email_communication()} | {:error, changeset() | atom()}
+  def delete_email_communication(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %EmailCommunication{company_id: company_id} = email_communication
+      ) do
+    Repo.delete(email_communication)
+  end
+
+  def delete_email_communication(
+        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        %EmailCommunication{recipient_id: user_id} = email_communication
+      ) do
+    Repo.delete(email_communication)
+  end
+
+  def delete_email_communication(%Scope{}, _email_communication), do: {:error, :unauthorized}
+  def delete_email_communication(nil, _email_communication), do: {:error, :unauthorized}
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking email_communication changes.

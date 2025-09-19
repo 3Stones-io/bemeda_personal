@@ -329,7 +329,7 @@ defmodule BemedaPersonalWeb.UserRegistrationLiveTest do
       |> form("#registration_form", user: step2_attributes)
       |> render_submit()
 
-      user = Accounts.get_user_by_email(email)
+      user = Accounts.get_user_by_email(nil, email)
       assert user.locale == :it
     end
   end

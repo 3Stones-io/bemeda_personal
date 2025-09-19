@@ -1523,11 +1523,6 @@ msgstr ""
 msgid "Post job"
 msgstr ""
 
-#: lib/bemeda_personal_web/live/company_job_live/edit.ex
-#, elixir-autogen, elixir-format
-msgid "You are not authorized to edit this job posting"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Character limit"
@@ -1682,4 +1677,14 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Apply Now"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Error deleting job posting"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/company_job_live/edit.ex
+#, elixir-autogen, elixir-format
+msgid "Job posting not found or not authorized"
 msgstr ""

@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
 
   use BemedaPersonalWeb, :live_component
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedHelpers
@@ -351,7 +352,10 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
   end
 
   defp save_job_application(socket, :edit, job_application_params) do
+    scope = Scope.for_user(socket.assigns.current_user)
+
     case JobApplications.update_job_application(
+           scope,
            socket.assigns.job_application,
            job_application_params
          ) do

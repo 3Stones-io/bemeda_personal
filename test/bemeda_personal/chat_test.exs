@@ -1,50 +1,36 @@
 defmodule BemedaPersonal.ChatTest do
   use BemedaPersonal.DataCase, async: true
 
-  import BemedaPersonal.AccountsFixtures
-  import BemedaPersonal.ChatFixtures
-  import BemedaPersonal.CompaniesFixtures
-  import BemedaPersonal.JobApplicationsFixtures
-  import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.ResumesFixtures
 
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Resumes.Resume
+  alias BemedaPersonal.TestUtils
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 
   defp create_message(_attrs) do
-    user = user_fixture()
-    company = company_fixture(user)
-    job_posting = job_posting_fixture(company)
-    job_application = job_application_fixture(user, job_posting)
-    message = message_fixture(user, job_application)
-
-    %{
-      company: company,
-      job_application: job_application,
-      job_posting: job_posting,
-      message: message,
-      user: user
-    }
+    TestUtils.create_complete_test_setup()
   end
 
   describe "list_messages/1" do
     setup :create_message
 
     test "returns all messages for a job application", %{
-      job_application: job_application
+      job_application: job_application,
+      scope: scope
     } do
-      [_job_application | messages] = Chat.list_messages(job_application)
+      [_job_application | messages] = Chat.list_messages(scope, job_application)
       assert length(messages) == 1
     end
 
     test "includes user's public resume in the list when user has a public resume", %{
-      job_application: job_application
+      job_application: job_application,
+      scope: scope
     } do
       resume_fixture(job_application.user, %{is_public: true})
 
-      result = Chat.list_messages(job_application)
+      result = Chat.list_messages(scope, job_application)
 
       assert length(result) == 3
       [_job_application, resume | _messages] = result
@@ -59,18 +45,19 @@ defmodule BemedaPersonal.ChatTest do
     setup :create_message
 
     test "returns the message with given id", %{
-      message: message
+      message: message,
+      scope: scope
     } do
-      result = Chat.get_message!(message.id)
+      result = Chat.get_message!(scope, message.id)
       assert result.id == message.id
       assert result.content == message.content
       assert Ecto.assoc_loaded?(result.sender)
       assert Ecto.assoc_loaded?(result.job_application)
     end
 
-    test "raises error when message does not exist" do
+    test "raises error when message does not exist", %{scope: scope} do
       non_existent_id = Ecto.UUID.generate()
-      assert_raise Ecto.NoResultsError, fn -> Chat.get_message!(non_existent_id) end
+      assert_raise Ecto.NoResultsError, fn -> Chat.get_message!(scope, non_existent_id) end
     end
   end
 
@@ -79,12 +66,13 @@ defmodule BemedaPersonal.ChatTest do
 
     test "with valid data creates a message", %{
       job_application: job_application,
-      user: user
+      user: user,
+      scope: scope
     } do
       valid_attrs = %{content: "some content"}
 
       assert {:ok, %Chat.Message{} = message} =
-               Chat.create_message(user, job_application, valid_attrs)
+               Chat.create_message(scope, user, job_application, valid_attrs)
 
       assert message.content == "some content"
       assert message.job_application_id == job_application.id
@@ -93,14 +81,15 @@ defmodule BemedaPersonal.ChatTest do
 
     test "broadcasts message_created event when a message is created", %{
       job_application: job_application,
-      user: user
+      user: user,
+      scope: scope
     } do
       message_topic = "messages:job_application:#{job_application.id}"
       Endpoint.subscribe(message_topic)
 
       valid_attrs = %{content: "new broadcast message"}
 
-      {:ok, message} = Chat.create_message(user, job_application, valid_attrs)
+      {:ok, message} = Chat.create_message(scope, user, job_application, valid_attrs)
 
       assert_receive %Broadcast{
         event: "message_created",
@@ -111,12 +100,13 @@ defmodule BemedaPersonal.ChatTest do
 
     test "with empty string returns error", %{
       job_application: job_application,
-      user: user
+      user: user,
+      scope: scope
     } do
       empty_attrs = %{content: ""}
 
       assert {:error, %Ecto.Changeset{} = changeset} =
-               Chat.create_message(user, job_application, empty_attrs)
+               Chat.create_message(scope, user, job_application, empty_attrs)
 
       assert changeset.errors[:content] == {"cannot be blank", [validation: :required]}
       refute changeset.valid?
@@ -126,23 +116,24 @@ defmodule BemedaPersonal.ChatTest do
   describe "update_message/2" do
     setup [:create_message]
 
-    test "with valid data updates the message", %{message: message} do
+    test "with valid data updates the message", %{message: message, scope: scope} do
       update_attrs = %{content: "updated content"}
 
-      assert {:ok, %Chat.Message{} = updated} = Chat.update_message(message, update_attrs)
+      assert {:ok, %Chat.Message{} = updated} = Chat.update_message(scope, message, update_attrs)
       assert updated.content == "updated content"
     end
 
     test "broadcasts message_updated event when a message is updated", %{
       job_application: job_application,
-      message: message
+      message: message,
+      scope: scope
     } do
       message_topic = "messages:job_application:#{job_application.id}"
       Endpoint.subscribe(message_topic)
 
       update_attrs = %{content: "updated broadcast content"}
 
-      {:ok, updated_message} = Chat.update_message(message, update_attrs)
+      {:ok, updated_message} = Chat.update_message(scope, message, update_attrs)
 
       assert_receive %Broadcast{
         event: "message_updated",
@@ -156,10 +147,11 @@ defmodule BemedaPersonal.ChatTest do
     setup :create_message
 
     test "successfully deletes the message", %{
-      message: message
+      message: message,
+      scope: scope
     } do
-      assert {:ok, %Chat.Message{}} = Chat.delete_message(message)
-      assert_raise Ecto.NoResultsError, fn -> Chat.get_message!(message.id) end
+      assert {:ok, %Chat.Message{}} = Chat.delete_message(scope, message)
+      assert_raise Ecto.NoResultsError, fn -> Chat.get_message!(scope, message.id) end
     end
   end
 
@@ -188,7 +180,8 @@ defmodule BemedaPersonal.ChatTest do
 
     test "with valid data creates a message with media asset", %{
       job_application: job_application,
-      user: user
+      user: user,
+      scope: scope
     } do
       media_data = %{
         "file_name" => "test.mp4",
@@ -199,7 +192,7 @@ defmodule BemedaPersonal.ChatTest do
       attrs = %{"media_data" => media_data}
 
       assert {:ok, %Chat.Message{} = message} =
-               Chat.create_message_with_media(user, job_application, attrs)
+               Chat.create_message_with_media(scope, user, job_application, attrs)
 
       assert message.media_asset
       assert message.media_asset.file_name == "test.mp4"
@@ -209,19 +202,21 @@ defmodule BemedaPersonal.ChatTest do
 
     test "creates a message without media asset when media_data is nil", %{
       job_application: job_application,
-      user: user
+      user: user,
+      scope: scope
     } do
       attrs = %{}
 
       assert {:ok, %Chat.Message{} = message} =
-               Chat.create_message_with_media(user, job_application, attrs)
+               Chat.create_message_with_media(scope, user, job_application, attrs)
 
       assert message.media_asset == nil
     end
 
     test "broadcasts message_created event when a message with media is created", %{
       job_application: job_application,
-      user: user
+      user: user,
+      scope: scope
     } do
       message_topic = "messages:job_application:#{job_application.id}"
       Endpoint.subscribe(message_topic)
@@ -234,7 +229,7 @@ defmodule BemedaPersonal.ChatTest do
 
       attrs = %{"media_data" => media_data}
 
-      {:ok, message} = Chat.create_message_with_media(user, job_application, attrs)
+      {:ok, message} = Chat.create_message_with_media(scope, user, job_application, attrs)
 
       assert_receive %Broadcast{
         event: "message_created",

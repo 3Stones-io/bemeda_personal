@@ -68,7 +68,6 @@ defmodule BemedaPersonal.MixProject do
   # Specifies your project dependencies.
   #
   # Type `mix help deps` for examples and options.
-  # TODO: Update phoenix_storybook once the new version is released
   defp app_deps do
     [
       {:bcrypt_elixir, "~> 3.0"},

@@ -4,6 +4,7 @@ defmodule BemedaPersonal.ChatFixtures do
   entities via the `BemedaPersonal.Chat` context.
   """
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat
   alias BemedaPersonal.JobApplications.JobApplication
@@ -20,7 +21,23 @@ defmodule BemedaPersonal.ChatFixtures do
         content: "some test message content"
       })
 
-    {:ok, message} = Chat.create_message(user, job_application, message_attrs)
+    # Create scope for user access based on user type
+    job_application = BemedaPersonal.Repo.preload(job_application, job_posting: [:company])
+    user_scope = Scope.for_user(user)
+
+    scope =
+      case user.user_type do
+        :employer ->
+          # For employers, add their company to the scope
+          company = job_application.job_posting.company
+          Scope.put_company(user_scope, company)
+
+        :job_seeker ->
+          # For job seekers, just user scope is enough if they own the application
+          user_scope
+      end
+
+    {:ok, message} = Chat.create_message(scope, user, job_application, message_attrs)
 
     message
   end

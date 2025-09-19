@@ -13,7 +13,12 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
   setup do
     admin_user =
-      user_fixture(%{first_name: "Admin", last_name: "User", email: "admin@example.com"})
+      user_fixture(%{
+        first_name: "Admin",
+        last_name: "User",
+        email: "admin@example.com",
+        user_type: :employer
+      })
 
     user = user_fixture(%{first_name: "John", last_name: "Doe", email: "john@example.com"})
     company = company_fixture(admin_user)
@@ -77,22 +82,21 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
   describe "deliver_new_message/3" do
     test "delivers new message notification with proper content", %{
       user: user,
+      admin_user: admin_user,
       job_application: job_application
     } do
-      sender =
-        user_fixture(%{first_name: "Sender", last_name: "Name", email: "sender@example.com"})
-
-      message = message_fixture(sender, job_application)
+      # Use admin_user as sender since they have access to the job application
+      message = message_fixture(admin_user, job_application)
 
       UserNotifier.deliver_new_message(user, message, "MESSAGE_URL")
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | New Message from Sender Name",
+        subject: "BemedaPersonal | New Message from Admin User",
         to: [{"John Doe", "john@example.com"}],
         html_body: ~r/<a href="MESSAGE_URL"/,
         text_body: ~r/MESSAGE_URL/,
-        text_body: ~r/Sender Name/
+        text_body: ~r/Admin User/
       )
     end
   end
@@ -259,18 +263,12 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           locale: :fr
         })
 
-      sender =
-        user_fixture(%{
-          first_name: "Jean",
-          last_name: "Durand",
-          email: "jean@example.com"
-        })
-
       admin_user =
         user_fixture(%{
           first_name: "Admin",
           last_name: "User",
-          email: "admin_fr@example.com"
+          email: "admin_fr@example.com",
+          user_type: :employer
         })
 
       company = company_fixture(admin_user)
@@ -279,13 +277,13 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       job_application =
         job_application_fixture(french_user, job_posting, %{state: "pending"})
 
-      message = message_fixture(sender, job_application)
+      message = message_fixture(admin_user, job_application)
 
       UserNotifier.deliver_new_message(french_user, message, "MESSAGE_URL")
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Nouveau Message de Jean Durand",
+        subject: "BemedaPersonal | Nouveau Message de Admin User",
         to: [{"Marie Martin", "marie@example.com"}],
         text_body: ~r/Bonjour Marie Martin,/,
         text_body: ~r/MESSAGE_URL/
@@ -305,7 +303,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         user_fixture(%{
           first_name: "Admin",
           last_name: "User",
-          email: "admin_it@example.com"
+          email: "admin_it@example.com",
+          user_type: :employer
         })
 
       company = company_fixture(admin_user)
@@ -339,7 +338,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           first_name: "Klaus",
           last_name: "Weber",
           email: "klaus@example.com",
-          locale: :de
+          locale: :de,
+          user_type: :employer
         })
 
       company = company_fixture(german_admin)
@@ -375,7 +375,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           first_name: "Sarah",
           last_name: "Johnson",
           email: "sarah@example.com",
-          locale: :en
+          locale: :en,
+          user_type: :employer
         })
 
       company = company_fixture(english_admin)

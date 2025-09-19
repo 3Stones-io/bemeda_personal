@@ -14,6 +14,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
   setup :verify_on_exit!
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Documents.MockProcessor
   alias BemedaPersonal.Documents.MockStorage
@@ -38,7 +39,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       user = user_fixture()
 
       company =
-        company_fixture(user_fixture(%{email: "company@example.com", user_type: :employer}))
+        company_fixture(employer_user_fixture(%{email: "company@example.com"}))
 
       job =
         job_posting_fixture(company, @create_attrs)
@@ -187,7 +188,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       assert html =~ job_application.cover_letter
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 2
     end
 
@@ -220,7 +222,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ ~s(<video controls)
       assert html =~ "Application with video"
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 2
     end
 
@@ -240,7 +243,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       |> form("#chat-form", %{message: %{content: message_content}})
       |> render_submit()
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 3
 
       assert_enqueued(
@@ -273,7 +277,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       |> form("#chat-form", %{message: %{content: " "}})
       |> render_submit()
 
-      [_job_application, _resume | messages] = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      [_job_application, _resume | messages] = Chat.list_messages(scope, job_application)
       assert Enum.empty?(messages)
     end
 
@@ -321,7 +326,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       updated_html = render(view)
       assert updated_html =~ "hero-arrow-up-on-square"
 
-      [_job_application, _resume, uploaded_message] = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      [_job_application, _resume, uploaded_message] = Chat.list_messages(scope, job_application)
 
       assert uploaded_message
       assert uploaded_message.media_asset.file_name == "test-video.mp4"
@@ -334,7 +340,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{message_id: uploaded_message.id, status: "uploaded"}
       )
 
-      updated_message = Chat.get_message!(uploaded_message.id)
+      updated_scope = Scope.for_user(job_application.user)
+      updated_message = Chat.get_message!(updated_scope, uploaded_message.id)
 
       assert updated_message.media_asset.status == :uploaded
     end
@@ -355,7 +362,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{filename: "document.pdf", type: "application/pdf"}
       )
 
-      [_job_application, _resume, pdf_message] = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      [_job_application, _resume, pdf_message] = Chat.list_messages(scope, job_application)
 
       assert pdf_message.media_asset.file_name == "document.pdf"
       assert pdf_message.media_asset.type == "application/pdf"
@@ -367,7 +375,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{message_id: pdf_message.id, status: "uploaded"}
       )
 
-      updated_pdf_message = Chat.get_message!(pdf_message.id)
+      updated_pdf_message = Chat.get_message!(scope, pdf_message.id)
       assert updated_pdf_message.media_asset.status == :uploaded
 
       pdf_html = render(view)
@@ -385,7 +393,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       )
 
       [_job_application, _resume, _pdf_message, image_message] =
-        Chat.list_messages(job_application)
+        Chat.list_messages(scope, job_application)
 
       assert image_message
       assert image_message.media_asset.file_name == "profile.jpg"
@@ -398,7 +406,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         %{message_id: image_message.id, status: "uploaded"}
       )
 
-      updated_image_message = Chat.get_message!(image_message.id)
+      updated_image_message = Chat.get_message!(scope, image_message.id)
       assert updated_image_message.media_asset.status == :uploaded
 
       image_html = render(view)
@@ -424,8 +432,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       # Create a contract message with PDF
       upload_id = Ecto.UUID.generate()
 
+      admin_scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, contract_message} =
         Chat.create_message_with_media(
+          admin_scope,
           company.admin_user,
           job_application_with_offer,
           %{
@@ -441,7 +455,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Create job offer with extended status and link to contract message
       {:ok, _job_offer} =
-        JobOffers.create_job_offer(contract_message, %{
+        JobOffers.create_job_offer(admin_scope, contract_message, %{
           job_application_id: job_application_with_offer.id,
           status: :extended,
           variables: JobOffers.auto_populate_variables(job_application_with_offer)
@@ -471,7 +485,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       user = user_fixture()
 
       company =
-        company_fixture(user_fixture(%{email: "company@example.com", user_type: :employer}))
+        company_fixture(employer_user_fixture(%{email: "company@example.com"}))
 
       job = job_posting_fixture(company)
       job_application = job_application_fixture(user, job)
@@ -479,8 +493,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       conn = log_in_user(conn, user)
 
+      user_scope = Scope.for_user(user)
+
       {:ok, message} =
-        Chat.create_message_with_media(user, job_application, %{
+        Chat.create_message_with_media(user_scope, user, job_application, %{
           "content" => "Template Document",
           "media_data" => %{
             "file_name" => "template.docx",
@@ -766,7 +782,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       html2 = render(view)
       assert html2 =~ "Withdraw Application"
-      job = JobApplications.get_job_application!(job_application.id)
+      job = JobApplications.get_job_application_by_id!(job_application.id)
       assert job.state == "applied"
     end
 
@@ -791,7 +807,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   describe "offer extension" do
     setup %{conn: conn} do
       candidate = user_fixture()
-      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      employer = employer_user_fixture(%{email: "employer@example.com"})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
       job_application = job_application_fixture(candidate, job)
@@ -879,7 +895,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
     test "employer can successfully extend offer through details modal", %{
       conn: conn,
       employer: employer,
-      job_application: job_application
+      job_application: job_application,
+      company: company
     } do
       conn = log_in_user(conn, employer)
 
@@ -904,10 +921,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       })
       |> render_submit()
 
-      updated_job_application = JobApplications.get_job_application!(job_application.id)
+      updated_job_application = JobApplications.get_job_application_by_id!(job_application.id)
       assert updated_job_application.state == "offer_extended"
 
-      job_offer = JobOffers.get_job_offer_by_application(job_application.id)
+      employer_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      job_offer = JobOffers.get_job_offer_by_application(employer_scope, job_application.id)
       assert job_offer != nil
       assert job_offer.variables["Start_Date"] == "2025-07-01"
       assert job_offer.variables["Gross_Salary"] == "5000 CHF"
@@ -926,9 +948,15 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
     test "shows error message when offer already exists", %{
       conn: conn,
       employer: employer,
-      job_application: job_application
+      job_application: job_application,
+      company: company
     } do
-      JobOffers.create_job_offer(%{
+      employer_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      JobOffers.create_job_offer(employer_scope, %{
         job_application_id: job_application.id,
         status: :pending,
         variables: %{}
@@ -1037,8 +1065,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       employer: employer,
       job_application: job_application
     } do
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(job_application.job_posting.company)
+
       {:ok, updated_job_posting} =
-        BemedaPersonal.JobPostings.update_job_posting(job_application.job_posting, %{
+        BemedaPersonal.JobPostings.update_job_posting(scope, job_application.job_posting, %{
           department: [:Administration, :"Home Care (Spitex)"]
         })
 
@@ -1138,7 +1171,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       candidate: candidate,
       employer: employer,
-      job_application: job_application
+      job_application: job_application,
+      company: company
     } do
       {:ok, offer_extended_application} =
         JobApplications.update_job_application_status(
@@ -1150,8 +1184,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       # Create a contract message with PDF to enable Accept Offer button
       upload_id = Ecto.UUID.generate()
 
+      employer_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, contract_message} =
         Chat.create_message_with_media(
+          employer_scope,
           employer,
           offer_extended_application,
           %{
@@ -1167,7 +1207,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Create job offer with extended status and link to contract message
       {:ok, _job_offer} =
-        JobOffers.create_job_offer(contract_message, %{
+        JobOffers.create_job_offer(employer_scope, contract_message, %{
           job_application_id: offer_extended_application.id,
           status: :extended,
           variables: JobOffers.auto_populate_variables(offer_extended_application)
@@ -1257,7 +1297,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
            conn: conn,
            candidate: candidate,
            employer: employer,
-           job_application: job_application
+           job_application: job_application,
+           company: company
          } do
       # Extend offer but don't create contract yet
       {:ok, offer_extended_application} =
@@ -1268,8 +1309,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       # Create job offer in pending status (contract not ready)
+      employer_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, _job_offer} =
-        JobOffers.create_job_offer(%{
+        JobOffers.create_job_offer(employer_scope, %{
           job_application_id: offer_extended_application.id,
           status: :pending,
           variables: JobOffers.auto_populate_variables(offer_extended_application)
@@ -1293,7 +1339,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       conn: conn,
       candidate: candidate,
       employer: employer,
-      job_application: job_application
+      job_application: job_application,
+      company: company
     } do
       # Extend offer
       {:ok, offer_extended_application} =
@@ -1304,8 +1351,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       # First create job offer in pending status
+      employer_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, job_offer} =
-        JobOffers.create_job_offer(%{
+        JobOffers.create_job_offer(employer_scope, %{
           job_application_id: offer_extended_application.id,
           status: :pending,
           variables: JobOffers.auto_populate_variables(offer_extended_application)
@@ -1327,8 +1379,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       # Now create contract message and update job offer to extended status
       upload_id = Ecto.UUID.generate()
 
+      employer_contract_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, contract_message} =
         Chat.create_message_with_media(
+          employer_contract_scope,
           employer,
           offer_extended_application,
           %{
@@ -1344,7 +1402,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Update job offer with extended status and link to contract message
       {:ok, updated_job_offer} =
-        JobOffers.update_job_offer(job_offer, contract_message, %{
+        JobOffers.update_job_offer(employer_contract_scope, job_offer, contract_message, %{
           status: :extended
         })
 
@@ -1403,7 +1461,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   describe "job offer updates" do
     setup %{conn: conn} do
       candidate = user_fixture()
-      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      employer = employer_user_fixture(%{email: "employer@example.com"})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
 
@@ -1412,8 +1470,13 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         |> job_application_fixture(job)
         |> Repo.preload(job_posting: [company: :admin_user])
 
+      employer_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       job_offer =
-        JobOffers.create_job_offer(%{
+        JobOffers.create_job_offer(employer_scope, %{
           job_application_id: job_application.id,
           status: :pending,
           variables: %{
@@ -1439,7 +1502,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       candidate: candidate,
       employer: employer,
       job_application: job_application,
-      job_offer: job_offer
+      job_offer: job_offer,
+      company: company
     } do
       {:ok, updated_job_application} =
         JobApplications.update_job_application_status(
@@ -1472,8 +1536,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       upload_id = Ecto.UUID.generate()
 
+      employer_scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, contract_message} =
         Chat.create_message_with_media(
+          employer_scope,
           employer,
           updated_job_application,
           %{
@@ -1539,7 +1609,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   describe "authorization" do
     test "employer can access job application they own" do
       # Create employer and their company
-      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      employer = employer_user_fixture(%{email: "employer@example.com"})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
 
@@ -1564,7 +1634,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_seeker = user_fixture(%{email: "jobseeker@example.com", user_type: :job_seeker})
 
       # Create employer and their company
-      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      employer = employer_user_fixture(%{email: "employer@example.com"})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
 
@@ -1585,11 +1655,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
     test "employer cannot access job application from different company" do
       # Create first employer and their company
-      employer1 = user_fixture(%{email: "employer1@example.com", user_type: :employer})
+      employer1 = employer_user_fixture(%{email: "employer1@example.com"})
       _company1 = company_fixture(employer1)
 
       # Create second employer and their company
-      employer2 = user_fixture(%{email: "employer2@example.com", user_type: :employer})
+      employer2 = employer_user_fixture(%{email: "employer2@example.com"})
       company2 = company_fixture(employer2)
       job = job_posting_fixture(company2, @create_attrs)
 
@@ -1617,7 +1687,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       job_seeker2 = user_fixture(%{email: "jobseeker2@example.com", user_type: :job_seeker})
 
       # Create employer and their company
-      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      employer = employer_user_fixture(%{email: "employer@example.com"})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
 
@@ -1638,7 +1708,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
     test "employer can send messages in job application chat" do
       # Create employer and their company
-      employer = user_fixture(%{email: "employer@example.com", user_type: :employer})
+      employer = employer_user_fixture(%{email: "employer@example.com"})
       company = company_fixture(employer)
       job = job_posting_fixture(company, @create_attrs)
 
@@ -1660,7 +1730,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       |> form("#chat-form", %{message: %{content: message_content}})
       |> render_submit()
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
 
       new_message =
         Enum.find(messages, fn
@@ -1719,7 +1790,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       |> form("#chat-form", %{message: %{content: message_content}})
       |> render_submit()
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
 
       actual_messages =
         Enum.filter(messages, fn item ->
@@ -1779,8 +1851,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
     } do
       upload_id = Ecto.UUID.generate()
 
+      admin_scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, _pdf_message} =
         Chat.create_message_with_media(
+          admin_scope,
           company.admin_user,
           job_application,
           %{
@@ -1815,8 +1893,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
     } do
       upload_id = Ecto.UUID.generate()
 
+      admin_scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, _pdf_message} =
         Chat.create_message_with_media(
+          admin_scope,
           company.admin_user,
           job_application,
           %{
@@ -1849,8 +1933,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
     } do
       invalid_upload_id = Ecto.UUID.generate()
 
+      admin_scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
       {:ok, _pdf_message} =
         Chat.create_message_with_media(
+          admin_scope,
           company.admin_user,
           job_application,
           %{
@@ -1903,7 +1993,14 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         Repo.preload(job_application, job_posting: [company: :admin_user])
 
       admin_user = job_application_preloaded.job_posting.company.admin_user
-      {:ok, message} = Chat.create_message(admin_user, updated_application, %{})
+      company = job_application_preloaded.job_posting.company
+
+      admin_scope =
+        admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, message} = Chat.create_message(admin_scope, admin_user, updated_application, %{})
 
       # Create media asset for contract
       media_asset =
@@ -1915,7 +2012,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         })
 
       # Update job offer with message
-      {:ok, updated_job_offer} = JobOffers.update_job_offer(job_offer, message, %{})
+      {:ok, updated_job_offer} = JobOffers.update_job_offer(admin_scope, job_offer, message, %{})
 
       Map.merge(data, %{
         job_application: updated_application,
@@ -2068,7 +2165,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       end)
 
       # Get initial message count
-      initial_messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      initial_messages = Chat.list_messages(scope, job_application)
       initial_count = length(initial_messages)
 
       {:ok, view, _html} =
@@ -2089,7 +2187,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       :timer.sleep(100)
 
       # Verify signed document message was created
-      final_messages = Chat.list_messages(job_application)
+      final_messages = Chat.list_messages(scope, job_application)
       final_count = length(final_messages)
 
       # Should have two additional messages: status update + signed document

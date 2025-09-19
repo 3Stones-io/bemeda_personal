@@ -3,9 +3,13 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
 
   use BemedaPersonalWeb, :live_component
 
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Companies
   alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.SharedHelpers
+
+  attr :current_user, :map, required: true
 
   @impl Phoenix.LiveComponent
   def render(assigns) do
@@ -403,7 +407,9 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
         job_posting_params
       end
 
-    case JobPostings.update_job_posting(socket.assigns.job_posting, job_posting_params) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
+    case JobPostings.update_job_posting(scope, socket.assigns.job_posting, job_posting_params) do
       {:ok, _job_posting} ->
         {:noreply,
          socket
@@ -423,7 +429,9 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
         job_posting_params
       end
 
-    case JobPostings.create_job_posting(socket.assigns.company, final_params) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
+    case JobPostings.create_job_posting(scope, final_params) do
       {:ok, _job_posting} ->
         {:noreply,
          socket
@@ -456,4 +464,17 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
 
   defp translate_enum_value(:years_of_experience, value),
     do: I18n.translate_years_of_experience(value)
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
+  end
 end

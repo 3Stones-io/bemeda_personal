@@ -1,6 +1,8 @@
 defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.Components.Job.JobsComponents
@@ -31,12 +33,19 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.Show do
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
-    company = Companies.get_company!(id)
-    job_postings = JobPostings.list_job_postings(%{company_id: company.id}, 10)
+    # For public view, create a temporary job seeker scope to access companies and job postings
+    public_scope = %Scope{user: %User{user_type: :job_seeker}}
+    company = Companies.get_company!(public_scope, id)
+
+    job_postings =
+      public_scope
+      |> JobPostings.list_job_postings()
+      |> Enum.filter(&(&1.company_id == company.id))
+      |> Enum.take(10)
 
     socket
     |> assign(:company, company)
-    |> assign(:job_count, JobPostings.company_jobs_count(company.id))
+    |> assign(:job_count, JobPostings.company_jobs_count(public_scope, company.id))
     |> assign(:page_title, company.name)
     |> stream(:job_postings, job_postings)
   end

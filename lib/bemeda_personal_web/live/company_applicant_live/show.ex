@@ -13,7 +13,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Show do
   @impl Phoenix.LiveView
   def handle_params(%{"id" => applicant_id}, _url, socket) do
     company = socket.assigns.company
-    application = JobApplications.get_job_application!(applicant_id)
+    scope = socket.assigns.current_scope
+    application = JobApplications.get_job_application!(scope, applicant_id)
     job_posting = application.job_posting
     resume = Resumes.get_user_resume(application.user)
     full_name = "#{application.user.first_name} #{application.user.last_name}"

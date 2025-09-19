@@ -1,12 +1,21 @@
 defmodule BemedaPersonalWeb.JobLive.Show do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Components.Job.JobsComponents
   alias BemedaPersonalWeb.Components.JobApplication.ApplicationWarning
   alias BemedaPersonalWeb.Components.JobApplication.FormComponent
   alias BemedaPersonalWeb.SharedHelpers
+
+  @impl Phoenix.LiveView
+  def mount(_params, _session, socket) do
+    # Create scope for current user (can be nil for public viewing)
+    current_user = socket.assigns[:current_user]
+    scope = Scope.for_user(current_user)
+    {:ok, assign(socket, :scope, scope)}
+  end
 
   @impl Phoenix.LiveView
   def handle_params(params, _url, socket) do

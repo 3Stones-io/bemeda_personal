@@ -3,6 +3,8 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
 
   use BemedaPersonalWeb, :live_component
 
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Companies
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Repo
@@ -71,6 +73,19 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
       </.simple_form>
     </div>
     """
+  end
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
   end
 
   defp auto_populated_info_section(assigns) do
@@ -271,7 +286,9 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
   end
 
   defp get_job_offer(job_application, socket) do
-    case JobOffers.get_job_offer_by_application(job_application.id) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
+    case JobOffers.get_job_offer_by_application(scope, job_application.id) do
       %JobOffers.JobOffer{} ->
         {:error,
          socket
@@ -320,6 +337,8 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
   end
 
   defp create_offer_transaction(job_application, final_variables, current_user) do
+    scope = create_scope_for_user(current_user)
+
     Multi.new()
     |> Multi.run(:update_status, fn _repo, _changes ->
       JobApplications.update_job_application_status(
@@ -329,7 +348,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
       )
     end)
     |> Multi.run(:create_offer, fn _repo, _changes ->
-      JobOffers.create_job_offer(%{
+      JobOffers.create_job_offer(scope, %{
         job_application_id: job_application.id,
         status: :pending,
         variables: final_variables

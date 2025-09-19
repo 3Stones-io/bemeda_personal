@@ -1,6 +1,8 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Companies
   alias BemedaPersonal.JobPostings
   alias BemedaPersonal.JobPostings.FilterUtils
   alias BemedaPersonal.JobPostings.JobFilter
@@ -52,20 +54,24 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("delete-job-posting", %{"id" => id}, socket) do
-    job_posting = JobPostings.get_job_posting!(id)
+    scope = create_scope_for_user(socket.assigns.current_user)
+    job_posting = JobPostings.get_job_posting!(scope, id)
 
-    # Verify the job posting belongs to this company
-    if job_posting.company_id == socket.assigns.company.id do
-      {:ok, _deleted} = JobPostings.delete_job_posting(job_posting)
+    # Use scoped delete function which handles authorization internally
+    case JobPostings.delete_job_posting(scope, job_posting) do
+      {:ok, _deleted} ->
+        {:noreply, put_flash(socket, :info, dgettext("jobs", "Job posting deleted successfully"))}
 
-      {:noreply, put_flash(socket, :info, dgettext("jobs", "Job posting deleted successfully"))}
-    else
-      {:noreply,
-       put_flash(
-         socket,
-         :error,
-         dgettext("jobs", "You are not authorized to delete this job posting")
-       )}
+      {:error, :unauthorized} ->
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "You are not authorized to delete this job posting")
+         )}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, dgettext("jobs", "Error deleting job posting"))}
     end
   end
 
@@ -85,4 +91,17 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Index do
   end
 
   def handle_info(_event, socket), do: {:noreply, socket}
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
+  end
 end

@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -150,7 +150,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       |> element("#tags-input")
       |> render_hook("update_tags", %{tags: "qualified,urgent"})
 
-      job_application = JobApplications.get_job_application!(application.id)
+      job_application = JobApplications.get_job_application_by_id!(application.id)
       assert "qualified" in Enum.map(job_application.tags, & &1.name)
       assert "urgent" in Enum.map(job_application.tags, & &1.name)
     end
@@ -209,7 +209,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn: conn,
       job_application: application
     } do
-      other_company = company_fixture(user_fixture(confirmed: true))
+      other_company = company_fixture(employer_user_fixture(confirmed: true))
 
       rating1 =
         rating_fixture(%{
@@ -393,7 +393,7 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
       conn: conn,
       job_application: application
     } do
-      other_company = company_fixture(user_fixture(confirmed: true))
+      other_company = company_fixture(employer_user_fixture(confirmed: true))
 
       rating_fixture(%{
         comment: "Average candidate",

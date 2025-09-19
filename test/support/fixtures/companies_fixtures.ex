@@ -4,6 +4,7 @@ defmodule BemedaPersonal.CompaniesFixtures do
   entities via the `BemedaPersonal.Companies` context.
   """
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
 
@@ -12,7 +13,9 @@ defmodule BemedaPersonal.CompaniesFixtures do
   @type user :: User.t()
 
   @spec company_fixture(user(), attrs()) :: company()
-  def company_fixture(%User{} = user, attrs \\ %{}) do
+  def company_fixture(user, attrs \\ %{})
+
+  def company_fixture(%User{user_type: :employer} = user, attrs) do
     company_attrs =
       Enum.into(attrs, %{
         description: "some description",
@@ -24,8 +27,14 @@ defmodule BemedaPersonal.CompaniesFixtures do
         website_url: "https://example.com"
       })
 
-    {:ok, company} = Companies.create_company(user, company_attrs)
+    scope = Scope.for_user(user)
+    {:ok, company} = Companies.create_company(scope, company_attrs)
 
     company
+  end
+
+  def company_fixture(%User{user_type: user_type}, _attrs) when user_type != :employer do
+    raise ArgumentError,
+          "company_fixture requires an employer user, got user_type: #{inspect(user_type)}. Use employer_user_fixture() instead."
   end
 end

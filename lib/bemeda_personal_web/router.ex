@@ -15,6 +15,7 @@ defmodule BemedaPersonalWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :fetch_current_scope
     plug Locale
   end
 
@@ -74,6 +75,10 @@ defmodule BemedaPersonalWeb.Router do
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
+
+      # Magic link routes
+      live "/magic-link", UserMagicLinkLive, :request
+      live "/magic-link/verify/:token", UserMagicLinkLive, :verify
     end
 
     post "/users/log_in", UserSessionController, :create
@@ -153,6 +158,7 @@ defmodule BemedaPersonalWeb.Router do
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
             {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+            {BemedaPersonalWeb.UserAuth, :mount_current_scope},
             {BemedaPersonalWeb.UserAuth, :require_employer_user_type},
             {BemedaPersonalWeb.UserAuth, :require_user_company},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
@@ -184,6 +190,7 @@ defmodule BemedaPersonalWeb.Router do
               do: {BemedaPersonalWeb.LiveAcceptance, :default}
             ),
             {BemedaPersonalWeb.UserAuth, :ensure_authenticated},
+            {BemedaPersonalWeb.UserAuth, :mount_current_scope},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1
@@ -191,11 +198,16 @@ defmodule BemedaPersonalWeb.Router do
       live "/users/settings", UserSettingsLive.Index, :index
       live "/users/settings/info", UserSettingsLive.Info, :view
       live "/users/settings/password", UserSettingsLive.Password, :edit
+      live "/users/settings/authentication", UserSettingsLive.Authentication, :index
       live "/users/settings/confirm_email/:token", UserSettingsLive.Info, :confirm_email
       live "/notifications", NotificationLive.Index, :index
       live "/notifications/:id", NotificationLive.Show, :show
       live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
       live "/jobs/:job_id/job_applications/:id/history", JobApplicationLive.History, :show
+
+      # Sudo mode route
+      live "/sudo", UserSudoLive, :index
+      live "/sudo/verify/:token", UserSudoLive, :verify
     end
   end
 
@@ -277,4 +289,6 @@ defmodule BemedaPersonalWeb.Router do
 
     live_storybook("/storybook", backend_module: BemedaPersonalWeb.Storybook)
   end
+
+  # Private functions
 end

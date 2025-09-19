@@ -1,13 +1,17 @@
 defmodule BemedaPersonalWeb.CompanyPublicLive.Jobs do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
   alias BemedaPersonalWeb.Components.Job.JobListComponent
   alias BemedaPersonalWeb.Components.Job.JobsComponents
 
   @impl Phoenix.LiveView
   def mount(%{"id" => id}, _session, socket) do
-    company = Companies.get_company!(id)
+    # For public view, create a temporary job seeker scope to access companies
+    public_scope = %Scope{user: %User{user_type: :job_seeker}}
+    company = Companies.get_company!(public_scope, id)
 
     {:ok, assign(socket, :company, company)}
   end

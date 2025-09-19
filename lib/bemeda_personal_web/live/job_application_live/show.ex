@@ -1,7 +1,9 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.Companies
   alias BemedaPersonal.DigitalSignatures
   alias BemedaPersonal.Documents.Storage
   alias BemedaPersonal.JobApplications
@@ -45,7 +47,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   def handle_event("send-message", %{"message" => message_params}, socket) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
     case Chat.create_message(
+           scope,
            socket.assigns.current_user,
            socket.assigns.job_application,
            message_params
@@ -69,8 +74,11 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   def handle_event("upload-media", %{"filename" => filename, "type" => type}, socket) do
     upload_id = Ecto.UUID.generate()
 
+    scope = create_scope_for_user(socket.assigns.current_user)
+
     {:ok, message} =
       Chat.create_message_with_media(
+        scope,
         socket.assigns.current_user,
         socket.assigns.job_application,
         %{
@@ -172,7 +180,9 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   def handle_event("show-status-transition-modal", %{"to_state" => "offer_extended"}, socket) do
     job_application = socket.assigns.job_application
 
-    case JobOffers.get_job_offer_by_application(job_application.id) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
+    case JobOffers.get_job_offer_by_application(scope, job_application.id) do
       nil ->
         {:noreply,
          socket
@@ -403,7 +413,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   defp apply_action(socket, :show, %{"id" => job_application_id}) do
-    job_application = JobApplications.get_job_application!(job_application_id)
+    # Use system scope to fetch job application first, then check authorization
+    job_application = JobApplications.get_job_application_by_id!(job_application_id)
 
     case Authorization.authorize_job_application_access(socket, job_application) do
       :ok ->
@@ -424,7 +435,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     available_statuses =
       SharedHelpers.get_available_statuses(
         socket.assigns.current_user,
-        job_application
+        job_application,
+        socket.assigns.current_scope
       )
 
     assign(socket, :available_statuses, available_statuses)
@@ -492,10 +504,26 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
       job_offer.message.media_asset
   end
 
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
+  end
+
   defp setup_job_application_view(socket, job_application, job_application_id) do
-    messages = Chat.list_messages(job_application)
+    user = socket.assigns.current_user
+    scope = create_scope_for_user(user)
+
+    messages = Chat.list_messages(scope, job_application)
     changeset = Chat.change_message(%Chat.Message{})
-    job_offer = JobOffers.get_job_offer_by_application(job_application_id)
+    job_offer = JobOffers.get_job_offer_by_application(scope, job_application_id)
     job_posting = job_application.job_posting
 
     if connected?(socket) do

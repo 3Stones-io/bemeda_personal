@@ -1,12 +1,15 @@
+import Ecto.Query
+
 alias BemedaPersonal.Accounts.User
 alias BemedaPersonal.Accounts
 alias BemedaPersonal.Companies
 alias BemedaPersonal.JobApplications
 alias BemedaPersonal.JobPostings
+alias BemedaPersonal.JobPostings.JobPosting
 alias BemedaPersonal.Repo
 
 get_or_create_user = fn email, attrs ->
-  case Accounts.get_user_by_email(email) do
+  case Accounts.get_user_by_email(nil, email) do
     nil ->
       case Accounts.register_user(attrs) do
         {:ok, user} ->
@@ -20,7 +23,7 @@ get_or_create_user = fn email, attrs ->
         {:error, changeset} ->
           IO.puts("Failed to register user #{email}: #{inspect(changeset.errors)}")
           # If registration fails, try to get the user again (race condition)
-          Accounts.get_user_by_email(email)
+          Accounts.get_user_by_email(nil, email)
       end
 
     user ->
@@ -336,8 +339,10 @@ update_job_inserted_at = fn job, seconds_offset ->
   updated_job
 end
 
-existing_tech_jobs = JobPostings.list_job_postings(%{company_id: company1.id}, 1)
-existing_health_jobs = JobPostings.list_job_postings(%{company_id: company2.id}, 1)
+existing_tech_jobs = Repo.all(from j in JobPosting, where: j.company_id == ^company1.id, limit: 1)
+
+existing_health_jobs =
+  Repo.all(from j in JobPosting, where: j.company_id == ^company2.id, limit: 1)
 
 if Enum.empty?(existing_tech_jobs) do
   Enum.with_index(all_tech_jobs)
@@ -365,8 +370,19 @@ else
 end
 
 create_job_applications = fn ->
-  tech_jobs_list = JobPostings.list_job_postings(%{company_id: company1.id}, 1)
-  health_jobs_list = JobPostings.list_job_postings(%{company_id: company2.id}, 1)
+  tech_jobs_list =
+    Repo.all(
+      from j in JobPosting,
+        where: j.company_id == ^company1.id,
+        preload: [:media_asset, company: :media_asset]
+    )
+
+  health_jobs_list =
+    Repo.all(
+      from j in JobPosting,
+        where: j.company_id == ^company2.id,
+        preload: [:media_asset, company: :media_asset]
+    )
 
   existing_applications = JobApplications.list_job_applications(%{user_id: job_seeker.id})
 

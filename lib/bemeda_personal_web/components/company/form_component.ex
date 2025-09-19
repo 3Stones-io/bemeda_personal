@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
 
   import BemedaPersonalWeb.Components.Shared.FormSection
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.SharedHelpers
@@ -225,7 +226,9 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
   end
 
   defp save_company(socket, :edit, company_params) do
-    case Companies.update_company(socket.assigns.company, company_params) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
+    case Companies.update_company(scope, socket.assigns.company, company_params) do
       {:ok, _company} ->
         {:noreply,
          socket
@@ -245,6 +248,19 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
     case company.media_asset do
       %Media.MediaAsset{} = _asset -> true
       _other -> false
+    end
+  end
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
     end
   end
 end

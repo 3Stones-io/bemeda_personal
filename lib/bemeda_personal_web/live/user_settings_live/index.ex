@@ -29,6 +29,13 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Index do
             navigate={~p"/users/settings/password"}
             icon="/images/icons/icon-key.svg"
             label={dgettext("auth", "Change Password")}
+            class="border-b border-gray-100"
+          />
+
+          <.nav_item
+            navigate={~p"/users/settings/authentication"}
+            icon="/images/icons/icon-shield.svg"
+            label="Authentication Settings"
           />
         </div>
       </section>

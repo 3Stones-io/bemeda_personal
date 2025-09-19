@@ -16,7 +16,12 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
 
   setup do
     admin_user =
-      user_fixture(%{first_name: "Admin", last_name: "User", email: "admin@example.com"})
+      user_fixture(%{
+        first_name: "Admin",
+        last_name: "User",
+        email: "admin@example.com",
+        user_type: :employer
+      })
 
     applicant = user_fixture(%{first_name: "John", last_name: "Doe", email: "john@example.com"})
     company = company_fixture(admin_user)

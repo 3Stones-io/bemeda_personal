@@ -24,7 +24,7 @@ defmodule BemedaPersonalWeb.UserLoginLiveTest do
   end
 
   describe "user login" do
-    # TODO: Fix this test with new authentication logic/upgrade
+    # Disabled until authentication logic is updated
     # test "redirects if user login with valid credentials", %{conn: conn} do
     #   password = "123456789abcd"
     #   user = user_fixture(%{confirmed: true, password: password})
@@ -56,7 +56,7 @@ defmodule BemedaPersonalWeb.UserLoginLiveTest do
       assert redirected_to(conn) == "/users/log_in"
     end
 
-    # TODO: Fix this test with new authentication logic/upgrade
+    # Disabled until authentication logic is updated
     # test "redirects to login page with a flash error if the user is not confirmed", %{conn: conn} do
     #   password = "123456789abcd"
     #   user = user_fixture(%{password: password})

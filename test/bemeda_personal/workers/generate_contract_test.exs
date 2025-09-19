@@ -10,6 +10,7 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
   import ExUnit.CaptureLog
   import Mox
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.CompanyTemplates
   alias BemedaPersonal.CompanyTemplates.CompanyTemplate
   alias BemedaPersonal.Documents.MockProcessor
@@ -55,7 +56,7 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
       pdf_path: pdf_path
     } do
       user = user_fixture()
-      company = company_fixture(user_fixture())
+      company = company_fixture(employer_user_fixture())
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
 
@@ -105,7 +106,12 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
 
       assert :ok = perform_job(GenerateContract, %{job_offer_id: job_offer.id})
 
-      updated_offer = JobOffers.get_job_offer_by_application(job_application.id)
+      admin_scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      updated_offer = JobOffers.get_job_offer_by_application(admin_scope, job_application.id)
       assert updated_offer.status == :extended
       assert updated_offer.message
       assert updated_offer.message.media_asset
@@ -131,7 +137,7 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
 
     test "handles PDF generation failure gracefully" do
       user = user_fixture()
-      company = company_fixture(user_fixture())
+      company = company_fixture(employer_user_fixture())
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
 
@@ -154,7 +160,12 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
                         perform_job(GenerateContract, %{job_offer_id: job_offer.id})
              end)
 
-      updated_offer = JobOffers.get_job_offer_by_application(job_application.id)
+      admin_scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      updated_offer = JobOffers.get_job_offer_by_application(admin_scope, job_application.id)
       assert updated_offer.status == :pending
       refute updated_offer.message
     end
@@ -184,7 +195,7 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
       pdf_path: pdf_path
     } do
       user = user_fixture()
-      company = company_fixture(user_fixture())
+      company = company_fixture(employer_user_fixture())
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
 
@@ -246,7 +257,12 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
 
       assert :ok = perform_job(GenerateContract, %{job_offer_id: job_offer.id})
 
-      updated_offer = JobOffers.get_job_offer_by_application(job_application.id)
+      admin_scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      updated_offer = JobOffers.get_job_offer_by_application(admin_scope, job_application.id)
       assert updated_offer.status == :extended
     end
 
@@ -276,7 +292,7 @@ defmodule BemedaPersonal.Workers.GenerateContractTest do
 
   defp create_test_job_offer(attrs \\ %{}) do
     user = user_fixture()
-    company = company_fixture(user_fixture())
+    company = company_fixture(employer_user_fixture())
     job_posting = job_posting_fixture(company)
     job_application = job_application_fixture(user, job_posting)
 

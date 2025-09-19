@@ -4,7 +4,6 @@ defmodule BemedaPersonal.JobApplicationsFixtures do
   entities via the `BemedaPersonal.JobPostings` and `BemedaPersonal.JobApplications` contexts.
   """
 
-  import BemedaPersonal.TestUtils
   import Ecto.Query, only: [from: 2]
 
   alias BemedaPersonal.Accounts.User
@@ -19,6 +18,15 @@ defmodule BemedaPersonal.JobApplicationsFixtures do
   @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
   @type user :: User.t()
+
+  @spec stringify_keys(map() | any()) :: map()
+  defp stringify_keys(map) when is_map(map) do
+    map
+    |> Enum.map(fn {k, v} -> {to_string(k), v} end)
+    |> Enum.into(%{})
+  end
+
+  defp stringify_keys(value), do: value
 
   @spec job_application_fixture(user(), job_posting(), attrs()) :: job_application()
   def job_application_fixture(%User{} = user, %JobPosting{} = job_posting, attrs \\ %{}) do

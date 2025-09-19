@@ -1,5 +1,6 @@
 defmodule BemedaPersonalWeb.PageControllerTest do
   use BemedaPersonalWeb.ConnCase, async: true
+
   import BemedaPersonal.AccountsFixtures
 
   test "GET / when not logged in shows appropriate content and navigation", %{conn: conn} do
@@ -17,6 +18,9 @@ defmodule BemedaPersonalWeb.PageControllerTest do
     refute response =~ "My Applications"
     refute response =~ "Resume"
     refute response =~ "Log out"
+
+    # Verify scope is nil for unauthenticated users
+    assert conn.assigns.current_scope == nil
   end
 
   test "GET / when logged in as job seeker redirects to jobs", %{conn: conn} do
@@ -28,6 +32,9 @@ defmodule BemedaPersonalWeb.PageControllerTest do
       |> get(~p"/")
 
     assert redirected_to(conn) == ~p"/jobs"
+
+    # Verify scope is set for authenticated user
+    assert conn.assigns.current_scope.user.id == user.id
   end
 
   test "GET / when logged in as employer redirects to company", %{conn: conn} do
@@ -39,6 +46,9 @@ defmodule BemedaPersonalWeb.PageControllerTest do
       |> get(~p"/")
 
     assert redirected_to(conn) == ~p"/company"
+
+    # Verify scope is set for authenticated employer
+    assert conn.assigns.current_scope.user.id == user.id
   end
 
   test "navigation links lead to correct pages", %{conn: conn} do

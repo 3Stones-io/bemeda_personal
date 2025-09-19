@@ -85,7 +85,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
   # Real-time updates testing - PubSub implementation needed
   describe "visitor sees real-time updates" do
     test "visitor sees real-time job updates", %{conn: conn} do
-      employer = user_fixture(%{type: :employer})
+      employer = user_fixture(%{user_type: :employer})
       company = company_fixture(employer)
 
       conn

@@ -11,32 +11,38 @@ defmodule BemedaPersonal.ResumesTest do
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
 
-  describe "get_or_create_resume_by_user/1" do
-    test "returns existing resume" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+  describe "get_or_create_resume_by_user/1 with scope" do
+    setup do
+      scope = user_scope_fixture()
+      %{scope: scope}
+    end
 
-      assert %Resume{id: id} = Resumes.get_or_create_resume_by_user(user)
+    test "returns existing resume for scoped user", %{scope: scope} do
+      resume = resume_fixture(scope.user)
+
+      assert %Resume{id: id} = Resumes.get_or_create_resume_by_user(scope)
       assert id == resume.id
     end
 
-    test "creates resume if none exists" do
-      user = user_fixture()
-
-      assert %Resume{} = resume = Resumes.get_or_create_resume_by_user(user)
-      assert resume.user_id == user.id
+    test "creates resume if none exists for scoped user", %{scope: scope} do
+      assert %Resume{} = resume = Resumes.get_or_create_resume_by_user(scope)
+      assert resume.user_id == scope.user.id
     end
 
-    test "broadcasts resume update event" do
-      user = user_fixture()
+    test "refuses access with nil scope" do
+      assert_raise RuntimeError, fn ->
+        Resumes.get_or_create_resume_by_user(nil)
+      end
+    end
 
-      resume = Resumes.get_or_create_resume_by_user(user)
+    test "broadcasts resume update event", %{scope: scope} do
+      resume = Resumes.get_or_create_resume_by_user(scope)
 
       topic = "resume"
       Endpoint.subscribe(topic)
 
-      new_user = user_fixture()
-      new_resume = Resumes.get_or_create_resume_by_user(new_user)
+      new_scope = user_scope_fixture()
+      new_resume = Resumes.get_or_create_resume_by_user(new_scope)
 
       assert_receive %Broadcast{
         event: "resume_created",
@@ -44,7 +50,8 @@ defmodule BemedaPersonal.ResumesTest do
         payload: %{resume: ^new_resume}
       }
 
-      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+      {:ok, updated_resume} =
+        Resumes.update_resume(scope, resume, %{headline: "Updated Headline"})
 
       assert_receive %Broadcast{
         event: "resume_updated",
@@ -54,12 +61,15 @@ defmodule BemedaPersonal.ResumesTest do
     end
   end
 
-  describe "get_resume/1" do
-    test "returns the resume with given id" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+  describe "get_resume!/2 with scope" do
+    setup do
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope.user)
+      %{scope: scope, resume: resume}
+    end
 
-      fetched_resume = Resumes.get_resume(resume.id)
+    test "returns the resume with given id for authorized user", %{scope: scope, resume: resume} do
+      fetched_resume = Resumes.get_resume!(scope, resume.id)
       assert fetched_resume.id == resume.id
       assert fetched_resume.headline == resume.headline
 
@@ -68,41 +78,69 @@ defmodule BemedaPersonal.ResumesTest do
       assert Ecto.assoc_loaded?(fetched_resume.work_experiences)
     end
 
-    test "returns nil if resume doesn't exist" do
-      refute Resumes.get_resume(Ecto.UUID.generate())
+    test "raises for unauthorized access to other user's resume", %{scope: scope} do
+      other_user = user_fixture()
+      other_resume = resume_fixture(other_user)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Resumes.get_resume!(scope, other_resume.id)
+      end
+    end
+
+    test "raises if resume doesn't exist", %{scope: scope} do
+      assert_raise Ecto.NoResultsError, fn ->
+        Resumes.get_resume!(scope, Ecto.UUID.generate())
+      end
+    end
+
+    test "refuses access with nil scope" do
+      assert_raise RuntimeError, fn ->
+        Resumes.get_resume!(nil, Ecto.UUID.generate())
+      end
     end
   end
 
-  describe "update_resume/2" do
-    test "with valid data updates the resume" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+  describe "update_resume/3 with scope" do
+    setup do
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope.user)
+      %{scope: scope, resume: resume}
+    end
+
+    test "with valid data updates the resume for authorized user", %{scope: scope, resume: resume} do
       update_attrs = %{headline: "Updated Headline", summary: "Updated Summary"}
 
-      assert {:ok, %Resume{} = updated_resume} = Resumes.update_resume(resume, update_attrs)
+      assert {:ok, %Resume{} = updated_resume} =
+               Resumes.update_resume(scope, resume, update_attrs)
+
       assert updated_resume.headline == "Updated Headline"
       assert updated_resume.summary == "Updated Summary"
     end
 
-    test "with invalid data returns error changeset" do
-      user = user_fixture()
-      resume = resume_fixture(user)
+    test "refuses to update other user's resume", %{scope: scope} do
+      other_user = user_fixture()
+      other_resume = resume_fixture(other_user)
 
-      {:ok, _updated_resume} = Resumes.update_resume(resume, %{headline: "New Headline"})
-
-      fetched_resume = Resumes.get_resume(resume.id)
-      assert fetched_resume.id == resume.id
-      assert fetched_resume.headline == "New Headline"
+      assert_raise RuntimeError, fn ->
+        Resumes.update_resume(scope, other_resume, %{headline: "Hacked Headline"})
+      end
     end
 
-    test "broadcasts resume update event" do
+    test "refuses access with nil scope" do
       user = user_fixture()
       resume = resume_fixture(user)
 
+      assert_raise RuntimeError, fn ->
+        Resumes.update_resume(nil, resume, %{headline: "Should fail"})
+      end
+    end
+
+    test "broadcasts resume update event", %{scope: scope, resume: resume} do
       topic = "resume"
       Endpoint.subscribe(topic)
 
-      {:ok, updated_resume} = Resumes.update_resume(resume, %{headline: "Updated Headline"})
+      {:ok, updated_resume} =
+        Resumes.update_resume(scope, resume, %{headline: "Updated Headline"})
 
       assert_receive %Broadcast{
         event: "resume_updated",
@@ -129,17 +167,21 @@ defmodule BemedaPersonal.ResumesTest do
     end
   end
 
-  describe "list_educations/1" do
+  describe "list_educations/2 with scope" do
     setup do
-      user = user_fixture()
-      resume = resume_fixture(user)
+      scope = user_scope_fixture()
+      resume = resume_fixture(scope.user)
       education = education_fixture(resume)
 
-      %{user: user, resume: resume, education: education}
+      %{scope: scope, resume: resume, education: education}
     end
 
-    test "returns all educations for a resume", %{resume: resume, education: education} do
-      educations = Resumes.list_educations(resume.id)
+    test "returns all educations for authorized user's resume", %{
+      scope: scope,
+      resume: resume,
+      education: education
+    } do
+      educations = Resumes.list_educations(scope, resume.id)
       assert length(educations) == 1
       assert hd(educations).id == education.id
 
@@ -148,14 +190,24 @@ defmodule BemedaPersonal.ResumesTest do
       end)
     end
 
-    test "orders by current and start_date", %{resume: resume, education: education} do
+    test "refuses access to other user's resume educations", %{scope: scope} do
+      other_user = user_fixture()
+      other_resume = resume_fixture(other_user)
+      _other_education = education_fixture(other_resume)
+
+      assert_raise RuntimeError, fn ->
+        Resumes.list_educations(scope, other_resume.id)
+      end
+    end
+
+    test "orders by current and start_date", %{scope: scope, resume: resume, education: education} do
       newer_education =
         education_fixture(resume, %{start_date: ~D[2010-01-01], end_date: ~D[2014-01-01]})
 
       current_education =
         education_fixture(resume, %{start_date: ~D[2020-01-01], end_date: nil, current: true})
 
-      educations = Resumes.list_educations(resume.id)
+      educations = Resumes.list_educations(scope, resume.id)
 
       assert Enum.map(educations, & &1.id) == [
                current_education.id,
@@ -164,12 +216,10 @@ defmodule BemedaPersonal.ResumesTest do
              ]
     end
 
-    test "returns an empty list for a non-existent resume ID" do
-      non_existent_id = Ecto.UUID.generate()
-
-      assert non_existent_id
-             |> Resumes.list_educations()
-             |> Enum.empty?()
+    test "refuses access with nil scope" do
+      assert_raise RuntimeError, fn ->
+        Resumes.list_educations(nil, Ecto.UUID.generate())
+      end
     end
   end
 
@@ -291,7 +341,7 @@ defmodule BemedaPersonal.ResumesTest do
                Resumes.create_or_update_education(%Education{}, resume, current_attrs)
 
       assert education.current == true
-      assert education.end_date == nil
+      refute education.end_date
 
       end_date_attrs = Map.put(base_attrs, :end_date, ~D[2024-01-01])
 
@@ -552,7 +602,7 @@ defmodule BemedaPersonal.ResumesTest do
                Resumes.create_or_update_work_experience(%WorkExperience{}, resume, current_attrs)
 
       assert work_experience.current == true
-      assert work_experience.end_date == nil
+      refute work_experience.end_date
 
       end_date_attrs = Map.put(base_attrs, :end_date, ~D[2024-01-01])
 

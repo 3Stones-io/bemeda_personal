@@ -4,8 +4,7 @@ defmodule BemedaPersonal.JobPostingsFixtures do
   entities via the `BemedaPersonal.JobPostings` and `BemedaPersonal.JobApplications` contexts.
   """
 
-  import BemedaPersonal.TestUtils
-
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobApplications.JobApplication
@@ -18,8 +17,24 @@ defmodule BemedaPersonal.JobPostingsFixtures do
   @type job_posting :: JobPosting.t()
   @type user :: User.t()
 
+  @spec stringify_keys(map() | any()) :: map()
+  defp stringify_keys(map) when is_map(map) do
+    map
+    |> Enum.map(fn {k, v} -> {to_string(k), v} end)
+    |> Enum.into(%{})
+  end
+
+  defp stringify_keys(value), do: value
+
   @spec job_posting_fixture(company(), attrs()) :: job_posting()
+  @spec job_posting_fixture(user(), company(), attrs()) :: job_posting()
   def job_posting_fixture(%Companies.Company{} = company, attrs \\ %{}) do
+    # Get the company with admin_user preloaded using system scope
+    company_with_admin = Companies.get_company!(Scope.system(), company.id)
+    job_posting_fixture(company_with_admin.admin_user, company, attrs)
+  end
+
+  def job_posting_fixture(%User{} = user, %Companies.Company{} = company, attrs) do
     attrs = stringify_keys(attrs)
 
     job_posting_attrs =
@@ -43,8 +58,14 @@ defmodule BemedaPersonal.JobPostingsFixtures do
         "years_of_experience" => :"2-5 years"
       }
 
+    # Create a scope for the user and company
+    scope =
+      user
+      |> Scope.for_user()
+      |> Scope.put_company(company)
+
     {:ok, job_posting} =
-      JobPostings.create_job_posting(company, Map.merge(job_posting_attrs, attrs))
+      JobPostings.create_job_posting(scope, Map.merge(job_posting_attrs, attrs))
 
     job_posting
   end

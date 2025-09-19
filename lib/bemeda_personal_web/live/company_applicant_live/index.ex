@@ -1,6 +1,7 @@
 defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.Components.JobApplication.JobApplicationsListComponent
@@ -27,7 +28,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   end
 
   defp apply_action(socket, :index, %{"job_id" => job_id} = params) do
-    job_posting = JobPostings.get_job_posting!(job_id)
+    scope = create_scope_for_user(socket.assigns.current_user)
+    job_posting = JobPostings.get_job_posting!(scope, job_id)
     params = Map.put(params, "job_posting_id", job_posting.id)
 
     socket
@@ -40,7 +42,8 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
   end
 
   defp apply_action(socket, :index, %{"company_id" => company_id} = params) do
-    company = Companies.get_company!(company_id)
+    scope = create_scope_for_user(socket.assigns.current_user)
+    company = Companies.get_company!(scope, company_id)
 
     socket
     |> assign(:company, company)
@@ -83,5 +86,18 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.Index do
     )
 
     {:noreply, socket}
+  end
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
   end
 end

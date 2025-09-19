@@ -109,7 +109,7 @@ defmodule BemedaPersonal.CompanyTemplates.CompanyTemplateTest do
 
   describe "database constraints" do
     test "allows multiple templates per company" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       attrs1 = %{
@@ -127,7 +127,7 @@ defmodule BemedaPersonal.CompanyTemplates.CompanyTemplateTest do
     end
 
     test "enforces unique active template per company constraint" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       attrs1 = %{

@@ -247,18 +247,14 @@ defmodule BemedaPersonal.FeatureHelpers do
       {:ok, _result} = Frame.click(frame_id, "button[type='submit']")
       :ok
     end)
-    # Wait longer for step 2 form - LiveView might need time to update
-    |> wait_for_element("form")
+    # Wait specifically for step 2 elements to be available - not just any form
+    |> wait_for_element("select[name='user[medical_role]']")
   end
 
   defp fill_job_seeker_step2(session) do
     # Step 2: Fill medical role information using correct enum values from Enums module
-    # First wait for the page to transition to step 2
-    Process.sleep(500)
-
-    session
-    |> wait_for_element("select[name='user[medical_role]']")
-    |> unwrap(fn %{frame_id: frame_id} ->
+    # Element availability already confirmed by submit_step1, proceed with form filling
+    unwrap(session, fn %{frame_id: frame_id} ->
       # Wait for dropdown to be fully interactive before selecting options
       Process.sleep(100)
 

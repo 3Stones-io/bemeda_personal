@@ -36,7 +36,16 @@ defmodule BemedaPersonal.Accounts.User do
     field :user_type, Ecto.Enum, values: [:job_seeker, :employer], default: :job_seeker
     field :zip_code, :string
 
+    # Magic link fields
+    field :magic_link_enabled, :boolean, default: false
+    field :last_magic_link_sent_at, :utc_datetime
+    field :magic_link_send_count, :integer, default: 0
+    field :passwordless_only, :boolean, default: false
+    field :last_sudo_at, :utc_datetime
+    field :magic_link_reset_at, :utc_datetime
+
     has_one :resume, BemedaPersonal.Resumes.Resume
+    has_many :magic_tokens, BemedaPersonal.Accounts.MagicLinkToken
 
     timestamps(type: :utc_datetime)
   end
@@ -337,6 +346,96 @@ defmodule BemedaPersonal.Accounts.User do
     else
       add_error(changeset, :current_password, dgettext("auth", "is not valid"))
     end
+  end
+
+  @doc """
+  Changeset for enabling/disabling magic link authentication
+  """
+  @spec magic_link_preferences_changeset(t() | changeset(), attrs(), keyword()) :: changeset()
+  def magic_link_preferences_changeset(user, attrs, opts \\ []) do
+    # Handle checkbox fields carefully:
+    # - For form submissions (string keys), missing checkboxes should default to false
+    # - For programmatic updates (atom keys), only update the fields that are explicitly provided
+    # - For display (empty map with for_display: true), show current values without defaults
+    for_display = Keyword.get(opts, :for_display, false)
+
+    attrs_with_defaults =
+      cond do
+        Map.has_key?(attrs, "magic_link_enabled") or Map.has_key?(attrs, "passwordless_only") ->
+          # String keys (form submission) - add string defaults for missing checkboxes
+          attrs
+          |> Map.put_new("magic_link_enabled", false)
+          |> Map.put_new("passwordless_only", false)
+
+        Map.has_key?(attrs, :magic_link_enabled) and Map.has_key?(attrs, :passwordless_only) ->
+          # Atom keys with both fields - this is an explicit update of both
+          attrs
+
+        Map.has_key?(attrs, :magic_link_enabled) or Map.has_key?(attrs, :passwordless_only) ->
+          # Atom keys with only one field - partial update, don't add defaults
+          attrs
+
+        for_display ->
+          # Empty map for display - show current values, don't add defaults
+          attrs
+
+        true ->
+          # Empty map for form submission - add string defaults (unchecked checkboxes)
+          attrs
+          |> Map.put_new("magic_link_enabled", false)
+          |> Map.put_new("passwordless_only", false)
+      end
+
+    user
+    |> cast(attrs_with_defaults, [:magic_link_enabled, :passwordless_only])
+    |> validate_magic_link_preferences()
+  end
+
+  defp validate_magic_link_preferences(changeset) do
+    changeset
+    |> maybe_disable_passwordless_only()
+    |> validate_change(:passwordless_only, fn
+      :passwordless_only, true ->
+        magic_link_enabled = get_field(changeset, :magic_link_enabled)
+
+        if magic_link_enabled != true do
+          [{:passwordless_only, "can only be enabled when magic links are enabled"}]
+        else
+          []
+        end
+
+      :passwordless_only, _value ->
+        []
+    end)
+  end
+
+  defp maybe_disable_passwordless_only(changeset) do
+    case get_change(changeset, :magic_link_enabled) do
+      false -> put_change(changeset, :passwordless_only, false)
+      _other_value -> changeset
+    end
+  end
+
+  @doc """
+  Updates tracking fields when magic link is sent
+  """
+  @spec track_magic_link_sent(t()) :: {:ok, t()} | {:error, changeset()}
+  def track_magic_link_sent(user) do
+    user
+    |> change()
+    |> put_change(:last_magic_link_sent_at, DateTime.utc_now(:second))
+    |> put_change(:magic_link_send_count, (user.magic_link_send_count || 0) + 1)
+    |> BemedaPersonal.Repo.update()
+  end
+
+  @doc """
+  Records sudo mode authentication
+  """
+  @spec record_sudo_authentication(t()) :: {:ok, t()} | {:error, changeset()}
+  def record_sudo_authentication(user) do
+    user
+    |> change(last_sudo_at: DateTime.utc_now(:second))
+    |> BemedaPersonal.Repo.update()
   end
 
   @doc """

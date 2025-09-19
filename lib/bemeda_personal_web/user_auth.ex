@@ -10,6 +10,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   import Plug.Conn
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
 
   @type conn() :: Plug.Conn.t()
@@ -117,6 +118,16 @@ defmodule BemedaPersonalWeb.UserAuth do
     assign(conn, :current_user, user)
   end
 
+  @doc """
+  Assigns the current scope based on the authenticated user.
+  """
+  @spec fetch_current_scope(conn(), params()) :: conn()
+  def fetch_current_scope(conn, _opts) do
+    user = conn.assigns[:current_user]
+    scope = Scope.for_user(user)
+    assign(conn, :current_scope, scope)
+  end
+
   defp ensure_user_token(conn) do
     if token = get_session(conn, :user_token) do
       {token, conn}
@@ -183,6 +194,10 @@ defmodule BemedaPersonalWeb.UserAuth do
     {:cont, mount_current_user(socket, session)}
   end
 
+  def on_mount(:mount_current_scope, _params, session, socket) do
+    {:cont, mount_current_scope(socket, session)}
+  end
+
   def on_mount(:ensure_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
 
@@ -213,7 +228,8 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   def on_mount(:require_admin_user, params, _session, socket) do
     company_id = params["company_id"]
-    company = Companies.get_company!(company_id)
+    scope = build_user_scope(socket.assigns.current_user)
+    company = Companies.get_company!(scope, company_id)
 
     if company.admin_user_id == socket.assigns.current_user.id do
       {:cont, Phoenix.Component.assign(socket, :company, company)}
@@ -324,6 +340,17 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
+  def on_mount(:require_sudo, _params, _session, socket) do
+    if socket.assigns[:current_user] && Accounts.has_recent_sudo?(socket.assigns.current_user) do
+      {:cont, socket}
+    else
+      {:halt,
+       socket
+       |> Phoenix.LiveView.put_flash(:error, "This action requires additional verification")
+       |> Phoenix.LiveView.redirect(to: ~p"/sudo")}
+    end
+  end
+
   @spec assign_current_user(conn(), any()) :: map()
   def assign_current_user(conn, _opts) do
     user_token = get_session(conn, "user_token")
@@ -344,10 +371,22 @@ defmodule BemedaPersonalWeb.UserAuth do
     end)
   end
 
+  defp mount_current_scope(socket, session) do
+    Phoenix.Component.assign_new(socket, :current_scope, fn ->
+      user =
+        if user_token = session["user_token"] do
+          Accounts.get_user_by_session_token(user_token)
+        end
+
+      build_user_scope(user)
+    end)
+  end
+
   @spec require_admin_user(conn(), any()) :: any()
   def require_admin_user(conn, _opts) do
     company_id = conn.params["company_id"]
-    company = Companies.get_company!(company_id)
+    scope = build_user_scope(conn.assigns[:current_user])
+    company = Companies.get_company!(scope, company_id)
 
     if company.admin_user_id == conn.assigns[:current_user].id do
       conn
@@ -501,6 +540,46 @@ defmodule BemedaPersonalWeb.UserAuth do
     else
       # Job seeker or other user types
       ~p"/"
+    end
+  end
+
+  @doc """
+  Logs in user from LiveView after magic link verification
+  """
+  @spec log_in_user_from_liveview(socket(), user()) :: socket()
+  def log_in_user_from_liveview(socket, user) do
+    socket
+    |> Phoenix.Component.assign(:current_user, user)
+    |> Phoenix.Component.assign(:current_scope, Scope.for_user(user))
+  end
+
+  @doc """
+  Plug to require sudo mode for sensitive operations
+  """
+  @spec require_sudo_mode(conn(), any()) :: conn()
+  def require_sudo_mode(conn, _opts) do
+    user = conn.assigns[:current_user]
+
+    if user && Accounts.has_recent_sudo?(user) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "This action requires additional verification")
+      |> redirect(to: ~p"/sudo?return_to=#{conn.request_path}")
+      |> halt()
+    end
+  end
+
+  defp build_user_scope(user) do
+    scope = Scope.for_user(user)
+
+    if user && user.user_type == :employer do
+      case BemedaPersonal.Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
     end
   end
 end

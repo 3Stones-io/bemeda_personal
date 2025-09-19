@@ -26,7 +26,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
   - Integration with external services (email, file storage)
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures

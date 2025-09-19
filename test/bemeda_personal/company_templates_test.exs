@@ -11,7 +11,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "create_template/2" do
     test "creates template with valid attributes" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       attrs = %{name: "template.docx", status: :active}
@@ -25,7 +25,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "returns error with invalid attributes" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       assert {:error, %Ecto.Changeset{}} =
@@ -35,7 +35,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "get_active_template/1" do
     test "returns active template for company" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       template = template_fixture(company, %{status: :active})
 
@@ -44,7 +44,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "returns nil when no active template" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       _template = template_fixture(company, %{status: :inactive})
 
@@ -52,7 +52,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "enforces unique constraint for active templates" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       _first_template = template_fixture(company, %{status: :active})
@@ -73,7 +73,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "replace_active_template/2" do
     test "creates first active template when none exists" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       attrs = %{
@@ -89,7 +89,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "replaces existing active template" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       {:ok, first_template} =
@@ -119,7 +119,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "creates template with non-active status without deactivating existing" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       template_fixture(company, %{name: "active.docx", status: :active})
@@ -139,7 +139,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "handles validation errors when creating new template" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       attrs = %{
@@ -152,7 +152,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "archive_template/1" do
     test "archives template successfully" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       template = template_fixture(company, %{name: "to_archive.docx", status: :active})
 
@@ -163,7 +163,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "archives inactive template successfully" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       template = template_fixture(company, %{name: "to_archive.docx", status: :inactive})
 
@@ -175,7 +175,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "get_current_template/1" do
     test "returns processing template when both processing and active exist" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       _active_template = template_fixture(company, %{name: "active.docx", status: :active})
@@ -189,7 +189,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "returns active template when no processing template exists" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       active_template = template_fixture(company, %{name: "active.docx", status: :active})
@@ -200,7 +200,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "ignores failed templates and returns active template" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       active_template = template_fixture(company, %{name: "active.docx", status: :active})
@@ -212,14 +212,14 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "returns nil when no templates exist" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       refute CompanyTemplates.get_current_template(company.id)
     end
 
     test "returns most recent processing template when multiple exist" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       older_processing = template_fixture(company, %{name: "older.docx", status: :processing})
@@ -238,7 +238,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "get_template/1" do
     test "returns template with preloaded associations" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       template = template_fixture(company, %{name: "test.docx", status: :active})
 
@@ -259,7 +259,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "update_template/2" do
     test "updates template with valid attributes" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       template = template_fixture(company, %{status: :uploading})
 
@@ -276,7 +276,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "returns error with invalid attributes" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       template = template_fixture(company)
 
@@ -286,7 +286,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "updates error message on failed status" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       template = template_fixture(company, %{status: :processing})
 
@@ -303,7 +303,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
 
   describe "activate_template/1" do
     test "activates template and deactivates existing active template" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       active_template = template_fixture(company, %{name: "active.docx", status: :active})
@@ -323,7 +323,7 @@ defmodule BemedaPersonal.CompanyTemplatesTest do
     end
 
     test "activates template when no existing active template" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       inactive_template = template_fixture(company, %{name: "inactive.docx", status: :inactive})

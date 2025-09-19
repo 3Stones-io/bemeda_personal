@@ -161,7 +161,8 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
   defp process_user_rating(socket, score, comment, entity_id) do
     %{
       application: application,
-      company: company
+      company: company,
+      current_scope: scope
     } = socket.assigns
 
     attrs = %{
@@ -170,9 +171,9 @@ defmodule BemedaPersonalWeb.Live.Hooks.RatingHooks do
     }
 
     with true <- can_rate?(socket),
-         user = Accounts.get_user!(entity_id),
+         user = Accounts.get_user!(scope, entity_id),
          {:ok, _rating} <- Ratings.rate_user(company, user, attrs) do
-      updated_application = JobApplications.get_job_application!(application.id)
+      updated_application = JobApplications.get_job_application!(scope, application.id)
 
       {:halt,
        socket

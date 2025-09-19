@@ -93,7 +93,7 @@ defmodule BemedaPersonalWeb.UserConfirmationInstructionsLive do
 
   @impl Phoenix.LiveView
   def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
-    if user = Accounts.get_user_by_email(email) do
+    if user = Accounts.get_user_by_email(nil, email) do
       Accounts.deliver_user_confirmation_instructions(
         user,
         &url(~p"/users/confirm/#{&1}")
@@ -114,7 +114,7 @@ defmodule BemedaPersonalWeb.UserConfirmationInstructionsLive do
 
   @impl Phoenix.LiveView
   def handle_event("resend_instructions", _params, socket) do
-    if user = Accounts.get_user_by_email(socket.assigns.email) do
+    if user = Accounts.get_user_by_email(nil, socket.assigns.email) do
       Accounts.deliver_user_confirmation_instructions(
         user,
         &url(~p"/users/confirm/#{&1}")

@@ -12,7 +12,7 @@ defmodule BemedaPersonal.EmailsTest do
   alias BemedaPersonal.Repo
 
   setup do
-    sender = user_fixture()
+    sender = employer_user_fixture()
     company = company_fixture(sender)
     job_posting = job_posting_fixture(company)
     recipient = user_fixture()

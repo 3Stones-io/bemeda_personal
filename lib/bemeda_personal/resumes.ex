@@ -8,6 +8,8 @@ defmodule BemedaPersonal.Resumes do
 
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Resumes.Education
   alias BemedaPersonal.Resumes.Resume
@@ -20,6 +22,7 @@ defmodule BemedaPersonal.Resumes do
   @type education_id :: Ecto.UUID.t()
   @type resume :: Resume.t()
   @type resume_id :: Ecto.UUID.t()
+  @type scope :: Scope.t()
   @type user :: BemedaPersonal.Accounts.User.t()
   @type work_experience :: WorkExperience.t()
   @type work_experience_id :: Ecto.UUID.t()
@@ -29,25 +32,25 @@ defmodule BemedaPersonal.Resumes do
   @work_experience_topic "work_experience"
 
   @doc """
-  Gets or creates a resume for a user.
+  Gets or creates a resume for a scoped user.
 
   If the user already has a resume, returns it.
   If the user doesn't have a resume, creates one and returns it.
 
   ## Examples
 
-      iex> get_or_create_resume_by_user(user)
+      iex> get_or_create_resume_by_user(scope)
       %Resume{}
 
   """
-  @spec get_or_create_resume_by_user(user()) :: resume()
-  def get_or_create_resume_by_user(user) do
-    case Repo.get_by(Resume, user_id: user.id) do
+  @spec get_or_create_resume_by_user(scope() | User.t() | nil) :: resume() | no_return()
+  def get_or_create_resume_by_user(%Scope{user: %User{id: user_id}} = scope) do
+    case Repo.get_by(Resume, user_id: user_id) do
       nil ->
         resume =
           %Resume{}
           |> Resume.changeset()
-          |> Changeset.put_assoc(:user, user)
+          |> Changeset.put_assoc(:user, scope.user)
           |> Repo.insert!()
 
         broadcast_event(@resume_topic, "resume_created", %{resume: resume})
@@ -56,6 +59,42 @@ defmodule BemedaPersonal.Resumes do
       resume ->
         resume
     end
+  end
+
+  def get_or_create_resume_by_user(nil) do
+    raise "Cannot access resumes without scope"
+  end
+
+  # Backwards compatibility for existing code during migration
+  def get_or_create_resume_by_user(%User{} = user) do
+    scope = Scope.for_user(user)
+    get_or_create_resume_by_user(scope)
+  end
+
+  @doc """
+  Gets a single resume with scope authorization.
+
+  Raises `Ecto.NoResultsError` if the Resume does not exist or is not authorized.
+
+  ## Examples
+
+      iex> get_resume!(scope, "123")
+      %Resume{}
+
+      iex> get_resume!(scope, "456")
+      ** (Ecto.NoResultsError)
+
+  """
+  @spec get_resume!(scope(), resume_id()) :: resume() | no_return()
+  def get_resume!(%Scope{user: %User{id: user_id}}, id) do
+    Resume
+    |> where([r], r.id == ^id and r.user_id == ^user_id)
+    |> Repo.one!()
+    |> Repo.preload([:user, :educations, :work_experiences])
+  end
+
+  def get_resume!(nil, _id) do
+    raise "Cannot access resumes without scope"
   end
 
   @doc """
@@ -90,6 +129,35 @@ defmodule BemedaPersonal.Resumes do
     |> where([r], r.user_id == ^user.id)
     |> Repo.one()
     |> Repo.preload([:user, :educations, :work_experiences])
+  end
+
+  @doc """
+  Updates a resume with scope authorization.
+
+  ## Examples
+
+      iex> update_resume(scope, resume, %{field: new_value})
+      {:ok, %Resume{}}
+
+      iex> update_resume(scope, resume, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec update_resume(scope(), resume(), map()) :: {:ok, resume()} | {:error, changeset()}
+  def update_resume(
+        %Scope{user: %User{id: user_id}},
+        %Resume{user_id: resume_user_id} = resume,
+        attrs
+      ) do
+    if user_id == resume_user_id do
+      update_resume(resume, attrs)
+    else
+      raise "Cannot update resume - user #{user_id} cannot access resume owned by #{resume_user_id}"
+    end
+  end
+
+  def update_resume(nil, _resume, _attrs) do
+    raise "Cannot update resumes without scope"
   end
 
   @doc """
@@ -138,6 +206,32 @@ defmodule BemedaPersonal.Resumes do
   # Education functions
 
   @doc """
+  Returns the list of educations for a resume with scope authorization.
+
+  ## Examples
+
+      iex> list_educations(scope, resume_id)
+      [%Education{}, ...]
+
+  """
+  @spec list_educations(scope(), resume_id()) :: [education()]
+  def list_educations(%Scope{user: %User{id: user_id}}, resume_id) do
+    # First verify the resume belongs to the scoped user
+    query = from(r in Resume, where: r.id == ^resume_id, select: r.user_id)
+    resume_owner_id = Repo.one(query)
+
+    if resume_owner_id == user_id do
+      list_educations(resume_id)
+    else
+      raise "Cannot access educations - user #{user_id} cannot access resume #{resume_id}"
+    end
+  end
+
+  def list_educations(nil, _resume_id) do
+    raise "Cannot access educations without scope"
+  end
+
+  @doc """
   Returns the list of educations for a resume.
 
   ## Examples
@@ -156,9 +250,37 @@ defmodule BemedaPersonal.Resumes do
   end
 
   @doc """
-  Gets a single education entry.
+  Gets a single education entry with scope authorization.
 
-  Raises `Ecto.NoResultsError` if the Education does not exist.
+  ## Examples
+
+      iex> get_education(scope, 123)
+      %Education{}
+
+      iex> get_education(scope, 456)
+      nil
+
+  """
+  @spec get_education(scope(), education_id()) :: education() | nil
+  def get_education(%Scope{user: %User{id: user_id}}, id) do
+    result =
+      Education
+      |> join(:inner, [e], r in Resume, on: e.resume_id == r.id)
+      |> where([e, r], e.id == ^id and r.user_id == ^user_id)
+      |> Repo.one()
+
+    case result do
+      nil -> nil
+      education -> Repo.preload(education, :resume)
+    end
+  end
+
+  def get_education(nil, _id) do
+    raise "Cannot access education without scope"
+  end
+
+  @doc """
+  Gets a single education entry.
 
   ## Examples
 
@@ -263,6 +385,32 @@ defmodule BemedaPersonal.Resumes do
   # Work Experience functions
 
   @doc """
+  Returns the list of work experiences for a resume with scope authorization.
+
+  ## Examples
+
+      iex> list_work_experiences(scope, resume_id)
+      [%WorkExperience{}, ...]
+
+  """
+  @spec list_work_experiences(scope(), resume_id()) :: [work_experience()]
+  def list_work_experiences(%Scope{user: %User{id: user_id}}, resume_id) do
+    # First verify the resume belongs to the scoped user
+    query = from(r in Resume, where: r.id == ^resume_id, select: r.user_id)
+    resume_owner_id = Repo.one(query)
+
+    if resume_owner_id == user_id do
+      list_work_experiences(resume_id)
+    else
+      raise "Cannot access work experiences - user #{user_id} cannot access resume #{resume_id}"
+    end
+  end
+
+  def list_work_experiences(nil, _resume_id) do
+    raise "Cannot access work experiences without scope"
+  end
+
+  @doc """
   Returns the list of work experiences for a resume.
 
   ## Examples
@@ -281,9 +429,37 @@ defmodule BemedaPersonal.Resumes do
   end
 
   @doc """
-  Gets a single work experience entry.
+  Gets a single work experience entry with scope authorization.
 
-  Raises `Ecto.NoResultsError` if the WorkExperience does not exist.
+  ## Examples
+
+      iex> get_work_experience(scope, 123)
+      %WorkExperience{}
+
+      iex> get_work_experience(scope, 456)
+      nil
+
+  """
+  @spec get_work_experience(scope(), work_experience_id()) :: work_experience() | nil
+  def get_work_experience(%Scope{user: %User{id: user_id}}, id) do
+    result =
+      WorkExperience
+      |> join(:inner, [w], r in Resume, on: w.resume_id == r.id)
+      |> where([w, r], w.id == ^id and r.user_id == ^user_id)
+      |> Repo.one()
+
+    case result do
+      nil -> nil
+      work_experience -> Repo.preload(work_experience, :resume)
+    end
+  end
+
+  def get_work_experience(nil, _id) do
+    raise "Cannot access work experience without scope"
+  end
+
+  @doc """
+  Gets a single work experience entry.
 
   ## Examples
 

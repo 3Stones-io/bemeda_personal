@@ -2,19 +2,20 @@ defmodule BemedaPersonal.AccountsTest do
   use BemedaPersonal.DataCase, async: true
 
   import BemedaPersonal.AccountsFixtures
+  import Swoosh.TestAssertions
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Accounts.UserToken
 
-  describe "get_user_by_email/1" do
+  describe "get_user_by_email/2" do
     test "does not return the user if the email does not exist" do
-      refute Accounts.get_user_by_email("unknown@example.com")
+      refute Accounts.get_user_by_email(nil, "unknown@example.com")
     end
 
     test "returns the user if the email exists" do
       %{id: id} = user = user_fixture()
-      assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
+      assert %User{id: ^id} = Accounts.get_user_by_email(nil, user.email)
     end
   end
 
@@ -578,6 +579,332 @@ defmodule BemedaPersonal.AccountsTest do
     test "new users have default locale" do
       user = user_fixture()
       assert user.locale == :en
+    end
+  end
+
+  describe "magic_link_preferences_changeset/2" do
+    test "allows magic_link_enabled to be set" do
+      user = user_fixture()
+      changeset = User.magic_link_preferences_changeset(user, %{magic_link_enabled: true})
+
+      assert changeset.valid?
+      assert get_change(changeset, :magic_link_enabled) == true
+    end
+
+    test "validates passwordless_only requires magic_link_enabled" do
+      user = user_fixture()
+
+      changeset =
+        User.magic_link_preferences_changeset(user, %{
+          passwordless_only: true,
+          magic_link_enabled: false
+        })
+
+      refute changeset.valid?
+
+      assert %{passwordless_only: ["can only be enabled when magic links are enabled"]} =
+               errors_on(changeset)
+    end
+
+    test "validates passwordless_only without magic_link_enabled" do
+      user = user_fixture()
+
+      changeset = User.magic_link_preferences_changeset(user, %{passwordless_only: true})
+
+      refute changeset.valid?
+
+      assert %{passwordless_only: ["can only be enabled when magic links are enabled"]} =
+               errors_on(changeset)
+    end
+
+    test "allows passwordless_only when magic_link_enabled is true" do
+      user = user_fixture()
+
+      changeset =
+        User.magic_link_preferences_changeset(user, %{
+          passwordless_only: true,
+          magic_link_enabled: true
+        })
+
+      assert changeset.valid?
+    end
+
+    test "allows passwordless_only when user already has magic_link_enabled" do
+      # First enable magic links for the user
+      user = user_fixture()
+
+      {:ok, user_with_magic_links} =
+        user
+        |> User.magic_link_preferences_changeset(%{magic_link_enabled: true})
+        |> Repo.update()
+
+      changeset =
+        User.magic_link_preferences_changeset(user_with_magic_links, %{passwordless_only: true})
+
+      assert changeset.valid?
+    end
+
+    test "allows disabling passwordless_only" do
+      user = user_fixture()
+      changeset = User.magic_link_preferences_changeset(user, %{passwordless_only: false})
+
+      assert changeset.valid?
+      # When value doesn't change (false -> false), there's no change recorded
+      refute get_change(changeset, :passwordless_only)
+    end
+  end
+
+  describe "track_magic_link_sent/1" do
+    test "updates last_magic_link_sent_at timestamp" do
+      user = user_fixture()
+      assert is_nil(user.last_magic_link_sent_at)
+
+      assert {:ok, updated_user} = User.track_magic_link_sent(user)
+      assert %DateTime{} = updated_user.last_magic_link_sent_at
+    end
+
+    test "increments magic_link_send_count" do
+      user = user_fixture()
+      assert user.magic_link_send_count == 0
+
+      assert {:ok, updated_user} = User.track_magic_link_sent(user)
+      assert updated_user.magic_link_send_count == 1
+
+      assert {:ok, updated_user_2} = User.track_magic_link_sent(updated_user)
+      assert updated_user_2.magic_link_send_count == 2
+    end
+
+    test "handles nil magic_link_send_count gracefully" do
+      # Create user with nil count (edge case)
+      user = user_fixture()
+      user_with_nil_count = %{user | magic_link_send_count: nil}
+
+      assert {:ok, updated_user} = User.track_magic_link_sent(user_with_nil_count)
+      assert updated_user.magic_link_send_count == 1
+    end
+
+    test "persists changes to database" do
+      user = user_fixture()
+      assert {:ok, _updated_user} = User.track_magic_link_sent(user)
+
+      # Verify changes are saved
+      persisted_user = Accounts.get_user!(user.id)
+      assert persisted_user.magic_link_send_count == 1
+      assert %DateTime{} = persisted_user.last_magic_link_sent_at
+    end
+  end
+
+  describe "record_sudo_authentication/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "successfully records sudo authentication timestamp", %{user: user} do
+      # Verify user initially has no sudo timestamp
+      assert is_nil(user.last_sudo_at)
+
+      # Record sudo authentication
+      assert {:ok, updated_user} = User.record_sudo_authentication(user)
+
+      # Verify timestamp was set
+      assert %DateTime{} = updated_user.last_sudo_at
+      assert updated_user.id == user.id
+    end
+
+    test "persists sudo authentication timestamp to database", %{user: user} do
+      # Record sudo authentication
+      assert {:ok, updated_user} = User.record_sudo_authentication(user)
+
+      # Verify changes are persisted in database
+      persisted_user = Accounts.get_user!(user.id)
+      assert %DateTime{} = persisted_user.last_sudo_at
+      assert persisted_user.last_sudo_at == updated_user.last_sudo_at
+    end
+
+    test "updates existing sudo authentication timestamp", %{user: user} do
+      # Record initial sudo authentication
+      assert {:ok, first_update} = User.record_sudo_authentication(user)
+      first_timestamp = first_update.last_sudo_at
+
+      # Wait sufficient time to ensure different timestamps (seconds precision)
+      :timer.sleep(1500)
+
+      # Record another sudo authentication
+      assert {:ok, second_update} = User.record_sudo_authentication(first_update)
+
+      # Verify timestamp was updated (not just the first time)
+      assert %DateTime{} = second_update.last_sudo_at
+      assert DateTime.compare(second_update.last_sudo_at, first_timestamp) == :gt
+    end
+
+    test "returns {:ok, user} tuple structure", %{user: user} do
+      result = User.record_sudo_authentication(user)
+
+      assert {:ok, updated_user} = result
+      assert %User{} = updated_user
+      assert updated_user.id == user.id
+    end
+  end
+
+  describe "magic links" do
+    test "deliver_magic_link/2 creates token and sends email" do
+      user = user_fixture(%{magic_link_enabled: true})
+
+      assert {:ok, token} = Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+      assert token.user_id == user.id
+      assert token.context == "magic_link"
+
+      assert_email_sent(fn email ->
+        {"Test User", user.email} in email.to
+      end)
+    end
+
+    test "deliver_magic_link/2 fails for disabled magic links" do
+      user = user_fixture(%{magic_link_enabled: false})
+
+      # This should fail because magic links are disabled for this user
+      assert {:error, :magic_links_disabled} =
+               Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+    end
+
+    test "verify_magic_link/1 returns user for valid token" do
+      user = user_fixture(%{magic_link_enabled: true})
+      {:ok, token} = Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+
+      encoded = Base.url_encode64(token.token, padding: false)
+      assert {:ok, verified_user} = Accounts.verify_magic_link(encoded)
+      assert verified_user.id == user.id
+    end
+
+    test "verify_magic_link/1 fails for expired token" do
+      user = user_fixture(%{magic_link_enabled: true})
+      {:ok, token} = Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+
+      # Manually expire the token
+      expired =
+        DateTime.utc_now()
+        |> DateTime.add(-3600, :second)
+        |> DateTime.truncate(:second)
+
+      token
+      |> Ecto.Changeset.change(inserted_at: expired)
+      |> Repo.update!()
+
+      encoded = Base.url_encode64(token.token, padding: false)
+      assert {:error, :invalid_or_expired} = Accounts.verify_magic_link(encoded)
+    end
+
+    test "verify_magic_link/1 fails for used token" do
+      user = user_fixture(%{magic_link_enabled: true})
+      {:ok, token} = Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+
+      encoded = Base.url_encode64(token.token, padding: false)
+      # Use the token once
+      assert {:ok, _user} = Accounts.verify_magic_link(encoded)
+      # Try to use it again
+      assert {:error, :invalid_or_expired} = Accounts.verify_magic_link(encoded)
+    end
+
+    test "rate limits magic link requests" do
+      user = user_fixture(%{magic_link_enabled: true})
+
+      # First 3 should succeed
+      assert {:ok, _token1} = Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+      assert {:ok, _token2} = Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+      assert {:ok, _token3} = Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+
+      # Fourth should fail
+      assert {:error, :too_many_requests} =
+               Accounts.deliver_magic_link(user, &"http://example.com/#{&1}")
+    end
+  end
+
+  describe "sudo mode" do
+    test "deliver_sudo_magic_link/2 creates token and sends email" do
+      user = user_fixture()
+
+      assert {:ok, token} = Accounts.deliver_sudo_magic_link(user, &"http://example.com/#{&1}")
+      assert token.user_id == user.id
+      assert token.context == "sudo"
+
+      assert_email_sent(fn email ->
+        {"Test User", user.email} in email.to
+      end)
+    end
+
+    test "verify_sudo_token/1 returns user for valid token" do
+      user = user_fixture()
+      {:ok, token} = Accounts.deliver_sudo_magic_link(user, &"http://example.com/#{&1}")
+
+      encoded = Base.url_encode64(token.token, padding: false)
+      assert {:ok, verified_user} = Accounts.verify_sudo_token(encoded)
+      assert verified_user.id == user.id
+      assert %DateTime{} = verified_user.last_sudo_at
+    end
+
+    test "verify_sudo_token/1 fails for expired token" do
+      user = user_fixture()
+      {:ok, token} = Accounts.deliver_sudo_magic_link(user, &"http://example.com/#{&1}")
+
+      # Manually expire the token (sudo tokens expire after 5 minutes)
+      expired =
+        DateTime.utc_now()
+        |> DateTime.add(-360, :second)
+        |> DateTime.truncate(:second)
+
+      token
+      |> Ecto.Changeset.change(inserted_at: expired)
+      |> Repo.update!()
+
+      encoded = Base.url_encode64(token.token, padding: false)
+      assert {:error, :invalid_or_expired} = Accounts.verify_sudo_token(encoded)
+    end
+
+    test "has_recent_sudo?/1 returns false for user without sudo" do
+      user = user_fixture()
+      refute Accounts.has_recent_sudo?(user)
+    end
+
+    test "has_recent_sudo?/1 returns true for recent sudo" do
+      user = user_fixture()
+      {:ok, updated_user} = User.record_sudo_authentication(user)
+      assert Accounts.has_recent_sudo?(updated_user)
+    end
+
+    test "has_recent_sudo?/1 returns false for expired sudo" do
+      user = user_fixture()
+      # Set last_sudo_at to 20 minutes ago (expired, since limit is 15 minutes)
+      expired =
+        DateTime.utc_now()
+        |> DateTime.add(-1200, :second)
+        |> DateTime.truncate(:second)
+
+      user_with_old_sudo =
+        user
+        |> Ecto.Changeset.change(last_sudo_at: expired)
+        |> Repo.update!()
+
+      refute Accounts.has_recent_sudo?(user_with_old_sudo)
+    end
+  end
+
+  describe "update_magic_link_preferences/2" do
+    test "updates magic link preferences" do
+      user = user_fixture()
+
+      attrs = %{magic_link_enabled: true, passwordless_only: false}
+      assert {:ok, updated_user} = Accounts.update_magic_link_preferences(user, attrs)
+      assert updated_user.magic_link_enabled == true
+      assert updated_user.passwordless_only == false
+    end
+
+    test "validates that passwordless_only requires magic_link_enabled" do
+      user = user_fixture()
+
+      attrs = %{magic_link_enabled: false, passwordless_only: true}
+      assert {:error, changeset} = Accounts.update_magic_link_preferences(user, attrs)
+
+      assert "can only be enabled when magic links are enabled" in errors_on(changeset).passwordless_only
     end
   end
 

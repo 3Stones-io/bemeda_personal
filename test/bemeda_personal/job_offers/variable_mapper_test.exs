@@ -22,7 +22,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
         })
 
       company =
-        company_fixture(user_fixture(%{locale: :en}), %{
+        company_fixture(employer_user_fixture(%{locale: :en}), %{
           location: "Switzerland",
           name: "Acme Corp"
         })
@@ -77,7 +77,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
 
     test "handles missing optional fields gracefully" do
       user = user_fixture(%{first_name: "Bob", gender: nil, last_name: "Jones"})
-      company = company_fixture(user_fixture(), %{location: nil, name: "Beta LLC"})
+      company = company_fixture(employer_user_fixture(), %{location: nil, name: "Beta LLC"})
 
       job_posting =
         job_posting_fixture(company, %{
@@ -101,7 +101,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
     test "generates consistent date for all applications" do
       user1 = user_fixture()
       user2 = user_fixture()
-      company = company_fixture(user_fixture())
+      company = company_fixture(employer_user_fixture())
       job_posting = job_posting_fixture(company)
       job_application1 = job_application_fixture(user1, job_posting)
       job_application2 = job_application_fixture(user2, job_posting)
@@ -115,7 +115,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
 
     test "formats Place_Date with city" do
       user = user_fixture(%{city: "Geneva"})
-      company = company_fixture(user_fixture())
+      company = company_fixture(employer_user_fixture())
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
 
@@ -130,7 +130,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
     test "priority 1: job seeker locale matches job posting languages" do
       # Job seeker prefers French, job posting supports French
       job_seeker = user_fixture(%{gender: :female, locale: :fr})
-      company_admin = user_fixture(%{locale: :de})
+      company_admin = employer_user_fixture(%{locale: :de})
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company, %{language: [:German, :French, :English]})
       job_application = job_application_fixture(job_seeker, job_posting)
@@ -144,7 +144,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
     test "priority 2: company admin locale matches when job seeker doesn't" do
       # Job seeker prefers Italian, company admin prefers German, job posting supports German/English
       job_seeker = user_fixture(%{gender: :male, locale: :it})
-      company_admin = user_fixture(%{locale: :de})
+      company_admin = employer_user_fixture(%{locale: :de})
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company, %{language: [:German, :English]})
       job_application = job_application_fixture(job_seeker, job_posting)
@@ -158,7 +158,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
     test "priority 3: job seeker locale as fallback" do
       # Job seeker prefers French, job posting has no language restrictions
       job_seeker = user_fixture(%{gender: :female, locale: :fr})
-      company_admin = user_fixture(%{locale: :de})
+      company_admin = employer_user_fixture(%{locale: :de})
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company, %{language: nil})
       job_application = job_application_fixture(job_seeker, job_posting)
@@ -172,7 +172,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
     test "priority 4: German as final fallback" do
       # Use German locale for both users but empty job posting languages to test fallback logic
       job_seeker = user_fixture(%{gender: :male, locale: :de})
-      company_admin = user_fixture(%{locale: :de})
+      company_admin = employer_user_fixture(%{locale: :de})
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company, %{language: []})
       job_application = job_application_fixture(job_seeker, job_posting)
@@ -186,7 +186,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
     test "complex scenario with multiple languages" do
       # Job seeker prefers English, company admin prefers Italian, job posting supports French/Italian
       job_seeker = user_fixture(%{gender: :female, locale: :en})
-      company_admin = user_fixture(%{gender: :male, locale: :it})
+      company_admin = employer_user_fixture(%{gender: :male, locale: :it})
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company, %{language: [:French, :Italian]})
       job_application = job_application_fixture(job_seeker, job_posting)
@@ -200,7 +200,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
 
     test "empty job posting language array uses job seeker preference" do
       job_seeker = user_fixture(%{gender: :male, locale: :fr})
-      company_admin = user_fixture(%{locale: :de})
+      company_admin = employer_user_fixture(%{locale: :de})
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company, %{language: []})
       job_application = job_application_fixture(job_seeker, job_posting)

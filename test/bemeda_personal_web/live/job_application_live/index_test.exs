@@ -14,7 +14,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
   defp create_test_data(conn) do
     user = user_fixture()
-    company = company_fixture(user_fixture(%{email: "company@example.com"}))
+    company = company_fixture(employer_user_fixture(%{email: "company@example.com"}))
     job = job_posting_fixture(company)
     job_application = job_application_fixture(user, job)
     resume = resume_fixture(user)
@@ -258,7 +258,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   describe "job application form submission" do
     setup do
       user = user_fixture()
-      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+      company = company_fixture(employer_user_fixture(%{email: "company@example.com"}))
       job = job_posting_fixture(company)
       job_application = job_application_fixture(user, job)
       resume = resume_fixture(user)
@@ -560,7 +560,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   describe "/job_applications" do
     setup %{conn: conn} do
       user = user_fixture()
-      company = company_fixture(user_fixture(%{email: "company@example.com"}))
+      company = company_fixture(employer_user_fixture(%{email: "company@example.com"}))
 
       job1 = job_posting_fixture(company, %{title: "Frontend Developer"})
       job2 = job_posting_fixture(company, %{title: "Backend Developer"})

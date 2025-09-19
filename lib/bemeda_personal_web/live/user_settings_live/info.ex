@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
   import BemedaPersonalWeb.Components.UserSettings.SettingsInput
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonalWeb.Components.Shared.RatingComponent
@@ -683,7 +684,9 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
   end
 
   def handle_event("update_company", %{"company" => company_params}, socket) do
-    case Companies.update_company(socket.assigns.company, company_params) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
+    case Companies.update_company(scope, socket.assigns.company, company_params) do
       {:ok, updated_company} ->
         {:noreply,
          socket
@@ -719,5 +722,18 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
     Enum.map(Enums.departments(), fn department ->
       {to_string(department), to_string(department)}
     end)
+  end
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
   end
 end

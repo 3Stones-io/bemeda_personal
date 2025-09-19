@@ -13,7 +13,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
   describe "Show" do
     setup %{conn: conn} do
       user = user_fixture(confirmed: true)
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company)
 
@@ -81,7 +81,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
   describe "company ratings" do
     setup %{conn: conn} do
       user = user_fixture(confirmed: true)
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company)
 

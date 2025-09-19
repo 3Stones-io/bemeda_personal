@@ -11,10 +11,12 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
 
   use Oban.Worker, max_attempts: 3
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.CompanyTemplates
   alias BemedaPersonal.Documents
   alias BemedaPersonal.JobOffers
+  alias BemedaPersonal.JobOffers.JobOffer
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
 
@@ -43,12 +45,23 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
   end
 
   defp load_job_offer(job_offer_id) do
+    # For background jobs, we don't have user context, so we need to load without scope first
+    # to get the company admin user to create scope for subsequent operations
     job_offer =
-      job_offer_id
-      |> JobOffers.get_job_offer!()
+      JobOffer
+      |> Repo.get!(job_offer_id)
       |> Repo.preload([:message, job_application: [:user, job_posting: [company: :admin_user]]])
 
     {:ok, job_offer}
+  end
+
+  defp scope_for_job_offer(job_offer) do
+    admin_user = job_offer.job_application.job_posting.company.admin_user
+    company = job_offer.job_application.job_posting.company
+
+    admin_user
+    |> Scope.for_user()
+    |> Scope.put_company(company)
   end
 
   defp check_contract_not_exists(%{message_id: message_id}) when is_binary(message_id),
@@ -69,8 +82,9 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
 
   defp finalize_job_offer(job_offer, pdf_id) do
     with {:ok, pdf_message} <- create_pdf_message(pdf_id, job_offer),
+         scope <- scope_for_job_offer(job_offer),
          {:ok, updated_offer} <-
-           JobOffers.update_job_offer(job_offer, pdf_message, %{
+           JobOffers.update_job_offer(scope, job_offer, pdf_message, %{
              status: :extended,
              contract_generated_at: DateTime.utc_now()
            }) do
@@ -190,8 +204,17 @@ defmodule BemedaPersonal.JobOffers.GenerateContract do
   end
 
   defp create_pdf_message(pdf_id, job_offer) do
+    admin_user = job_offer.job_application.job_posting.company.admin_user
+    company = job_offer.job_application.job_posting.company
+
+    scope =
+      admin_user
+      |> Scope.for_user()
+      |> Scope.put_company(company)
+
     Chat.create_message_with_media(
-      job_offer.job_application.job_posting.company.admin_user,
+      scope,
+      admin_user,
       job_offer.job_application,
       %{
         "content" => "Generated contract",

@@ -7,6 +7,7 @@ defmodule BemedaPersonal.DocumentsTest do
   import BemedaPersonal.JobPostingsFixtures
   import Mox
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Documents
   alias BemedaPersonal.Documents.MockProcessor
@@ -17,15 +18,19 @@ defmodule BemedaPersonal.DocumentsTest do
 
   setup do
     user = user_fixture()
-    company = company_fixture(user_fixture(%{email: "company@example.com"}))
+    company = company_fixture(employer_user_fixture(%{email: "company@example.com"}))
     job = job_posting_fixture(company)
     job_application = job_application_fixture(user, job)
 
     template_path = "test/support/fixtures/files/Job_Offer_Serial_Template.docx"
     upload_id = Ecto.UUID.generate()
 
+    # Create scope for test setup
+    user_scope = Scope.for_user(user)
+    scope = Scope.put_company(user_scope, company)
+
     {:ok, message} =
-      Chat.create_message_with_media(user, job_application, %{
+      Chat.create_message_with_media(scope, user, job_application, %{
         "media_data" => %{
           "file_name" => "template.docx",
           "status" => :uploaded,

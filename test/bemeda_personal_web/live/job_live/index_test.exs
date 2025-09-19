@@ -8,7 +8,7 @@ defmodule BemedaPersonalWeb.JobLive.IndexTest do
 
   describe "Job Index" do
     setup %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job1 =

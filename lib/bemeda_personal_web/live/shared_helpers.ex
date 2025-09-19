@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   import Phoenix.Component, only: [assign: 3]
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplication
@@ -15,6 +16,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   require Logger
 
   @type job_application :: JobApplication.t()
+  @type scope :: Scope.t()
   @type socket :: Phoenix.LiveView.Socket.t()
   @type user :: User.t()
 
@@ -49,7 +51,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   @spec assign_job_posting(socket(), Ecto.UUID.t()) ::
           {:noreply, socket()}
   def assign_job_posting(socket, job_id) do
-    job_posting = JobPostings.get_job_posting!(job_id)
+    scope = socket.assigns[:scope]
+    job_posting = JobPostings.get_job_posting!(scope, job_id)
 
     if Phoenix.LiveView.connected?(socket) do
       Endpoint.subscribe("job_posting_assets_#{job_posting.id}")
@@ -99,8 +102,8 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     TigrisHelper.get_presigned_download_url(upload_id)
   end
 
-  @spec get_available_statuses(user(), job_application()) :: list()
-  def get_available_statuses(current_user, job_application) do
+  @spec get_available_statuses(user(), job_application(), scope()) :: list()
+  def get_available_statuses(current_user, job_application, scope) do
     current_state = job_application.state
     is_job_applicant = job_application.user_id == current_user.id
 
@@ -112,14 +115,21 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       current_state,
       all_next_states,
       job_application.id,
-      is_job_applicant
+      is_job_applicant,
+      scope
     )
   end
 
-  defp get_available_statuses_by_role("withdrawn", _all_next_states, job_application_id, true) do
+  defp get_available_statuses_by_role(
+         "withdrawn",
+         _all_next_states,
+         job_application_id,
+         true,
+         scope
+       ) do
     latest_transition =
-      job_application_id
-      |> JobApplications.get_job_application!()
+      scope
+      |> JobApplications.get_job_application!(job_application_id)
       |> JobApplications.get_latest_withdraw_state_transition()
 
     if latest_transition.from_state == "offer_extended" do
@@ -133,11 +143,18 @@ defmodule BemedaPersonalWeb.SharedHelpers do
          "offer_extended",
          _all_next_states,
          _job_application_id,
-         true
+         true,
+         _scope
        ),
        do: ["withdrawn"]
 
-  defp get_available_statuses_by_role(current_state, _all_next_states, _job_application_id, true)
+  defp get_available_statuses_by_role(
+         current_state,
+         _all_next_states,
+         _job_application_id,
+         true,
+         _scope
+       )
        when current_state in ["offer_accepted", "withdrawn"],
        do: []
 
@@ -145,14 +162,27 @@ defmodule BemedaPersonalWeb.SharedHelpers do
          _current_state,
          _all_next_states,
          _job_application_id,
-         true
+         true,
+         _scope
        ),
        do: ["withdrawn"]
 
-  defp get_available_statuses_by_role("withdrawn", _all_next_states, _job_application_id, false),
-    do: []
+  defp get_available_statuses_by_role(
+         "withdrawn",
+         _all_next_states,
+         _job_application_id,
+         false,
+         _scope
+       ),
+       do: []
 
-  defp get_available_statuses_by_role(_current_state, all_next_states, _job_application_id, false) do
+  defp get_available_statuses_by_role(
+         _current_state,
+         all_next_states,
+         _job_application_id,
+         false,
+         _scope
+       ) do
     Enum.filter(all_next_states, fn state ->
       state not in ["offer_accepted", "withdrawn"]
     end)

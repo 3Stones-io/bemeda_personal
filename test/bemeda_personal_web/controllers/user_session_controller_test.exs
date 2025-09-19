@@ -26,6 +26,9 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
       assert response =~ user.email
       assert response =~ ~p"/users/settings"
       assert response =~ ~p"/users/log_out"
+
+      # Verify scope is properly set after login
+      assert jobs_conn.assigns.current_scope.user.id == user.id
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do

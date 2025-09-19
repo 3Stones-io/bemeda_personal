@@ -236,7 +236,7 @@ defmodule BemedaPersonal.Workers.ProcessTemplateTest do
   end
 
   defp setup_template_with_media_asset(opts \\ []) do
-    user = user_fixture()
+    user = employer_user_fixture()
     company = company_fixture(user)
 
     template_attrs = Keyword.get(opts, :template_attrs, %{status: :processing})

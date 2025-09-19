@@ -7,8 +7,10 @@ defmodule BemedaPersonal.Chat do
 
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
@@ -21,21 +23,29 @@ defmodule BemedaPersonal.Chat do
   @type job_application :: JobApplication.t()
   @type message :: Message.t()
   @type message_id :: Ecto.UUID.t()
+  @type scope :: Scope.t()
   @type user :: User.t()
 
   @message_topic "messages"
 
   @doc """
-  Returns a list of messages for a job application.
+  Returns a list of messages for a job application with scope filtering.
+
+  Users can only see messages for job applications they have access to.
 
   ## Examples
 
-      iex> list_messages(job_application)
+      iex> list_messages(scope, job_application)
       [%Message{}, ...]
 
   """
-  @spec list_messages(job_application()) :: [message()]
-  def list_messages(%JobApplication{} = job_application) do
+  @spec list_messages(scope(), job_application()) :: [message()]
+  def list_messages(%Scope{} = scope, %JobApplication{} = job_application) do
+    # Validate user has access to this job application
+    unless JobApplications.has_job_application_access?(scope, job_application) do
+      raise "Access denied to job application"
+    end
+
     messages =
       Message
       |> where([m], m.job_application_id == ^job_application.id)
@@ -58,41 +68,59 @@ defmodule BemedaPersonal.Chat do
   end
 
   @doc """
-  Gets a single message.
+  Gets a single message with scope filtering.
 
-  Raises `Ecto.NoResultsError` if the Message does not exist.
+  Raises `Ecto.NoResultsError` if the Message does not exist or user has no access.
 
   ## Examples
 
-      iex> get_message!(123)
+      iex> get_message!(scope, 123)
       %Message{}
 
-      iex> get_message!(456)
+      iex> get_message!(scope, 456)
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_message!(message_id()) :: message()
-  def get_message!(id) do
-    Message
-    |> Repo.get!(id)
-    |> Repo.preload([:media_asset, :sender, job_application: [job_posting: [:company]]])
+  @spec get_message!(scope(), message_id()) :: message()
+  def get_message!(%Scope{} = scope, id) do
+    message =
+      Message
+      |> Repo.get!(id)
+      |> Repo.preload([:media_asset, :sender, job_application: [job_posting: [:company]]])
+
+    # Validate user has access to this message's job application
+    unless JobApplications.has_job_application_access?(scope, message.job_application) do
+      raise "Access denied to message"
+    end
+
+    message
   end
 
   @doc """
-  Creates a message.
+  Creates a message with scope validation.
 
   ## Examples
 
-      iex> create_message(user, job_application, %{field: value})
+      iex> create_message(scope, user, job_application, %{field: value})
       {:ok, %Message{}}
 
-      iex> create_message(user, job_application, %{field: bad_value})
+      iex> create_message(scope, user, job_application, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_message(user(), job_application(), attrs()) ::
+  @spec create_message(scope(), user(), job_application(), attrs()) ::
           {:ok, message()} | {:error, changeset()}
-  def create_message(%User{} = sender, %JobApplication{} = job_application, attrs) do
+  def create_message(
+        %Scope{} = scope,
+        %User{} = sender,
+        %JobApplication{} = job_application,
+        attrs
+      ) do
+    # Validate user has access to this job application
+    unless JobApplications.has_job_application_access?(scope, job_application) do
+      raise "Access denied to job application"
+    end
+
     result =
       %Message{}
       |> Message.changeset(attrs)
@@ -118,21 +146,42 @@ defmodule BemedaPersonal.Chat do
   end
 
   @doc """
-  Creates a message with associated media asset in a transaction.
+  Creates a message with associated media asset in a transaction with scope validation.
 
   ## Examples
 
-      iex> create_message_with_media(user, job_application, %{field: value, media_data: %{}})
+      iex> create_message_with_media(scope, user, job_application, %{field: value, media_data: %{}})
       {:ok, %Message{}}
 
-      iex> create_message_with_media(user, job_application, %{field: bad_value})
+      iex> create_message_with_media(scope, user, job_application, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_message_with_media(user(), job_application(), attrs()) ::
+  @spec create_message_with_media(scope(), user(), job_application(), attrs()) ::
           {:ok, message()} | {:error, changeset()}
-  def create_message_with_media(%User{} = sender, %JobApplication{} = job_application, attrs) do
-    # Extract content from attrs for the message, media_data will be handled separately
+  def create_message_with_media(
+        %Scope{} = scope,
+        %User{} = sender,
+        %JobApplication{} = job_application,
+        attrs
+      ) do
+    # Validate user has access to this job application
+    unless JobApplications.has_job_application_access?(scope, job_application) do
+      raise "Access denied to job application"
+    end
+
+    multi = build_message_with_media_multi(sender, job_application, attrs)
+
+    case Repo.transaction(multi) do
+      {:ok, %{message: message}} ->
+        handle_successful_message_creation(message, job_application)
+
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
+    end
+  end
+
+  defp build_message_with_media_multi(sender, job_application, attrs) do
     content_attrs = Map.take(attrs, ["content"])
 
     changeset =
@@ -141,54 +190,63 @@ defmodule BemedaPersonal.Chat do
       |> Ecto.Changeset.put_assoc(:sender, sender)
       |> Ecto.Changeset.put_assoc(:job_application, job_application)
 
-    multi =
-      Multi.new()
-      |> Multi.insert(:message, changeset)
-      |> Multi.run(:media_asset, fn _repo, %{message: message} ->
-        case Map.get(attrs, "media_data") do
-          nil -> {:ok, nil}
-          media_data -> Media.create_media_asset(message, media_data)
-        end
-      end)
+    Multi.new()
+    |> Multi.insert(:message, changeset)
+    |> Multi.run(:media_asset, fn _repo, %{message: message} ->
+      case Map.get(attrs, "media_data") do
+        nil -> {:ok, nil}
+        media_data -> Media.create_media_asset(message, media_data)
+      end
+    end)
+  end
 
-    case Repo.transaction(multi) do
-      {:ok, %{message: message}} ->
-        message =
-          Repo.preload(
-            message,
-            [:sender, :job_application, :media_asset],
-            force: true
-          )
+  defp handle_successful_message_creation(message, job_application) do
+    message =
+      Repo.preload(
+        message,
+        [:sender, :job_application, :media_asset],
+        force: true
+      )
 
-        message_topic = "#{@message_topic}:job_application:#{job_application.id}"
-        Endpoint.broadcast(message_topic, "message_created", %{message: message})
+    broadcast_message_created(message, job_application)
+    maybe_enqueue_email_notification(message, job_application)
 
-        # Enqueue email notification for new messages
-        if message.type == :user do
-          enqueue_message_notification(message, job_application)
-        end
+    {:ok, message}
+  end
 
-        {:ok, message}
+  defp broadcast_message_created(message, job_application) do
+    message_topic = "#{@message_topic}:job_application:#{job_application.id}"
+    Endpoint.broadcast(message_topic, "message_created", %{message: message})
+  end
 
-      {:error, _operation, changeset, _changes} ->
-        {:error, changeset}
+  defp maybe_enqueue_email_notification(message, job_application) do
+    if message.type == :user do
+      enqueue_message_notification(message, job_application)
     end
   end
 
   @doc """
-  Updates a message.
+  Updates a message with scope validation.
 
   ## Examples
 
-      iex> update_message(message, %{field: new_value})
+      iex> update_message(scope, message, %{field: new_value})
       {:ok, %Message{}}
 
-      iex> update_message(message, %{field: bad_value})
+      iex> update_message(scope, message, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update_message(message(), attrs()) :: {:ok, message()} | {:error, changeset()}
-  def update_message(%Message{} = message, attrs) do
+  @spec update_message(scope(), message(), attrs()) :: {:ok, message()} | {:error, changeset()}
+  def update_message(%Scope{} = scope, %Message{} = message, attrs) do
+    # Load job application to validate access
+    message = Repo.preload(message, job_application: [job_posting: [:company]])
+
+    # Validate user has access to this message's job application
+    unless JobApplications.has_job_application_access?(scope, message.job_application) do
+      raise "Access denied to message"
+    end
+
     result =
       message
       |> Message.changeset(attrs)
@@ -212,19 +270,27 @@ defmodule BemedaPersonal.Chat do
   end
 
   @doc """
-  Deletes a message.
+  Deletes a message with scope validation.
 
   ## Examples
 
-      iex> delete_message(message)
+      iex> delete_message(scope, message)
       {:ok, %Message{}}
 
-      iex> delete_message(message)
+      iex> delete_message(scope, message)
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec delete_message(message()) :: {:ok, message()} | {:error, changeset()}
-  def delete_message(%Message{} = message) do
+  @spec delete_message(scope(), message()) :: {:ok, message()} | {:error, changeset()}
+  def delete_message(%Scope{} = scope, %Message{} = message) do
+    # Load job application to validate access
+    message = Repo.preload(message, job_application: [job_posting: [:company]])
+
+    # Validate user has access to this message's job application
+    unless JobApplications.has_job_application_access?(scope, message.job_application) do
+      raise "Access denied to message"
+    end
+
     Repo.delete(message)
   end
 

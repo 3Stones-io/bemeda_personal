@@ -5,6 +5,8 @@ defmodule BemedaPersonal.Media do
 
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.CompanyTemplates.CompanyTemplate
@@ -24,39 +26,103 @@ defmodule BemedaPersonal.Media do
   @type media_asset_id :: Ecto.UUID.t()
   @type message :: Message.t()
   @type message_id :: Ecto.UUID.t()
+  @type scope :: Scope.t()
+  @type user :: User.t()
 
   @doc """
-  Returns the list of media assets.
+  Returns the list of media assets with scope filtering.
+
+  Employers see media assets for their own company.
+  Job seekers see media assets for their own data.
 
   ## Examples
 
-      iex> list_media_assets()
+      iex> list_media_assets(scope)
       [%MediaAsset{}, ...]
 
+      iex> list_media_assets(nil)
+      []
+
   """
-  @spec list_media_assets() :: [media_asset()]
-  def list_media_assets do
-    Repo.all(MediaAsset)
+  @spec list_media_assets(scope() | nil) :: [media_asset()]
+  def list_media_assets(%Scope{
+        user: %User{user_type: :employer},
+        company: %Company{id: company_id}
+      }) do
+    query =
+      from m in MediaAsset,
+        left_join: c in assoc(m, :company),
+        left_join: jp in assoc(m, :job_posting),
+        left_join: ja in assoc(m, :job_application),
+        left_join: jp2 in assoc(ja, :job_posting),
+        where:
+          c.id == ^company_id or jp.company_id == ^company_id or jp2.company_id == ^company_id
+
+    Repo.all(query)
+  end
+
+  def list_media_assets(%Scope{user: %User{user_type: :job_seeker, id: user_id}}) do
+    query =
+      from m in MediaAsset,
+        left_join: ja in assoc(m, :job_application),
+        where: ja.user_id == ^user_id
+
+    Repo.all(query)
+  end
+
+  def list_media_assets(%Scope{}) do
+    # Other scope types see no media assets
+    []
+  end
+
+  def list_media_assets(nil) do
+    # No scope means no access
+    []
   end
 
   @doc """
-  Gets a single media asset.
+  Gets a single media asset with scope filtering.
 
-  Raises `Ecto.NoResultsError` if the Media asset does not exist.
+  Returns nil if not accessible to the scope or does not exist.
 
   ## Examples
 
-      iex> get_media_asset!(123)
+      iex> get_media_asset(scope, "123")
       %MediaAsset{}
 
-      iex> get_media_asset!(456)
-      ** (Ecto.NoResultsError)
+      iex> get_media_asset(scope, "456")
+      nil
 
   """
-  @spec get_media_asset!(media_asset_id()) :: media_asset()
-  def get_media_asset!(id) do
-    Repo.get!(MediaAsset, id)
+  @spec get_media_asset(scope() | nil, media_asset_id()) :: media_asset() | nil
+  def get_media_asset(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        id
+      ) do
+    query =
+      from m in MediaAsset,
+        left_join: c in assoc(m, :company),
+        left_join: jp in assoc(m, :job_posting),
+        left_join: ja in assoc(m, :job_application),
+        left_join: jp2 in assoc(ja, :job_posting),
+        where:
+          m.id == ^id and
+            (c.id == ^company_id or jp.company_id == ^company_id or jp2.company_id == ^company_id)
+
+    Repo.one(query)
   end
+
+  def get_media_asset(%Scope{user: %User{user_type: :job_seeker, id: user_id}}, id) do
+    query =
+      from m in MediaAsset,
+        left_join: ja in assoc(m, :job_application),
+        where: m.id == ^id and ja.user_id == ^user_id
+
+    Repo.one(query)
+  end
+
+  def get_media_asset(%Scope{}, _id), do: nil
+  def get_media_asset(nil, _id), do: nil
 
   @doc """
   Gets a media asset by message_id.
@@ -78,15 +144,93 @@ defmodule BemedaPersonal.Media do
   end
 
   @doc """
-  Creates a media asset.
+  Creates a media asset with scope verification.
 
   ## Examples
 
-      iex> create_media_asset(%{field: value})
+      iex> create_media_asset(scope, company, %{field: value})
       {:ok, %MediaAsset{}}
 
-      iex> create_media_asset(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      iex> create_media_asset(scope, job_application, %{field: value})
+      {:ok, %MediaAsset{}}
+
+      iex> create_media_asset(scope, job_posting, %{field: value})
+      {:ok, %MediaAsset{}}
+
+      iex> create_media_asset(scope, message, %{field: value})
+      {:ok, %MediaAsset{}}
+
+      iex> create_media_asset(scope, company_template, %{field: value})
+      {:ok, %MediaAsset{}}
+
+  """
+  @spec create_media_asset(
+          scope() | nil,
+          company() | company_template() | job_application() | job_posting() | message(),
+          attrs()
+        ) ::
+          {:ok, media_asset()} | {:error, changeset() | atom()}
+  def create_media_asset(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %Company{id: company_id} = company,
+        attrs
+      ) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Repo.insert()
+  end
+
+  def create_media_asset(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %CompanyTemplate{company_id: company_id} = company_template,
+        attrs
+      ) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:company_template, company_template)
+    |> Repo.insert()
+  end
+
+  def create_media_asset(
+        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        %JobApplication{user_id: user_id} = job_application,
+        attrs
+      ) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:job_application, job_application)
+    |> Repo.insert()
+  end
+
+  def create_media_asset(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %JobPosting{company_id: company_id} = job_posting,
+        attrs
+      ) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:job_posting, job_posting)
+    |> Repo.insert()
+  end
+
+  def create_media_asset(%Scope{} = _scope, %Message{} = message, attrs) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:message, message)
+    |> Repo.insert()
+  end
+
+  def create_media_asset(%Scope{}, _entity, _attrs), do: {:error, :unauthorized}
+  def create_media_asset(nil, _entity, _attrs), do: {:error, :unauthorized}
+
+  @doc """
+  Creates a media asset (legacy function without scope).
+
+  ## Examples
+
+      iex> create_media_asset(company, %{field: value})
+      {:ok, %MediaAsset{}}
 
       iex> create_media_asset(job_application, %{field: value})
       {:ok, %MediaAsset{}}

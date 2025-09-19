@@ -6,6 +6,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplication
@@ -14,7 +15,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
   alias Phoenix.Socket.Broadcast
 
   defp create_job_posting(_attrs) do
-    user = user_fixture()
+    user = employer_user_fixture()
     company = company_fixture(user)
     job_posting = job_posting_fixture(company)
     job_application = job_application_fixture(user, job_posting)
@@ -29,7 +30,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
   describe "create_job_application/3" do
     test "creates a job_application with valid data" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job_posting =
@@ -56,7 +57,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "creates a job_application with nil media_data and no media asset" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job_posting =
@@ -79,7 +80,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "creates a job_application with empty media_data and no media asset" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job_posting =
@@ -102,7 +103,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "creates a job_application with media asset" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job_posting =
@@ -130,7 +131,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns error changeset when data is invalid" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job_posting =
@@ -147,7 +148,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "broadcasts job_application_created event when creating a new job application" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job_posting =
@@ -281,7 +282,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
       assert {:error, %Ecto.Changeset{}} =
                JobApplications.update_job_application(job_application, invalid_attrs)
 
-      unchanged_job_application = JobApplications.get_job_application!(job_application.id)
+      unchanged_job_application = JobApplications.get_job_application_by_id!(job_application.id)
       assert unchanged_job_application.cover_letter == job_application.cover_letter
     end
 
@@ -321,7 +322,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     setup [:create_job_posting]
 
     test "returns the job_application with given id", %{job_application: job_application} do
-      result = JobApplications.get_job_application!(job_application.id)
+      result = JobApplications.get_job_application_by_id!(job_application.id)
       assert result.id == job_application.id
       assert result.cover_letter == job_application.cover_letter
       assert Ecto.assoc_loaded?(result.job_posting)
@@ -330,7 +331,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns the job_application with media asset" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
@@ -345,7 +346,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
       {:ok, _asset} =
         BemedaPersonal.Media.create_media_asset(job_application, media_data)
 
-      result = JobApplications.get_job_application!(job_application.id)
+      result = JobApplications.get_job_application_by_id!(job_application.id)
       assert result.id == job_application.id
       assert result.media_asset
       assert result.media_asset.file_name == "test_file.mp4"
@@ -353,7 +354,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
     test "raises error when job application with id does not exist" do
       assert_raise Ecto.NoResultsError, fn ->
-        JobApplications.get_job_application!(Ecto.UUID.generate())
+        JobApplications.get_job_application_by_id!(Ecto.UUID.generate())
       end
     end
   end
@@ -369,14 +370,14 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
       # Find our specific job application in the results
       result = Enum.find(results, &(&1.id == job_application.id))
-      assert result != nil
+      assert result
       assert Ecto.assoc_loaded?(result.job_posting)
       assert Ecto.assoc_loaded?(result.user)
       assert Ecto.assoc_loaded?(result.media_asset)
     end
 
     test "returns job applications with media assets" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
@@ -463,7 +464,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns empty list when a job posting has no applications" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       non_existing_job_posting_id = Ecto.UUID.generate()
@@ -512,12 +513,12 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
       # Find our specific job application in the results
       result = Enum.find(results, &(&1.id == job_application.id))
-      assert result != nil
+      assert result
       assert job_application.id == result.id
     end
 
     test "limits the number of returned job applications" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
@@ -534,7 +535,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     test "can filter job applications by newer_than and older_than timestamp" do
       Repo.delete_all(JobApplication)
 
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
@@ -644,7 +645,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "can filter job applications by state" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
@@ -720,7 +721,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns the job_application with media asset" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
@@ -820,7 +821,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
   describe "update_job_application_status/3" do
     setup do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
@@ -859,7 +860,8 @@ defmodule BemedaPersonal.JobApplicationsTest do
       assert transition.job_application_id == job_application.id
       assert transition.transitioned_by_id == user.id
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 2
 
       status_message = Enum.at(messages, 1)
@@ -896,7 +898,8 @@ defmodule BemedaPersonal.JobApplicationsTest do
       transitions = Repo.all(JobApplicationStateTransition)
       assert length(transitions) == 2
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 3
     end
 
@@ -917,7 +920,8 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
       assert Repo.all(JobApplicationStateTransition) == []
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 1
     end
 
@@ -936,7 +940,8 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
       assert Repo.all(JobApplicationStateTransition) == []
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 1
     end
 
@@ -961,14 +966,15 @@ defmodule BemedaPersonal.JobApplicationsTest do
       transitions = Repo.all(JobApplicationStateTransition)
       assert length(transitions) == 2
 
-      messages = Chat.list_messages(job_application)
+      scope = Scope.for_user(job_application.user)
+      messages = Chat.list_messages(scope, job_application)
       assert length(messages) == 3
     end
   end
 
   describe "change_job_application_status/2" do
     setup do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
@@ -1017,7 +1023,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
   describe "list_job_application_state_transitions/1" do
     setup do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
@@ -1073,7 +1079,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
   describe "user_has_applied_to_company_job?/2" do
     test "returns true when user has applied to a job at the company" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       _job_application = job_application_fixture(user, job_posting)
@@ -1082,7 +1088,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns false when user has not applied to any job at the company" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       _job_posting = job_posting_fixture(company)
 
@@ -1091,12 +1097,14 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
     test "returns false when user has applied to jobs at other companies but not this one" do
       user = user_fixture()
+      employer1 = employer_user_fixture()
+      employer2 = employer_user_fixture()
 
-      company1 = company_fixture(user)
+      company1 = company_fixture(employer1)
       job_posting1 = job_posting_fixture(company1)
       _job_application1 = job_application_fixture(user, job_posting1)
 
-      company2 = company_fixture(user)
+      company2 = company_fixture(employer2)
       _job_posting2 = job_posting_fixture(company2)
 
       assert JobApplications.user_has_applied_to_company_job?(user.id, company1.id)
@@ -1104,7 +1112,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns true when user has applied to multiple jobs at the same company" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job_posting1 = job_posting_fixture(company)
@@ -1117,7 +1125,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns false for non-existent user" do
-      company = company_fixture(user_fixture())
+      company = company_fixture(employer_user_fixture())
       non_existent_user_id = Ecto.UUID.generate()
 
       refute JobApplications.user_has_applied_to_company_job?(non_existent_user_id, company.id)
@@ -1131,7 +1139,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns true regardless of job application status" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
@@ -1154,14 +1162,16 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns correct results for multiple users and companies" do
+      employer1 = employer_user_fixture(%{email: "employer1@example.com"})
+      employer2 = employer_user_fixture(%{email: "employer2@example.com"})
       user1 = user_fixture(%{email: "user1@example.com"})
-      company1 = company_fixture(user1)
-      job_posting1 = job_posting_fixture(company1)
-      _job_application1 = job_application_fixture(user1, job_posting1)
-
       user2 = user_fixture(%{email: "user2@example.com"})
-      company2 = company_fixture(user2)
+
+      company1 = company_fixture(employer1)
+      company2 = company_fixture(employer2)
+      job_posting1 = job_posting_fixture(company1)
       job_posting2 = job_posting_fixture(company2)
+      _job_application1 = job_application_fixture(user1, job_posting1)
       _job_application2 = job_application_fixture(user2, job_posting2)
 
       assert JobApplications.user_has_applied_to_company_job?(user1.id, company1.id)
@@ -1179,7 +1189,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns correct count when user has one application" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       _job_application = job_application_fixture(user, job_posting)
@@ -1188,7 +1198,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "returns correct count when user has multiple applications" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       # Create 3 job postings and applications
@@ -1204,9 +1214,10 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "only counts applications for the specified user" do
+      employer = employer_user_fixture(%{email: "employer@example.com"})
       user1 = user_fixture(%{email: "user1@example.com"})
       user2 = user_fixture(%{email: "user2@example.com"})
-      company = company_fixture(user1)
+      company = company_fixture(employer)
       job_posting = job_posting_fixture(company)
 
       # Create applications for both users
@@ -1218,7 +1229,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "counts applications regardless of their status" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting1 = job_posting_fixture(company)
       job_posting2 = job_posting_fixture(company)
@@ -1243,7 +1254,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "accepts user_id as string or binary" do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       _job_application = job_application_fixture(user, job_posting)
@@ -1260,7 +1271,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
 
   describe "get_latest_withdraw_state_transition/1" do
     setup do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
@@ -1371,6 +1382,306 @@ defmodule BemedaPersonal.JobApplicationsTest do
       new_job_application = job_application_fixture(user, job_posting)
 
       refute JobApplications.get_latest_withdraw_state_transition(new_job_application)
+    end
+  end
+
+  # Scope-based TDD Tests - Dual Authorization Patterns
+  setup :setup_scope_tests
+
+  defp setup_scope_tests(_context) do
+    # Create employer scope (company owner)
+    employer_scope = employer_scope_fixture()
+    job_posting = job_posting_fixture(employer_scope.company)
+
+    # Create job seeker scope (applicant)
+    job_seeker_scope = job_seeker_scope_fixture()
+
+    # Create application
+    job_application = job_application_fixture(job_seeker_scope.user, job_posting)
+
+    # Create other scopes for negative testing
+    other_employer_scope = employer_scope_fixture()
+    other_job_seeker_scope = job_seeker_scope_fixture()
+
+    %{
+      employer_scope: employer_scope,
+      job_seeker_scope: job_seeker_scope,
+      other_employer_scope: other_employer_scope,
+      other_job_seeker_scope: other_job_seeker_scope,
+      job_posting: job_posting,
+      job_application: job_application
+    }
+  end
+
+  describe "list_job_applications/1 (scope-based)" do
+    test "employer scope returns applications for their company's job postings", %{
+      employer_scope: employer_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based list
+      results = JobApplications.list_job_applications(employer_scope)
+
+      # Employer should see applications to their job postings
+      assert Enum.any?(results, &(&1.id == job_application.id))
+    end
+
+    test "job seeker scope returns their own applications only", %{
+      job_seeker_scope: job_seeker_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based list
+      results = JobApplications.list_job_applications(job_seeker_scope)
+
+      # Job seeker should see their own applications
+      assert Enum.any?(results, &(&1.id == job_application.id))
+
+      # Should only contain applications from this user
+      assert Enum.all?(results, &(&1.user_id == job_seeker_scope.user.id))
+    end
+
+    test "other employer scope does not see applications to different companies", %{
+      other_employer_scope: other_employer_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based list
+      results = JobApplications.list_job_applications(other_employer_scope)
+
+      # Other employer should not see this application
+      refute Enum.any?(results, &(&1.id == job_application.id))
+    end
+
+    test "other job seeker scope does not see different user's applications", %{
+      other_job_seeker_scope: other_job_seeker_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based list
+      results = JobApplications.list_job_applications(other_job_seeker_scope)
+
+      # Other job seeker should not see this application
+      refute Enum.any?(results, &(&1.id == job_application.id))
+    end
+
+    test "nil scope returns empty list" do
+      # RED phase: This will fail until we implement scope-based list
+      results = JobApplications.list_job_applications(nil)
+      assert results == []
+    end
+  end
+
+  describe "get_job_application!/2 (scope-based)" do
+    test "employer scope can access applications to their job postings", %{
+      employer_scope: employer_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based get
+      result = JobApplications.get_job_application!(employer_scope, job_application.id)
+      assert result.id == job_application.id
+    end
+
+    test "job seeker scope can access their own applications", %{
+      job_seeker_scope: job_seeker_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based get
+      result = JobApplications.get_job_application!(job_seeker_scope, job_application.id)
+      assert result.id == job_application.id
+    end
+
+    test "other employer scope cannot access applications to different companies", %{
+      other_employer_scope: other_employer_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based get
+      assert_raise Ecto.NoResultsError, fn ->
+        JobApplications.get_job_application!(other_employer_scope, job_application.id)
+      end
+    end
+
+    test "other job seeker scope cannot access different user's applications", %{
+      other_job_seeker_scope: other_job_seeker_scope,
+      job_application: job_application
+    } do
+      # RED phase: This will fail until we implement scope-based get
+      assert_raise Ecto.NoResultsError, fn ->
+        JobApplications.get_job_application!(other_job_seeker_scope, job_application.id)
+      end
+    end
+
+    test "nil scope cannot access applications" do
+      # RED phase: This will fail until we implement scope-based get
+      assert_raise Ecto.NoResultsError, fn ->
+        JobApplications.get_job_application!(nil, Ecto.UUID.generate())
+      end
+    end
+  end
+
+  describe "create_job_application/3 (scope-based)" do
+    test "job seeker scope can create applications", %{
+      job_seeker_scope: job_seeker_scope,
+      job_posting: job_posting
+    } do
+      attrs = %{"cover_letter" => "Test cover letter"}
+
+      # RED phase: This will fail until we implement scope-based create
+      assert {:ok, %JobApplication{} = job_application} =
+               JobApplications.create_job_application(job_seeker_scope, job_posting, attrs)
+
+      assert job_application.cover_letter == "Test cover letter"
+      assert job_application.user_id == job_seeker_scope.user.id
+      assert job_application.job_posting_id == job_posting.id
+    end
+
+    test "employer scope cannot create applications", %{
+      employer_scope: employer_scope,
+      job_posting: job_posting
+    } do
+      attrs = %{"cover_letter" => "Test cover letter"}
+
+      # RED phase: This will fail until we implement scope-based create
+      assert {:error, :unauthorized} =
+               JobApplications.create_job_application(employer_scope, job_posting, attrs)
+    end
+
+    test "nil scope cannot create applications", %{job_posting: job_posting} do
+      attrs = %{"cover_letter" => "Test cover letter"}
+
+      # RED phase: This will fail until we implement scope-based create
+      assert {:error, :unauthorized} =
+               JobApplications.create_job_application(nil, job_posting, attrs)
+    end
+  end
+
+  describe "update_job_application/3 (scope-based)" do
+    test "job seeker scope can update their own applications", %{
+      job_seeker_scope: job_seeker_scope,
+      job_application: job_application
+    } do
+      attrs = %{"cover_letter" => "Updated cover letter"}
+
+      # RED phase: This will fail until we implement scope-based update
+      assert {:ok, %JobApplication{} = updated_application} =
+               JobApplications.update_job_application(job_seeker_scope, job_application, attrs)
+
+      assert updated_application.cover_letter == "Updated cover letter"
+      assert updated_application.id == job_application.id
+    end
+
+    test "employer scope can update applications to their job postings", %{
+      employer_scope: employer_scope,
+      job_application: job_application
+    } do
+      # Only certain fields can be updated by employers
+      attrs = %{"internal_notes" => "Updated internal notes"}
+
+      # RED phase: This will fail until we implement scope-based update
+      assert {:ok, %JobApplication{} = updated_application} =
+               JobApplications.update_job_application(employer_scope, job_application, attrs)
+
+      assert updated_application.id == job_application.id
+    end
+
+    test "other job seeker scope cannot update different user's applications", %{
+      other_job_seeker_scope: other_job_seeker_scope,
+      job_application: job_application
+    } do
+      attrs = %{"cover_letter" => "Malicious update"}
+
+      # RED phase: This will fail until we implement scope-based update
+      assert {:error, :unauthorized} =
+               JobApplications.update_job_application(
+                 other_job_seeker_scope,
+                 job_application,
+                 attrs
+               )
+    end
+
+    test "other employer scope cannot update applications to different companies", %{
+      other_employer_scope: other_employer_scope,
+      job_application: job_application
+    } do
+      attrs = %{"internal_notes" => "Malicious update"}
+
+      # RED phase: This will fail until we implement scope-based update
+      assert {:error, :unauthorized} =
+               JobApplications.update_job_application(
+                 other_employer_scope,
+                 job_application,
+                 attrs
+               )
+    end
+
+    test "nil scope cannot update applications", %{job_application: job_application} do
+      attrs = %{"cover_letter" => "Malicious update"}
+
+      # RED phase: This will fail until we implement scope-based update
+      assert {:error, :unauthorized} =
+               JobApplications.update_job_application(nil, job_application, attrs)
+    end
+  end
+
+  describe "update_job_application_status/4 (scope-based)" do
+    test "employer scope can update status on applications to their job postings", %{
+      employer_scope: employer_scope,
+      job_application: job_application
+    } do
+      attrs = %{"to_state" => "offer_extended", "notes" => "Great candidate"}
+
+      # RED phase: This will fail until we implement scope-based status update
+      assert {:ok, %JobApplication{} = updated_application} =
+               JobApplications.update_job_application_status(
+                 employer_scope,
+                 job_application,
+                 attrs
+               )
+
+      assert updated_application.state == "offer_extended"
+    end
+
+    test "job seeker scope can withdraw their own applications", %{
+      job_seeker_scope: job_seeker_scope,
+      job_application: job_application
+    } do
+      attrs = %{"to_state" => "withdrawn", "notes" => "Found another opportunity"}
+
+      # RED phase: This will fail until we implement scope-based status update
+      assert {:ok, %JobApplication{} = updated_application} =
+               JobApplications.update_job_application_status(
+                 job_seeker_scope,
+                 job_application,
+                 attrs
+               )
+
+      assert updated_application.state == "withdrawn"
+    end
+
+    test "job seeker scope cannot change status to employer-only states", %{
+      job_seeker_scope: job_seeker_scope,
+      job_application: job_application
+    } do
+      attrs = %{"to_state" => "offer_extended"}
+
+      # RED phase: This will fail until we implement scope-based status update
+      assert {:error, :unauthorized} =
+               JobApplications.update_job_application_status(
+                 job_seeker_scope,
+                 job_application,
+                 attrs
+               )
+    end
+
+    test "other employer scope cannot update status on different company applications", %{
+      other_employer_scope: other_employer_scope,
+      job_application: job_application
+    } do
+      attrs = %{"to_state" => "offer_extended"}
+
+      # RED phase: This will fail until we implement scope-based status update
+      assert {:error, :unauthorized} =
+               JobApplications.update_job_application_status(
+                 other_employer_scope,
+                 job_application,
+                 attrs
+               )
     end
   end
 end

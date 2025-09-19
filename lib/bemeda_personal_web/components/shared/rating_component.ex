@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.Components.Shared.RatingComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.Ratings
@@ -251,13 +252,15 @@ defmodule BemedaPersonalWeb.Components.Shared.RatingComponent do
   end
 
   defp create_or_update_rating("Company", company_id, attrs, socket) do
-    company = Companies.get_company!(company_id)
+    scope = create_scope_for_user(socket.assigns.current_user)
+    company = Companies.get_company!(scope, company_id)
     Ratings.rate_company(socket.assigns.current_user, company, attrs)
   end
 
   defp create_or_update_rating("User", user_id, attrs, socket) do
     company = Companies.get_company_by_user(socket.assigns.current_user)
-    user = Accounts.get_user!(user_id)
+    scope = create_scope_for_user(socket.assigns.current_user)
+    user = Accounts.get_user!(scope, user_id)
     Ratings.rate_user(company, user, attrs)
   end
 
@@ -332,5 +335,18 @@ defmodule BemedaPersonalWeb.Components.Shared.RatingComponent do
 
   defp format_date(datetime) do
     Calendar.strftime(datetime, "%d %b %Y")
+  end
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
   end
 end

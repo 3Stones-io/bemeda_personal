@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
   import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Media.MediaAsset
 
@@ -133,7 +134,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/company/jobs/new")
 
-      job_count_before = length(JobPostings.list_job_postings(%{company_id: company.id}))
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      job_count_before = length(JobPostings.list_job_postings(scope))
 
       form_data = %{
         "job_posting" => %{
@@ -164,7 +170,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert render(index_view) =~ "Software Engineer"
 
       # Verify the job was created in the database
-      job_count_after = length(JobPostings.list_job_postings(%{company_id: company.id}))
+      job_count_after = length(JobPostings.list_job_postings(scope))
       assert job_count_after == job_count_before + 1
     end
 
@@ -174,7 +180,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company/jobs/new")
 
-      job_count_before = length(JobPostings.list_job_postings(%{company_id: company.id}))
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      job_count_before = length(JobPostings.list_job_postings(scope))
 
       view
       |> element("#job_posting-video-file-upload")
@@ -208,7 +219,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       assert path == "/company/jobs"
 
-      job_postings = JobPostings.list_job_postings(%{company_id: company.id})
+      job_postings = JobPostings.list_job_postings(scope)
       job_count_after = length(job_postings)
       assert job_count_after == job_count_before + 1
 
@@ -272,8 +283,13 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       user: user,
       job_posting: job_posting
     } do
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(job_posting.company)
+
       {:ok, job_posting} =
-        JobPostings.update_job_posting(job_posting, %{
+        JobPostings.update_job_posting(scope, job_posting, %{
           "media_data" => %{
             "file_name" => "test_video.mp4",
             "upload_id" => Ecto.UUID.generate()
@@ -312,7 +328,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert path == "/company/jobs"
 
       # Verify the job was updated
-      updated_job = JobPostings.get_job_posting!(job_posting.id)
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(job_posting.company)
+
+      updated_job = JobPostings.get_job_posting!(scope, job_posting.id)
       assert updated_job.title == "Updated Job Title"
     end
 
@@ -359,7 +380,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert path == "/company/jobs"
 
       # Verify updates
-      updated_job = JobPostings.get_job_posting!(job_posting.id)
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      updated_job = JobPostings.get_job_posting!(scope, job_posting.id)
       assert updated_job.title == "Updated Job Title"
 
       assert %MediaAsset{
@@ -381,7 +407,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
                |> live(~p"/company/jobs/#{other_job.id}/edit")
 
       assert path == "/company/jobs"
-      assert flash["error"] == "You are not authorized to edit this job posting"
+      assert flash["error"] == "Job posting not found or not authorized"
     end
   end
 

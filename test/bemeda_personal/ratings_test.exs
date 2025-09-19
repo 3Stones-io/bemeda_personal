@@ -12,7 +12,7 @@ defmodule BemedaPersonal.RatingsTest do
 
   setup do
     user = user_fixture(confirmed: true)
-    company_admin = user_fixture(confirmed: true)
+    company_admin = employer_user_fixture(confirmed: true)
     company = company_fixture(company_admin)
 
     rating =
@@ -55,7 +55,7 @@ defmodule BemedaPersonal.RatingsTest do
   describe "rate_company/3" do
     setup do
       user = user_fixture(confirmed: true)
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
@@ -121,7 +121,7 @@ defmodule BemedaPersonal.RatingsTest do
 
     test "user cannot rate a company without interaction" do
       user = user_fixture(confirmed: true)
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
 
       attrs = %{score: 4, comment: "Great company!"}
@@ -146,7 +146,7 @@ defmodule BemedaPersonal.RatingsTest do
   describe "rate_user/3" do
     setup do
       user = user_fixture(confirmed: true)
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
       job_posting = job_posting_fixture(company)
       job_application = job_application_fixture(user, job_posting)
@@ -212,7 +212,7 @@ defmodule BemedaPersonal.RatingsTest do
 
     test "company cannot rate a user without interaction" do
       user = user_fixture(confirmed: true)
-      company_admin = user_fixture(confirmed: true)
+      company_admin = employer_user_fixture(confirmed: true)
       company = company_fixture(company_admin)
 
       attrs = %{score: 3, comment: "Good candidate"}

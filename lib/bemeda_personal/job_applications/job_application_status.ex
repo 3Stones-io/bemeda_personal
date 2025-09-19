@@ -5,10 +5,14 @@ defmodule BemedaPersonal.JobApplications.JobApplicationStatus do
 
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat
+  alias BemedaPersonal.Companies
+  alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobApplications.JobApplicationStateTransition
+  alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
@@ -18,9 +22,52 @@ defmodule BemedaPersonal.JobApplications.JobApplicationStatus do
   @type changeset :: Ecto.Changeset.t()
   @type job_application :: JobApplication.t()
   @type job_application_state_transition :: JobApplicationStateTransition.t()
+  @type scope :: Scope.t()
   @type user :: User.t()
 
   @job_application_topic "job_application"
+
+  @spec update_job_application_status(scope() | nil, job_application(), attrs()) ::
+          {:ok, job_application()} | {:error, changeset() | :unauthorized}
+  def update_job_application_status(
+        %Scope{user: %User{user_type: :employer} = user, company: %Company{id: company_id}},
+        %JobApplication{job_posting: %JobPosting{company_id: posting_company_id}} =
+          job_application,
+        attrs
+      )
+      when company_id == posting_company_id do
+    # Employer can update status on applications to their job postings
+    update_job_application_status(job_application, user, attrs)
+  end
+
+  def update_job_application_status(
+        %Scope{user: %User{id: user_id, user_type: :job_seeker} = user},
+        %JobApplication{user_id: application_user_id} = job_application,
+        %{"to_state" => "withdrawn"} = attrs
+      )
+      when user_id == application_user_id do
+    # Job seeker can withdraw their own applications
+    update_job_application_status(job_application, user, attrs)
+  end
+
+  def update_job_application_status(
+        %Scope{user: %User{user_type: :job_seeker}},
+        %JobApplication{},
+        _attrs
+      ) do
+    # Job seekers cannot update status to non-withdrawal states
+    {:error, :unauthorized}
+  end
+
+  def update_job_application_status(%Scope{}, %JobApplication{}, _attrs) do
+    # Other scope combinations are unauthorized
+    {:error, :unauthorized}
+  end
+
+  def update_job_application_status(nil, %JobApplication{}, _attrs) do
+    # No scope means no access
+    {:error, :unauthorized}
+  end
 
   @doc """
   Updates a job application status and creates a state transition record.
@@ -58,7 +105,10 @@ defmodule BemedaPersonal.JobApplications.JobApplicationStatus do
                                             } ->
       state = job_application_state_transition.to_state
 
-      Chat.create_message(user, job_application_state_transition.job_application, %{
+      # Create appropriate scope based on user type
+      scope = build_scope_for_user(user)
+
+      Chat.create_message(scope, user, job_application_state_transition.job_application, %{
         content: state,
         type: "status_update"
       })
@@ -154,6 +204,22 @@ defmodule BemedaPersonal.JobApplications.JobApplicationStatus do
 
   defp handle_update_job_application_status_result({:error, _operation, changeset, _changes}) do
     {:error, changeset}
+  end
+
+  defp build_scope_for_user(%User{user_type: :employer} = user) do
+    case Companies.get_company_by_user(user) do
+      nil ->
+        Scope.for_user(user)
+
+      company ->
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+    end
+  end
+
+  defp build_scope_for_user(%User{user_type: :job_seeker} = user) do
+    Scope.for_user(user)
   end
 
   defp broadcast_event(topic, event, message) do

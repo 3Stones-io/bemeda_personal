@@ -640,3 +640,8 @@ msgstr "Rôle médical*"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Phone"
 msgstr "Numéro de téléphone"
+
+#: lib/bemeda_personal_web/live/user_login_live.ex
+#, elixir-autogen, elixir-format
+msgid "Sign in with magic link instead →"
+msgstr "Se connecter avec un lien magique →"

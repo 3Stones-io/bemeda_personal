@@ -8,6 +8,7 @@ defmodule BemedaPersonal.DigitalSignaturesTest do
   import BemedaPersonal.JobPostingsFixtures
   import Mox
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.DigitalSignatures
   alias BemedaPersonal.DigitalSignatures.Providers.Mock
 
@@ -28,8 +29,12 @@ defmodule BemedaPersonal.DigitalSignaturesTest do
     # Create a contract message with PDF
     upload_id = Ecto.UUID.generate()
 
+    user_scope = Scope.for_user(employer)
+    scope = Scope.put_company(user_scope, company)
+
     {:ok, contract_message} =
       BemedaPersonal.Chat.create_message_with_media(
+        scope,
         employer,
         job_application,
         %{
@@ -45,7 +50,7 @@ defmodule BemedaPersonal.DigitalSignaturesTest do
 
     # Create job offer with extended status and link to contract message
     {:ok, _job_offer} =
-      BemedaPersonal.JobOffers.create_job_offer(contract_message, %{
+      BemedaPersonal.JobOffers.create_job_offer(scope, contract_message, %{
         job_application_id: job_application.id,
         status: :extended,
         variables: BemedaPersonal.JobOffers.auto_populate_variables(job_application)
@@ -144,7 +149,8 @@ defmodule BemedaPersonal.DigitalSignaturesTest do
       assert updated_application.state == "offer_accepted"
 
       # Check that messages were created (status update + signed document)
-      messages = BemedaPersonal.Chat.list_messages(updated_application)
+      scope = Scope.for_user(updated_application.user)
+      messages = BemedaPersonal.Chat.list_messages(scope, updated_application)
 
       # Find a message with the upload_id in the media_asset
       has_signed_doc_message =

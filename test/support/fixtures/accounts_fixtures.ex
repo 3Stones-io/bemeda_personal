@@ -4,9 +4,11 @@ defmodule BemedaPersonal.AccountsFixtures do
   entities via the `BemedaPersonal.Accounts` context.
   """
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
 
   @type attrs :: keyword()
+  @type scope :: Scope.t()
 
   @default_locale Application.compile_env!(:bemeda_personal, BemedaPersonalWeb.Gettext)[
                     :default_locale
@@ -47,12 +49,27 @@ defmodule BemedaPersonal.AccountsFixtures do
       |> valid_user_attributes()
       |> BemedaPersonal.Accounts.register_user()
 
-    if attrs[:confirmed] do
-      user
-      |> Ecto.Changeset.change(%{confirmed_at: DateTime.utc_now(:second)})
+    confirmed_user =
+      if attrs[:confirmed] do
+        user
+        |> Ecto.Changeset.change(%{confirmed_at: DateTime.utc_now(:second)})
+        |> BemedaPersonal.Repo.update!()
+      else
+        user
+      end
+
+    # Handle magic link preferences if specified
+    magic_link_attrs =
+      attrs
+      |> Enum.filter(fn {key, _value} -> key in [:magic_link_enabled, :passwordless_only] end)
+      |> Enum.into(%{})
+
+    if magic_link_attrs != %{} do
+      confirmed_user
+      |> User.magic_link_preferences_changeset(magic_link_attrs)
       |> BemedaPersonal.Repo.update!()
     else
-      user
+      confirmed_user
     end
   end
 
@@ -80,5 +97,35 @@ defmodule BemedaPersonal.AccountsFixtures do
 
   defp maybe_set_locale(attrs) when is_list(attrs) do
     Keyword.put_new(attrs, :locale, @default_locale)
+  end
+
+  @doc """
+  Generate a user scope fixture
+  """
+  @spec user_scope_fixture(attrs()) :: scope()
+  def user_scope_fixture(attrs \\ []) do
+    user = user_fixture(attrs)
+    Scope.for_user(user)
+  end
+
+  @doc """
+  Generate an employer scope with company
+  """
+  @spec employer_scope_fixture(attrs()) :: scope()
+  def employer_scope_fixture(attrs \\ []) do
+    user = user_fixture(Keyword.put(attrs, :user_type, :employer))
+    company = BemedaPersonal.CompaniesFixtures.company_fixture(user)
+
+    scope = Scope.for_user(user)
+    Scope.put_company(scope, company)
+  end
+
+  @doc """
+  Generate a job seeker scope
+  """
+  @spec job_seeker_scope_fixture(attrs()) :: scope()
+  def job_seeker_scope_fixture(attrs \\ []) do
+    user = user_fixture(Keyword.put(attrs, :user_type, :job_seeker))
+    Scope.for_user(user)
   end
 end

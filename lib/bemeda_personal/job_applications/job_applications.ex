@@ -5,7 +5,9 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
 
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobApplications.JobApplicationFilters
   alias BemedaPersonal.JobApplications.JobApplicationStateTransition
@@ -21,9 +23,77 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
   @type changeset :: Ecto.Changeset.t()
   @type job_application :: JobApplication.t()
   @type job_posting :: JobPosting.t()
+  @type scope :: Scope.t()
   @type user :: User.t()
 
   @job_application_topic "job_application"
+
+  @doc """
+  Returns the list of job applications with scope-based authorization.
+
+  Employers see applications for their company's job postings.
+  Job seekers see only their own applications.
+
+  ## Examples
+
+      iex> list_job_applications(employer_scope)
+      [%JobApplication{}, ...]
+
+      iex> list_job_applications(job_seeker_scope)
+      [%JobApplication{}, ...]
+
+      iex> list_job_applications(nil)
+      []
+
+  """
+  @spec list_job_applications(scope() | nil) :: [job_application()]
+  def list_job_applications(%Scope{
+        user: %User{user_type: :employer},
+        company: %Company{id: company_id}
+      }) do
+    # Employer sees applications to their company's job postings
+    query =
+      from(ja in JobApplication,
+        join: jp in assoc(ja, :job_posting),
+        where: jp.company_id == ^company_id,
+        order_by: [desc: ja.inserted_at],
+        preload: [
+          :media_asset,
+          :tags,
+          :user,
+          job_posting: [company: [:admin_user, :media_asset]]
+        ]
+      )
+
+    Repo.all(query)
+  end
+
+  def list_job_applications(%Scope{user: %User{id: user_id, user_type: :job_seeker}}) do
+    # Job seeker sees their own applications
+    query =
+      from(ja in JobApplication,
+        where: ja.user_id == ^user_id,
+        order_by: [desc: ja.inserted_at],
+        preload: [
+          :media_asset,
+          :tags,
+          :user,
+          job_posting: [company: [:admin_user, :media_asset]]
+        ]
+      )
+
+    Repo.all(query)
+  end
+
+  def list_job_applications(%Scope{}) do
+    # Other scope types see no applications
+    []
+  end
+
+  def list_job_applications(nil) do
+    # No scope means no access
+    []
+  end
 
   @doc """
   Counts all job applications for a user.
@@ -75,21 +145,64 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
   end
 
   @doc """
-  Gets a single job application.
+  Gets a single job application with scope-based authorization.
 
-  Raises `Ecto.NoResultsError` if the Job application does not exist.
+  Employers can access applications to their company's job postings.
+  Job seekers can access their own applications.
+
+  Raises `Ecto.NoResultsError` if the Job application does not exist or access denied.
 
   ## Examples
 
-      iex> get_job_application!(123)
+      iex> get_job_application!(employer_scope, id)
       %JobApplication{}
 
-      iex> get_job_application!(456)
+      iex> get_job_application!(job_seeker_scope, id)
+      %JobApplication{}
+
+      iex> get_job_application!(nil, id)
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_job_application!(Ecto.UUID.t()) :: job_application() | no_return()
-  def get_job_application!(id) do
+  @spec get_job_application!(scope() | nil, Ecto.UUID.t()) :: job_application() | no_return()
+  def get_job_application!(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        id
+      ) do
+    # Company owner can access applications to their postings
+    query =
+      from(ja in JobApplication,
+        join: jp in assoc(ja, :job_posting),
+        where: ja.id == ^id and jp.company_id == ^company_id,
+        preload: [
+          :media_asset,
+          :tags,
+          :user,
+          job_posting: [company: [:admin_user, :media_asset]]
+        ]
+      )
+
+    Repo.one!(query)
+  end
+
+  def get_job_application!(%Scope{user: %User{id: user_id, user_type: :job_seeker}}, id) do
+    # Applicant can access their own applications
+    query =
+      from(ja in JobApplication,
+        where: ja.id == ^id and ja.user_id == ^user_id,
+        preload: [
+          :media_asset,
+          :tags,
+          :user,
+          job_posting: [company: [:admin_user, :media_asset]]
+        ]
+      )
+
+    Repo.one!(query)
+  end
+
+  def get_job_application!(%Scope{system: true}, id) do
+    # System scope for background workers - can access any job application
     JobApplication
     |> Repo.get!(id)
     |> Repo.preload([
@@ -98,6 +211,48 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
       :user,
       job_posting: [company: [:admin_user, :media_asset]]
     ])
+  end
+
+  def get_job_application!(%Scope{user: %User{user_type: :employer}} = scope, id)
+      when is_nil(scope.company) do
+    # Handle employer scope without company loaded - find their company first
+    case BemedaPersonal.Companies.get_company_by_user(scope.user) do
+      %Company{id: company_id} ->
+        # Found company, validate they own this job application through job posting
+        query =
+          from(ja in JobApplication,
+            join: jp in assoc(ja, :job_posting),
+            where: ja.id == ^id and jp.company_id == ^company_id,
+            preload: [
+              :media_asset,
+              :tags,
+              :user,
+              job_posting: [company: [:admin_user, :media_asset]]
+            ]
+          )
+
+        case Repo.one(query) do
+          nil ->
+            raise Ecto.NoResultsError, queryable: JobApplication
+
+          job_application ->
+            job_application
+        end
+
+      nil ->
+        # Employer has no company, cannot access job applications
+        raise Ecto.NoResultsError, queryable: JobApplication
+    end
+  end
+
+  def get_job_application!(%Scope{}, _id) do
+    # Other scope types cannot access applications
+    raise Ecto.NoResultsError, queryable: JobApplication
+  end
+
+  def get_job_application!(nil, _id) do
+    # No scope means no access
+    raise Ecto.NoResultsError, queryable: JobApplication
   end
 
   @doc """
@@ -131,7 +286,11 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
   """
   @spec create_job_application(user(), job_posting(), attrs()) ::
           {:ok, job_application()} | {:error, changeset()}
-  def create_job_application(%User{} = user, %JobPosting{} = job_posting, attrs \\ %{}) do
+
+  # Function header for User version with default params
+  def create_job_application(user, job_posting, attrs \\ %{})
+
+  def create_job_application(%User{} = user, %JobPosting{} = job_posting, attrs) do
     changeset =
       %JobApplication{}
       |> JobApplication.changeset(attrs)
@@ -172,6 +331,27 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
       {:error, _operation, changeset, _changes} ->
         {:error, changeset}
     end
+  end
+
+  @spec create_job_application(scope() | nil, job_posting(), attrs()) ::
+          {:ok, job_application()} | {:error, changeset() | :unauthorized}
+  def create_job_application(
+        %Scope{user: %User{user_type: :job_seeker} = user},
+        job_posting,
+        attrs
+      ) do
+    # Job seekers can create applications
+    create_job_application(user, job_posting, attrs)
+  end
+
+  def create_job_application(%Scope{}, _job_posting, _attrs) do
+    # Other scope types cannot create applications
+    {:error, :unauthorized}
+  end
+
+  def create_job_application(nil, _job_posting, _attrs) do
+    # No scope means no access
+    {:error, :unauthorized}
   end
 
   @doc """
@@ -229,6 +409,57 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
       {:error, _operation, changeset, _changes} ->
         {:error, changeset}
     end
+  end
+
+  @doc """
+  Updates a job application with scope-based authorization.
+
+  Job seekers can update their own applications.
+  Employers can update applications to their job postings (limited fields).
+
+  ## Examples
+
+      iex> update_job_application(job_seeker_scope, application, %{cover_letter: "..."})
+      {:ok, %JobApplication{}}
+
+      iex> update_job_application(employer_scope, application, %{internal_notes: "..."})
+      {:ok, %JobApplication{}}
+
+      iex> update_job_application(other_scope, application, attrs)
+      {:error, :unauthorized}
+
+  """
+  @spec update_job_application(scope() | nil, job_application(), attrs()) ::
+          {:ok, job_application()} | {:error, changeset() | :unauthorized}
+  def update_job_application(
+        %Scope{user: %User{id: user_id, user_type: :job_seeker}},
+        %JobApplication{user_id: application_user_id} = job_application,
+        attrs
+      )
+      when user_id == application_user_id do
+    # Job seeker can update their own application
+    update_job_application(job_application, attrs)
+  end
+
+  def update_job_application(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %JobApplication{job_posting: %JobPosting{company_id: posting_company_id}} =
+          job_application,
+        attrs
+      )
+      when company_id == posting_company_id do
+    # Employer can update applications to their job postings
+    update_job_application(job_application, attrs)
+  end
+
+  def update_job_application(%Scope{}, %JobApplication{}, _attrs) do
+    # Other scope combinations are unauthorized
+    {:error, :unauthorized}
+  end
+
+  def update_job_application(nil, %JobApplication{}, _attrs) do
+    # No scope means no access
+    {:error, :unauthorized}
   end
 
   @doc """

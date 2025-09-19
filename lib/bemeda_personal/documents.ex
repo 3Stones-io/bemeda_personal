@@ -7,6 +7,7 @@ defmodule BemedaPersonal.Documents do
   import Ecto.Query, warn: false
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.Documents.Processor
   alias BemedaPersonal.Documents.Storage
@@ -63,6 +64,12 @@ defmodule BemedaPersonal.Documents do
         ) ::
           {:ok, Chat.Message.t()} | {:error, reason()}
   def generate_pdf(message_id, variables, user, job_application) do
+    # Create scope for the user
+    job_application = BemedaPersonal.Repo.preload(job_application, job_posting: [:company])
+    user_scope = Scope.for_user(user)
+    company = job_application.job_posting.company
+    scope = Scope.put_company(user_scope, company)
+
     with {:ok, %Media.MediaAsset{upload_id: upload_id} = media_asset} <-
            get_media_asset(message_id),
          {:ok, doc_path} <- download_document(upload_id),
@@ -72,6 +79,7 @@ defmodule BemedaPersonal.Documents do
       base_name = Path.rootname(media_asset.file_name)
 
       Chat.create_message_with_media(
+        scope,
         user,
         job_application,
         %{

@@ -3,8 +3,11 @@ defmodule BemedaPersonal.Accounts do
   The Accounts context.
   """
 
+  import Ecto.Changeset, only: [change: 2]
   import Ecto.Query, warn: false
 
+  alias BemedaPersonal.Accounts.MagicLinkToken
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Accounts.UserNotifier
   alias BemedaPersonal.Accounts.UserToken
@@ -15,27 +18,40 @@ defmodule BemedaPersonal.Accounts do
   @type email :: String.t()
   @type id :: binary()
   @type password :: String.t()
+  @type scope :: Scope.t()
   @type token :: String.t()
   @type user :: User.t()
 
   ## Database getters
 
   @doc """
-  Gets a user by email.
+  Gets a user by email with scope filtering.
 
   ## Examples
 
-      iex> get_user_by_email("foo@example.com")
+      iex> get_user_by_email(scope, "foo@example.com")
       %User{}
 
-      iex> get_user_by_email("unknown@example.com")
+      iex> get_user_by_email(scope, "unknown@example.com")
+      nil
+
+      iex> get_user_by_email(nil, "foo@example.com")
       nil
 
   """
-  @spec get_user_by_email(email()) :: user() | nil
-  def get_user_by_email(email) when is_binary(email) do
+  @spec get_user_by_email(scope() | nil, email()) :: user() | nil
+  def get_user_by_email(%Scope{} = _scope, email) when is_binary(email) do
+    # For now, scope-aware version works the same as regular version
+    # In the future, this could filter by scope permissions
     Repo.get_by(User, email: email)
   end
+
+  def get_user_by_email(nil, email) when is_binary(email) do
+    # Allow unauthenticated access for login/registration flows
+    Repo.get_by(User, email: email)
+  end
+
+  def get_user_by_email(nil, _email), do: nil
 
   @doc """
   Gets a user by email and password.
@@ -72,6 +88,34 @@ defmodule BemedaPersonal.Accounts do
   """
   @spec get_user!(id()) :: user()
   def get_user!(id), do: Repo.get!(User, id)
+
+  @doc """
+  Gets a single user with scope filtering.
+
+  Raises `Ecto.NoResultsError` if the User does not exist or scope is nil.
+
+  ## Examples
+
+      iex> get_user!(scope, 123)
+      %User{}
+
+      iex> get_user!(scope, 456)
+      ** (Ecto.NoResultsError)
+
+      iex> get_user!(nil, 123)
+      ** (Ecto.NoResultsError)
+
+  """
+  @spec get_user!(scope() | nil, id()) :: user()
+  def get_user!(%Scope{} = _scope, id) do
+    # For now, scope-aware version works the same as regular version
+    # In the future, this could filter by scope permissions
+    Repo.get!(User, id)
+  end
+
+  def get_user!(nil, _id) do
+    raise Ecto.NoResultsError, queryable: User
+  end
 
   ## User registration
 
@@ -195,7 +239,10 @@ defmodule BemedaPersonal.Accounts do
          {:ok, %{user: _user}} <- Repo.transaction(multi) do
       :ok
     else
-      _reason -> :error
+      {:error, :token_verification_failed} -> :error
+      {:error, :user_not_found} -> :error
+      {:error, :transaction_failed} -> :error
+      _other -> :error
     end
   end
 
@@ -352,7 +399,10 @@ defmodule BemedaPersonal.Accounts do
          {:ok, %{user: user}} <- Repo.transaction(multi) do
       {:ok, user}
     else
-      _reason -> :error
+      {:error, :token_verification_failed} -> :error
+      {:error, :user_not_found} -> :error
+      {:error, :transaction_failed} -> :error
+      _other -> :error
     end
   end
 
@@ -400,7 +450,9 @@ defmodule BemedaPersonal.Accounts do
          %User{} = user <- Repo.one(query) do
       user
     else
-      _reason -> nil
+      {:error, :token_verification_failed} -> nil
+      {:error, :user_not_found} -> nil
+      _other -> nil
     end
   end
 
@@ -483,5 +535,231 @@ defmodule BemedaPersonal.Accounts do
     user
     |> User.personal_info_changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Updates the user personal info with scope authorization.
+
+  ## Examples
+
+      iex> update_user_personal_info(scope, user, %{gender: "female", title: "Dr."})
+      {:ok, %User{}}
+
+      iex> update_user_personal_info(nil, user, %{title: "Dr."})
+      {:error, :unauthorized}
+
+      iex> update_user_personal_info(other_scope, user, %{title: "Dr."})
+      {:error, :unauthorized}
+
+  """
+  @spec update_user_personal_info(scope() | nil, user(), attrs()) ::
+          {:ok, user()} | {:error, changeset() | :unauthorized}
+  def update_user_personal_info(
+        %Scope{user: %User{id: scope_user_id}},
+        %User{id: target_user_id} = user,
+        attrs
+      )
+      when scope_user_id == target_user_id do
+    user
+    |> User.personal_info_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_user_personal_info(_scope, _user, _attrs) do
+    {:error, :unauthorized}
+  end
+
+  ## Magic Link Functions
+
+  @doc """
+  Generates and sends a magic link to the user's email
+  """
+  @spec deliver_magic_link(User.t(), function()) ::
+          {:ok, MagicLinkToken.t()} | {:error, :too_many_requests | :magic_links_disabled}
+  def deliver_magic_link(%User{magic_link_enabled: false}, _magic_link_url_fun) do
+    {:error, :magic_links_disabled}
+  end
+
+  def deliver_magic_link(%User{} = user, magic_link_url_fun)
+      when is_function(magic_link_url_fun, 1) do
+    # Rate limiting: max 3 magic links per hour
+    one_hour_ago = DateTime.add(DateTime.utc_now(), -3600, :second)
+
+    query =
+      from(t in MagicLinkToken,
+        where: t.user_id == ^user.id,
+        where: t.inserted_at > ^one_hour_ago,
+        select: count(t.id)
+      )
+
+    recent_count = Repo.one(query)
+
+    if recent_count >= 3 do
+      {:error, :too_many_requests}
+    else
+      token = MagicLinkToken.build_magic_link_token(user, "magic_link")
+
+      Repo.transaction(fn ->
+        {:ok, inserted_token} = Repo.insert(token)
+        {:ok, _user} = User.track_magic_link_sent(user)
+
+        UserNotifier.deliver_magic_link(
+          user,
+          magic_link_url_fun.(Base.url_encode64(inserted_token.token, padding: false))
+        )
+
+        inserted_token
+      end)
+    end
+  end
+
+  @doc """
+  Verifies a magic link token and logs the user in
+  """
+  @spec verify_magic_link(String.t() | nil) :: {:ok, User.t()} | {:error, :invalid_or_expired}
+  def verify_magic_link(nil), do: {:error, :invalid_or_expired}
+
+  def verify_magic_link(token_string) when is_binary(token_string) do
+    with {:ok, token} <- Base.url_decode64(token_string, padding: false),
+         %MagicLinkToken{} = magic_token <- get_valid_magic_link_token(token),
+         {:ok, _token} <- MagicLinkToken.mark_as_used(magic_token),
+         %User{} = user <- Repo.get(User, magic_token.user_id) do
+      {:ok, user}
+    else
+      _error -> {:error, :invalid_or_expired}
+    end
+  end
+
+  defp get_valid_magic_link_token(token) do
+    query =
+      from t in MagicLinkToken,
+        join: u in assoc(t, :user),
+        where: t.token == ^token,
+        where: t.context == "magic_link",
+        where: is_nil(t.used_at),
+        where: t.inserted_at > ago(15, "minute"),
+        preload: [user: u]
+
+    Repo.one(query)
+  end
+
+  @doc """
+  Delivers sudo mode magic link for sensitive operations
+  """
+  @spec deliver_sudo_magic_link(User.t(), function()) :: {:ok, MagicLinkToken.t()}
+  def deliver_sudo_magic_link(%User{} = user, sudo_url_fun) when is_function(sudo_url_fun, 1) do
+    token = MagicLinkToken.build_magic_link_token(user, "sudo")
+
+    Repo.transaction(fn ->
+      {:ok, inserted_token} = Repo.insert(token)
+
+      UserNotifier.deliver_sudo_link(
+        user,
+        sudo_url_fun.(Base.url_encode64(inserted_token.token, padding: false))
+      )
+
+      inserted_token
+    end)
+  end
+
+  @doc """
+  Verifies sudo mode access
+  """
+  @spec verify_sudo_token(String.t()) :: {:ok, User.t()} | {:error, :invalid_or_expired}
+  def verify_sudo_token(token_string) do
+    with {:ok, token} <- Base.url_decode64(token_string, padding: false),
+         %MagicLinkToken{} = magic_token <- get_valid_sudo_token(token),
+         {:ok, _token} <- MagicLinkToken.mark_as_used(magic_token),
+         %User{} = user <- Repo.get(User, magic_token.user_id),
+         {:ok, updated_user} <- User.record_sudo_authentication(user) do
+      {:ok, updated_user}
+    else
+      _error -> {:error, :invalid_or_expired}
+    end
+  end
+
+  defp get_valid_sudo_token(token) do
+    query =
+      from t in MagicLinkToken,
+        where: t.token == ^token,
+        where: t.context == "sudo",
+        where: is_nil(t.used_at),
+        where: t.inserted_at > ago(5, "minute")
+
+    Repo.one(query)
+  end
+
+  @doc """
+  Checks if user has recent sudo authentication
+  """
+  @spec has_recent_sudo?(User.t() | nil) :: boolean()
+  def has_recent_sudo?(nil), do: false
+  def has_recent_sudo?(%User{last_sudo_at: nil}), do: false
+
+  def has_recent_sudo?(%User{last_sudo_at: last_sudo}) do
+    # 15 minutes
+    minutes_ago = DateTime.add(DateTime.utc_now(), -900, :second)
+    DateTime.compare(last_sudo, minutes_ago) == :gt
+  end
+
+  @doc """
+  Updates user's magic link preferences
+  """
+  @spec update_magic_link_preferences(User.t(), map()) ::
+          {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def update_magic_link_preferences(%User{} = user, attrs) do
+    user
+    |> User.magic_link_preferences_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates the user's sudo timestamp to current time
+  """
+  @spec update_user_sudo_timestamp(User.t()) :: {:ok, User.t()} | {:error, changeset()}
+  def update_user_sudo_timestamp(%User{} = user) do
+    user
+    |> change(%{last_sudo_at: DateTime.utc_now(:second)})
+    |> Repo.update()
+  end
+
+  @doc """
+  Resets the magic link send count to 0
+  """
+  @spec reset_magic_link_send_count(User.t()) :: {:ok, User.t()} | {:error, changeset()}
+  def reset_magic_link_send_count(%User{} = user) do
+    user
+    |> change(%{magic_link_send_count: 0})
+    |> Repo.update()
+  end
+
+  @doc """
+  Clears recent magic link tokens for a user (for testing rate limiting)
+
+  This removes all MagicLinkToken records for the user that were created in the past hour,
+  effectively resetting the database-based rate limiting. Used in conjunction with
+  reset_magic_link_send_count/1 to fully reset rate limiting for testing purposes.
+  """
+  @spec clear_recent_magic_link_tokens(User.t()) :: :ok
+  def clear_recent_magic_link_tokens(%User{} = user) do
+    one_hour_ago = DateTime.add(DateTime.utc_now(), -3600, :second)
+
+    query =
+      from(t in MagicLinkToken,
+        where: t.user_id == ^user.id,
+        where: t.inserted_at > ^one_hour_ago
+      )
+
+    Repo.delete_all(query)
+    :ok
+  end
+
+  @doc """
+  Lists all users with scope authorization
+  """
+  @spec list_users(scope()) :: [User.t()]
+  def list_users(%Scope{} = _scope) do
+    # For now, return all users - in future this could be filtered by scope permissions
+    Repo.all(User)
   end
 end

@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
   import BemedaPersonal.CompaniesFixtures
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonalWeb.UserAuth
   alias Phoenix.LiveView
 
@@ -16,7 +17,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       |> Map.replace!(:secret_key_base, BemedaPersonalWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{user: employer_user_fixture(), conn: conn}
   end
 
   describe "log_in_user/3" do
@@ -24,7 +25,8 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
       assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
-      assert redirected_to(conn) == ~p"/"
+      # Employer without company redirects to company setup
+      assert redirected_to(conn) == ~p"/company"
       assert Accounts.get_user_by_session_token(token)
     end
 
@@ -323,7 +325,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     end
 
     test "halts if user already has a company", %{conn: conn} do
-      user_with_company = user_fixture()
+      user_with_company = employer_user_fixture()
       company_fixture(user_with_company)
       user_with_company_token = Accounts.generate_user_session_token(user_with_company)
 
@@ -347,7 +349,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
 
   describe "on_mount :require_user_company" do
     test "continues and assigns company if user has a company", %{conn: conn} do
-      user_with_company = user_fixture()
+      user_with_company = employer_user_fixture()
       company = company_fixture(user_with_company)
       user_with_company_token = Accounts.generate_user_session_token(user_with_company)
 
@@ -436,7 +438,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
 
   describe "require_user_company/2" do
     test "allows access and assigns company if user has a company", %{conn: conn} do
-      user_with_company = user_fixture()
+      user_with_company = employer_user_fixture()
       company = company_fixture(user_with_company)
       conn = assign(conn, :current_user, user_with_company)
       result_conn = UserAuth.require_user_company(conn, [])
@@ -578,7 +580,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     end
 
     test "redirects if user already has a company", %{conn: conn} do
-      user_with_company = user_fixture()
+      user_with_company = employer_user_fixture()
       company_fixture(user_with_company)
       conn = assign(conn, :current_user, user_with_company)
       result_conn = UserAuth.require_no_existing_company(conn, [])
@@ -757,4 +759,154 @@ defmodule BemedaPersonalWeb.UserAuthTest do
                "You must be logged in as an employer to access this page."
     end
   end
+
+  describe "fetch_current_scope/2" do
+    test "assigns scope when user is authenticated", %{conn: conn} do
+      user = user_fixture()
+
+      conn =
+        conn
+        |> assign(:current_user, user)
+        |> UserAuth.fetch_current_scope([])
+
+      assert %Scope{user: ^user} = conn.assigns.current_scope
+    end
+
+    test "assigns nil scope when no user", %{conn: conn} do
+      conn =
+        conn
+        |> assign(:current_user, nil)
+        |> UserAuth.fetch_current_scope([])
+
+      assert conn.assigns.current_scope == nil
+    end
+
+    test "assigns nil scope when current_user not assigned", %{conn: conn} do
+      conn = UserAuth.fetch_current_scope(conn, [])
+
+      assert conn.assigns.current_scope == nil
+    end
+  end
+
+  describe "log_in_user_from_liveview/2" do
+    test "assigns user and scope to socket" do
+      user = user_fixture()
+
+      socket = %Phoenix.LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}}
+      }
+
+      updated_socket = UserAuth.log_in_user_from_liveview(socket, user)
+
+      assert updated_socket.assigns.current_user == user
+      assert %Scope{user: ^user} = updated_socket.assigns.current_scope
+    end
+  end
+
+  describe "require_sudo_mode/2" do
+    test "allows access with recent sudo", %{conn: conn} do
+      user = user_fixture()
+      {:ok, updated_user} = Accounts.update_user_sudo_timestamp(user)
+
+      conn =
+        conn
+        |> assign(:current_user, updated_user)
+        |> UserAuth.require_sudo_mode([])
+
+      refute conn.halted
+    end
+
+    test "redirects without recent sudo", %{conn: conn} do
+      user = user_fixture()
+
+      conn =
+        conn
+        |> assign(:current_user, user)
+        |> fetch_flash()
+        |> UserAuth.require_sudo_mode([])
+
+      assert conn.halted
+      assert redirected_to(conn) =~ "/sudo"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "additional verification"
+    end
+
+    test "redirects when no user", %{conn: conn} do
+      conn =
+        conn
+        |> fetch_flash()
+        |> UserAuth.require_sudo_mode([])
+
+      assert conn.halted
+      assert redirected_to(conn) =~ "/sudo"
+    end
+  end
+
+  describe "on_mount :require_sudo" do
+    test "continues with recent sudo" do
+      user = user_fixture()
+      {:ok, updated_user} = Accounts.update_user_sudo_timestamp(user)
+      socket = %Phoenix.LiveView.Socket{assigns: %{current_user: updated_user}}
+
+      {:cont, _socket} = UserAuth.on_mount(:require_sudo, %{}, %{}, socket)
+    end
+
+    test "halts without recent sudo" do
+      user = user_fixture()
+
+      socket = %Phoenix.LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user}
+      }
+
+      {:halt, halted_socket} = UserAuth.on_mount(:require_sudo, %{}, %{}, socket)
+
+      assert Phoenix.Flash.get(halted_socket.assigns.flash, :error) =~ "additional verification"
+    end
+
+    test "halts without user" do
+      socket = %Phoenix.LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}}
+      }
+
+      {:halt, halted_socket} = UserAuth.on_mount(:require_sudo, %{}, %{}, socket)
+
+      assert Phoenix.Flash.get(halted_socket.assigns.flash, :error) =~ "additional verification"
+    end
+  end
+
+  describe "on_mount :mount_current_scope" do
+    test "assigns scope from session with user token", %{conn: _conn, user: user} do
+      user_token = Accounts.generate_user_session_token(user)
+      session = %{"user_token" => token_to_string(user_token)}
+
+      socket = %Phoenix.LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}}
+      }
+
+      {:cont, updated_socket} = UserAuth.on_mount(:mount_current_scope, %{}, session, socket)
+
+      assert %Scope{user: user_from_scope} = updated_socket.assigns.current_scope
+      assert user_from_scope.id == user.id
+    end
+
+    test "assigns nil scope with no user token" do
+      session = %{}
+
+      socket = %Phoenix.LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}}
+      }
+
+      {:cont, updated_socket} = UserAuth.on_mount(:mount_current_scope, %{}, session, socket)
+
+      assert updated_socket.assigns.current_scope == nil
+    end
+  end
+
+  # Helper function to convert token to string for session
+  defp token_to_string(token) when is_binary(token), do: token
+  defp token_to_string(token), do: Base.encode64(token)
 end

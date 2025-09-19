@@ -6,6 +6,7 @@ defmodule BemedaPersonal.DigitalSignatures do
   Sessions are managed in-memory via GenServers with no database persistence.
   """
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Chat
   alias BemedaPersonal.DigitalSignatures.ProviderManager
   alias BemedaPersonal.DigitalSignatures.SessionRegistry
@@ -79,7 +80,9 @@ defmodule BemedaPersonal.DigitalSignatures do
   end
 
   defp get_contract_for_signing(job_application) do
-    case JobOffers.get_job_offer_by_application(job_application.id) do
+    scope = Scope.for_user(job_application.user)
+
+    case JobOffers.get_job_offer_by_application(scope, job_application.id) do
       nil ->
         {:error, :no_job_offer}
 
@@ -129,7 +132,10 @@ defmodule BemedaPersonal.DigitalSignatures do
   end
 
   defp create_signed_document_message(job_application, signed_document_upload_id) do
+    scope = Scope.for_user(job_application.user)
+
     Chat.create_message_with_media(
+      scope,
       job_application.user,
       job_application,
       %{

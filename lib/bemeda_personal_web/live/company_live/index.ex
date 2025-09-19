@@ -1,6 +1,7 @@
 defmodule BemedaPersonalWeb.CompanyLive.Index do
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.CompanyTemplates
@@ -87,7 +88,8 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"company_id" => company_id}) do
-    company = Companies.get_company!(company_id)
+    scope = create_scope_for_user(socket.assigns.current_user)
+    company = Companies.get_company!(scope, company_id)
 
     socket
     |> assign(:company, company)
@@ -193,11 +195,17 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   def handle_info(%Broadcast{event: event, payload: payload}, socket)
       when event in [
              "job_posting_created",
-             "job_posting_updated"
+             "job_posting_updated",
+             "company_job_posting_created"
            ] do
+    job_count =
+      socket.assigns.current_user
+      |> create_scope_for_user()
+      |> JobPostings.company_jobs_count(socket.assigns.company.id)
+
     {:noreply,
      socket
-     |> assign(:job_count, JobPostings.company_jobs_count(socket.assigns.company.id))
+     |> assign(:job_count, job_count)
      |> stream_insert(:job_postings, payload.job_posting)}
   end
 
@@ -223,8 +231,13 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])
 
-  defp assign_job_postings(socket, company) do
-    job_postings = JobPostings.list_job_postings(%{company_id: company.id}, 5)
+  defp assign_job_postings(socket, _company) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+
+    job_postings =
+      scope
+      |> JobPostings.list_job_postings()
+      |> Enum.take(5)
 
     stream(socket, :job_postings, job_postings)
   end
@@ -239,8 +252,12 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   defp assign_job_count(socket, nil), do: assign(socket, :job_count, 0)
 
-  defp assign_job_count(socket, company),
-    do: assign(socket, :job_count, JobPostings.company_jobs_count(company.id))
+  defp assign_job_count(socket, company) do
+    socket.assigns.current_user
+    |> create_scope_for_user()
+    |> JobPostings.company_jobs_count(company.id)
+    |> then(&assign(socket, :job_count, &1))
+  end
 
   defp validate_file_type(params) do
     docx? =
@@ -308,5 +325,18 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
      socket
      |> assign(:template_data, %{})
      |> put_flash(:error, dgettext("companies", "Failed to upload template"))}
+  end
+
+  defp create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
   end
 end

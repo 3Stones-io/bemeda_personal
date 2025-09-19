@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.EditTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -40,8 +40,8 @@ defmodule BemedaPersonalWeb.CompanyJobLive.EditTest do
       assert {:error, {:live_redirect, %{to: "/company/jobs", flash: flash}}} =
                live(conn, ~p"/company/jobs/#{job_posting.id}/edit")
 
-      # Should show error flash message
-      assert flash["error"] =~ "You are not authorized to edit this job posting"
+      # Should show error flash message (scope-based authorization message)
+      assert flash["error"] =~ "Job posting not found or not authorized"
     end
 
     test "handles cancel form event", %{conn: conn, employer: employer, job_posting: job_posting} do

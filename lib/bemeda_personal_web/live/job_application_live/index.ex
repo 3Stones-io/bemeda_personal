@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
 
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Resumes
@@ -56,7 +57,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   def handle_info(_event, socket), do: {:noreply, socket}
 
   defp apply_action(socket, :new, %{"job_id" => job_id}) do
-    job_posting = JobPostings.get_job_posting!(job_id)
+    scope = Scope.for_user(socket.assigns.current_user)
+    job_posting = JobPostings.get_job_posting!(scope, job_id)
 
     socket
     |> assign(:page_title, dgettext("jobs", "New Application"))

@@ -13,9 +13,9 @@ defmodule BemedaPersonalWeb.UserSettingsLive.InfoTest do
   describe "user ratings" do
     setup %{conn: conn} do
       user = user_fixture(%{confirmed: true})
-      company_admin = user_fixture(%{confirmed: true})
+      company_admin = employer_user_fixture(%{confirmed: true})
       company1 = company_fixture(company_admin)
-      company2 = company_fixture(user_fixture(%{confirmed: true}))
+      company2 = company_fixture(employer_user_fixture(%{confirmed: true}))
       job_posting1 = job_posting_fixture(company1)
       job_posting2 = job_posting_fixture(company2)
       job_application1 = job_application_fixture(user, job_posting1)

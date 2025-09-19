@@ -7,11 +7,12 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
   import BemedaPersonal.JobPostingsFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobPostings
 
   describe "Job Show" do
     setup %{conn: conn} do
-      user = user_fixture()
+      user = employer_user_fixture()
       company = company_fixture(user)
 
       job =
@@ -98,9 +99,14 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
              |> has_element?()
     end
 
-    test "displays video player for job posting with video", %{conn: conn, job: job} do
+    test "displays video player for job posting with video", %{conn: conn, job: job, user: user} do
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(job.company)
+
       {:ok, job} =
-        JobPostings.update_job_posting(job, %{
+        JobPostings.update_job_posting(scope, job, %{
           "media_data" => %{
             "file_name" => "test_video.mp4",
             "status" => :uploaded,
@@ -131,7 +137,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
   describe "Job Application Modal" do
     setup %{conn: conn} do
       user = user_fixture()
-      employer = user_fixture()
+      employer = employer_user_fixture()
       company = company_fixture(employer)
 
       job =
@@ -261,7 +267,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
   describe "Job Detail Page Features" do
     setup %{conn: conn} do
       user = user_fixture()
-      employer = user_fixture()
+      employer = employer_user_fixture()
       company = company_fixture(employer)
 
       other_job1 = job_posting_fixture(company, %{title: "Other Job 1"})

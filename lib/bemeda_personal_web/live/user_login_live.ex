@@ -90,16 +90,28 @@ defmodule BemedaPersonalWeb.UserLoginLive do
               </:actions>
             </.simple_form>
 
-            <div class="text-center mt-6">
-              <span class="text-sm text-[#1f1f1f]">
-                {dgettext("auth", "Don't have an account?")}
-                <.link
-                  navigate={~p"/users/register"}
-                  class="text-[#7b4eab] underline font-medium ml-1"
-                >
-                  {dgettext("auth", "Sign up")}
-                </.link>
-              </span>
+            <div class="text-center mt-6 space-y-2">
+              <div>
+                <span class="text-sm text-[#1f1f1f]">
+                  <.link
+                    navigate={~p"/magic-link"}
+                    class="text-[#7b4eab] underline font-medium"
+                  >
+                    {dgettext("auth", "Sign in with magic link instead →")}
+                  </.link>
+                </span>
+              </div>
+              <div>
+                <span class="text-sm text-[#1f1f1f]">
+                  {dgettext("auth", "Don't have an account?")}
+                  <.link
+                    navigate={~p"/users/register"}
+                    class="text-[#7b4eab] underline font-medium ml-1"
+                  >
+                    {dgettext("auth", "Sign up")}
+                  </.link>
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -1524,11 +1524,6 @@ msgstr "Publiez une offre d'emploi et trouvez le bon professionnel médical pour
 msgid "Post job"
 msgstr "Publier l'offre"
 
-#: lib/bemeda_personal_web/live/company_job_live/edit.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "You are not authorized to edit this job posting"
-msgstr "Vous n'êtes pas autorisé à supprimer cette offre d'emploi"
-
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Character limit"
@@ -1684,3 +1679,13 @@ msgstr "Inconnu"
 #, elixir-autogen, elixir-format
 msgid "Apply Now"
 msgstr "Postuler maintenant"
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Error deleting job posting"
+msgstr "Erreur lors de la suppression de l'offre d'emploi"
+
+#: lib/bemeda_personal_web/live/company_job_live/edit.ex
+#, elixir-autogen, elixir-format
+msgid "Job posting not found or not authorized"
+msgstr "Offre d'emploi introuvable ou non autorisée"

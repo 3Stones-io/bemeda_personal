@@ -1524,11 +1524,6 @@ msgstr "Erstellen Sie eine Stellenanzeige und finden Sie die richtige medizinisc
 msgid "Post job"
 msgstr "Stelle Veröffentlichen"
 
-#: lib/bemeda_personal_web/live/company_job_live/edit.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "You are not authorized to edit this job posting"
-msgstr "Sie sind nicht berechtigt, diese Stellenausschreibung zu löschen"
-
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Character limit"
@@ -1684,3 +1679,13 @@ msgstr "Unbekannt"
 #, elixir-autogen, elixir-format
 msgid "Apply Now"
 msgstr "Apply Now"
+
+#: lib/bemeda_personal_web/live/company_job_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Error deleting job posting"
+msgstr "Fehler beim Löschen der Stellenausschreibung"
+
+#: lib/bemeda_personal_web/live/company_job_live/edit.ex
+#, elixir-autogen, elixir-format
+msgid "Job posting not found or not authorized"
+msgstr "Stellenausschreibung nicht gefunden oder nicht autorisiert"
