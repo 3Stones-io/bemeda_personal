@@ -2,6 +2,7 @@ import Ecto.Query
 
 alias BemedaPersonal.Accounts.User
 alias BemedaPersonal.Accounts
+alias BemedaPersonal.Accounts.Scope
 alias BemedaPersonal.Companies
 alias BemedaPersonal.JobApplications
 alias BemedaPersonal.JobPostings
@@ -34,7 +35,9 @@ end
 get_or_create_company = fn user, attrs ->
   case Companies.get_company_by_user(user) do
     nil ->
-      case Companies.create_company(user, attrs) do
+      scope = Scope.for_user(user)
+
+      case Companies.create_company(scope, attrs) do
         {:ok, company} ->
           company
 
@@ -345,9 +348,14 @@ existing_health_jobs =
   Repo.all(from j in JobPosting, where: j.company_id == ^company2.id, limit: 1)
 
 if Enum.empty?(existing_tech_jobs) do
+  scope1 =
+    user1
+    |> Scope.for_user()
+    |> Scope.put_company(company1)
+
   Enum.with_index(all_tech_jobs)
   |> Enum.each(fn {job_attrs, index} ->
-    {:ok, job} = JobPostings.create_job_posting(company1, job_attrs)
+    {:ok, job} = JobPostings.create_job_posting(scope1, job_attrs)
 
     update_job_inserted_at.(job, -7200 * (index + 1))
   end)
@@ -358,9 +366,14 @@ else
 end
 
 if Enum.empty?(existing_health_jobs) do
+  scope2 =
+    user2
+    |> Scope.for_user()
+    |> Scope.put_company(company2)
+
   Enum.with_index(all_health_jobs)
   |> Enum.each(fn {job_attrs, index} ->
-    {:ok, job} = JobPostings.create_job_posting(company2, job_attrs)
+    {:ok, job} = JobPostings.create_job_posting(scope2, job_attrs)
     update_job_inserted_at.(job, -7200 * (index + 1))
   end)
 
@@ -384,7 +397,8 @@ create_job_applications = fn ->
         preload: [:media_asset, company: :media_asset]
     )
 
-  existing_applications = JobApplications.list_job_applications(%{user_id: job_seeker.id})
+  job_seeker_scope = Scope.for_user(job_seeker)
+  existing_applications = JobApplications.list_job_applications(job_seeker_scope)
 
   if Enum.empty?(existing_applications) and not Enum.empty?(tech_jobs_list) and
        not Enum.empty?(health_jobs_list) do
@@ -395,7 +409,7 @@ create_job_applications = fn ->
 
     Enum.each(tech_jobs_to_apply, fn job ->
       {:ok, _application} =
-        JobApplications.create_job_application(job_seeker, job, %{
+        JobApplications.create_job_application(job_seeker_scope, job, %{
           cover_letter:
             "I am very interested in this #{job.title} position at #{job.company.name}. My background in technology and passion for innovation make me a great fit for this role. I would love to contribute to your team's success.",
           status: Enum.random(application_statuses)
@@ -404,7 +418,7 @@ create_job_applications = fn ->
 
     Enum.each(health_jobs_to_apply, fn job ->
       {:ok, _application} =
-        JobApplications.create_job_application(job_seeker, job, %{
+        JobApplications.create_job_application(job_seeker_scope, job, %{
           cover_letter:
             "I am excited about the opportunity to work as a #{job.title} at #{job.company.name}. My interest in healthcare technology and commitment to improving patient outcomes align perfectly with your mission.",
           status: Enum.random(application_statuses)
