@@ -11,6 +11,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobPostings.Enums
+  alias BemedaPersonal.Media
   alias BemedaPersonalWeb.Components.Shared.RatingComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
@@ -325,7 +326,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
                 <.logo_container>
                   <%= if @company.media_asset do %>
                     <img
-                      src={@company.media_asset.url}
+                      src={Media.get_media_asset_url(@company.media_asset)}
                       alt={@company.name}
                       class="w-full h-full object-cover rounded-full"
                     />
@@ -405,7 +406,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.Info do
                   <.logo_container>
                     <%= if @company.media_asset do %>
                       <img
-                        src={@company.media_asset.url}
+                        src={Media.get_media_asset_url(@company.media_asset)}
                         alt={@company.name}
                         class="w-full h-full object-cover rounded-full"
                       />

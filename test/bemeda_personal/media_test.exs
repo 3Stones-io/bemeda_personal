@@ -49,7 +49,7 @@ defmodule BemedaPersonal.MediaTest do
     end
 
     test "returns nil when media asset with id does not exist", %{scope: scope} do
-      assert Media.get_media_asset(scope, Ecto.UUID.generate()) == nil
+      refute Media.get_media_asset(scope, Ecto.UUID.generate())
     end
   end
 
@@ -133,10 +133,10 @@ defmodule BemedaPersonal.MediaTest do
       invalid_attrs = %{file_name: nil, type: nil}
 
       {:ok, updated_media_asset} = Media.update_media_asset(media_asset, invalid_attrs)
-      assert updated_media_asset.file_name == nil
+      refute updated_media_asset.file_name
       fetched_media_asset = Media.get_media_asset(scope, media_asset.id)
       assert fetched_media_asset.id == updated_media_asset.id
-      assert fetched_media_asset.file_name == nil
+      refute fetched_media_asset.file_name
     end
 
     test "broadcasts to company topic when updating company media asset", %{
@@ -216,7 +216,7 @@ defmodule BemedaPersonal.MediaTest do
     test "deletes the media asset", %{job_posting: job_posting, scope: scope} do
       media_asset = media_asset_fixture(job_posting, %{})
       assert {:ok, %MediaAsset{}} = Media.delete_media_asset(media_asset)
-      assert Media.get_media_asset(scope, media_asset.id) == nil
+      refute Media.get_media_asset(scope, media_asset.id)
     end
 
     test "returns error when media asset does not exist" do
@@ -242,6 +242,87 @@ defmodule BemedaPersonal.MediaTest do
       changeset = Media.change_media_asset(media_asset, %{file_name: nil})
       assert %Ecto.Changeset{} = changeset
       assert changeset.valid?
+    end
+  end
+
+  describe "get_media_asset_url/1" do
+    test "returns nil when media_asset is nil" do
+      refute Media.get_media_asset_url(nil)
+    end
+
+    test "returns nil when media_asset has nil upload_id" do
+      media_asset = %MediaAsset{upload_id: nil}
+      refute Media.get_media_asset_url(media_asset)
+    end
+
+    test "returns URL string when media_asset has valid upload_id" do
+      upload_id = Ecto.UUID.generate()
+      media_asset = %MediaAsset{upload_id: upload_id}
+
+      result = Media.get_media_asset_url(media_asset)
+
+      # Should return a string URL (TigrisHelper.get_presigned_download_url result)
+      assert is_binary(result)
+      # The URL should contain the upload_id
+      assert String.contains?(result, upload_id)
+    end
+
+    test "handles edge case with empty string upload_id" do
+      media_asset = %MediaAsset{upload_id: ""}
+      result = Media.get_media_asset_url(media_asset)
+
+      # Should still call TigrisHelper.get_presigned_download_url with empty string
+      # The function doesn't explicitly handle empty string, so it passes through
+      assert is_binary(result)
+    end
+
+    test "handles various valid upload_id formats" do
+      # Test with UUID format
+      uuid_upload_id = Ecto.UUID.generate()
+      uuid_media_asset = %MediaAsset{upload_id: uuid_upload_id}
+      uuid_result = Media.get_media_asset_url(uuid_media_asset)
+
+      assert is_binary(uuid_result)
+      assert String.contains?(uuid_result, uuid_upload_id)
+
+      # Test with custom string format
+      custom_upload_id = "custom-upload-123"
+      custom_media_asset = %MediaAsset{upload_id: custom_upload_id}
+      custom_result = Media.get_media_asset_url(custom_media_asset)
+
+      assert is_binary(custom_result)
+      assert String.contains?(custom_result, custom_upload_id)
+    end
+
+    test "function signature matches expected pattern matching" do
+      # Test the actual pattern matching behavior described in the bug fix
+
+      # Pattern 1: nil input
+      refute Media.get_media_asset_url(nil)
+
+      # Pattern 2: MediaAsset with nil upload_id
+      nil_upload_asset = %MediaAsset{
+        id: Ecto.UUID.generate(),
+        upload_id: nil,
+        file_name: "test.jpg",
+        status: :uploaded,
+        type: "image/jpeg"
+      }
+
+      refute Media.get_media_asset_url(nil_upload_asset)
+
+      # Pattern 3: MediaAsset with valid upload_id
+      valid_upload_asset = %MediaAsset{
+        id: Ecto.UUID.generate(),
+        upload_id: "valid-upload-id",
+        file_name: "test.jpg",
+        status: :uploaded,
+        type: "image/jpeg"
+      }
+
+      result = Media.get_media_asset_url(valid_upload_asset)
+      assert is_binary(result)
+      assert String.contains?(result, "valid-upload-id")
     end
   end
 

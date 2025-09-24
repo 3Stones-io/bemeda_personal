@@ -3,8 +3,10 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
 
   use BemedaPersonalWeb, :live_component
 
+  alias BemedaPersonal.DateUtils
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplicationFilter
+  alias BemedaPersonal.Media
   alias BemedaPersonalWeb.Components.Job.JobsComponents
 
   @impl Phoenix.LiveComponent
@@ -95,7 +97,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
                   class="w-11 h-11 rounded-full overflow-hidden bg-gray-100 border border-gray-200"
                 >
                   <img
-                    src={application.job_posting.company.media_asset.url}
+                    src={Media.get_media_asset_url(application.job_posting.company.media_asset)}
                     alt={application.job_posting.company.name}
                     class="w-full h-full object-cover"
                   />
@@ -120,9 +122,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.JobApplicationsListCompone
                 </p>
 
                 <div class="text-xs text-gray-400 mb-3">
-                  {dgettext("jobs", "Applied")} {BemedaPersonal.DateUtils.relative_time(
-                    application.inserted_at
-                  )}
+                  {dgettext("jobs", "Applied")} {DateUtils.relative_time(application.inserted_at)}
                 </div>
 
                 <div class="flex items-center gap-2 text-xs text-gray-500 mb-2 flex-wrap">

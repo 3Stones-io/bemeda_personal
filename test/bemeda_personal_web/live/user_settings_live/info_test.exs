@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.UserSettingsLive.InfoTest do
   import BemedaPersonal.RatingsFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Ratings
 
   describe "user ratings" do
@@ -358,6 +359,139 @@ defmodule BemedaPersonalWeb.UserSettingsLive.InfoTest do
       updated_html = render(view)
       refute has_element?(view, "#company_form_inline")
       assert updated_html =~ company.name
+    end
+  end
+
+  describe "Company Media Asset Handling (Bug Fix)" do
+    setup %{conn: conn} do
+      employer = employer_user_fixture(%{confirmed: true})
+      company = company_fixture(employer, %{name: "Media Test Company"})
+
+      %{conn: log_in_user(conn, employer), employer: employer, company: company}
+    end
+
+    test "handles company with nil media_asset without crashing", %{conn: conn, company: company} do
+      # Explicitly set media_asset_id to nil
+      {:ok, updated_company} =
+        BemedaPersonal.Companies.update_company(company, %{media_asset_id: nil})
+
+      # Should load successfully without KeyError
+      {:ok, _view, html} = live(conn, ~p"/users/settings/info")
+
+      # Should display company information section
+      assert html =~ "Company Information"
+      assert html =~ updated_company.name
+
+      # Should show company info without crashing on media asset access
+      refute html =~ "KeyError"
+      refute html =~ "500 Internal Server Error"
+
+      # The template has conditional rendering: <%= if @company.media_asset do %>
+      # So when media_asset is nil, the company logo img tag should not be present
+      # We check for the specific company logo image with its distinctive classes
+      refute html =~ "object-cover rounded-full"
+      refute html =~ ~s(alt="#{updated_company.name}")
+    end
+
+    test "displays company logo when media_asset exists", %{conn: conn, company: company} do
+      # Create media asset for company
+      {:ok, _media_asset} =
+        BemedaPersonal.Media.create_media_asset(company, %{
+          file_name: "company_logo.png",
+          status: :uploaded,
+          type: "image/png",
+          upload_id: Ecto.UUID.generate()
+        })
+
+      # Reload company to get media_asset association
+      company = BemedaPersonal.Repo.preload(company, :media_asset, force: true)
+      assert company.media_asset != nil
+
+      # Update the company to ensure it has the media_asset
+      {:ok, updated_company} =
+        BemedaPersonal.Companies.update_company(company, %{
+          media_asset_id: company.media_asset.id
+        })
+
+      # Should load successfully and display company logo
+      {:ok, _view, html} = live(conn, ~p"/users/settings/info")
+
+      assert html =~ "Company Information"
+      assert html =~ updated_company.name
+
+      # Should contain img tag when media_asset exists
+      assert html =~ ~s(<img)
+      assert html =~ "object-cover"
+      assert html =~ "rounded-full"
+
+      # Template uses Media.get_media_asset_url(@company.media_asset)
+      # which should generate a proper URL
+      refute html =~ "KeyError"
+    end
+
+    test "handles malformed media_asset gracefully", %{conn: conn, company: company} do
+      # Create media asset with valid upload_id first
+      {:ok, media_asset} =
+        BemedaPersonal.Media.create_media_asset(company, %{
+          file_name: "broken_logo.png",
+          status: :uploaded,
+          type: "image/png",
+          upload_id: Ecto.UUID.generate()
+        })
+
+      # Manually set upload_id to nil to simulate edge case
+      media_asset
+      |> MediaAsset.changeset(%{upload_id: nil})
+      |> BemedaPersonal.Repo.update!()
+
+      # Update company to have the malformed media_asset
+      {:ok, _updated_company} =
+        BemedaPersonal.Companies.update_company(company, %{
+          media_asset_id: media_asset.id
+        })
+
+      # Should handle nil upload_id gracefully (Media.get_media_asset_url returns nil)
+      {:ok, _view, html} = live(conn, ~p"/users/settings/info")
+
+      assert html =~ "Company Information"
+      assert html =~ company.name
+
+      # Should still not crash even with malformed media_asset
+      refute html =~ "KeyError"
+      refute html =~ "500 Internal Server Error"
+
+      # The component should still render the img tag with src pointing to the helper function
+      # Media.get_media_asset_url will return nil for nil upload_id, but template still renders
+      assert html =~ ~s(<img)
+    end
+
+    test "edit mode also handles nil media_asset without crashing", %{
+      conn: conn,
+      company: company
+    } do
+      # Set media_asset_id to nil
+      {:ok, _updated_company} =
+        BemedaPersonal.Companies.update_company(company, %{media_asset_id: nil})
+
+      {:ok, view, _html} = live(conn, ~p"/users/settings/info")
+
+      # Click edit company button to enter edit mode
+      render_hook(view, "edit_company", %{})
+
+      # Should load edit mode without crashing
+      edit_html = render(view)
+
+      assert edit_html =~ "Company Information"
+      assert edit_html =~ "company_form_inline"
+
+      # Should show edit mode company logo area without crashing
+      refute edit_html =~ "KeyError"
+      refute edit_html =~ "500 Internal Server Error"
+
+      # In edit mode, the template also uses: <%= if @company.media_asset do %>
+      # So company logo img should not be present when media_asset is nil
+      # We check for the specific company logo image with its distinctive classes
+      refute edit_html =~ "object-cover rounded-full"
     end
   end
 
