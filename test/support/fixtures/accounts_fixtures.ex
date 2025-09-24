@@ -128,4 +128,12 @@ defmodule BemedaPersonal.AccountsFixtures do
     user = user_fixture(Keyword.put(attrs, :user_type, :job_seeker))
     Scope.for_user(user)
   end
+
+  @doc """
+  Generate a job seeker user without any parameters
+  """
+  @spec job_seeker_user_fixture() :: User.t()
+  def job_seeker_user_fixture do
+    user_fixture(user_type: :job_seeker)
+  end
 end

@@ -29,6 +29,7 @@ defmodule BemedaPersonal.JobApplications.JobApplication do
     field :state, :string, default: "applied"
     many_to_many :tags, Tag, join_through: JobApplicationTag, on_replace: :delete
     belongs_to :user, User
+    has_many :interviews, BemedaPersonal.Scheduling.Interview
 
     timestamps(type: :utc_datetime)
   end

@@ -40,6 +40,7 @@ import SignwellEmbed from './hooks/signwell_embed'
 import StoryHook from './hooks/story_hook'
 import TagsInput from './hooks/tags_input'
 import TextTruncate from './hooks/text_truncate'
+import TimezoneDetector from './hooks/timezone_detector'
 
 // Define hooks object
 const Hooks = {
@@ -60,6 +61,7 @@ const Hooks = {
   StoryHook,
   TagsInput,
   TextTruncate,
+  TimezoneDetector,
 }
 
 let csrfToken = document

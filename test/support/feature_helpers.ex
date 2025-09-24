@@ -247,8 +247,74 @@ defmodule BemedaPersonal.FeatureHelpers do
       {:ok, _result} = Frame.click(frame_id, "button[type='submit']")
       :ok
     end)
-    # Wait specifically for step 2 elements to be available - not just any form
-    |> wait_for_element("select[name='user[medical_role]']")
+    # Add additional wait for step transition with longer timeout for mobile
+    |> wait_for_element("h1", timeout: 15_000)
+    # Add defensive wait before checking for step 2 elements
+    |> unwrap(fn %{frame_id: frame_id} ->
+      # Extra wait for LiveView step transition to complete
+      Process.sleep(1000)
+      {:ok, %{frame_id: frame_id}}
+    end)
+    # Check if step 2 medical_role field appears, with enhanced error handling
+    |> check_step_transition()
+  end
+
+  defp check_step_transition(session) do
+    # Try to find step 2 element
+    wait_for_element(session, "select[name='user[medical_role]']", timeout: 15_000)
+  rescue
+    _error ->
+      # Step 2 element not found - check if we're still on step 1 (validation failed)
+      try do
+        assert_has(session, "input[name='user[first_name]']")
+
+        # We're still on step 1 - check for validation errors
+        error_elements =
+          try do
+            assert_has(session, ".text-red-600")
+            "Validation errors found on form"
+          rescue
+            _ex -> "No visible validation errors"
+          end
+
+        reraise "Step transition failed: still on step 1. #{error_elements}", __STACKTRACE__
+      rescue
+        # Not on step 1 either - check what page we're on
+        _ex ->
+          # Try to identify the current page by checking for common elements
+          page_info =
+            cond do
+              has_element?(session, "input[name='user[email]']") ->
+                "Appears to be login page"
+
+              has_element?(session, "h1", text: "Job Postings") ->
+                "Appears to be jobs listing page"
+
+              has_element?(session, "h1", text: "Register") ->
+                "Appears to be registration page but unknown state"
+
+              has_element?(session, "main") ->
+                "Has main element but unknown page type"
+
+              true ->
+                "Completely unknown page state"
+            end
+
+          reraise "Step transition failed: #{page_info}", __STACKTRACE__
+      end
+  end
+
+  # Helper function to safely check if element exists
+  defp has_element?(session, selector, opts \\ []) do
+    if text = opts[:text] do
+      assert_has(session, selector, text: text)
+    else
+      assert_has(session, selector)
+    end
+
+    true
+  rescue
+    _ex -> false
   end
 
   defp fill_job_seeker_step2(session) do
@@ -256,7 +322,7 @@ defmodule BemedaPersonal.FeatureHelpers do
     # Element availability already confirmed by submit_step1, proceed with form filling
     unwrap(session, fn %{frame_id: frame_id} ->
       # Wait for dropdown to be fully interactive before selecting options
-      Process.sleep(100)
+      Process.sleep(500)
 
       # Use correct enum values that match the schema with improved error handling
       {:ok, _result} =

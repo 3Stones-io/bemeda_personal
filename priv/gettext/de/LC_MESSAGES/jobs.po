@@ -1100,6 +1100,7 @@ msgid "%{company} has extended you a job offer for %{position}."
 msgstr "%{company} hat Ihnen ein Stellenangebot für %{position} unterbreitet."
 
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -1689,3 +1690,261 @@ msgstr "Fehler beim Löschen der Stellenausschreibung"
 #, elixir-autogen, elixir-format
 msgid "Job posting not found or not authorized"
 msgstr "Stellenausschreibung nicht gefunden oder nicht autorisiert"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "1 day before"
+msgstr "1 Tag vorher"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "1 hour before"
+msgstr "1 Stunde vorher"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "10 minutes before"
+msgstr "10 Minuten vorher"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "15 minutes before"
+msgstr "15 Minuten vorher"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "30 minutes before"
+msgstr "30 Minuten vorher"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "5 minutes before"
+msgstr "5 Minuten vorher"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Add a Link"
+msgstr "Link hinzufügen"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Add a title"
+msgstr "Titel hinzufügen"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Additional information for the interview..."
+msgstr "Zusätzliche Informationen zum Vorstellungsgespräch..."
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Are you sure you want to cancel this interview?"
+msgstr "Sind Sie sicher, dass Sie dieses Vorstellungsgespräch absagen möchten?"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Attendees"
+msgstr "Teilnehmer"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Call"
+msgstr "Anrufen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Cancel interview"
+msgstr "Vorstellungsgespräch absagen"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Cancelled by employer"
+msgstr "Vom Arbeitgeber abgesagt"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Chat"
+msgstr "Chat"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Date"
+msgstr "Datum"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Done"
+msgstr "Fertig"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Edit interview"
+msgstr "Vorstellungsgespräch bearbeiten"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "End Date"
+msgstr "Enddatum"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "End Time"
+msgstr "Endzeit"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to cancel interview"
+msgstr "Vorstellungsgespräch konnte nicht abgesagt werden"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Hire"
+msgstr "Einstellen"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Interview cancelled successfully"
+msgstr "Vorstellungsgespräch erfolgreich abgesagt"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Interview not found or you don't have permission to cancel it"
+msgstr "Vorstellungsgespräch nicht gefunden oder Sie haben keine Berechtigung, es abzusagen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Interview not found or you don't have permission to edit it"
+msgstr "Vorstellungsgespräch nicht gefunden oder Sie haben keine Berechtigung, es zu bearbeiten"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#: lib/bemeda_personal_web/live/job_application_live/show.ex
+#, elixir-autogen, elixir-format
+msgid "Interview scheduled successfully"
+msgstr "Vorstellungsgespräch erfolgreich geplant"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Interview updated successfully"
+msgstr "Vorstellungsgespräch erfolgreich aktualisiert"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Interview with"
+msgstr "Vorstellungsgespräch mit"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Join meeting"
+msgstr "Meeting beitreten"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Leave a note"
+msgstr "Notiz hinterlassen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Mail"
+msgstr "E-Mail"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Notify me"
+msgstr "Benachrichtigen"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Schedule a Meeting"
+msgstr "Meeting planen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Schedule a meeting"
+msgstr "Meeting planen"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Schedule an interview with the candidate"
+msgstr "Vorstellungsgespräch mit dem Kandidaten planen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Scheduled Interviews"
+msgstr "Geplante Vorstellungsgespräche"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Start Time"
+msgstr "Startzeit"
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Type email or name here..."
+msgstr "E-Mail oder Name eingeben..."
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "You are not authorized to modify this interview"
+msgstr "Sie sind nicht berechtigt, dieses Vorstellungsgespräch zu bearbeiten"
+
+#: lib/bemeda_personal_web/components/scheduling/calendar_component.ex
+#, elixir-autogen, elixir-format
+msgid "Meeting with candidate"
+msgstr "Meeting mit Kandidat"
+
+#: lib/bemeda_personal_web/components/scheduling/calendar_component.ex
+#, elixir-autogen, elixir-format
+msgid "Today's Interviews"
+msgstr "Heutige Vorstellungsgespräche"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Could not cancel interview"
+msgstr "Vorstellungsgespräch konnte nicht abgesagt werden"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Edit functionality coming soon for interview %{id}"
+msgstr "Bearbeitungsfunktion für Vorstellungsgespräch %{id} kommt bald"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Interview details: %{title}"
+msgstr "Vorstellungsgespräch Details: %{title}"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Cancelled"
+msgstr "Abbrechen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Next Interview"
+msgstr "Nächstes Gespräch"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Scheduled"
+msgstr "Geplante Vorstellungsgespräche"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Topic"
+msgstr "Thema"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Your Interviews"
+msgstr "Ihre Vorstellungsgespräche"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "at"
+msgstr "Datum"

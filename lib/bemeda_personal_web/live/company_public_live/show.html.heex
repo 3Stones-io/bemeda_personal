@@ -80,7 +80,7 @@
           {dgettext("companies", "About %{company}", company: @company.name)}
         </.section_heading>
         <div :if={@company.description} class="md-to-html">
-          {SharedHelpers.to_html(@company.description)}
+          {BemedaPersonalWeb.MarkdownHelper.to_html(@company.description)}
         </div>
         <.text :if={!@company.description} class="text-gray-500">
           {dgettext("companies", "No company description available.")}

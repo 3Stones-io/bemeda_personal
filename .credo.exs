@@ -217,7 +217,9 @@
                "lib/bemeda_personal_web/endpoint.ex",
                "lib/bemeda_personal_web/router.ex",
                "lib/bemeda_personal/application.ex",
-               "lib/bemeda_personal_web/live/job_application_live/show.ex"
+               "lib/bemeda_personal_web/live/job_application_live/show.ex",
+               "lib/bemeda_personal_web/live/company_live/index.ex",
+               "lib/bemeda_personal_web/live/shared_helpers.ex"
              ]
            },
            max_deps: 20},

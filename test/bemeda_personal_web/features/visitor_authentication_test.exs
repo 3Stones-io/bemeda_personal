@@ -155,7 +155,7 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
         {:ok, _result} = Frame.click(frame_id, "button[type='submit']")
         :ok
       end)
-      |> assert_has("main")
+      |> assert_has("h1")
     end
   end
 

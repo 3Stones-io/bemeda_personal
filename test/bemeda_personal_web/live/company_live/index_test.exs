@@ -658,6 +658,79 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
     end
   end
 
+  describe "My Schedule Tab" do
+    test "displays schedule tab and calendar component", %{conn: conn} do
+      user = employer_user_fixture()
+      _company = company_fixture(user)
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      # Should show the schedule tab
+      assert has_element?(view, "button", "My Schedule")
+
+      # Click the schedule tab
+      view
+      |> element("button", "My Schedule")
+      |> render_click()
+
+      updated_html = render(view)
+
+      # Calendar component should be rendered
+      assert updated_html =~ "View and manage your upcoming interviews"
+      assert updated_html =~ "calendar-container"
+
+      # Should show current month
+      current_month = Calendar.strftime(Date.utc_today(), "%B %Y")
+      assert updated_html =~ current_month
+
+      # Should have navigation buttons
+      assert has_element?(view, "button[phx-click='prev_month']")
+      assert has_element?(view, "button[phx-click='next_month']")
+    end
+
+    test "calendar navigation works correctly", %{conn: conn} do
+      user = employer_user_fixture()
+      _company = company_fixture(user)
+
+      {:ok, view, _html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/company")
+
+      # Click the schedule tab first
+      view
+      |> element("button", "My Schedule")
+      |> render_click()
+
+      # Get current month for comparison
+      current_date = Date.utc_today()
+      current_month = Calendar.strftime(current_date, "%B %Y")
+
+      # Should show current month initially
+      html = render(view)
+      assert html =~ current_month
+
+      # Click next month button
+      view
+      |> element("button[phx-click='next_month']")
+      |> render_click()
+
+      # Should show next month
+      next_month =
+        current_date
+        |> Date.end_of_month()
+        |> Date.add(1)
+        |> Date.beginning_of_month()
+        |> Calendar.strftime("%B %Y")
+
+      updated_html = render(view)
+      assert updated_html =~ next_month
+    end
+  end
+
   describe "Job Management" do
     test "allows creating a new job posting", %{conn: conn} do
       user = employer_user_fixture()
@@ -684,14 +757,26 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
         |> log_in_user(company_user)
         |> live(~p"/company")
 
-      {:ok, _new_application} =
+      # Switch to applicants tab BEFORE creating the application
+      view
+      |> element("button", "Applicants")
+      |> render_click()
+
+      {:ok, new_application} =
         JobApplications.create_job_application(job_applicant, job_posting, %{
           cover_letter: "I am very interested in this position"
         })
 
-      Process.sleep(50)
+      # Wait longer for PubSub message to propagate
+      Process.sleep(100)
 
       updated_html = render(view)
+
+      # Debug: Check if the application was created
+      assert new_application.user.first_name == "New"
+      assert new_application.user.last_name == "Applicant"
+
+      # Check if the applicant appears in the UI
       assert updated_html =~ "New Applicant"
       assert updated_html =~ "new@example.com"
     end

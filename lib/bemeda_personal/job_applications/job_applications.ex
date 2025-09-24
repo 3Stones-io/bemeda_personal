@@ -15,6 +15,7 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
   alias BemedaPersonal.MediaDataUtils
   alias BemedaPersonal.QueryBuilder
   alias BemedaPersonal.Repo
+  alias BemedaPersonal.RepoHelpers
   alias BemedaPersonalWeb.Endpoint
   alias Ecto.Changeset
   alias Ecto.Multi
@@ -136,12 +137,39 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
     |> order_by([job_application: ja], desc: ja.inserted_at)
     |> limit(^limit)
     |> Repo.all()
-    |> Repo.preload([
+    |> RepoHelpers.safe_preload([
       :media_asset,
       :tags,
       :user,
       job_posting: [company: [:admin_user, :media_asset]]
     ])
+  end
+
+  @doc """
+  Gets a single job application with scope-based authorization.
+
+  Employers can access applications to their company's job postings.
+  Job seekers can access their own applications.
+
+  Returns nil if the Job application does not exist or access denied.
+
+  ## Examples
+
+      iex> get_job_application(employer_scope, id)
+      %JobApplication{}
+
+      iex> get_job_application(job_seeker_scope, id)
+      %JobApplication{}
+
+      iex> get_job_application(nil, id)
+      nil
+
+  """
+  @spec get_job_application(scope() | nil, Ecto.UUID.t()) :: job_application() | nil
+  def get_job_application(scope, id) do
+    get_job_application!(scope, id)
+  rescue
+    Ecto.NoResultsError -> nil
   end
 
   @doc """
@@ -205,7 +233,7 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
     # System scope for background workers - can access any job application
     JobApplication
     |> Repo.get!(id)
-    |> Repo.preload([
+    |> RepoHelpers.safe_preload([
       :media_asset,
       :tags,
       :user,
@@ -307,9 +335,9 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
     case Repo.transaction(multi) do
       {:ok, %{job_application: job_application}} ->
         job_application =
-          Repo.preload(
+          RepoHelpers.safe_preload(
             job_application,
-            [:job_posting, :media_asset, :tags, :user]
+            [:media_asset, :tags, :user, job_posting: [company: [:admin_user, :media_asset]]]
           )
 
         :ok =
@@ -386,7 +414,7 @@ defmodule BemedaPersonal.JobApplications.JobApplications do
     case Repo.transaction(multi) do
       {:ok, %{job_application: updated_job_application}} ->
         updated_job_application =
-          Repo.preload(
+          RepoHelpers.safe_preload(
             updated_job_application,
             [:job_posting, :user, :media_asset],
             force: true

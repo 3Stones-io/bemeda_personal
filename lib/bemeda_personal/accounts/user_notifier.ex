@@ -3,29 +3,14 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
   use Gettext, backend: BemedaPersonalWeb.Gettext
 
-  import Swoosh.Email
-
-  alias BemedaPersonal.Accounts.EmailTemplates.ConfirmationEmail
-  alias BemedaPersonal.Accounts.EmailTemplates.EmployerJobApplicationReceivedEmail
-  alias BemedaPersonal.Accounts.EmailTemplates.EmployerJobApplicationStatusEmail
-  alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationReceivedEmail
-  alias BemedaPersonal.Accounts.EmailTemplates.JobApplicationStatusEmail
-  alias BemedaPersonal.Accounts.EmailTemplates.NewMessageEmail
-  alias BemedaPersonal.Accounts.EmailTemplates.ResetPasswordEmail
-  alias BemedaPersonal.Accounts.EmailTemplates.UpdateEmailInstructions
-  alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Chat.Message
-  alias BemedaPersonal.JobApplications.JobApplication
-  alias BemedaPersonal.Mailer
+  alias BemedaPersonal.Accounts.EmailDelivery
+  alias BemedaPersonal.Accounts.EmailTemplates
+  alias BemedaPersonal.Accounts.InterviewNotifier
 
   @type email :: Swoosh.Email.t()
-  @type job_application :: JobApplication.t()
-  @type message :: Message.t()
-  @type recipient :: User.t()
   @type url :: String.t()
 
   @default_status_message dgettext("emails", "Application Status Updated")
-  @from {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
 
   @status_messages %{
     "offer_accepted" => dgettext("emails", "Offer Accepted"),
@@ -45,31 +30,18 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     "withdrawn" => dgettext("emails", "The candidate has withdrawn their application.")
   }
 
-  defp deliver(%User{} = recipient, subject, html_body, text_body) do
-    email =
-      new()
-      |> to({"#{recipient.first_name} #{recipient.last_name}", recipient.email})
-      |> from(@from)
-      |> subject(subject)
-      |> text_body(text_body)
-      |> html_body(html_body)
-
-    case Mailer.deliver(email) do
-      {:ok, _metadata} ->
-        {:ok, email}
-
-      {:error, error} ->
-        {:error, error}
-    end
+  defp deliver(recipient, subject, html_body, text_body) do
+    EmailDelivery.deliver(recipient, subject, html_body, text_body)
   end
 
-  @spec deliver_confirmation_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
+  @spec deliver_confirmation_instructions(BemedaPersonal.Accounts.User.t(), url()) ::
+          {:ok, email()} | {:error, any()}
   def deliver_confirmation_instructions(user, url) do
-    put_locale(user)
+    EmailDelivery.put_locale(user)
     user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
-      ConfirmationEmail.render(
+      EmailTemplates.ConfirmationEmail.render(
         url: url,
         user_name: user_name
       )
@@ -94,14 +66,14 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_reset_password_instructions(recipient(), url()) ::
+  @spec deliver_reset_password_instructions(BemedaPersonal.Accounts.User.t(), url()) ::
           {:ok, email()} | {:error, any()}
   def deliver_reset_password_instructions(user, url) do
-    put_locale(user)
+    EmailDelivery.put_locale(user)
     user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
-      ResetPasswordEmail.render(
+      EmailTemplates.ResetPasswordEmail.render(
         url: url,
         user_name: user_name
       )
@@ -126,13 +98,14 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_update_email_instructions(recipient(), url()) :: {:ok, email()} | {:error, any()}
+  @spec deliver_update_email_instructions(BemedaPersonal.Accounts.User.t(), url()) ::
+          {:ok, email()} | {:error, any()}
   def deliver_update_email_instructions(user, url) do
-    put_locale(user)
+    EmailDelivery.put_locale(user)
     user_name = "#{user.first_name} #{user.last_name}"
 
     html_body =
-      UpdateEmailInstructions.render(
+      EmailTemplates.UpdateEmailInstructions.render(
         url: url,
         user_name: user_name
       )
@@ -157,14 +130,18 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_new_message(recipient(), message(), url()) :: {:ok, email()} | {:error, any()}
+  @spec deliver_new_message(
+          BemedaPersonal.Accounts.User.t(),
+          BemedaPersonal.Chat.Message.t(),
+          url()
+        ) :: {:ok, email()} | {:error, any()}
   def deliver_new_message(recipient, message, url) do
-    put_locale(recipient)
+    EmailDelivery.put_locale(recipient)
     user_name = "#{recipient.first_name} #{recipient.last_name}"
     sender_name = "#{message.sender.first_name} #{message.sender.last_name}"
 
     html_body =
-      NewMessageEmail.render(
+      EmailTemplates.NewMessageEmail.render(
         url: url,
         user_name: user_name,
         sender_name: sender_name
@@ -190,16 +167,19 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_user_job_application_received(job_application(), url()) ::
+  @spec deliver_user_job_application_received(
+          BemedaPersonal.JobApplications.JobApplication.t(),
+          url()
+        ) ::
           {:ok, email} | {:error, any()}
   def deliver_user_job_application_received(job_application, url) do
-    put_locale(job_application.user)
+    EmailDelivery.put_locale(job_application.user)
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     company_name = job_application.job_posting.company.name
 
     html_body =
-      JobApplicationReceivedEmail.render(
+      EmailTemplates.JobApplicationReceivedEmail.render(
         url: url,
         user_name: user_name,
         job_title: job_title,
@@ -226,10 +206,13 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_user_job_application_status(job_application(), url()) ::
+  @spec deliver_user_job_application_status(
+          BemedaPersonal.JobApplications.JobApplication.t(),
+          url()
+        ) ::
           {:ok, email} | {:error, any()}
   def deliver_user_job_application_status(job_application, url) do
-    put_locale(job_application.user)
+    EmailDelivery.put_locale(job_application.user)
     user_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
     new_status = job_application.state
@@ -243,7 +226,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     html_body =
-      JobApplicationStatusEmail.render(
+      EmailTemplates.JobApplicationStatusEmail.render(
         url: url,
         user_name: user_name,
         job_title: job_title,
@@ -273,17 +256,20 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_employer_job_application_received(job_application(), url()) ::
+  @spec deliver_employer_job_application_received(
+          BemedaPersonal.JobApplications.JobApplication.t(),
+          url()
+        ) ::
           {:ok, email} | {:error, any()}
   def deliver_employer_job_application_received(job_application, url) do
-    put_locale(job_application.job_posting.company.admin_user)
+    EmailDelivery.put_locale(job_application.job_posting.company.admin_user)
     admin_user = job_application.job_posting.company.admin_user
     employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
     applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
     job_title = job_application.job_posting.title
 
     html_body =
-      EmployerJobApplicationReceivedEmail.render(
+      EmailTemplates.EmployerJobApplicationReceivedEmail.render(
         url: url,
         user_name: employer_name,
         job_title: job_title,
@@ -310,10 +296,13 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_employer_job_application_status(job_application(), url()) ::
+  @spec deliver_employer_job_application_status(
+          BemedaPersonal.JobApplications.JobApplication.t(),
+          url()
+        ) ::
           {:ok, email} | {:error, any()}
   def deliver_employer_job_application_status(job_application, url) do
-    put_locale(job_application.job_posting.company.admin_user)
+    EmailDelivery.put_locale(job_application.job_posting.company.admin_user)
     admin_user = job_application.job_posting.company.admin_user
     employer_name = "#{admin_user.first_name} #{admin_user.last_name}"
     applicant_name = "#{job_application.user.first_name} #{job_application.user.last_name}"
@@ -329,7 +318,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
       )
 
     html_body =
-      EmployerJobApplicationStatusEmail.render(
+      EmailTemplates.EmployerJobApplicationStatusEmail.render(
         url: url,
         user_name: employer_name,
         job_title: job_title,
@@ -363,7 +352,8 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @doc """
   Deliver magic link authentication email
   """
-  @spec deliver_magic_link(recipient(), url()) :: {:ok, email()} | {:error, any()}
+  @spec deliver_magic_link(BemedaPersonal.Accounts.User.t(), url()) ::
+          {:ok, email()} | {:error, any()}
   def deliver_magic_link(user, url) do
     html_body = """
     <h2>Sign in to BemedaPersonal</h2>
@@ -399,7 +389,8 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   @doc """
   Deliver sudo mode verification email
   """
-  @spec deliver_sudo_link(recipient(), String.t()) :: {:ok, email()} | {:error, term()}
+  @spec deliver_sudo_link(BemedaPersonal.Accounts.User.t(), String.t()) ::
+          {:ok, email()} | {:error, term()}
   def deliver_sudo_link(user, url) do
     html_body = """
     <h2>Verify sensitive action</h2>
@@ -431,9 +422,23 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     deliver(user, "Verify sensitive action - BemedaPersonal", html_body, text_body)
   end
 
-  defp put_locale(user) do
-    user.locale
-    |> Atom.to_string()
-    |> Gettext.put_locale()
+  @spec deliver_interview_scheduled(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  def deliver_interview_scheduled(interview) do
+    InterviewNotifier.deliver_interview_scheduled(interview)
+  end
+
+  @spec deliver_interview_reminder(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  def deliver_interview_reminder(interview) do
+    InterviewNotifier.deliver_interview_reminder(interview)
+  end
+
+  @spec deliver_interview_cancelled(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  def deliver_interview_cancelled(interview) do
+    InterviewNotifier.deliver_interview_cancelled(interview)
+  end
+
+  @spec deliver_interview_updated(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  def deliver_interview_updated(interview) do
+    InterviewNotifier.deliver_interview_updated(interview)
   end
 end

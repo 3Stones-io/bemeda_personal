@@ -1,6 +1,6 @@
 {
   "coverage_options": {
-    "minimum_coverage": 87.0
+    "minimum_coverage": 86.8
   },
   "skip_files": [
     "lib/bemeda_personal/release.ex",

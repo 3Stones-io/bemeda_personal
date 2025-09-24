@@ -33,13 +33,14 @@ defmodule BemedaPersonal.JobOffersFixtures do
   end
 
   defp create_job_application_context(attrs) do
-    user = user_fixture()
-    company = company_fixture(user)
+    employer = employer_user_fixture()
+    company = company_fixture(employer)
     job_posting = job_posting_fixture(company)
-    job_application = job_application_fixture(user, job_posting)
+    job_seeker = user_fixture()
+    job_application = job_application_fixture(job_seeker, job_posting)
 
     scope =
-      user
+      employer
       |> Scope.for_user()
       |> Scope.put_company(company)
 
