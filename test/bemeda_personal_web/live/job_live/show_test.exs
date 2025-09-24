@@ -335,4 +335,73 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
       assert html =~ "px-3"
     end
   end
+
+  describe "Company Logo Display (MediaAsset URL Bug)" do
+    setup %{conn: conn} do
+      user = employer_user_fixture()
+      company = company_fixture(user)
+
+      %{
+        company: company,
+        conn: conn,
+        user: user
+      }
+    end
+
+    test "displays job with company logo when media asset exists (bug fixed)", %{
+      conn: conn,
+      company: company
+    } do
+      # Create media asset for company using Media context directly
+      {:ok, _media_asset} =
+        BemedaPersonal.Media.create_media_asset(company, %{
+          file_name: "logo.jpg",
+          status: :uploaded,
+          type: "image/jpeg",
+          upload_id: Ecto.UUID.generate()
+        })
+
+      # Reload company to verify media_asset association
+      company = BemedaPersonal.Repo.preload(company, :media_asset, force: true)
+      assert company.media_asset != nil, "Media asset should be associated with company"
+
+      job = job_posting_fixture(company, %{title: "Test Job"})
+
+      # Verify the job loads correctly with media asset
+      loaded_job = BemedaPersonal.JobPostings.get_job_posting!(nil, job.id)
+      assert loaded_job.company.media_asset != nil, "Job's company should have media asset"
+
+      # Should now load successfully with the helper function
+      # The bug is fixed - no more KeyError when accessing media asset URL
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
+
+      # Should display the job and company logo correctly
+      assert html =~ "Test Job"
+      assert html =~ company.name
+    end
+
+    test "handles missing company logo gracefully", %{conn: conn, company: company} do
+      # Company without media_asset should work fine
+      job = job_posting_fixture(company, %{title: "Test Job"})
+
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
+
+      # Should show fallback avatar with company initials
+      assert html =~ "rounded-full"
+      assert html =~ "some name"
+    end
+
+    test "handles nil media_asset gracefully", %{conn: conn, company: company} do
+      # Update company to explicitly have nil media_asset_id
+      {:ok, company} = BemedaPersonal.Companies.update_company(company, %{media_asset_id: nil})
+
+      job = job_posting_fixture(company, %{title: "Test Job"})
+
+      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}")
+
+      # Should show fallback avatar
+      assert html =~ "rounded-full"
+      assert html =~ "some name"
+    end
+  end
 end

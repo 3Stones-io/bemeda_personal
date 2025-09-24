@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.JobLive.Show do
 
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.Media
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Components.Job.JobsComponents
   alias BemedaPersonalWeb.Components.JobApplication.ApplicationWarning

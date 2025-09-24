@@ -14,6 +14,7 @@ defmodule BemedaPersonal.Media do
   alias BemedaPersonal.JobPostings.JobPosting
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Repo
+  alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Endpoint
 
   @type attrs :: map()
@@ -399,5 +400,30 @@ defmodule BemedaPersonal.Media do
   @spec change_media_asset(media_asset(), attrs()) :: changeset()
   def change_media_asset(%MediaAsset{} = media_asset, attrs \\ %{}) do
     MediaAsset.changeset(media_asset, attrs)
+  end
+
+  @doc """
+  Gets the download URL for a media asset.
+
+  Returns nil if the media asset is nil or has no upload_id.
+
+  ## Examples
+
+      iex> get_media_asset_url(%MediaAsset{upload_id: "123"})
+      "https://..."
+
+      iex> get_media_asset_url(nil)
+      nil
+
+      iex> get_media_asset_url(%MediaAsset{upload_id: nil})
+      nil
+
+  """
+  @spec get_media_asset_url(MediaAsset.t() | nil) :: String.t() | nil
+  def get_media_asset_url(nil), do: nil
+  def get_media_asset_url(%MediaAsset{upload_id: nil}), do: nil
+
+  def get_media_asset_url(%MediaAsset{upload_id: upload_id}) do
+    TigrisHelper.get_presigned_download_url(upload_id)
   end
 end
