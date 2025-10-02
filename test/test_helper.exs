@@ -1,4 +1,9 @@
-ExUnit.start(exclude: [:feature])
+# Exclude feature and bdd tests by default
+ExUnit.start(exclude: [:feature, :bdd])
+
+# Compile Cucumber features after starting ExUnit
+Cucumber.compile_features!()
+
 Ecto.Adapters.SQL.Sandbox.mode(BemedaPersonal.Repo, :manual)
 
 Application.put_env(:phoenix_test, :base_url, BemedaPersonalWeb.Endpoint.url())

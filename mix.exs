@@ -71,6 +71,7 @@ defmodule BemedaPersonal.MixProject do
   defp app_deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:cucumber, "~> 0.4.1", only: :test},
       {:fsmx, "~> 0.5.0"},
       {:mdex, "~> 0.4.0"},
       {:mjml_eex, "~> 0.12.0"},
@@ -188,6 +189,25 @@ defmodule BemedaPersonal.MixProject do
           # Run the feature test script
           cmd_args = Enum.join(args, " ")
           Mix.shell().cmd("./scripts/feature_test.sh #{cmd_args}")
+        end
+      ],
+      "test.bdd": [
+        fn args ->
+          # PORT_TEST must be set in environment - fail fast if not
+          port_test =
+            System.get_env("PORT_TEST") ||
+              raise "PORT_TEST environment variable must be set (check codegen/CONTEXT.md for workspace port)"
+
+          # Clean up any existing test server first
+          System.cmd(
+            "bash",
+            ["-c", "lsof -ti tcp:#{port_test} | xargs kill -9 2>/dev/null || true"],
+            env: []
+          )
+
+          # Run the BDD test script (PORT_TEST already in environment)
+          cmd_args = Enum.join(args, " ")
+          Mix.shell().cmd("./scripts/bdd_test.sh #{cmd_args}")
         end
       ]
     ]
