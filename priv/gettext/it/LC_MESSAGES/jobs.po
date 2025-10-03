@@ -2263,16 +2263,6 @@ msgstr "Anni di esperienza"
 msgid "Yes"
 msgstr "Sì"
 
-#: lib/bemeda_personal/job_postings/job_posting.ex
-#, elixir-autogen, elixir-format
-msgid "is required when employment type is Contract Hire"
-msgstr "è richiesto quando il tipo di impiego è Assunzione a contratto"
-
-#: lib/bemeda_personal/job_postings/job_posting.ex
-#, elixir-autogen, elixir-format
-msgid "is required when location type is On-site"
-msgstr "è richiesto quando il tipo di località è In sede"
-
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "1 day before"

@@ -11,6 +11,8 @@ defmodule BemedaPersonal.Repo.Migrations.AddSkillsAndContractDurationToJobPostin
       modify :region, :string
       modify :department, :string
       modify :remote_allowed, :boolean, default: nil
+      modify :salary_min, :decimal
+      modify :salary_max, :decimal
     end
 
     execute "UPDATE job_postings SET is_draft = false WHERE is_draft IS NULL"
@@ -28,6 +30,8 @@ defmodule BemedaPersonal.Repo.Migrations.AddSkillsAndContractDurationToJobPostin
     alter table(:job_postings) do
       modify :remote_allowed, :boolean, default: false
       modify :department, :string
+      modify :salary_min, :integer
+      modify :salary_max, :integer
       modify :region, :string
       remove :is_draft
       remove :net_pay

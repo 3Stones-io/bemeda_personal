@@ -2262,16 +2262,6 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: lib/bemeda_personal/job_postings/job_posting.ex
-#, elixir-autogen, elixir-format
-msgid "is required when employment type is Contract Hire"
-msgstr ""
-
-#: lib/bemeda_personal/job_postings/job_posting.ex
-#, elixir-autogen, elixir-format
-msgid "is required when location type is On-site"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "1 day before"

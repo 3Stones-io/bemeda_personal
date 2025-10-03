@@ -424,15 +424,15 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
 
   defp format_salary_range(nil, nil, _currency), do: nil
 
-  defp format_salary_range(min, max, currency) when is_integer(min) and is_integer(max) do
-    "#{min} - #{max} #{currency}"
+  defp format_salary_range(%Decimal{} = min, %Decimal{} = max, currency) do
+    "#{Decimal.to_integer(min)} - #{Decimal.to_integer(max)} #{currency}"
   end
 
-  defp format_salary_range(min, nil, currency) when is_integer(min) do
-    "#{dgettext("jobs", "From")} #{min} #{currency}"
+  defp format_salary_range(%Decimal{} = min, nil, currency) do
+    "#{dgettext("jobs", "From")} #{Decimal.to_integer(min)} #{currency}"
   end
 
-  defp format_salary_range(nil, max, currency) when is_integer(max) do
-    "#{dgettext("jobs", "Up to")} #{max} #{currency}"
+  defp format_salary_range(nil, %Decimal{} = max, currency) do
+    "#{dgettext("jobs", "Up to")} #{Decimal.to_integer(max)} #{currency}"
   end
 end

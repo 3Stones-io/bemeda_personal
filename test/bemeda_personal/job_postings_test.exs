@@ -365,12 +365,12 @@ defmodule BemedaPersonal.JobPostingsTest do
       job_posting2 = job_posting_fixture(company, %{salary_min: 30_000, salary_max: 60_000})
       job_posting_fixture(company, %{salary_min: 120_000, salary_max: 150_000})
 
-      # Get all job postings and filter by salary range (testing data exists)
       all_results = JobPostings.list_job_postings()
 
       results =
         Enum.filter(all_results, fn job ->
-          job.salary_min <= 70_000 and job.salary_max >= 55_000
+          Decimal.compare(job.salary_min, 70_000) in [:lt, :eq] and
+            Decimal.compare(job.salary_max, 55_000) in [:gt, :eq]
         end)
 
       assert length(results) == 2
@@ -425,13 +425,13 @@ defmodule BemedaPersonal.JobPostingsTest do
         title: "Senior Product Manager"
       })
 
-      # Get all job postings and apply multiple filters (testing data exists)
       all_results = JobPostings.list_job_postings()
 
       results =
         Enum.filter(all_results, fn job ->
           job.remote_allowed == true and
-            job.salary_min <= 125_000 and job.salary_max >= 75_000 and
+            Decimal.compare(job.salary_min, 125_000) in [:lt, :eq] and
+            Decimal.compare(job.salary_max, 75_000) in [:gt, :eq] and
             String.contains?(job.title, "Engineer")
         end)
 

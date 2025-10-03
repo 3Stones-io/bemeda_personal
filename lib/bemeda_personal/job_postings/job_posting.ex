@@ -30,8 +30,8 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
     field :position, Ecto.Enum, values: Enums.positions()
     field :region, Ecto.Enum, values: Enums.regions()
     field :remote_allowed, :boolean
-    field :salary_max, :integer
-    field :salary_min, :integer
+    field :salary_max, :decimal
+    field :salary_min, :decimal
     field :net_pay, :decimal
     field :shift_type, {:array, Ecto.Enum}, values: Enums.shift_types()
 
@@ -78,7 +78,6 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
     |> validate_number(:salary_min, greater_than_or_equal_to: 0)
     |> validate_number(:salary_max, greater_than_or_equal_to: 0)
     |> validate_salary_range()
-    |> validate_conditional_fields()
   end
 
   defp validate_salary_range(changeset) do
@@ -90,42 +89,6 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
         changeset,
         :salary_min,
         dgettext("jobs", "must be less than or equal to salary maximum")
-      )
-    else
-      changeset
-    end
-  end
-
-  defp validate_conditional_fields(changeset) do
-    changeset
-    |> validate_contract_duration()
-    |> validate_region_for_onsite()
-  end
-
-  defp validate_contract_duration(changeset) do
-    employment_type = get_field(changeset, :employment_type)
-    contract_duration = get_field(changeset, :contract_duration)
-
-    if employment_type == :contract_hire && is_nil(contract_duration) do
-      add_error(
-        changeset,
-        :contract_duration,
-        dgettext("jobs", "is required when employment type is Contract Hire")
-      )
-    else
-      changeset
-    end
-  end
-
-  defp validate_region_for_onsite(changeset) do
-    remote_allowed = get_field(changeset, :remote_allowed)
-    region = get_field(changeset, :region)
-
-    if remote_allowed == false && is_nil(region) do
-      add_error(
-        changeset,
-        :region,
-        dgettext("jobs", "is required when location type is On-site")
       )
     else
       changeset

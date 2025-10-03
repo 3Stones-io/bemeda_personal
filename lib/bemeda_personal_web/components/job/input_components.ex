@@ -190,7 +190,7 @@ defmodule BemedaPersonalWeb.Components.Job.InputComponents do
       phx-hook="SkillsInput"
       phx-update="ignore"
       class={[
-        "z-[1000] fixed bg-white shadow-lg rounded-lg py-4 max-w-3xl h-[fit-content]",
+        "z-[1000] fixed bg-white shadow-lg rounded-lg pb-4 max-w-3xl h-[fit-content]",
         "left-0 right-0 bottom-0 md:inset-0 md:m-auto mx-4 md:mx-auto",
         "skills-input hidden"
       ]}
@@ -445,7 +445,7 @@ defmodule BemedaPersonalWeb.Components.Job.InputComponents do
         role="listbox"
         phx-update="ignore"
       >
-        <label
+        <li
           :for={{label, value} <- @dropdown_options}
           class="text-sm md:text-base text-form-dropdown-option-txt py-2 px-2 cursor-pointer hover:bg-form-dropdown-option-hover-bg rounded-md mx-2 transition-colors duration-150"
           role="option"
@@ -453,7 +453,7 @@ defmodule BemedaPersonalWeb.Components.Job.InputComponents do
           data-value={value}
         >
           {label}
-        </label>
+        </li>
       </ul>
     </div>
     """

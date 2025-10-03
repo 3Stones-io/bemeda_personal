@@ -80,6 +80,8 @@ export default SkillsInput = {
 
     searchInput.addEventListener('input', (event) => {
       event.stopPropagation()
+      optionsList.classList.remove('hidden')
+
       if (event.target.value.trim() !== '') {
         let searchValue = event.target.value.trim().toLowerCase()
 
