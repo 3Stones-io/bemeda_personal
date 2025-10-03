@@ -20,7 +20,6 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     field :language, {:array, Ecto.Enum}, values: Enums.languages()
     field :location, :string
     field :position, Ecto.Enum, values: Enums.positions()
-    field :profession, Ecto.Enum, values: Enums.professions()
     field :region, {:array, Ecto.Enum}, values: Enums.regions()
     field :remote_allowed, :boolean
     field :salary_max, :integer
@@ -38,7 +37,6 @@ defmodule BemedaPersonal.JobPostings.JobFilter do
     :language,
     :location,
     :position,
-    :profession,
     :region,
     :remote_allowed,
     :salary_max,

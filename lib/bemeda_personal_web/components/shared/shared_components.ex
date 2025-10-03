@@ -17,7 +17,7 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
   def video_player(assigns) do
     ~H"""
     <div :if={@media_asset} class={@class}>
-      <video controls>
+      <video controls class="w-full h-full">
         <source src={SharedHelpers.get_presigned_url(@media_asset.upload_id)} type="video/mp4" />
       </video>
     </div>
@@ -48,30 +48,24 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
     >
       <div
         id={"#{@id}-file-upload-inputs-container"}
-        class="text-center flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-secondary-300 p-lg bg-surface-secondary cursor-pointer"
+        class="text-center flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-8 cursor-pointer hover:border-gray-400 transition-colors"
       >
-        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-100">
-          <.icon name="hero-cloud-arrow-up" class="h-6 w-6 text-primary-600" />
+        <div class="mb-4">
+          <.icon name="hero-photo" class="h-12 w-12 text-gray-400" />
         </div>
-        <h3 class="mb-2 text-lg font-medium text-secondary-900">
-          {dgettext("general", "Drag and drop to upload your %{type}", type: @type)}
-        </h3>
-        <p class="mb-4 text-sm text-secondary-500">{dgettext("general", "or")}</p>
-        <div>
-          <div class="cursor-pointer rounded-md bg-primary-600 px-sm py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">
-            {dgettext("general", "Browse Files")}
-            <input
-              id={"#{@id}-hidden-file-input"}
-              type="file"
-              class="hidden"
-              accept={@accept}
-              data-max-file-size={@max_file_size}
-            />
-          </div>
-        </div>
-        <p class="mt-2 text-xs text-secondary-500">
-          {dgettext("general", "Max file size: %{size}", size: FileSizeUtils.pretty(@max_file_size))}
+        <p class="mb-2 text-base text-gray-700">
+          Drag and drop {@type} or <span class="text-blue-600 underline">browse</span>
         </p>
+        <p class="text-sm text-gray-500">
+          Upload a {@type} not more than {FileSizeUtils.pretty(@max_file_size)}, in mp4 format.
+        </p>
+        <input
+          id={"#{@id}-hidden-file-input"}
+          type="file"
+          class="hidden file-input"
+          accept={@accept}
+          data-max-file-size={@max_file_size}
+        />
       </div>
       <p id={"#{@id}-file-upload-error"} class="mt-2 text-sm text-danger-600 text-center mt-4 hidden">
         <.icon name="hero-exclamation-circle" class="h-4 w-4" /> {dgettext(
@@ -93,38 +87,80 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
     <div
       id={"#{@id}"}
       class={[
-        "mt-4 bg-white rounded-lg border border-secondary-200 p-sm file-upload-progress",
         @class
       ]}
       {@rest}
     >
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center space-x-2">
-          <.icon name="hero-paper-clip" class="h-5 w-5 text-secondary-400" />
-          <span class="text-sm font-medium text-secondary-700" id={"#{@id}-upload-filename"}></span>
+      <div class="mt-4 bg-white rounded-md border border-secondary-200 file-upload-progress hidden grid">
+        <div class="h-48 w-full bg-white blur-[2px] image-container rounded-sm col-start-1 row-start-1">
+          <img src="" alt="" />
         </div>
-      </div>
-      <div class="relative w-full">
-        <div
-          id={"#{@id}-upload-progress"}
-          role="progressbar"
-          aria-label={dgettext("general", "Upload progress")}
-          aria-valuemin="0"
-          aria-valuemax="100"
-          class="w-full bg-secondary-200 rounded-full h-2.5"
-        >
-          <div
-            class="bg-primary-600 h-2.5 rounded-full transition-all duration-300"
-            style="width: 0%"
-            id={"#{@id}-upload-progress-bar"}
-          >
+        <div class="overlay-container col-start-1 row-start-1 flex flex-col items-center justify-center relative">
+          <div class="relative">
+            <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+              <path
+                class="text-gray-300"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+                d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              <path
+                class="text-blue-600 progress-circle"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                fill="none"
+                stroke-dasharray="0, 100"
+                d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+
+            <button
+              type="button"
+              class="upload-cancel-btn absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-opacity-50 rounded-full flex items-center justify-center text-white hover:bg-opacity-70 transition-all duration-200 z-20"
+              title="Cancel upload"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div class="mt-4 text-center">
+            <p class="text-white text-sm font-medium">Uploading Video...</p>
           </div>
         </div>
       </div>
-      <div class="flex justify-between mt-2">
-        <span id={"#{@id}-upload-size"} class="text-xs text-secondary-500"></span>
-        <span id={"#{@id}-upload-percentage"} class="text-xs text-secondary-500"></span>
+
+      <div class="video-preview hidden">
+        <video controls class="w-full h-full">
+          <source src="" type="video/mp4" />
+        </video>
       </div>
+    </div>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :url, :string, required: true
+
+  @spec video_preview(assigns()) :: output()
+  def video_preview(assigns) do
+    ~H"""
+    <div class={"uploaded-video-placeholder" <> @class}>
+      <video controls class="w-full h-full">
+        <source src={@url} type="video/mp4" />
+      </video>
     </div>
     """
   end

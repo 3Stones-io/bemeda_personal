@@ -1,0 +1,137 @@
+<Layouts.app flash={@flash} socket={@socket}>
+  <header class="px-4 pt-3 md:py-4">
+    <h1 class="text-lg font-semibold text-[#202020]">{dgettext("jobs", "Review Job Post")}</h1>
+  </header>
+
+  <section class="text-sm p-3 review-job-grid">
+    <h2 class="text-base text-[#202020] font-semibold mb-4 title">{@job_posting.title}</h2>
+    <div
+      :if={@job_posting.media_asset}
+      class="video rounded-md overflow-hidden border-[1px] border-white shadow-md w-[fit-content] h-[fit-content]"
+    >
+      <SharedComponents.video_player
+        media_asset={@job_posting.media_asset}
+        class="w-full h-full rounded-md"
+      />
+    </div>
+    <div class="job-metadata text-[#808080]">
+      <div class="py-3">
+        <h2 class="text-base font-semibold text-[#5b56ef] mb-1">{@job_posting.company.name}</h2>
+        <p class="mb-4">
+          {dgettext("jobs", "Posted")} {DateUtils.relative_time(@job_posting.inserted_at)}
+        </p>
+        <p :if={@job_posting.remote_allowed}>
+          <.icon name="hero-map-pin" class="w-4 h-4 text-gray-400" />
+          {dgettext("jobs", "Remote")}
+          <span :if={@job_posting.swiss_only} class="text-gray-400">•</span>
+          <span :if={@job_posting.swiss_only}>{dgettext("jobs", "Switzerland only")}</span>
+        </p>
+        <p :if={@job_posting.region}>
+          <.icon name="hero-map-pin" class="w-4 h-4 text-gray-400" />
+          {@job_posting.region |> to_string() |> I18n.translate_region()}
+        </p>
+      </div>
+
+      <div class="grid gap-y-2 border-y border-[#e4e9ef] py-3">
+        <p class="flex items-center gap-x-2">
+          <Icons.briefcase class="w-4 h-4" />
+          <span :if={@job_posting.employment_type == :"Contract Hire"}>
+            {dgettext("jobs", "Contract")}
+          </span>
+          <span :if={
+            @job_posting.employment_type == :"Contract Hire" && @job_posting.contract_duration
+          }>
+            ( {@job_posting.contract_duration |> to_string() |> I18n.translate_contract_duration()})
+          </span>
+          <span :if={@job_posting.employment_type == :"Full-time Hire"}>
+            {dgettext("jobs", "Full-time")}
+          </span>
+        </p>
+        <p class="flex items-center gap-x-2">
+          <Icons.speaker class="w-4 h-4" />
+          <span>
+            {Enum.map_join(@job_posting.language, ", ", &I18n.translate_language(to_string(&1)))}
+          </span>
+        </p>
+        <p class="flex items-center gap-x-2">
+          <Icons.banknotes class="w-4 h-4" />
+          <span :if={@job_posting.salary_min && @job_posting.salary_max}>
+            {@job_posting.currency} {Number.Delimit.number_to_delimited(@job_posting.salary_min)} - {Number.Delimit.number_to_delimited(
+              @job_posting.salary_max
+            )}
+          </span>
+          <span :if={@job_posting.net_pay}>
+            {@job_posting.currency} {Number.Delimit.number_to_delimited(@job_posting.net_pay)}
+          </span>
+        </p>
+        <p class="flex items-center gap-x-2">
+          <Icons.person_gear class="w-4 h-4" />
+
+          <span>
+            {@job_posting.years_of_experience
+            |> to_string()
+            |> I18n.translate_years_of_experience()} of experience
+          </span>
+        </p>
+      </div>
+    </div>
+    <div class="description border-y-[1px] border-[#e4e9ef] md:border-0 py-3">
+      <h3 class="text-base font-medium text-gray-900 mb-3">
+        {dgettext("jobs", "Job Description")}
+      </h3>
+      <div class="md-to-html grid gap-y-2">
+        {raw(@job_posting.description)}
+      </div>
+    </div>
+
+    <div :if={@job_posting.skills} class="skills py-3 md:py-0">
+      <h3 class="text-base font-medium text-gray-900 mb-3 md:border-t md:border-[#e4e9ef] md:pt-3">
+        {dgettext("jobs", "Required Skills")}
+      </h3>
+      <div class="flex flex-wrap gap-2 md:pb-3 md:border-b md:border-[#e4e9ef]">
+        <div :for={skill <- @job_posting.skills}>
+          <.skill_pill
+            skill={skill |> to_string() |> I18n.translate_skill()}
+            class="bg-[#f2f1fd] text-[#817df2]"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="activities border-y-[1px] border-[#e4e9ef] grid gap-y-3 py-6 md:py-3 md:border-0">
+      <h3 class="text-base font-medium text-gray-900 mb-3">
+        {dgettext("jobs", "Activity on this Job")}
+      </h3>
+      <p class="flex items-center justify-between gap-2 border border-[#e4e9ef] p-3 rounded-sm">
+        <span class="text-sm text-gray-600 inline-flex items-center gap-2">
+          <.icon name="hero-document-text" class="w-5 h-5 text-gray-400" />
+          {dgettext("jobs", "Received applications")}
+        </span>
+        <span class="text-sm font-medium text-gray-900">0</span>
+      </p>
+      <p class="flex items-center justify-between gap-2 border border-[#e4e9ef] p-3 rounded-sm">
+        <span class="text-sm text-gray-600 inline-flex items-center gap-2">
+          <.icon name="hero-calendar" class="w-5 h-5 text-gray-400" />
+          {dgettext("jobs", "Interviewing")}
+        </span>
+        <span class="text-sm font-medium text-gray-900">0</span>
+      </p>
+    </div>
+
+    <div class="actions flex gap-4 justify-between md:justify-end items-center py-6 border-b border-[#e4e9ef] md:rounded-b">
+      <.custom_button
+        class="text-[#7c4eab] outline-[#7c4eab] w-[40%] md:w-[15%] md:border-t-[1px]"
+        phx-click={JS.navigate(~p"/company/jobs/#{@job_posting.id}/edit")}
+      >
+        {dgettext("jobs", "Back")}
+      </.custom_button>
+      <.custom_button
+        class={["text-white bg-[#7c4eab] w-[40%] md:w-[15%]"]}
+        phx-click={JS.push("post_job")}
+        phx-disable-with={dgettext("jobs", "Submitting...")}
+      >
+        {dgettext("jobs", "Post job")}
+      </.custom_button>
+    </div>
+  </section>
+</Layouts.app>

@@ -28,6 +28,7 @@ import ChatInput from './hooks/chat_input'
 import CopyToClipboard from './hooks/copy_to_clipboard'
 import CurrentCheckbox from './hooks/current_checkbox'
 import DocumentTemplate from './hooks/document_template'
+import DropDownInput from './hooks/drop_down_input'
 import FileUpload from './hooks/file_upload'
 import FlashAutoDisappear from './hooks/flash_auto_disappear'
 import MultiSelect from './hooks/multi_select'
@@ -37,9 +38,11 @@ import RatingsTooltipContent from './hooks/ratings_tooltip_content'
 import SearchHook from './hooks/search_hook'
 import SidebarHook from './hooks/sidebar_hook'
 import SignwellEmbed from './hooks/signwell_embed'
+import SkillsInput from './hooks/skills_input'
 import StoryHook from './hooks/story_hook'
 import TagsInput from './hooks/tags_input'
 import TextTruncate from './hooks/text_truncate'
+import WysiwygInput from './hooks/wysiwyg_input'
 
 // Define hooks object
 const Hooks = {
@@ -48,6 +51,7 @@ const Hooks = {
   CopyToClipboard,
   CurrentCheckbox,
   DocumentTemplate,
+  DropDownInput,
   FileUpload,
   FlashAutoDisappear,
   MultiSelect,
@@ -57,9 +61,11 @@ const Hooks = {
   SearchHook,
   SidebarHook,
   SignwellEmbed,
+  SkillsInput,
   StoryHook,
   TagsInput,
   TextTruncate,
+  WysiwygInput,
 }
 
 let csrfToken = document

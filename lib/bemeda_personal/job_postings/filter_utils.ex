@@ -37,7 +37,6 @@ defmodule BemedaPersonal.JobPostings.FilterUtils do
               :currency,
               :employment_type,
               :position,
-              :profession,
               :years_of_experience
             ] and is_binary(value) do
     {key, string_to_atom(value)}

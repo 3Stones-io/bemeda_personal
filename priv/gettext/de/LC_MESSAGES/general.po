@@ -11,11 +11,6 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Browse Files"
-msgstr "Dateien durchsuchen"
-
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
@@ -37,11 +32,6 @@ msgstr "Verbinden Sie sich mit führenden Arbeitgebern und entdecken Sie Stellen
 msgid "Copy to clipboard"
 msgstr "In die Zwischenablage kopieren"
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Drag and drop to upload your %{type}"
-msgstr "Ziehen und ablegen, um Ihre %{type} hochzuladen"
-
 #: lib/bemeda_personal_web/components/shared/resume_components.ex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
@@ -53,11 +43,6 @@ msgstr "Bearbeiten"
 #, elixir-autogen, elixir-format
 msgid "Find Your Next"
 msgstr "Finden Sie Ihre nächste"
-
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Max file size: %{size}"
-msgstr "Maximale Dateigröße: %{size}"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
@@ -85,21 +70,11 @@ msgstr "Remote"
 msgid "Show %{type}"
 msgstr "%{type} anzeigen"
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Upload progress"
-msgstr "Upload-Fortschritt"
-
 #: lib/bemeda_personal_web/components/core/flash.ex
 #: lib/bemeda_personal_web/components/core/modal.ex
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr "schließen"
-
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "or"
-msgstr "oder"
 
 #: lib/bemeda_personal_web/components/shared/resume_components.ex
 #, elixir-autogen, elixir-format

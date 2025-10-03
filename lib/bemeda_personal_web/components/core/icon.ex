@@ -28,11 +28,12 @@ defmodule BemedaPersonalWeb.Components.Core.Icon do
   """
   attr :name, :string, required: true
   attr :class, :string, default: nil
+  attr :id, :string, default: nil
 
   @spec icon(assigns()) :: rendered()
   def icon(%{name: "hero-" <> _rest} = assigns) do
     ~H"""
-    <span class={[@name, @class]} />
+    <span class={[@name, @class]} id={@id} />
     """
   end
 end

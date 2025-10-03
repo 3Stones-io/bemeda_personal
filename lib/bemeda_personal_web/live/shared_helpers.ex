@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Companies
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobApplications.JobApplicationStateMachine
@@ -46,6 +47,20 @@ defmodule BemedaPersonalWeb.SharedHelpers do
       ]
     )
     |> Phoenix.HTML.raw()
+  end
+
+  @spec create_scope_for_user(user()) :: scope()
+  def create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    if user.user_type == :employer do
+      case Companies.get_company_by_user(user) do
+        nil -> scope
+        company -> Scope.put_company(scope, company)
+      end
+    else
+      scope
+    end
   end
 
   @spec assign_job_posting(socket(), Ecto.UUID.t()) ::
@@ -93,6 +108,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
     {:reply, %{upload_url: upload_url, upload_id: upload_id},
      socket
+     |> assign(:upload_id, upload_id)
      |> assign(:enable_submit?, false)
      |> assign(:media_data, %{file_name: params["filename"], upload_id: upload_id})}
   end

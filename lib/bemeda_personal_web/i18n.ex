@@ -34,12 +34,8 @@ defmodule BemedaPersonalWeb.I18n do
   end
 
   @spec translate_employment_type(enum_value()) :: translated_string()
-  def translate_employment_type("Floater"), do: dgettext("jobs", "Floater")
-  def translate_employment_type("Permanent Position"), do: dgettext("jobs", "Permanent Position")
-  def translate_employment_type("Staff Pool"), do: dgettext("jobs", "Staff Pool")
-
-  def translate_employment_type("Temporary Assignment"),
-    do: dgettext("jobs", "Temporary Assignment")
+  def translate_employment_type("Contract Hire"), do: dgettext("jobs", "Contract Hire")
+  def translate_employment_type("Full-time Hire"), do: dgettext("jobs", "Full-time Hire")
 
   @spec translate_department(enum_value()) :: translated_string()
   def translate_department("Acute Care"), do: dgettext("jobs", "Acute Care")
@@ -193,9 +189,157 @@ defmodule BemedaPersonalWeb.I18n do
   def translate_years_of_experience("More than 5 years"),
     do: dgettext("jobs", "More than 5 years")
 
+  @spec translate_contract_duration(enum_value()) :: translated_string()
+  def translate_contract_duration("1 to 3 months"), do: dgettext("jobs", "1 to 3 months")
+  def translate_contract_duration("4 to 6 months"), do: dgettext("jobs", "4 to 6 months")
+  def translate_contract_duration("7 to 12 months"), do: dgettext("jobs", "7 to 12 months")
+  def translate_contract_duration("13 to 18 months"), do: dgettext("jobs", "13 to 18 months")
+  def translate_contract_duration("19 to 24 months"), do: dgettext("jobs", "19 to 24 months")
+
+  def translate_contract_duration("More than 24 months"),
+    do: dgettext("jobs", "More than 24 months")
+
   @spec translate_template_status(enum_value()) :: translated_string()
   def translate_template_status("active"), do: dgettext("companies", "Active")
   def translate_template_status("failed"), do: dgettext("companies", "Failed")
   def translate_template_status("processing"), do: dgettext("companies", "Processing")
   def translate_template_status("uploading"), do: dgettext("companies", "Uploading")
+
+  @spec translate_skill(enum_value()) :: translated_string()
+  def translate_skill("Patient assessment"), do: dgettext("jobs", "Patient assessment")
+  def translate_skill("Vital signs monitoring"), do: dgettext("jobs", "Vital signs monitoring")
+
+  def translate_skill("Medication administration"),
+    do: dgettext("jobs", "Medication administration")
+
+  def translate_skill("Post-operative care"), do: dgettext("jobs", "Post-operative care")
+  def translate_skill("Wound care"), do: dgettext("jobs", "Wound care")
+  def translate_skill("Pain management"), do: dgettext("jobs", "Pain management")
+  def translate_skill("IV therapy"), do: dgettext("jobs", "IV therapy")
+  def translate_skill("Infection control"), do: dgettext("jobs", "Infection control")
+
+  def translate_skill("Patient positioning & mobility support"),
+    do: dgettext("jobs", "Patient positioning & mobility support")
+
+  def translate_skill("Health education & counseling"),
+    do: dgettext("jobs", "Health education & counseling")
+
+  def translate_skill("Basic life support (BLS) and CPR"),
+    do: dgettext("jobs", "Basic life support (BLS) and CPR")
+
+  def translate_skill("Electronic Health Records (EHR) management"),
+    do: dgettext("jobs", "Electronic Health Records (EHR) management")
+
+  def translate_skill("Critical care nursing"), do: dgettext("jobs", "Critical care nursing")
+
+  def translate_skill("Emergency response & triage"),
+    do: dgettext("jobs", "Emergency response & triage")
+
+  def translate_skill("Pediatric care"), do: dgettext("jobs", "Pediatric care")
+  def translate_skill("Geriatric care"), do: dgettext("jobs", "Geriatric care")
+  def translate_skill("Anesthesia support"), do: dgettext("jobs", "Anesthesia support")
+
+  def translate_skill("Intensive care (ICU) monitoring"),
+    do: dgettext("jobs", "Intensive care (ICU) monitoring")
+
+  def translate_skill("Intermediate care (IMC) nursing"),
+    do: dgettext("jobs", "Intermediate care (IMC) nursing")
+
+  def translate_skill("Surgical assistance & sterile technique"),
+    do: dgettext("jobs", "Surgical assistance & sterile technique")
+
+  def translate_skill("Palliative & end-of-life care"),
+    do: dgettext("jobs", "Palliative & end-of-life care")
+
+  def translate_skill("Phlebotomy"), do: dgettext("jobs", "Phlebotomy")
+  def translate_skill("Diagnostic testing"), do: dgettext("jobs", "Diagnostic testing")
+
+  def translate_skill("Physiotherapy techniques"),
+    do: dgettext("jobs", "Physiotherapy techniques")
+
+  def translate_skill("Occupational therapy interventions"),
+    do: dgettext("jobs", "Occupational therapy interventions")
+
+  def translate_skill("Speech therapy & communication rehabilitation"),
+    do: dgettext("jobs", "Speech therapy & communication rehabilitation")
+
+  def translate_skill("Swallowing therapy"), do: dgettext("jobs", "Swallowing therapy")
+  def translate_skill("Rehabilitation planning"), do: dgettext("jobs", "Rehabilitation planning")
+
+  def translate_skill("Adaptive equipment training"),
+    do: dgettext("jobs", "Adaptive equipment training")
+
+  def translate_skill("Radiology imaging operation (X-ray, MRI, CT)"),
+    do: dgettext("jobs", "Radiology imaging operation (X-ray, MRI, CT)")
+
+  def translate_skill("Radiation safety"), do: dgettext("jobs", "Radiation safety")
+
+  def translate_skill("Laboratory & diagnostic support"),
+    do: dgettext("jobs", "Laboratory & diagnostic support")
+
+  def translate_skill("Medical coding & documentation"),
+    do: dgettext("jobs", "Medical coding & documentation")
+
+  def translate_skill("Operating medical equipment"),
+    do: dgettext("jobs", "Operating medical equipment")
+
+  def translate_skill("Medical terminology"), do: dgettext("jobs", "Medical terminology")
+
+  def translate_skill("Midwifery & prenatal care"),
+    do: dgettext("jobs", "Midwifery & prenatal care")
+
+  def translate_skill("Labor & delivery support"),
+    do: dgettext("jobs", "Labor & delivery support")
+
+  def translate_skill("Newborn care"), do: dgettext("jobs", "Newborn care")
+  def translate_skill("Breastfeeding support"), do: dgettext("jobs", "Breastfeeding support")
+  def translate_skill("Family education"), do: dgettext("jobs", "Family education")
+  def translate_skill("Strong communication"), do: dgettext("jobs", "Strong communication")
+  def translate_skill("Team collaboration"), do: dgettext("jobs", "Team collaboration")
+  def translate_skill("Empathy & compassion"), do: dgettext("jobs", "Empathy & compassion")
+  def translate_skill("Cultural competence"), do: dgettext("jobs", "Cultural competence")
+  def translate_skill("Stress management"), do: dgettext("jobs", "Stress management")
+  def translate_skill("Time management"), do: dgettext("jobs", "Time management")
+  def translate_skill("Attention to detail"), do: dgettext("jobs", "Attention to detail")
+  def translate_skill("Ethical decision-making"), do: dgettext("jobs", "Ethical decision-making")
+  def translate_skill("Problem-solving"), do: dgettext("jobs", "Problem-solving")
+  def translate_skill("Adaptability"), do: dgettext("jobs", "Adaptability")
+  def translate_skill("Leadership"), do: dgettext("jobs", "Leadership")
+  def translate_skill("Conflict resolution"), do: dgettext("jobs", "Conflict resolution")
+  def translate_skill("Customer service"), do: dgettext("jobs", "Customer service")
+  def translate_skill("Organizational skills"), do: dgettext("jobs", "Organizational skills")
+  def translate_skill("Sterile technique"), do: dgettext("jobs", "Sterile technique")
+
+  def translate_skill("Surgical instrumentation"),
+    do: dgettext("jobs", "Surgical instrumentation")
+
+  def translate_skill("Anesthesia monitoring"), do: dgettext("jobs", "Anesthesia monitoring")
+
+  def translate_skill("Paramedic emergency response"),
+    do: dgettext("jobs", "Paramedic emergency response")
+
+  def translate_skill("Home care management"), do: dgettext("jobs", "Home care management")
+  def translate_skill("Long-term care planning"), do: dgettext("jobs", "Long-term care planning")
+  def translate_skill("Psychiatric care"), do: dgettext("jobs", "Psychiatric care")
+
+  def translate_skill("Mental health assessment"),
+    do: dgettext("jobs", "Mental health assessment")
+
+  def translate_skill("Administrative coordination"),
+    do: dgettext("jobs", "Administrative coordination")
+
+  def translate_skill("Medical practice management"),
+    do: dgettext("jobs", "Medical practice management")
+
+  def translate_skill("Patient scheduling"), do: dgettext("jobs", "Patient scheduling")
+  def translate_skill("Insurance processing"), do: dgettext("jobs", "Insurance processing")
+  def translate_skill("Quality assurance"), do: dgettext("jobs", "Quality assurance")
+  def translate_skill("Risk management"), do: dgettext("jobs", "Risk management")
+  def translate_skill("Compliance monitoring"), do: dgettext("jobs", "Compliance monitoring")
+  def translate_skill("Patient advocacy"), do: dgettext("jobs", "Patient advocacy")
+  def translate_skill("Discharge planning"), do: dgettext("jobs", "Discharge planning")
+  def translate_skill("Care coordination"), do: dgettext("jobs", "Care coordination")
+
+  def translate_skill("Interdisciplinary collaboration"),
+    do: dgettext("jobs", "Interdisciplinary collaboration")
 end

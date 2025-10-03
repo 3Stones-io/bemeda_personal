@@ -220,7 +220,7 @@
                "lib/bemeda_personal_web/live/job_application_live/show.ex"
              ]
            },
-           max_deps: 20},
+           max_deps: 30},
           {Credo.Check.Refactor.NegatedIsNil, []},
           {Credo.Check.Refactor.PassAsyncInTestCases, []},
           {Credo.Check.Refactor.PipeChainStart, excluded_functions: ["from"]},

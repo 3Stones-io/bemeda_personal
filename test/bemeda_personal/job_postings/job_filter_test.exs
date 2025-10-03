@@ -6,7 +6,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
   describe "changeset/2" do
     test "creates a changeset with valid attributes" do
       valid_attrs = %{
-        employment_type: "Permanent Position",
+        employment_type: "Full-time Hire",
         location: "New York",
         position: "Specialist Role",
         remote_allowed: "true",
@@ -30,7 +30,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
 
     test "validates employment_type for valid values" do
       Enum.each(
-        ["Floater", "Permanent Position", "Staff Pool", "Temporary Assignment", ""],
+        ["Contract Hire", "Full-time Hire", ""],
         fn value ->
           changeset = JobFilter.changeset(%JobFilter{}, %{employment_type: value})
           assert changeset.valid?, "Expected #{value} to be valid"
@@ -51,23 +51,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       changeset = JobFilter.changeset(%JobFilter{}, %{position: "Invalid"})
       refute changeset.valid?
       assert "is invalid" in errors_on(changeset).position
-    end
-
-    test "validates profession for valid values" do
-      valid_professions = [
-        "Medical Practice Assistant (MPA)",
-        "Registered Nurse (AKP/DNII/HF/FH)",
-        ""
-      ]
-
-      Enum.each(valid_professions, fn value ->
-        changeset = JobFilter.changeset(%JobFilter{}, %{profession: value})
-        assert changeset.valid?, "Expected #{value} to be valid"
-      end)
-
-      changeset = JobFilter.changeset(%JobFilter{}, %{profession: "Invalid Profession"})
-      refute changeset.valid?
-      assert "is invalid" in errors_on(changeset).profession
     end
 
     test "validates department array for valid values" do
@@ -211,7 +194,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
           language: [],
           location: "",
           position: "",
-          profession: "",
           region: [],
           remote_allowed: "",
           salary_max: nil,
@@ -228,7 +210,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
   describe "to_params/1" do
     test "converts string values to appropriate types" do
       filter = %JobFilter{
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         location: "New York",
         position: :"Specialist Role",
         remote_allowed: true,
@@ -238,7 +220,7 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       changeset = JobFilter.changeset(filter, %{})
       params = JobFilter.to_params(changeset)
 
-      assert params[:employment_type] == :"Permanent Position"
+      assert params[:employment_type] == :"Full-time Hire"
       assert params[:location] == "New York"
       assert params[:position] == :"Specialist Role"
       assert params[:remote_allowed] == true
@@ -319,7 +301,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       attrs = %{
         department: [],
         language: [],
-        profession: "Registered Nurse (AKP/DNII/HF/FH)",
         region: ["Zurich"]
       }
 
@@ -328,7 +309,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
 
       refute Map.has_key?(params, :department)
       refute Map.has_key?(params, :language)
-      assert params[:profession] == :"Registered Nurse (AKP/DNII/HF/FH)"
       assert params[:region] == [:Zurich]
     end
 
@@ -337,7 +317,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
         employment_type: "",
         position: nil,
         location: "New York",
-        profession: "",
         remote_allowed: true,
         salary_max: 100_000,
         salary_min: nil,
@@ -350,7 +329,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       refute Map.has_key?(params, :employment_type)
       refute Map.has_key?(params, :position)
       assert params[:location] == "New York"
-      refute Map.has_key?(params, :profession)
       assert params[:remote_allowed] == true
       refute Map.has_key?(params, :salary_min)
       assert params[:salary_max] == 100_000
@@ -363,7 +341,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
           company_id: "550e8400-e29b-41d4-a716-446655440000",
           department: ["Intensive Care"],
           position: "",
-          profession: "Registered Nurse (AKP/DNII/HF/FH)",
           remote_allowed: "true",
           salary_min: 75_000,
           search: "Software Engineer"
@@ -374,7 +351,6 @@ defmodule BemedaPersonal.JobPostings.JobFilterTest do
       assert params[:company_id] == "550e8400-e29b-41d4-a716-446655440000"
       assert params[:department] == [:"Intensive Care"]
       refute Map.has_key?(params, :position)
-      assert params[:profession] == :"Registered Nurse (AKP/DNII/HF/FH)"
       assert params[:remote_allowed] == true
       assert params[:salary_min] == 75_000
       assert params[:search] == "Software Engineer"

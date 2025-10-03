@@ -81,7 +81,7 @@ defmodule BemedaPersonalWeb.Features.SmokeTest do
         job_posting_fixture(company, %{
           title: "Smoke Test Job",
           description: "System health check job posting",
-          employment_type: "Permanent Position"
+          employment_type: "Full-time Hire"
         })
 
       conn

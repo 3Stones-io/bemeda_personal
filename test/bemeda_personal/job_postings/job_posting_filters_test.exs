@@ -26,9 +26,8 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           description:
             "We are seeking an experienced registered nurse to join our intensive care unit. The ideal candidate will have strong clinical skills and experience with critical care patients.",
           location: "Zurich Hospital",
-          profession: "Registered Nurse (AKP/DNII/HF/FH)",
-          department: ["Intensive Care"],
-          employment_type: :"Permanent Position"
+          department: :"Intensive Care",
+          employment_type: :"Full-time Hire"
         })
 
       job2 =
@@ -37,9 +36,8 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           description:
             "Join our dynamic emergency department team. We need a medical practice assistant with excellent communication skills and ability to work under pressure.",
           location: "Geneva Medical Center",
-          profession: "Medical Practice Assistant (MPA)",
-          department: ["Emergency Department"],
-          employment_type: :"Permanent Position"
+          department: :"Emergency Department",
+          employment_type: :"Full-time Hire"
         })
 
       job3 =
@@ -48,9 +46,8 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           description:
             "Provide compassionate care to patients in their homes. Experience with elderly care and chronic disease management preferred.",
           location: "Basel Region",
-          profession: "Registered Nurse (AKP/DNII/HF/FH)",
-          department: ["Home Care (Spitex)"],
-          employment_type: :"Temporary Assignment"
+          department: :"Home Care (Spitex)",
+          employment_type: :"Contract Hire"
         })
 
       job4 =
@@ -59,8 +56,8 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
           description:
             "Develop innovative healthcare software solutions. Must have experience with medical data systems and patient privacy regulations.",
           location: "Remote - Switzerland",
-          profession: "Medical Secretary",
-          employment_type: :"Permanent Position"
+          department: :Administration,
+          employment_type: :"Full-time Hire"
         })
 
       %{jobs: [job1, job2, job3, job4], company: company}
@@ -150,7 +147,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
     test "works correctly with other filters combined", %{jobs: [job1, job2, _job3, _job4]} do
       filters = %{
         search: "nurse",
-        profession: "Registered Nurse (AKP/DNII/HF/FH)"
+        department: :"Intensive Care"
       }
 
       filter_config = JobPostingFilters.filter_config()
