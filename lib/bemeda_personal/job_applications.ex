@@ -31,6 +31,14 @@ defmodule BemedaPersonal.JobApplications do
     JobApplications.list_job_applications(nil)
   end
 
+  @spec get_job_application(scope(), id()) :: job_application() | nil
+  def get_job_application(%Scope{} = scope, id) do
+    JobApplications.get_job_application(scope, id)
+  end
+
+  @spec get_job_application(nil, id()) :: nil
+  def get_job_application(nil, _id), do: nil
+
   @spec get_job_application!(scope(), id()) :: job_application()
   def get_job_application!(%Scope{} = scope, id) do
     JobApplications.get_job_application!(scope, id)

@@ -42,6 +42,7 @@ import SkillsInput from './hooks/skills_input'
 import StoryHook from './hooks/story_hook'
 import TagsInput from './hooks/tags_input'
 import TextTruncate from './hooks/text_truncate'
+import TimezoneDetector from './hooks/timezone_detector'
 import WysiwygInput from './hooks/wysiwyg_input'
 
 // Define hooks object
@@ -65,6 +66,7 @@ const Hooks = {
   StoryHook,
   TagsInput,
   TextTruncate,
+  TimezoneDetector,
   WysiwygInput,
 }
 

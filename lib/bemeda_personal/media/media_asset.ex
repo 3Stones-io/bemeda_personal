@@ -5,6 +5,7 @@ defmodule BemedaPersonal.Media.MediaAsset do
 
   import Ecto.Changeset
 
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Chat.Message
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.CompanyTemplates.CompanyTemplate
@@ -28,12 +29,22 @@ defmodule BemedaPersonal.Media.MediaAsset do
     field :status, Ecto.Enum, values: [:pending, :uploaded, :failed]
     field :type, :string
     field :upload_id, Ecto.UUID
+    belongs_to :user, User
 
     timestamps(type: :utc_datetime)
   end
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(%__MODULE__{} = media_asset, attrs) do
-    cast(media_asset, attrs, [:company_template_id, :file_name, :status, :type, :upload_id])
+    media_asset
+    |> cast(attrs, [
+      :company_template_id,
+      :file_name,
+      :status,
+      :type,
+      :upload_id,
+      :user_id
+    ])
+    |> foreign_key_constraint(:user_id)
   end
 end

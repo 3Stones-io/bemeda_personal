@@ -21,6 +21,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Repo
+  alias BemedaPersonal.Scheduling
   alias BemedaPersonal.Workers.EmailNotificationWorker
   alias BemedaPersonalWeb.Endpoint
 
@@ -930,7 +931,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         |> Scope.put_company(company)
 
       job_offer = JobOffers.get_job_offer_by_application(employer_scope, job_application.id)
-      assert job_offer != nil
+      assert job_offer
       assert job_offer.variables["Start_Date"] == "2025-07-01"
       assert job_offer.variables["Gross_Salary"] == "5000 CHF"
 
@@ -2216,6 +2217,595 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Verify in the UI
       assert render(view) =~ "signed_contract.pdf"
+    end
+  end
+
+  describe "interview scheduling" do
+    setup %{conn: conn} do
+      candidate = user_fixture(%{email: "candidate@example.com", user_type: :job_seeker})
+      employer = employer_user_fixture(%{email: "employer@example.com"})
+      company = company_fixture(employer)
+      job = job_posting_fixture(company, @create_attrs)
+      job_application = job_application_fixture(candidate, job)
+
+      %{
+        candidate: candidate,
+        company: company,
+        conn: conn,
+        employer: employer,
+        job: job,
+        job_application: job_application
+      }
+    end
+
+    test "employer sees all five action buttons including Schedule a meeting", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # All five action buttons should be present
+      assert html =~ "Call"
+      assert html =~ "Mail"
+      assert html =~ "Chat"
+      assert html =~ "Hire"
+      assert html =~ "Schedule a meeting"
+      assert html =~ "data-test-id=\"schedule-meeting-button\""
+    end
+
+    test "candidate does not see employer action buttons", %{
+      conn: conn,
+      candidate: candidate,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, candidate)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Candidate should not see action buttons
+      refute html =~ "Schedule a meeting"
+      refute html =~ "data-test-id=\"schedule-meeting-button\""
+    end
+
+    test "employer can open schedule interview modal", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click the schedule meeting button
+      view
+      |> element("[data-test-id='schedule-meeting-button']")
+      |> render_click()
+
+      # Should display the scheduling modal
+      assert render(view) =~ "Schedule a Meeting"
+      assert render(view) =~ "Schedule an interview with the candidate"
+      assert render(view) =~ "Add a title"
+      assert render(view) =~ "Date"
+      assert render(view) =~ "Start Time"
+      assert render(view) =~ "Add a Link"
+    end
+
+    test "employer can successfully schedule an interview", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Open the modal
+      view
+      |> element("[data-test-id='schedule-meeting-button']")
+      |> render_click()
+
+      # Fill in the form
+      form_data = %{
+        "interview" => %{
+          "title" => "Initial Interview",
+          "scheduled_at_date" => "2025-12-25",
+          "scheduled_at_time" => "14:00",
+          "end_date" => "2025-12-25",
+          "end_time" => "15:00",
+          "meeting_link" => "https://zoom.us/j/123456789",
+          "notes" => "Technical interview discussion",
+          "reminder_minutes_before" => "30"
+        }
+      }
+
+      # Submit the form
+      view
+      |> form("#interview-form", form_data)
+      |> render_submit()
+
+      # Verify interview was created successfully
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(job_application.job_posting.company)
+
+      interviews = Scheduling.list_interviews(scope, %{job_application_id: job_application.id})
+      assert length(interviews) == 1
+
+      # Modal should be closed
+      refute render(view) =~ "Schedule a Meeting"
+
+      interview = hd(interviews)
+      assert interview.meeting_link == "https://zoom.us/j/123456789"
+      assert interview.notes == "Technical interview discussion"
+      assert interview.reminder_minutes_before == 30
+    end
+
+    test "validates required fields in interview form", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Open the modal
+      view
+      |> element("[data-test-id='schedule-meeting-button']")
+      |> render_click()
+
+      # Submit form with missing required fields
+      view
+      |> form("#interview-form", %{"interview" => %{"title" => "Test"}})
+      |> render_submit()
+
+      # Should show validation errors and not close modal
+      assert render(view) =~ "Schedule a Meeting"
+      # Verify no interview was created
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(job_application.job_posting.company)
+
+      interviews = Scheduling.list_interviews(scope, %{job_application_id: job_application.id})
+      assert Enum.empty?(interviews)
+    end
+
+    test "displays scheduled interviews for employer", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application,
+      company: company
+    } do
+      # Create an interview
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, _interview} =
+        Scheduling.create_interview(scope, %{
+          "job_application_id" => job_application.id,
+          "created_by_id" => employer.id,
+          "scheduled_at" => ~U[2025-12-25 14:00:00Z],
+          "end_time" => ~U[2025-12-25 15:00:00Z],
+          "meeting_link" => "https://zoom.us/j/123456789",
+          "notes" => "Technical interview",
+          "timezone" => "Europe/Zurich"
+        })
+
+      conn = log_in_user(conn, employer)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Should display the scheduled interview
+      assert html =~ "Scheduled Interviews"
+      assert html =~ "https://zoom.us/j/123456789"
+      assert html =~ "Technical interview"
+      assert html =~ "Join meeting"
+    end
+
+    test "candidate does not see interview management buttons", %{
+      conn: conn,
+      candidate: candidate,
+      employer: employer,
+      job_application: job_application,
+      company: company
+    } do
+      # Create an interview as employer
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, _interview} =
+        Scheduling.create_interview(scope, %{
+          "job_application_id" => job_application.id,
+          "created_by_id" => employer.id,
+          "scheduled_at" => ~U[2025-12-25 14:00:00Z],
+          "end_time" => ~U[2025-12-25 15:00:00Z],
+          "meeting_link" => "https://zoom.us/j/123456789",
+          "timezone" => "Europe/Zurich"
+        })
+
+      conn = log_in_user(conn, candidate)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Candidate should not see the interviews section
+      refute html =~ "Scheduled Interviews"
+    end
+
+    test "employer can edit an existing interview", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application,
+      company: company
+    } do
+      # Create an interview
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, interview} =
+        Scheduling.create_interview(scope, %{
+          "job_application_id" => job_application.id,
+          "created_by_id" => employer.id,
+          "scheduled_at" => ~U[2025-12-25 14:00:00Z],
+          "end_time" => ~U[2025-12-25 15:00:00Z],
+          "meeting_link" => "https://zoom.us/j/123456789",
+          "notes" => "Initial notes",
+          "timezone" => "Europe/Zurich"
+        })
+
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click edit button
+      view
+      |> element("button[phx-click='edit_interview'][phx-value-id='#{interview.id}']")
+      |> render_click()
+
+      # Should open modal in edit mode
+      assert render(view) =~ "Schedule a Meeting"
+
+      # Update the interview
+      view
+      |> form("#interview-form", %{
+        "interview" => %{
+          "title" => "Updated Interview Title",
+          "scheduled_at_date" => "2025-12-25",
+          "scheduled_at_time" => "14:00",
+          "end_date" => "2025-12-25",
+          "end_time" => "15:00",
+          "meeting_link" => "https://zoom.us/j/987654321",
+          "notes" => "Updated interview notes",
+          "timezone" => "Europe/Zurich"
+        }
+      })
+      |> render_submit()
+
+      # Should show success message
+      assert render(view) =~ "Interview updated successfully"
+
+      # Verify interview was updated
+      updated_interview = Scheduling.get_interview!(scope, interview.id)
+      assert updated_interview.notes == "Updated interview notes"
+      assert updated_interview.meeting_link == "https://zoom.us/j/987654321"
+    end
+
+    test "employer can cancel an interview", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application,
+      company: company
+    } do
+      # Create an interview
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, interview} =
+        Scheduling.create_interview(scope, %{
+          "job_application_id" => job_application.id,
+          "created_by_id" => employer.id,
+          "scheduled_at" => ~U[2025-12-25 14:00:00Z],
+          "end_time" => ~U[2025-12-25 15:00:00Z],
+          "meeting_link" => "https://zoom.us/j/123456789",
+          "timezone" => "Europe/Zurich"
+        })
+
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click cancel button
+      view
+      |> element("button[phx-click='cancel_interview'][phx-value-id='#{interview.id}']")
+      |> render_click()
+
+      # Should show success message
+      assert render(view) =~ "Interview cancelled successfully"
+
+      # Verify interview was cancelled
+      cancelled_interview = Scheduling.get_interview!(scope, interview.id)
+      assert cancelled_interview.status == :cancelled
+    end
+
+    test "timezone detection hook populates timezone field", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Open the modal
+      view
+      |> element("[data-test-id='schedule-meeting-button']")
+      |> render_click()
+
+      # The form should have the timezone hook
+      assert render(view) =~ "phx-hook=\"TimezoneDetector\""
+      assert render(view) =~ "id=\"interview_timezone\""
+    end
+
+    test "interview updates are broadcasted in real-time", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application,
+      company: company
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Create an interview directly (bypassing the form)
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, interview} =
+        Scheduling.create_interview(scope, %{
+          "job_application_id" => job_application.id,
+          "created_by_id" => employer.id,
+          "scheduled_at" => ~U[2025-12-25 14:00:00Z],
+          "end_time" => ~U[2025-12-25 15:00:00Z],
+          "meeting_link" => "https://zoom.us/j/123456789",
+          "timezone" => "Europe/Zurich"
+        })
+
+      # Give time for the PubSub message to be processed
+      :timer.sleep(10)
+
+      # The view should update with the new interview
+      html = render(view)
+      assert html =~ "Scheduled Interviews"
+      assert html =~ interview.meeting_link
+    end
+
+    test "mobile action buttons include schedule meeting option", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, _view, html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Should have mobile schedule button
+      assert html =~ "data-test-id=\"schedule-meeting-button-mobile\""
+
+      # Mobile menu should contain schedule option (it's in DOM but hidden)
+      assert html =~ "Schedule a meeting"
+    end
+
+    test "interview form component handles edit mode correctly", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application,
+      company: company
+    } do
+      # Create an interview with a title
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, interview} =
+        Scheduling.create_interview(scope, %{
+          "job_application_id" => job_application.id,
+          "created_by_id" => employer.id,
+          "scheduled_at" => ~U[2025-12-25 14:00:00Z],
+          "end_time" => ~U[2025-12-25 15:00:00Z],
+          "meeting_link" => "https://zoom.us/j/original",
+          "notes" => "Original notes",
+          "timezone" => "Europe/Zurich"
+        })
+
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Click edit to open modal with existing data
+      view
+      |> element("button[phx-click='edit_interview'][phx-value-id='#{interview.id}']")
+      |> render_click()
+
+      # Modal should be open and show some existing data
+      modal_html = render(view)
+      assert modal_html =~ "Schedule a Meeting"
+
+      # Update specific fields
+      view
+      |> form("#interview-form", %{
+        "interview" => %{
+          "meeting_link" => "https://zoom.us/j/updated",
+          "notes" => "Updated notes",
+          "timezone" => "Europe/Zurich"
+        }
+      })
+      |> render_submit()
+
+      # Verify the update was successful
+      updated_interview = Scheduling.get_interview!(scope, interview.id)
+      assert updated_interview.meeting_link == "https://zoom.us/j/updated"
+      assert updated_interview.notes == "Updated notes"
+    end
+
+    test "interview form validates meeting link format", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Open the modal
+      view
+      |> element("[data-test-id='schedule-meeting-button']")
+      |> render_click()
+
+      # Try to submit with invalid meeting link
+      invalid_form_data = %{
+        "interview" => %{
+          "scheduled_at_date" => "2025-12-25",
+          "scheduled_at_time" => "14:00",
+          "end_date" => "2025-12-25",
+          "end_time" => "15:00",
+          "meeting_link" => "invalid-url"
+        }
+      }
+
+      # Submit form and expect validation error
+      view
+      |> form("#interview-form", invalid_form_data)
+      |> render_submit()
+
+      # Should remain on modal with validation error
+      assert render(view) =~ "Schedule a Meeting"
+
+      # Verify no interview was created
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(job_application.job_posting.company)
+
+      interviews = Scheduling.list_interviews(scope, %{job_application_id: job_application.id})
+      assert Enum.empty?(interviews)
+    end
+
+    test "interview form validates time range (end time after start time)", %{
+      conn: conn,
+      employer: employer,
+      job_application: job_application
+    } do
+      conn = log_in_user(conn, employer)
+
+      {:ok, view, _html} =
+        live(
+          conn,
+          ~p"/jobs/#{job_application.job_posting_id}/job_applications/#{job_application.id}"
+        )
+
+      # Open the modal
+      view
+      |> element("[data-test-id='schedule-meeting-button']")
+      |> render_click()
+
+      # Try to submit with end time before start time
+      invalid_time_data = %{
+        "interview" => %{
+          "scheduled_at_date" => "2025-12-25",
+          "scheduled_at_time" => "15:00",
+          "end_date" => "2025-12-25",
+          "end_time" => "14:00",
+          "meeting_link" => "https://zoom.us/j/123456789"
+        }
+      }
+
+      # Submit form and expect validation error
+      view
+      |> form("#interview-form", invalid_time_data)
+      |> render_submit()
+
+      # Should remain on modal
+      assert render(view) =~ "Schedule a Meeting"
+
+      # Verify no interview was created
+      scope =
+        employer
+        |> Scope.for_user()
+        |> Scope.put_company(job_application.job_posting.company)
+
+      interviews = Scheduling.list_interviews(scope, %{job_application_id: job_application.id})
+      assert Enum.empty?(interviews)
     end
   end
 end

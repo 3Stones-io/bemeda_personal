@@ -37,4 +37,13 @@ defmodule BemedaPersonal.CompaniesFixtures do
     raise ArgumentError,
           "company_fixture requires an employer user, got user_type: #{inspect(user_type)}. Use employer_user_fixture() instead."
   end
+
+  @doc """
+  Generate a company with a default employer user
+  """
+  @spec company_fixture() :: company()
+  def company_fixture do
+    employer = BemedaPersonal.AccountsFixtures.employer_user_fixture()
+    company_fixture(employer)
+  end
 end

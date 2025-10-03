@@ -118,7 +118,6 @@ export default SkillsInput = {
       }
     })
 
-    // Checkboxes -> CHECK BACK
     const maxSkills = 10
 
     const renderSelectedSkills = () => {

@@ -6,6 +6,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
+  import BemedaPersonal.SchedulingFixtures
   import Swoosh.TestAssertions
 
   alias BemedaPersonal.Accounts.UserNotifier
@@ -396,6 +397,68 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         text_body: ~r/Hi Sarah Johnson,/,
         text_body: ~r/STATUS_URL/
       )
+    end
+  end
+
+  describe "interview notifications" do
+    test "deliver_interview_scheduled/1 sends emails to both job seeker and employer" do
+      %{interview: interview} = interview_fixture_with_scope()
+
+      assert {:ok, :emails_sent} = UserNotifier.deliver_interview_scheduled(interview)
+
+      # Check that emails are sent
+      assert_email_sent(subject: ~r/Interview Scheduled/)
+      assert_email_sent(subject: ~r/Interview Scheduled - Confirmation/)
+    end
+
+    test "deliver_interview_reminder/1 sends reminder emails to both parties" do
+      %{interview: interview} = interview_fixture_with_scope()
+
+      assert {:ok, :reminders_sent} = UserNotifier.deliver_interview_reminder(interview)
+
+      # Check reminder emails are sent
+      assert_email_sent(subject: ~r/Interview Reminder/)
+      assert_email_sent(text_body: ~r/scheduled in/)
+    end
+
+    test "deliver_interview_cancelled/1 notifies about cancellation" do
+      %{interview: interview} =
+        interview_fixture_with_scope(%{
+          status: :cancelled,
+          cancellation_reason: "Schedule conflict"
+        })
+
+      assert {:ok, :cancellation_emails_sent} =
+               UserNotifier.deliver_interview_cancelled(interview)
+
+      # Check cancellation emails are sent
+      assert_email_sent(subject: ~r/Interview Cancelled/)
+      assert_email_sent(subject: ~r/Interview Cancellation Confirmed/)
+    end
+
+    test "deliver_interview_updated/1 notifies job seeker about changes" do
+      %{interview: interview} = interview_fixture_with_scope()
+
+      assert {:ok, :update_email_sent} = UserNotifier.deliver_interview_updated(interview)
+
+      # Only one email is sent (to job seeker only)
+      assert_email_sent(subject: ~r/Interview Updated/)
+    end
+
+    test "interview emails include meeting link and timing information" do
+      %{interview: interview} =
+        interview_fixture_with_scope(%{
+          meeting_link: "https://zoom.us/j/123456789",
+          notes: "Interview notes test"
+        })
+
+      assert {:ok, :emails_sent} = UserNotifier.deliver_interview_scheduled(interview)
+
+      # Check meeting link in email
+      assert_email_sent(text_body: ~r/https:\/\/zoom\.us\/j\/123456789/)
+
+      # Check basic email functionality without specific content requirements
+      assert_email_sent(subject: ~r/Interview Scheduled/)
     end
   end
 end

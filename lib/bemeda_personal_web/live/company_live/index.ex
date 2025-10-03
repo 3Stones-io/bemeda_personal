@@ -3,17 +3,13 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
-  alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.CompanyTemplates
-  alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobPostings
-  alias BemedaPersonal.Media
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Workers.ProcessTemplate
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
-  alias BemedaPersonalWeb.SharedHelpers
-  alias Phoenix.LiveView.JS
+  alias Ecto.Multi
   alias Phoenix.Socket.Broadcast
 
   @allowed_file_types [
@@ -43,17 +39,23 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
         CompanyTemplates.get_current_template(company.id)
       end
 
+    current_scope = create_scope_for_user(current_user)
+
     {:ok,
      socket
      |> stream_configure(:job_postings, dom_id: &"job-#{&1.id}")
      |> stream_configure(:recent_applicants, dom_id: &"applicant-#{&1.id}")
      |> assign(:company, company)
+     |> assign(:current_scope, current_scope)
      |> assign(:template, template)
      |> assign(:template_data, %{})
      |> assign(:show_template_modal, false)
      |> assign(:show_variables_modal, false)
      |> assign(:show_create_company_section, is_nil(company))
-     |> assign_company_data(company)}
+     |> assign(:active_tab, "overview")
+     |> assign(:calendar_date, Date.utc_today())
+     |> assign_company_data(company)
+     |> assign_schedule_data(company, current_user)}
   end
 
   defp assign_company_data(socket, nil) do
@@ -77,7 +79,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
 
   defp apply_action(%{assigns: %{company: nil}} = socket, :new, _params) do
     socket
-    |> assign(:company, %Company{})
+    |> assign(:company, %Companies.Company{})
     |> assign(:page_title, dgettext("companies", "Create Company Profile"))
   end
 
@@ -112,7 +114,8 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   def handle_event("upload_file", params, socket) do
     case validate_file_type(params) do
       {:ok, params} ->
-        {:reply, response, updated_socket} = SharedHelpers.create_file_upload(socket, params)
+        {:reply, response, updated_socket} =
+          BemedaPersonalWeb.SharedHelpers.create_file_upload(socket, params)
 
         updated_socket_with_template_data =
           assign(updated_socket, :template_data, updated_socket.assigns.media_data)
@@ -125,18 +128,9 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   def handle_event("upload_completed", _params, socket) do
-    company = socket.assigns.company
-    template_data = socket.assigns.template_data
-
-    with %{file_name: _file_name} <- template_data,
-         template_attrs = build_template_attrs(template_data),
-         media_attrs = build_media_attrs(template_data),
-         multi = build_upload_transaction(company, template_attrs, media_attrs),
-         {:ok, %{template: template}} <- Repo.transaction(multi) do
-      handle_upload_success(socket, template)
-    else
-      _reason ->
-        handle_upload_error(socket)
+    case process_template_upload(socket) do
+      {:ok, template} -> handle_upload_success(socket, template)
+      {:error, _reason} -> handle_upload_error(socket)
     end
   end
 
@@ -157,6 +151,10 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
      socket
      |> assign(:show_template_modal, false)
      |> assign(:show_variables_modal, false)}
+  end
+
+  def handle_event("switch_tab", %{"tab" => tab}, socket) do
+    {:noreply, assign(socket, :active_tab, tab)}
   end
 
   def handle_event("archive_template", _params, socket) do
@@ -233,6 +231,77 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     {:noreply, assign(socket, :template, template_with_media)}
   end
 
+  def handle_info({:calendar_navigate, new_date}, socket) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+    interviews = load_interviews_for_month(scope, new_date)
+
+    {:noreply,
+     socket
+     |> assign(:calendar_date, new_date)
+     |> assign(:interviews, interviews)}
+  end
+
+  def handle_info({:edit_interview, interview_id}, socket) do
+    # For now, just show a flash message - in a full implementation,
+    # this would redirect to an edit modal or page
+    {:noreply,
+     put_flash(
+       socket,
+       :info,
+       dgettext("jobs", "Edit functionality coming soon for interview %{id}", id: interview_id)
+     )}
+  end
+
+  def handle_info({:cancel_interview, interview_id}, socket) do
+    scope = create_scope_for_user(socket.assigns.current_user)
+    interview = BemedaPersonal.Scheduling.get_interview!(scope, interview_id)
+
+    case BemedaPersonal.Scheduling.cancel_interview(
+           scope,
+           interview,
+           dgettext("jobs", "Cancelled by employer")
+         ) do
+      {:ok, _cancelled_interview} ->
+        # Reload interviews to reflect the cancellation
+        interviews = load_interviews_for_month(scope, socket.assigns.calendar_date)
+
+        {:noreply,
+         socket
+         |> assign(:interviews, interviews)
+         |> put_flash(:info, dgettext("jobs", "Interview cancelled successfully"))}
+
+      {:error, _reason} ->
+        {:noreply, put_flash(socket, :error, dgettext("jobs", "Could not cancel interview"))}
+    end
+  end
+
+  def handle_info({:show_interview_details, interview}, socket) do
+    # For now, just show a flash message - in a full implementation,
+    # this would show interview details modal
+    {:noreply,
+     put_flash(
+       socket,
+       :info,
+       dgettext("jobs", "Interview details: %{title}", title: interview.title || "Interview")
+     )}
+  end
+
+  def handle_info({:interview_updated, _interview}, socket) do
+    # Reload interviews when one is updated
+    scope = create_scope_for_user(socket.assigns.current_user)
+    interviews = load_interviews_for_month(scope, socket.assigns.calendar_date)
+
+    {:noreply, assign(socket, :interviews, interviews)}
+  end
+
+  def handle_info({:interview_cancelled, _interview}, socket) do
+    # Reload interviews when one is cancelled
+    scope = create_scope_for_user(socket.assigns.current_user)
+    interviews = load_interviews_for_month(scope, socket.assigns.calendar_date)
+
+    {:noreply, assign(socket, :interviews, interviews)}
+  end
+
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])
 
   defp assign_job_postings(socket, _company) do
@@ -249,7 +318,8 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   defp assign_recent_applicants(socket, nil), do: stream(socket, :recent_applicants, [])
 
   defp assign_recent_applicants(socket, company) do
-    recent_applicants = JobApplications.list_job_applications(%{company_id: company.id}, 10)
+    recent_applicants =
+      BemedaPersonal.JobApplications.list_job_applications(%{company_id: company.id}, 10)
 
     stream(socket, :recent_applicants, recent_applicants)
   end
@@ -290,6 +360,21 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     }
   end
 
+  defp process_template_upload(socket) do
+    company = socket.assigns.company
+    template_data = socket.assigns.template_data
+
+    with %{file_name: _file_name} <- template_data,
+         template_attrs = build_template_attrs(template_data),
+         media_attrs = build_media_attrs(template_data),
+         multi = build_upload_transaction(company, template_attrs, media_attrs),
+         {:ok, %{template: template}} <- Repo.transaction(multi) do
+      {:ok, template}
+    else
+      _reason -> {:error, :upload_failed}
+    end
+  end
+
   defp build_template_attrs(template_data) do
     %{
       name: template_data.file_name,
@@ -298,12 +383,12 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   defp build_upload_transaction(company, template_attrs, media_attrs) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.run(:template, fn _repo, _changes ->
+    Multi.new()
+    |> Multi.run(:template, fn _repo, _changes ->
       CompanyTemplates.replace_active_template(company, template_attrs)
     end)
-    |> Ecto.Multi.run(:media_asset, fn _repo, %{template: template} ->
-      Media.create_media_asset(template, media_attrs)
+    |> Multi.run(:media_asset, fn _repo, %{template: template} ->
+      BemedaPersonal.Media.create_media_asset(template, media_attrs)
     end)
   end
 
@@ -342,5 +427,28 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     else
       scope
     end
+  end
+
+  defp assign_schedule_data(socket, nil, _user), do: assign(socket, :interviews, [])
+
+  defp assign_schedule_data(socket, _company, user) do
+    scope = create_scope_for_user(user)
+    interviews = load_interviews_for_month(scope, Date.utc_today())
+
+    assign(socket, :interviews, interviews)
+  end
+
+  defp load_interviews_for_month(scope, date) do
+    start_date = Date.beginning_of_month(date)
+    # Include first week of next month
+    end_date =
+      date
+      |> Date.end_of_month()
+      |> Date.add(7)
+
+    BemedaPersonal.Scheduling.list_interviews(scope, %{
+      from_date: DateTime.new!(start_date, ~T[00:00:00]),
+      to_date: DateTime.new!(end_date, ~T[23:59:59])
+    })
   end
 end

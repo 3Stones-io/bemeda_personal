@@ -4,50 +4,21 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Accounts.Scope
-  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobApplications.JobApplicationStateMachine
   alias BemedaPersonal.JobPostings
+  alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonal.Workers.EmailNotificationWorker
-  alias BemedaPersonalWeb.Endpoint
 
   require Logger
 
   @type job_application :: JobApplication.t()
   @type scope :: Scope.t()
   @type socket :: Phoenix.LiveView.Socket.t()
-  @type user :: User.t()
-
-  @spec to_html(binary()) :: Phoenix.HTML.safe()
-  def to_html(markdown) do
-    markdown
-    |> MDEx.to_html!(
-      features: [syntax_highlight_theme: "onedark"],
-      extension: [
-        autolink: true,
-        footnotes: true,
-        shortcodes: true,
-        strikethrough: true,
-        table: true,
-        tagfilter: true,
-        tasklist: true,
-        underline: true
-      ],
-      parse: [
-        relaxed_autolinks: true,
-        relaxed_tasklist_matching: true,
-        smart: true
-      ],
-      render: [
-        github_pre_lang: true,
-        escape: true
-      ]
-    )
-    |> Phoenix.HTML.raw()
-  end
+  @type user :: BemedaPersonal.Accounts.User.t()
 
   @spec create_scope_for_user(user()) :: scope()
   def create_scope_for_user(user) do
@@ -70,7 +41,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     job_posting = JobPostings.get_job_posting!(scope, job_id)
 
     if Phoenix.LiveView.connected?(socket) do
-      Endpoint.subscribe("job_posting_assets_#{job_posting.id}")
+      BemedaPersonalWeb.Endpoint.subscribe("job_posting_assets_#{job_posting.id}")
     end
 
     {:noreply,
@@ -115,6 +86,16 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
   @spec get_presigned_url(String.t()) :: String.t()
   def get_presigned_url(upload_id) do
+    TigrisHelper.get_presigned_download_url(upload_id)
+  end
+
+  @spec get_media_asset_url(MediaAsset.t() | nil | Ecto.Association.NotLoaded.t()) ::
+          String.t() | nil
+  def get_media_asset_url(nil), do: nil
+  def get_media_asset_url(%Ecto.Association.NotLoaded{}), do: nil
+  def get_media_asset_url(%MediaAsset{upload_id: nil}), do: nil
+
+  def get_media_asset_url(%MediaAsset{upload_id: upload_id}) do
     TigrisHelper.get_presigned_download_url(upload_id)
   end
 

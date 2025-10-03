@@ -29,6 +29,62 @@
 
       <div class="relative">
         <div class="hidden sm:flex items-center gap-x-2">
+          <.button
+            :if={@is_employer?}
+            phx-click="show-call-modal"
+            variant="secondary"
+            size="sm"
+            class="text-white hover:text-white/80 border-white border-opacity-50"
+          >
+            <.icon name="hero-phone" class="w-4 h-4 mr-1" />
+            {dgettext("jobs", "Call")}
+          </.button>
+
+          <.button
+            :if={@is_employer?}
+            phx-click="show-mail-modal"
+            variant="secondary"
+            size="sm"
+            class="text-white hover:text-white/80 border-white border-opacity-50"
+          >
+            <.icon name="hero-envelope" class="w-4 h-4 mr-1" />
+            {dgettext("jobs", "Mail")}
+          </.button>
+
+          <.button
+            :if={@is_employer?}
+            phx-click="show-chat"
+            variant="secondary"
+            size="sm"
+            class="text-white hover:text-white/80 border-white border-opacity-50"
+          >
+            <.icon name="hero-chat-bubble-left" class="w-4 h-4 mr-1" />
+            {dgettext("jobs", "Chat")}
+          </.button>
+
+          <.button
+            :if={@is_employer?}
+            phx-click="show-hire-modal"
+            variant="secondary"
+            size="sm"
+            class="text-white hover:text-white/80 border-white border-opacity-50"
+          >
+            <.icon name="hero-briefcase" class="w-4 h-4 mr-1" />
+            {dgettext("jobs", "Hire")}
+          </.button>
+
+          <.button
+            :if={@is_employer?}
+            phx-click="open_schedule_modal"
+            variant="primary"
+            size="sm"
+            data-test-id="schedule-meeting-button"
+            class="bg-white text-indigo-600 hover:bg-gray-50"
+          >
+            <.icon name="hero-calendar" class="w-4 h-4 mr-1" />
+            {dgettext("jobs", "Schedule a meeting")}
+          </.button>
+
           <.link
             patch={
               ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/history"
@@ -57,6 +113,52 @@
             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 hidden"
           >
             <div class="py-1">
+              <button
+                :if={@is_employer?}
+                phx-click="show-call-modal"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+              >
+                <.icon name="hero-phone" class="w-4 h-4 mr-2" />
+                {dgettext("jobs", "Call")}
+              </button>
+
+              <button
+                :if={@is_employer?}
+                phx-click="show-mail-modal"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+              >
+                <.icon name="hero-envelope" class="w-4 h-4 mr-2" />
+                {dgettext("jobs", "Mail")}
+              </button>
+
+              <button
+                :if={@is_employer?}
+                phx-click="show-chat"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+              >
+                <.icon name="hero-chat-bubble-left" class="w-4 h-4 mr-2" />
+                {dgettext("jobs", "Chat")}
+              </button>
+
+              <button
+                :if={@is_employer?}
+                phx-click="show-hire-modal"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+              >
+                <.icon name="hero-briefcase" class="w-4 h-4 mr-2" />
+                {dgettext("jobs", "Hire")}
+              </button>
+
+              <button
+                :if={@is_employer?}
+                phx-click="open_schedule_modal"
+                class="w-full text-left px-4 py-2 text-sm text-indigo-600 hover:bg-indigo-50 flex items-center font-medium"
+                data-test-id="schedule-meeting-button-mobile"
+              >
+                <.icon name="hero-calendar" class="w-4 h-4 mr-2" />
+                {dgettext("jobs", "Schedule a meeting")}
+              </button>
+
               <.link
                 patch={
                   ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}/history"
@@ -162,6 +264,153 @@
               "View Contract"
             )}
           </.link>
+        </div>
+      </div>
+    </div>
+
+    <div :if={@is_employer? && length(@interviews) > 0} class="mt-8 px-4">
+      <h3 class="text-lg font-semibold mb-4">{dgettext("jobs", "Scheduled Interviews")}</h3>
+      <div class="space-y-3">
+        <div :for={interview <- @interviews} class="p-4 bg-gray-50 rounded-lg">
+          <div class="flex justify-between items-start">
+            <div>
+              <p :if={interview.title} class="font-medium text-gray-900 mb-1">
+                {interview.title}
+              </p>
+              <p class="font-medium">
+                {format_interview_date(interview.scheduled_at, interview.timezone)}
+              </p>
+              <p class="text-sm text-gray-600">
+                {format_interview_time(
+                  interview.scheduled_at,
+                  interview.end_time,
+                  interview.timezone
+                )}
+              </p>
+              <p :if={interview.notes} class="text-sm text-gray-500 mt-2">
+                {interview.notes}
+              </p>
+              <a
+                href={interview.meeting_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600 hover:underline text-sm mt-2 inline-block"
+              >
+                {dgettext("jobs", "Join meeting")}
+              </a>
+            </div>
+            <div class="flex gap-2">
+              <button
+                phx-click="edit_interview"
+                phx-value-id={interview.id}
+                class="text-gray-600 hover:text-gray-900"
+                title={dgettext("jobs", "Edit interview")}
+              >
+                <.icon name="hero-pencil" class="w-4 h-4" />
+              </button>
+              <button
+                phx-click="cancel_interview"
+                phx-value-id={interview.id}
+                class="text-red-600 hover:text-red-900"
+                data-confirm={dgettext("jobs", "Are you sure you want to cancel this interview?")}
+                title={dgettext("jobs", "Cancel interview")}
+              >
+                <.icon name="hero-x-mark" class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div :if={!@is_employer? && length(@interviews) > 0} class="mt-8 px-4">
+      <h3 class="text-lg font-semibold mb-4">{dgettext("jobs", "Your Interviews")}</h3>
+
+      <div :if={@next_interview} class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div class="flex items-center gap-2 text-blue-800 mb-2">
+          <.icon name="hero-clock" class="w-5 h-5" />
+          <span class="font-semibold">{dgettext("jobs", "Next Interview")}</span>
+        </div>
+        <p class="text-sm mb-2">
+          {format_interview_date(@next_interview.scheduled_at, @next_interview.timezone)} {dgettext(
+            "jobs",
+            "at"
+          )} {format_interview_time(
+            @next_interview.scheduled_at,
+            @next_interview.end_time,
+            @next_interview.timezone
+          )}
+        </p>
+        <p :if={@next_interview.title} class="text-sm font-medium text-gray-900 mb-2">
+          {dgettext("jobs", "Topic")}: {@next_interview.title}
+        </p>
+        <p :if={@next_interview.notes} class="text-sm text-blue-700 mb-2">
+          {dgettext("jobs", "Notes")}: {@next_interview.notes}
+        </p>
+        <a
+          href={@next_interview.meeting_link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 mt-2 text-blue-600 hover:underline text-sm font-medium"
+        >
+          <.icon name="hero-video-camera" class="w-4 h-4" />
+          {dgettext("jobs", "Join meeting")}
+        </a>
+      </div>
+
+      <div class="space-y-3">
+        <div :for={interview <- @interviews} class="p-4 bg-gray-50 rounded-lg">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <p :if={interview.title} class="font-medium text-gray-900 mb-1">
+                {interview.title}
+              </p>
+              <p class="font-medium">
+                {format_interview_date(interview.scheduled_at, interview.timezone)}
+              </p>
+              <p class="text-sm text-gray-600">
+                {format_interview_time(
+                  interview.scheduled_at,
+                  interview.end_time,
+                  interview.timezone
+                )}
+              </p>
+              <div class="flex items-center gap-2 mt-2">
+                <span class={[
+                  "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+                  case interview.status do
+                    :scheduled -> "bg-green-100 text-green-800"
+                    :cancelled -> "bg-red-100 text-red-800"
+                    :completed -> "bg-gray-100 text-gray-800"
+                  end
+                ]}>
+                  {case interview.status do
+                    :scheduled -> dgettext("jobs", "Scheduled")
+                    :cancelled -> dgettext("jobs", "Cancelled")
+                    :completed -> dgettext("jobs", "Completed")
+                  end}
+                </span>
+                <p
+                  :if={interview.status == :cancelled && interview.cancellation_reason}
+                  class="text-sm text-red-600"
+                >
+                  ({interview.cancellation_reason})
+                </p>
+              </div>
+              <p :if={interview.notes} class="text-sm text-gray-500 mt-2">
+                {interview.notes}
+              </p>
+              <a
+                :if={interview.status == :scheduled}
+                href={interview.meeting_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600 hover:underline text-sm mt-2 inline-block"
+              >
+                {dgettext("jobs", "Join meeting")}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -274,6 +523,26 @@
           Cancel
         </.button>
       </div>
+    </.modal>
+
+    <.modal
+      :if={@show_schedule_modal}
+      id="schedule-interview-modal"
+      show
+      on_cancel={JS.push("close_schedule_modal")}
+    >
+      <.live_component
+        module={BemedaPersonalWeb.Scheduling.InterviewFormComponent}
+        id="schedule-interview-form"
+        job_application={@job_application}
+        current_scope={@current_scope}
+        current_user={@current_user}
+        current_company={@current_company}
+        edit_interview={Map.get(assigns, :edit_interview)}
+        patch={
+          ~p"/jobs/#{@job_application.job_posting_id}/job_applications/#{@job_application.id}"
+        }
+      />
     </.modal>
   </section>
 </Layouts.app>

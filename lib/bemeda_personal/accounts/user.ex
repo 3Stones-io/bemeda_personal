@@ -46,6 +46,7 @@ defmodule BemedaPersonal.Accounts.User do
 
     has_one :resume, BemedaPersonal.Resumes.Resume
     has_many :magic_tokens, BemedaPersonal.Accounts.MagicLinkToken
+    has_one :media_asset, BemedaPersonal.Media.MediaAsset
 
     timestamps(type: :utc_datetime)
   end
@@ -451,4 +452,12 @@ defmodule BemedaPersonal.Accounts.User do
   @spec employer?(t()) :: boolean()
   def employer?(%__MODULE__{user_type: :employer}), do: true
   def employer?(_user), do: false
+
+  @doc """
+  Returns the full name of the user.
+  """
+  @spec full_name(t()) :: String.t()
+  def full_name(%__MODULE__{first_name: first_name, last_name: last_name}) do
+    "#{first_name} #{last_name}"
+  end
 end

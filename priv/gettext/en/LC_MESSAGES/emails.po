@@ -308,19 +308,199 @@ msgstr ""
 #: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
 #, elixir-autogen, elixir-format
 msgid "Thank you for joining Bemeda Personal. We're excited to have you on board. Simply click the link below to verify your email address."
-msgstr ""
+msgstr "Thank you for joining Bemeda Personal. We're excited to have you on board. Simply click the link below to verify your email address."
 
 #: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
 #, elixir-autogen, elixir-format
 msgid "Verify my email"
-msgstr ""
+msgstr "Verify my email"
 
 #: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "We received a request to reset the password for your Bemeda Personal account. To create a new password, please click the button below:"
-msgstr ""
+msgstr "We received a request to reset the password for your Bemeda Personal account. To create a new password, please click the button below:"
 
 #: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "We received a request to update the email address for your Bemeda Personal account. To confirm this change, please click the button below:"
-msgstr ""
+msgstr "We received a request to update the email address for your Bemeda Personal account. To confirm this change, please click the button below:"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "A reminder will be sent %{minutes} minutes before the interview."
+msgstr "A reminder will be sent %{minutes} minutes before the interview."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal Team"
+msgstr "BemedaPersonal Team"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Best regards"
+msgstr "Best regards"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Candidate"
+msgstr "Candidate"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Company"
+msgstr "Company"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Date"
+msgstr "Date"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Duration"
+msgstr "Duration"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Good luck!"
+msgstr "Good luck!"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Good news! An interview has been scheduled for your application."
+msgstr "Good news! An interview has been scheduled for your application."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Hello"
+msgstr "Hello"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Cancellation Confirmed"
+msgstr "Interview Cancellation Confirmed"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Cancelled"
+msgstr "Interview Cancelled"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Reminder"
+msgstr "Interview Reminder"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Scheduled"
+msgstr "Interview Scheduled"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Scheduled - Confirmation"
+msgstr "Interview Scheduled - Confirmation"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Interview Updated"
+msgstr "Interview Updated"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Meeting Link"
+msgstr "Meeting Link"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "New Date"
+msgstr "New Date"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "New Time"
+msgstr "New Time"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Notes"
+msgstr "Notes"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Originally scheduled for"
+msgstr "Originally scheduled for"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Please make sure to join the meeting on time."
+msgstr "Please make sure to join the meeting on time."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Please make sure you're ready to join the meeting."
+msgstr "Please make sure you're ready to join the meeting."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Please note the updated details."
+msgstr "Please note the updated details."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Position"
+msgstr "Position"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Reason"
+msgstr "Reason"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Reminder: You have an interview scheduled in %{time}."
+msgstr "Reminder: You have an interview scheduled in %{time}."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "The candidate has been notified of the cancellation."
+msgstr "The candidate has been notified of the cancellation."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "The interview has been cancelled as requested."
+msgstr "The interview has been cancelled as requested."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "This is a reminder that your interview is coming up in %{time}."
+msgstr "This is a reminder that your interview is coming up in %{time}."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Time"
+msgstr "Time"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Was scheduled for"
+msgstr "Was scheduled for"
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "We apologize for any inconvenience. The employer may reach out to reschedule."
+msgstr "We apologize for any inconvenience. The employer may reach out to reschedule."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "We regret to inform you that your scheduled interview has been cancelled."
+msgstr "We regret to inform you that your scheduled interview has been cancelled."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Your interview details have been updated."
+msgstr "Your interview details have been updated."
+
+#: lib/bemeda_personal/accounts/interview_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Your interview has been scheduled successfully."
+msgstr "Your interview has been scheduled successfully."

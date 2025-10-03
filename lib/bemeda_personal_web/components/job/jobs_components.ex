@@ -861,7 +861,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
             <dt class="text-sm font-medium text-gray-500">{dgettext("jobs", "Cover letter")}</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 prose max-w-none">
               <div class="md-to-html">
-                {SharedHelpers.to_html(@application.cover_letter)}
+                {BemedaPersonalWeb.MarkdownHelper.to_html(@application.cover_letter)}
               </div>
             </dd>
           </div>

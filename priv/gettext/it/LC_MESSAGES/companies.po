@@ -18,6 +18,7 @@ msgstr "Informazioni su %{company}"
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
 msgid "Applicants"
 msgstr "Candidati"
@@ -551,3 +552,23 @@ msgstr "Studio privato"
 #, elixir-autogen, elixir-format
 msgid "e.g., University Hospital Zürich"
 msgstr "ad es., Ospedale Universitario di Zurigo"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Jobs"
+msgstr "Offerte di lavoro"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "My Schedule"
+msgstr "Il mio programma"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Overview"
+msgstr "Panoramica"
+
+#: lib/bemeda_personal_web/live/company_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View and manage your upcoming interviews"
+msgstr "Visualizza e gestisci i tuoi prossimi colloqui"

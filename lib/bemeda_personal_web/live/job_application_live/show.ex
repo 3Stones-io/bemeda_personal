@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobOffers
   alias BemedaPersonal.Media
+  alias BemedaPersonal.Scheduling
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonalWeb.Components.JobApplication.ChatComponents
   alias BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent
@@ -28,6 +29,8 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      |> assign(:show_status_transition_modal, false)
      |> assign(:show_offer_details_modal, false)
      |> assign(:show_signing_modal, false)
+     |> assign(:show_schedule_modal, false)
+     |> assign(:edit_interview, nil)
      |> assign(:signing_session, nil)}
   end
 
@@ -37,6 +40,75 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
   end
 
   @impl Phoenix.LiveView
+  def handle_event("open_schedule_modal", _params, socket) do
+    {:noreply, assign(socket, :show_schedule_modal, true)}
+  end
+
+  def handle_event("close_schedule_modal", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:show_schedule_modal, false)
+     |> assign(:edit_interview, nil)}
+  end
+
+  def handle_event("edit_interview", %{"id" => interview_id}, socket) do
+    case Scheduling.get_interview(socket.assigns.current_scope, interview_id) do
+      nil ->
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "Interview not found or you don't have permission to edit it")
+         )}
+
+      interview ->
+        {:noreply,
+         socket
+         |> assign(:edit_interview, interview)
+         |> assign(:show_schedule_modal, true)}
+    end
+  end
+
+  def handle_event("cancel_interview", %{"id" => interview_id}, socket) do
+    case Scheduling.get_interview(socket.assigns.current_scope, interview_id) do
+      nil ->
+        {:noreply,
+         put_flash(
+           socket,
+           :error,
+           dgettext("jobs", "Interview not found or you don't have permission to cancel it")
+         )}
+
+      interview ->
+        case Scheduling.cancel_interview(
+               socket.assigns.current_scope,
+               interview,
+               dgettext("jobs", "Cancelled by employer")
+             ) do
+          {:ok, _cancelled_interview} ->
+            # Reload interviews
+            interviews =
+              Scheduling.list_interviews(
+                socket.assigns.current_scope,
+                %{job_application_id: socket.assigns.job_application.id}
+              )
+
+            {:noreply,
+             socket
+             |> assign(:interviews, interviews)
+             |> put_flash(:info, dgettext("jobs", "Interview cancelled successfully"))}
+
+          {:error, _changeset} ->
+            {:noreply,
+             put_flash(
+               socket,
+               :error,
+               dgettext("jobs", "Failed to cancel interview")
+             )}
+        end
+    end
+  end
+
   def handle_event("validate", %{"message" => message_params}, socket) do
     changeset =
       %Chat.Message{}
@@ -335,6 +407,17 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     {:noreply, put_flash(socket, type, message)}
   end
 
+  def handle_info({:interview_updated, _interview}, socket) do
+    # Reload interviews for display
+    interviews =
+      Scheduling.list_interviews(
+        socket.assigns.current_scope,
+        %{job_application_id: socket.assigns.job_application.id}
+      )
+
+    {:noreply, assign(socket, :interviews, interviews)}
+  end
+
   def handle_info(:offer_cancelled, socket) do
     {:noreply, assign(socket, :show_offer_details_modal, false)}
   end
@@ -344,6 +427,65 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
      socket
      |> assign(:job_offer, job_offer)
      |> assign(:show_offer_details_modal, false)}
+  end
+
+  def handle_info(
+        {BemedaPersonalWeb.Scheduling.InterviewFormComponent,
+         {:saved, _interview, flash_message}},
+        socket
+      ) do
+    # Reload job application to get updated interview data
+    job_application =
+      JobApplications.get_job_application!(
+        socket.assigns.current_scope,
+        socket.assigns.job_application.id
+      )
+
+    # Reload interviews for display
+    interviews =
+      Scheduling.list_interviews(
+        socket.assigns.current_scope,
+        %{job_application_id: socket.assigns.job_application.id}
+      )
+
+    # Use the flash message from the component that correctly handles
+    # both "Interview scheduled successfully" and "Interview updated successfully"
+    {:noreply,
+     socket
+     |> put_flash(:info, flash_message)
+     |> assign(:job_application, job_application)
+     |> assign(:interviews, interviews)
+     |> assign(:show_schedule_modal, false)
+     |> assign(:edit_interview, nil)}
+  end
+
+  # Legacy support for old 2-tuple format (temporary during transition)
+  def handle_info(
+        {BemedaPersonalWeb.Scheduling.InterviewFormComponent, {:saved, _interview}},
+        socket
+      ) do
+    # Reload job application to get updated interview data
+    job_application =
+      JobApplications.get_job_application!(
+        socket.assigns.current_scope,
+        socket.assigns.job_application.id
+      )
+
+    # Reload interviews for display
+    interviews =
+      Scheduling.list_interviews(
+        socket.assigns.current_scope,
+        %{job_application_id: socket.assigns.job_application.id}
+      )
+
+    # Fallback message since component didn't provide one
+    {:noreply,
+     socket
+     |> put_flash(:info, dgettext("jobs", "Interview scheduled successfully"))
+     |> assign(:job_application, job_application)
+     |> assign(:interviews, interviews)
+     |> assign(:show_schedule_modal, false)
+     |> assign(:edit_interview, nil)}
   end
 
   # Handle messages from signing session GenServer
@@ -521,29 +663,69 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     user = socket.assigns.current_user
     scope = create_scope_for_user(user)
 
+    data = load_job_application_data(scope, job_application, job_application_id, user)
+
+    setup_subscriptions(socket, job_application_id, job_application)
+
+    is_employer =
+      socket.assigns.current_user.id == job_application.job_posting.company.admin_user_id
+
+    socket
+    |> assign(:is_employer?, is_employer)
+    |> assign(:job_application, job_application)
+    |> assign(:job_offer, data.job_offer)
+    |> assign(:job_posting, job_application.job_posting)
+    |> assign(:interviews, data.interviews)
+    |> assign(:next_interview, data.next_interview)
+    |> assign(:current_company, data.current_company)
+    |> assign(:current_scope, scope)
+    |> assign_available_statuses(job_application)
+    |> assign_chat_form(data.changeset)
+    |> stream(:messages, data.messages)
+  end
+
+  defp load_job_application_data(scope, job_application, job_application_id, user) do
     messages = Chat.list_messages(scope, job_application)
     changeset = Chat.change_message(%Chat.Message{})
     job_offer = JobOffers.get_job_offer_by_application(scope, job_application_id)
-    job_posting = job_application.job_posting
 
+    # Load interviews for this job application
+    interviews =
+      Scheduling.list_interviews(
+        scope,
+        %{job_application_id: job_application_id}
+      )
+
+    # Find next interview for job seekers
+    next_interview = find_next_interview(interviews)
+
+    # Get current company if user is an employer
+    current_company =
+      if user.user_type == :employer do
+        Companies.get_company_by_user(user)
+      else
+        nil
+      end
+
+    %{
+      messages: messages,
+      changeset: changeset,
+      job_offer: job_offer,
+      interviews: interviews,
+      next_interview: next_interview,
+      current_company: current_company
+    }
+  end
+
+  defp setup_subscriptions(socket, job_application_id, job_application) do
     if connected?(socket) do
       Endpoint.subscribe("messages:job_application:#{job_application_id}")
       Endpoint.subscribe("job_application_messages:#{job_application_id}:media_assets")
       Endpoint.subscribe("job_application:#{job_application_id}:media_assets")
       Endpoint.subscribe("job_application:company:#{job_application.job_posting.company_id}")
       Endpoint.subscribe("job_application:user:#{job_application.user_id}")
+      Endpoint.subscribe("job_application:#{job_application_id}")
     end
-
-    is_employer = socket.assigns.current_user.id == job_posting.company.admin_user_id
-
-    socket
-    |> assign(:is_employer?, is_employer)
-    |> assign(:job_application, job_application)
-    |> assign(:job_offer, job_offer)
-    |> assign(:job_posting, job_posting)
-    |> assign_available_statuses(job_application)
-    |> assign_chat_form(changeset)
-    |> stream(:messages, messages)
   end
 
   defp process_signing_completion(job_application, document_id) do
@@ -600,5 +782,44 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
         # Fallback to simple mock content
         {:ok, "Mock signed document content"}
     end
+  end
+
+  # Helper functions for interview date formatting
+  defp format_interview_date(scheduled_at, timezone) do
+    # Format date with timezone info - times are stored in UTC
+    formatted_date = Calendar.strftime(scheduled_at, "%A, %d.%m.%Y")
+
+    if timezone && timezone != "UTC" do
+      "#{formatted_date} (#{timezone})"
+    else
+      formatted_date
+    end
+  end
+
+  defp format_interview_time(scheduled_at, end_time, timezone) do
+    # Format time with timezone info - times are stored in UTC
+    start_time = Calendar.strftime(scheduled_at, "%H:%M")
+    end_time_formatted = Calendar.strftime(end_time, "%H:%M")
+
+    base_time = "#{start_time} - #{end_time_formatted}"
+
+    if timezone && timezone != "UTC" do
+      "#{base_time} (#{timezone})"
+    else
+      "#{base_time} UTC"
+    end
+  end
+
+  # Find the next scheduled interview for job seekers
+  defp find_next_interview(interviews) do
+    now = DateTime.utc_now()
+
+    interviews
+    |> Enum.filter(fn interview ->
+      interview.status == :scheduled &&
+        DateTime.compare(interview.scheduled_at, now) == :gt
+    end)
+    |> Enum.sort_by(& &1.scheduled_at, DateTime)
+    |> List.first()
   end
 end

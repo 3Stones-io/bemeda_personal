@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.JobApplications
+  alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Workers.EmailNotificationWorker
 
@@ -554,6 +555,122 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       assert html =~ "Start applying to jobs"
       assert html =~ "Find jobs"
       assert html =~ "applications.svg"
+    end
+  end
+
+  describe "JobApplicationsListComponent Media Asset Handling (Bug Fix)" do
+    setup %{conn: conn} do
+      user = user_fixture()
+      employer = employer_user_fixture(%{email: "company@example.com"})
+      company = company_fixture(employer)
+
+      %{
+        conn: log_in_user(conn, user),
+        user: user,
+        company: company,
+        employer: employer
+      }
+    end
+
+    test "handles company with nil media_asset without crashing", %{
+      conn: conn,
+      user: user,
+      company: company
+    } do
+      # Company without media_asset (null media_asset_id)
+      {:ok, updated_company} =
+        BemedaPersonal.Companies.update_company(company, %{media_asset_id: nil})
+
+      job = job_posting_fixture(updated_company, %{title: "Test Job"})
+      job_application_fixture(user, job)
+
+      # Should load successfully without KeyError
+      {:ok, _view, html} = live(conn, ~p"/job_applications")
+
+      # Should display the application with fallback avatar (company initials)
+      assert html =~ "Test Job"
+      assert html =~ company.name
+
+      # Should show fallback avatar with company initials instead of image
+      # The component shows initials when no media_asset
+      company_initials =
+        company.name
+        |> String.slice(0, 2)
+        |> String.upcase()
+
+      assert html =~ company_initials
+
+      # Should not crash when accessing media_asset URL
+      refute html =~ "KeyError"
+      refute html =~ "500 Internal Server Error"
+    end
+
+    test "displays company logo when media_asset exists", %{
+      conn: conn,
+      user: user,
+      company: company
+    } do
+      # Create media asset for company
+      {:ok, _media_asset} =
+        BemedaPersonal.Media.create_media_asset(company, %{
+          file_name: "company_logo.png",
+          status: :uploaded,
+          type: "image/png",
+          upload_id: Ecto.UUID.generate()
+        })
+
+      # Reload company to get media_asset association
+      company = BemedaPersonal.Repo.preload(company, :media_asset, force: true)
+      assert company.media_asset != nil
+
+      job = job_posting_fixture(company, %{title: "Test Job With Logo"})
+      job_application_fixture(user, job)
+
+      # Should load successfully and show company logo
+      {:ok, _view, html} = live(conn, ~p"/job_applications")
+
+      assert html =~ "Test Job With Logo"
+      assert html =~ company.name
+
+      # Should contain img tag when media_asset exists
+      assert html =~ "<img"
+      assert html =~ "object-cover"
+    end
+
+    test "handles malformed media_asset data gracefully", %{
+      conn: conn,
+      user: user,
+      company: company
+    } do
+      # Create media asset with nil upload_id to test edge case
+      {:ok, media_asset} =
+        BemedaPersonal.Media.create_media_asset(company, %{
+          file_name: "broken_logo.png",
+          status: :uploaded,
+          type: "image/png",
+          upload_id: Ecto.UUID.generate()
+        })
+
+      # Manually set upload_id to nil to simulate edge case
+      media_asset
+      |> MediaAsset.changeset(%{upload_id: nil})
+      |> BemedaPersonal.Repo.update!()
+
+      # Reload company
+      company = BemedaPersonal.Repo.preload(company, :media_asset, force: true)
+
+      job = job_posting_fixture(company, %{title: "Test Job Edge Case"})
+      job_application_fixture(user, job)
+
+      # Should handle nil upload_id gracefully (Media.get_media_asset_url returns nil)
+      {:ok, _view, html} = live(conn, ~p"/job_applications")
+
+      assert html =~ "Test Job Edge Case"
+      assert html =~ company.name
+
+      # Should still not crash even with malformed media_asset
+      refute html =~ "KeyError"
+      refute html =~ "500 Internal Server Error"
     end
   end
 
