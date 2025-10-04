@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
   use BemedaPersonalWeb, :live_component
 
   import BemedaPersonalWeb.Components.Job.InputComponents
+  import Phoenix.HTML.Form, only: [input_value: 2]
 
   alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.I18n
@@ -22,7 +23,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
-        class="py-4 max-w-3xl mx-auto"
+        class="py-4 w-full max-w-3xl mx-auto"
       >
         <h1 class="text-xl font-medium text-gray-900 mb-6 px-4">
           {if @action == :new,
@@ -68,10 +69,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                   value="Contract Hire"
                   label={dgettext("jobs", "Contract Hire")}
                   label_class="text-xs md:text-sm font-semibold text-gray-900"
-                  checked={
-                    f |> Phoenix.HTML.Form.input_value(:employment_type) |> to_string() ==
-                      "Contract Hire"
-                  }
+                  checked={checked?(f, :employment_type, "Contract Hire")}
                 />
                 <p class="text-xs text-gray-900 opacity-75 mt-2">
                   {dgettext(
@@ -105,10 +103,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                 value="Full-time Hire"
                 label={dgettext("jobs", "Full-time Hire")}
                 label_class="text-xs font-semibold text-gray-900"
-                checked={
-                  f |> Phoenix.HTML.Form.input_value(:employment_type) |> to_string() ==
-                    "Full-time Hire"
-                }
+                checked={checked?(f, :employment_type, "Full-time Hire")}
               />
               <p class="text-xs text-gray-900 opacity-75 mt-2">
                 {dgettext(
@@ -132,7 +127,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                   value="false"
                   label={dgettext("jobs", "On-site")}
                   label_class="text-xs md:text-sm font-semibold text-gray-900"
-                  checked={Phoenix.HTML.Form.input_value(f, :remote_allowed) == false}
+                  checked={checked?(f, :remote_allowed, false)}
                 />
                 <p class="text-xs text-gray-900 opacity-75 mt-2">
                   {dgettext("jobs", "Candidates will work from a specific physical location.")}
@@ -160,7 +155,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                   value="true"
                   label={dgettext("jobs", "Remote")}
                   label_class="text-xs md:text-sm font-semibold text-gray-900"
-                  checked={Phoenix.HTML.Form.input_value(f, :remote_allowed)}
+                  checked={checked?(f, :remote_allowed, true)}
                 />
                 <p class="text-xs text-gray-900 opacity-75 mt-2">
                   {dgettext("jobs", "Candidates can work from anywhere.")}
@@ -178,7 +173,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                     value="false"
                     label={dgettext("jobs", "No")}
                     label_class="text-sm text-gray-900"
-                    checked={Phoenix.HTML.Form.input_value(f, :swiss_only) == false}
+                    checked={checked?(f, :swiss_only, false)}
                   />
                   <.custom_input
                     field={f[:swiss_only]}
@@ -187,7 +182,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                     value="true"
                     label={dgettext("jobs", "Yes")}
                     label_class="text-sm text-gray-900"
-                    checked={Phoenix.HTML.Form.input_value(f, :swiss_only)}
+                    checked={checked?(f, :swiss_only, true)}
                   />
                 </div>
               </div>
@@ -573,5 +568,14 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
       "false" -> Map.delete(params, "swiss_only")
       _other -> params
     end
+  end
+
+  defp checked?(form, field, value) do
+    form_value =
+      form
+      |> input_value(field)
+      |> to_string()
+
+    value == form_value
   end
 end

@@ -306,7 +306,11 @@ defmodule BemedaPersonalWeb.Components.Job.InputComponents do
         {@rest}
       />
 
-      <div id={"trix-editor-container-#{@id}"} phx-update="ignore" class="mt-2">
+      <div
+        id={"trix-editor-container-#{@id}"}
+        phx-update="ignore"
+        class="mt-2 max-w-[23rem] md:max-w-[50rem]"
+      >
         <trix-editor
           input={@id}
           class="trix-editor-custom placeholder:text-form-placeholder-txt placeholder:text-sm placeholder:italic"

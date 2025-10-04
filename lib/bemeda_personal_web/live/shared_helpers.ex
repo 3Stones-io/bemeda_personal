@@ -24,13 +24,11 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   def create_scope_for_user(user) do
     scope = Scope.for_user(user)
 
-    if user.user_type == :employer do
-      case Companies.get_company_by_user(user) do
-        nil -> scope
-        company -> Scope.put_company(scope, company)
-      end
+    with :employer <- user.user_type,
+         %{} = company <- Companies.get_company_by_user(user) do
+      Scope.put_company(scope, company)
     else
-      scope
+      _other -> scope
     end
   end
 

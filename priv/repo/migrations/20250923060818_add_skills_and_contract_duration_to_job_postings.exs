@@ -10,7 +10,7 @@ defmodule BemedaPersonal.Repo.Migrations.AddSkillsAndContractDurationToJobPostin
       add :is_draft, :boolean, default: true
       modify :region, :string
       modify :department, :string
-      modify :remote_allowed, :boolean, default: nil
+      modify :remote_allowed, :boolean
       modify :salary_min, :decimal
       modify :salary_max, :decimal
     end
