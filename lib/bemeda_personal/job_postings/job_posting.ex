@@ -7,6 +7,7 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
   import Ecto.Changeset
 
   alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.HtmlSanitizer
   alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonal.Media.MediaAsset
 
@@ -75,6 +76,7 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
     |> validate_required([:title, :description])
     |> validate_length(:title, min: 5, max: 255)
     |> validate_length(:description, min: 10, max: 8000)
+    |> sanitize_description()
     |> validate_number(:salary_min, greater_than_or_equal_to: 0)
     |> validate_number(:salary_max, greater_than_or_equal_to: 0)
     |> validate_salary_range()
@@ -92,6 +94,29 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
       )
     else
       changeset
+    end
+  end
+
+  defp sanitize_description(changeset) do
+    case get_change(changeset, :description) do
+      nil ->
+        changeset
+
+      description when is_binary(description) ->
+        case HtmlSanitizer.sanitize_trix_content(description) do
+          {:ok, sanitized_html} ->
+            put_change(changeset, :description, sanitized_html)
+
+          {:error, reason} ->
+            add_error(
+              changeset,
+              :description,
+              dgettext("jobs", "contains invalid or dangerous HTML: %{reason}", reason: reason)
+            )
+        end
+
+      _other ->
+        add_error(changeset, :description, dgettext("jobs", "must be a string"))
     end
   end
 end

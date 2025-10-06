@@ -2520,3 +2520,13 @@ msgstr "Vos entretiens"
 #, elixir-autogen, elixir-format
 msgid "at"
 msgstr "à"
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "contains invalid or dangerous HTML: %{reason}"
+msgstr "contient du HTML invalide ou dangereux : %{reason}"
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "must be a string"
+msgstr "doit être une chaîne de caractères"

@@ -2519,3 +2519,13 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "at"
 msgstr ""
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "contains invalid or dangerous HTML: %{reason}"
+msgstr ""
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "must be a string"
+msgstr ""

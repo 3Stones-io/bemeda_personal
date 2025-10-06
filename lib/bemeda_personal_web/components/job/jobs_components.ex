@@ -130,7 +130,7 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
           </div>
 
           <div :if={@job.description} class="text-sm text-gray-600 line-clamp-2 md-to-html">
-            {raw(@job.description)}
+            {safe_html(@job.description)}
           </div>
         </div>
       </div>

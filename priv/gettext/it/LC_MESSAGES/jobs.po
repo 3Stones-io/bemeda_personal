@@ -2520,3 +2520,13 @@ msgstr "I tuoi colloqui"
 #, elixir-autogen, elixir-format
 msgid "at"
 msgstr "alle"
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "contains invalid or dangerous HTML: %{reason}"
+msgstr "contiene HTML non valido o pericoloso: %{reason}"
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "must be a string"
+msgstr "deve essere una stringa"
