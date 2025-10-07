@@ -126,6 +126,7 @@
         {dgettext("jobs", "Back")}
       </.custom_button>
       <.custom_button
+        data-test-id="post-job-button"
         class={["text-white bg-[#7c4eab] w-[40%] md:w-[15%]"]}
         phx-click={JS.push("post_job")}
         phx-disable-with={dgettext("jobs", "Submitting...")}

@@ -81,26 +81,59 @@ defmodule BemedaPersonalWeb.Features.SchedulingSteps do
 
   step "I fill in interview date with {string}", %{args: [date]} = context do
     form_data = Map.get(context, :form_data, %{})
-    {:ok, Map.put(context, :form_data, Map.put(form_data, :scheduled_at_date, date))}
+    updated_data = Map.put(form_data, :scheduled_at_date, date)
+    # Store in context - will be submitted later when form is complete
+    {:ok, Map.put(context, :form_data, updated_data)}
   end
 
   step "I fill in interview time with {string}", %{args: [time]} = context do
     form_data = Map.get(context, :form_data, %{})
-    {:ok, Map.put(context, :form_data, Map.put(form_data, :scheduled_at_time, time))}
+    updated_data = Map.put(form_data, :scheduled_at_time, time)
+    # Store in context - will be submitted later when form is complete
+    {:ok, Map.put(context, :form_data, updated_data)}
   end
 
   step "I fill in interview duration with {string}", %{args: [duration]} = context do
     # Duration in minutes - calculate end_time based on start time
     form_data = Map.get(context, :form_data, %{})
 
-    # Store duration for later calculation
-    {:ok, Map.put(context, :form_data, Map.put(form_data, :duration_minutes, duration))}
+    # Calculate end date/time based on duration
+    # Get start date and time from form_data
+    start_date = Map.get(form_data, :scheduled_at_date, "2024-02-15")
+    start_time = Map.get(form_data, :scheduled_at_time, "14:00")
+    duration_minutes = String.to_integer(duration)
+
+    # Parse start datetime
+    {:ok, start_datetime} = NaiveDateTime.from_iso8601("#{start_date}T#{start_time}:00")
+
+    # Add duration to get end datetime
+    end_datetime = NaiveDateTime.add(start_datetime, duration_minutes * 60, :second)
+
+    # Extract end date and time
+    end_date = NaiveDateTime.to_date(end_datetime) |> Date.to_iso8601()
+    end_time = NaiveDateTime.to_time(end_datetime) |> Time.to_iso8601() |> String.slice(0, 5)
+
+    updated_data =
+      form_data
+      |> Map.put(:end_date, end_date)
+      |> Map.put(:end_time, end_time)
+
+    # Store in context - will be submitted later when form is complete
+    {:ok, Map.put(context, :form_data, updated_data)}
   end
 
   step "I fill in interview location with {string}", %{args: [location]} = context do
     # Meeting link field is what we have in the form
+    view = context.view
     form_data = Map.get(context, :form_data, %{})
-    {:ok, Map.put(context, :form_data, Map.put(form_data, :meeting_link, location))}
+    updated_data = Map.put(form_data, :meeting_link, location)
+
+    # NOW submit ALL accumulated form data at once
+    view
+    |> form("#interview-form", interview: updated_data)
+    |> render_change()
+
+    {:ok, Map.put(context, :form_data, updated_data)}
   end
 
   step "I visit my interviews page", context do
@@ -128,8 +161,22 @@ defmodule BemedaPersonalWeb.Features.SchedulingSteps do
       |> Scope.for_user()
       |> Scope.put_company(context.company)
 
-    interviews = Scheduling.list_interviews(scope, %{job_application_id: application.id})
-    assert length(interviews) > 0
+    # Poll database for interview (async message may not have processed yet)
+    # Try up to 10 times with 100ms delay (total 1 second max wait)
+    interviews =
+      Enum.reduce_while(1..10, [], fn attempt, _acc ->
+        interviews = Scheduling.list_interviews(scope, %{job_application_id: application.id})
+
+        if length(interviews) > 0 do
+          {:halt, interviews}
+        else
+          if attempt < 10, do: Process.sleep(100)
+          {:cont, []}
+        end
+      end)
+
+    assert length(interviews) > 0,
+           "Expected interview to be saved to database, but found none after waiting"
 
     {:ok, context}
   end

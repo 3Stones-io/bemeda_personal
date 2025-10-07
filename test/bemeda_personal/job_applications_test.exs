@@ -1,6 +1,8 @@
 defmodule BemedaPersonal.JobApplicationsTest do
   use BemedaPersonal.DataCase, async: true
 
+  @moduletag :exclude_with_bdd
+
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobApplicationsFixtures

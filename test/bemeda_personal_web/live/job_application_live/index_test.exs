@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.ResumesFixtures
+  import Ecto.Query, only: [from: 2]
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.JobApplications
@@ -621,7 +622,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       # Reload company to get media_asset association
       company = BemedaPersonal.Repo.preload(company, :media_asset, force: true)
-      assert company.media_asset != nil
+      assert company.media_asset
 
       job = job_posting_fixture(company, %{title: "Test Job With Logo"})
       job_application_fixture(user, job)
@@ -741,6 +742,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       existing_apps = JobApplications.list_job_applications(%{"user_id" => user.id}, 100)
 
       for app <- existing_apps do
+        # Delete any associated job offers first to avoid foreign key constraint violations
+        from(jo in BemedaPersonal.JobOffers.JobOffer, where: jo.job_application_id == ^app.id)
+        |> Repo.delete_all()
+
         Repo.delete!(app)
       end
 

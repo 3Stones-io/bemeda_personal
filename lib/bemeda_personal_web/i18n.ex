@@ -25,6 +25,7 @@ defmodule BemedaPersonalWeb.I18n do
   def translate_status_action(state) do
     action_translations = %{
       "applied" => dgettext("jobs", "Resume Application"),
+      "interview" => dgettext("jobs", "Interview"),
       "offer_accepted" => dgettext("jobs", "Accept Offer"),
       "offer_extended" => dgettext("jobs", "Extend Offer"),
       "withdrawn" => dgettext("jobs", "Withdraw Application")

@@ -61,6 +61,7 @@ defmodule BemedaPersonalWeb.Features.JobSteps do
     conn = context.conn
 
     # Navigate to the apply page (this triggers the :apply action)
+    # Use the job struct directly - verified routes will extract the ID
     {:ok, view, _html} = live(conn, ~p"/jobs/#{job}/apply")
 
     {:ok, Map.put(context, :view, view)}
@@ -101,6 +102,18 @@ defmodule BemedaPersonalWeb.Features.JobSteps do
           # Validation error or other response
           html
       end
+
+    {:ok, Map.put(context, :last_html, html)}
+  end
+
+  step "I click {string} without filling cover letter", %{args: [_button_text]} = context do
+    view = context.view
+
+    # Submit form with empty cover letter to trigger validation error
+    html =
+      view
+      |> form("#new", %{job_application: %{cover_letter: ""}})
+      |> render_submit()
 
     {:ok, Map.put(context, :last_html, html)}
   end

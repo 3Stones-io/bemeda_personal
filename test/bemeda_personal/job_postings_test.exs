@@ -1,5 +1,8 @@
 defmodule BemedaPersonal.JobPostingsTest do
-  use BemedaPersonal.DataCase, async: true
+  # async: false - Tests interact with shared database state for BDD compatibility
+  use BemedaPersonal.DataCase, async: false
+
+  @moduletag :exclude_with_bdd
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -649,11 +652,16 @@ defmodule BemedaPersonal.JobPostingsTest do
       assert JobPostings.count_job_postings() == 2
     end
 
-    test "can count job_postings by remote_allowed", %{job_posting: _setup_posting} do
+    test "can count job_postings by remote_allowed", %{
+      job_posting: _setup_posting,
+      user: user,
+      company: company
+    } do
       # Setup created 1 job posting with remote_allowed: true (default)
-      user = employer_user_fixture()
-      company = company_fixture(user)
+      # Create another job posting with remote_allowed: false
       job_posting_fixture(company, %{remote_allowed: false})
+
+      _scope = Scope.for_user(user) |> Scope.put_company(company)
 
       assert JobPostings.count_job_postings(%{remote_allowed: true}) == 1
       assert JobPostings.count_job_postings(%{remote_allowed: false}) == 1

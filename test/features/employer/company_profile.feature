@@ -28,11 +28,12 @@ Feature: Company Profile Management
 
   @company_profile
   Scenario: Update company branding
-    Given I am on the company edit page
-    When I fill in company website with "https://newwebsite.com"
+    Given I am on the company dashboard
+    When I click "Edit"
+    And I fill in company website with "https://newwebsite.com"
     And I fill in company phone with "+41445551234"
     And I submit the company form
-    Then I should see "https://newwebsite.com"
+    Then the company profile should be updated
 
   @company_profile
   Scenario: View public company profile as job seeker

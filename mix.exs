@@ -30,7 +30,7 @@ defmodule BemedaPersonal.MixProject do
         dialyzer: :test,
         sobelow: :test
       ],
-      test_coverage: [tool: ExCoveralls],
+      test_coverage: [tool: ExCoveralls, minimum_coverage: 86.4],
 
       # Docs
       name: "BemedaPersonal",
@@ -155,7 +155,7 @@ defmodule BemedaPersonal.MixProject do
       ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": [
         "tailwind.install --if-missing",
         "esbuild.install --if-missing",

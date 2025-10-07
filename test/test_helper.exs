@@ -1,5 +1,13 @@
 # Exclude feature and bdd tests by default
-ExUnit.start(exclude: [:feature, :bdd])
+# Also exclude tests incompatible with BDD shared database mode
+exclude_tags =
+  if "--include" in System.argv() and "bdd" in System.argv() do
+    [:feature, :exclude_with_bdd]
+  else
+    [:feature, :bdd]
+  end
+
+ExUnit.start(exclude: exclude_tags)
 
 # Compile Cucumber features and set sandbox mode based on test type
 # BDD tests use shared mode for Cucumber-generated test modules

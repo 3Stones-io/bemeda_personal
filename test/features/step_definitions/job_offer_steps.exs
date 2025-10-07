@@ -22,7 +22,8 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
 
   step "I have created a job offer for an application", context do
     user = context.current_user
-    company = context.company
+    # Get or create company for the employer
+    company = context[:company] || BemedaPersonal.CompaniesFixtures.company_fixture(user)
     conn = context.conn
 
     # Create a job seeker and application for THIS company's job
@@ -55,6 +56,7 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
 
     updated_context =
       context
+      |> Map.put(:company, company)
       |> Map.put(:job_offer, job_offer)
       |> Map.put(:application, application)
       |> Map.put(:job_posting, job_posting)
@@ -207,7 +209,7 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
       |> Scope.put_company(company)
 
     job_offer = JobOffers.get_job_offer_by_application(scope, application.id)
-    assert job_offer != nil
+    assert job_offer
     assert job_offer.job_application_id == application.id
 
     {:ok, context}
@@ -251,7 +253,7 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
       |> Scope.put_company(company)
 
     job_offer = JobOffers.get_job_offer_by_application(scope, application.id)
-    assert job_offer != nil
+    assert job_offer
 
     expected_status_atom = String.to_existing_atom(expected_status)
     assert job_offer.status == expected_status_atom
@@ -271,8 +273,8 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
       |> Scope.put_company(company)
 
     job_offer = JobOffers.get_job_offer_by_application(scope, application.id)
-    assert job_offer != nil
-    assert job_offer.contract_generated_at != nil
+    assert job_offer
+    assert job_offer.contract_generated_at
 
     {:ok, context}
   end

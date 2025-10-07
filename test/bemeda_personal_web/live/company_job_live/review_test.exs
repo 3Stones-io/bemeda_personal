@@ -1,5 +1,6 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.ReviewTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  # async: false - BDD tests may conflict with parallel execution on shared port
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -11,7 +12,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.ReviewTest do
   alias Ecto.UUID
 
   setup %{conn: conn} do
-    user = employer_user_fixture()
+    user = employer_user_fixture(confirmed: true)
     company = company_fixture(user)
     conn = log_in_user(conn, user)
 
