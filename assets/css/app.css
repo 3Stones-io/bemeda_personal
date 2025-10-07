@@ -2,6 +2,7 @@
    https://tailwindcss.com/docs/configuration */
 
 @import 'tailwindcss';
+@import '../node_modules/trix/dist/trix.css';
 
 @source "../css";
 @source "../js";
@@ -193,6 +194,41 @@
 
   /* Typography colors */
   --color-purple: #7b4eab;
+
+  /* Form Input Component Colors */
+  --color-form-label-text: #1f1f1f;
+  --color-form-placeholder-text: #9d9d9d;
+  --color-form-input-text: #1f1f1f;
+  --color-form-border-default: #eeeff1;
+  --color-form-border-focus: #a7a8a9;
+  --color-form-error-text: #a7a8a9;
+  --color-form-error-border: #a7a8a9;
+  --color-form-hint-text: #737373;
+  --color-form-dropdown-option-text: #737373;
+  --color-form-dropdown-option-hover: #eeeff1;
+  --color-form-search-icon: #9d9d9d;
+  --color-form-chevron-icon: #9d9d9d;
+
+  /* Form Input Tailwind Classes */
+  --color-form-label-txt: var(--color-form-label-text);
+  --color-form-placeholder-txt: var(--color-form-placeholder-text);
+  --color-form-input-txt: var(--color-form-input-text);
+  --color-form-input-border: var(--color-form-border-default);
+  --color-form-border-focus: #a7a8a9;
+  --color-form-error-txt: var(--color-form-error-text);
+  --color-form-error-border: var(--color-form-error-border);
+  --color-form-hint-txt: var(--color-form-hint-text);
+  --color-form-dropdown-option-txt: var(--color-form-dropdown-option-text);
+  --color-form-dropdown-option-hover-bg: var(
+    --color-form-dropdown-option-hover
+  );
+  --color-form-search-icon-color: var(--color-form-search-icon);
+  --color-form-chevron-icon-color: var(--color-form-chevron-icon);
+
+  /* Form Component Shadows */
+  --shadow-form-dropdown: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-form-dropdown-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-form-input-focus: 0 0 0 3px rgba(255, 152, 0, 0.1);
 
   /* Descriptive colors */
   --color-peach-50: #ffcc99;
@@ -549,4 +585,510 @@ input[type='date'].unsupported {
 
 .nested-multi-select-input-container .nested-input {
   grid-area: nested-input;
+}
+
+.search-input-container:has(.search-input:focus) {
+  @apply border-form-border-focus;
+}
+
+/* Scrollbars */
+.dropdown-options-list::-webkit-scrollbar {
+  @apply w-[.20em];
+}
+
+.dropdown-options-list::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.dropdown-options-list::-webkit-scrollbar-thumb {
+  @apply bg-[#bdbdbd];
+  border-radius: 1em;
+}
+
+/* Form component shadow utilities */
+.shadow-form-dropdown {
+  box-shadow: var(--shadow-form-dropdown);
+}
+
+.shadow-form-dropdown-light {
+  box-shadow: var(--shadow-form-dropdown-light);
+}
+
+.shadow-form-input-focus {
+  box-shadow: var(--shadow-form-input-focus);
+}
+
+/* Custom Select Component Styles */
+.custom-select {
+  /* Remove default browser styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* Custom styling to match design */
+  background-image: none;
+  background-color: transparent;
+
+  /* Ensure consistent text styling */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  /* Remove default padding-right to make room for custom arrow */
+  padding-right: 2rem;
+}
+
+/* Remove default arrow in IE */
+.custom-select::-ms-expand {
+  display: none;
+}
+
+/* Firefox specific styling */
+.custom-select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 var(--color-form-input-txt);
+}
+
+/* Option styling */
+.custom-select option {
+  background-color: white;
+  color: var(--color-form-input-txt);
+  padding: 0.5rem;
+}
+
+/* Placeholder option styling */
+.custom-select option[disabled] {
+  color: var(--color-form-placeholder-txt);
+}
+
+/* Hover and focus states for better UX */
+.custom-select:hover {
+  cursor: pointer;
+}
+
+.custom-select:focus {
+  outline: none;
+}
+
+/* Blurring items on the page based on appearance of pop ups */
+.blur-background .jobs-form-container form > h1,
+.blur-background .jobs-form-container form > div.grid,
+.blur-background header,
+.blur-background nav {
+  @apply blur-md;
+}
+
+/* Trix editor specifics - restore default styles that Tailwind resets */
+@layer base {
+  /* Restore default heading styles */
+  trix-editor h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0.67em 0;
+  }
+
+  trix-editor h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0.75em 0;
+  }
+
+  trix-editor h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+    margin: 0.83em 0;
+  }
+
+  trix-editor h4 {
+    font-size: 1em;
+    font-weight: bold;
+    margin: 1.12em 0;
+  }
+
+  trix-editor h5 {
+    font-size: 0.83em;
+    font-weight: bold;
+    margin: 1.5em 0;
+  }
+
+  trix-editor h6 {
+    font-size: 0.75em;
+    font-weight: bold;
+    margin: 1.67em 0;
+  }
+
+  /* Restore default list styles */
+  trix-editor ul {
+    list-style-type: disc;
+    margin: 1em 0;
+    padding-left: 40px;
+  }
+
+  trix-editor ol {
+    list-style-type: decimal;
+    margin: 1em 0;
+    padding-left: 40px;
+  }
+
+  trix-editor ul ul {
+    list-style-type: circle;
+    margin: 0;
+  }
+
+  trix-editor ul ul ul {
+    list-style-type: square;
+  }
+
+  trix-editor ol ol {
+    margin: 0;
+  }
+
+  /* Restore default paragraph styles */
+  trix-editor p {
+    margin: 1em 0;
+  }
+
+  /* Restore default blockquote styles */
+  trix-editor blockquote {
+    margin: 1em 40px;
+    padding-left: 1em;
+    border-left: 4px solid #ccc;
+  }
+
+  /* Restore default strong/bold styles */
+  trix-editor strong,
+  trix-editor b {
+    font-weight: bold;
+  }
+
+  /* Restore default em/italic styles */
+  trix-editor em,
+  trix-editor i {
+    font-style: italic;
+  }
+
+  /* Restore default link styles */
+  trix-editor a {
+    color: blue;
+    text-decoration: underline;
+  }
+
+  /* Restore default code styles */
+  trix-editor code {
+    font-family: monospace;
+    background-color: #f5f5f5;
+    padding: 0.125em 0.25em;
+  }
+}
+
+/* Custom Trix Editor Styles to match form design */
+.trix-editor-custom {
+  @apply border border-form-input-border h-[20rem] overflow-y-scroll px-2 mt-0;
+  border-top: none !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5rem !important;
+  color: var(--color-form-input-txt) !important;
+}
+
+/* Hide scrollbar for Trix editor */
+.trix-editor-custom {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.trix-editor-custom::-webkit-scrollbar {
+  display: none; /* WebKit browsers (Chrome, Safari, Edge) */
+}
+
+.trix-editor-custom:focus {
+  outline: none !important;
+  border-bottom: 1px solid var(--color-form-border-focus) !important;
+  box-shadow: none !important;
+}
+
+trix-toolbar {
+  @apply border border-form-input-border px-2 py-2 mb-0;
+  border-bottom: 1px solid var(--color-form-input-border) !important;
+  border-top-left-radius: 6px !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  background: transparent !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+}
+
+trix-toolbar .trix-button-group {
+  border: none !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+trix-toolbar .trix-button {
+  border: none !important;
+  background: transparent !important;
+  color: var(--color-form-input-txt) !important;
+  padding: 0.25rem 0.5rem !important;
+  margin: 0 0.125rem !important;
+  border-radius: 4px !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  height: auto !important;
+  width: auto !important;
+  min-width: auto !important;
+}
+
+trix-toolbar .trix-button:hover {
+  background: var(--color-form-dropdown-option-hover-bg) !important;
+  color: var(--color-form-input-txt) !important;
+}
+
+trix-toolbar .trix-button.trix-active {
+  background: var(--color-primary-100) !important;
+  color: var(--color-primary-700) !important;
+}
+
+.trix-editor-custom .trix-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: inherit !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5rem !important;
+  color: var(--color-form-input-txt) !important;
+}
+
+.trix-editor-custom .trix-content:empty:not(:focus)::before {
+  color: var(--color-form-placeholder-txt) !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  content: 'Start writing' !important;
+}
+
+/* Additional heading customization for your design */
+trix-editor.trix-editor-custom .trix-content h1 {
+  color: var(--color-form-input-txt) !important;
+}
+
+/* Paragraph styles */
+.trix-editor-custom .trix-content div,
+.trix-editor-custom .trix-content p {
+  margin: 0.5rem 0 !important;
+  line-height: 1.6 !important;
+}
+
+/* Bold text */
+.trix-editor-custom .trix-content strong,
+.trix-editor-custom .trix-content b {
+  font-weight: 600 !important;
+  color: var(--color-form-input-txt) !important;
+}
+
+/* Italic text */
+.trix-editor-custom .trix-content em,
+.trix-editor-custom .trix-content i {
+  font-style: italic !important;
+}
+
+/* Underline text */
+.trix-editor-custom .trix-content u {
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+}
+
+/* Strikethrough text */
+.trix-editor-custom .trix-content del,
+.trix-editor-custom .trix-content s {
+  text-decoration: line-through !important;
+  opacity: 0.7 !important;
+}
+
+/* Link styles */
+.trix-editor-custom .trix-content a {
+  color: var(--color-primary-600) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+}
+
+.trix-editor-custom .trix-content a:hover {
+  color: var(--color-primary-700) !important;
+  text-decoration-thickness: 2px !important;
+}
+
+/* Quote/Blockquote styles */
+.trix-editor-custom .trix-content blockquote {
+  border-left: 3px solid var(--color-primary-300) !important;
+  padding-left: 1rem !important;
+  margin: 1rem 0 !important;
+  font-style: italic !important;
+  color: var(--color-gray-600) !important;
+  background: var(--color-primary-50) !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0 6px 6px 0 !important;
+}
+
+/* Code styles */
+.trix-editor-custom .trix-content code {
+  background: var(--color-gray-100) !important;
+  padding: 0.125rem 0.375rem !important;
+  border-radius: 4px !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 0.8125rem !important;
+  color: var(--color-gray-800) !important;
+}
+
+.trix-editor-custom .trix-content pre {
+  background: var(--color-gray-100) !important;
+  padding: 1rem !important;
+  border-radius: 6px !important;
+  overflow-x: auto !important;
+  margin: 1rem 0 !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.4 !important;
+}
+
+/* List styles */
+.trix-editor-custom .trix-content ul,
+.trix-editor-custom .trix-content ol {
+  margin: 0.75rem 0 !important;
+  padding-left: 1.5rem !important;
+}
+
+.trix-editor-custom .trix-content ul li,
+.trix-editor-custom .trix-content ol li {
+  margin: 0.375rem 0 !important;
+  line-height: 1.5 !important;
+}
+
+.trix-editor-custom .trix-content ul {
+  list-style-type: disc !important;
+}
+
+.trix-editor-custom .trix-content ol {
+  list-style-type: decimal !important;
+}
+
+/* Nested list styles */
+.trix-editor-custom .trix-content ul ul,
+.trix-editor-custom .trix-content ol ol,
+.trix-editor-custom .trix-content ul ol,
+.trix-editor-custom .trix-content ol ul {
+  margin: 0.25rem 0 !important;
+}
+
+.trix-editor-custom .trix-content ul ul {
+  list-style-type: circle !important;
+}
+
+.trix-editor-custom .trix-content ul ul ul {
+  list-style-type: square !important;
+}
+
+.character-limit-container {
+  margin-top: 0.75rem;
+}
+
+.character-progress-circle-container {
+  position: relative;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.character-progress-circle {
+  width: 1.25rem;
+  height: 1.25rem;
+  transform: rotate(-90deg);
+}
+
+.character-progress-indicator {
+  transition:
+    stroke-dashoffset 0.3s ease-out,
+    stroke 0.2s ease;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Review Job Grid */
+.review-job-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    'title'
+    'video'
+    'job-metadata'
+    'description'
+    'skills'
+    'activities'
+    'actions';
+}
+
+.review-job-grid > .title {
+  grid-area: title;
+}
+
+.review-job-grid > .video {
+  grid-area: video;
+}
+
+.review-job-grid > .job-metadata {
+  grid-area: job-metadata;
+}
+
+.review-job-grid > .description {
+  grid-area: description;
+}
+
+.review-job-grid > .skills {
+  grid-area: skills;
+}
+
+.review-job-grid > .activities {
+  grid-area: activities;
+}
+
+.review-job-grid > .actions {
+  grid-area: actions;
+}
+
+@media (min-width: 768px) {
+  .review-job-grid {
+    grid-template-columns: 29% 69%;
+    grid-template-areas:
+      'title ...'
+      'video job-metadata'
+      'activities description'
+      '... skills'
+      '... actions';
+    gap: 0 2%;
+  }
+
+  .review-job-grid > .activities {
+    align-self: start;
+  }
+
+  .review-job-grid > .job-metadata {
+    @apply border-t-[1px] border-[#e4e9ef] rounded-t md:rounded-t-md;
+  }
+  .review-job-grid > .description,
+  .review-job-grid > .skills,
+  .review-job-grid > .actions,
+  .review-job-grid > .job-metadata {
+    @apply border-x-[1px] border-[#e4e9ef] px-3;
+  }
+
+  .review-job-grid > .skills {
+    align-self: start;
+  }
 }

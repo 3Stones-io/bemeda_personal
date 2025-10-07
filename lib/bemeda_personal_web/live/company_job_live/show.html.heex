@@ -23,7 +23,7 @@
           <SharedComponents.video_player media_asset={@job_posting.media_asset} />
 
           <div class={"border-t border-gray-200 #{card_padding()} prose max-w-none md-to-html"}>
-            {BemedaPersonalWeb.MarkdownHelper.to_html(@job_posting.description)}
+            {safe_html(@job_posting.description)}
           </div>
         </.card>
       </div>

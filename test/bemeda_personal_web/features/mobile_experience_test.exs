@@ -141,11 +141,14 @@ defmodule BemedaPersonalWeb.Features.MobileExperienceTest do
       remote_job =
         job_posting_fixture(company, %{
           title: "Remote Nurse",
-          employment_type: "Permanent Position"
+          employment_type: "Full-time Hire"
         })
 
       office_job =
-        job_posting_fixture(company, %{title: "Office Assistant", employment_type: "Floater"})
+        job_posting_fixture(company, %{
+          title: "Office Assistant",
+          employment_type: "Contract Hire"
+        })
 
       conn
       |> resize_to_mobile()

@@ -11,11 +11,6 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Browse Files"
-msgstr "Parcourir les fichiers"
-
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
@@ -37,11 +32,6 @@ msgstr "Connectez-vous avec des employeurs de premier plan et découvrez des opp
 msgid "Copy to clipboard"
 msgstr "Copier dans le presse-papiers"
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Drag and drop to upload your %{type}"
-msgstr "Glissez-déposez pour télécharger votre %{type}"
-
 #: lib/bemeda_personal_web/components/shared/resume_components.ex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
@@ -53,11 +43,6 @@ msgstr "Modifier"
 #, elixir-autogen, elixir-format
 msgid "Find Your Next"
 msgstr "Trouvez votre prochaine"
-
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Max file size: %{size}"
-msgstr "Taille maximale du fichier : %{size}"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
@@ -85,21 +70,11 @@ msgstr "À distance"
 msgid "Show %{type}"
 msgstr "Afficher %{type}"
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Upload progress"
-msgstr "Progression du téléchargement"
-
 #: lib/bemeda_personal_web/components/core/flash.ex
 #: lib/bemeda_personal_web/components/core/modal.ex
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr "fermer"
-
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "or"
-msgstr "ou"
 
 #: lib/bemeda_personal_web/components/shared/resume_components.ex
 #, elixir-autogen, elixir-format

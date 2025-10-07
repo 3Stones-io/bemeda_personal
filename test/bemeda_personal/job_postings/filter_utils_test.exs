@@ -7,7 +7,7 @@ defmodule BemedaPersonal.JobPostings.FilterUtilsTest do
   describe "changeset_to_params/1" do
     test "converts a valid changeset to parameters" do
       attrs = %{
-        employment_type: "Permanent Position",
+        employment_type: "Full-time Hire",
         location: "Zurich",
         remote_allowed: true,
         search: "Software Developer"
@@ -18,7 +18,7 @@ defmodule BemedaPersonal.JobPostings.FilterUtilsTest do
         |> JobFilter.changeset(attrs)
         |> FilterUtils.changeset_to_params()
 
-      assert params[:employment_type] == :"Permanent Position"
+      assert params[:employment_type] == :"Full-time Hire"
       assert params[:location] == "Zurich"
       assert params[:remote_allowed] == true
       assert params[:search] == "Software Developer"
@@ -38,7 +38,7 @@ defmodule BemedaPersonal.JobPostings.FilterUtilsTest do
     end
 
     test "excludes empty string values" do
-      attrs = %{employment_type: "Permanent Position", location: "", search: "Developer"}
+      attrs = %{employment_type: "Full-time Hire", location: "", search: "Developer"}
 
       params =
         %JobFilter{}
@@ -46,7 +46,7 @@ defmodule BemedaPersonal.JobPostings.FilterUtilsTest do
         |> FilterUtils.changeset_to_params()
 
       refute Map.has_key?(params, :location)
-      assert params[:employment_type] == :"Permanent Position"
+      assert params[:employment_type] == :"Full-time Hire"
       assert params[:search] == "Developer"
     end
 

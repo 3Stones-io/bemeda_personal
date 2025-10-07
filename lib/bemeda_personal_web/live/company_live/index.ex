@@ -150,6 +150,10 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     {:noreply, assign(socket, :template_data, %{})}
   end
 
+  def handle_event("upload_cancelled", _params, socket) do
+    {:noreply, assign(socket, :template_data, %{})}
+  end
+
   def handle_event("show_variables", _params, socket) do
     {:noreply, assign(socket, :show_variables_modal, true)}
   end

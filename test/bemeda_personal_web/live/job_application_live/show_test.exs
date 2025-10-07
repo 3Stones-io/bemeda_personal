@@ -27,7 +27,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
   @create_attrs %{
     description: "Build amazing applications",
-    employment_type: :"Permanent Position",
+    employment_type: :"Full-time Hire",
     location: "Remote",
     remote_allowed: true,
     salary_max: 42_000,
@@ -1073,7 +1073,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       {:ok, updated_job_posting} =
         BemedaPersonal.JobPostings.update_job_posting(scope, job_application.job_posting, %{
-          department: [:Administration, :"Home Care (Spitex)"]
+          department: :Administration
         })
 
       updated_job_application = %{job_application | job_posting: updated_job_posting}

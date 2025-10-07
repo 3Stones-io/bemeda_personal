@@ -44,7 +44,7 @@ defmodule BemedaPersonalWeb.Layouts do
       sticky: true
     )}
 
-    <main class="pt-8 pb-16">
+    <main class="relative">
       <.flash_group flash={@flash} />
       {render_slot(@inner_block)}
     </main>

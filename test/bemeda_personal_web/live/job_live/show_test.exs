@@ -19,7 +19,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,
@@ -144,7 +144,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,
@@ -277,7 +277,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
         job_posting_fixture(company, %{
           currency: "USD",
           description: "Build amazing software products",
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "New York",
           remote_allowed: true,
           salary_max: 80_000,
@@ -327,7 +327,7 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
 
       # Should show location, employment type, and remote tags
       assert html =~ job.location
-      assert html =~ "Permanent Position"
+      assert html =~ "Full-time Hire"
       assert html =~ "Remote"
 
       # Check for purple pill styling - just check the basic classes exist

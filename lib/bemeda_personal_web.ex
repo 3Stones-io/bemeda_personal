@@ -84,6 +84,7 @@ defmodule BemedaPersonalWeb do
       use Gettext, backend: BemedaPersonalWeb.Gettext
 
       # HTML escaping functionality
+      import BemedaPersonalWeb.HtmlHelper
       import Phoenix.HTML
 
       # Design system components

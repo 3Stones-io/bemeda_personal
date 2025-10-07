@@ -119,7 +119,7 @@ defmodule BemedaPersonalWeb.Features.CompanyProfileSteps do
           {:ok, new_view, _html} = live(context.conn, path)
           new_view
 
-        _ ->
+        _result ->
           # No redirect, just re-render current view
           view
       end

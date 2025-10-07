@@ -129,8 +129,8 @@ defmodule BemedaPersonalWeb.Components.Job.JobsComponents do
             </span>
           </div>
 
-          <div :if={@job.description} class="text-sm text-gray-600 line-clamp-2">
-            {BemedaPersonalWeb.MarkdownHelper.to_html(@job.description)}
+          <div :if={@job.description} class="text-sm text-gray-600 line-clamp-2 md-to-html">
+            {safe_html(@job.description)}
           </div>
         </div>
       </div>

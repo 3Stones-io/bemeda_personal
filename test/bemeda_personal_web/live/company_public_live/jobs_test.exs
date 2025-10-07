@@ -30,7 +30,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
 
       job3 =
         job_posting_fixture(company, %{
-          employment_type: :Floater,
+          employment_type: :"Contract Hire",
           title: "UI/UX Designer"
         })
 
