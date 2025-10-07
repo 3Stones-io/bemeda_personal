@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.Features.CommunicationTest do
   job seekers and employers.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   import BemedaPersonal.FeatureHelpers
 

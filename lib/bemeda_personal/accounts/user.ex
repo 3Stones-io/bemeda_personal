@@ -192,12 +192,30 @@ defmodule BemedaPersonal.Accounts.User do
   end
 
   defp validate_personal_info(changeset) do
-    changeset
-    |> validate_required([:city, :country, :street, :zip_code])
-    |> validate_length(:city, min: 1, max: 100)
-    |> validate_length(:country, min: 1, max: 100)
-    |> validate_length(:street, min: 1, max: 255)
-    |> validate_length(:zip_code, min: 1, max: 20)
+    user_type = get_field(changeset, :user_type)
+
+    case user_type do
+      :job_seeker ->
+        # Job seekers need full address information
+        changeset
+        |> validate_required([:city, :country, :street, :zip_code])
+        |> validate_length(:city, min: 1, max: 100)
+        |> validate_length(:country, min: 1, max: 100)
+        |> validate_length(:street, min: 1, max: 255)
+        |> validate_length(:zip_code, min: 1, max: 20)
+
+      :employer ->
+        # Employers only need city during registration
+        changeset
+        |> validate_required([:city])
+        |> validate_length(:city, min: 1, max: 100)
+
+      _other_country ->
+        # Fallback: require at least city
+        changeset
+        |> validate_required([:city])
+        |> validate_length(:city, min: 1, max: 100)
+    end
   end
 
   defp validate_job_seeker_fields(changeset) do

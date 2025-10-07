@@ -2,6 +2,7 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
   use Cucumber.StepDefinition
   use BemedaPersonalWeb, :verified_routes
 
+  import BemedaPersonal.BddHelpers
   import ExUnit.Assertions
   import Phoenix.ConnTest
   import Phoenix.LiveViewTest
@@ -31,35 +32,18 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
   end
 
   step "my company has a job with {int} applications", %{args: [count]} = context do
-    company = context.company
+    {:ok, create_job_with_applications(context, count)}
+  end
 
-    job =
-      JobPostingsFixtures.job_posting_fixture(company, %{title: "Test Position", is_active: true})
-
-    applications =
-      Enum.map(1..count, fn i ->
-        applicant =
-          AccountsFixtures.user_fixture(%{
-            user_type: :job_seeker,
-            first_name: "Applicant#{i}",
-            confirmed_at: DateTime.utc_now()
-          })
-
-        JobApplicationsFixtures.job_application_fixture(applicant, job)
-      end)
-
-    updated_context =
-      context
-      |> Map.put(:job, job)
-      |> Map.put(:applications, applications)
-
-    {:ok, updated_context}
+  # Singular version for "1 application"
+  step "my company has a job with {int} application", %{args: [count]} = context do
+    {:ok, create_job_with_applications(context, count)}
   end
 
   step "the application status is {string}", %{args: [status]} = context do
     # Application already created with default "pending" status
     [application | _rest] = context.applications
-    assert to_string(application.status) == status
+    assert to_string(application.state) == status
 
     {:ok, context}
   end
@@ -70,9 +54,9 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
 
   step "I visit the company jobs page", context do
     conn = context.conn
-    {:ok, _view, _html} = live(conn, ~p"/company/jobs")
+    {:ok, view, _html} = live(conn, ~p"/company/jobs")
 
-    {:ok, Map.put(context, :view, _view)}
+    {:ok, Map.put(context, :view, view)}
   end
 
   step "I fill in job title with {string}", %{args: [title]} = context do
@@ -92,9 +76,9 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
 
   step "I visit the company applicants page", context do
     conn = context.conn
-    {:ok, _view, _html} = live(conn, ~p"/company/applicants")
+    {:ok, view, _html} = live(conn, ~p"/company/applicants")
 
-    {:ok, Map.put(context, :view, _view)}
+    {:ok, Map.put(context, :view, view)}
   end
 
   step "I visit the application details", context do
@@ -102,9 +86,9 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
     job = context.job
     [application | _rest] = context.applications
 
-    {:ok, _view, _html} = live(conn, ~p"/jobs/#{job}/job_applications/#{application}")
+    {:ok, view, _html} = live(conn, ~p"/jobs/#{job}/job_applications/#{application}")
 
-    {:ok, Map.put(context, :view, _view)}
+    {:ok, Map.put(context, :view, view)}
   end
 
   step "I change status to {string}", %{args: [new_status]} = context do
@@ -172,5 +156,33 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
     assert to_string(updated.status) == expected_status
 
     {:ok, context}
+  end
+
+  # ============================================================================
+  # Private Helpers
+  # ============================================================================
+
+  defp create_job_with_applications(context, count) do
+    company = context.company
+
+    job =
+      JobPostingsFixtures.job_posting_fixture(company, %{title: "Test Position", is_active: true})
+
+    applications =
+      Enum.map(1..count, fn i ->
+        applicant =
+          AccountsFixtures.user_fixture(%{
+            user_type: :job_seeker,
+            first_name: "Applicant#{i}",
+            confirmed_at: DateTime.utc_now(),
+            email: generate_unique_email("applicant#{i}")
+          })
+
+        JobApplicationsFixtures.job_application_fixture(applicant, job)
+      end)
+
+    context
+    |> Map.put(:job, job)
+    |> Map.put(:applications, applications)
   end
 end

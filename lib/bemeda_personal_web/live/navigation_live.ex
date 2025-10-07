@@ -34,6 +34,9 @@ defmodule BemedaPersonalWeb.NavigationLive do
 
   defp assign_user(socket, token) do
     case safe_get_user_by_token(token) do
+      {:ok, nil} ->
+        assign_user(socket, nil)
+
       {:ok, user} ->
         if connected?(socket) do
           Endpoint.subscribe("users:#{user.id}:notifications_count")

@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.Features.SimpleTest do
   Ultra-simple test to verify PhoenixTest.Playwright infrastructure is working.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   @moduletag :feature
 

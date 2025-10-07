@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.Scheduling.CalendarComponentTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   describe "calendar component" do
     test "calendar component is tested through parent LiveView integration" do

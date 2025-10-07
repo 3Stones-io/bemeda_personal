@@ -533,15 +533,14 @@ defmodule BemedaPersonal.JobApplicationsTest do
     end
 
     test "can filter job applications by newer_than and older_than timestamp" do
-      Repo.delete_all(JobApplication)
-
+      # Use very old timestamps to avoid collisions with other async tests
       user = employer_user_fixture()
       company = company_fixture(user)
       job_posting = job_posting_fixture(company)
 
-      older_timestamp = DateTime.from_naive!(~N[2023-01-01 00:00:00], "Etc/UTC")
-      middle_timestamp = DateTime.from_naive!(~N[2023-02-01 00:00:00], "Etc/UTC")
-      newer_timestamp = DateTime.from_naive!(~N[2023-03-01 00:00:00], "Etc/UTC")
+      older_timestamp = DateTime.from_naive!(~N[2020-01-01 00:00:00], "Etc/UTC")
+      middle_timestamp = DateTime.from_naive!(~N[2020-02-01 00:00:00], "Etc/UTC")
+      newer_timestamp = DateTime.from_naive!(~N[2020-03-01 00:00:00], "Etc/UTC")
 
       older_application =
         %JobApplication{}
@@ -573,11 +572,21 @@ defmodule BemedaPersonal.JobApplicationsTest do
         |> Ecto.Changeset.put_change(:inserted_at, newer_timestamp)
         |> Repo.insert!()
 
-      assert results = JobApplications.list_job_applications(%{newer_than: middle_application})
+      assert results =
+               JobApplications.list_job_applications(%{
+                 newer_than: middle_application,
+                 user_id: user.id
+               })
+
       assert length(results) == 1
       assert hd(results).id == newer_application.id
 
-      assert results = JobApplications.list_job_applications(%{older_than: middle_application})
+      assert results =
+               JobApplications.list_job_applications(%{
+                 older_than: middle_application,
+                 user_id: user.id
+               })
+
       assert length(results) == 1
       assert hd(results).id == older_application.id
 
@@ -592,7 +601,7 @@ defmodule BemedaPersonal.JobApplicationsTest do
         |> Ecto.Changeset.put_assoc(:job_posting, job_posting)
         |> Ecto.Changeset.put_change(
           :inserted_at,
-          DateTime.from_naive!(~N[2023-01-15 00:00:00], "Etc/UTC")
+          DateTime.from_naive!(~N[2019-12-15 00:00:00], "Etc/UTC")
         )
         |> Repo.insert!()
 

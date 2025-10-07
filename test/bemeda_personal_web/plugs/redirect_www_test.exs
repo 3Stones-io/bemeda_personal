@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.Plugs.RedirectWwwTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   alias BemedaPersonalWeb.Plugs.RedirectWww
 

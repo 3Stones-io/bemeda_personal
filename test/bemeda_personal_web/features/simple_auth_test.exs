@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.Features.SimpleAuthTest do
   Simple authentication test to verify basic login/logout works.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   alias PhoenixTest.Playwright.Frame
 

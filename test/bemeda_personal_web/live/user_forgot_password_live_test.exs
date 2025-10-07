@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.UserForgotPasswordLiveTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import Phoenix.LiveViewTest
@@ -57,7 +57,14 @@ defmodule BemedaPersonalWeb.UserForgotPasswordLiveTest do
         |> follow_redirect(conn, "/")
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
-      assert Repo.all(Accounts.UserToken) == []
+
+      # Only check that no token was created for the unknown email (async tests may have other users' tokens)
+      unknown_email_tokens =
+        Accounts.UserToken
+        |> Repo.all()
+        |> Enum.filter(fn t -> t.sent_to == "unknown@example.com" end)
+
+      assert unknown_email_tokens == []
     end
   end
 end

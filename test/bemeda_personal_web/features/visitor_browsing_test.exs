@@ -24,7 +24,7 @@ defmodule BemedaPersonalWeb.Features.VisitorBrowsingTest do
   - Visitor-to-user conversion pathway testing
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   import BemedaPersonal.FeatureHelpers
 

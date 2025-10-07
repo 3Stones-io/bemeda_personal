@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.ErrorJSONTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   test "renders 404" do
     assert BemedaPersonalWeb.ErrorJSON.render("404.json", %{}) == %{

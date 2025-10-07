@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.NavigationLiveTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -144,6 +144,37 @@ defmodule BemedaPersonalWeb.NavigationLiveTest do
       assert updated_html =~ "text-xs"
       assert updated_html =~ "rounded-full"
       assert updated_html =~ "notification-badge"
+    end
+  end
+
+  describe "Nil user handling" do
+    test "handles nil user gracefully when session token returns nil", %{conn: conn} do
+      # This simulates the scenario where safe_get_user_by_token returns {:ok, nil}
+      # due to database errors or invalid token
+      conn =
+        conn
+        |> init_test_session(%{})
+        |> put_session("user_token", "invalid_token")
+
+      # Should not crash, should render as unauthenticated user
+      {:ok, _lv, html} = live(conn, ~p"/jobs")
+
+      assert html =~ "Bemeda"
+      assert html =~ "Log in"
+      assert html =~ "Sign up"
+      refute html =~ "Log out"
+      refute html =~ "Settings"
+    end
+
+    test "does not crash when accessing page without user token", %{conn: conn} do
+      # Explicitly clear any user token
+      conn = init_test_session(conn, %{})
+
+      {:ok, _lv, html} = live(conn, ~p"/jobs")
+
+      assert html =~ "Bemeda"
+      assert html =~ "Log in"
+      assert html =~ "Sign up"
     end
   end
 

@@ -389,6 +389,11 @@ defmodule BemedaPersonal.SchedulingTest do
 
   describe "list_upcoming_interviews_for_reminders/0" do
     test "returns only scheduled interviews in the future" do
+      # Clean up any existing interviews from other tests in this transaction
+      # This test needs isolation since list_upcoming_interviews_for_reminders/0
+      # returns ALL interviews without scope filtering
+      BemedaPersonal.Repo.delete_all(BemedaPersonal.Scheduling.Interview)
+
       # Create future scheduled interview
       scheduled_at = DateTime.add(DateTime.utc_now(), 1, :day)
 

@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
   for both job seekers and employers.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   alias PhoenixTest.Playwright.Frame
 

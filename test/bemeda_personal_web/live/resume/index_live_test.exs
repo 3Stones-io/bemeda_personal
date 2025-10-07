@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.Resume.IndexLiveTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.ResumesFixtures

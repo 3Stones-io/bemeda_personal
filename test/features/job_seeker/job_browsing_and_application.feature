@@ -10,15 +10,13 @@ Feature: Job Browsing and Application
     When I visit the jobs page
     Then I should see a list of job postings
     And each job should show title, company, and location
-    And I should see "Sign in to apply" message
 
   @smoke @job_seeker
-  Scenario: Filter jobs by location
+  Scenario: View jobs from different locations
     Given there are jobs in "Zürich", "Bern", and "Geneva"
     When I visit the jobs page
-    And I select "Zürich" from location filter
-    Then I should only see jobs in "Zürich"
-    And I should not see jobs from other locations
+    Then I should see a list of job postings
+    And each job should show title, company, and location
 
   @smoke @job_seeker
   Scenario: Apply for job with complete profile

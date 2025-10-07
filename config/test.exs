@@ -22,8 +22,7 @@ config :bemeda_personal, BemedaPersonal.Repo,
   queue_interval: 10_000,
   # Increased timeout for complex tests
   timeout: 60_000,
-  # Disable parallel preloading to prevent DBConnection.OwnershipError
-  # Task processes spawned by Ecto.Repo.Preloader don't inherit database ownership
+  # Increased ownership timeout for feature tests with LiveView
   ownership_timeout: 300_000
 
 # Only start server for feature tests

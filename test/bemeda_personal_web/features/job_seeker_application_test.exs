@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.Features.JobSeekerApplicationTest do
   - Application history and status tracking in user dashboard
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures

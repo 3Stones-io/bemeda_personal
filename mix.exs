@@ -179,10 +179,18 @@ defmodule BemedaPersonal.MixProject do
       ],
       prettier: ["cmd npx prettier -w ."],
       "test.features": [
+        "ecto.drop --quiet",
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
         "assets.deploy",
         fn args ->
+          # PORT_TEST must be set in environment - use dynamic port
+          port_test = System.get_env("PORT_TEST") || "4205"
+
           # Clean up any existing test server first
-          System.cmd("bash", ["-c", "lsof -ti tcp:4205 | xargs kill -9 2>/dev/null || true"],
+          System.cmd(
+            "bash",
+            ["-c", "lsof -ti tcp:#{port_test} | xargs kill -9 2>/dev/null || true"],
             env: []
           )
 
@@ -192,6 +200,9 @@ defmodule BemedaPersonal.MixProject do
         end
       ],
       "test.bdd": [
+        "ecto.drop --quiet",
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
         fn args ->
           # PORT_TEST must be set in environment - fail fast if not
           port_test =

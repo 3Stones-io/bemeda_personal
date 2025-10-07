@@ -25,7 +25,7 @@ defmodule BemedaPersonalWeb.Features.MobileExperienceTest do
   - Mobile-specific UI components and gestures
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures

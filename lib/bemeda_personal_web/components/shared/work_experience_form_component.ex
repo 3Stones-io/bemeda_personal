@@ -71,7 +71,11 @@ defmodule BemedaPersonalWeb.Components.Shared.WorkExperienceFormComponent do
         />
 
         <:actions>
-          <.button phx-disable-with={dgettext("resumes", "Saving...")}>
+          <.button
+            data-test-id="save-experience-button"
+            type="submit"
+            phx-disable-with={dgettext("resumes", "Saving...")}
+          >
             {dgettext("resumes", "Save Work Experience")}
           </.button>
         </:actions>
@@ -120,7 +124,7 @@ defmodule BemedaPersonalWeb.Components.Shared.WorkExperienceFormComponent do
         {:noreply,
          socket
          |> put_flash(:info, dgettext("resumes", "Work experience saved successfully"))
-         |> push_navigate(to: socket.assigns.return_to)}
+         |> push_patch(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}

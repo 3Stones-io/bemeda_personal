@@ -262,6 +262,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
           <:actions>
             <div class="px-6 pb-6">
               <.button
+                data-test-id="submit-application-button"
                 class={[
                   "w-full bg-violet-600 hover:bg-violet-700 text-white px-6 py-4 rounded-lg font-medium transition-colors text-base",
                   !@enable_submit? && "opacity-50 cursor-not-allowed"

@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.LiveHelpersTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   alias BemedaPersonalWeb.LiveHelpers
   alias Phoenix.LiveView.Socket

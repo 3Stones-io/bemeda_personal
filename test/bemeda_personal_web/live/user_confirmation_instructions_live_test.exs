@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.UserConfirmationInstructionsLiveTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import Phoenix.LiveViewTest
@@ -53,8 +53,14 @@ defmodule BemedaPersonalWeb.UserConfirmationInstructionsLiveTest do
       |> form("#resend_confirmation_form", user: %{email: "unknown@example.com"})
       |> render_submit()
 
-      # The main behavior we care about is that no token was created
-      assert Repo.all(Accounts.UserToken) == []
+      # The main behavior we care about is that no token was created for unknown email
+      # Only check tokens in the test database (async tests may have other users' tokens)
+      unknown_email_tokens =
+        Accounts.UserToken
+        |> Repo.all()
+        |> Enum.filter(fn t -> t.sent_to == "unknown@example.com" end)
+
+      assert unknown_email_tokens == []
     end
   end
 end

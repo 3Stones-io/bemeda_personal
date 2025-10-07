@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.UserConfirmationLiveTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import Phoenix.LiveViewTest
@@ -38,7 +38,13 @@ defmodule BemedaPersonalWeb.UserConfirmationLiveTest do
 
       assert Accounts.get_user!(user.id).confirmed_at
       refute get_session(conn, :user_token)
-      assert Repo.all(Accounts.UserToken) == []
+
+      user_tokens =
+        Accounts.UserToken
+        |> Repo.all()
+        |> Enum.filter(fn token -> token.user_id == user.id end)
+
+      assert user_tokens == []
 
       # when not logged in
       {:ok, logged_out_lv, _html} = live(conn, ~p"/users/confirm/#{token}")

@@ -59,6 +59,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.OfferDetailsComponent do
             type="submit"
             class="!bg-green-600 hover:!bg-green-700 !text-white"
             disabled={@submitting}
+            data-test-id="send-offer-button"
           >
             <div :if={@submitting} class="flex items-center">
               <.icon name="hero-arrow-path" class="w-4 h-4 mr-2 animate-spin" />

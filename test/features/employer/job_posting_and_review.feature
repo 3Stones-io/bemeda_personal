@@ -15,7 +15,7 @@ Feature: Job Posting and Application Review
     And I fill in job title with "Senior ICU Nurse"
     And I fill in job location with "Zürich"
     And I fill in job description with "Looking for experienced nurse"
-    And I click "Publish Job"
+    And I click "Post job"
     Then I should see "Job posted successfully"
     And the job should be visible in job listings
 
@@ -29,7 +29,7 @@ Feature: Job Posting and Application Review
   @employer
   Scenario: Update application status
     Given my company has a job with 1 application
-    And the application status is "pending"
+    And the application status is "applied"
     When I visit the application details
     And I change status to "interview"
     And I add note "Good candidate, schedule interview"

@@ -139,7 +139,7 @@ defmodule BemedaPersonalWeb.Scheduling.InterviewFormComponent do
           >
             {dgettext("jobs", "Cancel")}
           </.button>
-          <.button type="submit" variant="primary">
+          <.button type="submit" variant="primary" data-test-id="done-button">
             {dgettext("jobs", "Done")}
           </.button>
         </:actions>

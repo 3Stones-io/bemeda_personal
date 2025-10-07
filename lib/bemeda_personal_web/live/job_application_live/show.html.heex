@@ -22,6 +22,7 @@
             "rounded-xl transition-colors duration-150 ease-in-out",
             SharedHelpers.status_badge_color(status)
           ]}
+          data-test-id={"#{String.replace(status, "_", "-")}-button"}
         >
           {I18n.translate_status_action(status)}
         </.button>
@@ -78,7 +79,7 @@
             phx-click="open_schedule_modal"
             variant="primary"
             size="sm"
-            data-test-id="schedule-meeting-button"
+            data-test-id="schedule-a-meeting-button"
             class="bg-white text-indigo-600 hover:bg-gray-50"
           >
             <.icon name="hero-calendar" class="w-4 h-4 mr-1" />
@@ -153,7 +154,7 @@
                 :if={@is_employer?}
                 phx-click="open_schedule_modal"
                 class="w-full text-left px-4 py-2 text-sm text-indigo-600 hover:bg-indigo-50 flex items-center font-medium"
-                data-test-id="schedule-meeting-button-mobile"
+                data-test-id="schedule-a-meeting-button-mobile"
               >
                 <.icon name="hero-calendar" class="w-4 h-4 mr-2" />
                 {dgettext("jobs", "Schedule a meeting")}
@@ -224,10 +225,11 @@
 
         <div :if={contract_available?(@job_offer)} class="flex justify-center">
           <.button
-            phx-click="accept_offer"
+            phx-click="sign_contract"
             variant="primary"
             size="lg"
             class="bg-success-600 hover:bg-success-700 font-semibold text-lg shadow-lg hover:shadow-xl"
+            data-test-id="accept-offer-button"
           >
             <.icon name="hero-pen" class="w-6 h-6 mr-3" />
             {dgettext("jobs", "Accept offer & sign contract")}

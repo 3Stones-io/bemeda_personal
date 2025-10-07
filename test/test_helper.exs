@@ -1,10 +1,15 @@
 # Exclude feature and bdd tests by default
 ExUnit.start(exclude: [:feature, :bdd])
 
-# Compile Cucumber features after starting ExUnit
-Cucumber.compile_features!()
-
-Ecto.Adapters.SQL.Sandbox.mode(BemedaPersonal.Repo, :manual)
+# Compile Cucumber features and set sandbox mode based on test type
+# BDD tests use shared mode for Cucumber-generated test modules
+# Regular tests use manual mode (default)
+if "--include" in System.argv() and "bdd" in System.argv() do
+  Cucumber.compile_features!()
+  Ecto.Adapters.SQL.Sandbox.mode(BemedaPersonal.Repo, {:shared, self()})
+else
+  Ecto.Adapters.SQL.Sandbox.mode(BemedaPersonal.Repo, :manual)
+end
 
 Application.put_env(:phoenix_test, :base_url, BemedaPersonalWeb.Endpoint.url())
 

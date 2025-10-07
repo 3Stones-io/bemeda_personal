@@ -12,6 +12,13 @@ SCRIPT_PID=$$
 # Get test port from environment (no hardcoded fallback - workspace must set it)
 TEST_PORT=${PORT_TEST:?PORT_TEST environment variable must be set}
 
+# 🔧 DATABASE RESET - Ensures clean database for each BDD run
+echo "🗄️  Resetting test database..."
+MIX_ENV=test mix ecto.drop --quiet 2>/dev/null || true
+MIX_ENV=test mix ecto.create --quiet
+MIX_ENV=test mix ecto.migrate --quiet
+echo "  Database reset complete ✓"
+
 # Function to kill ONLY the test server, not the test runner
 cleanup_on_exit() {
     echo -e "\n🧹 Cleaning up test server..."

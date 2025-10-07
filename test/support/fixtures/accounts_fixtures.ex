@@ -15,7 +15,17 @@ defmodule BemedaPersonal.AccountsFixtures do
                   ]
 
   @spec unique_user_email() :: String.t()
-  def unique_user_email, do: "user#{System.unique_integer()}@example.com"
+  def unique_user_email do
+    # Use microsecond timestamp + unique integers + random string for guaranteed uniqueness
+    # even in shared database mode with BDD tests
+    timestamp = System.system_time(:microsecond)
+    unique1 = System.unique_integer([:positive])
+    unique2 = :erlang.unique_integer([:positive])
+    random_bytes = :crypto.strong_rand_bytes(8)
+    random = Base.encode16(random_bytes, case: :lower)
+
+    "user#{timestamp}_#{unique1}_#{unique2}_#{random}@example.com"
+  end
 
   @spec valid_user_password() :: String.t()
   def valid_user_password, do: "securepassword123"

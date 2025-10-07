@@ -6,7 +6,7 @@ defmodule BemedaPersonalWeb.Features.InterviewCalendarTest do
   workflows following the testing.md patterns.
   """
 
-  use BemedaPersonalWeb.FeatureCase, async: true
+  use BemedaPersonalWeb.FeatureCase, async: false
 
   import BemedaPersonal.SchedulingFixtures
 
@@ -81,9 +81,9 @@ defmodule BemedaPersonalWeb.Features.InterviewCalendarTest do
 
     test "today's interviews are highlighted", %{conn: conn} do
       session = visit(conn, "/")
-      # Setup: Create interview for today
-      base_time = DateTime.utc_now(:second)
-      today = DateTime.add(base_time, 10, :hour)
+      # Setup: Create interview for today (10 minutes from now)
+      # This ensures it's in the future (passes validation) but still today's date
+      today_interview_time = DateTime.add(DateTime.utc_now(), 10, :minute)
 
       %{
         employer: employer,
@@ -91,7 +91,7 @@ defmodule BemedaPersonalWeb.Features.InterviewCalendarTest do
         job_seeker: job_seeker
       } =
         interview_fixture_with_scope(%{
-          scheduled_at: today,
+          scheduled_at: today_interview_time,
           title: "Today's Interview"
         })
 

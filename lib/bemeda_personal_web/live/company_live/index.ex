@@ -99,7 +99,13 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   defp apply_action(socket, :edit, _params) do
-    assign(socket, :page_title, dgettext("companies", "Edit Company Profile"))
+    # Reload company to ensure we have the latest data
+    current_user = socket.assigns.current_user
+    updated_company = Companies.get_company_by_user(current_user)
+
+    socket
+    |> assign(:company, updated_company)
+    |> assign(:page_title, dgettext("companies", "Edit Company Profile"))
   end
 
   defp apply_action(%{assigns: %{company: nil}} = socket, :index, _params) do
@@ -107,7 +113,13 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   defp apply_action(%{assigns: %{company: _company}} = socket, :index, _params) do
-    assign(socket, :page_title, dgettext("companies", "Company Dashboard"))
+    # Reload company data to ensure we have the latest updates
+    current_user = socket.assigns.current_user
+    updated_company = Companies.get_company_by_user(current_user)
+
+    socket
+    |> assign(:company, updated_company)
+    |> assign(:page_title, dgettext("companies", "Company Dashboard"))
   end
 
   @impl Phoenix.LiveView
@@ -184,10 +196,12 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   end
 
   def handle_info(%Broadcast{event: "company_updated", payload: payload}, socket) do
+    updated_company = Repo.preload(payload.company, :media_asset, force: true)
+
     {:noreply,
      socket
-     |> assign(:company, payload.company)
-     |> assign_job_postings(payload.company)}
+     |> assign(:company, updated_company)
+     |> assign_job_postings(updated_company)}
   end
 
   def handle_info(%Broadcast{event: event, payload: payload}, socket)

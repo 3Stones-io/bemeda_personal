@@ -1,8 +1,11 @@
 defmodule BemedaPersonalWeb.Features.JobSteps do
   use Cucumber.StepDefinition
+  use BemedaPersonalWeb, :verified_routes
 
+  import BemedaPersonal.BddHelpers
   import Ecto.Query
   import ExUnit.Assertions
+  import Phoenix.ConnTest
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.AccountsFixtures
@@ -11,6 +14,9 @@ defmodule BemedaPersonalWeb.Features.JobSteps do
   alias BemedaPersonal.JobApplicationsFixtures
   alias BemedaPersonal.JobPostingsFixtures
   alias BemedaPersonal.Repo
+  alias BemedaPersonalWeb.Endpoint
+
+  @endpoint Endpoint
 
   @type context :: map()
 
@@ -20,7 +26,11 @@ defmodule BemedaPersonalWeb.Features.JobSteps do
 
   step "there is a job posting titled {string}", %{args: [title]} = context do
     employer =
-      AccountsFixtures.user_fixture(user_type: :employer, confirmed_at: DateTime.utc_now())
+      AccountsFixtures.user_fixture(
+        user_type: :employer,
+        confirmed_at: DateTime.utc_now(),
+        email: generate_unique_email("employer")
+      )
 
     company = CompaniesFixtures.company_fixture(employer)
     job = JobPostingsFixtures.job_posting_fixture(company, %{title: title, is_active: true})
@@ -46,18 +56,51 @@ defmodule BemedaPersonalWeb.Features.JobSteps do
   # Job Application Actions
   # ============================================================================
 
+  step "I click \"Apply Now\"", context do
+    job = context.current_job
+    conn = context.conn
+
+    # Navigate to the apply page (this triggers the :apply action)
+    {:ok, view, _html} = live(conn, ~p"/jobs/#{job}/apply")
+
+    {:ok, Map.put(context, :view, view)}
+  end
+
+  step "I fill in \"Cover Letter\" with {string}", %{args: [value]} = context do
+    # Just store the value for later use in the submit step
+    # We don't need to actually trigger a form change event
+    form_data = Map.get(context, :form_data, %{})
+    updated_form_data = Map.put(form_data, "Cover Letter", value)
+
+    {:ok, Map.put(context, :form_data, updated_form_data)}
+  end
+
   step "I click \"Submit Application\"", context do
     view = context.view
     form_data = Map.get(context, :form_data, %{})
 
-    html =
+    # Submit the application form with cover letter data
+    # The form ID is "new" for new applications
+    result =
       view
-      |> form("#application-form", %{
+      |> form("#new", %{
         job_application: %{
           cover_letter: Map.get(form_data, "Cover Letter", "")
         }
       })
       |> render_submit()
+
+    # Handle both successful submission (redirect) and validation errors
+    html =
+      case result do
+        {:error, {:live_redirect, %{to: _path}}} ->
+          # Successful submission, get the flash message or final state
+          render(view)
+
+        html when is_binary(html) ->
+          # Validation error or other response
+          html
+      end
 
     {:ok, Map.put(context, :last_html, html)}
   end

@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
-  use BemedaPersonalWeb.ConnCase, async: true
+  use BemedaPersonalWeb.ConnCase, async: false
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -2034,7 +2034,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       assert html =~ "Accept offer &amp; sign contract"
-      assert html =~ "phx-click=\"accept_offer\""
+      assert html =~ "phx-click=\"sign_contract\""
     end
 
     test "opens signing modal when clicking accept_offer", %{
@@ -2257,7 +2257,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
       assert html =~ "Chat"
       assert html =~ "Hire"
       assert html =~ "Schedule a meeting"
-      assert html =~ "data-test-id=\"schedule-meeting-button\""
+      assert html =~ "data-test-id=\"schedule-a-meeting-button\""
     end
 
     test "candidate does not see employer action buttons", %{
@@ -2275,7 +2275,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Candidate should not see action buttons
       refute html =~ "Schedule a meeting"
-      refute html =~ "data-test-id=\"schedule-meeting-button\""
+      refute html =~ "data-test-id=\"schedule-a-meeting-button\""
     end
 
     test "employer can open schedule interview modal", %{
@@ -2293,7 +2293,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Click the schedule meeting button
       view
-      |> element("[data-test-id='schedule-meeting-button']")
+      |> element("[data-test-id='schedule-a-meeting-button']")
       |> render_click()
 
       # Should display the scheduling modal
@@ -2320,7 +2320,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Open the modal
       view
-      |> element("[data-test-id='schedule-meeting-button']")
+      |> element("[data-test-id='schedule-a-meeting-button']")
       |> render_click()
 
       # Fill in the form
@@ -2375,7 +2375,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Open the modal
       view
-      |> element("[data-test-id='schedule-meeting-button']")
+      |> element("[data-test-id='schedule-a-meeting-button']")
       |> render_click()
 
       # Submit form with missing required fields
@@ -2590,7 +2590,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Open the modal
       view
-      |> element("[data-test-id='schedule-meeting-button']")
+      |> element("[data-test-id='schedule-a-meeting-button']")
       |> render_click()
 
       # The form should have the timezone hook
@@ -2651,7 +2651,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
         )
 
       # Should have mobile schedule button
-      assert html =~ "data-test-id=\"schedule-meeting-button-mobile\""
+      assert html =~ "data-test-id=\"schedule-a-meeting-button-mobile\""
 
       # Mobile menu should contain schedule option (it's in DOM but hidden)
       assert html =~ "Schedule a meeting"
@@ -2729,7 +2729,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Open the modal
       view
-      |> element("[data-test-id='schedule-meeting-button']")
+      |> element("[data-test-id='schedule-a-meeting-button']")
       |> render_click()
 
       # Try to submit with invalid meeting link
@@ -2776,7 +2776,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.ShowTest do
 
       # Open the modal
       view
-      |> element("[data-test-id='schedule-meeting-button']")
+      |> element("[data-test-id='schedule-a-meeting-button']")
       |> render_click()
 
       # Try to submit with end time before start time

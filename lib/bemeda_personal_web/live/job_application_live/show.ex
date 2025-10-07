@@ -204,7 +204,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Show do
     )
   end
 
-  def handle_event("accept_offer", _params, socket) do
+  def handle_event("sign_contract", _params, socket) do
     job_application = socket.assigns.job_application
 
     case DigitalSignatures.create_signing_session(
