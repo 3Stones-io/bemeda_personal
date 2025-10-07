@@ -22,7 +22,6 @@ defmodule BemedaPersonal.JobPostings.JobPostingFilters do
       employment_type: &QueryBuilder.exact_match_filter(:employment_type, &1),
       location: &QueryBuilder.ilike_filter(:location, &1),
       position: &QueryBuilder.exact_match_filter(:position, &1),
-      profession: &QueryBuilder.exact_match_filter(:profession, &1),
       remote_allowed: &QueryBuilder.boolean_filter(:remote_allowed, &1),
       search: &full_text_search_filter/1,
       years_of_experience: &QueryBuilder.exact_match_filter(:years_of_experience, &1)
@@ -31,11 +30,11 @@ defmodule BemedaPersonal.JobPostings.JobPostingFilters do
 
   defp advanced_filters do
     %{
-      department: &array_overlap_filter(:department, &1),
+      department: &QueryBuilder.exact_match_filter(:department, &1),
       language: &array_overlap_filter(:language, &1),
       newer_than: &newer_than_filter/1,
       older_than: &older_than_filter/1,
-      region: &array_overlap_filter(:region, &1),
+      region: &QueryBuilder.exact_match_filter(:region, &1),
       salary_max: &salary_max_filter/1,
       salary_min: &salary_min_filter/1,
       salary_range: &salary_range_filter/1,

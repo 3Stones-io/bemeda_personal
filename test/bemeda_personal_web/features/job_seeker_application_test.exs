@@ -45,7 +45,7 @@ defmodule BemedaPersonalWeb.Features.JobSeekerApplicationTest do
       remote_job =
         job_posting_fixture(company, %{
           title: "Remote Nurse",
-          employment_type: "Permanent Position",
+          employment_type: "Full-time Hire",
           location: "Zurich",
           remote_allowed: true
         })
@@ -53,7 +53,7 @@ defmodule BemedaPersonalWeb.Features.JobSeekerApplicationTest do
       _office_job =
         job_posting_fixture(company, %{
           title: "Office Assistant",
-          employment_type: "Staff Pool",
+          employment_type: "Contract Hire",
           location: "Basel",
           remote_allowed: false
         })

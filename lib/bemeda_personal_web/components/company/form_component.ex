@@ -199,8 +199,9 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
     SharedHelpers.create_file_upload(socket, params)
   end
 
-  def handle_event("upload_completed", _params, socket) do
-    {:noreply, assign(socket, :enable_submit?, true)}
+  def handle_event("upload_completed", %{"upload_id" => upload_id}, socket) do
+    video_url = SharedHelpers.get_presigned_url(upload_id)
+    {:reply, %{video_url: video_url}, assign(socket, :enable_submit?, true)}
   end
 
   def handle_event("delete_file", _params, socket) do
@@ -210,6 +211,13 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
      socket
      |> assign(:company, asset.company)
      |> assign(:show_logo?, false)}
+  end
+
+  def handle_event("upload_cancelled", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:media_data, %{})
+     |> assign(:enable_submit?, true)}
   end
 
   defp save_company(socket, :new, company_params) do

@@ -334,8 +334,9 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
     SharedHelpers.create_file_upload(socket, params)
   end
 
-  def handle_event("upload_completed", _params, socket) do
-    {:noreply, assign(socket, :enable_submit?, true)}
+  def handle_event("upload_completed", %{"upload_id" => upload_id}, socket) do
+    video_url = SharedHelpers.get_presigned_url(upload_id)
+    {:reply, %{video_url: video_url}, assign(socket, :enable_submit?, true)}
   end
 
   def handle_event("enable-submit", _params, socket) do
@@ -349,6 +350,13 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
      socket
      |> assign(:job_application, asset.job_application)
      |> assign(:show_video_upload_instruction?, true)}
+  end
+
+  def handle_event("upload_cancelled", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:media_data, %{})
+     |> assign(:enable_submit?, true)}
   end
 
   defp save_job_application(socket, :edit, job_application_params) do

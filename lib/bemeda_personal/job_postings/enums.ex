@@ -29,7 +29,7 @@ defmodule BemedaPersonal.JobPostings.Enums do
     :Therapies
   ]
 
-  @employment_types [:Floater, :"Permanent Position", :"Staff Pool", :"Temporary Assignment"]
+  @employment_types [:"Contract Hire", :"Full-time Hire"]
 
   @genders [:Female, :Male]
 
@@ -100,6 +100,91 @@ defmodule BemedaPersonal.JobPostings.Enums do
 
   @years_of_experience [:"2-5 years", :"Less than 2 years", :"More than 5 years"]
 
+  @contract_durations [
+    :"1 to 3 months",
+    :"4 to 6 months",
+    :"7 to 12 months",
+    :"13 to 18 months",
+    :"19 to 24 months",
+    :"More than 24 months"
+  ]
+
+  @skills [
+    :"Patient assessment",
+    :"Vital signs monitoring",
+    :"Medication administration",
+    :"Post-operative care",
+    :"Wound care",
+    :"Pain management",
+    :"IV therapy",
+    :"Infection control",
+    :"Patient positioning & mobility support",
+    :"Health education & counseling",
+    :"Basic life support (BLS) and CPR",
+    :"Electronic Health Records (EHR) management",
+    :"Critical care nursing",
+    :"Emergency response & triage",
+    :"Pediatric care",
+    :"Geriatric care",
+    :"Anesthesia support",
+    :"Intensive care (ICU) monitoring",
+    :"Intermediate care (IMC) nursing",
+    :"Surgical assistance & sterile technique",
+    :"Palliative & end-of-life care",
+    :Phlebotomy,
+    :"Diagnostic testing",
+    :"Physiotherapy techniques",
+    :"Occupational therapy interventions",
+    :"Speech therapy & communication rehabilitation",
+    :"Swallowing therapy",
+    :"Rehabilitation planning",
+    :"Adaptive equipment training",
+    :"Radiology imaging operation (X-ray, MRI, CT)",
+    :"Radiation safety",
+    :"Laboratory & diagnostic support",
+    :"Medical coding & documentation",
+    :"Operating medical equipment",
+    :"Medical terminology",
+    :"Midwifery & prenatal care",
+    :"Labor & delivery support",
+    :"Newborn care",
+    :"Breastfeeding support",
+    :"Family education",
+    :"Strong communication",
+    :"Team collaboration",
+    :"Empathy & compassion",
+    :"Cultural competence",
+    :"Stress management",
+    :"Time management",
+    :"Attention to detail",
+    :"Ethical decision-making",
+    :"Problem-solving",
+    :Adaptability,
+    :Leadership,
+    :"Conflict resolution",
+    :"Customer service",
+    :"Organizational skills",
+    :"Sterile technique",
+    :"Surgical instrumentation",
+    :"Anesthesia monitoring",
+    :"Paramedic emergency response",
+    :"Home care management",
+    :"Long-term care planning",
+    :"Psychiatric care",
+    :"Mental health assessment",
+    :"Administrative coordination",
+    :"Medical practice management",
+    :"Patient scheduling",
+    :"Insurance processing",
+    :"Quality assurance",
+    :"Risk management",
+    :"Compliance monitoring",
+    :"Patient advocacy",
+    :"Discharge planning",
+    :"Care coordination",
+    :"Interdisciplinary collaboration"
+  ]
+
   @spec currencies() :: enum_values()
   def currencies, do: @currencies
 
@@ -132,4 +217,10 @@ defmodule BemedaPersonal.JobPostings.Enums do
 
   @spec years_of_experience() :: enum_values()
   def years_of_experience, do: @years_of_experience
+
+  @spec contract_durations() :: enum_values()
+  def contract_durations, do: @contract_durations
+
+  @spec skills() :: enum_values()
+  def skills, do: @skills
 end

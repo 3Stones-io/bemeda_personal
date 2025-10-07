@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   import Phoenix.Component, only: [assign: 3]
 
   alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Companies
   alias BemedaPersonal.JobApplications
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobApplications.JobApplicationStateMachine
@@ -18,6 +19,18 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   @type scope :: Scope.t()
   @type socket :: Phoenix.LiveView.Socket.t()
   @type user :: BemedaPersonal.Accounts.User.t()
+
+  @spec create_scope_for_user(user()) :: scope()
+  def create_scope_for_user(user) do
+    scope = Scope.for_user(user)
+
+    with :employer <- user.user_type,
+         %{} = company <- Companies.get_company_by_user(user) do
+      Scope.put_company(scope, company)
+    else
+      _other -> scope
+    end
+  end
 
   @spec assign_job_posting(socket(), Ecto.UUID.t()) ::
           {:noreply, socket()}
@@ -64,6 +77,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
 
     {:reply, %{upload_url: upload_url, upload_id: upload_id},
      socket
+     |> assign(:upload_id, upload_id)
      |> assign(:enable_submit?, false)
      |> assign(:media_data, %{file_name: params["filename"], upload_id: upload_id})}
   end

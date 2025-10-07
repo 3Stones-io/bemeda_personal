@@ -1,5 +1,6 @@
 import 'dragster'
 import * as UpChunk from '@mux/upchunk'
+import generateVideoThumbnail from '../utils/thumbnail_generator'
 
 export default FileUpload = {
   initializeTranslations() {
@@ -26,22 +27,15 @@ export default FileUpload = {
     const uploadProgressElement = document.querySelector(
       '.file-upload-progress'
     )
+    const imageContainer = uploadProgressElement?.querySelector(
+      '.image-container img'
+    )
+    const progressCircle =
+      uploadProgressElement?.querySelector('.progress-circle')
+    const cancelButton =
+      uploadProgressElement?.querySelector('.upload-cancel-btn')
 
-    const filenameElement = uploadProgressElement?.querySelector(
-      '[id$="-upload-filename"]'
-    )
-    const fileSizeElement = uploadProgressElement?.querySelector(
-      '[id$="-upload-size"]'
-    )
-    const percentageElement = uploadProgressElement?.querySelector(
-      '[id$="-upload-percentage"]'
-    )
-    const progressBar = uploadProgressElement?.querySelector(
-      '[id$="-upload-progress-bar"]'
-    )
-    const progressElement = uploadProgressElement?.querySelector(
-      '[id$="-upload-progress"]'
-    )
+    const videoPreview = document.querySelector('.video-preview')
 
     let currentUpload
 
@@ -49,6 +43,18 @@ export default FileUpload = {
       fileUploadInputsContainer.classList.remove('border-indigo-600')
       fileUploadInputsContainer.classList.add('border-gray-300')
       fileUploadInputsContainer.classList.remove('dropzone')
+    }
+
+    const cancelUpload = () => {
+      if (currentUpload) {
+        currentUpload.abort()
+        currentUpload = null
+      }
+
+      uploadProgressElement.classList.add('hidden')
+      fileUploadInputsContainer.classList.remove('hidden')
+
+      hook.pushEventTo(`#${eventsTarget}`, 'upload_cancelled')
     }
 
     const fileSizeSI = (bytes) => {
@@ -65,64 +71,99 @@ export default FileUpload = {
         currentUpload = null
       }
 
-      hook.pushEventTo(
-        `#${eventsTarget}`,
-        'upload_file',
-        { filename: file.name, type: file.type },
-        (response) => {
-          if (response.error) {
-            uploadProgressElement.classList.remove('hidden')
-            progressBar.classList.remove('bg-indigo-600')
-            progressBar.classList.add('bg-red-600')
-            percentageElement.textContent = response.error
-
-            hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
-
-            return
-          }
-
-          progressBar.classList.add('bg-indigo-600')
-          progressBar.classList.remove('bg-green-600')
-          uploadProgressElement.classList.remove('hidden')
-          filenameElement.textContent = file.name
-          fileSizeElement.textContent = fileSizeSI(file.size)
-
-          currentUpload = UpChunk.createUpload({
-            endpoint: response.upload_url,
-            file: file,
-            chunkSize: 30720,
-            method: 'PUT',
-            headers: {
-              'Content-Type': file.type,
-            },
-          })
-
-          currentUpload.on('progress', (entry) => {
-            let progress = Math.round(entry.detail)
-
-            percentageElement.textContent = `${progress}%`
-            progressElement.setAttribute('aria-valuenow', progress)
-            progressBar.style.width = `${progress}%`
-          })
-
-          currentUpload.on('error', (_error) => {
-            hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
-
-            progressBar.classList.remove('bg-indigo-600')
-            progressBar.classList.add('bg-red-600')
-            percentageElement.textContent = hook.translations.uploadError
-          })
-
-          currentUpload.on('success', (_entry) => {
-            progressBar.classList.remove('bg-blue-500')
-            progressBar.classList.add('bg-green-600')
-            progressBar.classList.remove('processing-bar')
-            percentageElement.textContent = hook.translations.completed
-
-            hook.pushEventTo(`#${eventsTarget}`, 'upload_completed')
-          })
+      const generateThumbnail = async (file) => {
+        if (file.type.startsWith('video/')) {
+          return await generateVideoThumbnail(file, [300, 300])
+        } else {
+          return null
         }
-      )
+      }
+      const getPayload = async () => {
+        let thumbnail = await generateThumbnail(file)
+        return {
+          filename: file.name,
+          thumbnail: thumbnail,
+          type: file.type,
+        }
+      }
+
+      getPayload().then((payload) => {
+        hook.pushEventTo(
+          `#${eventsTarget}`,
+          'upload_file',
+          { filename: payload.filename, type: payload.type },
+          (response) => {
+            if (response.error) {
+              // Put error message with an exclamation icon
+              uploadProgressElement.classList.remove('hidden')
+
+              hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
+
+              return
+            }
+
+            uploadProgressElement.classList.remove('hidden')
+            fileUploadInputsContainer.classList.add('hidden')
+
+            if (payload.thumbnail && imageContainer) {
+              imageContainer.src = payload.thumbnail
+            }
+
+            if (progressCircle) {
+              progressCircle.style.strokeDasharray = '0, 100'
+            }
+
+            currentUpload = UpChunk.createUpload({
+              endpoint: response.upload_url,
+              file: file,
+              chunkSize: 30720,
+              method: 'PUT',
+              headers: {
+                'Content-Type': file.type,
+              },
+            })
+
+            currentUpload.on('progress', (entry) => {
+              let progress = Math.round(entry.detail)
+
+              if (progressCircle) {
+                progressCircle.style.strokeDasharray = `${progress}, 100`
+              }
+            })
+
+            currentUpload.on('error', (_error) => {
+              hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
+            })
+
+            currentUpload.on('success', (_entry) => {
+              uploadProgressElement.classList.add('hidden')
+
+              if (assetDescription) {
+                assetDescription.classList.remove('hidden')
+              }
+
+              hook.pushEventTo(
+                `#${eventsTarget}`,
+                'upload_completed',
+                { upload_id: response.upload_id },
+                (response) => {
+                  if (response.video_url && videoPreview) {
+                    videoPreview.classList.remove('hidden')
+                    const videoSource = videoPreview.querySelector('source')
+                    if (videoSource) {
+                      videoSource.src = response.video_url
+                    }
+                    const videoElement = videoPreview.querySelector('video')
+                    if (videoElement) {
+                      videoElement.load()
+                    }
+                  }
+                }
+              )
+            })
+          }
+        )
+      })
     }
 
     const deleteButton = assetDescription?.querySelector(
@@ -133,6 +174,12 @@ export default FileUpload = {
         fileUploadInput.classList.remove('hidden')
         assetDescription.classList.add('hidden')
         hook.pushEventTo(`#${eventsTarget}`, 'delete_file')
+      })
+    }
+
+    if (cancelButton) {
+      cancelButton.addEventListener('click', () => {
+        cancelUpload()
       })
     }
 

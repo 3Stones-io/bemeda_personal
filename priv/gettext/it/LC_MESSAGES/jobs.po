@@ -89,6 +89,7 @@ msgstr "Sfoglia Lavori"
 msgid "Clear All"
 msgstr "Cancella Tutto"
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Employment Type"
@@ -114,6 +115,8 @@ msgstr "Impossibile aggiornare lo stato della candidatura."
 msgid "Find your next career opportunity"
 msgstr "Trova la tua prossima opportunità di carriera"
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #: lib/bemeda_personal_web/live/company_job_live/show.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -135,7 +138,6 @@ msgstr "Elenco Lavori"
 msgid "Job Postings"
 msgstr "Annunci di Lavoro"
 
-#: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Job Title"
@@ -162,6 +164,7 @@ msgstr "Lavori"
 msgid "Jobs at %{company}"
 msgstr "Lavori presso %{company}"
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Location"
@@ -343,6 +346,7 @@ msgstr "Seleziona tipo di impiego"
 msgid "Select experience range"
 msgstr "Seleziona gamma di esperienza"
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Years of Experience"
@@ -503,6 +507,7 @@ msgid "Post New Job"
 msgstr "Pubblica nuovo lavoro"
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Posted"
@@ -513,7 +518,9 @@ msgstr "Pubblicato"
 msgid "Rating"
 msgstr "Valutazione"
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Remote"
@@ -771,11 +778,6 @@ msgstr "Femminile"
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Floater"
-msgstr "Sostituto"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "French"
 msgstr "Francese"
 
@@ -916,11 +918,6 @@ msgstr "Altro"
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
-msgid "Permanent Position"
-msgstr "Posizione Permanente"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
 msgid "Psychiatry"
 msgstr "Psichiatria"
 
@@ -963,16 +960,6 @@ msgstr "Turno Spezzato"
 #, elixir-autogen, elixir-format
 msgid "St. Gallen"
 msgstr "San Gallo"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Staff Pool"
-msgstr "Pool di Personale"
-
-#: lib/bemeda_personal_web/i18n.ex
-#, elixir-autogen, elixir-format
-msgid "Temporary Assignment"
-msgstr "Incarico Temporaneo"
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
@@ -1099,6 +1086,8 @@ msgstr "Stato - aggiorna nell'interfaccia chat"
 msgid "%{company} has extended you a job offer for %{position}."
 msgstr "%{company} ti ha fatto un'offerta di lavoro per la posizione di %{position}."
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
@@ -1480,16 +1469,6 @@ msgstr "È già stata fatta un'offerta per questa candidatura."
 msgid "Sending..."
 msgstr "Invio in corso..."
 
-#: lib/bemeda_personal_web/components/job/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Job posting created successfully"
-msgstr "Annuncio di lavoro eliminato con successo"
-
-#: lib/bemeda_personal_web/components/job/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Job updated successfully"
-msgstr "Lavoro aggiornato con successo."
-
 #: lib/bemeda_personal_web/components/job/job_list_component.ex
 #, elixir-autogen, elixir-format
 msgid "%{count} Stellen gefunden"
@@ -1521,6 +1500,7 @@ msgid "Post a job and find the right medical professional for your team"
 msgstr "Pubblica un'offerta di lavoro e trova il professionista sanitario giusto per il tuo team"
 
 #: lib/bemeda_personal_web/live/company_job_live/index.html.heex
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Post job"
 msgstr "Pubblica Lavoro"
@@ -1550,6 +1530,8 @@ msgstr "Le Mie Candidature"
 msgid "Required"
 msgstr "Richiesto"
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Start writing"
@@ -1565,6 +1547,7 @@ msgstr "Non hai ancora fatto domanda per nessun lavoro."
 msgid "You'll find a list of Jobs you've applied to here"
 msgstr "Qui troverai un elenco dei lavori per cui hai fatto candidatura"
 
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Activity on this Job"
@@ -1591,6 +1574,7 @@ msgid "Briefly explain why you're a good fit"
 msgstr "Spiega brevemente perché sei adatto"
 
 #: lib/bemeda_personal_web/components/job_application/job_applications_list_component.ex
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Contract"
 msgstr "Tutti i contratti"
@@ -1610,6 +1594,7 @@ msgstr "Copyright Bemeda Personal ©2025 tutti i diritti riservati"
 msgid "Go back"
 msgstr "Indietro"
 
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Interviewing"
@@ -1620,6 +1605,7 @@ msgstr "In colloquio"
 msgid "Please note that Bemeda personal uses your career profile as your resume when you apply for a job."
 msgstr "Nota che Bemeda Personal utilizza il tuo profilo di carriera come curriculum quando ti candidi per un lavoro."
 
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Received applications"
@@ -1635,7 +1621,9 @@ msgstr "Lavoro remoto consentito"
 msgid "See more"
 msgstr "Vedi altro"
 
+#: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
 #, elixir-autogen, elixir-format
 msgid "Submitting..."
 msgstr "Invio in corso..."
@@ -1687,9 +1675,593 @@ msgid "Error deleting job posting"
 msgstr "Errore nell'eliminazione dell'offerta di lavoro"
 
 #: lib/bemeda_personal_web/live/company_job_live/edit.ex
+#: lib/bemeda_personal_web/live/company_job_live/review.ex
 #, elixir-autogen, elixir-format
 msgid "Job posting not found or not authorized"
 msgstr "Annuncio di lavoro non trovato o non autorizzato"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "1 to 3 months"
+msgstr "da 1 a 3 mesi"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "13 to 18 months"
+msgstr "da 13 a 18 mesi"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "19 to 24 months"
+msgstr "da 19 a 24 mesi"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "4 to 6 months"
+msgstr "da 4 a 6 mesi"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "7 to 12 months"
+msgstr "da 7 a 12 mesi"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Adaptability"
+msgstr "Adattabilità"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Adaptive equipment training"
+msgstr "Formazione su attrezzature adattive"
+
+#: lib/bemeda_personal_web/components/job/input_components.ex
+#, elixir-autogen, elixir-format
+msgid "Add required skills"
+msgstr "Aggiungi competenze richieste"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Add skill"
+msgstr "Aggiungi competenza"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Add video to job post (optional)"
+msgstr "Aggiungi video all'annuncio di lavoro (opzionale)"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Administrative coordination"
+msgstr "Amministrazione"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Anesthesia monitoring"
+msgstr "Anestesia"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Anesthesia support"
+msgstr "Anestesia"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Attention to detail"
+msgstr "Attenzione ai dettagli"
+
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
+#, elixir-autogen, elixir-format
+msgid "Back"
+msgstr "Indietro"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Basic life support (BLS) and CPR"
+msgstr "Supporto vitale di base (BLS) e RCP"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Breastfeeding support"
+msgstr "Supporto all'allattamento"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "CHF 0"
+msgstr "CHF 0"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Candidates can work from anywhere."
+msgstr "I candidati possono lavorare da qualsiasi luogo."
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Candidates will work from a specific physical location."
+msgstr "I candidati lavoreranno da una specifica sede fisica."
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Care coordination"
+msgstr "Coordinamento dell'assistenza"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Compliance monitoring"
+msgstr "Monitoraggio della conformità"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Conflict resolution"
+msgstr "Risoluzione dei conflitti"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Contract Duration"
+msgstr "Tutti i contratti"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Contract Hire"
+msgstr "Tutti i contratti"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Create Job Post"
+msgstr "Crea annuncio di lavoro"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Critical care nursing"
+msgstr "Assistenza infermieristica in terapia intensiva"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Cultural competence"
+msgstr "Competenza culturale"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Customer service"
+msgstr "Servizio clienti"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Diagnostic testing"
+msgstr "Test diagnostici"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Discharge planning"
+msgstr "Pianificazione delle dimissioni"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Do candidates need to be based in Switzerland for this job?"
+msgstr "I candidati devono essere basati in Svizzera per questo lavoro?"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Edit skills"
+msgstr "Modifica competenze"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Edit video"
+msgstr "Modifica video"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Electronic Health Records (EHR) management"
+msgstr "Gestione cartelle cliniche elettroniche (EHR)"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Emergency response & triage"
+msgstr "Risposta alle emergenze e triage"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Empathy & compassion"
+msgstr "Empatia e compassione"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Enter a title"
+msgstr "Inserisci un titolo"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Ethical decision-making"
+msgstr "Processo decisionale etico"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Family education"
+msgstr "Educazione familiare"
+
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
+#, elixir-autogen, elixir-format
+msgid "Full-time"
+msgstr "Tempo pieno"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Full-time Hire"
+msgstr "Assunzione a tempo pieno"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Geriatric care"
+msgstr "Assistenza geriatrica"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Health education & counseling"
+msgstr "Educazione sanitaria e consulenza"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Home care management"
+msgstr "Gestione dell'assistenza domiciliare"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "IV therapy"
+msgstr "Terapia endovenosa"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Infection control"
+msgstr "Controllo delle infezioni"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Insurance processing"
+msgstr "Elaborazione assicurativa"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Intensive care (ICU) monitoring"
+msgstr "Monitoraggio terapia intensiva (ICU)"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Interdisciplinary collaboration"
+msgstr "Collaborazione interdisciplinare"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Intermediate care (IMC) nursing"
+msgstr "Cure Intermedie (IMC)"
+
+#: lib/bemeda_personal_web/live/company_job_live/review.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Job posting posted successfully"
+msgstr "Annuncio di lavoro eliminato con successo"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Labor & delivery support"
+msgstr "Supporto al travaglio e al parto"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Laboratory & diagnostic support"
+msgstr "Supporto di laboratorio e diagnostico"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Language"
+msgstr "Lingua"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Leadership"
+msgstr "Leadership"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Long-term care planning"
+msgstr "Pianificazione delle cure a lungo termine"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Max"
+msgstr "Max"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Medical coding & documentation"
+msgstr "Codifica medica e documentazione"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Medical practice management"
+msgstr "Gestione dello studio medico"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Medical terminology"
+msgstr "Terminologia medica"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Medication administration"
+msgstr "Somministrazione di farmaci"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Mental health assessment"
+msgstr "Valutazione della salute mentale"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Midwifery & prenatal care"
+msgstr "Ostetricia e assistenza prenatale"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Min"
+msgstr "Min"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "More than 24 months"
+msgstr "Più di 24 mesi"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Net Pay"
+msgstr "Retribuzione netta"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Newborn care"
+msgstr "Assistenza neonatale"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "No"
+msgstr "No"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Occupational therapy interventions"
+msgstr "Interventi di terapia occupazionale"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "On-site"
+msgstr "In sede"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Operating medical equipment"
+msgstr "Uso di attrezzature mediche"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Organizational skills"
+msgstr "Capacità organizzative"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Pain management"
+msgstr "Gestione del dolore"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Palliative & end-of-life care"
+msgstr "Cure palliative e di fine vita"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Paramedic emergency response"
+msgstr "Risposta di emergenza paramedica"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Patient advocacy"
+msgstr "Difesa del paziente"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Patient assessment"
+msgstr "Valutazione del paziente"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Patient positioning & mobility support"
+msgstr "Posizionamento del paziente e supporto alla mobilità"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Patient scheduling"
+msgstr "Programmazione dei pazienti"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Pediatric care"
+msgstr "Assistenza pediatrica"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Phlebotomy"
+msgstr "Prelievo venoso"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Physiotherapy techniques"
+msgstr "Tecniche di fisioterapia"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Post-operative care"
+msgstr "Assistenza postoperatoria"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Pricing"
+msgstr "Prezzo"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Problem-solving"
+msgstr "Risoluzione dei problemi"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Psychiatric care"
+msgstr "Assistenza psichiatrica"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Quality assurance"
+msgstr "Garanzia della qualità"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Radiation safety"
+msgstr "Sicurezza dalle radiazioni"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Radiology imaging operation (X-ray, MRI, CT)"
+msgstr "Operazioni di imaging radiologico (raggi X, risonanza magnetica, TAC)"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Rehabilitation planning"
+msgstr "Pianificazione della riabilitazione"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
+#, elixir-autogen, elixir-format
+msgid "Required Skills"
+msgstr "Competenze richieste"
+
+#: lib/bemeda_personal_web/live/company_job_live/review.ex
+#, elixir-autogen, elixir-format
+msgid "Review Job"
+msgstr "Rivedi lavoro"
+
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
+#, elixir-autogen, elixir-format
+msgid "Review Job Post"
+msgstr "Rivedi annuncio di lavoro"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Review job post"
+msgstr "Rivedi annuncio di lavoro"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Risk management"
+msgstr "Gestione del rischio"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select Location"
+msgstr "Seleziona località"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select a contract duration"
+msgstr "Seleziona una durata del contratto"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select a department"
+msgstr "Seleziona un dipartimento"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Send contracts to qualified candidates - Bemeda Personal facilitates billing and payments for contract hire."
+msgstr "Invia contratti ai candidati qualificati - Bemeda Personal facilita la fatturazione e i pagamenti per le assunzioni a contratto."
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Send contracts to qualified candidates and manage further engagements off-platform."
+msgstr "Invia contratti ai candidati qualificati e gestisci ulteriori impegni fuori dalla piattaforma."
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Speech therapy & communication rehabilitation"
+msgstr "Logopedia e riabilitazione della comunicazione"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Sterile technique"
+msgstr "Tecnica sterile"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Stress management"
+msgstr "Gestione dello stress"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Strong communication"
+msgstr "Comunicazione efficace"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Surgical assistance & sterile technique"
+msgstr "Assistenza chirurgica e tecnica sterile"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Surgical instrumentation"
+msgstr "Strumentazione chirurgica"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Swallowing therapy"
+msgstr "Terapia della deglutizione"
+
+#: lib/bemeda_personal_web/live/company_job_live/review.html.heex
+#, elixir-autogen, elixir-format
+msgid "Switzerland only"
+msgstr "Solo Svizzera"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Team collaboration"
+msgstr "Collaborazione di squadra"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Time management"
+msgstr "Gestione del tempo"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Title"
+msgstr "Titolo"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Vital signs monitoring"
+msgstr "Monitoraggio dei segni vitali"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format
+msgid "Wound care"
+msgstr "Cura delle ferite"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Years of experience"
+msgstr "Anni di esperienza"
+
+#: lib/bemeda_personal_web/components/job/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Yes"
+msgstr "Sì"
 
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
@@ -1756,6 +2328,11 @@ msgstr "Chiama"
 msgid "Cancel interview"
 msgstr "Annulla colloquio"
 
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Cancelled"
+msgstr "Annullato"
+
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #: lib/bemeda_personal_web/live/job_application_live/show.ex
 #, elixir-autogen, elixir-format
@@ -1767,6 +2344,16 @@ msgstr "Annullato dal datore di lavoro"
 msgid "Chat"
 msgstr "Chat"
 
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Completed"
+msgstr "Completato"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Could not cancel interview"
+msgstr "Impossibile annullare il colloquio"
+
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Date"
@@ -1776,6 +2363,11 @@ msgstr "Data"
 #, elixir-autogen, elixir-format
 msgid "Done"
 msgstr "Fatto"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Edit functionality coming soon for interview %{id}"
+msgstr "Funzionalità di modifica disponibile a breve per il colloquio %{id}"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -1807,6 +2399,11 @@ msgstr "Assumi"
 #, elixir-autogen, elixir-format
 msgid "Interview cancelled successfully"
 msgstr "Colloquio annullato con successo"
+
+#: lib/bemeda_personal_web/live/company_live/index.ex
+#, elixir-autogen, elixir-format
+msgid "Interview details: %{title}"
+msgstr "Dettagli colloquio: %{title}"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.ex
 #, elixir-autogen, elixir-format
@@ -1847,12 +2444,22 @@ msgstr "Lascia una nota"
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Mail"
-msgstr "E-mail"
+msgstr "Email"
+
+#: lib/bemeda_personal_web/components/scheduling/calendar_component.ex
+#, elixir-autogen, elixir-format
+msgid "Meeting with candidate"
+msgstr "Riunione con il candidato"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Next Interview"
+msgstr "Prossimo colloquio"
 
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Notify me"
-msgstr "Notificami"
+msgstr "Avvisami"
 
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
@@ -1871,6 +2478,11 @@ msgstr "Programma un colloquio con il candidato"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
+msgid "Scheduled"
+msgstr "Programmato"
+
+#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
+#, elixir-autogen, elixir-format
 msgid "Scheduled Interviews"
 msgstr "Colloqui programmati"
 
@@ -1879,72 +2491,42 @@ msgstr "Colloqui programmati"
 msgid "Start Time"
 msgstr "Ora di inizio"
 
-#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Type email or name here..."
-msgstr "Inserisci email o nome qui..."
-
-#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
-#, elixir-autogen, elixir-format
-msgid "You are not authorized to modify this interview"
-msgstr "Non sei autorizzato a modificare questo colloquio"
-
-#: lib/bemeda_personal_web/components/scheduling/calendar_component.ex
-#, elixir-autogen, elixir-format
-msgid "Meeting with candidate"
-msgstr "Incontro con candidato"
-
 #: lib/bemeda_personal_web/components/scheduling/calendar_component.ex
 #, elixir-autogen, elixir-format
 msgid "Today's Interviews"
 msgstr "Colloqui di oggi"
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Could not cancel interview"
-msgstr "Impossibile annullare il colloquio"
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Edit functionality coming soon for interview %{id}"
-msgstr "Funzionalità di modifica presto disponibile per il colloquio %{id}"
-
-#: lib/bemeda_personal_web/live/company_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Interview details: %{title}"
-msgstr "Dettagli del colloquio: %{title}"
-
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Cancelled"
-msgstr "Annulla"
-
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Completed"
-msgstr "Completato"
-
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format
-msgid "Next Interview"
-msgstr "Prossimo colloquio"
-
-#: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Scheduled"
-msgstr "Colloqui programmati"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Topic"
 msgstr "Argomento"
 
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Type email or name here..."
+msgstr "Digita email o nome qui..."
+
+#: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
+#, elixir-autogen, elixir-format
+msgid "You are not authorized to modify this interview"
+msgstr "Non sei autorizzato a modificare questo colloquio"
+
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Your Interviews"
-msgstr "I suoi colloqui"
+msgstr "I tuoi colloqui"
 
 #: lib/bemeda_personal_web/live/job_application_live/show.html.heex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "at"
-msgstr "Data"
+msgstr "alle"
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "contains invalid or dangerous HTML: %{reason}"
+msgstr "contiene HTML non valido o pericoloso: %{reason}"
+
+#: lib/bemeda_personal/job_postings/job_posting.ex
+#, elixir-autogen, elixir-format
+msgid "must be a string"
+msgstr "deve essere una stringa"

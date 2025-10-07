@@ -7,6 +7,7 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
   import Ecto.Changeset
 
   alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.HtmlSanitizer
   alias BemedaPersonal.JobPostings.Enums
   alias BemedaPersonal.Media.MediaAsset
 
@@ -19,7 +20,7 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
   schema "job_postings" do
     belongs_to :company, Company
     field :currency, Ecto.Enum, values: Enums.currencies(), default: :CHF
-    field :department, {:array, Ecto.Enum}, values: Enums.departments()
+    field :department, Ecto.Enum, values: Enums.departments()
     field :description, :string
     field :employment_type, Ecto.Enum, values: Enums.employment_types()
     field :gender, {:array, Ecto.Enum}, values: Enums.genders()
@@ -28,14 +29,21 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
     has_one :media_asset, MediaAsset
     field :part_time_details, {:array, Ecto.Enum}, values: Enums.part_time_details()
     field :position, Ecto.Enum, values: Enums.positions()
-    field :profession, Ecto.Enum, values: Enums.professions()
-    field :region, {:array, Ecto.Enum}, values: Enums.regions()
-    field :remote_allowed, :boolean, default: false
-    field :salary_max, :integer
-    field :salary_min, :integer
+    field :region, Ecto.Enum, values: Enums.regions()
+    field :remote_allowed, :boolean
+    field :salary_max, :decimal
+    field :salary_min, :decimal
+    field :net_pay, :decimal
     field :shift_type, {:array, Ecto.Enum}, values: Enums.shift_types()
+
+    field :skills, {:array, Ecto.Enum}, values: Enums.skills()
     field :title, :string
     field :years_of_experience, Ecto.Enum, values: Enums.years_of_experience()
+
+    field :contract_duration, Ecto.Enum, values: Enums.contract_durations()
+
+    field :swiss_only, :boolean
+    field :is_draft, :boolean, default: true
 
     timestamps(type: :utc_datetime)
   end
@@ -44,27 +52,31 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
   def changeset(job_posting, attrs) do
     job_posting
     |> cast(attrs, [
+      :contract_duration,
       :currency,
       :department,
       :description,
       :employment_type,
       :gender,
+      :is_draft,
       :language,
       :location,
       :part_time_details,
       :position,
-      :profession,
       :region,
       :remote_allowed,
       :salary_max,
       :salary_min,
       :shift_type,
+      :skills,
+      :swiss_only,
       :title,
       :years_of_experience
     ])
     |> validate_required([:title, :description])
     |> validate_length(:title, min: 5, max: 255)
-    |> validate_length(:description, min: 10)
+    |> validate_length(:description, min: 10, max: 8000)
+    |> sanitize_description()
     |> validate_number(:salary_min, greater_than_or_equal_to: 0)
     |> validate_number(:salary_max, greater_than_or_equal_to: 0)
     |> validate_salary_range()
@@ -82,6 +94,29 @@ defmodule BemedaPersonal.JobPostings.JobPosting do
       )
     else
       changeset
+    end
+  end
+
+  defp sanitize_description(changeset) do
+    case get_change(changeset, :description) do
+      nil ->
+        changeset
+
+      description when is_binary(description) ->
+        case HtmlSanitizer.sanitize_trix_content(description) do
+          {:ok, sanitized_html} ->
+            put_change(changeset, :description, sanitized_html)
+
+          {:error, reason} ->
+            add_error(
+              changeset,
+              :description,
+              dgettext("jobs", "contains invalid or dangerous HTML: %{reason}", reason: reason)
+            )
+        end
+
+      _other ->
+        add_error(changeset, :description, dgettext("jobs", "must be a string"))
     end
   end
 end

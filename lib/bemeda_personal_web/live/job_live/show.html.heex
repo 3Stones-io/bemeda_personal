@@ -96,7 +96,7 @@
           {dgettext("jobs", "Job Description")}
         </h2>
         <div class="prose max-w-none text-gray-700 md-to-html">
-          {BemedaPersonalWeb.MarkdownHelper.to_html(@job_posting.description)}
+          {safe_html(@job_posting.description)}
         </div>
       </div>
       

@@ -32,7 +32,7 @@ defmodule BemedaPersonal.JobPostingsTest do
     Enum.map(1..count, fn i ->
       job_posting_fixture(company, %{
         description: "Description for job posting #{i}",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         location: "Location #{i}",
         remote_allowed: rem(i, 2) == 0,
         salary_max: i * 15_000,
@@ -83,7 +83,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "Great job opportunity with lots of details",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "Test Location",
         remote_allowed: true,
@@ -316,12 +316,12 @@ defmodule BemedaPersonal.JobPostingsTest do
       user = employer_user_fixture()
       company = company_fixture(user)
 
-      job_posting1 = job_posting_fixture(company, %{employment_type: :"Permanent Position"})
-      job_posting_fixture(company, %{employment_type: :Floater})
+      job_posting1 = job_posting_fixture(company, %{employment_type: :"Full-time Hire"})
+      job_posting_fixture(company, %{employment_type: :"Contract Hire"})
 
       # Get all job postings and filter by employment_type (testing data exists)
       all_results = JobPostings.list_job_postings()
-      results = Enum.filter(all_results, &(&1.employment_type == :"Permanent Position"))
+      results = Enum.filter(all_results, &(&1.employment_type == :"Full-time Hire"))
       assert [result] = results
       assert result.id == job_posting1.id
       assert Ecto.assoc_loaded?(result.company)
@@ -365,12 +365,12 @@ defmodule BemedaPersonal.JobPostingsTest do
       job_posting2 = job_posting_fixture(company, %{salary_min: 30_000, salary_max: 60_000})
       job_posting_fixture(company, %{salary_min: 120_000, salary_max: 150_000})
 
-      # Get all job postings and filter by salary range (testing data exists)
       all_results = JobPostings.list_job_postings()
 
       results =
         Enum.filter(all_results, fn job ->
-          job.salary_min <= 70_000 and job.salary_max >= 55_000
+          Decimal.compare(job.salary_min, 70_000) in [:lt, :eq] and
+            Decimal.compare(job.salary_max, 55_000) in [:gt, :eq]
         end)
 
       assert length(results) == 2
@@ -402,7 +402,7 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       job_posting1 =
         job_posting_fixture(company, %{
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           remote_allowed: true,
           salary_max: 120_000,
           salary_min: 80_000,
@@ -410,7 +410,7 @@ defmodule BemedaPersonal.JobPostingsTest do
         })
 
       job_posting_fixture(company, %{
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         remote_allowed: false,
         salary_max: 70_000,
         salary_min: 50_000,
@@ -418,20 +418,20 @@ defmodule BemedaPersonal.JobPostingsTest do
       })
 
       job_posting_fixture(company, %{
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         remote_allowed: true,
         salary_max: 130_000,
         salary_min: 90_000,
         title: "Senior Product Manager"
       })
 
-      # Get all job postings and apply multiple filters (testing data exists)
       all_results = JobPostings.list_job_postings()
 
       results =
         Enum.filter(all_results, fn job ->
           job.remote_allowed == true and
-            job.salary_min <= 125_000 and job.salary_max >= 75_000 and
+            Decimal.compare(job.salary_min, 125_000) in [:lt, :eq] and
+            Decimal.compare(job.salary_max, 75_000) in [:gt, :eq] and
             String.contains?(job.title, "Engineer")
         end)
 
@@ -446,7 +446,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       company = company_fixture(user)
 
       job_posting_fixture(company, %{
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         remote_allowed: true,
         salary_max: 120_000,
         salary_min: 80_000,
@@ -474,9 +474,10 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for older job",
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "Location",
           position: "Employee",
+          region: :Zurich,
           remote_allowed: false,
           salary_max: 70_000,
           salary_min: 50_000,
@@ -491,9 +492,10 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for middle job",
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "Location",
           position: "Employee",
+          region: :Zurich,
           remote_allowed: false,
           salary_max: 80_000,
           salary_min: 60_000,
@@ -508,9 +510,10 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for newer job",
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "Location",
           position: "Employee",
+          region: :Zurich,
           remote_allowed: false,
           salary_max: 90_000,
           salary_min: 70_000,
@@ -533,7 +536,7 @@ defmodule BemedaPersonal.JobPostingsTest do
         |> JobPosting.changeset(%{
           currency: "USD",
           description: "Description for another older job",
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "Location",
           position: "Employee",
           remote_allowed: true,
@@ -619,10 +622,10 @@ defmodule BemedaPersonal.JobPostingsTest do
     test "can count job_postings by employment_type", %{job_posting: _job_posting} do
       user = employer_user_fixture()
       company = company_fixture(user)
-      job_posting_fixture(company, %{employment_type: :"Temporary Assignment"})
+      job_posting_fixture(company, %{employment_type: :"Contract Hire"})
 
-      assert JobPostings.count_job_postings(%{employment_type: "Permanent Position"}) == 1
-      assert JobPostings.count_job_postings(%{employment_type: "Temporary Assignment"}) == 1
+      assert JobPostings.count_job_postings(%{employment_type: "Full-time Hire"}) == 1
+      assert JobPostings.count_job_postings(%{employment_type: "Contract Hire"}) == 1
       assert JobPostings.count_job_postings() == 2
     end
 
@@ -659,7 +662,7 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       job_posting_fixture(company, %{
         title: "Remote Healthcare Developer",
-        employment_type: :"Temporary Assignment",
+        employment_type: :"Contract Hire",
         remote_allowed: true,
         salary_min: 80_000,
         salary_max: 120_000
@@ -667,7 +670,7 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       job_posting_fixture(company, %{
         title: "On-site Developer",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         remote_allowed: false,
         salary_min: 60_000,
         salary_max: 90_000
@@ -675,18 +678,18 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       assert JobPostings.count_job_postings(%{
                search: "Healthcare",
-               employment_type: "Temporary Assignment",
+               employment_type: "Contract Hire",
                remote_allowed: true
              }) == 1
 
       assert JobPostings.count_job_postings(%{
-               employment_type: "Permanent Position",
+               employment_type: "Full-time Hire",
                remote_allowed: false
              }) == 1
 
       assert JobPostings.count_job_postings(%{
                salary_min: 75_000,
-               employment_type: "Temporary Assignment"
+               employment_type: "Contract Hire"
              }) == 1
     end
 
@@ -729,7 +732,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -756,7 +759,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -784,7 +787,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -817,7 +820,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         "currency" => "USD",
         "description" => "some description that is long enough",
-        "employment_type" => :"Permanent Position",
+        "employment_type" => :"Full-time Hire",
         "experience_level" => "Mid-level",
         "location" => "some location",
         "remote_allowed" => true,
@@ -863,7 +866,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       invalid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -885,7 +888,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       invalid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -907,7 +910,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       invalid_attrs = %{
         currency: "USD",
         description: "too short",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -935,7 +938,7 @@ defmodule BemedaPersonal.JobPostingsTest do
       valid_attrs = %{
         currency: "USD",
         description: "some description that is long enough",
-        employment_type: :"Permanent Position",
+        employment_type: :"Full-time Hire",
         experience_level: "Mid-level",
         location: "some location",
         remote_allowed: true,
@@ -1254,6 +1257,232 @@ defmodule BemedaPersonal.JobPostingsTest do
 
       refute changeset_2.valid?
       assert "must be greater than or equal to 0" in errors_on(changeset_2).salary_max
+    end
+
+    test "sanitizes dangerous HTML in description" do
+      dangerous_html = "<p>Safe content</p><script>alert('xss')</script>"
+
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: dangerous_html
+        })
+
+      assert changeset.valid?
+      sanitized_description = Ecto.Changeset.get_change(changeset, :description)
+      refute String.contains?(sanitized_description, "<script>")
+      assert String.contains?(sanitized_description, "Safe content")
+    end
+
+    test "removes event handlers from description" do
+      html_with_events = "<div onclick=\"alert('xss')\">Click me</div>"
+
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: html_with_events
+        })
+
+      assert changeset.valid?
+      sanitized_description = Ecto.Changeset.get_change(changeset, :description)
+      refute String.contains?(sanitized_description, "onclick")
+      assert String.contains?(sanitized_description, "Click me")
+    end
+
+    test "removes dangerous URL protocols from description" do
+      dangerous_link = "<a href=\"javascript:alert('xss')\">Click</a>"
+
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: dangerous_link
+        })
+
+      assert changeset.valid?
+      sanitized_description = Ecto.Changeset.get_change(changeset, :description)
+      refute String.contains?(sanitized_description, "javascript:")
+      assert String.contains?(sanitized_description, "Click")
+    end
+
+    test "removes iframe tags from description" do
+      html_with_iframe = "<p>Content</p><iframe src=\"evil.com\"></iframe>"
+
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: html_with_iframe
+        })
+
+      assert changeset.valid?
+      sanitized_description = Ecto.Changeset.get_change(changeset, :description)
+      refute String.contains?(sanitized_description, "iframe")
+      assert String.contains?(sanitized_description, "Content")
+    end
+
+    test "allows image tags in description" do
+      html_with_image = "<p>Text content</p><img src=\"image.jpg\" alt=\"test\">"
+
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: html_with_image
+        })
+
+      assert changeset.valid?
+      sanitized_description = Ecto.Changeset.get_change(changeset, :description)
+      assert String.contains?(sanitized_description, "<img")
+      assert String.contains?(sanitized_description, "image.jpg")
+      assert String.contains?(sanitized_description, "Text content")
+    end
+
+    test "allows safe HTML tags in description" do
+      safe_html =
+        "<h1>Heading</h1><p>Paragraph with <strong>bold</strong> and <em>italic</em></p><ul><li>Item 1</li></ul>"
+
+      changeset =
+        JobPosting.changeset(%JobPosting{}, %{
+          title: "Valid Title",
+          description: safe_html
+        })
+
+      assert changeset.valid?
+      sanitized_description = Ecto.Changeset.get_change(changeset, :description)
+      assert String.contains?(sanitized_description, "<h1>Heading</h1>")
+      assert String.contains?(sanitized_description, "<strong>bold</strong>")
+      assert String.contains?(sanitized_description, "<em>italic</em>")
+      assert String.contains?(sanitized_description, "<ul>")
+      assert String.contains?(sanitized_description, "<li>Item 1</li>")
+    end
+  end
+
+  describe "HTML sanitization in job posting operations" do
+    setup :create_job_posting
+
+    test "create_job_posting/2 sanitizes description before saving", %{
+      company: company,
+      user: user
+    } do
+      dangerous_attrs = %{
+        currency: "USD",
+        description: "<p>Valid content</p><script>alert('xss')</script>",
+        employment_type: :"Full-time Hire",
+        location: "Test Location",
+        title: "Software Engineer"
+      }
+
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      assert {:ok, job_posting} = JobPostings.create_job_posting(scope, dangerous_attrs)
+      refute String.contains?(job_posting.description, "<script>")
+      assert String.contains?(job_posting.description, "Valid content")
+    end
+
+    test "create_job_posting/2 allows images in description", %{company: company, user: user} do
+      attrs_with_image = %{
+        currency: "USD",
+        description: "<p>Job description</p><img src=\"logo.png\" alt=\"Logo\">",
+        employment_type: :"Full-time Hire",
+        location: "Test Location",
+        title: "Software Engineer"
+      }
+
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      assert {:ok, job_posting} = JobPostings.create_job_posting(scope, attrs_with_image)
+      assert String.contains?(job_posting.description, "<img")
+      assert String.contains?(job_posting.description, "logo.png")
+      assert String.contains?(job_posting.description, "Job description")
+    end
+
+    test "update_job_posting/2 sanitizes description before saving", %{job_posting: job_posting} do
+      dangerous_update = %{
+        description: "<p>Updated content</p><iframe src=\"evil.com\"></iframe>"
+      }
+
+      assert {:ok, updated_posting} =
+               JobPostings.update_job_posting(job_posting, dangerous_update)
+
+      refute String.contains?(updated_posting.description, "<iframe>")
+      assert String.contains?(updated_posting.description, "Updated content")
+    end
+
+    test "update_job_posting/2 removes event handlers from description", %{
+      job_posting: job_posting
+    } do
+      update_with_events = %{
+        description: "<div onclick=\"alert('xss')\">Click here for details</div>"
+      }
+
+      assert {:ok, updated_posting} =
+               JobPostings.update_job_posting(job_posting, update_with_events)
+
+      refute String.contains?(updated_posting.description, "onclick")
+      assert String.contains?(updated_posting.description, "Click here for details")
+    end
+
+    test "create_job_posting/2 allows safe Trix editor HTML", %{company: company, user: user} do
+      trix_html = """
+      <h1>Senior Software Engineer</h1>
+      <p>We are looking for a <strong>talented developer</strong> with:</p>
+      <ul>
+        <li>5+ years of experience</li>
+        <li><em>Strong</em> problem-solving skills</li>
+      </ul>
+      <blockquote>Join our amazing team!</blockquote>
+      """
+
+      attrs = %{
+        currency: "USD",
+        description: trix_html,
+        employment_type: :"Full-time Hire",
+        location: "Remote",
+        title: "Senior Software Engineer"
+      }
+
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      assert {:ok, job_posting} = JobPostings.create_job_posting(scope, attrs)
+      assert String.contains?(job_posting.description, "<h1>Senior Software Engineer</h1>")
+      assert String.contains?(job_posting.description, "<strong>talented developer</strong>")
+      assert String.contains?(job_posting.description, "<ul>")
+      assert String.contains?(job_posting.description, "<li>5+ years of experience</li>")
+      assert String.contains?(job_posting.description, "<blockquote>")
+    end
+
+    test "create_job_posting/2 sanitizes SQL injection attempts in description", %{
+      company: company,
+      user: user
+    } do
+      sql_injection_attempt = "<p>Job</p><a href=\"'; DROP TABLE users; --\">Link</a>"
+
+      attrs = %{
+        currency: "USD",
+        description: sql_injection_attempt,
+        employment_type: :"Full-time Hire",
+        location: "Test",
+        title: "Software Engineer"
+      }
+
+      scope =
+        user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      # Should successfully save without executing SQL injection
+      assert {:ok, job_posting} = JobPostings.create_job_posting(scope, attrs)
+      # The link text is preserved
+      assert String.contains?(job_posting.description, "Link")
+      # The href attribute is preserved (but won't execute as SQL due to parameterized queries)
+      assert String.contains?(job_posting.description, "<a href=")
     end
   end
 end

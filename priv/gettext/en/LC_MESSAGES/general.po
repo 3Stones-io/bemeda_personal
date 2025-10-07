@@ -11,11 +11,6 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Browse Files"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
@@ -37,11 +32,6 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Drag and drop to upload your %{type}"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/shared/resume_components.ex
 #: lib/bemeda_personal_web/live/resume/show_live.html.heex
 #: lib/bemeda_personal_web/live/user_settings_live/info.ex
@@ -52,11 +42,6 @@ msgstr ""
 #: lib/bemeda_personal_web/controllers/page_html/home.html.heex
 #, elixir-autogen, elixir-format
 msgid "Find Your Next"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Max file size: %{size}"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
@@ -85,20 +70,10 @@ msgstr ""
 msgid "Show %{type}"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "Upload progress"
-msgstr ""
-
 #: lib/bemeda_personal_web/components/core/flash.ex
 #: lib/bemeda_personal_web/components/core/modal.ex
 #, elixir-autogen, elixir-format
 msgid "close"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/shared/shared_components.ex
-#, elixir-autogen, elixir-format
-msgid "or"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/shared/resume_components.ex

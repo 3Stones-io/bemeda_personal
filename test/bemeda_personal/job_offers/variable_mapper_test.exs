@@ -29,7 +29,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
 
       job_posting =
         job_posting_fixture(company, %{
-          employment_type: :"Permanent Position",
+          employment_type: :"Full-time Hire",
           location: "Remote",
           title: "Engineer"
         })
@@ -57,12 +57,12 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
                "#{company.admin_user.first_name} #{company.admin_user.last_name}"
 
       # Job posting variables
-      assert variables["Contract_Type"] == "Permanent Position"
+      assert variables["Contract_Type"] == "Full-time Hire"
       assert variables["Job_Title"] == "Engineer"
       assert variables["Work_Location"] == "Remote"
 
       # System variables
-      assert variables["Contract_Type"] == "Permanent Position"
+      assert variables["Contract_Type"] == "Full-time Hire"
       assert variables["Date"] == Date.to_string(Date.utc_today())
       assert String.starts_with?(variables["Serial_Number"], "JO-#{Date.utc_today().year}-")
 
