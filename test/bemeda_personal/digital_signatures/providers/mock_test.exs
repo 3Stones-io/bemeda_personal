@@ -1,5 +1,5 @@
 defmodule BemedaPersonal.DigitalSignatures.Providers.MockTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
 
   alias BemedaPersonal.DigitalSignatures.Providers.Mock
 

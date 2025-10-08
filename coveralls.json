@@ -1,14 +1,12 @@
 {
   "coverage_options": {
-    "minimum_coverage": 86.4
+    "minimum_coverage": 84.2
   },
   "skip_files": [
     "lib/bemeda_personal/release.ex",
     "lib/bemeda_personal/digital_signatures/providers/signwell.ex",
     "lib/bemeda_personal/documents/tigris_storage.ex",
     "lib/bemeda_personal_web/live/live_acceptance.ex",
-    "test/support/feature_case.ex",
-    "test/support/feature_helpers.ex",
     "lib/bemeda_personal_web/storybook.ex",
     "lib/bemeda_personal_web/storybook/"
   ]

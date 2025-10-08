@@ -110,8 +110,16 @@ defmodule BemedaPersonalWeb.Features.SchedulingSteps do
     end_datetime = NaiveDateTime.add(start_datetime, duration_minutes * 60, :second)
 
     # Extract end date and time
-    end_date = NaiveDateTime.to_date(end_datetime) |> Date.to_iso8601()
-    end_time = NaiveDateTime.to_time(end_datetime) |> Time.to_iso8601() |> String.slice(0, 5)
+    end_date =
+      end_datetime
+      |> NaiveDateTime.to_date()
+      |> Date.to_iso8601()
+
+    end_time =
+      end_datetime
+      |> NaiveDateTime.to_time()
+      |> Time.to_iso8601()
+      |> String.slice(0, 5)
 
     updated_data =
       form_data
@@ -162,15 +170,15 @@ defmodule BemedaPersonalWeb.Features.SchedulingSteps do
       |> Scope.put_company(context.company)
 
     # Poll database for interview (async message may not have processed yet)
-    # Try up to 10 times with 100ms delay (total 1 second max wait)
+    # Try up to 15 times with 100ms delay (total 1.5 second max wait)
     interviews =
-      Enum.reduce_while(1..10, [], fn attempt, _acc ->
+      Enum.reduce_while(1..15, [], fn attempt, _acc ->
         interviews = Scheduling.list_interviews(scope, %{job_application_id: application.id})
 
         if length(interviews) > 0 do
           {:halt, interviews}
         else
-          if attempt < 10, do: Process.sleep(100)
+          if attempt < 15, do: Process.sleep(100)
           {:cont, []}
         end
       end)

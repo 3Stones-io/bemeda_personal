@@ -1,18 +1,23 @@
 defmodule BemedaPersonal.Documents.ProcessorTest do
+  # Cannot be async because we modify global Application config
   use BemedaPersonal.DataCase, async: false
 
   alias BemedaPersonal.Documents.FileProcessor
-  alias BemedaPersonal.Documents.MockProcessor
   alias BemedaPersonal.Documents.Processor
 
   @moduletag :processor
 
   setup do
-    on_exit(fn ->
-      Application.put_env(:bemeda_personal, :documents_processor, MockProcessor)
-    end)
+    # Store the original configuration
+    original_processor = Application.get_env(:bemeda_personal, :documents_processor)
 
+    # Use the real FileProcessor for these tests
     Application.put_env(:bemeda_personal, :documents_processor, FileProcessor)
+
+    # Restore original configuration after test
+    on_exit(fn ->
+      Application.put_env(:bemeda_personal, :documents_processor, original_processor)
+    end)
 
     :ok
   end

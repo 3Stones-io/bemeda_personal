@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.ErrorHTMLTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   # Bring render_to_string/4 for testing custom views
   import Phoenix.Template

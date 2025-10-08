@@ -1,5 +1,5 @@
 defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
-  use BemedaPersonal.DataCase, async: false
+  use BemedaPersonal.DataCase, async: true
   use Oban.Testing, repo: BemedaPersonal.Repo
 
   import BemedaPersonal.AccountsFixtures

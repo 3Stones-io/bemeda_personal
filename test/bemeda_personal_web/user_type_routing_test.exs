@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.UserTypeRoutingTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures

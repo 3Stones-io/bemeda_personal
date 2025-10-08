@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures
@@ -743,8 +743,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
 
       for app <- existing_apps do
         # Delete any associated job offers first to avoid foreign key constraint violations
-        from(jo in BemedaPersonal.JobOffers.JobOffer, where: jo.job_application_id == ^app.id)
-        |> Repo.delete_all()
+        query =
+          from(jo in BemedaPersonal.JobOffers.JobOffer, where: jo.job_application_id == ^app.id)
+
+        Repo.delete_all(query)
 
         Repo.delete!(app)
       end

@@ -2530,3 +2530,8 @@ msgstr "enthält ungültiges oder gefährliches HTML: %{reason}"
 #, elixir-autogen, elixir-format
 msgid "must be a string"
 msgstr "muss eine Zeichenkette sein"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Interview"
+msgstr "Im Vorstellungsgespräch"

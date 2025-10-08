@@ -2530,3 +2530,8 @@ msgstr "contiene HTML non valido o pericoloso: %{reason}"
 #, elixir-autogen, elixir-format
 msgid "must be a string"
 msgstr "deve essere una stringa"
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Interview"
+msgstr "In colloquio"

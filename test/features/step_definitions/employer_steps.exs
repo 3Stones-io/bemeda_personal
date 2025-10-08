@@ -62,7 +62,7 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
   step "I fill in job title with {string}", %{args: [title]} = context do
     view = context.view
 
-    # Actually fill the form field in the LiveView
+    # Fill the form field in the LiveView
     _html =
       view
       |> form("form", %{job_posting: %{title: title}})
@@ -77,11 +77,16 @@ defmodule BemedaPersonalWeb.Features.EmployerSteps do
     {:ok, context}
   end
 
-  step "I fill in job description with {string}", %{args: [_description]} = context do
-    # Description field is managed by a JavaScript rich text editor (TipTap)
-    # Cannot be filled via standard LiveView form mechanisms
-    # Skip this step - the form will need a valid description from another source
-    {:ok, context}
+  step "I fill in job description with {string}", %{args: [description]} = context do
+    # WORKAROUND: Description field is managed by TipTap JavaScript rich text editor
+    # In LiveView tests (without real browser), we cannot fill JavaScript-managed fields
+    # Store description in context for potential later use, but skip actual form filling
+    # The form will be submitted with the description field empty, which will fail validation
+    # unless the form component has a test mode or default value
+
+    # For now, just acknowledge the step without filling the field
+    # The test will fail validation, which we'll need to address differently
+    {:ok, Map.put(context, :job_description, description)}
   end
 
   step "I visit the company applicants page", context do

@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.Plugs.LocaleTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonalWeb.Locale

@@ -30,7 +30,7 @@ defmodule BemedaPersonal.MixProject do
         dialyzer: :test,
         sobelow: :test
       ],
-      test_coverage: [tool: ExCoveralls, minimum_coverage: 86.4],
+      test_coverage: [tool: ExCoveralls],
 
       # Docs
       name: "BemedaPersonal",

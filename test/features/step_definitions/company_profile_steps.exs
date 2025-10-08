@@ -168,7 +168,11 @@ defmodule BemedaPersonalWeb.Features.CompanyProfileSteps do
     company = context.company
     user = context.current_user
 
-    scope = Scope.for_user(user) |> Scope.put_company(company)
+    scope =
+      user
+      |> Scope.for_user()
+      |> Scope.put_company(company)
+
     updated_company = Companies.get_company!(scope, company.id)
 
     if Map.has_key?(form_data, :name) do

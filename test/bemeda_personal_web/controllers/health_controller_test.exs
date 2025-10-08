@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.HealthControllerTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   describe "GET /health" do
     test "returns cluster info", %{conn: conn} do

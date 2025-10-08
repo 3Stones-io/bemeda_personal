@@ -143,14 +143,15 @@ defmodule BemedaPersonalWeb.Components.Job.JobListComponent do
   end
 
   defp assign_jobs(socket) do
-    jobs = JobPostings.list_job_postings(socket.assigns.filters)
-    total_count = JobPostings.count_job_postings(socket.assigns.filters)
+    filters = socket.assigns.filters
+    jobs = JobPostings.list_job_postings(filters)
+    total_count = JobPostings.count_job_postings(filters)
 
     first_job = List.first(jobs)
     last_job = List.last(jobs)
 
     socket
-    |> stream(:job_postings, jobs, reset: true, limit: 10)
+    |> stream(:job_postings, jobs, reset: true)
     |> assign(:first_job, first_job)
     |> assign(:last_job, last_job)
     |> assign(:total_count, total_count)

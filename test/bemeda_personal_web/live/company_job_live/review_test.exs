@@ -1,6 +1,5 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.ReviewTest do
-  # async: false - BDD tests may conflict with parallel execution on shared port
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures

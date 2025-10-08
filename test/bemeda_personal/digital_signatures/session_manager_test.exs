@@ -1,5 +1,5 @@
 defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
-  use BemedaPersonal.DataCase, async: false
+  use BemedaPersonal.DataCase, async: true
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures

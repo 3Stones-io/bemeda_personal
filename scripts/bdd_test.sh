@@ -56,9 +56,9 @@ if lsof -ti tcp:${TEST_PORT} > /dev/null 2>&1; then
     lsof -ti tcp:${TEST_PORT} | xargs kill -9 2>/dev/null || true
 fi
 
-# Run mix test with BDD inclusion
+# Run mix test with BDD only
 echo "🚀 Starting BDD tests..."
-mix test --color --include bdd "$@"
+mix test --color --only bdd "$@"
 TEST_EXIT_CODE=$?
 
 # Exit with the test's exit code (cleanup happens via EXIT trap)

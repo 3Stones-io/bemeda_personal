@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.CompanyLive.CalendarIntegrationTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   describe "calendar integration" do
     test "calendar integration is tested through CompanyLive.IndexTest" do

@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.UserSettingsLive.AuthenticationTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
   import Phoenix.LiveViewTest

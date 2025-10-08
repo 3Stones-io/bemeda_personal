@@ -1,5 +1,5 @@
 defmodule BemedaPersonalWeb.AdminAuthTest do
-  use BemedaPersonalWeb.ConnCase, async: false
+  use BemedaPersonalWeb.ConnCase, async: true
 
   import ExUnit.CaptureLog
 

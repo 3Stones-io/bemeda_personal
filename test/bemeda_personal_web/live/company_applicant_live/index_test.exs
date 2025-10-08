@@ -1,7 +1,5 @@
 defmodule BemedaPersonalWeb.CompanyApplicantLive.IndexTest do
-  use BemedaPersonalWeb.ConnCase, async: false
-
-  @moduletag :exclude_with_bdd
+  use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.CompaniesFixtures

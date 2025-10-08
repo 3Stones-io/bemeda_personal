@@ -13,34 +13,39 @@ defmodule BemedaPersonal.Documents.FileProcessor do
     extract_dir = Path.join(work_dir, "extracted")
     File.mkdir_p!(extract_dir)
 
-    {:ok, _extracted_files_list} =
-      document_path
-      |> String.to_charlist()
-      |> :zip.unzip([{:cwd, String.to_charlist(extract_dir)}])
+    case document_path
+         |> String.to_charlist()
+         |> :zip.unzip([{:cwd, String.to_charlist(extract_dir)}]) do
+      {:ok, _extracted_files_list} ->
+        doc_xml_path = Path.join(extract_dir, "word/document.xml")
 
-    doc_xml_path = Path.join(extract_dir, "word/document.xml")
+        header_files =
+          [extract_dir, "word", "header*.xml"]
+          |> Path.join()
+          |> Path.wildcard()
 
-    header_files =
-      [extract_dir, "word", "header*.xml"]
-      |> Path.join()
-      |> Path.wildcard()
+        footer_files =
+          [extract_dir, "word", "footer*.xml"]
+          |> Path.join()
+          |> Path.wildcard()
 
-    footer_files =
-      [extract_dir, "word", "footer*.xml"]
-      |> Path.join()
-      |> Path.wildcard()
+        documents = [doc_xml_path] ++ header_files ++ footer_files
 
-    documents = [doc_xml_path] ++ header_files ++ footer_files
+        variables =
+          documents
+          |> Enum.flat_map(&extract_variables_from_file/1)
+          |> Enum.uniq()
 
-    variables =
-      documents
-      |> Enum.flat_map(&extract_variables_from_file/1)
-      |> Enum.uniq()
+        File.rm_rf(extract_dir)
+        File.rm_rf(work_dir)
 
-    File.rm_rf(extract_dir)
-    File.rm_rf(work_dir)
+        variables
 
-    variables
+      {:error, reason} ->
+        File.rm_rf(extract_dir)
+        File.rm_rf(work_dir)
+        raise "Failed to extract document: #{inspect(reason)}"
+    end
   end
 
   @impl Processor
@@ -119,11 +124,16 @@ defmodule BemedaPersonal.Documents.FileProcessor do
     extract_dir = Path.join(System.tmp_dir!(), "extracted")
     File.mkdir_p!(extract_dir)
 
-    document_path
-    |> String.to_charlist()
-    |> :zip.unzip([{:cwd, String.to_charlist(extract_dir)}])
+    case document_path
+         |> String.to_charlist()
+         |> :zip.unzip([{:cwd, String.to_charlist(extract_dir)}]) do
+      {:ok, _extracted_files_list} ->
+        extract_dir
 
-    extract_dir
+      {:error, reason} ->
+        File.rm_rf(extract_dir)
+        raise "Failed to extract document: #{inspect(reason)}"
+    end
   end
 
   defp find_document_files(extract_dir) do

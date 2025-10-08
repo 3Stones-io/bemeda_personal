@@ -2530,3 +2530,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "must be a string"
 msgstr ""
+
+#: lib/bemeda_personal_web/i18n.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Interview"
+msgstr ""

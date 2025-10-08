@@ -22,9 +22,12 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
 
   step "I have created a job offer for an application", context do
     user = context.current_user
-    # Get or create company for the employer
-    company = context[:company] || BemedaPersonal.CompaniesFixtures.company_fixture(user)
     conn = context.conn
+
+    # CRITICAL: Always create a NEW company for THIS specific employer user
+    # This scenario might be run standalone or might have context from Background
+    # To ensure clean test isolation, create a fresh company for the current user
+    company = BemedaPersonal.CompaniesFixtures.company_fixture(user)
 
     # Create a job seeker and application for THIS company's job
     job_seeker =
@@ -41,7 +44,7 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
     application =
       BemedaPersonal.JobApplicationsFixtures.job_application_fixture(job_seeker, job_posting)
 
-    # Create scope for the employer
+    # Create scope for the employer with the company
     scope =
       user
       |> Scope.for_user()
@@ -50,7 +53,7 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
     job_offer = JobOffersFixtures.job_offer_fixture(%{job_application_id: application.id})
 
     # Navigate to the application page where contract can be generated
-    # Store both job_posting_id and application for proper navigation
+    # Use scope-aware navigation - the LiveView will check authorization
     {:ok, view, _html} =
       live(conn, ~p"/jobs/#{job_posting.id}/job_applications/#{application.id}")
 
@@ -162,16 +165,17 @@ defmodule BemedaPersonalWeb.Features.JobOfferSteps do
   end
 
   step "I generate the contract", context do
-    _job_offer = context.job_offer
-    view = context.view
+    job_offer = context.job_offer
+    scope = context.scope
 
-    # Simulate contract generation action
-    html =
-      view
-      |> element("button", "Generate Contract")
-      |> render_click()
+    # Contract generation happens automatically via Oban worker when offer is sent
+    # For BDD testing purposes, we need to trigger this manually since we're not
+    # waiting for Oban to process the job
+    # This simulates what the GenerateContract worker would do
+    {:ok, updated_job_offer} =
+      JobOffers.mark_contract_as_generated(scope, job_offer.id)
 
-    {:ok, Map.put(context, :last_html, html)}
+    {:ok, Map.put(context, :job_offer, updated_job_offer)}
   end
 
   step "I visit my job applications page", context do

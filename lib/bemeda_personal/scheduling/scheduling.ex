@@ -202,6 +202,9 @@ defmodule BemedaPersonal.Scheduling.Scheduling do
       {:to_date, date}, query ->
         from i in query, where: i.scheduled_at <= ^date
 
+      {:job_application_id, job_application_id}, query ->
+        from i in query, where: i.job_application_id == ^job_application_id
+
       _filter, query ->
         query
     end)

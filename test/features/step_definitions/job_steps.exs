@@ -60,11 +60,17 @@ defmodule BemedaPersonalWeb.Features.JobSteps do
     job = context.current_job
     conn = context.conn
 
-    # Navigate to the apply page (this triggers the :apply action)
-    # Use the job struct directly - verified routes will extract the ID
-    {:ok, view, _html} = live(conn, ~p"/jobs/#{job}/apply")
+    # First navigate to the job show page
+    {:ok, show_view, _html} = live(conn, ~p"/jobs/#{job}")
 
-    {:ok, Map.put(context, :view, view)}
+    # Then click the Apply Now button which patches to /apply
+    # The button uses JS.patch(), so render_click triggers the patch action
+    show_view
+    |> element("button[data-testid='apply-button']")
+    |> render_click()
+
+    # The view is now showing the apply modal - same view, different live_action
+    {:ok, Map.put(context, :view, show_view)}
   end
 
   step "I fill in \"Cover Letter\" with {string}", %{args: [value]} = context do
@@ -109,7 +115,11 @@ defmodule BemedaPersonalWeb.Features.JobSteps do
   step "I click {string} without filling cover letter", %{args: [_button_text]} = context do
     view = context.view
 
+    # Ensure the view is fully loaded
+    _initial_html = render(view)
+
     # Submit form with empty cover letter to trigger validation error
+    # The form ID is "new" for new applications (from job_application.id || :new)
     html =
       view
       |> form("#new", %{job_application: %{cover_letter: ""}})

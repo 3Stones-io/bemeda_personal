@@ -384,7 +384,9 @@ defmodule BemedaPersonalWeb.Features.CommonSteps do
               # Extract domain name (e.g., "newwebsite" from "https://newwebsite.com")
               domain_parts =
                 if uri.host do
-                  uri.host |> String.split(".") |> Enum.filter(&(String.length(&1) > 3))
+                  uri.host
+                  |> String.split(".")
+                  |> Enum.filter(&(String.length(&1) > 3))
                 else
                   []
                 end
