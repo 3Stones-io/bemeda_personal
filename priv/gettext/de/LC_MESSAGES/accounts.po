@@ -1,0 +1,62 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr "Ein Link zur Bestätigung Ihrer E-Mail-Änderung wurde an die neue Adresse gesendet."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr "Kontoeinstellungen"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "E-Mail ändern"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "Neues Passwort bestätigen"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "E-Mail"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr "Der Link zur E-Mail-Änderung ist ungültig oder abgelaufen."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr "E-Mail erfolgreich geändert."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Manage your account email address and password settings"
+msgstr "Verwalten Sie Ihre Konto-E-Mail-Adresse und Passwort-Einstellungen"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Save Password"
+msgstr "Passwort speichern"

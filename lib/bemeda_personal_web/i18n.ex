@@ -343,4 +343,19 @@ defmodule BemedaPersonalWeb.I18n do
 
   def translate_skill("Interdisciplinary collaboration"),
     do: dgettext("jobs", "Interdisciplinary collaboration")
+
+  @spec translate_organization_type(String.t()) :: String.t()
+  def translate_organization_type("Care Home"), do: dgettext("companies", "Care Home")
+  def translate_organization_type("Clinic"), do: dgettext("companies", "Clinic")
+
+  def translate_organization_type("Home Care Service"),
+    do: dgettext("companies", "Home Care Service")
+
+  def translate_organization_type("Hospital"), do: dgettext("companies", "Hospital")
+  def translate_organization_type("Medical Center"), do: dgettext("companies", "Medical Center")
+
+  def translate_organization_type("Private Practice"),
+    do: dgettext("companies", "Private Practice")
+
+  def translate_organization_type("Other"), do: dgettext("companies", "Other")
 end

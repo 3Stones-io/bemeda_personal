@@ -1086,8 +1086,8 @@ msgstr ""
 msgid "%{company} has extended you a job offer for %{position}."
 msgstr ""
 
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
-#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
@@ -1132,12 +1132,12 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Mr."
-msgstr "Mr."
+msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Ms."
-msgstr "Ms."
+msgstr ""
 
 #: lib/bemeda_personal_web/live/job_application_live/show.ex
 #, elixir-autogen, elixir-format, fuzzy
@@ -1182,7 +1182,7 @@ msgstr ""
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "From"
-msgstr "From"
+msgstr ""
 
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #, elixir-autogen, elixir-format
@@ -1232,7 +1232,7 @@ msgstr ""
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #, elixir-autogen, elixir-format
 msgid "Up to"
-msgstr "Up to"
+msgstr ""
 
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #, elixir-autogen, elixir-format
@@ -1530,8 +1530,8 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
-#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Start writing"
@@ -1621,6 +1621,7 @@ msgstr ""
 msgid "See more"
 msgstr ""
 
+#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #: lib/bemeda_personal_web/live/company_job_live/review.html.heex
@@ -1667,12 +1668,12 @@ msgstr ""
 #: lib/bemeda_personal_web/live/job_live/show.html.heex
 #, elixir-autogen, elixir-format
 msgid "Apply Now"
-msgstr "Apply Now"
+msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/index.ex
 #, elixir-autogen, elixir-format
 msgid "Error deleting job posting"
-msgstr "Error deleting job posting"
+msgstr ""
 
 #: lib/bemeda_personal_web/live/company_job_live/edit.ex
 #: lib/bemeda_personal_web/live/company_job_live/review.ex
@@ -1715,7 +1716,7 @@ msgstr ""
 msgid "Adaptive equipment training"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/job/input_components.ex
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #, elixir-autogen, elixir-format
 msgid "Add required skills"
 msgstr ""
@@ -2534,4 +2535,9 @@ msgstr ""
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Interview"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Continue"
 msgstr ""

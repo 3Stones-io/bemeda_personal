@@ -29,7 +29,7 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.ShowTest do
 
       assert html =~ company.name
       assert html =~ company.industry
-      assert html =~ company.location
+      assert html =~ to_string(company.location)
       assert html =~ company.size
       assert html =~ company.website_url
       assert html =~ job_posting.title

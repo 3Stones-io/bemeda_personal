@@ -11,80 +11,51 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
+  alias BemedaPersonalWeb.Endpoint
 
   @type conn() :: Plug.Conn.t()
+  @type opts() :: keyword()
   @type params() :: map()
   @type session() :: map()
   @type socket() :: Phoenix.LiveView.Socket.t()
-  @type user() :: Accounts.User.t()
+  @type user() :: User.t()
 
-  # Make the remember me cookie valid for 60 days.
-  # If you want bump or reduce this value, also change
-  # the token expiry itself in UserToken.
-  @max_age 60 * 60 * 24 * 60
+  # Make the remember me cookie valid for 14 days. This should match
+  # the session validity setting in UserToken.
+  @max_cookie_age_in_days 14
   @remember_me_cookie "_bemeda_personal_web_user_remember_me"
-  @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
+  @remember_me_options [
+    sign: true,
+    max_age: @max_cookie_age_in_days * 24 * 60 * 60,
+    same_site: "Lax"
+  ]
+
+  # How old the session token should be before a new one is issued. When a request is made
+  # with a session token older than this value, then a new session token will be created
+  # and the session and remember-me cookies (if set) will be updated with the new token.
+  # Lowering this value will result in more tokens being created by active users. Increasing
+  # it will result in less time before a session token expires for a user to get issued a new
+  # token. This can be set to a value greater than `@max_cookie_age_in_days` to disable
+  # the reissuing of tokens completely.
+  @session_reissue_age_in_days 7
 
   @doc """
   Logs the user in.
 
-  It renews the session ID and clears the whole session
-  to avoid fixation attacks. See the renew_session
-  function to customize this behaviour.
-
-  It also sets a `:live_socket_id` key in the session,
-  so LiveView sessions are identified and automatically
-  disconnected on log out. The line can be safely removed
-  if you are not using LiveView.
+  Redirects to the session's `:user_return_to` path
+  or falls back to the `signed_in_path/1`.
   """
   @spec log_in_user(conn(), user(), params()) :: conn()
   def log_in_user(conn, user, params \\ %{}) do
-    token = Accounts.generate_user_session_token(user)
     user_return_to = get_session(conn, :user_return_to)
 
-    # For employers without a company, redirect to company setup
-    redirect_path = user_return_to || signed_in_path_for_user(user)
+    redirect_path = user_return_to || signed_in_path(conn)
 
     conn
-    |> renew_session()
-    |> put_token_in_session(token)
-    |> maybe_write_remember_me_cookie(token, params)
+    |> create_or_extend_session(user, params)
     |> redirect(to: redirect_path)
-  end
-
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
-    put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
-  end
-
-  defp maybe_write_remember_me_cookie(conn, _token, _params) do
-    conn
-  end
-
-  # This function renews the session ID and erases the whole
-  # session to avoid fixation attacks. If there is any data
-  # in the session you may want to preserve after log in/log out,
-  # you must explicitly fetch the session data before clearing
-  # and then immediately set it after clearing, for example:
-  #
-  #     defp renew_session(conn) do
-  #       preferred_locale = get_session(conn, :preferred_locale)
-  #
-  #       conn
-  #       |> configure_session(renew: true)
-  #       |> clear_session()
-  #       |> put_session(:preferred_locale, preferred_locale)
-  #     end
-  #
-  defp renew_session(conn) do
-    delete_csrf_token()
-
-    current_locale = get_session(conn, :locale)
-
-    conn
-    |> configure_session(renew: true)
-    |> clear_session()
-    |> put_session(:locale, current_locale)
   end
 
   @doc """
@@ -98,34 +69,31 @@ defmodule BemedaPersonalWeb.UserAuth do
     user_token && Accounts.delete_user_session_token(user_token)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
-      BemedaPersonalWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
+      Endpoint.broadcast(live_socket_id, "disconnect", %{})
     end
 
     conn
-    |> renew_session()
+    |> renew_session(nil)
     |> delete_resp_cookie(@remember_me_cookie)
     |> redirect(to: ~p"/")
   end
 
   @doc """
-  Authenticates the user by looking into the session
-  and remember me token.
-  """
-  @spec fetch_current_user(conn(), params()) :: conn()
-  def fetch_current_user(conn, _opts) do
-    {user_token, conn} = ensure_user_token(conn)
-    user = user_token && Accounts.get_user_by_session_token(user_token)
-    assign(conn, :current_user, user)
-  end
+  Authenticates the user by looking into the session and remember me token.
 
-  @doc """
-  Assigns the current scope based on the authenticated user.
+  Will reissue the session token if it is older than the configured age.
   """
-  @spec fetch_current_scope(conn(), params()) :: conn()
-  def fetch_current_scope(conn, _opts) do
-    user = conn.assigns[:current_user]
-    scope = Scope.for_user(user)
-    assign(conn, :current_scope, scope)
+  @spec fetch_current_scope_for_user(conn(), opts()) :: conn()
+  def fetch_current_scope_for_user(conn, _opts) do
+    with {token, conn} <- ensure_user_token(conn),
+         {user, token_inserted_at} <- Accounts.get_user_by_session_token(token) do
+      conn
+      |> assign(:current_scope, Scope.for_user(user))
+      |> assign(:current_user, user)
+      |> maybe_reissue_user_session_token(user, token_inserted_at)
+    else
+      nil -> assign(conn, :current_scope, Scope.for_user(nil))
+    end
   end
 
   defp ensure_user_token(conn) do
@@ -135,23 +103,133 @@ defmodule BemedaPersonalWeb.UserAuth do
       conn = fetch_cookies(conn, signed: [@remember_me_cookie])
 
       if token = conn.cookies[@remember_me_cookie] do
-        {token, put_token_in_session(conn, token)}
+        {token,
+         conn
+         |> put_token_in_session(token)
+         |> put_session(:user_remember_me, true)}
       else
-        {nil, conn}
+        nil
       end
     end
   end
+
+  # Reissue the session token if it is older than the configured reissue age.
+  defp maybe_reissue_user_session_token(conn, user, token_inserted_at) do
+    token_age =
+      :second
+      |> DateTime.utc_now()
+      |> DateTime.diff(token_inserted_at, :day)
+
+    if token_age >= @session_reissue_age_in_days do
+      create_or_extend_session(conn, user, %{})
+    else
+      conn
+    end
+  end
+
+  # This function is the one responsible for creating session tokens
+  # and storing them safely in the session and cookies. It may be called
+  # either when logging in, during sudo mode, or to renew a session which
+  # will soon expire.
+  #
+  # When the session is created, rather than extended, the renew_session
+  # function will clear the session to avoid fixation attacks. See the
+  # renew_session function to customize this behaviour.
+  defp create_or_extend_session(conn, user, params) do
+    token = Accounts.generate_user_session_token(user)
+    remember_me = get_session(conn, :user_remember_me)
+
+    conn
+    |> renew_session(user)
+    |> put_token_in_session(token)
+    |> maybe_write_remember_me_cookie(token, params, remember_me)
+  end
+
+  # Do not renew session if the user is already logged in
+  # to prevent CSRF errors or data being lost in tabs that are still open
+  defp renew_session(conn, %Accounts.User{} = user) do
+    current_scope = conn.assigns[:current_scope]
+
+    if current_scope && current_scope.user && current_scope.user.id == user.id do
+      conn
+    else
+      do_renew_session(conn)
+    end
+  end
+
+  defp renew_session(conn, _user) do
+    do_renew_session(conn)
+  end
+
+  # This function renews the session ID and erases the whole
+  # session to avoid fixation attacks. If there is any data
+  # in the session you may want to preserve after log in/log out,
+  # you must explicitly fetch the session data before clearing
+  # and then immediately set it after clearing, for example:
+  #
+  #     defp do_renew_session(conn) do
+  #       delete_csrf_token()
+  #       preferred_locale = get_session(conn, :preferred_locale)
+  #
+  #       conn
+  #       |> configure_session(renew: true)
+  #       |> clear_session()
+  #       |> put_session(:preferred_locale, preferred_locale)
+  #     end
+  #
+  defp do_renew_session(conn) do
+    delete_csrf_token()
+
+    current_locale = get_session(conn, :locale)
+
+    conn
+    |> configure_session(renew: true)
+    |> clear_session()
+    |> put_session(:locale, current_locale)
+  end
+
+  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}, _opts),
+    do: write_remember_me_cookie(conn, token)
+
+  defp maybe_write_remember_me_cookie(conn, token, _params, true),
+    do: write_remember_me_cookie(conn, token)
+
+  defp maybe_write_remember_me_cookie(conn, _token, _params, _opts), do: conn
+
+  defp write_remember_me_cookie(conn, token) do
+    conn
+    |> put_session(:user_remember_me, true)
+    |> put_resp_cookie(@remember_me_cookie, token, @remember_me_options)
+  end
+
+  defp put_token_in_session(conn, token) do
+    conn
+    |> put_session(:user_token, token)
+    |> put_session(:live_socket_id, user_session_topic(token))
+  end
+
+  @doc """
+  Disconnects existing sockets for the given tokens.
+  """
+  @spec disconnect_sessions(list(map())) :: any()
+  def disconnect_sessions(tokens) do
+    Enum.each(tokens, fn %{token: token} ->
+      Endpoint.broadcast(user_session_topic(token), "disconnect", %{})
+    end)
+  end
+
+  defp user_session_topic(token), do: "users_sessions:#{Base.url_encode64(token)}"
 
   @doc """
   Handles mounting and authenticating the current_user in LiveViews.
 
   ## `on_mount` arguments
 
-    * `:mount_current_user` - Assigns current_user
+    * `:assign_current_scope` - Assigns current_scope
       to socket assigns based on user_token, or nil if
       there's no user_token or no matching user.
 
-    * `:ensure_authenticated` - Authenticates the user from the session,
+    * `:require_authenticated` - Authenticates the user from the session,
       and assigns the current_user to socket assigns based
       on user_token.
       Redirects to login page if there's no logged user.
@@ -171,6 +249,8 @@ defmodule BemedaPersonalWeb.UserAuth do
     * `:require_no_existing_company` - Checks if the current user already has a company.
       Redirects to companies page if they do, preventing creation of multiple companies.
 
+    * `:require_sudo_mode` - Checks if the current user is in sudo mode.
+      Redirects to login page if not.
   ## Examples
 
   Use the `on_mount` lifecycle macro in LiveViews to mount or authenticate
@@ -179,29 +259,25 @@ defmodule BemedaPersonalWeb.UserAuth do
       defmodule BemedaPersonalWeb.PageLive do
         use BemedaPersonalWeb, :live_view
 
-        on_mount {BemedaPersonalWeb.UserAuth, :mount_current_user}
+        on_mount {BemedaPersonalWeb.UserAuth, :assign_current_scope}
         ...
       end
 
   Or use the `live_session` of your router to invoke the on_mount callback:
 
-      live_session :authenticated, on_mount: [{BemedaPersonalWeb.UserAuth, :ensure_authenticated}] do
+      live_session :authenticated, on_mount: [{BemedaPersonalWeb.UserAuth, :require_authenticated}] do
         live "/profile", ProfileLive, :index
       end
   """
   @spec on_mount(atom(), params(), session(), socket()) :: {:cont, socket()} | {:halt, socket()}
-  def on_mount(:mount_current_user, _params, session, socket) do
-    {:cont, mount_current_user(socket, session)}
-  end
-
-  def on_mount(:mount_current_scope, _params, session, socket) do
+  def on_mount(:assign_current_scope, _params, session, socket) do
     {:cont, mount_current_scope(socket, session)}
   end
 
-  def on_mount(:ensure_authenticated, _params, session, socket) do
-    socket = mount_current_user(socket, session)
+  def on_mount(:require_authenticated, _params, session, socket) do
+    socket = mount_current_scope(socket, session)
 
-    if socket.assigns.current_user do
+    if socket.assigns.current_scope && socket.assigns.current_scope.user do
       {:cont, socket}
     else
       socket =
@@ -217,9 +293,9 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
-    socket = mount_current_user(socket, session)
+    socket = mount_current_scope(socket, session)
 
-    if socket.assigns.current_user do
+    if socket.assigns.current_scope && socket.assigns.current_scope.user do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
     else
       {:cont, socket}
@@ -228,10 +304,10 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   def on_mount(:require_admin_user, params, _session, socket) do
     company_id = params["company_id"]
-    scope = build_user_scope(socket.assigns.current_user)
-    company = Companies.get_company!(scope, company_id)
+    company = Companies.get_company!(company_id)
 
-    if company.admin_user_id == socket.assigns.current_user.id do
+    if socket.assigns.current_scope && socket.assigns.current_scope.user &&
+         company.admin_user_id == socket.assigns.current_scope.user.id do
       {:cont, Phoenix.Component.assign(socket, :company, company)}
     else
       socket =
@@ -247,7 +323,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   def on_mount(:require_no_existing_company, _params, _session, socket) do
-    user = socket.assigns.current_user
+    user = socket.assigns.current_scope.user
     company = Companies.get_company_by_user(user)
 
     if company do
@@ -261,21 +337,13 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   def on_mount(:require_user_company, _params, _session, socket) do
-    user = socket.assigns.current_user
+    user = socket.assigns.current_scope.user
     company = Companies.get_company_by_user(user)
 
     if company do
       {:cont, Phoenix.Component.assign(socket, :company, company)}
     else
-      socket =
-        socket
-        |> Phoenix.LiveView.put_flash(
-          :error,
-          dgettext("companies", "You need to create a company first.")
-        )
-        |> Phoenix.LiveView.redirect(to: ~p"/company/new")
-
-      {:halt, socket}
+      {:halt, Phoenix.LiveView.redirect(socket, to: ~p"/company/new")}
     end
   end
 
@@ -340,55 +408,83 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
-  def on_mount(:require_sudo, _params, _session, socket) do
-    if socket.assigns[:current_user] && Accounts.has_recent_sudo?(socket.assigns.current_user) do
+  def on_mount(:require_user_profile, _params, _session, socket) do
+    profile_complete?(socket.assigns.current_user)
+
+    if profile_complete?(socket.assigns.current_user) do
       {:cont, socket}
     else
-      {:halt,
-       socket
-       |> Phoenix.LiveView.put_flash(:error, "This action requires additional verification")
-       |> Phoenix.LiveView.redirect(to: ~p"/sudo")}
+      {:halt, Phoenix.LiveView.redirect(socket, to: ~p"/users/profile")}
     end
   end
 
-  @spec assign_current_user(conn(), any()) :: map()
-  def assign_current_user(conn, _opts) do
-    user_token = get_session(conn, "user_token")
+  def on_mount(:require_sudo_mode, _params, session, socket) do
+    socket = mount_current_scope(socket, session)
 
-    if user_token do
-      user = Accounts.get_user_by_session_token(user_token)
-      assign(conn, :current_user, user)
+    if Accounts.sudo_mode?(socket.assigns.current_scope.user, -10) do
+      {:cont, socket}
     else
-      conn
-    end
-  end
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You must re-authenticate to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
 
-  defp mount_current_user(socket, session) do
-    Phoenix.Component.assign_new(socket, :current_user, fn ->
-      if user_token = session["user_token"] do
-        Accounts.get_user_by_session_token(user_token)
-      end
-    end)
+      {:halt, socket}
+    end
   end
 
   defp mount_current_scope(socket, session) do
-    Phoenix.Component.assign_new(socket, :current_scope, fn ->
-      user =
-        if user_token = session["user_token"] do
-          Accounts.get_user_by_session_token(user_token)
+    user =
+      if user_token = session["user_token"] do
+        case Accounts.get_user_by_session_token(user_token) do
+          {user, _timestamp} -> user
+          nil -> nil
         end
+      else
+        nil
+      end
 
-      build_user_scope(user)
-    end)
+    scope = Scope.for_user(user)
+
+    socket
+    |> Phoenix.Component.assign_new(:current_scope, fn -> scope end)
+    |> Phoenix.Component.assign_new(:current_user, fn -> user end)
   end
 
-  @spec require_admin_user(conn(), any()) :: any()
+  @spec assign_current_scope(conn(), any()) :: map()
+  def assign_current_scope(conn, _opts) do
+    user_token = get_session(conn, "user_token")
+
+    {user, _tokens} =
+      if user_token do
+        Accounts.get_user_by_session_token(user_token)
+      end || {nil, nil}
+
+    scope = build_user_scope(user)
+
+    conn
+    |> assign(:current_user, user)
+    |> assign(:current_scope, scope)
+  end
+
+  @spec require_user_profile(Plug.Conn.t(), keyword()) :: Plug.Conn.t()
+  def require_user_profile(conn, _opts) do
+    if profile_complete?(conn.assigns.current_user) do
+      conn
+    else
+      conn
+      |> redirect(to: ~p"/users/profile")
+      |> halt()
+    end
+  end
+
+  @spec require_admin_user(conn(), opts()) :: conn()
   def require_admin_user(conn, _opts) do
     company_id = conn.params["company_id"]
     scope = build_user_scope(conn.assigns[:current_user])
     company = Companies.get_company!(scope, company_id)
 
-    if company.admin_user_id == conn.assigns[:current_user].id do
+    if company.admin_user_id == get_user(conn).id do
       conn
     else
       conn
@@ -401,9 +497,9 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
-  @spec require_no_existing_company(conn(), params()) :: conn()
+  @spec require_no_existing_company(conn(), opts()) :: conn()
   def require_no_existing_company(conn, _opts) do
-    user = conn.assigns[:current_user]
+    user = get_user(conn)
     company = Companies.get_company_by_user(user)
 
     if company do
@@ -420,9 +516,9 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   Redirects employers and unauthenticated users to the home page with an error message.
   """
-  @spec require_job_seeker_user_type(conn(), params()) :: conn()
+  @spec require_job_seeker_user_type(conn(), opts()) :: conn()
   def require_job_seeker_user_type(conn, _opts) do
-    case conn.assigns[:current_user] do
+    case get_user(conn) do
       %{user_type: :job_seeker} ->
         conn
 
@@ -449,9 +545,9 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
-  @spec require_employer_user_type(conn(), params()) :: conn()
+  @spec require_employer_user_type(conn(), opts()) :: conn()
   def require_employer_user_type(conn, _opts) do
-    case conn.assigns[:current_user] do
+    case get_user(conn) do
       %{user_type: :employer} ->
         conn
 
@@ -463,9 +559,9 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
-  @spec require_user_company(conn(), params()) :: conn()
+  @spec require_user_company(conn(), opts()) :: conn()
   def require_user_company(conn, _opts) do
-    user = conn.assigns[:current_user]
+    user = get_user(conn)
     company = Companies.get_company_by_user(user)
 
     if company do
@@ -481,9 +577,10 @@ defmodule BemedaPersonalWeb.UserAuth do
   @doc """
   Used for routes that require the user to not be authenticated.
   """
-  @spec redirect_if_user_is_authenticated(conn(), params()) :: conn()
+  # Check sudo mode
+  @spec redirect_if_user_is_authenticated(conn(), opts()) :: conn()
   def redirect_if_user_is_authenticated(conn, _opts) do
-    if conn.assigns[:current_user] do
+    if get_user(conn) do
       conn
       |> redirect(to: signed_in_path(conn))
       |> halt()
@@ -498,9 +595,9 @@ defmodule BemedaPersonalWeb.UserAuth do
   If you want to enforce the user email is confirmed before
   they use the application at all, here would be a good place.
   """
-  @spec require_authenticated_user(conn(), params()) :: conn()
+  @spec require_authenticated_user(conn(), opts()) :: conn()
   def require_authenticated_user(conn, _opts) do
-    if conn.assigns[:current_user] do
+    if get_user(conn) do
       conn
     else
       conn
@@ -511,10 +608,11 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
-  defp put_token_in_session(conn, token) do
-    conn
-    |> put_session(:user_token, token)
-    |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
+  @spec get_user(conn()) :: User.t() | nil
+  def get_user(conn) do
+    if conn.assigns[:current_scope] && conn.assigns[:current_scope].user do
+      conn.assigns[:current_scope].user
+    end
   end
 
   defp maybe_store_return_to(%{method: "GET"} = conn) do
@@ -525,61 +623,26 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   defp signed_in_path(_conn), do: ~p"/"
 
-  defp signed_in_path_for_user(user) do
-    # Handle both string and atom user_type
-    is_employer = user.user_type == :employer or user.user_type == "employer"
-
-    if is_employer do
-      # Check if employer has a company
-      case Companies.get_company_by_user(user) do
-        # No company, redirect to company setup
-        nil -> ~p"/company"
-        # Has company, redirect to home
-        _company -> ~p"/"
-      end
-    else
-      # Job seeker or other user types
-      ~p"/"
-    end
-  end
-
-  @doc """
-  Logs in user from LiveView after magic link verification
-  """
-  @spec log_in_user_from_liveview(socket(), user()) :: socket()
-  def log_in_user_from_liveview(socket, user) do
-    socket
-    |> Phoenix.Component.assign(:current_user, user)
-    |> Phoenix.Component.assign(:current_scope, Scope.for_user(user))
-  end
-
-  @doc """
-  Plug to require sudo mode for sensitive operations
-  """
-  @spec require_sudo_mode(conn(), any()) :: conn()
-  def require_sudo_mode(conn, _opts) do
-    user = conn.assigns[:current_user]
-
-    if user && Accounts.has_recent_sudo?(user) do
-      conn
-    else
-      conn
-      |> put_flash(:error, "This action requires additional verification")
-      |> redirect(to: ~p"/sudo?return_to=#{conn.request_path}")
-      |> halt()
-    end
-  end
-
   defp build_user_scope(user) do
     scope = Scope.for_user(user)
 
     if user && user.user_type == :employer do
-      case BemedaPersonal.Companies.get_company_by_user(user) do
+      case Companies.get_company_by_user(user) do
         nil -> scope
         company -> Scope.put_company(scope, company)
       end
     else
       scope
+    end
+  end
+
+  defp profile_complete?(user) do
+    if user && user.user_type == :job_seeker do
+      user
+      |> Accounts.change_user_profile(%{})
+      |> Map.get(:valid?)
+    else
+      true
     end
   end
 end

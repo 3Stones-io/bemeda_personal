@@ -160,33 +160,8 @@ msgstr "Actualisation automatique toutes les 60 secondes"
 
 #: lib/bemeda_personal_web/live/admin_live/dashboard.ex
 #, elixir-autogen, elixir-format
-msgid "Benutzer gesamt"
-msgstr "Total des utilisateurs"
-
-#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
-#, elixir-autogen, elixir-format
 msgid "Bewerbungen"
 msgstr "Candidatures"
-
-#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
-#, elixir-autogen, elixir-format
-msgid "Bewerbungsstatus-Übersicht"
-msgstr "Aperçu du statut des candidatures"
-
-#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
-#, elixir-autogen, elixir-format
-msgid "Jobsuchende"
-msgstr "Demandeurs d'emploi"
-
-#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
-#, elixir-autogen, elixir-format
-msgid "Jobsuchender"
-msgstr "Demandeur d'emploi"
-
-#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
-#, elixir-autogen, elixir-format
-msgid "Letzte Aktualisierung:"
-msgstr "Dernière mise à jour:"
 
 #: lib/bemeda_personal_web/live/admin_live/dashboard.ex
 #, elixir-autogen, elixir-format
@@ -202,11 +177,6 @@ msgstr "Nouvelles candidatures"
 #, elixir-autogen, elixir-format
 msgid "Neue Stellenanzeigen"
 msgstr "Nouvelles offres d'emploi"
-
-#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
-#, elixir-autogen, elixir-format
-msgid "Registrierungen"
-msgstr "Inscriptions"
 
 #: lib/bemeda_personal_web/live/admin_live/dashboard.ex
 #, elixir-autogen, elixir-format
@@ -260,3 +230,180 @@ msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "minute"
 msgstr[1] "minutes"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Abbrechen"
+msgstr "Annuler"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Adresse"
+msgstr "Adresse"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Akzeptiert"
+msgstr "Accepté"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Arbeitssuchende"
+msgstr "Chercheurs d'emploi"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Ausstehend"
+msgstr "En attente"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Benutzer einladen"
+msgstr "Inviter un utilisateur"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Benutzer erfolgreich eingeladen. Anmeldeanweisungen wurden an %{email} gesendet."
+msgstr "Utilisateur invité avec succès. Les instructions de connexion ont été envoyées à %{email}."
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Benutzerinformationen"
+msgstr "Informations utilisateur"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Beschreibung"
+msgstr "Description"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Bewerbungsstatus Übersicht"
+msgstr "Aperçu du statut des candidatures"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Branche"
+msgstr "Secteur"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Der Benutzer wird als Arbeitgeber mit seinem Unternehmen registriert und erhält eine E-Mail mit Anmeldeanweisungen. Es wird kein Passwort festgelegt - der Benutzer meldet sich über einen Magic Link an."
+msgstr "L'utilisateur sera enregistré en tant qu'employeur avec son entreprise et recevra un e-mail avec des instructions de connexion. Aucun mot de passe n'est défini - l'utilisateur se connecte via un lien magique."
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "E-Mail"
+msgstr "E-mail"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Eingeladen am"
+msgstr "Invité le"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Eingeladene Benutzer"
+msgstr "Utilisateurs invités"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Einladungen"
+msgstr "Invitations"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Einladungshinweis"
+msgstr "Note d'invitation"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Gesamtzahl Benutzer"
+msgstr "Nombre total d'utilisateurs"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Keine Einladungen verfügbar"
+msgstr "Aucune invitation disponible"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Nachname"
+msgstr "Nom de famille"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "Nom"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Neues Arbeitgeberkonto mit Unternehmen erstellen und Anmeldeanweisungen senden"
+msgstr "Créer un nouveau compte employeur avec une entreprise et envoyer les instructions de connexion"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Postleitzahl"
+msgstr "Code postal"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Sprache"
+msgstr "Langue"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Stadt"
+msgstr "Ville"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Standort"
+msgstr "Emplacement"
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Status"
+msgstr "Statut"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Telefonnummer"
+msgstr "Numéro de téléphone"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Unternehmensgröße"
+msgstr "Entreprises"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Unternehmensinformationen"
+msgstr "Entreprises"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Unternehmensname"
+msgstr "Entreprises"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Vorname"
+msgstr "Prénom"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Website-URL"
+msgstr "URL du site web"
+
+#: lib/bemeda_personal_web/live/admin_live/invitation_new.ex
+#, elixir-autogen, elixir-format
+msgid "Wird erstellt..."
+msgstr "Création en cours..."
+
+#: lib/bemeda_personal_web/live/admin_live/dashboard.ex
+#, elixir-autogen, elixir-format
+msgid "Zuletzt aktualisiert"
+msgstr "Dernière mise à jour"

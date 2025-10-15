@@ -53,6 +53,29 @@ defmodule BemedaPersonal.MediaTest do
     end
   end
 
+  describe "get_media_asset_by_message_id/1" do
+    setup [:create_test_data]
+
+    test "returns the media asset for a given message_id", %{message: message} do
+      media_asset = media_asset_fixture(message, %{file_name: "message_attachment.pdf"})
+
+      fetched_asset = Media.get_media_asset_by_message_id(message.id)
+
+      assert fetched_asset.id == media_asset.id
+      assert fetched_asset.message_id == message.id
+      assert fetched_asset.file_name == "message_attachment.pdf"
+    end
+
+    test "returns nil when no media asset exists for the message_id" do
+      non_existent_message_id = Ecto.UUID.generate()
+      refute Media.get_media_asset_by_message_id(non_existent_message_id)
+    end
+
+    test "returns nil when message_id is nil" do
+      refute Media.get_media_asset_by_message_id(nil)
+    end
+  end
+
   describe "create_media_asset/2" do
     setup [:create_test_data]
 
@@ -102,6 +125,22 @@ defmodule BemedaPersonal.MediaTest do
       assert media_asset.status == :uploaded
       assert media_asset.type == "image/png"
       assert media_asset.message_id == message.id
+    end
+
+    test "with valid data creates a media asset for user" do
+      user = BemedaPersonal.AccountsFixtures.user_fixture()
+
+      valid_attrs = %{
+        file_name: "profile_picture.jpg",
+        status: :uploaded,
+        type: "image/jpeg"
+      }
+
+      assert {:ok, %MediaAsset{} = media_asset} = Media.create_media_asset(user, valid_attrs)
+      assert media_asset.file_name == "profile_picture.jpg"
+      assert media_asset.status == :uploaded
+      assert media_asset.type == "image/jpeg"
+      assert media_asset.user_id == user.id
     end
   end
 

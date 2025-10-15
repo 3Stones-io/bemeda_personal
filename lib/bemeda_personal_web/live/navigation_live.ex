@@ -57,7 +57,10 @@ defmodule BemedaPersonalWeb.NavigationLive do
   end
 
   defp safe_get_user_by_token(token) do
-    {:ok, Accounts.get_user_by_session_token(token)}
+    case Accounts.get_user_by_session_token(token) do
+      {user, _timestamp} -> {:ok, user}
+      nil -> {:ok, nil}
+    end
   rescue
     DBConnection.OwnershipError ->
       {:error, :no_database_access}

@@ -35,6 +35,15 @@ defmodule BemedaPersonal.TestUtils do
 
   def stringify_keys(value), do: value
 
+  @spec drain_existing_emails() :: :ok
+  def drain_existing_emails do
+    receive do
+      {:email, _email} -> drain_existing_emails()
+    after
+      10 -> :ok
+    end
+  end
+
   @spec create_complete_test_setup() :: map()
   def create_complete_test_setup do
     employer = employer_user_fixture()

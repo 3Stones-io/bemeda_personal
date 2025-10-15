@@ -13,7 +13,7 @@ unless Mix.env() == :test do
   alias BemedaPersonal.Repo
 
   get_or_create_user = fn email, attrs ->
-    case Accounts.get_user_by_email(nil, email) do
+    case Accounts.get_user_by_email(email) do
       nil ->
         case Accounts.register_user(attrs) do
           {:ok, user} ->
@@ -67,7 +67,7 @@ unless Mix.env() == :test do
       gender: :male,
       last_name: "Doe",
       password: "password123456",
-      phone: "+1-555-0123",
+      phone: "+15550123",
       street: "123 Tech Street, Apt 4B",
       user_type: :employer,
       zip_code: "94105"
@@ -83,7 +83,7 @@ unless Mix.env() == :test do
       gender: :female,
       last_name: "Smith",
       password: "password123456",
-      phone: "+1-555-0456",
+      phone: "+15550456",
       street: "456 Health Avenue",
       user_type: :employer,
       zip_code: "02101"
@@ -91,20 +91,21 @@ unless Mix.env() == :test do
 
   job_seeker =
     get_or_create_user.("alex.johnson@example.com", %{
-      city: "Seattle",
-      country: "United States",
+      city: "Zurich",
+      country: "Switzerland",
       date_of_birth: ~D[1992-11-08],
       department: :"Acute Care",
       email: "alex.johnson@example.com",
       first_name: "Alex",
       gender: :male,
       last_name: "Johnson",
+      location: :Zurich,
       medical_role: :"Registered Nurse (AKP/DNII/HF/FH)",
       password: "password123456",
-      phone: "+1-555-0789",
+      phone: "+41791234567",
       street: "789 Job Seeker Lane",
       user_type: :job_seeker,
-      zip_code: "98101"
+      zip_code: "8001"
     })
 
   company1 =
@@ -114,10 +115,10 @@ unless Mix.env() == :test do
       industry: "Technology",
       size: "51-200",
       website_url: "https://techinnovate.example.com",
-      location: "San Francisco, CA",
+      location: :Zurich,
       logo_url: "https://via.placeholder.com/150?text=TechInnovate",
-      phone_number: "+1 5550100",
-      organization_type: "other",
+      phone_number: "+41443334455",
+      organization_type: :Other,
       hospital_affiliation: nil
     })
 
@@ -128,11 +129,11 @@ unless Mix.env() == :test do
       industry: "Healthcare",
       size: "201-500",
       website_url: "https://healthplus.example.com",
-      location: "Boston, MA",
+      location: :Bern,
       logo_url: "https://via.placeholder.com/150?text=HealthPlus",
-      phone_number: "+1 5550200",
-      organization_type: "hospital",
-      hospital_affiliation: "Boston General Hospital"
+      phone_number: "+41313334455",
+      organization_type: :Hospital,
+      hospital_affiliation: "Bern General Hospital"
     })
 
   tech_jobs = [

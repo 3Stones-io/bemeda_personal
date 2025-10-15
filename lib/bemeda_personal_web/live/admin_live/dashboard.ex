@@ -56,11 +56,34 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
             </div>
             <div class="flex items-center gap-4">
               <div class="text-sm text-gray-500">
-                <p>{gettext("Letzte Aktualisierung:") <> " "} {format_datetime(@current_time)}</p>
+                <p>{gettext("Zuletzt aktualisiert")}: {format_datetime(@current_time)}</p>
                 <p class="text-xs">{gettext("Automatische Aktualisierung alle 60 Sekunden")}</p>
               </div>
               <LanguageSwitcher.language_switcher id="admin-language-switcher" locale={@locale} />
             </div>
+          </div>
+
+          <div class="mt-6">
+            <.link
+              navigate={~p"/admin/invitations/new"}
+              class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg shadow-sm transition-colors duration-200"
+            >
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                >
+                </path>
+              </svg>
+              {gettext("Benutzer einladen")}
+            </.link>
           </div>
         </div>
         
@@ -74,14 +97,14 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-600">{gettext("Benutzer gesamt")}</p>
+                <p class="text-sm font-medium text-gray-600">{gettext("Gesamtzahl Benutzer")}</p>
                 <p class="text-3xl font-bold text-gray-900">{@total_users}</p>
                 <div class="mt-2 space-y-1">
                   <p class="text-xs text-gray-500">
-                    {gettext("Arbeitgeber") <> ": "} {@total_employers}
+                    {gettext("Arbeitgeber")}: {@total_employers}
                   </p>
                   <p class="text-xs text-gray-500">
-                    {gettext("Jobsuchende") <> ": "} {@total_job_seekers}
+                    {gettext("Arbeitssuchende")}: {@total_job_seekers}
                   </p>
                 </div>
               </div>
@@ -162,18 +185,19 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
         
     <!-- Application Status Breakdown -->
         <div class="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 class="text-xl font-semibold mb-4">{gettext("Bewerbungsstatus-Übersicht")}</h2>
+          <h2 class="text-xl font-semibold mb-4">{gettext("Bewerbungsstatus Übersicht")}</h2>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <%= for {state, count} <- @application_state_counts do %>
-              <div class="text-center p-3 bg-gray-50 rounded">
-                <p class="text-2xl font-bold text-gray-900">{count}</p>
-                <p class="text-sm text-gray-600">{humanize_state(state)}</p>
-              </div>
-            <% end %>
+            <div
+              :for={{state, count} <- @application_state_counts}
+              class="text-center p-3 bg-gray-50 rounded"
+            >
+              <p class="text-2xl font-bold text-gray-900">{count}</p>
+              <p class="text-sm text-gray-600">{humanize_state(state)}</p>
+            </div>
           </div>
         </div>
         
-    <!-- Charts Container (placeholder for Step 3) -->
+    <!-- Charts Container -->
         <div id="charts-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-xl font-semibold mb-4">
@@ -185,8 +209,8 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
                 phx-hook="AdminChart"
                 phx-update="ignore"
                 data-chart-type="registrations"
-                data-label-registrations={gettext("Registrierungen")}
-                data-label-applications={gettext("Bewerbungen")}
+                data-label-registrations="Registrations"
+                data-label-applications="Applications"
               >
               </canvas>
             </div>
@@ -200,10 +224,72 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
                 phx-hook="AdminChart"
                 phx-update="ignore"
                 data-chart-type="applications"
-                data-label-registrations={gettext("Registrierungen")}
-                data-label-applications={gettext("Bewerbungen")}
+                data-label-registrations="Registrations"
+                data-label-applications="Applications"
               >
               </canvas>
+            </div>
+          </div>
+        </div>
+        
+    <!-- Invited Users Status -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold">{gettext("Eingeladene Benutzer")}</h2>
+            <span class="text-sm text-gray-500">
+              {length(@invited_users)} {gettext("Einladungen")}
+            </span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {gettext("Name")}
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {gettext("E-Mail")}
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {gettext("Status")}
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {gettext("Eingeladen am")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr :for={user <- @invited_users}>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">
+                      {user.first_name} {user.last_name}
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500">{user.email}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      :if={user.confirmed_at}
+                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                    >
+                      {gettext("Akzeptiert")}
+                    </span>
+                    <span
+                      :if={!user.confirmed_at}
+                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                    >
+                      {gettext("Ausstehend")}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {format_date(user.inserted_at)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div :if={Enum.empty?(@invited_users)} class="text-center py-8 text-gray-500">
+              {gettext("Keine Einladungen verfügbar")}
             </div>
           </div>
         </div>
@@ -214,23 +300,24 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
           <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold mb-4">{gettext("Neue Benutzer")}</h3>
             <div class="space-y-3">
-              <%= for user <- @recent_users do %>
-                <div class="flex items-center justify-between py-2 border-b last:border-0">
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">
-                      {user.email}
-                    </p>
-                    <p class="text-xs text-gray-500">
-                      {if user.user_type == :employer,
-                        do: gettext("Arbeitgeber"),
-                        else: gettext("Jobsuchender")}
-                    </p>
-                  </div>
-                  <div class="text-xs text-gray-400 ml-2">
-                    {format_date(user.inserted_at)}
-                  </div>
+              <div
+                :for={user <- @recent_users}
+                class="flex items-center justify-between py-2 border-b last:border-0"
+              >
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">
+                    {user.email}
+                  </p>
+                  <p class="text-xs text-gray-500">
+                    {if user.user_type == :employer,
+                      do: gettext("Arbeitgeber"),
+                      else: gettext("Arbeitssuchende")}
+                  </p>
                 </div>
-              <% end %>
+                <div class="text-xs text-gray-400 ml-2">
+                  {format_date(user.inserted_at)}
+                </div>
+              </div>
             </div>
           </div>
           
@@ -238,21 +325,22 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
           <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold mb-4">{gettext("Neue Stellenanzeigen")}</h3>
             <div class="space-y-3">
-              <%= for job <- @recent_job_postings do %>
-                <div class="flex items-center justify-between py-2 border-b last:border-0">
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">
-                      {job.title}
-                    </p>
-                    <p class="text-xs text-gray-500 truncate">
-                      {job.company.name}
-                    </p>
-                  </div>
-                  <div class="text-xs text-gray-400 ml-2">
-                    {format_date(job.inserted_at)}
-                  </div>
+              <div
+                :for={job <- @recent_job_postings}
+                class="flex items-center justify-between py-2 border-b last:border-0"
+              >
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">
+                    {job.title}
+                  </p>
+                  <p class="text-xs text-gray-500 truncate">
+                    {job.company.name}
+                  </p>
                 </div>
-              <% end %>
+                <div class="text-xs text-gray-400 ml-2">
+                  {format_date(job.inserted_at)}
+                </div>
+              </div>
             </div>
           </div>
           
@@ -260,21 +348,22 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
           <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold mb-4">{gettext("Neue Bewerbungen")}</h3>
             <div class="space-y-3">
-              <%= for application <- @recent_applications do %>
-                <div class="flex items-center justify-between py-2 border-b last:border-0">
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">
-                      {application.job_posting.title}
-                    </p>
-                    <p class="text-xs text-gray-500 truncate">
-                      {application.user.email}
-                    </p>
-                  </div>
-                  <div class="text-xs text-gray-400 ml-2">
-                    {format_date(application.inserted_at)}
-                  </div>
+              <div
+                :for={application <- @recent_applications}
+                class="flex items-center justify-between py-2 border-b last:border-0"
+              >
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">
+                    {application.job_posting.title}
+                  </p>
+                  <p class="text-xs text-gray-500 truncate">
+                    {application.user.email}
+                  </p>
                 </div>
-              <% end %>
+                <div class="text-xs text-gray-400 ml-2">
+                  {format_date(application.inserted_at)}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -289,6 +378,7 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
     company_stats = get_company_statistics()
     recent_activity = get_recent_activity()
     chart_data = get_chart_data()
+    invited_users = get_invited_users()
 
     socket
     |> assign(:total_users, user_stats.total_users)
@@ -302,6 +392,7 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
     |> assign(:recent_job_postings, recent_activity.job_postings)
     |> assign(:recent_applications, recent_activity.applications)
     |> assign(:chart_data, chart_data)
+    |> assign(:invited_users, invited_users)
   end
 
   @spec get_user_statistics() :: map()
@@ -413,6 +504,17 @@ defmodule BemedaPersonalWeb.AdminLive.Dashboard do
       registrations: Enum.map(dates, fn date -> Map.get(daily_registrations, date, 0) end),
       applications: Enum.map(dates, fn date -> Map.get(daily_applications, date, 0) end)
     }
+  end
+
+  defp get_invited_users do
+    query =
+      from(u in User,
+        where: u.registration_source == :invited,
+        order_by: [desc: u.inserted_at],
+        limit: 20
+      )
+
+    Repo.all(query)
   end
 
   @spec schedule_refresh() :: reference()

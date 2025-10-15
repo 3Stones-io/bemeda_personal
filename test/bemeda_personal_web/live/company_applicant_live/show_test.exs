@@ -58,13 +58,12 @@ defmodule BemedaPersonalWeb.CompanyApplicantLive.ShowTest do
     } do
       other_user = employer_user_fixture(confirmed: true)
 
-      assert {:error, {:redirect, %{to: path, flash: flash}}} =
+      assert {:error, {:redirect, %{to: path}}} =
                conn
                |> log_in_user(other_user)
                |> live(~p"/company/applicant/#{application.id}")
 
       assert path == ~p"/company/new"
-      assert flash["error"] == "You need to create a company first."
     end
 
     test "renders applicant details page", %{

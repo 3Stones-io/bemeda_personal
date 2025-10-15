@@ -13,6 +13,7 @@ defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
   alias BemedaPersonal.DigitalSignatures.SessionSupervisor
   alias BemedaPersonal.Documents.MockStorage
   alias BemedaPersonal.Repo
+  alias BemedaPersonal.TestUtils
   alias Ecto.Adapters.SQL.Sandbox
 
   @moduletag capture_log: true
@@ -143,6 +144,8 @@ defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
       # Send poll status message to trigger status check
       send(pid, :poll_status)
 
+      TestUtils.drain_existing_emails()
+
       # Should receive decline message
       assert_receive {:signing_declined, ^session_id}, 1_000
     end
@@ -182,6 +185,8 @@ defmodule BemedaPersonal.DigitalSignatures.SessionManagerTest do
       Mock.simulate_signing_completion(document_id)
 
       send(pid, :poll_status)
+
+      TestUtils.drain_existing_emails()
 
       assert_receive message, 2_000
 

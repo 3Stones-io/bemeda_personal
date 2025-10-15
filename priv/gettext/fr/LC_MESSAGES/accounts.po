@@ -1,0 +1,62 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr "Un lien pour confirmer votre changement d'e-mail a été envoyé à la nouvelle adresse."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr "Paramètres du compte"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "Changer l'e-mail"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "Confirmer le nouveau mot de passe"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "E-mail"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr "Le lien de changement d'e-mail est invalide ou a expiré."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr "E-mail modifié avec succès."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Manage your account email address and password settings"
+msgstr "Gérez votre adresse e-mail et vos paramètres de mot de passe"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Save Password"
+msgstr "Enregistrer le mot de passe"

@@ -1,6 +1,7 @@
 import 'dragster'
 import * as UpChunk from '@mux/upchunk'
-import generateVideoThumbnail from '../utils/thumbnail_generator'
+import generateVideoThumbnail from '../utils/video_thumbnail_generator'
+import generateImageThumbnail from '../utils/image_thumbnail_generator'
 
 export default FileUpload = {
   initializeTranslations() {
@@ -27,22 +28,27 @@ export default FileUpload = {
     const uploadProgressElement = document.querySelector(
       '.file-upload-progress'
     )
-    const imageContainer = uploadProgressElement?.querySelector(
-      '.image-container img'
-    )
     const progressCircle =
       uploadProgressElement?.querySelector('.progress-circle')
     const cancelButton =
       uploadProgressElement?.querySelector('.upload-cancel-btn')
 
     const videoPreview = document.querySelector('.video-preview')
+    const imageContainer = uploadProgressElement?.querySelector(
+      '.image-container img'
+    )
+    const imageUploadContainer = fileUploadInput.querySelector(
+      'button[type="button"]'
+    )
 
     let currentUpload
 
     const restoreDropzoneStyles = () => {
-      fileUploadInputsContainer.classList.remove('border-indigo-600')
-      fileUploadInputsContainer.classList.add('border-gray-300')
-      fileUploadInputsContainer.classList.remove('dropzone')
+      if (fileUploadInputsContainer) {
+        fileUploadInputsContainer.classList.remove('border-indigo-600')
+        fileUploadInputsContainer.classList.add('border-gray-300')
+        fileUploadInputsContainer.classList.remove('dropzone')
+      }
     }
 
     const cancelUpload = () => {
@@ -51,8 +57,17 @@ export default FileUpload = {
         currentUpload = null
       }
 
-      uploadProgressElement.classList.add('hidden')
-      fileUploadInputsContainer.classList.remove('hidden')
+      if (uploadProgressElement) {
+        uploadProgressElement.classList.add('hidden')
+      }
+
+      if (fileUploadInputsContainer) {
+        fileUploadInputsContainer.classList.remove('hidden')
+      }
+
+      if (imageUploadContainer) {
+        imageUploadContainer.classList.remove('hidden')
+      }
 
       hook.pushEventTo(`#${eventsTarget}`, 'upload_cancelled')
     }
@@ -74,6 +89,8 @@ export default FileUpload = {
       const generateThumbnail = async (file) => {
         if (file.type.startsWith('video/')) {
           return await generateVideoThumbnail(file, [300, 300])
+        } else if (file.type.startsWith('image/')) {
+          return await generateImageThumbnail(file, [300, 300])
         } else {
           return null
         }
@@ -95,15 +112,26 @@ export default FileUpload = {
           (response) => {
             if (response.error) {
               // Put error message with an exclamation icon
-              uploadProgressElement.classList.remove('hidden')
+              if (uploadProgressElement) {
+                uploadProgressElement.classList.remove('hidden')
+              }
 
               hook.pushEventTo(`#${eventsTarget}`, 'enable-submit')
 
               return
             }
 
-            uploadProgressElement.classList.remove('hidden')
-            fileUploadInputsContainer.classList.add('hidden')
+            if (uploadProgressElement) {
+              uploadProgressElement.classList.remove('hidden')
+            }
+
+            if (imageUploadContainer) {
+              imageUploadContainer.classList.add('hidden')
+            }
+
+            if (fileUploadInputsContainer) {
+              fileUploadInputsContainer.classList.add('hidden')
+            }
 
             if (payload.thumbnail && imageContainer) {
               imageContainer.src = payload.thumbnail
@@ -136,7 +164,9 @@ export default FileUpload = {
             })
 
             currentUpload.on('success', (_entry) => {
-              uploadProgressElement.classList.add('hidden')
+              if (uploadProgressElement) {
+                uploadProgressElement.classList.add('hidden')
+              }
 
               if (assetDescription) {
                 assetDescription.classList.remove('hidden')
@@ -183,42 +213,44 @@ export default FileUpload = {
       })
     }
 
-    new Dragster(fileUploadInput)
+    if (fileUploadInputsContainer) {
+      new Dragster(fileUploadInput)
 
-    fileUploadInputsContainer.addEventListener(
-      'dragster:enter',
-      () => {
-        fileUploadInputsContainer.classList.remove('border-gray-300')
-        fileUploadInputsContainer.classList.add('border-indigo-600')
-        fileUploadInputsContainer.classList.add('dropzone')
-      },
-      false
-    )
+      fileUploadInputsContainer.addEventListener(
+        'dragster:enter',
+        () => {
+          fileUploadInputsContainer.classList.remove('border-gray-300')
+          fileUploadInputsContainer.classList.add('border-indigo-600')
+          fileUploadInputsContainer.classList.add('dropzone')
+        },
+        false
+      )
 
-    fileUploadInputsContainer.addEventListener(
-      'dragster:leave',
-      () => {
+      fileUploadInputsContainer.addEventListener(
+        'dragster:leave',
+        () => {
+          restoreDropzoneStyles()
+        },
+        false
+      )
+
+      fileUploadInputsContainer.addEventListener('drop', (event) => {
+        event.preventDefault()
+
+        let newFiles = Array.from(event.dataTransfer.files || [])
+
+        uploadFile(newFiles[0])
+
         restoreDropzoneStyles()
-      },
-      false
-    )
+      })
 
-    fileUploadInputsContainer.addEventListener('drop', (event) => {
-      event.preventDefault()
-
-      let newFiles = Array.from(event.dataTransfer.files || [])
-
-      uploadFile(newFiles[0])
-
-      restoreDropzoneStyles()
-    })
-
-    fileUploadInputsContainer.addEventListener('dragenter', (e) =>
-      e.preventDefault()
-    )
-    fileUploadInputsContainer.addEventListener('dragover', (e) =>
-      e.preventDefault()
-    )
+      fileUploadInputsContainer.addEventListener('dragenter', (e) =>
+        e.preventDefault()
+      )
+      fileUploadInputsContainer.addEventListener('dragover', (e) =>
+        e.preventDefault()
+      )
+    }
 
     input.addEventListener('change', () => {
       let newFiles = Array.from(input.files || [])

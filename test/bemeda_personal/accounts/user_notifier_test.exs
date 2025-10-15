@@ -7,6 +7,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
   import BemedaPersonal.SchedulingFixtures
+  import BemedaPersonal.TestUtils, only: [drain_existing_emails: 0]
   import Swoosh.TestAssertions
 
   alias BemedaPersonal.Accounts.UserNotifier
@@ -38,22 +39,63 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     }
   end
 
-  describe "deliver_confirmation_instructions/2" do
-    test "delivers confirmation email with proper content", %{user: user} do
-      UserNotifier.deliver_confirmation_instructions(user, "CONFIRMATION_URL")
+  describe "deliver_login_instructions/2" do
+    test "delivers confirmation email for unconfirmed email registration users" do
+      unconfirmed_user =
+        unconfirmed_user_fixture(%{
+          first_name: "Jane",
+          last_name: "Smith",
+          email: "jane@example.com"
+        })
 
-      assert_email_sent(
-        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
-        subject: "BemedaPersonal | Welcome - Confirm Your Account",
-        to: [{"John Doe", "john@example.com"}],
-        html_body: ~r/<a href="CONFIRMATION_URL"/,
-        text_body: ~r/CONFIRMATION_URL/
-      )
+      {:ok, email} = UserNotifier.deliver_login_instructions(unconfirmed_user, "CONFIRMATION_URL")
+
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.subject == "BemedaPersonal | Welcome - Confirm Your Account"
+      assert email.to == [{"Jane Smith", "jane@example.com"}]
+      assert email.html_body =~ ~r/<a href="CONFIRMATION_URL"/
+      assert email.html_body =~ ~r/Thank you for joining/
+      assert email.text_body =~ ~r/Hello Jane Smith,/
+      assert email.text_body =~ ~r/confirm your account/
+      assert email.text_body =~ ~r/CONFIRMATION_URL/
+    end
+
+    test "delivers invitation email for unconfirmed invited users" do
+      invited_user =
+        unconfirmed_user_fixture(%{
+          first_name: "Bob",
+          last_name: "Johnson",
+          email: "bob@example.com",
+          registration_source: :invited
+        })
+
+      {:ok, email} = UserNotifier.deliver_login_instructions(invited_user, "INVITATION_URL")
+
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.subject == "BemedaPersonal | Invitation"
+      assert email.to == [{"Bob Johnson", "bob@example.com"}]
+      assert email.html_body =~ ~r/<a href="INVITATION_URL"/
+      assert email.html_body =~ ~r/Your organization account has been created successfully/
+      assert email.text_body =~ ~r/Welcome to BemedaPersonal!/
+      assert email.text_body =~ ~r/INVITATION_URL/
+    end
+
+    test "delivers magic link email for confirmed users", %{user: user} do
+      {:ok, email} = UserNotifier.deliver_login_instructions(user, "MAGIC_LINK_URL")
+
+      assert email.from == {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
+      assert email.subject == "BemedaPersonal | Magic Link"
+      assert email.to == [{"John Doe", "john@example.com"}]
+      assert email.html_body =~ ~r/<a href="MAGIC_LINK_URL"/
+      assert email.html_body =~ ~r/You can log into your account by visiting the URL below/
+      assert email.text_body =~ ~r/Hello John Doe,/
+      assert email.text_body =~ ~r/MAGIC_LINK_URL/
     end
   end
 
   describe "deliver_reset_password_instructions/2" do
     test "delivers password reset email with proper content", %{user: user} do
+      drain_existing_emails()
       UserNotifier.deliver_reset_password_instructions(user, "PASSWORD_RESET_URL")
 
       assert_email_sent(
@@ -68,6 +110,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
   describe "deliver_update_email_instructions/2" do
     test "delivers email update instructions with proper content", %{user: user} do
+      drain_existing_emails()
       UserNotifier.deliver_update_email_instructions(user, "EMAIL_UPDATE_URL")
 
       assert_email_sent(
@@ -89,6 +132,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       # Use admin_user as sender since they have access to the job application
       message = message_fixture(admin_user, job_application)
 
+      drain_existing_emails()
+
       UserNotifier.deliver_new_message(user, message, "MESSAGE_URL")
 
       assert_email_sent(
@@ -106,6 +151,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application received notification to applicant with proper content", %{
       job_application: job_application
     } do
+      drain_existing_emails()
+
       UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
@@ -124,6 +171,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application status update to applicant with proper content", %{
       job_application: job_application
     } do
+      drain_existing_emails()
+
       UserNotifier.deliver_user_job_application_status(job_application, "APPLICATION_URL")
 
       assert_email_sent(
@@ -142,6 +191,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application received notification to employer with proper content", %{
       job_application: job_application
     } do
+      drain_existing_emails()
+
       UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
@@ -160,6 +211,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "delivers job application status update to employer with proper content", %{
       job_application: job_application
     } do
+      drain_existing_emails()
+
       UserNotifier.deliver_employer_job_application_status(job_application, "APPLICATION_URL")
 
       assert_email_sent(
@@ -177,14 +230,15 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
   describe "email translations" do
     test "delivers confirmation email in German when user locale is :de" do
       german_user =
-        user_fixture(%{
+        unconfirmed_user_fixture(%{
           first_name: "Hans",
           last_name: "Mueller",
           email: "hans@example.com",
           locale: :de
         })
 
-      UserNotifier.deliver_confirmation_instructions(german_user, "CONFIRMATION_URL")
+      drain_existing_emails()
+      UserNotifier.deliver_login_instructions(german_user, "CONFIRMATION_URL")
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
@@ -197,14 +251,15 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
     test "delivers confirmation email in French when user locale is :fr" do
       french_user =
-        user_fixture(%{
+        unconfirmed_user_fixture(%{
           first_name: "Pierre",
           last_name: "Dupont",
           email: "pierre@example.com",
           locale: :fr
         })
 
-      UserNotifier.deliver_confirmation_instructions(french_user, "CONFIRMATION_URL")
+      drain_existing_emails()
+      UserNotifier.deliver_login_instructions(french_user, "CONFIRMATION_URL")
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
@@ -217,14 +272,15 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
     test "delivers confirmation email in Italian when user locale is :it" do
       italian_user =
-        user_fixture(%{
+        unconfirmed_user_fixture(%{
           first_name: "Marco",
           last_name: "Rossi",
           email: "marco@example.com",
           locale: :it
         })
 
-      UserNotifier.deliver_confirmation_instructions(italian_user, "CONFIRMATION_URL")
+      drain_existing_emails()
+      UserNotifier.deliver_login_instructions(italian_user, "CONFIRMATION_URL")
 
       assert_email_sent(
         from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
@@ -232,6 +288,48 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         to: [{"Marco Rossi", "marco@example.com"}],
         text_body: ~r/Ciao Marco Rossi,/,
         text_body: ~r/CONFIRMATION_URL/
+      )
+    end
+
+    test "delivers invitation email in German when invited user locale is :de" do
+      german_user =
+        unconfirmed_user_fixture(%{
+          first_name: "Klaus",
+          last_name: "Fischer",
+          email: "klaus@example.com",
+          locale: :de,
+          registration_source: :invited
+        })
+
+      drain_existing_emails()
+      UserNotifier.deliver_login_instructions(german_user, "INVITATION_URL")
+
+      assert_email_sent(
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
+        subject: "BemedaPersonal | Einladung",
+        to: [{"Klaus Fischer", "klaus@example.com"}],
+        text_body: ~r/INVITATION_URL/
+      )
+    end
+
+    test "delivers magic link email in French when confirmed user locale is :fr" do
+      french_user =
+        user_fixture(%{
+          first_name: "Marie",
+          last_name: "Dubois",
+          email: "marie@example.com",
+          locale: :fr
+        })
+
+      drain_existing_emails()
+      UserNotifier.deliver_login_instructions(french_user, "MAGIC_LINK_URL")
+
+      assert_email_sent(
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
+        subject: "BemedaPersonal | Lien magique",
+        to: [{"Marie Dubois", "marie@example.com"}],
+        text_body: ~r/Bonjour Marie Dubois,/,
+        text_body: ~r/MAGIC_LINK_URL/
       )
     end
 
@@ -244,6 +342,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           locale: :de
         })
 
+      drain_existing_emails()
       UserNotifier.deliver_reset_password_instructions(german_user, "RESET_URL")
 
       assert_email_sent(
@@ -280,6 +379,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
 
       message = message_fixture(admin_user, job_application)
 
+      drain_existing_emails()
       UserNotifier.deliver_new_message(french_user, message, "MESSAGE_URL")
 
       assert_email_sent(
@@ -314,6 +414,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
       job_application =
         job_application_fixture(italian_user, job_posting, %{state: "pending"})
 
+      drain_existing_emails()
       UserNotifier.deliver_user_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
@@ -351,6 +452,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         |> job_application_fixture(job_posting, %{state: "pending"})
         |> Repo.preload(job_posting: [company: :admin_user])
 
+      drain_existing_emails()
       UserNotifier.deliver_employer_job_application_received(job_application, "APPLICATION_URL")
 
       assert_email_sent(
@@ -388,6 +490,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
         |> job_application_fixture(job_posting, %{state: "offer_extended"})
         |> Repo.preload(job_posting: [company: :admin_user])
 
+      drain_existing_emails()
       UserNotifier.deliver_employer_job_application_status(job_application, "STATUS_URL")
 
       assert_email_sent(
@@ -404,6 +507,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "deliver_interview_scheduled/1 sends emails to both job seeker and employer" do
       %{interview: interview} = interview_fixture_with_scope()
 
+      drain_existing_emails()
       assert {:ok, :emails_sent} = UserNotifier.deliver_interview_scheduled(interview)
 
       # Check that emails are sent
@@ -414,6 +518,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "deliver_interview_reminder/1 sends reminder emails to both parties" do
       %{interview: interview} = interview_fixture_with_scope()
 
+      drain_existing_emails()
       assert {:ok, :reminders_sent} = UserNotifier.deliver_interview_reminder(interview)
 
       # Check reminder emails are sent
@@ -428,6 +533,8 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           cancellation_reason: "Schedule conflict"
         })
 
+      drain_existing_emails()
+
       assert {:ok, :cancellation_emails_sent} =
                UserNotifier.deliver_interview_cancelled(interview)
 
@@ -439,6 +546,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     test "deliver_interview_updated/1 notifies job seeker about changes" do
       %{interview: interview} = interview_fixture_with_scope()
 
+      drain_existing_emails()
       assert {:ok, :update_email_sent} = UserNotifier.deliver_interview_updated(interview)
 
       # Only one email is sent (to job seeker only)
@@ -452,6 +560,7 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
           notes: "Interview notes test"
         })
 
+      drain_existing_emails()
       assert {:ok, :emails_sent} = UserNotifier.deliver_interview_scheduled(interview)
 
       # Check meeting link in email

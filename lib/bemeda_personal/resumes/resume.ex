@@ -8,6 +8,7 @@ defmodule BemedaPersonal.Resumes.Resume do
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Resumes.Education
   alias BemedaPersonal.Resumes.WorkExperience
+  alias BemedaPersonal.Utils
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -31,7 +32,8 @@ defmodule BemedaPersonal.Resumes.Resume do
 
   @spec changeset(t(), attrs()) :: changeset()
   def changeset(resume, attrs \\ %{}) do
-    cast(resume, attrs, [
+    resume
+    |> cast(attrs, [
       :headline,
       :summary,
       :is_public,
@@ -39,5 +41,6 @@ defmodule BemedaPersonal.Resumes.Resume do
       :phone_number,
       :website_url
     ])
+    |> Utils.validate_e164_phone_number(:phone_number)
   end
 end

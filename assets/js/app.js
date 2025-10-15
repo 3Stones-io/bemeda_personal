@@ -33,6 +33,7 @@ import FileUpload from './hooks/file_upload'
 import FlashAutoDisappear from './hooks/flash_auto_disappear'
 import MultiSelect from './hooks/multi_select'
 import PdfPreview from './hooks/pdf_preview'
+import PhoneInput from './hooks/phone_input'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
 import SearchHook from './hooks/search_hook'
@@ -57,6 +58,7 @@ const Hooks = {
   FlashAutoDisappear,
   MultiSelect,
   PdfPreview,
+  PhoneInput,
   RatingsTooltip,
   RatingsTooltipContent,
   SearchHook,

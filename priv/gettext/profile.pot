@@ -1,0 +1,150 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new messages manually only if they're dynamic
+## messages that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+#
+msgid ""
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#, elixir-autogen, elixir-format
+msgid "Briefly describe yourself"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/employment_type_component.ex
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "Continue"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#, elixir-autogen, elixir-format
+msgid "Create profile"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/employment_type_component.ex
+#, elixir-autogen, elixir-format
+msgid "Flexible scheduling, temporary assignments, and fill in positions."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/employment_type_component.ex
+#, elixir-autogen, elixir-format
+msgid "Full-time employment"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "Go back"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#, elixir-autogen, elixir-format
+msgid "Great! Now add a professional photo and a bio about yourself."
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "Let us get to know you, a few details about you will help us connect you to the most suitable roles.\n        You can always edit your information later!"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "Location"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#, elixir-autogen, elixir-format
+msgid "Make a great first impression with a quality photo and a bio that highlights your professionalism and personality!"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "Medical Department"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/index.ex
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "Medical Role"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/employment_type_component.ex
+#, elixir-autogen, elixir-format
+msgid "Permanent positions, career growth, and long-term commitments,"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "Phone"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/employment_type_component.ex
+#, elixir-autogen, elixir-format
+msgid "Pool worker/ Temporary employment"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#, elixir-autogen, elixir-format
+msgid "Profile Photo"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#, elixir-autogen, elixir-format
+msgid "Profile created successfully!"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Step"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
+#, elixir-autogen, elixir-format
+msgid "Upload profile photo"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/medical_role_component.ex
+#, elixir-autogen, elixir-format
+msgid "What do you do?"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/employment_type_component.ex
+#, elixir-autogen, elixir-format
+msgid "What kind of employement do you seek?"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/employment_type_component.ex
+#, elixir-autogen, elixir-format
+msgid "You can select multiple and always change your preferences later!"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/index.ex
+#, elixir-autogen, elixir-format
+msgid "Bio"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/index.ex
+#, elixir-autogen, elixir-format
+msgid "Employment Type"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Hi"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/index.ex
+#, elixir-autogen, elixir-format
+msgid "Profile"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/profile/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "lets get you started"
+msgstr ""

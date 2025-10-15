@@ -259,8 +259,7 @@ defmodule BemedaPersonalWeb.Components.Shared.RatingComponent do
 
   defp create_or_update_rating("User", user_id, attrs, socket) do
     company = Companies.get_company_by_user(socket.assigns.current_user)
-    scope = create_scope_for_user(socket.assigns.current_user)
-    user = Accounts.get_user!(scope, user_id)
+    user = Accounts.get_user!(user_id)
     Ratings.rate_user(company, user, attrs)
   end
 

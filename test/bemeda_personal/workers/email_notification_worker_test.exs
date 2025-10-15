@@ -10,6 +10,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
   import Swoosh.TestAssertions
 
   alias BemedaPersonal.Emails
+  alias BemedaPersonal.TestUtils
   alias BemedaPersonal.Workers.EmailNotificationWorker
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.Socket.Broadcast
@@ -55,6 +56,8 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
       job_application: job_application
     } do
       url = "http://localhost:4000/company/applicant/#{job_application.id}"
+
+      TestUtils.drain_existing_emails()
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{
@@ -138,6 +141,8 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
     } do
       url = "http://localhost:4000/company/applicant/#{job_application.id}"
 
+      TestUtils.drain_existing_emails()
+
       assert :ok =
                perform_job(EmailNotificationWorker, %{
                  "job_application_id" => job_application.id,
@@ -218,6 +223,8 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorkerTest do
     } do
       url =
         "http://localhost:4000/company/applicant/#{message.job_application_id}"
+
+      TestUtils.drain_existing_emails()
 
       assert :ok =
                perform_job(EmailNotificationWorker, %{

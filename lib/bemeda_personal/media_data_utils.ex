@@ -1,6 +1,7 @@
 defmodule BemedaPersonal.MediaDataUtils do
   @moduledoc false
 
+  alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies.Company
   alias BemedaPersonal.JobApplications.JobApplication
   alias BemedaPersonal.JobPostings.JobPosting
@@ -9,7 +10,7 @@ defmodule BemedaPersonal.MediaDataUtils do
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
   @type media_asset :: Media.MediaAsset.t()
-  @type parent :: Company.t() | JobApplication.t() | JobPosting.t()
+  @type parent :: Company.t() | JobApplication.t() | JobPosting.t() | User.t()
   @type repo :: BemedaPersonal.Repo
 
   @spec handle_media_asset(repo(), media_asset() | nil, parent(), attrs()) ::

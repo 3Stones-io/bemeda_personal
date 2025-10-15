@@ -1,0 +1,62 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr "Un link per confermare il cambio email è stato inviato al nuovo indirizzo."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr "Impostazioni account"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "Cambia email"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "Conferma nuova password"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "Email"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr "Il link per il cambio email non è valido o è scaduto."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr "Email modificata con successo."
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Manage your account email address and password settings"
+msgstr "Gestisci il tuo indirizzo email e le impostazioni della password"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr "Nuova password"
+
+#: lib/bemeda_personal_web/live/user_live/settings.ex
+#, elixir-autogen, elixir-format
+msgid "Save Password"
+msgstr "Salva password"

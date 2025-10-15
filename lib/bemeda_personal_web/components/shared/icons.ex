@@ -83,4 +83,28 @@ defmodule BemedaPersonalWeb.Components.Shared.Icons do
     </svg>
     """
   end
+
+  @spec spinner_loader(map()) :: Phoenix.LiveView.Rendered.t()
+  def spinner_loader(assigns) do
+    ~H"""
+    <svg
+      width="34"
+      height="34"
+      viewBox="0 0 34 34"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="animate-spin [animation-duration:1.5s]"
+    >
+      <circle
+        cx="17"
+        cy="17"
+        r="12"
+        stroke="#7B4EAB"
+        stroke-width="10"
+        stroke-linecap="round"
+        stroke-dasharray="1 20"
+      />
+    </svg>
+    """
+  end
 end

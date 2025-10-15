@@ -38,7 +38,7 @@ defmodule BemedaPersonalWeb.Features.EmployerWorkflowTest do
       |> assert_has("input[name='user[password]']")
       |> assert_has("button[type='submit']")
       # Test that registration form exists and is accessible
-      |> assert_path("/users/register/employer")
+      |> assert_path("/users/register")
     end
 
     test "employer adds hospital affiliation", %{conn: conn} do

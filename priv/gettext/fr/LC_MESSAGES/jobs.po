@@ -1086,8 +1086,8 @@ msgstr "Statut - mettre à jour dans l'interface de chat"
 msgid "%{company} has extended you a job offer for %{position}."
 msgstr "%{company} vous a fait une offre d'emploi pour le poste de %{position}."
 
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
-#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
@@ -1530,8 +1530,8 @@ msgstr "Mes candidatures"
 msgid "Required"
 msgstr "Requis"
 
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
-#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Start writing"
@@ -1621,6 +1621,7 @@ msgstr "Télétravail autorisé"
 msgid "See more"
 msgstr "Voir plus"
 
+#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #: lib/bemeda_personal_web/live/company_job_live/review.html.heex
@@ -1715,7 +1716,7 @@ msgstr "Adaptabilité"
 msgid "Adaptive equipment training"
 msgstr "Formation aux équipements adaptatifs"
 
-#: lib/bemeda_personal_web/components/job/input_components.ex
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #, elixir-autogen, elixir-format
 msgid "Add required skills"
 msgstr "Ajouter les compétences requises"
@@ -2535,3 +2536,8 @@ msgstr "doit être une chaîne de caractères"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Interview"
 msgstr "En entretien"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Continue"
+msgstr "Continuer"

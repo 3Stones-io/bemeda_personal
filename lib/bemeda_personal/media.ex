@@ -138,6 +138,8 @@ defmodule BemedaPersonal.Media do
 
   """
   @spec get_media_asset_by_message_id(message_id()) :: media_asset() | nil
+  def get_media_asset_by_message_id(nil), do: nil
+
   def get_media_asset_by_message_id(message_id) do
     MediaAsset
     |> where([m], m.message_id == ^message_id)
@@ -162,6 +164,9 @@ defmodule BemedaPersonal.Media do
       {:ok, %MediaAsset{}}
 
       iex> create_media_asset(scope, company_template, %{field: value})
+      {:ok, %MediaAsset{}}
+
+      iex> create_media_asset(scope, user, %{field: value})
       {:ok, %MediaAsset{}}
 
   """
@@ -222,6 +227,13 @@ defmodule BemedaPersonal.Media do
     |> Repo.insert()
   end
 
+  def create_media_asset(%Scope{} = _scope, %User{} = user, attrs) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Repo.insert()
+  end
+
   def create_media_asset(%Scope{}, _entity, _attrs), do: {:error, :unauthorized}
   def create_media_asset(nil, _entity, _attrs), do: {:error, :unauthorized}
 
@@ -245,9 +257,12 @@ defmodule BemedaPersonal.Media do
       iex> create_media_asset(company_template, %{field: value})
       {:ok, %MediaAsset{}}
 
+      iex> create_media_asset(user, %{field: value})
+      {:ok, %MediaAsset{}}
+
   """
   @spec create_media_asset(
-          company() | company_template() | job_application() | job_posting() | message(),
+          company() | company_template() | job_application() | job_posting() | message() | user(),
           attrs()
         ) ::
           {:ok, media_asset()} | {:error, changeset()}
@@ -283,6 +298,13 @@ defmodule BemedaPersonal.Media do
     %MediaAsset{}
     |> MediaAsset.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:message, message)
+    |> Repo.insert()
+  end
+
+  def create_media_asset(%User{} = user, attrs) do
+    %MediaAsset{}
+    |> MediaAsset.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.insert()
   end
 

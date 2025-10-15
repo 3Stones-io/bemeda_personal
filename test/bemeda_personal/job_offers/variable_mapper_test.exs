@@ -23,7 +23,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
 
       company =
         company_fixture(employer_user_fixture(%{locale: :en}), %{
-          location: "Switzerland",
+          location: "Geneva",
           name: "Acme Corp"
         })
 
@@ -50,7 +50,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapperTest do
 
       # Company variables
       assert variables["Client_Company"] == "Acme Corp"
-      assert variables["Employer_Country"] == "Switzerland"
+      assert variables["Employer_Country"] == "Geneva"
       assert variables["Recruiter_Email"] == company.admin_user.email
 
       assert variables["Recruiter_Name"] ==
