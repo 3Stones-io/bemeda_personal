@@ -468,17 +468,17 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     end
 
     test "allows access if job seeker has incomplete profile", %{conn: conn} do
-      user = unconfirmed_user_fixture(%{user_type: :job_seeker})
+      user = user_fixture(%{user_type: :job_seeker})
 
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_login_instructions(user, url)
-        end)
+      incomplete_user = %{
+        user
+        | employment_type: nil,
+          medical_role: nil,
+          location: nil,
+          bio: nil
+      }
 
-      {:ok, {confirmed_user, _expired_tokens}} =
-        Accounts.login_user_by_magic_link(token)
-
-      user_token = Accounts.generate_user_session_token(confirmed_user)
+      user_token = Accounts.generate_user_session_token(user)
 
       session =
         conn
@@ -487,13 +487,13 @@ defmodule BemedaPersonalWeb.UserAuthTest do
 
       socket = %LiveView.Socket{
         endpoint: BemedaPersonalWeb.Endpoint,
-        assigns: %{__changed__: %{}, flash: %{}, current_user: confirmed_user}
+        assigns: %{__changed__: %{}, flash: %{}, current_user: incomplete_user}
       }
 
-      {:cont, updated_socket} =
-        UserAuth.on_mount(:redirect_if_profile_complete, %{}, session, socket)
+      assert {:cont, updated_socket} =
+               UserAuth.on_mount(:redirect_if_profile_complete, %{}, session, socket)
 
-      refute Map.has_key?(updated_socket, :redirected)
+      refute updated_socket.redirected
     end
 
     test "redirects for employer users (profile always complete)", %{conn: conn} do
@@ -551,20 +551,20 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     end
 
     test "allows access if job seeker has incomplete profile", %{conn: conn} do
-      user = unconfirmed_user_fixture(%{user_type: :job_seeker})
+      user = user_fixture(%{user_type: :job_seeker})
 
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_login_instructions(user, url)
-        end)
-
-      {:ok, {confirmed_user, _expired_tokens}} =
-        Accounts.login_user_by_magic_link(token)
+      incomplete_user = %{
+        user
+        | employment_type: nil,
+          medical_role: nil,
+          location: nil,
+          bio: nil
+      }
 
       conn =
         conn
-        |> assign(:current_scope, Scope.for_user(confirmed_user))
-        |> assign(:current_user, confirmed_user)
+        |> assign(:current_scope, Scope.for_user(incomplete_user))
+        |> assign(:current_user, incomplete_user)
         |> UserAuth.redirect_if_profile_complete([])
 
       refute conn.halted

@@ -412,8 +412,6 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   def on_mount(:require_user_profile, _params, _session, socket) do
-    profile_complete?(socket.assigns.current_user)
-
     if profile_complete?(socket.assigns.current_user) do
       {:cont, socket}
     else
@@ -662,6 +660,7 @@ defmodule BemedaPersonalWeb.UserAuth do
     if user && user.user_type == :job_seeker do
       user
       |> Accounts.change_user_profile(%{})
+      |> Map.put(:action, :validate)
       |> Map.get(:valid?)
     else
       true
