@@ -135,6 +135,7 @@ defmodule BemedaPersonalWeb.Router do
             ),
             {BemedaPersonalWeb.UserAuth, :require_authenticated},
             {BemedaPersonalWeb.UserAuth, :require_job_seeker_user_type},
+            {BemedaPersonalWeb.UserAuth, :redirect_if_profile_complete},
             {BemedaPersonalWeb.LiveHelpers, :assign_locale}
           ],
           & &1

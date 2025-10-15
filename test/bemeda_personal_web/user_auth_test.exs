@@ -445,4 +445,156 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       }
     end
   end
+
+  describe "on_mount :redirect_if_profile_complete" do
+    test "redirects to home page if job seeker has a complete profile", %{conn: conn} do
+      user = user_fixture(%{user_type: :job_seeker})
+      user_token = Accounts.generate_user_session_token(user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:redirect_if_profile_complete, %{}, session, socket)
+
+      assert {:redirect, %{to: "/"}} = updated_socket.redirected
+    end
+
+    test "allows access if job seeker has incomplete profile", %{conn: conn} do
+      user = unconfirmed_user_fixture(%{user_type: :job_seeker})
+
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_login_instructions(user, url)
+        end)
+
+      {:ok, {confirmed_user, _expired_tokens}} =
+        Accounts.login_user_by_magic_link(token)
+
+      user_token = Accounts.generate_user_session_token(confirmed_user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: confirmed_user}
+      }
+
+      {:cont, updated_socket} =
+        UserAuth.on_mount(:redirect_if_profile_complete, %{}, session, socket)
+
+      refute Map.has_key?(updated_socket, :redirected)
+    end
+
+    test "redirects for employer users (profile always complete)", %{conn: conn} do
+      user = user_fixture(%{user_type: :employer})
+      user_token = Accounts.generate_user_session_token(user)
+
+      session =
+        conn
+        |> put_session(:user_token, user_token)
+        |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: user}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:redirect_if_profile_complete, %{}, session, socket)
+
+      assert {:redirect, %{to: "/"}} = updated_socket.redirected
+    end
+
+    test "redirects when user is nil (nil users have complete profiles)", %{conn: conn} do
+      session = get_session(conn)
+
+      socket = %LiveView.Socket{
+        endpoint: BemedaPersonalWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}, current_user: nil}
+      }
+
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:redirect_if_profile_complete, %{}, session, socket)
+
+      assert {:redirect, %{to: "/"}} = updated_socket.redirected
+    end
+  end
+
+  describe "redirect_if_profile_complete/2" do
+    setup %{conn: conn} do
+      %{conn: UserAuth.fetch_current_scope_for_user(conn, [])}
+    end
+
+    test "redirects to home page if job seeker has complete profile", %{conn: conn} do
+      user = user_fixture(%{user_type: :job_seeker})
+
+      conn =
+        conn
+        |> assign(:current_scope, Scope.for_user(user))
+        |> assign(:current_user, user)
+        |> fetch_flash()
+        |> UserAuth.redirect_if_profile_complete([])
+
+      assert conn.halted
+      assert redirected_to(conn) == ~p"/"
+    end
+
+    test "allows access if job seeker has incomplete profile", %{conn: conn} do
+      user = unconfirmed_user_fixture(%{user_type: :job_seeker})
+
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_login_instructions(user, url)
+        end)
+
+      {:ok, {confirmed_user, _expired_tokens}} =
+        Accounts.login_user_by_magic_link(token)
+
+      conn =
+        conn
+        |> assign(:current_scope, Scope.for_user(confirmed_user))
+        |> assign(:current_user, confirmed_user)
+        |> UserAuth.redirect_if_profile_complete([])
+
+      refute conn.halted
+      refute conn.status
+    end
+
+    test "redirects for employer users (profile always complete)", %{conn: conn} do
+      user = user_fixture(%{user_type: :employer})
+
+      conn =
+        conn
+        |> assign(:current_scope, Scope.for_user(user))
+        |> assign(:current_user, user)
+        |> fetch_flash()
+        |> UserAuth.redirect_if_profile_complete([])
+
+      assert conn.halted
+      assert redirected_to(conn) == ~p"/"
+    end
+
+    test "redirects when user is nil (nil users have complete profiles)", %{conn: conn} do
+      conn =
+        conn
+        |> assign(:current_scope, Scope.for_user(nil))
+        |> assign(:current_user, nil)
+        |> fetch_flash()
+        |> UserAuth.redirect_if_profile_complete([])
+
+      assert conn.halted
+      assert redirected_to(conn) == ~p"/"
+    end
+  end
 end

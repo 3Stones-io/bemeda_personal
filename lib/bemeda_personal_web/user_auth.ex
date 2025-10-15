@@ -249,6 +249,9 @@ defmodule BemedaPersonalWeb.UserAuth do
     * `:require_no_existing_company` - Checks if the current user already has a company.
       Redirects to companies page if they do, preventing creation of multiple companies.
 
+    * `:redirect_if_profile_complete` - Checks if the current user has a complete profile.
+      Redirects to home page if they do, preventing access to profile completion flow.
+
     * `:require_sudo_mode` - Checks if the current user is in sudo mode.
       Redirects to login page if not.
   ## Examples
@@ -418,6 +421,14 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
+  def on_mount(:redirect_if_profile_complete, _params, _session, socket) do
+    if profile_complete?(socket.assigns.current_user) do
+      {:halt, Phoenix.LiveView.redirect(socket, to: ~p"/")}
+    else
+      {:cont, socket}
+    end
+  end
+
   def on_mount(:require_sudo_mode, _params, session, socket) do
     socket = mount_current_scope(socket, session)
 
@@ -475,6 +486,17 @@ defmodule BemedaPersonalWeb.UserAuth do
       conn
       |> redirect(to: ~p"/users/profile")
       |> halt()
+    end
+  end
+
+  @spec redirect_if_profile_complete(Plug.Conn.t(), keyword()) :: Plug.Conn.t()
+  def redirect_if_profile_complete(conn, _opts) do
+    if profile_complete?(conn.assigns.current_user) do
+      conn
+      |> redirect(to: ~p"/")
+      |> halt()
+    else
+      conn
     end
   end
 
