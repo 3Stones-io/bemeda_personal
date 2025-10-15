@@ -1,0 +1,19 @@
+<mj-body>
+  <mj-section padding="0">
+    <mj-column width="100%">
+      <mj-text align="center" font-size="24px" font-family="Inter, Arial, sans-serif" font-weight="600" color="#111827" padding="0 0 24px 0">
+        <%= dgettext("emails", "Welcome to BemedaPersonal!") %>
+      </mj-text>
+      <mj-text align="left" font-size="16px" font-family="Inter, Arial, sans-serif" color="#374151" padding="0 0 16px 0">
+        <%= dgettext("emails", "Hello %{user_name},", user_name: @user_name) %>
+      </mj-text>
+      <mj-text align="left" font-size="16px" font-family="Inter, Arial, sans-serif" color="#374151" padding="0 0 16px 0" line-height="24px">
+        <%= dgettext("emails", "Your organization account has been created successfully.") %>
+      </mj-text>
+      <mj-text align="left" font-size="16px" font-family="Inter, Arial, sans-serif" color="#374151" padding="0 0 32px 0" line-height="24px">
+        <%= dgettext("emails", "You can now start posting jobs and connecting with qualified medical professionals.") %>
+      </mj-text>
+      <%= render_dynamic_component CtaButtonComponent, %{cta_text: dgettext("emails", "Get Started"), cta_url: @url} %>
+    </mj-column>
+  </mj-section>
+</mj-body>

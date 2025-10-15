@@ -31,7 +31,7 @@ defmodule BemedaPersonal.JobOffers.VariableMapper do
   defp map_company_variables(company) do
     %{
       "Client_Company" => company.name,
-      "Employer_Country" => company.location || "",
+      "Employer_Country" => if(company.location, do: to_string(company.location), else: ""),
       "Recruiter_Email" => company.admin_user.email,
       "Recruiter_Name" => "#{company.admin_user.first_name} #{company.admin_user.last_name}"
     }

@@ -6,7 +6,9 @@ defmodule BemedaPersonal.Companies.Company do
   import Ecto.Changeset
 
   alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Companies.Enums
   alias BemedaPersonal.Media.MediaAsset
+  alias BemedaPersonal.Utils
 
   @type attrs :: map()
   @type changeset :: Ecto.Changeset.t()
@@ -22,10 +24,10 @@ defmodule BemedaPersonal.Companies.Company do
     field :description, :string
     field :hospital_affiliation, :string
     field :industry, :string
-    field :location, :string
+    field :location, Ecto.Enum, values: Enums.locations()
     has_one :media_asset, MediaAsset
     field :name, :string
-    field :organization_type, :string
+    field :organization_type, Ecto.Enum, values: Enums.organization_types()
     field :phone_number, :string
     field :postal_code, :string
     field :size, :string
@@ -53,10 +55,7 @@ defmodule BemedaPersonal.Companies.Company do
     ])
     |> validate_required([:name])
     |> validate_length(:name, min: 1, max: 255)
-    |> validate_format(:phone_number, ~r/^(\+\d{1,3}\s?)?\d{2,14}$/,
-      message: "must be a valid phone number",
-      allow_blank: true
-    )
+    |> Utils.validate_e164_phone_number(:phone_number)
     |> validate_format(:website_url, ~r/^https?:\/\//,
       message: "must start with http:// or https://",
       allow_blank: true

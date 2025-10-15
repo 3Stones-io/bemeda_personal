@@ -196,4 +196,13 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     |> EmailNotificationWorker.new()
     |> Oban.insert()
   end
+
+  @spec get_translated_options(atom(), module(), (atom(), String.t() -> String.t())) ::
+          list({String.t(), String.t()})
+  def get_translated_options(field, struct, translate_enum_value_fun) do
+    struct
+    |> Ecto.Enum.values(field)
+    |> Stream.map(&to_string/1)
+    |> Enum.map(fn value -> {translate_enum_value_fun.(field, value), value} end)
+  end
 end

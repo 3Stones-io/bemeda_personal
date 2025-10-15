@@ -3,6 +3,8 @@
     "@mux/upchunk": "^3.5.0",
     "clipboard": "^2.0.11",
     "dragster": "^0.1.3",
+    "intl-tel-input": "^25.11.3",
+    "libphonenumber-js": "^1.12.24",
     "trix": "^2.1.15"
   },
   "devDependencies": {

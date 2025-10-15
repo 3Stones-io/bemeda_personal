@@ -26,8 +26,8 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
   describe "job seeker registration flow" do
     test "job seeker completes 2-step registration", %{conn: conn} do
       conn
-      |> visit(~p"/users/register/job_seeker")
-      |> assert_path("/users/register/job_seeker")
+      |> visit(~p"/users/register")
+      |> assert_path("/users/register")
       |> assert_has("form")
       |> assert_has("input[name='user[email]']")
       |> assert_has("input[name='user[password]']")
@@ -36,7 +36,7 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
 
     test "job seeker registration validates required fields", %{conn: conn} do
       conn
-      |> visit(~p"/users/register/job_seeker")
+      |> visit(~p"/users/register")
       |> unwrap(fn %{frame_id: frame_id} ->
         {:ok, _result} =
           Frame.fill(
@@ -62,8 +62,8 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
   describe "employer registration flow" do
     test "employer completes 1-step registration", %{conn: conn} do
       conn
-      |> visit(~p"/users/register/employer")
-      |> assert_path("/users/register/employer")
+      |> visit(~p"/users/register")
+      |> assert_path("/users/register")
       |> assert_has("form")
       |> assert_has("input[name='user[email]']")
       |> assert_has("input[name='user[password]']")
@@ -72,8 +72,8 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
 
     test "employer registration redirects to company setup", %{conn: conn} do
       conn
-      |> visit(~p"/users/register/employer")
-      |> assert_path("/users/register/employer")
+      |> visit(~p"/users/register")
+      |> assert_path("/users/register")
       |> assert_has("form")
       |> assert_has("input[name='user[email]']")
       |> assert_has("input[name='user[password]']")
@@ -135,8 +135,8 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
   describe "password reset flow" do
     test "user requests password reset", %{conn: conn} do
       conn
-      |> visit(~p"/users/reset_password")
-      |> assert_path("/users/reset_password")
+      |> visit(~p"/users/log_in")
+      |> assert_path("/users/log_in")
       |> assert_has("form")
       |> assert_has("input[name='user[email]']")
       |> assert_has("button[type='submit']")
@@ -144,7 +144,7 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
 
     test "password reset with invalid email shows same message", %{conn: conn} do
       conn
-      |> visit(~p"/users/reset_password")
+      |> visit(~p"/users/log_in")
       |> unwrap(fn %{frame_id: frame_id} ->
         {:ok, _result} =
           Frame.fill(frame_id, "input[name='user[email]']", "nonexistent@example.com")
@@ -190,7 +190,7 @@ defmodule BemedaPersonalWeb.Features.VisitorAuthenticationTest do
       |> assert_has("h1")
       |> visit(~p"/jobs")
       |> assert_has("main")
-      |> visit(~p"/users/settings/info")
+      |> visit(~p"/users/settings")
       |> assert_has("main")
     end
   end

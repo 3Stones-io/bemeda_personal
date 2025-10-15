@@ -24,6 +24,45 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
     """
   end
 
+  attr :label, :string, required: true
+  attr :id, :string, required: true
+  attr :accept, :string, default: "image/*"
+  attr :max_file_size, :integer, default: 10_000_000
+  attr :class, :string, default: nil
+  attr :target, :any, default: nil
+  attr :events_target, :string, default: nil
+
+  @spec image_upload_component(assigns()) :: output()
+  def image_upload_component(assigns) do
+    ~H"""
+    <div
+      class={@class}
+      id={"#{@id}-container"}
+      phx-hook="FileUpload"
+      phx-target={@target}
+      phx-update="ignore"
+      data-events-target={@events_target}
+    >
+      <button
+        type="button"
+        class="cursor-pointer w-full h-full text-form-txt-primary text-sm border border-form-input-border hover:border-primary-400 rounded-full px-2 py-3 flex items-center justify-center gap-2"
+        phx-click={JS.dispatch("click", to: "##{@id}-hidden-file-input")}
+      >
+        <.icon name="hero-arrow-up-tray" class="h-4 w-4" />
+        <span>{@label}</span>
+      </button>
+
+      <input
+        id={"#{@id}-hidden-file-input"}
+        type="file"
+        class="hidden file-input"
+        accept={@accept}
+        data-max-file-size={@max_file_size}
+      />
+    </div>
+    """
+  end
+
   attr :accept, :string, required: true
   attr :class, :string, default: nil
   attr :events_target, :string

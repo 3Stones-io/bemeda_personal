@@ -26,7 +26,7 @@ defmodule BemedaPersonal.ResumesFixtures do
       summary: "Experienced software engineer with a passion for building web applications.",
       is_public: true,
       contact_email: "contact@example.com",
-      phone_number: "123-456-7890",
+      phone_number: "+41791234567",
       website_url: "https://example.com"
     })
   end

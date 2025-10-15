@@ -17,7 +17,7 @@ defmodule BemedaPersonal.JobPostings.JobPostingFiltersTest do
         company_fixture(user, %{
           name: "Test Healthcare Corp",
           industry: "Healthcare",
-          location: "Test City"
+          location: "Zurich"
         })
 
       job1 =

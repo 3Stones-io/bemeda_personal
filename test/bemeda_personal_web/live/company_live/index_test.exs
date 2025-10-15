@@ -45,7 +45,7 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert html =~ "Company Dashboard"
       assert html =~ "Edit Company Profile"
 
-      assert html =~ company.location
+      assert html =~ to_string(company.location)
       assert html =~ company.size
 
       assert html =~ company.website_url
@@ -95,31 +95,25 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
              |> has_element?()
     end
 
-    test "shows create company section when user has no company", %{conn: conn} do
+    test "redirects to company creation when user has no company", %{conn: conn} do
       user = employer_user_fixture()
 
-      {:ok, _view, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/company")
-
-      assert html =~ "Create Your Company Profile"
-      # The page title will be "Create Your Company Profile" not "Company Dashboard"
-      refute html =~ "<h1>Company Dashboard</h1>"
+      assert {:error, {:redirect, %{to: "/company/new"}}} =
+               conn
+               |> log_in_user(user)
+               |> live(~p"/company")
     end
 
-    test "can navigate to create company form", %{conn: conn} do
+    test "user without company can access /company/new directly", %{conn: conn} do
       user = employer_user_fixture()
 
-      {:ok, view, _html} =
+      {:ok, view, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/company")
+        |> live(~p"/company/new")
 
-      # Find and click the create company link
-      assert view
-             |> element("a[href='/company/new']")
-             |> has_element?()
+      assert html =~ "Create Company Profile"
+      assert has_element?(view, "#company-form")
     end
 
     test "redirects to main dashboard if user already has company when accessing /company/new", %{
@@ -148,20 +142,13 @@ defmodule BemedaPersonalWeb.CompanyLive.IndexTest do
       assert has_element?(view, "#company-form")
     end
 
-    test "user without company has cancel button that navigates to home", %{conn: conn} do
+    test "redirects from /company to /company/new when no company exists", %{conn: conn} do
       user = employer_user_fixture()
 
-      {:ok, view, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/company/new")
-
-      # Verify the page is rendered with the form
-      assert html =~ "Create Company Profile"
-      assert has_element?(view, "#company-form")
-
-      # Check that the cancel button exists for new company creation
-      assert has_element?(view, "button", "Cancel")
+      assert {:error, {:redirect, %{to: "/company/new"}}} =
+               conn
+               |> log_in_user(user)
+               |> live(~p"/company")
     end
   end
 

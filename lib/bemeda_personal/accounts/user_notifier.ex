@@ -6,9 +6,17 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   alias BemedaPersonal.Accounts.EmailDelivery
   alias BemedaPersonal.Accounts.EmailTemplates
   alias BemedaPersonal.Accounts.InterviewNotifier
+  alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Chat.Message
+  alias BemedaPersonal.JobApplications.JobApplication
+  alias BemedaPersonal.Scheduling.Interview
 
   @type email :: Swoosh.Email.t()
+  @type interview :: Interview.t()
+  @type job_application :: JobApplication.t()
+  @type message :: Message.t()
   @type url :: String.t()
+  @type user :: User.t()
 
   @default_status_message dgettext("emails", "Application Status Updated")
 
@@ -34,9 +42,21 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     EmailDelivery.deliver(recipient, subject, html_body, text_body)
   end
 
-  @spec deliver_confirmation_instructions(BemedaPersonal.Accounts.User.t(), url()) ::
-          {:ok, email()} | {:error, any()}
-  def deliver_confirmation_instructions(user, url) do
+  @spec deliver_login_instructions(user(), url()) :: {:ok, email()} | {:error, any()}
+  def deliver_login_instructions(user, url) do
+    case user do
+      %User{confirmed_at: nil, registration_source: :email} ->
+        deliver_confirmation_instructions(user, url)
+
+      %User{confirmed_at: nil, registration_source: :invited} ->
+        deliver_invitation(user, url)
+
+      _other ->
+        deliver_magic_link_instructions(user, url)
+    end
+  end
+
+  defp deliver_confirmation_instructions(user, url) do
     EmailDelivery.put_locale(user)
     user_name = "#{user.first_name} #{user.last_name}"
 
@@ -66,7 +86,63 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_reset_password_instructions(BemedaPersonal.Accounts.User.t(), url()) ::
+  defp deliver_invitation(user, url) do
+    EmailDelivery.put_locale(user)
+    user_name = "#{user.first_name} #{user.last_name}"
+
+    html_body =
+      EmailTemplates.InvitationEmail.render(
+        url: url,
+        user_name: user_name
+      )
+
+    text_body = """
+    #{dgettext("emails", "Welcome to BemedaPersonal!", user_name: user_name)}
+
+    #{dgettext("emails", "Your organization account has been created successfully.")}
+
+    #{dgettext("emails", "You can now start posting jobs and connecting with qualified medical professionals.")}
+
+    #{url}
+    """
+
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Invitation"),
+      html_body,
+      text_body
+    )
+  end
+
+  defp deliver_magic_link_instructions(user, url) do
+    EmailDelivery.put_locale(user)
+    user_name = "#{user.first_name} #{user.last_name}"
+
+    html_body =
+      EmailTemplates.MagicLinkEmail.render(
+        url: url,
+        user_name: user_name
+      )
+
+    text_body = """
+      #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
+
+      #{dgettext("emails", "You can log into your account by visiting the URL below:")}
+
+      #{url}
+
+      #{dgettext("emails", "If you didn't request this email, please ignore this.")}
+    """
+
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Magic Link"),
+      html_body,
+      text_body
+    )
+  end
+
+  @spec deliver_reset_password_instructions(user(), url()) ::
           {:ok, email()} | {:error, any()}
   def deliver_reset_password_instructions(user, url) do
     EmailDelivery.put_locale(user)
@@ -98,7 +174,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @spec deliver_update_email_instructions(BemedaPersonal.Accounts.User.t(), url()) ::
+  @spec deliver_update_email_instructions(user(), url()) ::
           {:ok, email()} | {:error, any()}
   def deliver_update_email_instructions(user, url) do
     EmailDelivery.put_locale(user)
@@ -131,8 +207,8 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   end
 
   @spec deliver_new_message(
-          BemedaPersonal.Accounts.User.t(),
-          BemedaPersonal.Chat.Message.t(),
+          user(),
+          message(),
           url()
         ) :: {:ok, email()} | {:error, any()}
   def deliver_new_message(recipient, message, url) do
@@ -168,7 +244,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   end
 
   @spec deliver_user_job_application_received(
-          BemedaPersonal.JobApplications.JobApplication.t(),
+          job_application(),
           url()
         ) ::
           {:ok, email} | {:error, any()}
@@ -207,7 +283,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   end
 
   @spec deliver_user_job_application_status(
-          BemedaPersonal.JobApplications.JobApplication.t(),
+          job_application(),
           url()
         ) ::
           {:ok, email} | {:error, any()}
@@ -257,7 +333,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   end
 
   @spec deliver_employer_job_application_received(
-          BemedaPersonal.JobApplications.JobApplication.t(),
+          job_application(),
           url()
         ) ::
           {:ok, email} | {:error, any()}
@@ -297,7 +373,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   end
 
   @spec deliver_employer_job_application_status(
-          BemedaPersonal.JobApplications.JobApplication.t(),
+          job_application(),
           url()
         ) ::
           {:ok, email} | {:error, any()}
@@ -349,95 +425,22 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
     )
   end
 
-  @doc """
-  Deliver magic link authentication email
-  """
-  @spec deliver_magic_link(BemedaPersonal.Accounts.User.t(), url()) ::
-          {:ok, email()} | {:error, any()}
-  def deliver_magic_link(user, url) do
-    html_body = """
-    <h2>Sign in to BemedaPersonal</h2>
-    <p>Hi #{user.email},</p>
-    <p>You requested a magic link to sign in. Click the button below to sign in:</p>
-    <p style="text-align: center; margin: 30px 0;">
-      <a href="#{url}" style="background-color: #7b4eab; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-        Sign In
-      </a>
-    </p>
-    <p>Or copy and paste this link: #{url}</p>
-    <p><strong>This link expires in 15 minutes and can only be used once.</strong></p>
-    <p>If you didn't request this link, please ignore this email.</p>
-    """
-
-    text_body = """
-    Sign in to BemedaPersonal
-
-    Hi #{user.email},
-
-    You requested a magic link to sign in. Visit the link below:
-
-    #{url}
-
-    This link expires in 15 minutes and can only be used once.
-
-    If you didn't request this link, please ignore this email.
-    """
-
-    deliver(user, "Sign in to BemedaPersonal", html_body, text_body)
-  end
-
-  @doc """
-  Deliver sudo mode verification email
-  """
-  @spec deliver_sudo_link(BemedaPersonal.Accounts.User.t(), String.t()) ::
-          {:ok, email()} | {:error, term()}
-  def deliver_sudo_link(user, url) do
-    html_body = """
-    <h2>Verify sensitive action</h2>
-    <p>Hi #{user.email},</p>
-    <p>You're trying to perform a sensitive action that requires additional verification.</p>
-    <p style="text-align: center; margin: 30px 0;">
-      <a href="#{url}" style="background-color: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-        Verify Action
-      </a>
-    </p>
-    <p><strong>This link expires in 5 minutes and can only be used once.</strong></p>
-    <p>If you didn't request this, please secure your account immediately.</p>
-    """
-
-    text_body = """
-    Verify sensitive action
-
-    Hi #{user.email},
-
-    You're trying to perform a sensitive action that requires additional verification.
-
-    #{url}
-
-    This link expires in 5 minutes and can only be used once.
-
-    If you didn't request this, please secure your account immediately.
-    """
-
-    deliver(user, "Verify sensitive action - BemedaPersonal", html_body, text_body)
-  end
-
-  @spec deliver_interview_scheduled(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  @spec deliver_interview_scheduled(interview()) :: {:ok, any()}
   def deliver_interview_scheduled(interview) do
     InterviewNotifier.deliver_interview_scheduled(interview)
   end
 
-  @spec deliver_interview_reminder(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  @spec deliver_interview_reminder(interview()) :: {:ok, any()}
   def deliver_interview_reminder(interview) do
     InterviewNotifier.deliver_interview_reminder(interview)
   end
 
-  @spec deliver_interview_cancelled(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  @spec deliver_interview_cancelled(interview()) :: {:ok, any()}
   def deliver_interview_cancelled(interview) do
     InterviewNotifier.deliver_interview_cancelled(interview)
   end
 
-  @spec deliver_interview_updated(BemedaPersonal.Scheduling.Interview.t()) :: {:ok, any()}
+  @spec deliver_interview_updated(interview()) :: {:ok, any()}
   def deliver_interview_updated(interview) do
     InterviewNotifier.deliver_interview_updated(interview)
   end

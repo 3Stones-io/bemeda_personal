@@ -16,7 +16,7 @@ defmodule BemedaPersonalWeb.Features.JobSeekerOnboardingTest do
     test "job seeker can access settings page", %{conn: conn} do
       conn
       |> sign_in_as_job_seeker()
-      |> visit(~p"/users/settings/info")
+      |> visit(~p"/users/settings")
       |> assert_has("main")
     end
 
@@ -92,7 +92,7 @@ defmodule BemedaPersonalWeb.Features.JobSeekerOnboardingTest do
     test "job seeker can access settings pages", %{conn: conn} do
       conn
       |> sign_in_as_job_seeker()
-      |> visit(~p"/users/settings/password")
+      |> visit(~p"/users/settings")
       |> assert_has("main")
     end
 

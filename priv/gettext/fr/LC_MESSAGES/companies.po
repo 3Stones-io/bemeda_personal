@@ -41,40 +41,26 @@ msgstr "Tableau de bord de l'entreprise"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Company Description"
-msgstr "Description de l'entreprise"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Company Logo"
 msgstr "Logo de l'entreprise"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Company Name"
 msgstr "Nom de l'entreprise"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Company Size"
 msgstr "Taille de l'entreprise"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Company profile created successfully."
-msgstr "Profil d'entreprise créé avec succès."
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
 msgid "Company profile updated successfully."
 msgstr "Profil d'entreprise mis à jour avec succès."
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
@@ -86,11 +72,6 @@ msgstr "Créer un profil d'entreprise"
 #, elixir-autogen, elixir-format
 msgid "Create Your Company Profile"
 msgstr "Créez votre profil d'entreprise"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Creating..."
-msgstr "Création en cours..."
 
 #: lib/bemeda_personal_web/live/company_applicant_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_applicant_live/show.html.heex
@@ -109,7 +90,6 @@ msgstr "Modifier le profil d'entreprise"
 msgid "Get started by clicking the \"Post New Job\" button above."
 msgstr "Commencez en cliquant sur le bouton \"Publier une nouvelle offre\" ci-dessus."
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
 #, elixir-autogen, elixir-format
@@ -119,7 +99,6 @@ msgstr "Secteur d'activité"
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
 #, elixir-autogen, elixir-format
 msgid "Location"
 msgstr "Localisation"
@@ -148,17 +127,6 @@ msgstr "Candidats récents"
 #, elixir-autogen, elixir-format
 msgid "Recent Jobs"
 msgstr "Offres récentes"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Save Changes"
-msgstr "Enregistrer les modifications"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
-msgid "Saving..."
-msgstr "Enregistrement en cours..."
 
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
@@ -194,12 +162,6 @@ msgstr "Visiter le site web"
 #, elixir-autogen, elixir-format
 msgid "Website"
 msgstr "Site web"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
-msgid "Website URL"
-msgstr "URL du site web"
 
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
@@ -403,100 +365,50 @@ msgstr "Profil d'entreprise créé avec succès !"
 msgid "You already have a company profile."
 msgstr "Vous avez déjà un profil d'entreprise."
 
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
-msgid "About"
-msgstr "À propos"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Basic Information"
-msgstr "Informations de base"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Care Home"
 msgstr "Maison de soins"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Clinic"
 msgstr "Clinique"
 
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
-msgid "Company Information"
-msgstr "Informations sur l'entreprise"
-
-#: lib/bemeda_personal_web/live/company_live/index.html.heex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Company profile"
-msgstr "Taille de l'entreprise"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Contact & Details"
-msgstr "Contact et détails"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Home Care Service"
 msgstr "Service de soins à domicile"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Hospital"
 msgstr "Hôpital"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Medical Center"
 msgstr "Centre médical"
 
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Organization Name"
 msgstr "Nom de l'organisation"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Other"
 msgstr "Autre"
 
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
+#: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Phone Number"
 msgstr "Numéro de téléphone"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format
-msgid "Select type"
-msgstr "Sélectionner le type"
-
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
 msgid "Type of organization"
 msgstr "Type d'organisation"
-
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "About Us"
-msgstr "À propos"
-
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Company updated successfully."
-msgstr "Profil d'entreprise mis à jour avec succès."
-
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Hospital affiliation"
-msgstr "Affiliation hospitalière"
-
-#: lib/bemeda_personal_web/live/user_settings_live/info.ex
-#, elixir-autogen, elixir-format
-msgid "Logo upload feature coming soon."
-msgstr "La fonction de téléchargement du logo arrive bientôt."
 
 #: lib/bemeda_personal_web/live/company_job_live/index.html.heex
 #, elixir-autogen, elixir-format
@@ -508,50 +420,10 @@ msgstr "Compléter le profil de l'entreprise"
 msgid "Let people know more about your organization."
 msgstr "Faites connaître votre organisation."
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Address"
-msgstr "Adresse"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Address Information"
-msgstr "Informations d'adresse"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "City"
-msgstr "Ville"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Hospital name"
-msgstr "Hôpital"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Organization type"
-msgstr "Nom de l'organisation"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Phone"
-msgstr "Numéro de téléphone"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Postal code"
-msgstr "Code postal"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Private Practice"
 msgstr "Cabinet privé"
-
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "e.g., University Hospital Zürich"
-msgstr "p. ex., Hôpital universitaire de Zurich"
 
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #, elixir-autogen, elixir-format
@@ -572,3 +444,28 @@ msgstr "Aperçu"
 #, elixir-autogen, elixir-format
 msgid "View and manage your upcoming interviews"
 msgstr "Voir et gérer vos entretiens à venir"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Briefly describe your organization"
+msgstr "Décrivez brièvement votre organisation"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Organization Type"
+msgstr "Nom de l'organisation"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Select a location"
+msgstr "Sélectionnez un emplacement"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Tell us about your organization"
+msgstr "Parlez-nous de votre organisation"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Upload company Logo"
+msgstr "Télécharger le logo de l'entreprise"

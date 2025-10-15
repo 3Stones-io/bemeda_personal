@@ -64,8 +64,10 @@ msgstr "Buone notizie! Ti abbiamo fatto un'offerta."
 #: lib/bemeda_personal/accounts/email_templates/confirmation_email.ex
 #: lib/bemeda_personal/accounts/email_templates/employer_job_application_received_email.ex
 #: lib/bemeda_personal/accounts/email_templates/employer_job_application_status_email.ex
+#: lib/bemeda_personal/accounts/email_templates/invitation_email.ex
 #: lib/bemeda_personal/accounts/email_templates/job_application_received_email.ex
 #: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
 #: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
 #: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
 #: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
@@ -504,3 +506,58 @@ msgstr "I dettagli del suo colloquio sono stati aggiornati."
 #, elixir-autogen, elixir-format
 msgid "Your interview has been scheduled successfully."
 msgstr "Il suo colloquio è stato pianificato con successo."
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Invitation"
+msgstr "BemedaPersonal | Invito"
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "BemedaPersonal | Magic Link"
+msgstr "BemedaPersonal | Link magico"
+
+#: lib/bemeda_personal/accounts/email_templates/invitation_email.ex
+#, elixir-autogen, elixir-format
+msgid "Get Started"
+msgstr "Inizia"
+
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you didn't request this email, please ignore this."
+msgstr "Se non hai richiesto questa email, ignorala."
+
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
+#, elixir-autogen, elixir-format
+msgid "Log in to your account"
+msgstr "Accedi al tuo account"
+
+#: lib/bemeda_personal/accounts/email_templates/invitation_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Welcome to BemedaPersonal!"
+msgstr "Benvenuto in BemedaPersonal!"
+
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You can log into your account by visiting the URL below:"
+msgstr "Puoi accedere al tuo account visitando l'URL qui sotto:"
+
+#: lib/bemeda_personal/accounts/email_templates/invitation_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "You can now start posting jobs and connecting with qualified medical professionals."
+msgstr "Ora puoi iniziare a pubblicare offerte di lavoro e a connetterti con professionisti sanitari qualificati."
+
+#: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
+#, elixir-autogen, elixir-format
+msgid "Your login link is ready"
+msgstr "Il tuo link di accesso è pronto"
+
+#: lib/bemeda_personal/accounts/email_templates/invitation_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "Your organization account has been created successfully."
+msgstr "Il tuo account organizzativo è stato creato con successo."

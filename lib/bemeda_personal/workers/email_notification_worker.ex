@@ -64,7 +64,7 @@ defmodule BemedaPersonal.Workers.EmailNotificationWorker do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"type" => "new_message"} = args}) do
-    recipient = Accounts.get_user!(Scope.system(), args["recipient_id"])
+    recipient = Accounts.get_user!(args["recipient_id"])
 
     # For employers, we need to load their company to create proper scope
     scope =

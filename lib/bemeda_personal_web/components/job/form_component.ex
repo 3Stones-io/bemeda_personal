@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
 
   use BemedaPersonalWeb, :live_component
 
-  import BemedaPersonalWeb.Components.Job.InputComponents
+  import BemedaPersonalWeb.Components.Core.CustomInputComponents
   import Phoenix.HTML.Form, only: [input_value: 2]
 
   alias BemedaPersonal.JobPostings
@@ -519,10 +519,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
   end
 
   defp get_translated_options(field) do
-    JobPostings.JobPosting
-    |> Ecto.Enum.values(field)
-    |> Stream.map(&to_string/1)
-    |> Enum.map(fn value -> {translate_enum_value(field, value), value} end)
+    SharedHelpers.get_translated_options(field, JobPostings.JobPosting, &translate_enum_value/2)
   end
 
   defp get_media_data(media_asset) do

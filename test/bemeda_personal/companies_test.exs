@@ -165,7 +165,7 @@ defmodule BemedaPersonal.CompaniesTest do
         name: "some name",
         size: "some size",
         description: "some description",
-        location: "some location",
+        location: "Zurich",
         industry: "some industry",
         website_url: "https://example.com",
         logo_url: "some logo_url"
@@ -192,7 +192,7 @@ defmodule BemedaPersonal.CompaniesTest do
       valid_attrs = %{
         name: "New Company",
         industry: "Healthcare",
-        location: "Basel, Switzerland"
+        location: "Basel-Stadt"
       }
 
       # This will FAIL until we implement create_company/2 with scope
@@ -232,7 +232,7 @@ defmodule BemedaPersonal.CompaniesTest do
       valid_attrs = %{
         name: "Test Company",
         industry: "Healthcare",
-        location: "Zurich, Switzerland"
+        location: "Zurich"
       }
 
       {:ok, company} = Companies.create_company(scope, valid_attrs)

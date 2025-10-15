@@ -215,7 +215,7 @@ defmodule BemedaPersonal.JobOffersTest do
       user = user_fixture(%{first_name: "John", last_name: "Doe", city: "Zurich"})
 
       company =
-        company_fixture(employer_user_fixture(), %{name: "Test Company", location: "Switzerland"})
+        company_fixture(employer_user_fixture(), %{name: "Test Company", location: "Zurich"})
 
       job_posting =
         job_posting_fixture(company, %{title: "Software Engineer", location: "Remote"})
@@ -230,7 +230,7 @@ defmodule BemedaPersonal.JobOffersTest do
       assert variables["Job_Title"] == "Software Engineer"
       assert variables["Work_Location"] == "Remote"
       assert variables["City"] == "Zurich"
-      assert variables["Employer_Country"] == "Switzerland"
+      assert variables["Employer_Country"] == "Zurich"
       assert variables["Date"] == Date.to_string(Date.utc_today())
       assert String.starts_with?(variables["Serial_Number"], "JO-#{Date.utc_today().year}-")
     end

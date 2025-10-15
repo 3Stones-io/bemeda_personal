@@ -55,7 +55,12 @@ defmodule BemedaPersonalWeb.CompanyPublicLive.JobsTest do
 
       assert html =~ "Jobs at #{company.name}"
       assert html =~ company.industry
-      assert html =~ company.location || "Remote"
+
+      if company.location do
+        assert html =~ to_string(company.location)
+      else
+        assert html =~ "Remote"
+      end
 
       assert html =~ job1.title
       assert html =~ job2.title

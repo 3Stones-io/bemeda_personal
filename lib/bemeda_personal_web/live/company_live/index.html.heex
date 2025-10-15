@@ -2,37 +2,17 @@
   <section
     :if={@live_action in [:new, :edit]}
     id="company-form-section"
-    class="px-4 sm:px-6 md:px-8 w-full py-4 sm:py-6 md:py-8 lg:max-w-[1000px] lg:mx-auto"
+    class="min-h-screen grid"
   >
-    <div class="mb-6">
-      <div :if={@live_action == :edit} class="flex items-center gap-1 mb-4 lg:hidden">
-        <.link
-          navigate={~p"/company"}
-          class="flex items-center text-neutral-500 hover:text-gray-700"
-        >
-          <img src="/images/icons/icon-chevron-left.svg" alt="" class="w-6 h-6" />
-          <span class="text-[16px] font-medium">
-            {dgettext("companies", "Company profile")}
-          </span>
-        </.link>
-      </div>
-      <.heading level="h1" class="text-lg sm:text-xl lg:text-2xl font-medium text-gray-700">
-        {if @live_action == :new,
-          do: dgettext("companies", "Create Company Profile"),
-          else: dgettext("companies", "Edit Company Profile")}
-      </.heading>
-    </div>
-
-    <.card variant="default" padding="large" class="mb-8 shadow-sm">
-      <.live_component
-        module={BemedaPersonalWeb.Components.Company.FormComponent}
-        action={@live_action}
-        company={@company}
-        current_user={@current_user}
-        id={@company.id || :new}
-        return_to={~p"/company"}
-      />
-    </.card>
+    <.live_component
+      module={BemedaPersonalWeb.Components.Company.FormComponent}
+      action={@live_action}
+      company={@company}
+      current_scope={@current_scope}
+      current_user={@current_user}
+      id={@company.id || :new}
+      return_to={~p"/company"}
+    />
   </section>
 
   <section

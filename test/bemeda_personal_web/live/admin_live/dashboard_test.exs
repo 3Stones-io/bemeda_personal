@@ -5,12 +5,13 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
   import BemedaPersonal.CompaniesFixtures
   import BemedaPersonal.JobApplicationsFixtures
   import BemedaPersonal.JobPostingsFixtures
+  import Ecto.Query
   import Phoenix.LiveViewTest
 
   setup do
     # Admin access is controlled via AdminAuth plug using HTTP Basic Auth.
     # We need to provide the correct credentials for testing.
-    admin_user = user_fixture(%{email: "admin@example.com", user_type: :employer})
+    admin_user = user_fixture(%{email: "admin@example.com", user_type: :employer, locale: :en})
 
     # Get admin credentials from application config (not environment variables)
     admin_username = Application.get_env(:bemeda_personal, :admin)[:username]
@@ -342,9 +343,226 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Should display zeros for counts
       assert html =~ "Admin Dashboard"
-      # Should not crash when no data exists
+    end
+  end
+
+  describe "invited users section" do
+    test "displays invited users with pending status", %{
+      conn: conn,
+      auth_header: auth_header,
+      admin: admin
+    } do
+      invited_user =
+        unconfirmed_user_fixture(%{
+          email: "invited@example.com",
+          first_name: "John",
+          last_name: "Doe",
+          user_type: :employer,
+          registration_source: :invited
+        })
+
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, _live, html} = live(conn, ~p"/admin")
+
+      assert html =~ invited_user.email
+      assert html =~ invited_user.first_name
+      assert html =~ invited_user.last_name
+      assert html =~ "Ausstehend"
+    end
+
+    test "displays invited users with accepted status", %{
+      conn: conn,
+      auth_header: auth_header,
+      admin: admin
+    } do
+      invited_user =
+        user_fixture(%{
+          email: "accepted@example.com",
+          first_name: "Jane",
+          last_name: "Smith",
+          user_type: :employer,
+          registration_source: :invited,
+          confirmed_at: DateTime.utc_now()
+        })
+
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, _live, html} = live(conn, ~p"/admin")
+
+      assert html =~ invited_user.email
+      assert html =~ invited_user.first_name
+      assert html =~ invited_user.last_name
+      assert html =~ "Akzeptiert"
+    end
+
+    test "displays multiple invited users ordered by most recent", %{
+      conn: conn,
+      auth_header: auth_header,
+      admin: admin
+    } do
+      # Create older user
+      older_user =
+        user_fixture(%{
+          email: "older@example.com",
+          first_name: "Older",
+          last_name: "User",
+          registration_source: :invited
+        })
+
+      older_timestamp = DateTime.add(DateTime.utc_now(), -2, :day)
+
+      query =
+        from(u in BemedaPersonal.Accounts.User, where: u.id == ^older_user.id)
+
+      BemedaPersonal.Repo.update_all(query, set: [inserted_at: older_timestamp])
+
+      # Create newer user
+      newer_user =
+        user_fixture(%{
+          email: "newer@example.com",
+          first_name: "Newer",
+          last_name: "User",
+          registration_source: :invited
+        })
+
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, _live, html} = live(conn, ~p"/admin")
+
+      assert html =~ older_user.email
+      assert html =~ newer_user.email
+
+      newer_position =
+        html
+        |> :binary.match(newer_user.email)
+        |> elem(0)
+
+      older_position =
+        html
+        |> :binary.match(older_user.email)
+        |> elem(0)
+
+      assert newer_position < older_position
+    end
+
+    test "does not display non-invited users in invited users section", %{
+      conn: conn,
+      auth_header: auth_header,
+      admin: admin
+    } do
+      _regular_user =
+        user_fixture(%{
+          email: "regular@example.com",
+          registration_source: :email
+        })
+
+      invited_user =
+        user_fixture(%{
+          email: "invited@example.com",
+          registration_source: :invited
+        })
+
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, live, _html} = live(conn, ~p"/admin")
+
+      html = render(live)
+
+      invited_section =
+        html
+        |> String.split("Eingeladene Benutzer")
+        |> Enum.at(1, "")
+        |> String.split("Recent Activity")
+        |> Enum.at(0, "")
+
+      assert invited_section =~ invited_user.email
+      refute invited_section =~ "regular@example.com"
+    end
+
+    test "shows empty state when no invited users exist", %{
+      conn: conn,
+      auth_header: auth_header,
+      admin: admin
+    } do
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, _live, html} = live(conn, ~p"/admin")
+
+      assert html =~ "Keine Einladungen verfügbar"
+    end
+
+    test "displays invitation count correctly", %{
+      conn: conn,
+      auth_header: auth_header,
+      admin: admin
+    } do
+      _user1 = user_fixture(%{email: "invited1@example.com", registration_source: :invited})
+      _user2 = user_fixture(%{email: "invited2@example.com", registration_source: :invited})
+      _user3 = user_fixture(%{email: "invited3@example.com", registration_source: :invited})
+
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, _live, html} = live(conn, ~p"/admin")
+
+      assert html =~ "3"
+      assert html =~ "Einladungen"
+    end
+
+    test "displays invite user button", %{conn: conn, auth_header: auth_header, admin: admin} do
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, live, html} = live(conn, ~p"/admin")
+
+      assert html =~ "Benutzer einladen"
+      assert has_element?(live, "a[href='/admin/invitations/new']")
+    end
+
+    test "limits invited users to 20 most recent", %{
+      conn: conn,
+      auth_header: auth_header,
+      admin: admin
+    } do
+      for i <- 1..25 do
+        user_fixture(%{
+          email: "invited#{i}@example.com",
+          registration_source: :invited,
+          inserted_at: DateTime.add(DateTime.utc_now(), -i, :day)
+        })
+      end
+
+      conn =
+        conn
+        |> log_in_user(admin)
+        |> admin_conn(auth_header)
+
+      {:ok, _live, html} = live(conn, ~p"/admin")
+
+      assert html =~ "invited1@example.com"
+      assert html =~ "invited20@example.com"
+      refute html =~ "invited25@example.com"
     end
   end
 end

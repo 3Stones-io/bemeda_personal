@@ -36,13 +36,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
     test "redirects if user is not admin of the company", %{conn: conn} do
       other_user = employer_user_fixture(%{email: "other@example.com"})
 
-      assert {:error, {:redirect, %{to: path, flash: flash}}} =
+      assert {:error, {:redirect, %{to: path}}} =
                conn
                |> log_in_user(other_user)
                |> live(~p"/company/jobs")
 
       assert path == "/company/new"
-      assert flash["error"] == "You need to create a company first."
     end
 
     test "renders company jobs page with job list", %{company: company, conn: conn, user: user} do

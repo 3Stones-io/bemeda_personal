@@ -20,7 +20,7 @@ defmodule BemedaPersonal.CompaniesFixtures do
       Enum.into(attrs, %{
         description: "some description",
         industry: "some industry",
-        location: "some location",
+        location: "Zurich",
         name: "some name",
         phone_number: "+41234738475",
         size: "some size",

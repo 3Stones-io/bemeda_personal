@@ -1086,8 +1086,8 @@ msgstr "Status - in Chat-Interface aktualisieren"
 msgid "%{company} has extended you a job offer for %{position}."
 msgstr "%{company} hat Ihnen ein Stellenangebot für %{position} unterbreitet."
 
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
-#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/offer_details_component.ex
 #: lib/bemeda_personal_web/components/scheduling/interview_form_component.ex
 #, elixir-autogen, elixir-format
@@ -1530,8 +1530,8 @@ msgstr "Meine Bewerbungen"
 msgid "Required"
 msgstr "Erforderlich"
 
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
-#: lib/bemeda_personal_web/components/job/input_components.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Start writing"
@@ -1621,6 +1621,7 @@ msgstr "Remote-Arbeit erlaubt"
 msgid "See more"
 msgstr "Mehr anzeigen"
 
+#: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/components/job/form_component.ex
 #: lib/bemeda_personal_web/components/job_application/form_component.ex
 #: lib/bemeda_personal_web/live/company_job_live/review.html.heex
@@ -1715,7 +1716,7 @@ msgstr "Anpassungsfähigkeit"
 msgid "Adaptive equipment training"
 msgstr "Training für adaptive Ausrüstung"
 
-#: lib/bemeda_personal_web/components/job/input_components.ex
+#: lib/bemeda_personal_web/components/core/custom_input_components.ex
 #, elixir-autogen, elixir-format
 msgid "Add required skills"
 msgstr "Erforderliche Fähigkeiten hinzufügen"
@@ -2535,3 +2536,8 @@ msgstr "muss eine Zeichenkette sein"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Interview"
 msgstr "Im Vorstellungsgespräch"
+
+#: lib/bemeda_personal_web/components/company/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Continue"
+msgstr "Weiter"
