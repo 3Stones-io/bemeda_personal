@@ -297,6 +297,7 @@ defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
         phx-update="ignore"
         phx-hook="DropDownInput"
       >
+      <input type="hidden" name={@name} id={@id} value={@value} />
         <button
           class={[
             "text-sm text-form-placeholder-txt flex items-center justify-between w-full p-2 border-b-[1px] border-form-input-border mb-1",
@@ -326,7 +327,7 @@ defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
           dropdown_options={@dropdown_options}
         />
       </div>
-      <input type="hidden" name={@name} id={@id} value={@value} />
+
 
       <.custom_error :for={msg <- @errors}>{msg}</.custom_error>
     </div>
