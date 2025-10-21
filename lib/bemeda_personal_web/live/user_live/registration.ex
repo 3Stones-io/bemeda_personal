@@ -3,8 +3,6 @@ defmodule BemedaPersonalWeb.UserLive.Registration do
 
   use BemedaPersonalWeb, :live_view
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents
-
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Accounts.User
 
@@ -15,8 +13,8 @@ defmodule BemedaPersonalWeb.UserLive.Registration do
       <div class="grid gap-2 text-[#636872] w-[95%] max-w-md mx-auto bg-white rounded-2xl p-8 text-center text-sm md:text-base">
         <h2 class="font-medium text-xl text-[#1f1f1f]">You've got mail!</h2>
         <p>
-          We just sent you an activation link to verify your email address.
-          Check your spam folder if you don’t see it in your inbox.
+          {dgettext("auth", "We just sent you an activation link to verify your email address.")}
+          {dgettext("auth", "Check your spam folder if you don’t see it in your inbox.")}
         </p>
 
         <div>
@@ -31,11 +29,11 @@ defmodule BemedaPersonalWeb.UserLive.Registration do
           href={"mailto:#{@user.email}"}
           class="w-full bg-[#7b4eab] text-white px-5 py-3 rounded-lg"
         >
-          Open my email
+          {dgettext("auth", "Open my email")}
         </.link>
 
         <p class="text-xs">
-          Didn’t receive any email?
+          {dgettext("auth", "Didn’t receive any email?")}
         </p>
 
         <p
@@ -43,14 +41,16 @@ defmodule BemedaPersonalWeb.UserLive.Registration do
           id="resend-countdown"
           class="text-xs"
         >
-          Resend link in {@resend_countdown} sec
+          {dgettext("auth", "Resend link in")}
+          {@resend_countdown}
+          {dgettext("auth", "sec")}
         </p>
         <.link
           :if={@resend_countdown == 0}
           class="text-[#7b4eab] text-xs underline font-medium"
           phx-click="resend_activation_email"
         >
-          Resend link
+          {dgettext("auth", "Resend link")}
         </.link>
       </div>
     </section>
@@ -230,12 +230,12 @@ defmodule BemedaPersonalWeb.UserLive.Registration do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:form, nil)
      |> assign(:account_type, nil)
-     |> assign(:user, nil)
+     |> assign(:form, nil)
      |> assign(:resend_countdown, 60)
      |> assign(:step, :one)
-     |> assign(:terms_accepted, false), temporary_assigns: [form: nil]}
+     |> assign(:terms_accepted, false)
+     |> assign(:user, nil), temporary_assigns: [form: nil]}
   end
 
   @impl Phoenix.LiveView
@@ -256,7 +256,11 @@ defmodule BemedaPersonalWeb.UserLive.Registration do
          socket
          |> put_flash(
            :info,
-           "An email was sent to #{user.email}, please access it to confirm your account."
+           dgettext(
+             "auth",
+             "An email was sent to %{user_email}, please access it to confirm your account.",
+             user_email: user.email
+           )
          )
          |> assign(:step, :three)
          |> assign(:user, user)}
@@ -303,7 +307,11 @@ defmodule BemedaPersonalWeb.UserLive.Registration do
          put_flash(
            socket,
            :info,
-           "An email was sent to #{socket.assigns.user.email}, please access it to confirm your account."
+           dgettext(
+             "auth",
+             "An email was sent to %{user_email}, please access it to confirm your account.",
+             user_email: socket.assigns.user.email
+           )
          )}
 
       {:error, _error} ->

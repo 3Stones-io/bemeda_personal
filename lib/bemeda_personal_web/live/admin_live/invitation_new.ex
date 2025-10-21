@@ -1,4 +1,5 @@
 defmodule BemedaPersonalWeb.AdminLive.InvitationNew do
+  @moduledoc false
   use BemedaPersonalWeb, :live_view
 
   alias BemedaPersonal.Accounts

@@ -151,6 +151,7 @@ msgstr "Geschäftliche E-Mail-Adresse*"
 msgid "Create my account"
 msgstr "Konto erstellen"
 
+#: lib/bemeda_personal_web/live/user_live/login.ex
 #: lib/bemeda_personal_web/live/user_live/registration.ex
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Email address"
@@ -170,3 +171,108 @@ msgstr "Ich stimme den Bemeda Personal "
 #, elixir-autogen, elixir-format
 msgid "Your bridge to the right healthcare opportunities in Switzerland"
 msgstr "Ihre Brücke zu den richtigen Gesundheitskarrieren in der Schweiz"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "An email was sent to %{user_email}, please access it to confirm your account."
+msgstr "Eine E-Mail wurde an %{user_email} gesendet. Bitte öffnen Sie diese, um Ihr Konto zu bestätigen."
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Check your spam folder if you don’t see it in your inbox."
+msgstr "Überprüfen Sie Ihren Spam-Ordner, wenn Sie sie nicht in Ihrem Posteingang sehen."
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Didn’t receive any email?"
+msgstr "Keine E-Mail erhalten?"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "E-Mail"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions for logging in shortly."
+msgstr "Wenn Ihre E-Mail-Adresse in unserem System vorhanden ist, erhalten Sie in Kürze Anweisungen zur Anmeldung."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Invalid email or password"
+msgstr "Ungültige E-Mail oder Passwort"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Log in with password"
+msgstr "Mit Passwort anmelden"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Logged out successfully."
+msgstr "Erfolgreich abgemeldet."
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Login"
+msgstr "Anmelden"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "Open my email"
+msgstr "Meine E-Mail öffnen"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Or"
+msgstr "Oder"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr "Passwort"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr "Passwort erfolgreich aktualisiert!"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "Resend link"
+msgstr "Link erneut senden"
+
+#: lib/bemeda_personal_web/live/user_live/login.ex
+#, elixir-autogen, elixir-format
+msgid "Sign in to Bemeda Personal"
+msgstr "Bei Bemeda Personal anmelden"
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "The link is invalid or it has expired."
+msgstr "Der Link ist ungültig oder abgelaufen."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "User confirmed successfully."
+msgstr "Benutzer erfolgreich bestätigt."
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "We just sent you an activation link to verify your email address."
+msgstr "Wir haben Ihnen gerade einen Aktivierungslink zur Überprüfung Ihrer E-Mail-Adresse gesendet."
+
+#: lib/bemeda_personal_web/controllers/user_session_controller.ex
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
+msgstr "Willkommen zurück!"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Resend link in"
+msgstr "Link erneut senden"
+
+#: lib/bemeda_personal_web/live/user_live/registration.ex
+#, elixir-autogen, elixir-format
+msgid "sec"
+msgstr "Sek"

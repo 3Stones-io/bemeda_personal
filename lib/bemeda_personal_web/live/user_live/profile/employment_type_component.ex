@@ -3,8 +3,6 @@ defmodule BemedaPersonalWeb.UserLive.Profile.EmploymentTypeComponent do
 
   use BemedaPersonalWeb, :live_component
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents
-
   alias BemedaPersonal.Accounts
 
   @impl Phoenix.LiveComponent

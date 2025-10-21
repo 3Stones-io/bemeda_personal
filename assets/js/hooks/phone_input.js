@@ -32,7 +32,7 @@ export default PhoneInput = {
     this.selectedCode = null
     this.selectedCountryISO = null
 
-    this.initializeCountryCode(hiddenInput, promptText, optionsItems)
+    this.initializeCountryCode(hiddenInput, promptText, optionsItems, telInput)
 
     promptButton.addEventListener('click', (event) => {
       event.preventDefault()
@@ -101,12 +101,13 @@ export default PhoneInput = {
     })
   },
 
-  initializeCountryCode(hiddenInput, promptText, optionsItems) {
+  initializeCountryCode(hiddenInput, promptText, optionsItems, telInput) {
     const hiddenValue = hiddenInput.value.trim()
     let countryCode = '+41'
+    let phoneNumber = null
 
     if (hiddenValue) {
-      const phoneNumber = parsePhoneNumberFromString(hiddenValue)
+      phoneNumber = parsePhoneNumberFromString(hiddenValue)
       if (phoneNumber) {
         countryCode = '+' + phoneNumber.countryCallingCode
         this.selectedCountryISO = phoneNumber.country
@@ -128,10 +129,6 @@ export default PhoneInput = {
       this.selectedCode = code
       this.selectedCountryISO = this.getCountryISOFromCode(code)
       promptText.innerHTML = `<span class="text-base">${flag}</span><span>${code}</span>`
-
-      if (!hiddenValue) {
-        hiddenInput.value = code
-      }
     } else {
       const swissCountry = optionsItems.find(
         (item) => item.dataset.countryCode === '+41'
@@ -141,8 +138,12 @@ export default PhoneInput = {
         this.selectedCode = '+41'
         this.selectedCountryISO = 'CH'
         promptText.innerHTML = `<span class="text-base">${flag}</span><span>+41</span>`
-        hiddenInput.value = '+41'
       }
+    }
+
+    if (phoneNumber && phoneNumber.isValid()) {
+      const nationalFormat = phoneNumber.formatNational()
+      telInput.value = nationalFormat
     }
   },
 
@@ -208,7 +209,7 @@ export default PhoneInput = {
     const rawNumber = telInput.value.trim()
 
     if (!rawNumber) {
-      hiddenInput.value = this.selectedCode
+      hiddenInput.value = ''
       hiddenInput.dispatchEvent(new Event('input', { bubbles: true }))
       return
     }
@@ -250,7 +251,7 @@ export default PhoneInput = {
       if (cleanNumber) {
         hiddenInput.value = `${this.selectedCode}${cleanNumber}`
       } else {
-        hiddenInput.value = this.selectedCode
+        hiddenInput.value = ''
       }
     }
 

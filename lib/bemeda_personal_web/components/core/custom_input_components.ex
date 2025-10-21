@@ -1,7 +1,13 @@
 defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
   @moduledoc false
 
-  use BemedaPersonalWeb, :html
+  use Gettext, backend: BemedaPersonalWeb.Gettext
+  use Phoenix.Component
+
+  import BemedaPersonalWeb.Components.Core.Error, only: [error: 1, translate_error: 1]
+  import BemedaPersonalWeb.Components.Core.Icon
+
+  alias Phoenix.LiveView.JS
 
   @type assigns :: Phoenix.LiveView.Socket.assigns()
   @type output :: Phoenix.LiveView.Rendered.t()
@@ -336,7 +342,9 @@ defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
   def custom_input(%{type: "textarea"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id} class={@label_class} required={@rest[:required]}>{@label}</.label>
+      <.custom_label for={@id} class={@label_class} required={@rest[:required]}>
+        {@label}
+      </.custom_label>
       <textarea
         id={@id}
         name={@name}
@@ -833,15 +841,22 @@ defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
   @doc """
   Renders a label.
   """
-  attr :for, :string, default: nil
   attr :class, :any, default: nil
+  attr :for, :string, default: nil
+  attr :required, :boolean, default: false
   attr :rest, :global
+
   slot :inner_block, required: true
 
   @spec custom_label(assigns()) :: output()
   def custom_label(assigns) do
     ~H"""
-    <label for={@for} class={@class} {@rest}>
+    <label
+      for={@for}
+      class={@class}
+      {@rest}
+    >
+      <span :if={@required} class="text-red-600"> * </span>
       {render_slot(@inner_block)}
     </label>
     """
@@ -850,9 +865,9 @@ defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
   @doc """
   Renders a button.
   """
-  attr :type, :string, default: "button"
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled form name value)
+  attr :type, :string, default: "button"
 
   slot :inner_block, required: true
 

@@ -138,4 +138,21 @@ defmodule BemedaPersonalWeb.UserSessionControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
     end
   end
+
+  describe "flash message translations" do
+    test "flash messages respects user's preferred locale", %{conn: conn} do
+      user = user_fixture()
+      user_with_password = set_password(user)
+
+      logged_in_conn =
+        conn
+        |> init_test_session(locale: "it")
+        |> post(~p"/users/log_in", %{
+          "user" => %{"email" => user_with_password.email, "password" => valid_user_password()}
+        })
+
+      assert Phoenix.Flash.get(logged_in_conn.assigns.flash, :info) == "Bentornato!"
+      assert get_session(logged_in_conn, :locale) == "it"
+    end
+  end
 end

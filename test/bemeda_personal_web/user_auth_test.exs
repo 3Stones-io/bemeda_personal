@@ -5,6 +5,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.UserAuth
   alias Phoenix.LiveView
 
@@ -14,7 +15,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
   setup %{conn: conn} do
     conn =
       conn
-      |> Map.replace!(:secret_key_base, BemedaPersonalWeb.Endpoint.config(:secret_key_base))
+      |> Map.replace!(:secret_key_base, Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
     %{user: %{user_fixture() | authenticated_at: DateTime.utc_now(:second)}, conn: conn}
@@ -107,7 +108,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       recycled_conn =
         initial_conn
         |> recycle()
-        |> Map.replace!(:secret_key_base, BemedaPersonalWeb.Endpoint.config(:secret_key_base))
+        |> Map.replace!(:secret_key_base, Endpoint.config(:secret_key_base))
         |> fetch_cookies()
         |> init_test_session(%{user_remember_me: true})
 
@@ -142,7 +143,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
 
     test "broadcasts to the given live_socket_id", %{conn: conn} do
       live_socket_id = "users_sessions:abcdef-token"
-      BemedaPersonalWeb.Endpoint.subscribe(live_socket_id)
+      Endpoint.subscribe(live_socket_id)
 
       conn
       |> put_session(:live_socket_id, live_socket_id)
@@ -303,7 +304,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
         |> get_session()
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
@@ -315,7 +316,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       session = get_session(conn)
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
@@ -334,7 +335,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
         |> get_session()
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
@@ -359,7 +360,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
         |> get_session()
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
@@ -416,7 +417,9 @@ defmodule BemedaPersonalWeb.UserAuthTest do
     test "does not redirect if user is authenticated", %{conn: conn, user: user} do
       conn =
         conn
+        |> fetch_flash()
         |> assign(:current_scope, Scope.for_user(user))
+        |> assign(:current_user, user)
         |> UserAuth.require_authenticated_user([])
 
       refute conn.halted
@@ -429,7 +432,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       tokens = [%{token: "token1"}, %{token: "token2"}]
 
       for %{token: token} <- tokens do
-        BemedaPersonalWeb.Endpoint.subscribe("users_sessions:#{Base.url_encode64(token)}")
+        Endpoint.subscribe("users_sessions:#{Base.url_encode64(token)}")
       end
 
       UserAuth.disconnect_sessions(tokens)
@@ -457,7 +460,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
         |> get_session()
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}, current_user: user}
       }
 
@@ -486,7 +489,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
         |> get_session()
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}, current_user: incomplete_user}
       }
 
@@ -506,7 +509,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
         |> get_session()
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}, current_user: user}
       }
 
@@ -520,7 +523,7 @@ defmodule BemedaPersonalWeb.UserAuthTest do
       session = get_session(conn)
 
       socket = %LiveView.Socket{
-        endpoint: BemedaPersonalWeb.Endpoint,
+        endpoint: Endpoint,
         assigns: %{__changed__: %{}, flash: %{}, current_user: nil}
       }
 

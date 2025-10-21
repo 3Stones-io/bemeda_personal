@@ -3,8 +3,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
 
   use BemedaPersonalWeb, :live_component
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents,
-    only: [custom_input: 1, custom_button: 1]
+  import Phoenix.HTML.Form, only: [input_value: 2]
 
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
@@ -39,7 +38,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
         <.custom_input
           field={@form[:organization_type]}
           dropdown_prompt={
-            Phoenix.HTML.Form.input_value(f, :organization_type) ||
+            input_value(f, :organization_type) ||
               dgettext("companies", "Organization Type")
           }
           type="dropdown"
@@ -58,9 +57,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
 
         <.custom_input
           field={@form[:location]}
-          dropdown_prompt={
-            Phoenix.HTML.Form.input_value(f, :location) || dgettext("companies", "Location")
-          }
+          dropdown_prompt={input_value(f, :location) || dgettext("companies", "Location")}
           type="dropdown"
           label={dgettext("companies", "Select a location")}
           dropdown_options={get_translated_options(:location)}
@@ -109,7 +106,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
               type="button"
               class="cursor-pointer w-full h-full text-form-txt-primary text-sm border border-form-input-border hover:border-primary-400 rounded-full px-2 py-3 flex items-center justify-center gap-2"
               phx-click={
-                JS.push("replace_logo", target: @myself)
+                JS.push("delete_logo", target: @myself)
                 |> JS.dispatch("click", to: "#company_logo-hidden-file-input")
               }
             >
@@ -214,23 +211,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
      |> assign(:logo_editable?, !Enum.empty?(media_data))}
   end
 
-  def handle_event("edit_logo", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:logo_editable?, false)}
-  end
-
-  def handle_event("replace_logo", _params, socket) do
-    # Clear media data and show upload component again
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:logo_editable?, false)}
-  end
-
   def handle_event("delete_logo", _params, socket) do
-    # Clear media data on the server
     {:noreply,
      socket
      |> assign(:media_data, %{})

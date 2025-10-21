@@ -24,13 +24,13 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
     """
   end
 
-  attr :label, :string, required: true
-  attr :id, :string, required: true
   attr :accept, :string, default: "image/*"
-  attr :max_file_size, :integer, default: 10_000_000
   attr :class, :string, default: nil
-  attr :target, :any, default: nil
   attr :events_target, :string, default: nil
+  attr :id, :string, required: true
+  attr :label, :string, required: true
+  attr :max_file_size, :integer, default: 10_000_000
+  attr :target, :any, default: nil
 
   @spec image_upload_component(assigns()) :: output()
   def image_upload_component(assigns) do
@@ -116,8 +116,8 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
     """
   end
 
-  attr :id, :string, required: true
   attr :class, :string, default: nil
+  attr :id, :string, required: true
   attr :rest, :global
 
   @spec file_upload_progress(assigns()) :: output()
@@ -161,7 +161,11 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
 
             <button
               type="button"
-              class="upload-cancel-btn absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-opacity-50 rounded-full flex items-center justify-center text-white hover:bg-opacity-70 transition-all duration-200 z-20"
+              class={[
+                "upload-cancel-btn absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+                "w-8 h-8 bg-opacity-50 rounded-full flex items-center justify-center text-white hover:bg-opacity-70 transition-all duration-200 z-20",
+                @class
+              ]}
               title="Cancel upload"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

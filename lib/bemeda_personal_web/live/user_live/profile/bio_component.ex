@@ -3,8 +3,6 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
 
   use BemedaPersonalWeb, :live_component
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents
-
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Media
   alias BemedaPersonalWeb.Components.Shared.SharedComponents

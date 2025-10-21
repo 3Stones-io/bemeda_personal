@@ -8,8 +8,6 @@ defmodule BemedaPersonal.Repo.Migrations.MakeHashedPasswordNullable do
   end
 
   def down do
-    execute "DELETE FROM users WHERE hashed_password IS NULL"
-
     alter table(:users) do
       modify :hashed_password, :string, null: false
     end

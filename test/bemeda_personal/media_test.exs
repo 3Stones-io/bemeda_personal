@@ -1,6 +1,7 @@
 defmodule BemedaPersonal.MediaTest do
   use BemedaPersonal.DataCase, async: true
 
+  import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.MediaFixtures
 
   alias BemedaPersonal.Media
@@ -128,7 +129,7 @@ defmodule BemedaPersonal.MediaTest do
     end
 
     test "with valid data creates a media asset for user" do
-      user = BemedaPersonal.AccountsFixtures.user_fixture()
+      user = user_fixture()
 
       valid_attrs = %{
         file_name: "profile_picture.jpg",

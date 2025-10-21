@@ -3,7 +3,7 @@ defmodule BemedaPersonalWeb.UserLive.Profile.MedicalRoleComponent do
 
   use BemedaPersonalWeb, :live_component
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents
+  import Phoenix.HTML.Form, only: [input_value: 2]
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonalWeb.I18n
@@ -85,7 +85,7 @@ defmodule BemedaPersonalWeb.UserLive.Profile.MedicalRoleComponent do
         <.custom_input
           field={@form[:medical_role]}
           dropdown_prompt={
-            Phoenix.HTML.Form.input_value(@form, :medical_role) ||
+            input_value(@form, :medical_role) ||
               dgettext("profile", "Medical Role")
           }
           type="dropdown"
@@ -99,7 +99,7 @@ defmodule BemedaPersonalWeb.UserLive.Profile.MedicalRoleComponent do
         <.custom_input
           field={@form[:department]}
           dropdown_prompt={
-            Phoenix.HTML.Form.input_value(@form, :department) ||
+            input_value(@form, :department) ||
               dgettext("profile", "Medical Department")
           }
           type="dropdown"
@@ -112,7 +112,7 @@ defmodule BemedaPersonalWeb.UserLive.Profile.MedicalRoleComponent do
         <.custom_input
           field={@form[:location]}
           dropdown_prompt={
-            Phoenix.HTML.Form.input_value(@form, :location) ||
+            input_value(@form, :location) ||
               dgettext("profile", "Location")
           }
           type="dropdown"

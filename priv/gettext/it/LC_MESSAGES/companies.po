@@ -451,9 +451,9 @@ msgid "Briefly describe your organization"
 msgstr "Descrivi brevemente la tua organizzazione"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Organization Type"
-msgstr "Nome dell'organizzazione"
+msgstr "Tipo di organizzazione"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format

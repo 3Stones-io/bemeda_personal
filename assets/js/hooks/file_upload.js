@@ -1,7 +1,7 @@
 import 'dragster'
 import * as UpChunk from '@mux/upchunk'
-import generateVideoThumbnail from '../utils/video_thumbnail_generator'
 import generateImageThumbnail from '../utils/image_thumbnail_generator'
+import generateVideoThumbnail from '../utils/video_thumbnail_generator'
 
 export default FileUpload = {
   initializeTranslations() {

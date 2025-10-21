@@ -1,8 +1,6 @@
 defmodule BemedaPersonalWeb.UserLive.Login do
   use BemedaPersonalWeb, :live_view
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents, only: [custom_input: 1]
-
   alias BemedaPersonal.Accounts
 
   @impl Phoenix.LiveView
@@ -11,7 +9,9 @@ defmodule BemedaPersonalWeb.UserLive.Login do
     <Layouts.app flash={@flash} socket={@socket}>
       <section class="grid items-center min-h-screen">
         <div class="w-[95%] mx-auto max-w-md">
-          <h2 class="text-xl font-medium text-center mb-8">Sign in to Bemeda Personal</h2>
+          <h2 class="text-xl font-medium text-center mb-8">
+            {dgettext("auth", "Sign in to Bemeda Personal")}
+          </h2>
           <div>
             <.form
               :let={f}
@@ -25,19 +25,21 @@ defmodule BemedaPersonalWeb.UserLive.Login do
                 readonly={!!@current_scope}
                 field={f[:email]}
                 type="email"
-                placeholder="Email address"
+                placeholder={dgettext("auth", "Email address")}
                 autocomplete="username"
                 required
                 phx-mounted={JS.focus()}
               />
               <.button class="btn btn-primary w-full" phx-disable-with="Log in..." type="submit">
-                Login
+                {dgettext("auth", "Login")}
               </.button>
             </.form>
 
             <div id="divider" class="relative flex items-center py-4">
               <div class="flex-grow border-t border-gray-200"></div>
-              <span class="flex-shrink mx-4 text-sm text-gray-500 font-medium">Or</span>
+              <span class="flex-shrink mx-4 text-sm text-gray-500 font-medium">
+                {dgettext("auth", "Or")}
+              </span>
               <div class="flex-grow border-t border-gray-200"></div>
             </div>
 
@@ -53,7 +55,7 @@ defmodule BemedaPersonalWeb.UserLive.Login do
                 |> JS.toggle(to: "#toggle_form_button")
               }
             >
-              Log in with password
+              {dgettext("auth", "Log in with password")}
             </.button>
 
             <.form
@@ -69,14 +71,14 @@ defmodule BemedaPersonalWeb.UserLive.Login do
                 readonly={!!@current_scope}
                 field={f[:email]}
                 type="email"
-                placeholder="Email"
+                placeholder={dgettext("auth", "Email")}
                 autocomplete="username"
                 required
               />
               <.custom_input
                 field={@form[:password]}
                 type="password"
-                placeholder="Password"
+                placeholder={dgettext("auth", "Password")}
                 autocomplete="current-password"
               />
               <.button class="btn btn-primary w-full" name={@form[:remember_me].name} value="true">
@@ -115,7 +117,10 @@ defmodule BemedaPersonalWeb.UserLive.Login do
     end
 
     info =
-      "If your email is in our system, you will receive instructions for logging in shortly."
+      dgettext(
+        "auth",
+        "If your email is in our system, you will receive instructions for logging in shortly."
+      )
 
     {:noreply,
      socket

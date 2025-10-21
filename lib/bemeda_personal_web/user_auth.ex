@@ -102,14 +102,16 @@ defmodule BemedaPersonalWeb.UserAuth do
     else
       conn = fetch_cookies(conn, signed: [@remember_me_cookie])
 
-      if token = conn.cookies[@remember_me_cookie] do
-        {token,
-         conn
-         |> put_token_in_session(token)
-         |> put_session(:user_remember_me, true)}
-      else
-        nil
-      end
+      update_conn_token(conn, token)
+    end
+  end
+
+  defp update_conn_token(conn, _token) do
+    if token = conn.cookies[@remember_me_cookie] do
+      {token,
+       conn
+       |> put_token_in_session(token)
+       |> put_session(:user_remember_me, true)}
     end
   end
 
@@ -280,7 +282,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   def on_mount(:require_authenticated, _params, session, socket) do
     socket = mount_current_scope(socket, session)
 
-    if socket.assigns.current_scope && socket.assigns.current_scope.user do
+    if socket.assigns.current_user do
       {:cont, socket}
     else
       socket =
@@ -298,7 +300,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
     socket = mount_current_scope(socket, session)
 
-    if socket.assigns.current_scope && socket.assigns.current_scope.user do
+    if socket.assigns.current_user do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
     else
       {:cont, socket}
@@ -309,8 +311,8 @@ defmodule BemedaPersonalWeb.UserAuth do
     company_id = params["company_id"]
     company = Companies.get_company!(company_id)
 
-    if socket.assigns.current_scope && socket.assigns.current_scope.user &&
-         company.admin_user_id == socket.assigns.current_scope.user.id do
+    if socket.assigns.current_user &&
+         company.admin_user_id == socket.assigns.current_user.id do
       {:cont, Phoenix.Component.assign(socket, :company, company)}
     else
       socket =
@@ -326,7 +328,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   def on_mount(:require_no_existing_company, _params, _session, socket) do
-    user = socket.assigns.current_scope.user
+    user = socket.assigns.current_user
     company = Companies.get_company_by_user(user)
 
     if company do
@@ -340,7 +342,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   def on_mount(:require_user_company, _params, _session, socket) do
-    user = socket.assigns.current_scope.user
+    user = socket.assigns.current_user
     company = Companies.get_company_by_user(user)
 
     if company do
@@ -430,7 +432,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   def on_mount(:require_sudo_mode, _params, session, socket) do
     socket = mount_current_scope(socket, session)
 
-    if Accounts.sudo_mode?(socket.assigns.current_scope.user, -10) do
+    if Accounts.sudo_mode?(socket.assigns.current_user, -10) do
       {:cont, socket}
     else
       socket =
@@ -443,16 +445,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   end
 
   defp mount_current_scope(socket, session) do
-    user =
-      if user_token = session["user_token"] do
-        case Accounts.get_user_by_session_token(user_token) do
-          {user, _timestamp} -> user
-          nil -> nil
-        end
-      else
-        nil
-      end
-
+    user = fetch_user_from_token(session["user_token"])
     scope = Scope.for_user(user)
 
     socket
@@ -463,17 +456,21 @@ defmodule BemedaPersonalWeb.UserAuth do
   @spec assign_current_scope(conn(), any()) :: map()
   def assign_current_scope(conn, _opts) do
     user_token = get_session(conn, "user_token")
-
-    {user, _tokens} =
-      if user_token do
-        Accounts.get_user_by_session_token(user_token)
-      end || {nil, nil}
-
+    user = fetch_user_from_token(user_token)
     scope = build_user_scope(user)
 
     conn
     |> assign(:current_user, user)
     |> assign(:current_scope, scope)
+  end
+
+  defp fetch_user_from_token(nil), do: nil
+
+  defp fetch_user_from_token(user_token) do
+    case Accounts.get_user_by_session_token(user_token) do
+      {user, _timestamp} -> user
+      nil -> nil
+    end
   end
 
   @spec require_user_profile(Plug.Conn.t(), keyword()) :: Plug.Conn.t()
@@ -501,10 +498,11 @@ defmodule BemedaPersonalWeb.UserAuth do
   @spec require_admin_user(conn(), opts()) :: conn()
   def require_admin_user(conn, _opts) do
     company_id = conn.params["company_id"]
-    scope = build_user_scope(conn.assigns[:current_user])
+    user = conn.assigns[:current_user]
+    scope = build_user_scope(user)
     company = Companies.get_company!(scope, company_id)
 
-    if company.admin_user_id == get_user(conn).id do
+    if company.admin_user_id == user.id do
       conn
     else
       conn
@@ -519,7 +517,7 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   @spec require_no_existing_company(conn(), opts()) :: conn()
   def require_no_existing_company(conn, _opts) do
-    user = get_user(conn)
+    user = conn.assigns[:current_user]
     company = Companies.get_company_by_user(user)
 
     if company do
@@ -538,7 +536,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   """
   @spec require_job_seeker_user_type(conn(), opts()) :: conn()
   def require_job_seeker_user_type(conn, _opts) do
-    case get_user(conn) do
+    case conn.assigns[:current_user] do
       %{user_type: :job_seeker} ->
         conn
 
@@ -567,7 +565,7 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   @spec require_employer_user_type(conn(), opts()) :: conn()
   def require_employer_user_type(conn, _opts) do
-    case get_user(conn) do
+    case conn.assigns[:current_user] do
       %{user_type: :employer} ->
         conn
 
@@ -581,7 +579,7 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   @spec require_user_company(conn(), opts()) :: conn()
   def require_user_company(conn, _opts) do
-    user = get_user(conn)
+    user = conn.assigns[:current_user]
     company = Companies.get_company_by_user(user)
 
     if company do
@@ -600,7 +598,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   # Check sudo mode
   @spec redirect_if_user_is_authenticated(conn(), opts()) :: conn()
   def redirect_if_user_is_authenticated(conn, _opts) do
-    if get_user(conn) do
+    if conn.assigns[:current_user] do
       conn
       |> redirect(to: signed_in_path(conn))
       |> halt()
@@ -617,7 +615,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   """
   @spec require_authenticated_user(conn(), opts()) :: conn()
   def require_authenticated_user(conn, _opts) do
-    if get_user(conn) do
+    if conn.assigns[:current_user] do
       conn
     else
       conn
@@ -625,13 +623,6 @@ defmodule BemedaPersonalWeb.UserAuth do
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()
-    end
-  end
-
-  @spec get_user(conn()) :: User.t() | nil
-  def get_user(conn) do
-    if conn.assigns[:current_scope] && conn.assigns[:current_scope].user do
-      conn.assigns[:current_scope].user
     end
   end
 
@@ -647,23 +638,25 @@ defmodule BemedaPersonalWeb.UserAuth do
     scope = Scope.for_user(user)
 
     if user && user.user_type == :employer do
-      case Companies.get_company_by_user(user) do
-        nil -> scope
-        company -> Scope.put_company(scope, company)
-      end
+      put_company_in_user_scope(user, scope)
     else
       scope
     end
   end
 
-  defp profile_complete?(user) do
-    if user && user.user_type == :job_seeker do
-      user
-      |> Accounts.change_user_profile(%{})
-      |> Map.put(:action, :validate)
-      |> Map.get(:valid?)
-    else
-      true
+  defp put_company_in_user_scope(user, scope) do
+    case Companies.get_company_by_user(user) do
+      nil -> scope
+      company -> Scope.put_company(scope, company)
     end
   end
+
+  defp profile_complete?(%User{user_type: :job_seeker} = user) do
+    user
+    |> Accounts.change_user_profile(%{})
+    |> Map.put(:action, :validate)
+    |> Map.get(:valid?)
+  end
+
+  defp profile_complete?(_user), do: true
 end

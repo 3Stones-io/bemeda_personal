@@ -8,7 +8,6 @@ defmodule BemedaPersonal.Accounts.UserToken do
   import Ecto.Query
 
   alias BemedaPersonal.Accounts.User
-  alias BemedaPersonal.Accounts.UserToken
 
   @type context :: String.t()
   @type query :: Ecto.Query.t()
@@ -28,11 +27,11 @@ defmodule BemedaPersonal.Accounts.UserToken do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users_tokens" do
-    field :token, :binary
+    field :authenticated_at, :utc_datetime
     field :context, :string
     field :sent_to, :string
-    field :authenticated_at, :utc_datetime
-    belongs_to :user, BemedaPersonal.Accounts.User
+    field :token, :binary
+    belongs_to :user, User
 
     timestamps(type: :utc_datetime, updated_at: false)
   end
@@ -60,7 +59,7 @@ defmodule BemedaPersonal.Accounts.UserToken do
   def build_session_token(user) do
     token = :crypto.strong_rand_bytes(@rand_size)
     dt = user.authenticated_at || DateTime.utc_now(:second)
-    {token, %UserToken{token: token, context: "session", user_id: user.id, authenticated_at: dt}}
+    {token, %__MODULE__{token: token, context: "session", user_id: user.id, authenticated_at: dt}}
   end
 
   @doc """
@@ -105,7 +104,7 @@ defmodule BemedaPersonal.Accounts.UserToken do
     hashed_token = :crypto.hash(@hash_algorithm, token)
 
     {Base.url_encode64(token, padding: false),
-     %UserToken{
+     %__MODULE__{
        token: hashed_token,
        context: context,
        sent_to: sent_to,
@@ -171,6 +170,6 @@ defmodule BemedaPersonal.Accounts.UserToken do
   end
 
   defp by_token_and_context_query(token, context) do
-    from UserToken, where: [token: ^token, context: ^context]
+    from __MODULE__, where: [token: ^token, context: ^context]
   end
 end

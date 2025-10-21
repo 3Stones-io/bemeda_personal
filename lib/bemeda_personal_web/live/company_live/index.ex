@@ -7,6 +7,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonal.JobPostings
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Workers.ProcessTemplate
+  alias BemedaPersonalWeb.Components.Company.FormComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias Ecto.Multi

@@ -21,8 +21,8 @@ defmodule BemedaPersonal.Accounts do
   @type password :: String.t()
   @type scope :: Scope.t()
   @type token :: binary()
-  @type token_struct :: UserToken.t()
   @type user :: User.t()
+  @type user_token :: UserToken.t()
 
   ## Database getters
 
@@ -100,7 +100,7 @@ defmodule BemedaPersonal.Accounts do
     |> Repo.insert()
   end
 
-  @spec change_user_registration(User.t(), map(), keyword()) :: Ecto.Changeset.t()
+  @spec change_user_registration(user(), attrs(), opts()) :: changeset()
   def change_user_registration(user, attrs \\ %{}, opts \\ []) do
     User.registration_changeset(user, attrs, opts)
   end
@@ -322,7 +322,7 @@ defmodule BemedaPersonal.Accounts do
      `mix help phx.gen.auth`.
   """
   @spec login_user_by_magic_link(token()) ::
-          {:ok, {user(), list(token_struct())}} | {:error, :not_found}
+          {:ok, {user(), [user_token()]}} | {:error, :not_found}
   def login_user_by_magic_link(token) do
     {:ok, query} = UserToken.verify_email_token_query(token, "login")
 

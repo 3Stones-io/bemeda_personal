@@ -4,6 +4,9 @@ defmodule BemedaPersonalWeb.UserLive.LoginTest do
   import BemedaPersonal.AccountsFixtures
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.Accounts.UserToken
+  alias BemedaPersonal.Repo
+
   describe "login page" do
     test "renders login page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/log_in")
@@ -28,7 +31,7 @@ defmodule BemedaPersonalWeb.UserLive.LoginTest do
 
       assert html =~ "If your email is in our system"
 
-      assert BemedaPersonal.Repo.get_by!(BemedaPersonal.Accounts.UserToken, user_id: user.id).context ==
+      assert Repo.get_by!(UserToken, user_id: user.id).context ==
                "login"
     end
 

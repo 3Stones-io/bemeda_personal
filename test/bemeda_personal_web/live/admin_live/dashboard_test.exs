@@ -47,13 +47,12 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
       {:ok, _live, html} = live(conn, ~p"/admin")
 
       assert html =~ "Admin Dashboard"
-      # Check for header structure instead of specific text
-      assert html =~ "text-3xl font-bold text-gray-900"
-      assert html =~ "text-gray-600"
+      assert html =~ "Systemübersicht und Statistiken"
+      assert html =~ "Zuletzt aktualisiert"
+      assert html =~ "Automatische Aktualisierung alle 60 Sekunden"
     end
 
     test "displays user statistics", %{conn: conn, auth_header: auth_header, admin: admin} do
-      # Create test users
       _job_seeker = user_fixture(%{user_type: :job_seeker})
       _employer = user_fixture(%{user_type: :employer})
 
@@ -64,13 +63,12 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for user statistics cards
-      assert html =~ "text-3xl font-bold text-gray-900"
-      assert html =~ "bg-white rounded-lg shadow"
+      assert html =~ "Gesamtzahl Benutzer"
+      assert html =~ "Arbeitgeber"
+      assert html =~ "Arbeitssuchende"
     end
 
     test "displays company statistics", %{conn: conn, auth_header: auth_header, admin: admin} do
-      # Create test company
       employer = user_fixture(%{user_type: :employer})
       _company = company_fixture(employer)
 
@@ -81,12 +79,10 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for company stats card structure
-      assert html =~ "bg-white rounded-lg shadow"
+      assert html =~ "Unternehmen"
     end
 
     test "displays job posting statistics", %{conn: conn, auth_header: auth_header, admin: admin} do
-      # Create test data
       employer = user_fixture(%{user_type: :employer})
       company = company_fixture(employer)
       _job_posting = job_posting_fixture(company)
@@ -98,12 +94,10 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for job postings card structure
-      assert html =~ "text-3xl font-bold"
+      assert html =~ "Stellenanzeigen"
     end
 
     test "displays application statistics", %{conn: conn, auth_header: auth_header, admin: admin} do
-      # Create test data
       employer = user_fixture(%{user_type: :employer})
       job_seeker = user_fixture(%{user_type: :job_seeker})
       company = company_fixture(employer)
@@ -117,14 +111,11 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for applications statistics
-      assert html =~ "bg-white rounded-lg shadow"
-      # Check for application status section
-      assert html =~ "text-xl font-semibold"
+      assert html =~ "Bewerbungen"
+      assert html =~ "Bewerbungsstatus Übersicht"
     end
 
     test "displays recent users", %{conn: conn, auth_header: auth_header, admin: admin} do
-      # Create recent users
       user = user_fixture(%{email: "recent@example.com"})
 
       conn =
@@ -134,13 +125,11 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for recent users section
-      assert html =~ "text-lg font-semibold"
+      assert html =~ "Neue Benutzer"
       assert html =~ user.email
     end
 
     test "displays recent job postings", %{conn: conn, auth_header: auth_header, admin: admin} do
-      # Create recent job posting
       employer = user_fixture(%{user_type: :employer})
       company = company_fixture(employer, %{name: "Test Company"})
       job_posting = job_posting_fixture(company, %{title: "Senior Developer"})
@@ -152,14 +141,12 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for recent job postings section
-      assert html =~ "text-lg font-semibold"
+      assert html =~ "Neue Stellenanzeigen"
       assert html =~ job_posting.title
       assert html =~ company.name
     end
 
     test "displays recent applications", %{conn: conn, auth_header: auth_header, admin: admin} do
-      # Create recent application
       employer = user_fixture(%{user_type: :employer})
       job_seeker = user_fixture(%{user_type: :job_seeker, email: "applicant@example.com"})
       company = company_fixture(employer)
@@ -173,8 +160,7 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for recent applications section
-      assert html =~ "text-lg font-semibold"
+      assert html =~ "Neue Bewerbungen"
       assert html =~ job_posting.title
       assert html =~ job_seeker.email
     end
@@ -187,9 +173,8 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for chart containers
-      assert html =~ "registrations-chart"
-      assert html =~ "applications-chart"
+      assert html =~ "Tägliche Registrierungen (30 Tage)"
+      assert html =~ "Tägliche Bewerbungen (30 Tage)"
       assert html =~ "registrations-chart"
       assert html =~ "applications-chart"
     end
@@ -202,8 +187,7 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check for update time structure
-      assert html =~ "text-sm text-gray-500"
+      assert html =~ "Zuletzt aktualisiert"
       assert html =~ "UTC"
     end
   end
@@ -221,21 +205,16 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, live, _html} = live(conn, ~p"/admin")
 
-      # Create new data
       _new_user = user_fixture(%{email: "newuser@example.com"})
 
-      # Trigger refresh
       send(live.pid, :refresh_stats)
 
-      # Wait for LiveView to process the message
       :timer.sleep(100)
 
-      # The view should still render correctly after refresh
       html = render(live)
       assert html =~ "Admin Dashboard"
-      # Use locale-agnostic assertion - check for the stats card structure and numbers
-      assert html =~ "bg-white rounded-lg shadow"
-      assert html =~ "text-3xl font-bold"
+      assert html =~ "Gesamtzahl Benutzer"
+      assert html =~ "newuser@example.com"
     end
   end
 
@@ -270,7 +249,6 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
       auth_header: auth_header,
       admin: admin
     } do
-      # Create users and applications over different days
       _user_today = user_fixture()
       _user_yesterday = user_fixture(%{inserted_at: DateTime.add(DateTime.utc_now(), -1, :day)})
 
@@ -279,16 +257,12 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
         |> log_in_user(admin)
         |> admin_conn(auth_header)
 
-      {:ok, live, _html} = live(conn, ~p"/admin")
+      {:ok, live, html} = live(conn, ~p"/admin")
 
-      # Check that chart data is assigned
-      assert live
-             |> element("#registrations-chart")
-             |> has_element?()
-
-      assert live
-             |> element("#applications-chart")
-             |> has_element?()
+      assert has_element?(live, "#registrations-chart")
+      assert has_element?(live, "#applications-chart")
+      assert html =~ "Tägliche Registrierungen (30 Tage)"
+      assert html =~ "Tägliche Bewerbungen (30 Tage)"
     end
   end
 
@@ -301,8 +275,8 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
       {:ok, _live, html} = live(conn, ~p"/admin")
 
-      # Check that date format includes dots (DD.MM.YYYY)
       assert html =~ ~r/\d{2}\.\d{2}\.\d{4}/
+      assert html =~ "Zuletzt aktualisiert"
     end
   end
 

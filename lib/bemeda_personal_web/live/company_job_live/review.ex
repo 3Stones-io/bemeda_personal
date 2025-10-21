@@ -1,8 +1,6 @@
 defmodule BemedaPersonalWeb.CompanyJobLive.Review do
   use BemedaPersonalWeb, :live_view
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents
-
   alias BemedaPersonal.DateUtils
   alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.Components.Shared.Icons

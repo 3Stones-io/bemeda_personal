@@ -3,7 +3,6 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
 
   use BemedaPersonalWeb, :live_component
 
-  import BemedaPersonalWeb.Components.Core.CustomInputComponents
   import Phoenix.HTML.Form, only: [input_value: 2]
 
   alias BemedaPersonal.JobPostings

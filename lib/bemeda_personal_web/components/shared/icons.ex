@@ -84,7 +84,7 @@ defmodule BemedaPersonalWeb.Components.Shared.Icons do
     """
   end
 
-  @spec spinner_loader(map()) :: Phoenix.LiveView.Rendered.t()
+  @spec spinner_loader(assigns()) :: rendered()
   def spinner_loader(assigns) do
     ~H"""
     <svg

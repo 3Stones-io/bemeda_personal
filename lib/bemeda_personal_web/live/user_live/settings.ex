@@ -26,7 +26,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings do
           autocomplete="username"
           required
         />
-        <.button variant="primary" phx-disable-with="Changing...">
+        <.button variant="primary" phx-disable-with="Changing..." type="submit">
           {dgettext("accounts", "Change Email")}
         </.button>
       </.form>
@@ -62,7 +62,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings do
           label={dgettext("accounts", "Confirm new password")}
           autocomplete="new-password"
         />
-        <.button variant="primary" phx-disable-with="Saving...">
+        <.button variant="primary" phx-disable-with="Saving..." type="submit">
           {dgettext("accounts", "Save Password")}
         </.button>
       </.form>

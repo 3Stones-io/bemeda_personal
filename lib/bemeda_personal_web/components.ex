@@ -51,6 +51,9 @@ defmodule BemedaPersonalWeb.Components do
 
       # Legacy alias for backward compatibility
       alias BemedaPersonalWeb.Components.Shared.SharedComponents
+
+      # custom input components
+      import BemedaPersonalWeb.Components.Core.CustomInputComponents
     end
   end
 end
