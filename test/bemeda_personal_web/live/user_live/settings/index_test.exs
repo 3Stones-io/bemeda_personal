@@ -1,4 +1,4 @@
-defmodule BemedaPersonalWeb.UserLive.SettingsTest do
+defmodule BemedaPersonalWeb.UserLive.Settings.IndexTest do
   use BemedaPersonalWeb.ConnCase, async: true
 
   import BemedaPersonal.AccountsFixtures

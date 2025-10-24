@@ -289,9 +289,12 @@ defmodule BemedaPersonal.Accounts do
   @spec update_user_password(user(), attrs()) ::
           {:ok, {user(), list(token())}} | {:error, changeset()}
   def update_user_password(user, attrs) do
-    case user
-         |> User.password_changeset(attrs)
-         |> update_user_and_delete_all_tokens() do
+    tokens =
+      user
+      |> User.password_changeset(attrs)
+      |> update_user_and_delete_all_tokens()
+
+    case tokens do
       {:ok, {updated_user, _expired_tokens}} = result ->
         UserNotifier.deliver_password_changed(updated_user)
         result
@@ -516,7 +519,7 @@ defmodule BemedaPersonal.Accounts do
   end
 
   defp handle_valid_account_update(user, changeset, attrs, email_update_url_fun) do
-    email_changed? = Ecto.Changeset.get_change(changeset, :email) != nil
+    email_changed? = Ecto.Changeset.get_change(changeset, :email)
 
     if email_changed? do
       update_account_with_email_change(user, changeset, attrs, email_update_url_fun)
