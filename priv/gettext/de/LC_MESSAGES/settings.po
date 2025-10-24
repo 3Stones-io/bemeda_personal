@@ -1,0 +1,248 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "About"
+msgstr "Über uns"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Account Information"
+msgstr "Kontoinformationen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr "Kontoeinstellungen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "Account deleted successfully."
+msgstr "Konto erfolgreich gelöscht."
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "Account information updated successfully."
+msgstr "Kontoinformationen erfolgreich aktualisiert."
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "Account information updated. A link to confirm your email change has been sent to the new address."
+msgstr "Kontoinformationen aktualisiert. Ein Link zur Bestätigung Ihrer E-Mail-Änderung wurde an die neue Adresse gesendet."
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Are you sure you want to delete your account?"
+msgstr "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
+#, elixir-autogen, elixir-format
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
+#, elixir-autogen, elixir-format
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Company Information"
+msgstr "Unternehmensinformationen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Company Size"
+msgstr "Unternehmensgröße"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "Company information updated successfully."
+msgstr "Unternehmensinformationen erfolgreich aktualisiert."
+
+#: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "Neues Passwort bestätigen"
+
+#: lib/bemeda_personal_web/components/shared/shared_components.ex
+#, elixir-autogen, elixir-format
+msgid "Copyright Bemeda Personal © 2025 all rights reserved."
+msgstr "Copyright Bemeda Personal © 2025 alle Rechte vorbehalten."
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Date of Birth"
+msgstr "Geburtsdatum"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Delete Account"
+msgstr "Konto löschen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Delete my account"
+msgstr "Mein Konto löschen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Deleting this account will remove all your profile data, job listings and Received applications."
+msgstr "Das Löschen dieses Kontos entfernt alle Ihre Profildaten, Stellenanzeigen und erhaltenen Bewerbungen."
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "E-Mail"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Email Address"
+msgstr "E-Mail-Adresse"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "Email Notifications"
+msgstr "E-Mail-Benachrichtigungen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "Failed to delete account. Please try again."
+msgstr "Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#, elixir-autogen, elixir-format
+msgid "Female"
+msgstr "Weiblich"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#, elixir-autogen, elixir-format
+msgid "First Name"
+msgstr "Vorname"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Gender"
+msgstr "Geschlecht"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#, elixir-autogen, elixir-format
+msgid "Last Name"
+msgstr "Nachname"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Location"
+msgstr "Standort"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#, elixir-autogen, elixir-format
+msgid "Male"
+msgstr "Männlich"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "My Info"
+msgstr "Meine Informationen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "Name"
+
+#: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
+#, elixir-autogen, elixir-format
+msgid "New password (12 or more characters)"
+msgstr "Neues Passwort (12 oder mehr Zeichen)"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Nil"
+msgstr "Keine Angabe"
+
+#: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
+#, elixir-autogen, elixir-format
+msgid "Old password"
+msgstr "Altes Passwort"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Organization Name"
+msgstr "Organisationsname"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#, elixir-autogen, elixir-format
+msgid "Phone"
+msgstr "Telefon"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Phone Number"
+msgstr "Telefonnummer"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
+#, elixir-autogen, elixir-format
+msgid "Save"
+msgstr "Speichern"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
+#, elixir-autogen, elixir-format
+msgid "Submitting..."
+msgstr "Wird gesendet..."
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Type of organization"
+msgstr "Art der Organisation"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "View public profile"
+msgstr "Öffentliches Profil ansehen"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Website URL"
+msgstr "Website-URL"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Work Email Address"
+msgstr "Geschäftliche E-Mail-Adresse"
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Would you like to delete your Bemeda Personal account? Deleting this account will remove all your profile data, job listings and Received applications."
+msgstr "Möchten Sie Ihr Bemeda Personal-Konto löschen? Das Löschen dieses Kontos entfernt alle Ihre Profildaten, Stellenanzeigen und erhaltenen Bewerbungen."
+
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
+#, elixir-autogen, elixir-format
+msgid "You are not authorized to update this company."
+msgstr "Sie sind nicht berechtigt, dieses Unternehmen zu aktualisieren."

@@ -986,3 +986,22 @@ trix-editor.trix-editor-custom .trix-content h1 {
     align-self: start;
   }
 }
+
+.settings-media-container {
+  position: relative;
+  margin-bottom: 2.5rem;
+  display: grid;
+  grid-template-columns: 1.2em 1fr 2fr;
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.settings-media-container > .video-placeholder {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+.settings-media-container > .logo-container {
+  position: absolute;
+  grid-column: 2 / 3;
+  grid-row: 3 / -1;
+}

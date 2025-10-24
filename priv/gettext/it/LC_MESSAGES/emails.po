@@ -69,6 +69,7 @@ msgstr "Buone notizie! Ti abbiamo fatto un'offerta."
 #: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
 #: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
 #: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
 #: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
 #: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
 #: lib/bemeda_personal/accounts/user_notifier.ex
@@ -561,3 +562,35 @@ msgstr "Il tuo link di accesso è pronto"
 #, elixir-autogen, elixir-format
 msgid "Your organization account has been created successfully."
 msgstr "Il tuo account organizzativo è stato creato con successo."
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "BemedaPersonal | Password Changed"
+msgstr "BemedaPersonal | Richiesta di reset password"
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you did not make this change, please contact our support team immediately to secure your account."
+msgstr "Se non hai effettuato questa modifica, contatta immediatamente il nostro team di supporto per proteggere il tuo account."
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you made this change, no further action is needed."
+msgstr "Se hai effettuato questa modifica, non è necessaria alcuna azione ulteriore."
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#, elixir-autogen, elixir-format
+msgid "This is a confirmation that your Bemeda Personal account password was successfully changed on %{changed_at}."
+msgstr "Questa è una conferma che la password del tuo account Bemeda Personal è stata modificata con successo il %{changed_at}."
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "This is a confirmation that your BemedaPersonal account password was successfully changed on %{changed_at}."
+msgstr "Questa è una conferma che la password del tuo account BemedaPersonal è stata modificata con successo il %{changed_at}."
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#, elixir-autogen, elixir-format
+msgid "Your password has been changed"
+msgstr "La tua password è stata modificata"

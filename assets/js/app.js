@@ -32,11 +32,13 @@ import DropDownInput from './hooks/drop_down_input'
 import FileUpload from './hooks/file_upload'
 import FlashAutoDisappear from './hooks/flash_auto_disappear'
 import MultiSelect from './hooks/multi_select'
+import PasswordInput from './hooks/password_input'
 import PdfPreview from './hooks/pdf_preview'
 import PhoneInput from './hooks/phone_input'
 import RatingsTooltip from './hooks/ratings_tooltip'
 import RatingsTooltipContent from './hooks/ratings_tooltip_content'
 import SearchHook from './hooks/search_hook'
+import SettingsRedirect from './hooks/settings_redirect'
 import SidebarHook from './hooks/sidebar_hook'
 import SignwellEmbed from './hooks/signwell_embed'
 import SkillsInput from './hooks/skills_input'
@@ -57,11 +59,13 @@ const Hooks = {
   FileUpload,
   FlashAutoDisappear,
   MultiSelect,
+  PasswordInput,
   PdfPreview,
   PhoneInput,
   RatingsTooltip,
   RatingsTooltipContent,
   SearchHook,
+  SettingsRedirect,
   SidebarHook,
   SignwellEmbed,
   SkillsInput,

@@ -123,6 +123,21 @@ defmodule BemedaPersonal.Accounts.UserNotifierTest do
     end
   end
 
+  describe "deliver_password_changed/1" do
+    test "delivers password changed notification with proper content", %{user: user} do
+      drain_existing_emails()
+      UserNotifier.deliver_password_changed(user)
+
+      assert_email_sent(
+        from: {"BemedaPersonal", "contact@mg.bemeda-personal.ch"},
+        subject: "BemedaPersonal | Password Changed",
+        to: [{"John Doe", "john@example.com"}],
+        text_body: ~r/password was successfully changed/,
+        text_body: ~r/If you did not make this change/
+      )
+    end
+  end
+
   describe "deliver_new_message/3" do
     test "delivers new message notification with proper content", %{
       user: user,

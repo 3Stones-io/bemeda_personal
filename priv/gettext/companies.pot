@@ -99,6 +99,7 @@ msgstr ""
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Location"
 msgstr ""
@@ -391,6 +392,7 @@ msgid "Medical Center"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Organization Name"
 msgstr ""
@@ -401,11 +403,13 @@ msgid "Other"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Phone Number"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Type of organization"
 msgstr ""
@@ -451,6 +455,7 @@ msgid "Briefly describe your organization"
 msgstr ""
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Organization Type"
 msgstr ""
@@ -468,4 +473,14 @@ msgstr ""
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Upload company Logo"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#, elixir-autogen, elixir-format
+msgid "Website URL"
+msgstr ""
+
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#, elixir-autogen, elixir-format
+msgid "Write a brief overview of your organization."
 msgstr ""

@@ -733,6 +733,46 @@ defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
     """
   end
 
+  def custom_input(%{type: "password"} = assigns) do
+    ~H"""
+    <div
+      phx-feedback-for={@name}
+      class="font-openSans relative"
+      id={"#{@id}-container"}
+      phx-hook="PasswordInput"
+    >
+      <.custom_label
+        for={@id}
+        class={@label_class}
+        id={"#{@id}-label"}
+        phx-update="ignore"
+      >
+        {@label}
+      </.custom_label>
+      <div class="relative">
+        <input
+          type={@type}
+          name={@name}
+          id={@id}
+          value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+          class={[
+            "mt-2 block w-full text-form-input-txt focus:ring-0 focus:outline-none sm:text-sm sm:leading-6 border-[0] px-0",
+            @errors == [] &&
+              "border-b-[1px]  border-form-input-border phx-no-feedback: border-form-input-border focus:border-b focus:border-form-border-focus phx-no-feedback:focus:border-form-border-focus placeholder:text-form-placeholder-txt",
+            @errors != [] &&
+              "border-b-[1px] border-form-error-border placeholder:text-form-error-txt focus:border-b focus:border-form-error-border"
+          ]}
+          phx-debounce="blur"
+          {@rest}
+        />
+        <.icon name="hero-eye" class="w-4 h-4 absolute right-0 top-0" />
+        <.icon name="hero-eye-slash" class="w-4 h-4 absolute right-0 top-0 hidden" />
+      </div>
+      <.custom_error :for={msg <- @errors}>{msg}</.custom_error>
+    </div>
+    """
+  end
+
   # All other inputs text, url, password, etc. are handled here...
   def custom_input(assigns) do
     ~H"""
@@ -869,9 +909,24 @@ defmodule BemedaPersonalWeb.Components.Core.CustomInputComponents do
   attr :rest, :global, include: ~w(disabled form name value)
   attr :type, :string, default: "button"
 
-  slot :inner_block, required: true
+  slot :inner_block
 
   @spec custom_button(assigns()) :: output()
+  def custom_button(%{type: "edit"} = assigns) do
+    ~H"""
+    <button
+      type="button"
+      class={[
+        "text-sm text-gray-500 h-5 w-5 border border-primary-500 rounded-sm flex items-center justify-center",
+        @class
+      ]}
+      {@rest}
+    >
+      <.icon name="hero-pencil" class="w-3 h-3" />
+    </button>
+    """
+  end
+
   def custom_button(assigns) do
     ~H"""
     <button

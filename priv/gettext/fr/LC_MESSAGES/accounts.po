@@ -37,11 +37,13 @@ msgid "Email"
 msgstr "E-mail"
 
 #: lib/bemeda_personal_web/live/user_live/settings.ex
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
 #, elixir-autogen, elixir-format
 msgid "Email change link is invalid or it has expired."
 msgstr "Le lien de changement d'e-mail est invalide ou a expiré."
 
 #: lib/bemeda_personal_web/live/user_live/settings.ex
+#: lib/bemeda_personal_web/live/user_live/settings/index.ex
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
 msgstr "E-mail modifié avec succès."

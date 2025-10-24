@@ -49,6 +49,9 @@ defmodule BemedaPersonalWeb.Components do
       import BemedaPersonalWeb.Components.JobApplication.ApplicationStatusBadge
       import BemedaPersonalWeb.Components.JobApplication.ApplicationWarning
 
+      # Custom input components
+      import BemedaPersonalWeb.Components.Core.CustomInputComponents
+
       # Legacy alias for backward compatibility
       alias BemedaPersonalWeb.Components.Shared.SharedComponents
 

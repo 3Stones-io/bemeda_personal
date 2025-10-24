@@ -2165,6 +2165,7 @@ msgid "Risk management"
 msgstr "Gestione del rischio"
 
 #: lib/bemeda_personal_web/components/job/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
 #, elixir-autogen, elixir-format
 msgid "Select Location"
 msgstr "Seleziona località"

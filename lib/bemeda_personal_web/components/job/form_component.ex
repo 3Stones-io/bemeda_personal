@@ -68,7 +68,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                   value="Contract Hire"
                   label={dgettext("jobs", "Contract Hire")}
                   label_class="text-xs md:text-sm font-semibold text-gray-900"
-                  checked={checked?(f, :employment_type, "Contract Hire")}
+                  checked={SharedHelpers.checked?(f, :employment_type, "Contract Hire")}
                 />
                 <p class="text-xs text-gray-900 opacity-75 mt-2">
                   {dgettext(
@@ -102,7 +102,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                 value="Full-time Hire"
                 label={dgettext("jobs", "Full-time Hire")}
                 label_class="text-xs font-semibold text-gray-900"
-                checked={checked?(f, :employment_type, "Full-time Hire")}
+                checked={SharedHelpers.checked?(f, :employment_type, "Full-time Hire")}
               />
               <p class="text-xs text-gray-900 opacity-75 mt-2">
                 {dgettext(
@@ -126,7 +126,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                   value="false"
                   label={dgettext("jobs", "On-site")}
                   label_class="text-xs md:text-sm font-semibold text-gray-900"
-                  checked={checked?(f, :remote_allowed, false)}
+                  checked={SharedHelpers.checked?(f, :remote_allowed, false)}
                 />
                 <p class="text-xs text-gray-900 opacity-75 mt-2">
                   {dgettext("jobs", "Candidates will work from a specific physical location.")}
@@ -137,7 +137,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                   field={f[:region]}
                   type="dropdown"
                   label={dgettext("jobs", "Select Location")}
-                  dropdown_prompt={Phoenix.HTML.Form.input_value(f, :region) || "Select Location"}
+                  dropdown_prompt={input_value(f, :region) || "Select Location"}
                   dropdown_options={get_translated_options(:region)}
                   phx-debounce="blur"
                   dropdown_searchable={true}
@@ -154,7 +154,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                   value="true"
                   label={dgettext("jobs", "Remote")}
                   label_class="text-xs md:text-sm font-semibold text-gray-900"
-                  checked={checked?(f, :remote_allowed, true)}
+                  checked={SharedHelpers.checked?(f, :remote_allowed, true)}
                 />
                 <p class="text-xs text-gray-900 opacity-75 mt-2">
                   {dgettext("jobs", "Candidates can work from anywhere.")}
@@ -172,7 +172,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                     value="false"
                     label={dgettext("jobs", "No")}
                     label_class="text-sm text-gray-900"
-                    checked={checked?(f, :swiss_only, false)}
+                    checked={SharedHelpers.checked?(f, :swiss_only, false)}
                   />
                   <.custom_input
                     field={f[:swiss_only]}
@@ -181,7 +181,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
                     value="true"
                     label={dgettext("jobs", "Yes")}
                     label_class="text-sm text-gray-900"
-                    checked={checked?(f, :swiss_only, true)}
+                    checked={SharedHelpers.checked?(f, :swiss_only, true)}
                   />
                 </div>
               </div>
@@ -209,7 +209,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
               field={f[:years_of_experience]}
               type="dropdown"
               dropdown_prompt={
-                Phoenix.HTML.Form.input_value(f, :years_of_experience) ||
+                input_value(f, :years_of_experience) ||
                   dgettext("jobs", "Years of experience")
               }
               dropdown_options={get_translated_options(:years_of_experience)}
@@ -222,7 +222,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
               {dgettext("jobs", "Required Skills")}
             </h3>
             <button
-              :if={!Phoenix.HTML.Form.input_value(f, :skills)}
+              :if={!input_value(f, :skills)}
               type="button"
               aria-label={dgettext("jobs", "Add skill")}
               class="w-full bg-white border-2 border-[#f3f6f8] rounded-md p-4 flex items-center justify-between"
@@ -234,12 +234,12 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
               </span>
             </button>
             <div
-              :if={Phoenix.HTML.Form.input_value(f, :skills)}
+              :if={input_value(f, :skills)}
               class="bg-white border-2 border-[#f3f6f8] rounded-md p-4 shadow-xs"
             >
               <div class="flex items-center justify-between mb-6">
                 <p class="text-xs font-semibold opacity-75">
-                  Add skill {length(Phoenix.HTML.Form.input_value(f, :skills))}/10
+                  Add skill {length(input_value(f, :skills))}/10
                 </p>
                 <button
                   type="button"
@@ -252,7 +252,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
               </div>
               <ul class="flex flex-wrap gap-2">
                 <li
-                  :for={skill <- Phoenix.HTML.Form.input_value(f, :skills)}
+                  :for={skill <- input_value(f, :skills)}
                   class="mb-2"
                 >
                   <.skill_pill skill={skill} class="bg-[#f2f1fd] text-[#817df2] " />
@@ -269,8 +269,8 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
               <span class="text-sm text-gray-900 mb-3">
                 Range
                 <.toggle_button checked={
-                  Phoenix.HTML.Form.input_value(f, :salary_min) &&
-                    Phoenix.HTML.Form.input_value(f, :salary_max)
+                  input_value(f, :salary_min) &&
+                    input_value(f, :salary_max)
                 } />
               </span>
 
@@ -564,14 +564,5 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
       "false" -> Map.delete(params, "swiss_only")
       _other -> params
     end
-  end
-
-  defp checked?(form, field, value) do
-    form_value =
-      form
-      |> input_value(field)
-      |> to_string()
-
-    value == form_value
   end
 end
