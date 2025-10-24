@@ -174,6 +174,9 @@ defmodule BemedaPersonalWeb.I18n do
   def translate_region("Zug"), do: dgettext("jobs", "Zug")
   def translate_region("Zurich"), do: dgettext("jobs", "Zurich")
 
+  @spec translate_location(enum_value()) :: translated_string()
+  def translate_location(value), do: translate_region(value)
+
   @spec translate_shift_type(enum_value()) :: translated_string()
   def translate_shift_type("Day Shift"), do: dgettext("jobs", "Day Shift")
   def translate_shift_type("Early Shift"), do: dgettext("jobs", "Early Shift")

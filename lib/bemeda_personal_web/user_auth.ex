@@ -13,6 +13,7 @@ defmodule BemedaPersonalWeb.UserAuth do
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Accounts.User
   alias BemedaPersonal.Companies
+  alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Endpoint
 
   @type conn() :: Plug.Conn.t()
@@ -87,10 +88,12 @@ defmodule BemedaPersonalWeb.UserAuth do
   def fetch_current_scope_for_user(conn, _opts) do
     with {token, conn} <- ensure_user_token(conn),
          {user, token_inserted_at} <- Accounts.get_user_by_session_token(token) do
+      user_with_media_asset = Repo.preload(user, :media_asset)
+
       conn
-      |> assign(:current_scope, Scope.for_user(user))
-      |> assign(:current_user, user)
-      |> maybe_reissue_user_session_token(user, token_inserted_at)
+      |> assign(:current_scope, Scope.for_user(user_with_media_asset))
+      |> assign(:current_user, user_with_media_asset)
+      |> maybe_reissue_user_session_token(user_with_media_asset, token_inserted_at)
     else
       nil -> assign(conn, :current_scope, Scope.for_user(nil))
     end
@@ -446,7 +449,7 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   defp mount_current_scope(socket, session) do
     user = fetch_user_from_token(session["user_token"])
-    scope = Scope.for_user(user)
+    scope = build_user_scope(user)
 
     socket
     |> Phoenix.Component.assign_new(:current_scope, fn -> scope end)
@@ -468,14 +471,14 @@ defmodule BemedaPersonalWeb.UserAuth do
 
   defp fetch_user_from_token(user_token) do
     case Accounts.get_user_by_session_token(user_token) do
-      {user, _timestamp} -> user
+      {user, _timestamp} -> Repo.preload(user, :media_asset)
       nil -> nil
     end
   end
 
-  @spec require_user_profile(Plug.Conn.t(), keyword()) :: Plug.Conn.t()
+  @spec require_user_profile(conn(), opts()) :: conn()
   def require_user_profile(conn, _opts) do
-    if profile_complete?(conn.assigns.current_user) do
+    if profile_complete?(conn.assigns[:current_user]) do
       conn
     else
       conn
@@ -484,9 +487,9 @@ defmodule BemedaPersonalWeb.UserAuth do
     end
   end
 
-  @spec redirect_if_profile_complete(Plug.Conn.t(), keyword()) :: Plug.Conn.t()
+  @spec redirect_if_profile_complete(conn(), opts()) :: conn()
   def redirect_if_profile_complete(conn, _opts) do
-    if profile_complete?(conn.assigns.current_user) do
+    if profile_complete?(conn.assigns[:current_user]) do
       conn
       |> redirect(to: ~p"/")
       |> halt()

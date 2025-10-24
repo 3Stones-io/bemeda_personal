@@ -8,6 +8,8 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
   import Ecto.Query
   import Phoenix.LiveViewTest
 
+  alias BemedaPersonal.TestUtils
+
   setup do
     # Admin access is controlled via AdminAuth plug using HTTP Basic Auth.
     # We need to provide the correct credentials for testing.
@@ -23,6 +25,20 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
 
   defp admin_conn(conn, auth_header) do
     put_req_header(conn, "authorization", auth_header)
+  end
+
+  defp create_multiple_invited_users(number_of_users) do
+    for i <- 1..number_of_users do
+      offset_time = -120 * i
+
+      user =
+        user_fixture(%{
+          email: "invited#{i}@example.com",
+          registration_source: :invited
+        })
+
+      TestUtils.update_struct_inserted_at(user, offset_time)
+    end
   end
 
   describe "mount/3" do
@@ -519,13 +535,7 @@ defmodule BemedaPersonalWeb.AdminLive.DashboardTest do
       auth_header: auth_header,
       admin: admin
     } do
-      for i <- 1..25 do
-        user_fixture(%{
-          email: "invited#{i}@example.com",
-          registration_source: :invited,
-          inserted_at: DateTime.add(DateTime.utc_now(), -i, :day)
-        })
-      end
+      create_multiple_invited_users(25)
 
       conn =
         conn

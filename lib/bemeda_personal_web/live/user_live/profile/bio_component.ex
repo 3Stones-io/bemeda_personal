@@ -51,9 +51,7 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
   end
 
   def handle_event("upload_file", params, socket) do
-    {:reply, response, updated_socket} = SharedHelpers.create_file_upload(socket, params)
-
-    {:reply, response, assign(updated_socket, :enable_submit?, false)}
+    SharedHelpers.create_file_upload(socket, params)
   end
 
   def handle_event("upload_completed", %{"upload_id" => upload_id}, socket) do

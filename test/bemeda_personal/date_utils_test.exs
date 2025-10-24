@@ -133,6 +133,30 @@ defmodule BemedaPersonal.DateUtilsTest do
     end
   end
 
+  describe "format_date_long/1" do
+    test "returns an empty string when nil is provided" do
+      assert DateUtils.format_date_long(nil) == ""
+    end
+
+    test "formats date as full month name, day, and year" do
+      date = ~D[1990-04-20]
+      assert DateUtils.format_date_long(date) == "April 20, 1990"
+    end
+
+    test "handles single-digit days without leading zero" do
+      date = ~D[2023-01-05]
+      assert DateUtils.format_date_long(date) == "January 5, 2023"
+    end
+
+    test "handles different months correctly" do
+      date1 = ~D[2025-10-15]
+      assert DateUtils.format_date_long(date1) == "October 15, 2025"
+
+      date2 = ~D[2023-12-31]
+      assert DateUtils.format_date_long(date2) == "December 31, 2023"
+    end
+  end
+
   describe "parse_date_string/1" do
     test "parses ISO 8601 format" do
       assert {:ok, ~D[2023-12-25]} = DateUtils.parse_date_string("2023-12-25")

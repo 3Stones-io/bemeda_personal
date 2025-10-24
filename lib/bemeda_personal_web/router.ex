@@ -226,8 +226,11 @@ defmodule BemedaPersonalWeb.Router do
       live "/notifications/:id", NotificationLive.Show, :show
       live "/jobs/:job_id/job_applications/:id", JobApplicationLive.Show, :show
       live "/jobs/:job_id/job_applications/:id/history", JobApplicationLive.History, :show
-      live "/users/settings", UserLive.Settings, :edit
-      live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
+      live "/users/settings", UserLive.Settings.Index, :index
+      live "/users/settings/info", UserLive.Settings.Index, :info
+      live "/users/settings/password", UserLive.Settings.Index, :password
+      # live "/users/settings/notifications", UserLive.Settings.Index, :notifications
+      live "/users/settings/confirm-email/:token", UserLive.Settings.Index, :confirm_email
     end
 
     post "/users/update_password", UserSessionController, :update_password

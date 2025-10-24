@@ -2,6 +2,7 @@ defmodule BemedaPersonal.AccountsTest do
   use BemedaPersonal.DataCase, async: true
 
   import BemedaPersonal.AccountsFixtures
+  import BemedaPersonal.TestUtils, only: [drain_existing_emails: 0]
 
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Accounts.User
@@ -15,6 +16,13 @@ defmodule BemedaPersonal.AccountsTest do
     test "returns the user if the email exists" do
       %{id: id} = user = user_fixture()
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
+    end
+
+    test "does not return soft deleted users" do
+      user = user_fixture()
+      assert Accounts.get_user_by_email(user.email)
+      {:ok, _deleted_user} = Accounts.soft_delete_user(user)
+      refute Accounts.get_user_by_email(user.email)
     end
   end
 
@@ -34,6 +42,13 @@ defmodule BemedaPersonal.AccountsTest do
       assert %User{id: ^id} =
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
     end
+
+    test "does not return soft deleted users" do
+      user = set_password(user_fixture())
+      assert Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+      {:ok, _deleted_user} = Accounts.soft_delete_user(user)
+      refute Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+    end
   end
 
   describe "get_user!/1" do
@@ -46,6 +61,16 @@ defmodule BemedaPersonal.AccountsTest do
     test "returns the user with the given id" do
       %{id: id} = user = user_fixture()
       assert %User{id: ^id} = Accounts.get_user!(user.id)
+    end
+
+    test "raises for soft deleted users" do
+      user = user_fixture()
+      assert Accounts.get_user!(user.id)
+      {:ok, _deleted_user} = Accounts.soft_delete_user(user)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user!(user.id)
+      end
     end
   end
 
@@ -294,6 +319,24 @@ defmodule BemedaPersonal.AccountsTest do
     end
   end
 
+  describe "has_password?/1" do
+    test "returns true for user with password" do
+      user = user_fixture()
+      user_with_password = set_password(user)
+
+      assert Accounts.has_password?(user_with_password)
+    end
+
+    test "returns false for user without password" do
+      user = user_fixture()
+      refute Accounts.has_password?(user)
+    end
+
+    test "returns false for new user struct" do
+      refute Accounts.has_password?(%User{})
+    end
+  end
+
   describe "change_user_password/3" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{})
@@ -305,14 +348,45 @@ defmodule BemedaPersonal.AccountsTest do
         Accounts.change_user_password(
           %User{},
           %{
-            "password" => "new valid password"
+            "password" => "new password"
           },
           hash_password: false
         )
 
       assert changeset.valid?
-      assert get_change(changeset, :password) == "new valid password"
+      assert get_change(changeset, :password) == "new password"
       assert is_nil(get_change(changeset, :hashed_password))
+    end
+
+    test "includes current_password validation for users with password" do
+      user = user_fixture()
+      user_with_password = set_password(user)
+
+      changeset =
+        user_with_password
+        |> Accounts.change_user_password(%{
+          "current_password" => "wrong password",
+          "password" => "new password"
+        })
+        |> Map.put(:action, :validate)
+
+      refute changeset.valid?
+      assert "is not valid" in errors_on(changeset).current_password
+    end
+
+    test "does not require current_password for users without password" do
+      user = user_fixture()
+
+      changeset =
+        Accounts.change_user_password(
+          user,
+          %{
+            "password" => "new password"
+          },
+          hash_password: false
+        )
+
+      assert changeset.valid?
     end
   end
 
@@ -344,14 +418,16 @@ defmodule BemedaPersonal.AccountsTest do
     end
 
     test "updates the password", %{user: user} do
+      drain_existing_emails()
+
       {:ok, {user, expired_tokens}} =
         Accounts.update_user_password(user, %{
-          password: "new valid password"
+          password: "new password"
         })
 
       assert expired_tokens == []
       refute user.password
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new password")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
@@ -359,7 +435,7 @@ defmodule BemedaPersonal.AccountsTest do
 
       {:ok, {_token, _expired_tokens}} =
         Accounts.update_user_password(user, %{
-          password: "new valid password"
+          password: "new password"
         })
 
       refute Repo.get_by(UserToken, user_id: user.id)
@@ -424,6 +500,12 @@ defmodule BemedaPersonal.AccountsTest do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: dt, authenticated_at: dt])
       refute Accounts.get_user_by_session_token(token)
     end
+
+    test "does not return soft deleted users", %{user: user, token: token} do
+      assert Accounts.get_user_by_session_token(token)
+      {:ok, _deleted_user} = Accounts.soft_delete_user(user)
+      refute Accounts.get_user_by_session_token(token)
+    end
   end
 
   describe "get_user_by_magic_link_token/1" do
@@ -444,6 +526,12 @@ defmodule BemedaPersonal.AccountsTest do
 
     test "does not return user for expired token", %{token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      refute Accounts.get_user_by_magic_link_token(token)
+    end
+
+    test "does not return soft deleted users", %{user: user, token: token} do
+      assert Accounts.get_user_by_magic_link_token(token)
+      {:ok, _deleted_user} = Accounts.soft_delete_user(user)
       refute Accounts.get_user_by_magic_link_token(token)
     end
   end
@@ -723,6 +811,225 @@ defmodule BemedaPersonal.AccountsTest do
         assert updated_user.media_asset.file_name == "profile.jpg"
         assert updated_user.media_asset.type == "image/jpeg"
       end
+    end
+  end
+
+  describe "change_account_information/3" do
+    test "returns a user changeset" do
+      user = user_fixture()
+      assert %Ecto.Changeset{} = changeset = Accounts.change_account_information(user)
+      assert :email in changeset.required
+      assert :first_name in changeset.required
+      assert :last_name in changeset.required
+    end
+
+    test "allows setting account information fields" do
+      user = user_fixture()
+
+      changeset =
+        Accounts.change_account_information(user, %{
+          email: "newemail@example.com",
+          first_name: "Jane",
+          last_name: "Smith",
+          phone: "+41791234567"
+        })
+
+      assert changeset.changes.email == "newemail@example.com"
+      assert changeset.changes.first_name == "Jane"
+      assert changeset.changes.last_name == "Smith"
+      assert changeset.changes.phone == "+41791234567"
+    end
+
+    test "does not require email to change" do
+      user = user_fixture()
+
+      changeset =
+        Accounts.change_account_information(user, %{
+          email: user.email,
+          first_name: "Jane"
+        })
+
+      assert changeset.valid?
+      assert changeset.changes.first_name == "Jane"
+      refute Keyword.has_key?(changeset.errors, :email)
+    end
+
+    test "validates uniqueness only when email changes" do
+      existing_user = user_fixture()
+      user = user_fixture()
+
+      changeset =
+        user
+        |> Accounts.change_account_information(%{email: existing_user.email})
+        |> Map.put(:action, :validate)
+
+      refute changeset.valid?
+      assert "has already been taken" in errors_on(changeset).email
+    end
+  end
+
+  describe "update_account_information/3" do
+    test "updates account fields without changing email" do
+      user = user_fixture()
+
+      attrs = %{
+        "email" => user.email,
+        "first_name" => "UpdatedFirst",
+        "last_name" => "UpdatedLast",
+        "phone" => "+41791234567"
+      }
+
+      assert {:ok, updated_user} = Accounts.update_account_information(user, attrs)
+      assert updated_user.first_name == "UpdatedFirst"
+      assert updated_user.last_name == "UpdatedLast"
+      assert updated_user.phone == "+41791234567"
+      assert updated_user.email == user.email
+    end
+
+    test "updates account fields and sends email confirmation when email changes" do
+      user = user_fixture()
+      drain_existing_emails()
+      new_email = unique_user_email()
+
+      attrs = %{
+        "email" => new_email,
+        "first_name" => "UpdatedFirst",
+        "last_name" => "UpdatedLast"
+      }
+
+      email_update_url_fun = fn _token -> "http://test.com/confirm" end
+
+      assert {:ok, updated_user, :email_update_sent} =
+               Accounts.update_account_information(user, attrs, email_update_url_fun)
+
+      assert updated_user.first_name == "UpdatedFirst"
+      assert updated_user.last_name == "UpdatedLast"
+      assert updated_user.email == user.email
+
+      assert_received {:email, email_struct}
+
+      sent_to_email =
+        email_struct.to
+        |> List.first()
+        |> elem(1)
+
+      assert sent_to_email == new_email
+      assert email_struct.subject =~ "Email Address Update"
+    end
+
+    test "updates account fields without sending email when email changes but no url function provided" do
+      user = user_fixture()
+      drain_existing_emails()
+      new_email = unique_user_email()
+
+      attrs = %{
+        "email" => new_email,
+        "first_name" => "UpdatedFirst",
+        "last_name" => "UpdatedLast"
+      }
+
+      assert {:ok, updated_user} =
+               Accounts.update_account_information(user, attrs, nil)
+
+      assert updated_user.first_name == "UpdatedFirst"
+      assert updated_user.last_name == "UpdatedLast"
+      assert updated_user.email == user.email
+
+      refute_received {:email, _}
+    end
+
+    test "returns error with invalid data" do
+      user = user_fixture()
+
+      attrs = %{
+        "email" => "invalid-email",
+        "first_name" => "UpdatedFirst"
+      }
+
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_account_information(user, attrs)
+
+      reloaded_user = Accounts.get_user!(user.id)
+      assert reloaded_user.first_name == user.first_name
+    end
+
+    test "returns error when email is already taken" do
+      existing_user = user_fixture()
+      user = user_fixture()
+
+      attrs = %{
+        "email" => existing_user.email,
+        "first_name" => "UpdatedFirst"
+      }
+
+      assert {:error, changeset} = Accounts.update_account_information(user, attrs)
+      assert "has already been taken" in errors_on(changeset).email
+
+      reloaded_user = Accounts.get_user!(user.id)
+      assert reloaded_user.first_name == user.first_name
+    end
+
+    test "updates job seeker specific fields" do
+      user = user_fixture(%{user_type: :job_seeker})
+
+      attrs = %{
+        "email" => user.email,
+        "first_name" => "UpdatedFirst",
+        "last_name" => "UpdatedLast",
+        "date_of_birth" => "1990-05-15",
+        "gender" => "male",
+        "location" => "Zurich",
+        "phone" => "+41791234567"
+      }
+
+      assert {:ok, updated_user} = Accounts.update_account_information(user, attrs)
+      assert updated_user.first_name == "UpdatedFirst"
+      assert updated_user.last_name == "UpdatedLast"
+      assert updated_user.date_of_birth == ~D[1990-05-15]
+      assert updated_user.gender == :male
+      assert updated_user.location == :Zurich
+      assert updated_user.phone == "+41791234567"
+    end
+
+    test "handles atom key attrs for email change" do
+      user = user_fixture()
+      drain_existing_emails()
+      new_email = unique_user_email()
+
+      attrs = %{
+        email: new_email,
+        first_name: "UpdatedFirst",
+        last_name: "UpdatedLast"
+      }
+
+      email_update_url_fun = fn _token -> "http://test.com/confirm" end
+
+      assert {:ok, updated_user, :email_update_sent} =
+               Accounts.update_account_information(user, attrs, email_update_url_fun)
+
+      assert updated_user.first_name == "UpdatedFirst"
+      assert updated_user.email == user.email
+
+      assert_received {:email, email_struct}
+
+      sent_to_email =
+        email_struct.to
+        |> List.first()
+        |> elem(1)
+
+      assert sent_to_email == new_email
+    end
+  end
+
+  describe "soft_delete_user/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "soft deletes a user by setting deleted_at", %{user: user} do
+      assert is_nil(user.deleted_at)
+      assert {:ok, deleted_user} = Accounts.soft_delete_user(user)
+      assert deleted_user.deleted_at != nil
+      assert DateTime.diff(DateTime.utc_now(), deleted_user.deleted_at, :second) < 5
     end
   end
 

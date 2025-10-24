@@ -69,6 +69,7 @@ msgstr ""
 #: lib/bemeda_personal/accounts/email_templates/job_application_status_email.ex
 #: lib/bemeda_personal/accounts/email_templates/magic_link_email.ex
 #: lib/bemeda_personal/accounts/email_templates/new_message_email.ex
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
 #: lib/bemeda_personal/accounts/email_templates/reset_password_email.ex
 #: lib/bemeda_personal/accounts/email_templates/update_email_instructions.ex
 #: lib/bemeda_personal/accounts/user_notifier.ex
@@ -560,4 +561,36 @@ msgstr ""
 #: lib/bemeda_personal/accounts/user_notifier.ex
 #, elixir-autogen, elixir-format
 msgid "Your organization account has been created successfully."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "BemedaPersonal | Password Changed"
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you did not make this change, please contact our support team immediately to secure your account."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "If you made this change, no further action is needed."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#, elixir-autogen, elixir-format
+msgid "This is a confirmation that your Bemeda Personal account password was successfully changed on %{changed_at}."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/user_notifier.ex
+#, elixir-autogen, elixir-format
+msgid "This is a confirmation that your BemedaPersonal account password was successfully changed on %{changed_at}."
+msgstr ""
+
+#: lib/bemeda_personal/accounts/email_templates/password_changed_email.ex
+#, elixir-autogen, elixir-format
+msgid "Your password has been changed"
 msgstr ""

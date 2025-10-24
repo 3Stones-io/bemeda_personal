@@ -36,12 +36,14 @@ defmodule BemedaPersonal.Accounts.User do
     has_one :media_asset, BemedaPersonal.Media.MediaAsset
     field :medical_role, Ecto.Enum, values: Enums.professions()
     field :password, :string, virtual: true, redact: true
+    field :current_password, :string, virtual: true, redact: true
     field :phone, :string
     field :registration_source, Ecto.Enum, values: [:email, :invited], default: :email
     has_one :resume, BemedaPersonal.Resumes.Resume
     field :street, :string
     field :user_type, Ecto.Enum, values: [:job_seeker, :employer], default: :job_seeker
     field :zip_code, :string
+    field :deleted_at, :utc_datetime
 
     timestamps(type: :utc_datetime)
   end
@@ -140,10 +142,32 @@ defmodule BemedaPersonal.Accounts.User do
   @spec password_changeset(t() | changeset(), attrs(), opts()) :: changeset()
   def password_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:password])
+    |> cast(attrs, [:password, :current_password])
     |> validate_confirmation(:password, message: "does not match password")
     |> validate_password(opts)
+    |> maybe_verify_current_password(opts)
   end
+
+  defp maybe_verify_current_password(changeset, opts) do
+    if Keyword.get(opts, :verify_current_password, false) do
+      verify_current_password(changeset)
+    else
+      changeset
+    end
+  end
+
+  defp verify_current_password(changeset) do
+    current_password = get_change(changeset, :current_password)
+
+    if current_password_valid?(changeset, current_password) do
+      changeset
+    else
+      add_error(changeset, :current_password, "is not valid")
+    end
+  end
+
+  defp current_password_valid?(_changeset, nil), do: false
+  defp current_password_valid?(changeset, password), do: valid_password?(changeset.data, password)
 
   defp validate_password(changeset, opts) do
     changeset
@@ -198,6 +222,16 @@ defmodule BemedaPersonal.Accounts.User do
     Bcrypt.no_user_verify()
     false
   end
+
+  @doc """
+  Checks if a user has a password set.
+  """
+  @spec has_password?(t()) :: boolean()
+  def has_password?(%__MODULE__{hashed_password: hashed_password})
+      when is_binary(hashed_password),
+      do: true
+
+  def has_password?(_user), do: false
 
   @doc """
   A user changeset for updating the locale preference.
@@ -260,9 +294,42 @@ defmodule BemedaPersonal.Accounts.User do
     |> validate_required([:bio])
   end
 
-  @doc """
-  Returns the full name of the user.
-  """
+  @spec change_account_information_changeset(t() | changeset(), attrs(), opts()) :: changeset()
+  def change_account_information_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [
+      :date_of_birth,
+      :email,
+      :first_name,
+      :gender,
+      :last_name,
+      :location,
+      :phone
+    ])
+    |> validate_email_for_account_info(opts)
+    |> validate_name()
+  end
+
+  defp validate_email_for_account_info(changeset, opts) do
+    email_changed? = get_change(changeset, :email) != nil
+
+    changeset =
+      changeset
+      |> validate_required([:email])
+      |> validate_format(:email, ~r/^[^@,;\s]+@[^@,;\s]+$/,
+        message: "must have the @ sign and no spaces"
+      )
+      |> validate_length(:email, max: 160)
+
+    if email_changed? and Keyword.get(opts, :validate_unique, true) do
+      changeset
+      |> unsafe_validate_unique(:email, BemedaPersonal.Repo)
+      |> unique_constraint(:email)
+    else
+      changeset
+    end
+  end
+
   @spec full_name(t()) :: String.t()
   def full_name(%__MODULE__{first_name: first_name, last_name: last_name}) do
     "#{first_name} #{last_name}"

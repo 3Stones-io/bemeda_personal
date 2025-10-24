@@ -444,4 +444,42 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
   def deliver_interview_updated(interview) do
     InterviewNotifier.deliver_interview_updated(interview)
   end
+
+  @spec deliver_password_changed(user()) :: {:ok, email()} | {:error, any()}
+  def deliver_password_changed(user) do
+    EmailDelivery.put_locale(user)
+    user_name = "#{user.first_name} #{user.last_name}"
+    changed_at = format_datetime(DateTime.utc_now())
+
+    html_body =
+      EmailTemplates.PasswordChangedEmail.render(
+        user_name: user_name,
+        changed_at: changed_at
+      )
+
+    text_body = """
+    #{dgettext("emails", "Hello %{user_name},", user_name: user_name)}
+
+    #{dgettext("emails", "This is a confirmation that your BemedaPersonal account password was successfully changed on %{changed_at}.", changed_at: changed_at)}
+
+    #{dgettext("emails", "If you made this change, no further action is needed.")}
+
+    #{dgettext("emails", "If you did not make this change, please contact our support team immediately to secure your account.")}
+    """
+
+    deliver(
+      user,
+      dgettext("emails", "BemedaPersonal | Password Changed"),
+      html_body,
+      text_body
+    )
+  end
+
+  defp format_datetime(datetime) do
+    datetime
+    |> DateTime.to_string()
+    |> String.split(".")
+    |> List.first()
+    |> Kernel.<>(" UTC")
+  end
 end

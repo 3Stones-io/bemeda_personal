@@ -68,6 +68,16 @@ defmodule BemedaPersonal.DateUtils do
   end
 
   @doc """
+  Format date as full month name, day, and year (e.g., "April 20, 1990").
+  """
+  @spec format_date_long(date() | nil) :: date_string()
+  def format_date_long(nil), do: ""
+
+  def format_date_long(%Date{} = date) do
+    Calendar.strftime(date, "%B %-d, %Y")
+  end
+
+  @doc """
   Returns a relative time string like "3 seconds ago", "2 days ago", etc.
   """
   @spec relative_time(datetime()) :: String.t()

@@ -287,4 +287,15 @@ defmodule BemedaPersonalWeb.Components.Shared.SharedComponents do
     </a>
     """
   end
+
+  @spec footer(assigns()) :: output()
+  def footer(assigns) do
+    ~H"""
+    <footer class="pb-3 px-4 fixed bottom-0 left-0 right-0 bg-white">
+      <p class="py-3 text-center text-xs text-gray-500 border-t-2 border-[#e7ecf1]">
+        {dgettext("settings", "Copyright Bemeda Personal © 2025 all rights reserved.")}
+      </p>
+    </footer>
+    """
+  end
 end

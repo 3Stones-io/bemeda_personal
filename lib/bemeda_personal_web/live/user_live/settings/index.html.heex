@@ -1,0 +1,262 @@
+<Layouts.app flash={@flash} socket={@socket}>
+  <section
+    class="text-sm md:text-base text-[#3b3b3b] py-6 px-3"
+    phx-hook={if @live_action == :index, do: "SettingsRedirect", else: nil}
+    id="settings-section"
+  >
+    <div :if={@live_action != :index} class="lg:hidden mb-4">
+      <.link
+        navigate={~p"/users/settings"}
+        class="text-sm font-semibold leading-6 text-secondary-900 hover:text-secondary-700 flex items-center gap-2"
+      >
+        <.icon name="hero-arrow-left" class="h-3 w-3" />
+        {dgettext("settings", "Account Settings")}
+      </.link>
+    </div>
+
+    <div class="lg:flex lg:gap-8 lg:max-w-7xl lg:mx-auto">
+      <aside class={"lg:w-64 lg:flex-shrink-0 #{if @live_action != :index, do: "hidden lg:block", else: ""}"}>
+        <.header class="lg:mb-6">
+          {dgettext("settings", "Account Settings")}
+        </.header>
+
+        <nav class="mt-6">
+          <ul class="grid gap-y-2">
+            <li
+              :for={item <- menu_items()}
+              class={"hover:bg-gray-50 p-3 rounded-lg transition-colors duration-200 #{if item.live_action == @live_action, do: "bg-primary-50 border-l-4 border-primary-500", else: ""}"}
+            >
+              <.link navigate={item.link} class="flex items-center gap-3">
+                <.icon name={item.icon} class="w-5 h-5" />
+                <span class="font-medium">{item.label}</span>
+              </.link>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class={"flex-1 lg:min-w-0 #{if @live_action == :index, do: "hidden lg:block", else: ""}"}>
+        <div :if={@live_action == :info} class="text-[#717171] pb-24">
+          <.header class="mb-6 lg:mt-0">
+            {dgettext("settings", "My Info")}
+          </.header>
+
+          <div :if={@show_personal_info_form?}>
+            <.live_component
+              module={AccountInfoComponent}
+              id="account-info-component"
+              current_user={@current_user}
+            />
+          </div>
+
+          <div
+            :if={!@show_personal_info_form?}
+            id="personal-information-section"
+            class="grid gap-y-2 outline outline-[#e8ecf1] rounded-xl shadow-sm shadow-[#e8ecf1] p-4"
+          >
+            <h2 class="flex items-center justify-between">
+              <span class="font-semibold text-base text-[#1f1f1f]">
+                {dgettext("settings", "Account Information")}
+              </span>
+              <.custom_button
+                type="edit"
+                phx-click={JS.push("show_personal_info_form")}
+              />
+            </h2>
+            <div class="avatar mt-4">
+              <div class="border-[1px] border-[#e4e9ef] w-[fit-content] p-1 rounded-full bg-white overflow-hidden">
+                <div class="w-24 h-24 rounded-full border-[1px] border-[#e4e9ef] overflow-hidden">
+                  <img
+                    src={
+                      SharedHelpers.avatar_image(
+                        @current_user,
+                        ~p"/images/empty-states/avatar_empty.png"
+                      )
+                    }
+                    alt={Accounts.User.full_name(@current_user)}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="info grid gap-y-2">
+              <div
+                :for={
+                  {title, value, show?} <-
+                    Enum.zip([
+                      [
+                        dgettext("settings", "Name"),
+                        if(@current_user.user_type == :job_seeker,
+                          do: dgettext("settings", "Email Address"),
+                          else: dgettext("settings", "Work Email Address")
+                        ),
+                        dgettext("settings", "Date of Birth"),
+                        dgettext("settings", "Gender"),
+                        dgettext("settings", "Location"),
+                        dgettext("settings", "Phone Number")
+                      ],
+                      [
+                        Accounts.User.full_name(@current_user),
+                        @current_user.email,
+                        @current_user.date_of_birth &&
+                          DateUtils.format_date_long(@current_user.date_of_birth),
+                        @current_user.gender,
+                        @current_user.location,
+                        @current_user.phone
+                      ],
+                      [
+                        @current_user,
+                        @current_user,
+                        @current_user.user_type == :job_seeker && @current_user.date_of_birth,
+                        @current_user.user_type == :job_seeker && @current_user.gender,
+                        @current_user.user_type == :job_seeker && @current_user.location,
+                        @current_user.user_type == :job_seeker && @current_user.phone
+                      ]
+                    ])
+                }
+                :if={show?}
+                class="grid gap-y-1"
+              >
+                <h3 class="text-base font-medium text-[#1f1f1f]">
+                  {title}
+                </h3>
+                <p class="text-sm text-[#717171]">
+                  {value}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            :if={@company && @show_company_info_form?}
+            class="mt-4"
+          >
+            <.live_component
+              module={CompanyProfileComponent}
+              id="personal-info-component"
+              company={@company}
+              current_scope={@current_scope}
+              current_user={@current_user}
+            />
+          </div>
+
+          <div
+            :if={@current_user.user_type == :employer && !@show_company_info_form?}
+            id="company-information-section"
+            class="grid gap-y-2 outline outline-[#e8ecf1] rounded-xl shadow-sm shadow-[#e8ecf1] p-4 mt-4"
+          >
+            <h2 class="flex items-center justify-between mb-4">
+              <span class="font-semibold text-base text-[#1f1f1f]">
+                {dgettext("settings", "Company Information")}
+              </span>
+              <.custom_button
+                type="edit"
+                phx-click={JS.push("show_company_info_form")}
+              />
+            </h2>
+            <div class="settings-media-container">
+              <div class="video-placeholder py-20 h-full bg-gradient-to-r from-purple-500 to-pink-300 rounded-lg">
+              </div>
+
+              <div class="logo-container border-[1px] border-[#e4e9ef] w-[fit-content] p-1 rounded-full bg-white overflow-hidden">
+                <div class="w-24 h-24 rounded-full border-[1px] border-[#e4e9ef] overflow-hidden">
+                  <img
+                    src={
+                      SharedHelpers.avatar_image(
+                        @company,
+                        ~p"/images/empty-states/company_logo.png"
+                      )
+                    }
+                    alt={@company.name}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="info grid gap-y-2">
+              <div
+                :for={
+                  {title, value} <-
+                    Enum.zip([
+                      [
+                        dgettext("settings", "Organization Name"),
+                        dgettext("settings", "About"),
+                        dgettext("settings", "Type of organization"),
+                        dgettext("settings", "Company Size"),
+                        dgettext("settings", "Location"),
+                        dgettext("settings", "Phone Number"),
+                        dgettext("settings", "Website URL")
+                      ],
+                      [
+                        @company.name,
+                        @company.description,
+                        @company.organization_type,
+                        @company.size,
+                        @company.location,
+                        @company.phone_number,
+                        @company.website_url
+                      ]
+                    ])
+                }
+                class="grid gap-y-1"
+              >
+                <h3 class="text-base font-medium text-[#1f1f1f]">
+                  {title}
+                </h3>
+                <p class="text-sm text-[#717171] capitalize">
+                  {value || dgettext("settings", "Nil")}
+                </p>
+              </div>
+
+              <.link
+                navigate={~p"/companies/#{@company.id}"}
+                class="mt-2 bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 w-[40%] py-2 flex items-center justify-center rounded-md"
+              >
+                {dgettext("settings", "View public profile")}
+              </.link>
+            </div>
+          </div>
+
+          <div class="account-deletion mt-4 text-[#1f1f1f] text-sm grid gap-y-2 outline outline-[#e8ecf1] rounded-xl shadow-sm shadow-[#e8ecf1] p-4">
+            <h2 class="text-base font-medium">{dgettext("settings", "Delete Account")}</h2>
+            <p>
+              {dgettext(
+                "settings",
+                "Would you like to delete your Bemeda Personal account? Deleting this account will remove all your profile data, job listings and Received applications."
+              )}
+              <strong>
+                {dgettext(
+                  "settings",
+                  "Deleting this account will remove all your profile data, job listings and Received applications."
+                )}
+              </strong>
+            </p>
+            <button
+              type="delete"
+              phx-click={JS.push("delete_account")}
+              class="font-medium text-red-600 hover:opacity-80 flex items-center justify-start"
+              data-confirm={dgettext("settings", "Are you sure you want to delete your account?")}
+            >
+              {dgettext("settings", "Delete my account")}
+            </button>
+          </div>
+        </div>
+
+        <div :if={@live_action == :password} class="text-[#717171] pb-24">
+          <.header class="mb-6 lg:mt-0">
+            {dgettext("settings", "Change Password")}
+          </.header>
+
+          <.live_component
+            module={PasswordComponent}
+            id="password-component"
+            current_user={@current_user}
+          />
+        </div>
+      </main>
+    </div>
+  </section>
+  <SharedComponents.footer />
+</Layouts.app>

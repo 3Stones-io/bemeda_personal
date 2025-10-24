@@ -81,7 +81,12 @@ defmodule BemedaPersonalWeb.UserLive.Login do
                 placeholder={dgettext("auth", "Password")}
                 autocomplete="current-password"
               />
-              <.button class="btn btn-primary w-full" name={@form[:remember_me].name} value="true">
+              <.button
+                class="btn btn-primary w-full"
+                name={@form[:remember_me].name}
+                value="true"
+                type="submit"
+              >
                 Log in
               </.button>
             </.form>

@@ -40,7 +40,9 @@ defmodule BemedaPersonal.Accounts do
   """
   @spec get_user_by_email(email()) :: user() | nil
   def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email)
+    User
+    |> where([u], u.email == ^email and is_nil(u.deleted_at))
+    |> Repo.one()
   end
 
   @doc """
@@ -58,7 +60,11 @@ defmodule BemedaPersonal.Accounts do
   @spec get_user_by_email_and_password(email(), password()) :: user() | nil
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
+    user =
+      User
+      |> where([u], u.email == ^email and is_nil(u.deleted_at))
+      |> Repo.one()
+
     if User.valid_password?(user, password), do: user
   end
 
@@ -77,7 +83,11 @@ defmodule BemedaPersonal.Accounts do
 
   """
   @spec get_user!(id()) :: user() | no_return()
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    User
+    |> where([u], u.id == ^id and is_nil(u.deleted_at))
+    |> Repo.one!()
+  end
 
   ## User registration
 
@@ -230,6 +240,21 @@ defmodule BemedaPersonal.Accounts do
   end
 
   @doc """
+  Checks if a user has a password set.
+
+  ## Examples
+
+      iex> has_password?(user)
+      true
+
+      iex> has_password?(user_without_password)
+      false
+
+  """
+  @spec has_password?(user()) :: boolean()
+  def has_password?(user), do: User.has_password?(user)
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for changing the user password.
 
   See `BemedaPersonal.Accounts.User.password_changeset/3` for a list of supported options.
@@ -242,6 +267,8 @@ defmodule BemedaPersonal.Accounts do
   """
   @spec change_user_password(user(), attrs(), opts()) :: changeset()
   def change_user_password(user, attrs \\ %{}, opts \\ []) do
+    verify_current? = has_password?(user)
+    opts = Keyword.put(opts, :verify_current_password, verify_current?)
     User.password_changeset(user, attrs, opts)
   end
 
@@ -262,9 +289,19 @@ defmodule BemedaPersonal.Accounts do
   @spec update_user_password(user(), attrs()) ::
           {:ok, {user(), list(token())}} | {:error, changeset()}
   def update_user_password(user, attrs) do
-    user
-    |> User.password_changeset(attrs)
-    |> update_user_and_delete_all_tokens()
+    tokens =
+      user
+      |> User.password_changeset(attrs)
+      |> update_user_and_delete_all_tokens()
+
+    case tokens do
+      {:ok, {updated_user, _expired_tokens}} = result ->
+        UserNotifier.deliver_password_changed(updated_user)
+        result
+
+      error ->
+        error
+    end
   end
 
   ## Session
@@ -287,7 +324,10 @@ defmodule BemedaPersonal.Accounts do
   @spec get_user_by_session_token(token()) :: {user(), DateTime.t()} | nil
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
+
+    query
+    |> join(:inner, [t, u], user in User, on: user.id == u.id and is_nil(user.deleted_at))
+    |> Repo.one()
   end
 
   @doc """
@@ -296,6 +336,10 @@ defmodule BemedaPersonal.Accounts do
   @spec get_user_by_magic_link_token(token()) :: user() | nil
   def get_user_by_magic_link_token(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "login"),
+         query <-
+           join(query, :inner, [t, u], user in User,
+             on: user.id == u.id and is_nil(user.deleted_at)
+           ),
          {user, _token} <- Repo.one(query) do
       user
     else
@@ -451,6 +495,82 @@ defmodule BemedaPersonal.Accounts do
     User.bio_changeset(user, attrs)
   end
 
+  @spec change_account_information(user(), attrs(), opts()) :: changeset()
+  def change_account_information(user, attrs \\ %{}, opts \\ []) do
+    User.change_account_information_changeset(user, attrs, opts)
+  end
+
+  @doc """
+  Updates the user account information.
+
+  If the email has changed, it will deliver update email instructions.
+  Otherwise, it just updates the other fields.
+  """
+  @spec update_account_information(user(), attrs(), function() | nil) ::
+          {:ok, user()} | {:ok, user(), :email_update_sent} | {:error, changeset()}
+  def update_account_information(user, attrs, email_update_url_fun \\ nil) do
+    changeset = User.change_account_information_changeset(user, attrs)
+
+    if changeset.valid? do
+      handle_valid_account_update(user, changeset, attrs, email_update_url_fun)
+    else
+      {:error, changeset}
+    end
+  end
+
+  defp handle_valid_account_update(user, changeset, attrs, email_update_url_fun) do
+    email_changed? = Ecto.Changeset.get_change(changeset, :email)
+
+    if email_changed? do
+      update_account_with_email_change(user, changeset, attrs, email_update_url_fun)
+    else
+      update_account_fields_only(changeset)
+    end
+  end
+
+  defp update_account_fields_only(changeset) do
+    Repo.update(changeset)
+  end
+
+  defp update_account_with_email_change(_user, changeset, attrs, email_update_url_fun) do
+    changeset_without_email = Ecto.Changeset.delete_change(changeset, :email)
+
+    case Repo.update(changeset_without_email) do
+      {:ok, updated_user} ->
+        handle_email_confirmation_result(updated_user, attrs, email_update_url_fun)
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  defp handle_email_confirmation_result(updated_user, attrs, email_update_url_fun) do
+    case maybe_send_email_confirmation(updated_user, attrs, email_update_url_fun) do
+      :ok -> {:ok, updated_user, :email_update_sent}
+      {:skip_email, nil} -> {:ok, updated_user}
+    end
+  end
+
+  defp maybe_send_email_confirmation(_user, _attrs, nil), do: {:skip_email, nil}
+
+  defp maybe_send_email_confirmation(user, attrs, email_update_url_fun)
+       when is_function(email_update_url_fun, 1) do
+    new_email = attrs["email"] || attrs[:email]
+    email_changeset = User.email_changeset(user, %{email: new_email})
+
+    if email_changeset.valid? do
+      send_email_confirmation(user, email_changeset, email_update_url_fun)
+    else
+      :ok
+    end
+  end
+
+  defp send_email_confirmation(user, email_changeset, email_update_url_fun) do
+    applied_changeset = Ecto.Changeset.apply_action!(email_changeset, :insert)
+    deliver_user_update_email_instructions(applied_changeset, user.email, email_update_url_fun)
+    :ok
+  end
+
   @doc """
   Updates the user profile.
   """
@@ -474,5 +594,26 @@ defmodule BemedaPersonal.Accounts do
       {:error, _operation, changeset, _changes} ->
         {:error, changeset}
     end
+  end
+
+  @doc """
+  Soft deletes a user by setting the deleted_at timestamp to the current time.
+
+  ## Examples
+
+      iex> soft_delete_user(user)
+      {:ok, %User{}}
+
+      iex> soft_delete_user(invalid_user)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec soft_delete_user(user()) :: {:ok, user()} | {:error, changeset()}
+  def soft_delete_user(%User{} = user) do
+    now = DateTime.utc_now(:second)
+
+    user
+    |> Ecto.Changeset.change(%{deleted_at: now})
+    |> Repo.update()
   end
 end

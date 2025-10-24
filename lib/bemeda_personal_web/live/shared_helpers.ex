@@ -12,6 +12,7 @@ defmodule BemedaPersonalWeb.SharedHelpers do
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.TigrisHelper
   alias BemedaPersonal.Workers.EmailNotificationWorker
+  alias Phoenix.HTML.Form
 
   require Logger
 
@@ -204,5 +205,24 @@ defmodule BemedaPersonalWeb.SharedHelpers do
     |> Ecto.Enum.values(field)
     |> Stream.map(&to_string/1)
     |> Enum.map(fn value -> {translate_enum_value_fun.(field, value), value} end)
+  end
+
+  @spec checked?(Form.t(), atom(), any()) :: boolean()
+  def checked?(form, field, value) do
+    form_value =
+      form
+      |> Form.input_value(field)
+      |> to_string()
+
+    value == form_value
+  end
+
+  @spec avatar_image(module(), String.t()) :: String.t()
+  def avatar_image(module, empty_image_path) do
+    if module.media_asset do
+      get_presigned_url(module.media_asset.upload_id)
+    else
+      empty_image_path
+    end
   end
 end

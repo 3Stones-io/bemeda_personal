@@ -99,6 +99,7 @@ msgstr "Secteur d'activité"
 #: lib/bemeda_personal_web/components/company/form_component.ex
 #: lib/bemeda_personal_web/live/company_live/index.html.heex
 #: lib/bemeda_personal_web/live/company_public_live/show.html.heex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Location"
 msgstr "Localisation"
@@ -391,6 +392,7 @@ msgid "Medical Center"
 msgstr "Centre médical"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Organization Name"
 msgstr "Nom de l'organisation"
@@ -401,11 +403,13 @@ msgid "Other"
 msgstr "Autre"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Phone Number"
 msgstr "Numéro de téléphone"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Type of organization"
 msgstr "Type d'organisation"
@@ -451,6 +455,7 @@ msgid "Briefly describe your organization"
 msgstr "Décrivez brièvement votre organisation"
 
 #: lib/bemeda_personal_web/components/company/form_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #, elixir-autogen, elixir-format
 msgid "Organization Type"
 msgstr "Type d'organisation"
@@ -469,3 +474,13 @@ msgstr "Parlez-nous de votre organisation"
 #, elixir-autogen, elixir-format
 msgid "Upload company Logo"
 msgstr "Télécharger le logo de l'entreprise"
+
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Website URL"
+msgstr "Site web"
+
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#, elixir-autogen, elixir-format
+msgid "Write a brief overview of your organization."
+msgstr "Rédigez un bref aperçu de votre organisation."
