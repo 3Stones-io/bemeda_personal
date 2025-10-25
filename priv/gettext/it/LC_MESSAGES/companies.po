@@ -39,11 +39,6 @@ msgstr "Torna ai candidati"
 msgid "Company Dashboard"
 msgstr "Dashboard aziendale"
 
-#: lib/bemeda_personal_web/components/company/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Company Logo"
-msgstr "Logo aziendale"
-
 #: lib/bemeda_personal_web/components/job/jobs_components.ex
 #, elixir-autogen, elixir-format
 msgid "Company Name"

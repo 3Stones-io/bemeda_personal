@@ -248,11 +248,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       {:ok, view, _html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
       assert view
-             |> element(".job-application-form-video-upload-progress")
-             |> has_element?()
-
-      assert view
-             |> element("#new-video")
+             |> element("#new-video-uploader")
              |> has_element?()
     end
   end
@@ -388,12 +384,10 @@ defmodule BemedaPersonalWeb.JobApplicationLive.IndexTest do
       conn: conn,
       job: job
     } do
-      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
+      {:ok, view, html} = live(conn, ~p"/jobs/#{job.id}/job_applications/new")
 
-      # Check for video upload section elements
       assert html =~ "Application Video"
-      assert html =~ "Upload video"
-      assert html =~ "video-upload-input"
+      assert has_element?(view, "#new-video-uploader")
     end
 
     test "shows video upload section on form", %{

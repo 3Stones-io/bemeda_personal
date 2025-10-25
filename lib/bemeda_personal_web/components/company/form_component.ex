@@ -7,8 +7,7 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
 
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Companies
-  alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.Components.Shared.SharedComponents
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -74,53 +73,14 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
         />
 
         <div class="logo-upload">
-          <div :if={!@logo_editable?}>
-            <SharedComponents.image_upload_component
-              label={dgettext("companies", "Upload company Logo")}
-              id="company_logo"
-              target={@myself}
-              events_target="company-form"
-            />
-          </div>
-
-          <SharedComponents.file_upload_progress
-            id="company-logo-progress"
-            phx-update="ignore"
+          <.live_component
+            module={AssetUploaderComponent}
+            id="company-logo-uploader"
+            type={:image}
+            media_asset={@company.media_asset}
+            label={dgettext("companies", "Upload company Logo")}
+            placeholder_image={~p"/images/empty-states/company_logo.png"}
           />
-
-          <div
-            :if={@media_data && @media_data["upload_id"]}
-            class="flex items-center gap-2 w-full"
-          >
-            <div>
-              <div class="border-[1px] border-gray-200 rounded-full h-[4rem] w-[4rem]">
-                <img
-                  src={SharedHelpers.get_presigned_url(@media_data["upload_id"])}
-                  alt={dgettext("companies", "Company Logo")}
-                  class="w-full h-full object-cover rounded-full"
-                />
-              </div>
-            </div>
-
-            <button
-              type="button"
-              class="cursor-pointer w-full h-full text-form-txt-primary text-sm border border-form-input-border hover:border-primary-400 rounded-full px-2 py-3 flex items-center justify-center gap-2"
-              phx-click={
-                JS.push("delete_logo", target: @myself)
-                |> JS.dispatch("click", to: "#company_logo-hidden-file-input")
-              }
-            >
-              <.icon name="hero-arrow-path" class="w-4 h-4" /> Replace company logo
-            </button>
-
-            <button
-              type="button"
-              class="w-full h-full object-cover rounded-full flex items-center text-red-700"
-              phx-click={JS.push("delete_logo", target: @myself)}
-            >
-              <.icon name="hero-trash" class="w-4 h-4" />
-            </button>
-          </div>
         </div>
 
         <.custom_button
@@ -139,18 +99,19 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{asset_uploader_event: {event_type, media_data}} = _assigns, socket) do
+    {:ok, SharedHelpers.handle_asset_uploader_event(event_type, media_data, socket)}
+  end
+
   def update(%{company: company} = assigns, socket) do
     changeset = Companies.change_company(company)
-    media_data = get_media_data(company.media_asset)
 
     {:ok,
      socket
      |> assign(assigns)
      |> assign(:enable_submit?, true)
      |> assign(:form, to_form(changeset))
-     |> assign(:media_data, media_data)
-     |> assign(:logo_editable?, !Enum.empty?(media_data))
-     |> assign(:show_logo?, has_logo?(company))}
+     |> assign(:media_data, %{})}
   end
 
   @impl Phoenix.LiveComponent
@@ -169,53 +130,6 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
     company_params = update_media_data_params(socket, company_params)
 
     save_company(socket, socket.assigns.action, company_params)
-  end
-
-  def handle_event("upload_file", params, socket) do
-    {:reply, response, updated_socket} = SharedHelpers.create_file_upload(socket, params)
-
-    {:reply, response, assign(updated_socket, :enable_submit?, false)}
-  end
-
-  def handle_event("upload_completed", %{"upload_id" => upload_id}, socket) do
-    # Store media data for company logo
-    media_data = %{
-      "upload_id" => upload_id,
-      "file_name" => "company_logo"
-    }
-
-    {:reply, %{},
-     socket
-     |> assign(:media_data, media_data)
-     |> assign(:enable_submit?, true)
-     |> assign(:logo_editable?, true)
-     |> assign(:show_logo?, true)}
-  end
-
-  def handle_event("delete_file", _params, socket) do
-    {:ok, asset} = Media.delete_media_asset(socket.assigns.company.media_asset)
-
-    {:noreply,
-     socket
-     |> assign(:company, asset.company)
-     |> assign(:show_logo?, false)}
-  end
-
-  def handle_event("upload_cancelled", _params, socket) do
-    media_data = get_media_data(socket.assigns.company.media_asset)
-
-    {:noreply,
-     socket
-     |> assign(:media_data, media_data)
-     |> assign(:enable_submit?, true)
-     |> assign(:logo_editable?, !Enum.empty?(media_data))}
-  end
-
-  def handle_event("delete_logo", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:logo_editable?, false)}
   end
 
   def handle_event("enable-submit", _params, socket) do
@@ -249,23 +163,6 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
 
   defp update_media_data_params(socket, params) do
     Map.put(params, "media_data", socket.assigns.media_data)
-  end
-
-  defp has_logo?(company) do
-    case company.media_asset do
-      %Media.MediaAsset{} = _asset -> true
-      _other -> false
-    end
-  end
-
-  defp get_media_data(media_asset) do
-    case media_asset do
-      %Media.MediaAsset{upload_id: upload_id, file_name: file_name} ->
-        %{"upload_id" => upload_id, "file_name" => file_name}
-
-      _no_asset ->
-        %{}
-    end
   end
 
   defp create_scope_for_user(user) do

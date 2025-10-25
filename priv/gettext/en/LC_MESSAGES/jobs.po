@@ -1654,11 +1654,6 @@ msgstr ""
 msgid "You already applied to this job"
 msgstr ""
 
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Remove video"
-msgstr ""
-
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Unknown"
@@ -1845,11 +1840,6 @@ msgstr ""
 #: lib/bemeda_personal_web/components/job/form_component.ex
 #, elixir-autogen, elixir-format
 msgid "Edit skills"
-msgstr ""
-
-#: lib/bemeda_personal_web/components/job/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Edit video"
 msgstr ""
 
 #: lib/bemeda_personal_web/i18n.ex

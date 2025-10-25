@@ -5,7 +5,7 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
 
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobApplications
-  alias BemedaPersonal.Media
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.SharedHelpers
   alias Phoenix.LiveView.JS
 
@@ -172,92 +172,17 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
                   {dgettext("jobs", "Application Video")}
                   <span class="font-normal text-gray-600">({dgettext("jobs", "optional")})</span>
                 </h3>
-                <button
-                  :if={!@show_video_upload_instruction? && @job_application.media_asset}
-                  type="button"
-                  phx-click="delete_file"
-                  phx-target={@myself}
-                  class="text-gray-400 hover:text-gray-600"
-                >
-                  <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                  </svg>
-                </button>
               </div>
 
-              <div :if={@show_video_upload_instruction?}>
-                <!-- Upload button -->
-                <label for={"video-upload-input-#{@id}"} class="block">
-                  <div class="bg-violet-50 rounded-lg p-8 text-center hover:bg-violet-100 transition-colors cursor-pointer">
-                    <img
-                      src={~p"/images/video-upload-button.svg"}
-                      alt=""
-                      class="w-20 h-20 mx-auto mb-4"
-                    />
-                    <p class="text-lg font-medium text-gray-900">
-                      {dgettext("jobs", "Upload video")}
-                    </p>
-                  </div>
-                </label>
-                <input
-                  id={"video-upload-input-#{@id}"}
-                  type="file"
-                  accept="video/*"
-                  class="hidden"
-                  phx-change="upload_file"
-                  phx-target={@myself}
-                />
-              </div>
-              
-    <!-- Video preview -->
-              <div :if={!@show_video_upload_instruction? && @job_application.media_asset}>
-                <div class="relative rounded-lg overflow-hidden bg-gray-100 aspect-video">
-                  <!-- Video thumbnail with play button overlay -->
-                  <img
-                    :if={@job_application.media_asset.thumbnail_url}
-                    src={@job_application.media_asset.thumbnail_url}
-                    alt="Video thumbnail"
-                    class="w-full h-full object-cover"
-                  />
-                  <div
-                    :if={!@job_application.media_asset.thumbnail_url}
-                    class="w-full h-full bg-violet-100 flex items-center justify-center"
-                  >
-                    <img src={~p"/images/video-upload-button.svg"} alt="" class="w-16 h-16" />
-                  </div>
-                  <!-- Play button overlay for thumbnails -->
-                  <div
-                    :if={@job_application.media_asset.thumbnail_url}
-                    class="absolute inset-0 flex items-center justify-center"
-                  >
-                    <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
-                      <svg
-                        class="w-8 h-8 text-violet-500 ml-1"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  phx-click="delete_file"
-                  phx-target={@myself}
-                  class="mt-2 text-sm text-gray-500 hover:text-gray-700"
-                >
-                  {dgettext("jobs", "Remove video")}
-                </button>
-              </div>
+              <.live_component
+                module={AssetUploaderComponent}
+                id={"#{@id}-video-uploader"}
+                type={:video}
+                media_asset={@job_application.media_asset}
+                label={dgettext("jobs", "Upload video")}
+              />
             </div>
           </div>
-
-          <SharedComponents.file_upload_progress
-            id={"#{@id}-video"}
-            class="job-application-form-video-upload-progress hidden"
-            phx-update="ignore"
-          />
 
           <:actions>
             <div class="px-6 pb-6">
@@ -288,6 +213,10 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{asset_uploader_event: {event_type, media_data}} = _assigns, socket) do
+    {:ok, SharedHelpers.handle_asset_uploader_event(event_type, media_data, socket)}
+  end
+
   def update(assigns, socket) do
     job_application = assigns.job_application
     changeset = JobApplications.change_job_application(job_application)
@@ -297,7 +226,6 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
      |> assign(assigns)
      |> assign(:enable_submit?, true)
      |> assign(:media_data, %{})
-     |> assign(:show_video_upload_instruction?, !has_media_asset?(job_application))
      |> assign(
        :character_count,
        changeset.changes
@@ -329,35 +257,6 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
     job_application_params = update_media_data_params(socket, job_application_params)
 
     save_job_application(socket, socket.assigns.action, job_application_params)
-  end
-
-  def handle_event("upload_file", params, socket) do
-    SharedHelpers.create_file_upload(socket, params)
-  end
-
-  def handle_event("upload_completed", %{"upload_id" => upload_id}, socket) do
-    video_url = SharedHelpers.get_presigned_url(upload_id)
-    {:reply, %{video_url: video_url}, assign(socket, :enable_submit?, true)}
-  end
-
-  def handle_event("enable-submit", _params, socket) do
-    {:noreply, assign(socket, :enable_submit?, true)}
-  end
-
-  def handle_event("delete_file", _params, socket) do
-    {:ok, asset} = Media.delete_media_asset(socket.assigns.job_application.media_asset)
-
-    {:noreply,
-     socket
-     |> assign(:job_application, asset.job_application)
-     |> assign(:show_video_upload_instruction?, true)}
-  end
-
-  def handle_event("upload_cancelled", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:enable_submit?, true)}
   end
 
   defp save_job_application(socket, :edit, job_application_params) do
@@ -414,13 +313,11 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
   end
 
   defp update_media_data_params(socket, params) do
-    Map.put(params, "media_data", socket.assigns.media_data)
-  end
-
-  defp has_media_asset?(job_application) do
-    case job_application.media_asset do
-      %Media.MediaAsset{} = _asset -> true
-      _other -> false
+    if socket.assigns.media_data && is_map(socket.assigns.media_data) &&
+         map_size(socket.assigns.media_data) > 0 do
+      Map.put(params, "media_data", socket.assigns.media_data)
+    else
+      params
     end
   end
 end

@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
   alias BemedaPersonal.Repo
   alias BemedaPersonal.Workers.ProcessTemplate
   alias BemedaPersonalWeb.Components.Company.FormComponent
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.Endpoint
   alias BemedaPersonalWeb.Live.Hooks.RatingHooks
   alias Ecto.Multi
@@ -315,6 +316,12 @@ defmodule BemedaPersonalWeb.CompanyLive.Index do
     interviews = load_interviews_for_month(scope, socket.assigns.calendar_date)
 
     {:noreply, assign(socket, :interviews, interviews)}
+  end
+
+  def handle_info({AssetUploaderComponent, msg}, socket) do
+    company_id = if socket.assigns.company, do: socket.assigns.company.id, else: :new
+    send_update(FormComponent, id: company_id, asset_uploader_event: msg)
+    {:noreply, socket}
   end
 
   defp assign_job_postings(socket, nil), do: stream(socket, :job_postings, [])

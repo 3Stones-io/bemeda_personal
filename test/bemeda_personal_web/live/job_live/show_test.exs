@@ -161,10 +161,10 @@ defmodule BemedaPersonalWeb.JobLive.ShowTest do
     end
 
     test "shows application modal when accessing apply path", %{conn: conn, job: job} do
-      {:ok, _view, html} = live(conn, ~p"/jobs/#{job.id}/apply")
+      {:ok, view, html} = live(conn, ~p"/jobs/#{job.id}/apply")
 
       assert html =~ "Apply to Senior Software Engineer"
-      assert html =~ "job-application-form"
+      assert has_element?(view, "form")
     end
 
     test "handles navigate_after_close message", %{conn: conn, job: job} do

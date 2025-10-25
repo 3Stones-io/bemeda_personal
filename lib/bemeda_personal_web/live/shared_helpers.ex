@@ -83,6 +83,29 @@ defmodule BemedaPersonalWeb.SharedHelpers do
      |> assign(:media_data, %{file_name: params["filename"], upload_id: upload_id})}
   end
 
+  @spec handle_asset_uploader_event(atom(), map(), socket()) :: socket()
+  def handle_asset_uploader_event(:upload_started, _media_data, socket) do
+    assign(socket, :enable_submit?, false)
+  end
+
+  def handle_asset_uploader_event(:upload_completed, media_data, socket) do
+    socket
+    |> assign(:media_data, media_data)
+    |> assign(:enable_submit?, true)
+  end
+
+  def handle_asset_uploader_event(:replace_asset, _media_data, socket) do
+    assign(socket, :media_data, %{})
+  end
+
+  def handle_asset_uploader_event(:delete_asset, _media_data, socket) do
+    assign(socket, :media_data, %{})
+  end
+
+  def handle_asset_uploader_event(:upload_cancelled, _media_data, socket) do
+    assign(socket, :enable_submit?, true)
+  end
+
   @spec get_presigned_url(String.t()) :: String.t()
   def get_presigned_url(upload_id) do
     TigrisHelper.get_presigned_download_url(upload_id)

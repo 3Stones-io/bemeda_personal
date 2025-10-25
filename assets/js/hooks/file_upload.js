@@ -41,6 +41,14 @@ export default FileUpload = {
       'button[type="button"]'
     )
 
+    const previewImage = fileUploadInput.querySelector('[id$="-preview-image"]')
+    const avatarProgressCircle = fileUploadInput.querySelector(
+      '[id$="-progress-circle"]'
+    )
+    const avatarProgressIndicator = fileUploadInput.querySelector(
+      '[id$="-progress-indicator"]'
+    )
+
     let currentUpload
 
     const restoreDropzoneStyles = () => {
@@ -137,6 +145,18 @@ export default FileUpload = {
               imageContainer.src = payload.thumbnail
             }
 
+            if (payload.thumbnail && previewImage) {
+              previewImage.src = payload.thumbnail
+            }
+
+            if (avatarProgressCircle) {
+              avatarProgressCircle.classList.remove('hidden')
+            }
+
+            if (avatarProgressIndicator) {
+              avatarProgressIndicator.style.strokeDasharray = '0 302'
+            }
+
             if (progressCircle) {
               progressCircle.style.strokeDasharray = '0, 100'
             }
@@ -157,6 +177,12 @@ export default FileUpload = {
               if (progressCircle) {
                 progressCircle.style.strokeDasharray = `${progress}, 100`
               }
+
+              if (avatarProgressIndicator) {
+                const circumference = 2 * Math.PI * 48
+                const progressValue = (progress / 100) * circumference
+                avatarProgressIndicator.style.strokeDasharray = `${progressValue} ${circumference}`
+              }
             })
 
             currentUpload.on('error', (_error) => {
@@ -166,6 +192,10 @@ export default FileUpload = {
             currentUpload.on('success', (_entry) => {
               if (uploadProgressElement) {
                 uploadProgressElement.classList.add('hidden')
+              }
+
+              if (avatarProgressCircle) {
+                avatarProgressCircle.classList.add('hidden')
               }
 
               if (assetDescription) {

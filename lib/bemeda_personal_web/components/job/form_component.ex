@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
   import Phoenix.HTML.Form, only: [input_value: 2]
 
   alias BemedaPersonal.JobPostings
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -321,47 +322,16 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
           </div>
 
           <div class="video-upload">
-            <h3 class="capitalize text-sm font-semibold text-gray-900 mb-3 flex items-center justify-between">
+            <h3 class="capitalize text-sm font-semibold text-gray-900 mb-3">
               {dgettext("jobs", "Add video to job post (optional)")}
-              <button
-                :if={@video_editable?}
-                type="button"
-                class={[
-                  "w-6 h-6  border border-violet-500 hover:opacity-75 rounded-sm",
-                  "inline-flex items-center justify-center"
-                ]}
-                phx-click={JS.push("edit_video", target: @myself)}
-                aria-label={dgettext("jobs", "Edit video")}
-              >
-                <.icon name="hero-pencil" class="w-4 h-4" />
-              </button>
             </h3>
 
-            <div :if={!@video_editable?}>
-              <SharedComponents.file_input_component
-                accept="video/*"
-                events_target={@id}
-                id="job_posting-video"
-                max_file_size={52_000_000}
-                target={@myself}
-                type="video"
-              />
-            </div>
-
-            <SharedComponents.file_upload_progress
-              id="job_posting-video-progress"
-              phx-update="ignore"
+            <.live_component
+              module={AssetUploaderComponent}
+              id="job-video-upload"
+              type={:video}
+              media_asset={@job_posting.media_asset}
             />
-
-            <div
-              :if={@media_data && @media_data["file_name"]}
-              class="border-[1px] border-white rounded-md"
-            >
-              <SharedComponents.video_player
-                media_asset={@job_posting.media_asset}
-                class="w-full h-full"
-              />
-            </div>
           </div>
 
           <div class="action flex gap-4 justify-between items-center">
@@ -400,22 +370,21 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
     {:ok,
      socket
      |> assign(:enable_submit?, true)
-     |> assign(:video_editable?, true)
      |> assign(:media_data, nil)}
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{asset_uploader_event: {event_type, media_data}} = _assigns, socket) do
+    {:ok, SharedHelpers.handle_asset_uploader_event(event_type, media_data, socket)}
+  end
+
   def update(%{job_posting: job_posting} = assigns, socket) do
     changeset = JobPostings.change_job_posting(job_posting)
-
-    media_data = get_media_data(job_posting.media_asset)
 
     {:ok,
      socket
      |> assign(assigns)
      |> assign(:form, to_form(changeset))
-     |> assign(:media_data, media_data)
-     |> assign(:video_editable?, !Enum.empty?(media_data))
      |> assign(:mode, Map.get(assigns, :mode, :modal))}
   end
 
@@ -448,39 +417,9 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
     {:noreply, socket}
   end
 
-  def handle_event("upload_file", params, socket) do
-    SharedHelpers.create_file_upload(socket, params)
-  end
-
-  def handle_event("upload_completed", %{"upload_id" => upload_id}, socket) do
-    video_url = SharedHelpers.get_presigned_url(upload_id)
-
-    {:reply, %{video_url: video_url},
-     socket
-     |> assign(:enable_submit?, true)
-     |> assign(:video_editable?, true)}
-  end
-
-  def handle_event("edit_video", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:video_editable?, false)}
-  end
-
-  def handle_event("upload_cancelled", _params, socket) do
-    media_data = get_media_data(socket.assigns.job_posting.media_asset)
-
-    {:noreply,
-     socket
-     |> assign(:enable_submit?, true)
-     |> assign(:media_data, media_data)
-     |> assign(:video_editable?, !Enum.empty?(media_data))}
-  end
-
   defp save_job_posting(socket, :edit, job_posting_params) do
     job_posting_params =
-      if socket.assigns.media_data do
+      if socket.assigns.media_data && is_map(socket.assigns.media_data) do
         Map.put(job_posting_params, "media_data", socket.assigns.media_data)
       else
         job_posting_params
@@ -500,7 +439,7 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
 
   defp save_job_posting(socket, :new, job_posting_params) do
     final_params =
-      if socket.assigns.media_data do
+      if socket.assigns.media_data && is_map(socket.assigns.media_data) do
         Map.put(job_posting_params, "media_data", socket.assigns.media_data)
       else
         job_posting_params
@@ -519,13 +458,6 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
 
   defp get_translated_options(field) do
     SharedHelpers.get_translated_options(field, JobPostings.JobPosting, &translate_enum_value/2)
-  end
-
-  defp get_media_data(media_asset) do
-    case media_asset do
-      %{file_name: file_name} -> %{"file_name" => file_name}
-      _no_file -> %{}
-    end
   end
 
   defp translate_enum_value(:department, value), do: I18n.translate_department(value)

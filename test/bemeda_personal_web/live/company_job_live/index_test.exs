@@ -8,7 +8,6 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
   alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.JobPostings
-  alias BemedaPersonal.Media.MediaAsset
 
   @create_attrs_job %{
     title: "Senior Software Engineer",
@@ -145,7 +144,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> live(~p"/company/jobs/new")
 
       assert html =~ "Add video to job post"
-      assert has_element?(view, "#job_posting-video-file-upload")
+      assert has_element?(view, "#job-video-upload")
     end
 
     test "shows video upload input on new job form", %{conn: conn, user: user} do
@@ -275,22 +274,30 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
         |> log_in_user(user)
         |> live(~p"/company/jobs/#{job_posting.id}/edit")
 
+      assert has_element?(view, "#job-video-upload")
+      assert has_element?(view, "video")
+
       view
-      |> element("button[aria-label='Edit video']")
+      |> element("button", "Delete video")
       |> render_click()
+
+      assert has_element?(view, "#job-video-upload-file-upload")
 
       upload_id = Ecto.UUID.generate()
 
       view
-      |> element("#job_posting-video-file-upload")
+      |> element("#job-video-upload-file-upload")
       |> render_hook("upload_file", %{
         "filename" => "updated_test_video.mp4",
         "type" => "video/mp4"
       })
 
       view
-      |> element("#job_posting-video-file-upload")
-      |> render_hook("upload_completed", %{"upload_id" => upload_id})
+      |> element("#job-video-upload-file-upload")
+      |> render_hook("upload_completed", %{
+        "upload_id" => upload_id,
+        "filename" => "updated_test_video.mp4"
+      })
 
       view
       |> form("#company-job-form")
@@ -314,10 +321,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
 
       updated_job = JobPostings.get_job_posting!(scope, job_posting.id)
       assert updated_job.title == "Updated Job Title"
-
-      assert %MediaAsset{
-               file_name: "updated_test_video.mp4"
-             } = updated_job.media_asset
+      assert updated_job.media_asset.upload_id == upload_id
     end
 
     test "redirects if trying to edit another company's job", %{

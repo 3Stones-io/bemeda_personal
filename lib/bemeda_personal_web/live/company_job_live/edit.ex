@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Edit do
 
   alias BemedaPersonal.JobPostings
   alias BemedaPersonalWeb.Components.Job.FormComponent
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
 
   @impl Phoenix.LiveView
   def handle_params(%{"id" => id}, _url, socket) do
@@ -29,6 +30,12 @@ defmodule BemedaPersonalWeb.CompanyJobLive.Edit do
   @impl Phoenix.LiveView
   def handle_info({:cancel_form, _action}, socket) do
     {:noreply, push_navigate(socket, to: ~p"/company/jobs")}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({AssetUploaderComponent, msg}, socket) do
+    send_update(FormComponent, id: "company-job-form", asset_uploader_event: msg)
+    {:noreply, socket}
   end
 
   @impl Phoenix.LiveView

@@ -1654,11 +1654,6 @@ msgstr "Le Mie Candidature"
 msgid "You already applied to this job"
 msgstr "Hai già fatto domanda per questo lavoro"
 
-#: lib/bemeda_personal_web/components/job_application/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Remove video"
-msgstr "Rimuovi video"
-
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
 msgid "Unknown"
@@ -1846,11 +1841,6 @@ msgstr "I candidati devono essere basati in Svizzera per questo lavoro?"
 #, elixir-autogen, elixir-format
 msgid "Edit skills"
 msgstr "Modifica competenze"
-
-#: lib/bemeda_personal_web/components/job/form_component.ex
-#, elixir-autogen, elixir-format
-msgid "Edit video"
-msgstr "Modifica video"
 
 #: lib/bemeda_personal_web/i18n.ex
 #, elixir-autogen, elixir-format
