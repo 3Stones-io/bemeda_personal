@@ -31,7 +31,7 @@ defmodule BemedaPersonal.Repo.Migrations.UpdateExistingJobPostingsWithEnumData d
   end
 
   defp set_default_employment_type do
-    employment_types = ["Permanent Position", "Floater", "Staff Pool", "Temporary Assignment"]
+    employment_types = ["Contract Hire", "Full-time Hire"]
     Enum.random(employment_types)
   end
 
