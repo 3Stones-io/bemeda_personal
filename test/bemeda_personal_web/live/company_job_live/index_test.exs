@@ -278,7 +278,7 @@ defmodule BemedaPersonalWeb.CompanyJobLive.IndexTest do
       assert has_element?(view, "video")
 
       view
-      |> element("button", "Delete video")
+      |> element("#job-video-upload button[phx-click='delete_asset']")
       |> render_click()
 
       assert has_element?(view, "#job-video-upload-file-upload")

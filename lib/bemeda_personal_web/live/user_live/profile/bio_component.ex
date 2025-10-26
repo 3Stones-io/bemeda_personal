@@ -111,7 +111,8 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
             module={AssetUploaderComponent}
             id="profile-photo-uploader"
             type={:image}
-            media_asset={@current_user.media_asset}
+            parent_record={@current_user}
+            current_scope={@current_scope}
             label={dgettext("profile", "Upload profile photo")}
           />
         </div>

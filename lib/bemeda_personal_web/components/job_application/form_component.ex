@@ -178,7 +178,9 @@ defmodule BemedaPersonalWeb.Components.JobApplication.FormComponent do
                 module={AssetUploaderComponent}
                 id={"#{@id}-video-uploader"}
                 type={:video}
-                media_asset={@job_application.media_asset}
+                parent_record={@job_application}
+                current_scope={@current_scope}
+                title={dgettext("jobs", "Add application video (optional)")}
                 label={dgettext("jobs", "Upload video")}
               />
             </div>

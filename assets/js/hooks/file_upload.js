@@ -226,13 +226,50 @@ export default FileUpload = {
       })
     }
 
+    const handleDeleteAsset = () => {
+      if (previewImage) {
+        const placeholderImage =
+          previewImage.dataset.placeholderSrc ||
+          '/images/empty-states/avatar_empty.png'
+        previewImage.src = placeholderImage
+      }
+
+      if (videoPreview) {
+        videoPreview.classList.add('hidden')
+        const videoSource = videoPreview.querySelector('source')
+        if (videoSource) {
+          videoSource.src = ''
+        }
+        const videoElement = videoPreview.querySelector('video')
+        if (videoElement) {
+          videoElement.pause()
+          videoElement.load()
+        }
+      }
+
+      if (fileUploadInputsContainer) {
+        fileUploadInputsContainer.classList.remove('hidden')
+      }
+
+      if (imageUploadContainer) {
+        imageUploadContainer.classList.remove('hidden')
+      }
+
+      if (assetDescription) {
+        assetDescription.classList.add('hidden')
+      }
+    }
+
+    window.addEventListener('phx:delete-asset-success', () => {
+      handleDeleteAsset()
+    })
+
     const deleteButton = assetDescription?.querySelector(
       'button[type="button"]'
     )
     if (deleteButton) {
       deleteButton.addEventListener('click', () => {
-        fileUploadInput.classList.remove('hidden')
-        assetDescription.classList.add('hidden')
+        handleDeleteAsset()
         hook.pushEventTo(`#${eventsTarget}`, 'delete_file')
       })
     }

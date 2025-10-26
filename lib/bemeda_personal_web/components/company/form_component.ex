@@ -77,7 +77,8 @@ defmodule BemedaPersonalWeb.Components.Company.FormComponent do
             module={AssetUploaderComponent}
             id="company-logo-uploader"
             type={:image}
-            media_asset={@company.media_asset}
+            parent_record={@company}
+            current_scope={@current_scope}
             label={dgettext("companies", "Upload company Logo")}
             placeholder_image={~p"/images/empty-states/company_logo.png"}
           />

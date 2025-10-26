@@ -3,22 +3,13 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
 
   use BemedaPersonalWeb, :live_component
 
+  alias BemedaPersonal.Media
+  alias BemedaPersonal.Repo
   alias BemedaPersonalWeb.Components.Shared.SharedComponents
   alias BemedaPersonalWeb.SharedHelpers
 
-  attr :id, :string, required: true
-  attr :type, :atom, required: true, values: [:image, :video]
-  attr :accept, :string, default: nil
-  attr :max_file_size, :integer, default: nil
-  attr :media_asset, :any, default: nil
-  attr :label, :string, default: nil
-  attr :class, :string, default: ""
-  attr :placeholder_image, :string, default: "/images/empty-states/avatar_empty.png"
-
   @impl Phoenix.LiveComponent
   def render(assigns) do
-    assigns = assign_defaults(assigns)
-
     ~H"""
     <div id={@id} class={["asset-uploader", @class]}>
       <%= if @type == :image do %>
@@ -63,6 +54,7 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
                 <img
                   id={"#{@id}-preview-image"}
                   src={@asset_url || @placeholder_image}
+                  data-placeholder-src={@placeholder_image}
                   alt={dgettext("assets", "Avatar")}
                   class="w-full h-full object-cover"
                 />
@@ -84,11 +76,11 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
               phx-click={JS.dispatch("click", to: "##{@id}-hidden-file-input")}
             >
               <.icon name="hero-arrow-up-tray" class="h-4 w-4" />
-              <span>{if @has_asset?, do: @replace_text, else: @upload_label}</span>
+              <span>{if @media_asset, do: @replace_text, else: @upload_label}</span>
             </button>
 
             <button
-              :if={@has_asset?}
+              :if={@media_asset}
               type="button"
               class="cursor-pointer text-red-700 p-2 border border-red-300 hover:border-red-400 rounded-full flex items-center justify-center"
               phx-click="delete_asset"
@@ -102,7 +94,20 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
       <% end %>
 
       <%= if @type == :video do %>
-        <div :if={!@has_asset?}>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="capitalize text-sm font-semibold text-gray-900">
+            {@title}
+          </h3>
+          <.custom_button
+            :if={@media_asset}
+            type="edit"
+            class=""
+            phx-click="delete_asset"
+            phx-target={@myself}
+          />
+        </div>
+
+        <div :if={!@media_asset}>
           <SharedComponents.file_input_component
             id={@id}
             type={@asset_type}
@@ -118,22 +123,10 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
           />
         </div>
 
-        <div :if={@has_asset?}>
-          <div class="video-preview border border-white rounded-md mb-4">
-            <video controls class="w-full h-full">
-              <source src={@asset_url} type="video/mp4" />
-            </video>
-          </div>
-
-          <button
-            type="button"
-            class="cursor-pointer text-red-700 text-sm border border-red-300 hover:border-red-400 rounded-full px-4 py-2 flex items-center justify-center gap-2"
-            phx-click="delete_asset"
-            phx-target={@myself}
-          >
-            <.icon name="hero-trash" class="h-4 w-4" />
-            <span>{@delete_text}</span>
-          </button>
+        <div :if={@media_asset} class="video-preview border border-white rounded-md">
+          <video controls class="w-full h-full">
+            <source src={@asset_url} type="video/mp4" />
+          </video>
         </div>
       <% end %>
     </div>
@@ -150,17 +143,59 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
 
   @impl Phoenix.LiveComponent
   def update(assigns, socket) do
-    has_asset? = has_media_asset?(assigns.media_asset)
+    socket = assign(socket, assigns)
 
-    asset_url =
-      if has_asset?, do: SharedHelpers.get_media_asset_url(assigns.media_asset), else: nil
+    media_asset = load_media_asset(socket.assigns.parent_record)
+    type = socket.assigns.type
+    asset_url = get_asset_url(media_asset)
 
     {:ok,
      socket
-     |> assign(assigns)
-     |> assign(:has_asset?, has_asset?)
-     |> assign(:asset_url, asset_url)}
+     |> assign_defaults()
+     |> assign_media_data(media_asset, asset_url, type)
+     |> assign_labels(type, socket.assigns[:label])}
   end
+
+  defp load_media_asset(parent_record) do
+    parent_record
+    |> Repo.preload(:media_asset)
+    |> Map.get(:media_asset)
+  end
+
+  defp get_asset_url(nil), do: nil
+  defp get_asset_url(media_asset), do: SharedHelpers.get_media_asset_url(media_asset)
+
+  defp assign_defaults(socket) do
+    socket
+    |> assign_new(:class, fn -> "" end)
+    |> assign_new(:placeholder_image, fn -> "/images/empty-states/avatar_empty.png" end)
+    |> assign_new(:title, fn -> "" end)
+  end
+
+  defp assign_media_data(socket, media_asset, asset_url, type) do
+    socket
+    |> assign(:media_asset, media_asset)
+    |> assign(:asset_url, asset_url)
+    |> assign(:asset_type, if(type == :video, do: "video", else: "image"))
+    |> assign_new(:accept, fn -> if type == :video, do: "video/*", else: "image/*" end)
+    |> assign_new(:max_file_size, fn -> if type == :video, do: 52_000_000, else: 10_000_000 end)
+  end
+
+  defp assign_labels(socket, type, custom_label) do
+    socket
+    |> assign(:upload_label, custom_label || get_upload_label(type))
+    |> assign(:replace_text, get_replace_text(type))
+    |> assign(:delete_text, get_delete_text(type))
+  end
+
+  defp get_upload_label(:video), do: dgettext("assets", "Upload video")
+  defp get_upload_label(_other), do: dgettext("assets", "Upload photo")
+
+  defp get_replace_text(:video), do: dgettext("assets", "Change video")
+  defp get_replace_text(_other), do: dgettext("assets", "Replace photo")
+
+  defp get_delete_text(:video), do: dgettext("assets", "Delete video")
+  defp get_delete_text(_other), do: dgettext("assets", "Delete photo")
 
   @impl Phoenix.LiveComponent
   def handle_event("upload_file", params, socket) do
@@ -192,7 +227,7 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
      socket
      |> assign(:media_data, media_data)
      |> assign(:uploading?, false)
-     |> assign(:has_asset?, true)
+     |> assign(:media_asset, true)
      |> assign(:asset_url, SharedHelpers.get_presigned_url(upload_id))}
   end
 
@@ -201,19 +236,27 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
 
     {:noreply,
      socket
-     |> assign(:has_asset?, false)
+     |> assign(:media_asset, false)
      |> assign(:asset_url, nil)
      |> assign(:media_data, %{})}
   end
 
   def handle_event("delete_asset", _params, socket) do
+    if socket.assigns.media_asset do
+      Media.delete_media_asset(
+        socket.assigns.current_scope,
+        socket.assigns.media_asset
+      )
+    end
+
     notify_parent({:delete_asset, socket.assigns.media_data}, socket)
 
     {:noreply,
      socket
-     |> assign(:has_asset?, false)
+     |> assign(:media_asset, nil)
      |> assign(:asset_url, nil)
-     |> assign(:media_data, %{})}
+     |> assign(:media_data, %{})
+     |> push_event("delete-asset-success", %{})}
   end
 
   def handle_event("upload_cancelled", _params, socket) do
@@ -228,51 +271,4 @@ defmodule BemedaPersonalWeb.Components.Shared.AssetUploaderComponent do
   defp notify_parent(msg, _socket) do
     send(self(), {__MODULE__, msg})
   end
-
-  defp assign_defaults(assigns) do
-    type = assigns.type
-
-    assigns
-    |> Map.put(:accept, get_accept(assigns, type))
-    |> Map.put(:max_file_size, get_max_file_size(assigns, type))
-    |> Map.put(:asset_type, get_asset_type(type))
-    |> Map.put(:upload_label, get_upload_label(assigns, type))
-    |> Map.put(:replace_text, get_replace_text(type))
-    |> Map.put(:delete_text, get_delete_text(type))
-  end
-
-  defp get_accept(assigns, type) do
-    assigns[:accept] || default_accept(type)
-  end
-
-  defp default_accept(:video), do: "video/*"
-  defp default_accept(:image), do: "image/*"
-
-  defp get_max_file_size(assigns, type) do
-    assigns[:max_file_size] || default_max_file_size(type)
-  end
-
-  defp default_max_file_size(:video), do: 52_000_000
-  defp default_max_file_size(:image), do: 10_000_000
-
-  defp get_asset_type(:video), do: "video"
-  defp get_asset_type(:image), do: "image"
-
-  defp get_upload_label(assigns, type) do
-    assigns[:label] || default_upload_label(type)
-  end
-
-  defp default_upload_label(:video), do: dgettext("assets", "Upload video")
-  defp default_upload_label(:image), do: dgettext("assets", "Upload photo")
-
-  defp get_replace_text(:video), do: dgettext("assets", "Change video")
-  defp get_replace_text(:image), do: dgettext("assets", "Replace photo")
-
-  defp get_delete_text(:video), do: dgettext("assets", "Delete video")
-  defp get_delete_text(:image), do: dgettext("assets", "Delete photo")
-
-  defp has_media_asset?(nil), do: false
-  defp has_media_asset?(%{upload_id: nil}), do: false
-  defp has_media_asset?(%{upload_id: _others}), do: true
-  defp has_media_asset?(_other), do: false
 end

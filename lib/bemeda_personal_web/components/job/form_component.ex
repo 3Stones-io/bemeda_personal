@@ -322,15 +322,13 @@ defmodule BemedaPersonalWeb.Components.Job.FormComponent do
           </div>
 
           <div class="video-upload">
-            <h3 class="capitalize text-sm font-semibold text-gray-900 mb-3">
-              {dgettext("jobs", "Add video to job post (optional)")}
-            </h3>
-
             <.live_component
               module={AssetUploaderComponent}
               id="job-video-upload"
               type={:video}
-              media_asset={@job_posting.media_asset}
+              parent_record={@job_posting}
+              current_scope={@current_scope}
+              title={dgettext("jobs", "Add video to job post (optional)")}
             />
           </div>
 

@@ -2532,3 +2532,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Continue"
 msgstr ""
+
+#: lib/bemeda_personal_web/components/job_application/form_component.ex
+#, elixir-autogen, elixir-format
+msgid "Add application video (optional)"
+msgstr ""
