@@ -41,6 +41,14 @@ export default FileUpload = {
       'button[type="button"]'
     )
 
+    const previewImage = fileUploadInput.querySelector('[id$="-preview-image"]')
+    const avatarProgressCircle = fileUploadInput.querySelector(
+      '[id$="-progress-circle"]'
+    )
+    const avatarProgressIndicator = fileUploadInput.querySelector(
+      '[id$="-progress-indicator"]'
+    )
+
     let currentUpload
 
     const restoreDropzoneStyles = () => {
@@ -137,6 +145,18 @@ export default FileUpload = {
               imageContainer.src = payload.thumbnail
             }
 
+            if (payload.thumbnail && previewImage) {
+              previewImage.src = payload.thumbnail
+            }
+
+            if (avatarProgressCircle) {
+              avatarProgressCircle.classList.remove('hidden')
+            }
+
+            if (avatarProgressIndicator) {
+              avatarProgressIndicator.style.strokeDasharray = '0 302'
+            }
+
             if (progressCircle) {
               progressCircle.style.strokeDasharray = '0, 100'
             }
@@ -157,6 +177,12 @@ export default FileUpload = {
               if (progressCircle) {
                 progressCircle.style.strokeDasharray = `${progress}, 100`
               }
+
+              if (avatarProgressIndicator) {
+                const circumference = 2 * Math.PI * 48
+                const progressValue = (progress / 100) * circumference
+                avatarProgressIndicator.style.strokeDasharray = `${progressValue} ${circumference}`
+              }
             })
 
             currentUpload.on('error', (_error) => {
@@ -166,6 +192,10 @@ export default FileUpload = {
             currentUpload.on('success', (_entry) => {
               if (uploadProgressElement) {
                 uploadProgressElement.classList.add('hidden')
+              }
+
+              if (avatarProgressCircle) {
+                avatarProgressCircle.classList.add('hidden')
               }
 
               if (assetDescription) {
@@ -196,13 +226,50 @@ export default FileUpload = {
       })
     }
 
+    const handleDeleteAsset = () => {
+      if (previewImage) {
+        const placeholderImage =
+          previewImage.dataset.placeholderSrc ||
+          '/images/empty-states/avatar_empty.png'
+        previewImage.src = placeholderImage
+      }
+
+      if (videoPreview) {
+        videoPreview.classList.add('hidden')
+        const videoSource = videoPreview.querySelector('source')
+        if (videoSource) {
+          videoSource.src = ''
+        }
+        const videoElement = videoPreview.querySelector('video')
+        if (videoElement) {
+          videoElement.pause()
+          videoElement.load()
+        }
+      }
+
+      if (fileUploadInputsContainer) {
+        fileUploadInputsContainer.classList.remove('hidden')
+      }
+
+      if (imageUploadContainer) {
+        imageUploadContainer.classList.remove('hidden')
+      }
+
+      if (assetDescription) {
+        assetDescription.classList.add('hidden')
+      }
+    }
+
+    window.addEventListener('phx:delete-asset-success', () => {
+      handleDeleteAsset()
+    })
+
     const deleteButton = assetDescription?.querySelector(
       'button[type="button"]'
     )
     if (deleteButton) {
       deleteButton.addEventListener('click', () => {
-        fileUploadInput.classList.remove('hidden')
-        assetDescription.classList.add('hidden')
+        handleDeleteAsset()
         hook.pushEventTo(`#${eventsTarget}`, 'delete_file')
       })
     }

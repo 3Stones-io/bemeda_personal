@@ -8,6 +8,7 @@ defmodule BemedaPersonalWeb.JobLive.Show do
   alias BemedaPersonalWeb.Components.Job.JobsComponents
   alias BemedaPersonalWeb.Components.JobApplication.ApplicationWarning
   alias BemedaPersonalWeb.Components.JobApplication.FormComponent
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveView
@@ -33,6 +34,16 @@ defmodule BemedaPersonalWeb.JobLive.Show do
   @impl Phoenix.LiveView
   def handle_info(:navigate_after_close, socket) do
     {:noreply, push_navigate(socket, to: ~p"/jobs/#{socket.assigns.job_posting.id}")}
+  end
+
+  def handle_info({AssetUploaderComponent, msg}, socket) do
+    form_id =
+      if socket.assigns[:job_application],
+        do: socket.assigns.job_application.id || :new,
+        else: :new
+
+    send_update(FormComponent, id: form_id, asset_uploader_event: msg)
+    {:noreply, socket}
   end
 
   def handle_info(payload, socket) do

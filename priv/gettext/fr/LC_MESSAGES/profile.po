@@ -91,11 +91,6 @@ msgstr "Intérimaire / Emploi temporaire"
 
 #: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
 #, elixir-autogen, elixir-format
-msgid "Profile Photo"
-msgstr "Photo de profil"
-
-#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
-#, elixir-autogen, elixir-format
 msgid "Profile created successfully!"
 msgstr "Profil créé avec succès !"
 

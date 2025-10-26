@@ -91,11 +91,6 @@ msgstr "Springer / Zeitarbeit"
 
 #: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
 #, elixir-autogen, elixir-format
-msgid "Profile Photo"
-msgstr "Profilfoto"
-
-#: lib/bemeda_personal_web/live/user_live/profile/bio_component.ex
-#, elixir-autogen, elixir-format
 msgid "Profile created successfully!"
 msgstr "Profil erfolgreich erstellt!"
 

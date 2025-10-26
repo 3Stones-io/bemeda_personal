@@ -17,12 +17,19 @@ defmodule BemedaPersonal.MediaDataUtils do
           {:ok, media_asset()} | {:ok, nil} | {:error, changeset()}
   def handle_media_asset(repo, existing_media_asset, parent, attrs) do
     media_data = Map.get(attrs, "media_data")
+    fresh_media_asset = get_fresh_media_asset(repo, existing_media_asset)
 
     if media_data && Enum.empty?(media_data) do
       process_media_data(nil, repo, nil, parent)
     else
-      process_media_data(media_data, repo, existing_media_asset, parent)
+      process_media_data(media_data, repo, fresh_media_asset, parent)
     end
+  end
+
+  defp get_fresh_media_asset(_repo, nil), do: nil
+
+  defp get_fresh_media_asset(repo, %Media.MediaAsset{id: id}) do
+    repo.get(Media.MediaAsset, id)
   end
 
   defp process_media_data(nil, _repo, nil, _parent), do: {:ok, nil}

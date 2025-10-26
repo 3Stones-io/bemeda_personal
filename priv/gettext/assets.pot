@@ -1,0 +1,47 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new messages manually only if they're dynamic
+## messages that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+#
+msgid ""
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared/asset_uploader_component.ex
+#, elixir-autogen, elixir-format
+msgid "Avatar"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared/asset_uploader_component.ex
+#, elixir-autogen, elixir-format
+msgid "Change video"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared/asset_uploader_component.ex
+#, elixir-autogen, elixir-format
+msgid "Delete photo"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared/asset_uploader_component.ex
+#, elixir-autogen, elixir-format
+msgid "Delete video"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared/asset_uploader_component.ex
+#, elixir-autogen, elixir-format
+msgid "Replace photo"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared/asset_uploader_component.ex
+#, elixir-autogen, elixir-format
+msgid "Upload photo"
+msgstr ""
+
+#: lib/bemeda_personal_web/components/shared/asset_uploader_component.ex
+#, elixir-autogen, elixir-format
+msgid "Upload video"
+msgstr ""

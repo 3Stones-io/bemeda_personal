@@ -386,7 +386,76 @@ defmodule BemedaPersonal.Media do
   end
 
   @doc """
-  Deletes a media asset.
+  Deletes a media asset with scope authorization.
+
+  Employers can delete media assets belonging to their company.
+  Job seekers can delete media assets from their own job applications.
+
+  ## Examples
+
+      iex> delete_media_asset(employer_scope, company_media_asset)
+      {:ok, %MediaAsset{}}
+
+      iex> delete_media_asset(job_seeker_scope, application_media_asset)
+      {:ok, %MediaAsset{}}
+
+      iex> delete_media_asset(scope, unauthorized_asset)
+      {:error, :unauthorized}
+
+  """
+  @spec delete_media_asset(scope(), media_asset()) ::
+          {:ok, media_asset()} | {:error, :unauthorized | changeset()}
+  def delete_media_asset(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %MediaAsset{company_id: company_id} = media_asset
+      ) do
+    delete_media_asset(media_asset)
+  end
+
+  def delete_media_asset(
+        %Scope{user: %User{user_type: :employer}, company: %Company{id: company_id}},
+        %MediaAsset{job_posting_id: job_posting_id} = media_asset
+      )
+      when is_binary(job_posting_id) do
+    job_posting = Repo.get(JobPosting, job_posting_id)
+
+    if job_posting && job_posting.company_id == company_id do
+      delete_media_asset(media_asset)
+    else
+      {:error, :unauthorized}
+    end
+  end
+
+  def delete_media_asset(
+        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        %MediaAsset{job_application_id: job_application_id} = media_asset
+      )
+      when is_binary(job_application_id) do
+    job_application = Repo.get(JobApplication, job_application_id)
+
+    if job_application && job_application.user_id == user_id do
+      delete_media_asset(media_asset)
+    else
+      {:error, :unauthorized}
+    end
+  end
+
+  def delete_media_asset(
+        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        %MediaAsset{user_id: asset_user_id} = media_asset
+      ) do
+    if asset_user_id == user_id do
+      delete_media_asset(media_asset)
+    else
+      {:error, :unauthorized}
+    end
+  end
+
+  def delete_media_asset(%Scope{}, _media_asset), do: {:error, :unauthorized}
+  def delete_media_asset(nil, _media_asset), do: {:error, :unauthorized}
+
+  @doc """
+  Deletes a media asset (legacy function without scope).
 
   ## Examples
 

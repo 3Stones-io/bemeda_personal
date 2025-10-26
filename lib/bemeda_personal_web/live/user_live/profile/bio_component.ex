@@ -4,8 +4,7 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Accounts
-  alias BemedaPersonal.Media
-  alias BemedaPersonalWeb.Components.Shared.SharedComponents
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
@@ -13,21 +12,21 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
     {:ok,
      socket
      |> assign(:media_data, %{})
-     |> assign(:photo_editable?, false)
      |> assign(:enable_submit?, true)}
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{asset_uploader_event: {event_type, media_data}} = _assigns, socket) do
+    {:ok, SharedHelpers.handle_asset_uploader_event(event_type, media_data, socket)}
+  end
+
   def update(%{current_user: current_user} = assigns, socket) do
     changeset = Accounts.change_user_bio(current_user)
-    media_data = get_media_data(current_user.media_asset)
 
     {:ok,
      socket
      |> assign(assigns)
      |> assign(:changeset, changeset)
-     |> assign(:media_data, media_data)
-     |> assign(:photo_editable?, !Enum.empty?(media_data))
      |> assign_form(changeset)}
   end
 
@@ -48,56 +47,6 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
      socket
      |> assign(:changeset, changeset)
      |> assign_form(changeset)}
-  end
-
-  def handle_event("upload_file", params, socket) do
-    SharedHelpers.create_file_upload(socket, params)
-  end
-
-  def handle_event("upload_completed", %{"upload_id" => upload_id}, socket) do
-    media_data = %{
-      "upload_id" => upload_id,
-      "file_name" => "profile_photo"
-    }
-
-    {:reply, %{},
-     socket
-     |> assign(:media_data, media_data)
-     |> assign(:enable_submit?, true)
-     |> assign(:photo_editable?, true)}
-  end
-
-  def handle_event("delete_file", _params, socket) do
-    {:ok, _asset} = Media.delete_media_asset(socket.assigns.current_user.media_asset)
-
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:photo_editable?, false)}
-  end
-
-  def handle_event("upload_cancelled", _params, socket) do
-    media_data = get_media_data(socket.assigns.current_user.media_asset)
-
-    {:noreply,
-     socket
-     |> assign(:media_data, media_data)
-     |> assign(:enable_submit?, true)
-     |> assign(:photo_editable?, !Enum.empty?(media_data))}
-  end
-
-  def handle_event("replace_photo", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:photo_editable?, false)}
-  end
-
-  def handle_event("delete_photo", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:media_data, %{})
-     |> assign(:photo_editable?, false)}
   end
 
   def handle_event("enable-submit", _params, socket) do
@@ -158,52 +107,14 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
         />
 
         <div class="profile-photo-upload">
-          <div :if={!@photo_editable?}>
-            <SharedComponents.image_upload_component
-              label={dgettext("profile", "Upload profile photo")}
-              id="profile_photo"
-              events_target="profile-form"
-            />
-          </div>
-
-          <SharedComponents.file_upload_progress
-            id="profile-photo-progress"
-            phx-update="ignore"
+          <.live_component
+            module={AssetUploaderComponent}
+            id="profile-photo-uploader"
+            type={:image}
+            parent_record={@current_user}
+            current_scope={@current_scope}
+            label={dgettext("profile", "Upload profile photo")}
           />
-
-          <div
-            :if={@media_data && @media_data["upload_id"]}
-            class="flex items-center gap-2 w-full"
-          >
-            <div>
-              <div class="border-[1px] border-gray-200 rounded-full h-[4rem] w-[4rem]">
-                <img
-                  src={SharedHelpers.get_presigned_url(@media_data["upload_id"])}
-                  alt={dgettext("profile", "Profile Photo")}
-                  class="w-full h-full object-cover rounded-full"
-                />
-              </div>
-            </div>
-
-            <button
-              type="button"
-              class="cursor-pointer w-full h-full text-form-txt-primary text-sm border border-form-input-border hover:border-primary-400 rounded-full px-2 py-3 flex items-center justify-center gap-2"
-              phx-click={
-                JS.push("replace_photo", target: @myself)
-                |> JS.dispatch("click", to: "#profile_photo-hidden-file-input")
-              }
-            >
-              <.icon name="hero-arrow-path" class="w-4 h-4" /> Replace profile photo
-            </button>
-
-            <button
-              type="button"
-              class="w-full h-full object-cover rounded-full flex items-center text-red-700"
-              phx-click={JS.push("delete_photo", target: @myself)}
-            >
-              <.icon name="hero-trash" class="w-4 h-4" />
-            </button>
-          </div>
         </div>
 
         <div class="flex items-center justify-center gap-x-2">
@@ -237,16 +148,6 @@ defmodule BemedaPersonalWeb.UserLive.Profile.BioComponent do
 
   defp update_media_data_params(socket, params) do
     Map.put(params, "media_data", socket.assigns.media_data)
-  end
-
-  defp get_media_data(media_asset) do
-    case media_asset do
-      %Media.MediaAsset{upload_id: upload_id, file_name: file_name} ->
-        %{"upload_id" => upload_id, "file_name" => file_name}
-
-      _no_asset ->
-        %{}
-    end
   end
 
   defp filter_empty_params(params) when is_map(params) do

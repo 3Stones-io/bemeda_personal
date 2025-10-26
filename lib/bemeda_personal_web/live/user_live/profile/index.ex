@@ -3,6 +3,7 @@ defmodule BemedaPersonalWeb.UserLive.Index do
 
   use BemedaPersonalWeb, :live_view
 
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.Components.Shared.Icons
   alias BemedaPersonalWeb.UserLive.Profile.BioComponent
   alias BemedaPersonalWeb.UserLive.Profile.EmploymentTypeComponent
@@ -48,5 +49,11 @@ defmodule BemedaPersonalWeb.UserLive.Index do
   @impl Phoenix.LiveView
   def handle_info(:navigate_after_spin, socket) do
     {:noreply, push_navigate(socket, to: ~p"/users/profile/employment_type")}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({AssetUploaderComponent, msg}, socket) do
+    send_update(BioComponent, id: "bio-component", asset_uploader_event: msg)
+    {:noreply, socket}
   end
 end

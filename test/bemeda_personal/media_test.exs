@@ -4,6 +4,7 @@ defmodule BemedaPersonal.MediaTest do
   import BemedaPersonal.AccountsFixtures
   import BemedaPersonal.MediaFixtures
 
+  alias BemedaPersonal.Accounts.Scope
   alias BemedaPersonal.Media
   alias BemedaPersonal.Media.MediaAsset
   alias BemedaPersonal.TestUtils
@@ -247,6 +248,103 @@ defmodule BemedaPersonal.MediaTest do
       assert broadcasted_message.id == message.id
       assert broadcasted_message.media_asset.id == updated_media_asset.id
       assert broadcasted_message.media_asset.status == :failed
+    end
+  end
+
+  describe "delete_media_asset/2 with scope" do
+    setup [:create_test_data]
+
+    test "employer can delete their company's media asset", %{
+      company: company,
+      scope: employer_scope
+    } do
+      media_asset = media_asset_fixture(company, %{file_name: "company_logo.png"})
+
+      assert {:ok, deleted_asset} = Media.delete_media_asset(employer_scope, media_asset)
+      assert deleted_asset.id == media_asset.id
+      refute Media.get_media_asset(employer_scope, media_asset.id)
+    end
+
+    test "employer can delete media asset from their job posting", %{
+      job_posting: job_posting,
+      scope: employer_scope
+    } do
+      media_asset = media_asset_fixture(job_posting, %{file_name: "job_video.mp4"})
+
+      assert {:ok, deleted_asset} = Media.delete_media_asset(employer_scope, media_asset)
+      assert deleted_asset.id == media_asset.id
+      refute Media.get_media_asset(employer_scope, media_asset.id)
+    end
+
+    test "employer cannot delete media asset from another company's job posting" do
+      other_setup = TestUtils.create_complete_test_setup()
+      other_job_posting = other_setup.job_posting
+      media_asset = media_asset_fixture(other_job_posting, %{file_name: "other_job.mp4"})
+
+      my_setup = TestUtils.create_complete_test_setup()
+      my_scope = my_setup.scope
+
+      assert {:error, :unauthorized} = Media.delete_media_asset(my_scope, media_asset)
+      assert Repo.get(MediaAsset, media_asset.id)
+    end
+
+    test "job seeker can delete media asset from their job application", %{
+      job_application: job_application,
+      user: job_seeker_user
+    } do
+      job_seeker_scope = user_scope_fixture(job_seeker_user)
+      media_asset = media_asset_fixture(job_application, %{file_name: "application_video.mp4"})
+
+      assert {:ok, deleted_asset} = Media.delete_media_asset(job_seeker_scope, media_asset)
+      assert deleted_asset.id == media_asset.id
+    end
+
+    test "job seeker can delete their user media asset (profile photo)", %{
+      user: job_seeker_user
+    } do
+      job_seeker_scope = user_scope_fixture(job_seeker_user)
+      media_asset = media_asset_fixture(job_seeker_user, %{file_name: "profile.jpg"})
+
+      assert {:ok, deleted_asset} = Media.delete_media_asset(job_seeker_scope, media_asset)
+      assert deleted_asset.id == media_asset.id
+    end
+
+    test "job seeker cannot delete another user's media asset" do
+      other_user = job_seeker_user_fixture()
+      other_media_asset = media_asset_fixture(other_user, %{file_name: "other_profile.jpg"})
+
+      my_scope = job_seeker_scope_fixture()
+
+      assert {:error, :unauthorized} = Media.delete_media_asset(my_scope, other_media_asset)
+      assert Repo.get(MediaAsset, other_media_asset.id)
+    end
+
+    test "job seeker cannot delete media asset from another user's job application" do
+      other_setup = TestUtils.create_complete_test_setup()
+      other_application = other_setup.job_application
+      media_asset = media_asset_fixture(other_application, %{file_name: "other_app.mp4"})
+
+      my_scope = job_seeker_scope_fixture()
+
+      assert {:error, :unauthorized} = Media.delete_media_asset(my_scope, media_asset)
+      assert Repo.get(MediaAsset, media_asset.id)
+    end
+
+    test "returns unauthorized for nil scope" do
+      company = TestUtils.create_complete_test_setup().company
+      media_asset = media_asset_fixture(company, %{})
+
+      assert {:error, :unauthorized} = Media.delete_media_asset(nil, media_asset)
+      assert Repo.get(MediaAsset, media_asset.id)
+    end
+
+    test "returns unauthorized for invalid scope type" do
+      invalid_scope = %Scope{user: nil, company: nil, system: false}
+      company = TestUtils.create_complete_test_setup().company
+      media_asset = media_asset_fixture(company, %{})
+
+      assert {:error, :unauthorized} = Media.delete_media_asset(invalid_scope, media_asset)
+      assert Repo.get(MediaAsset, media_asset.id)
     end
   end
 

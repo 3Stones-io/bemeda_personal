@@ -9,6 +9,7 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
   alias BemedaPersonal.Resumes
   alias BemedaPersonalWeb.Components.JobApplication.FormComponent
   alias BemedaPersonalWeb.Components.JobApplication.JobApplicationsListComponent
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.Endpoint
   alias Phoenix.LiveView.JS
   alias Phoenix.Socket.Broadcast
@@ -52,6 +53,16 @@ defmodule BemedaPersonalWeb.JobApplicationLive.Index do
     )
 
     {:noreply, update_counts(socket)}
+  end
+
+  def handle_info({AssetUploaderComponent, msg}, socket) do
+    form_id =
+      if socket.assigns[:job_application],
+        do: socket.assigns.job_application.id || :new,
+        else: :new
+
+    send_update(FormComponent, id: form_id, asset_uploader_event: msg)
+    {:noreply, socket}
   end
 
   def handle_info(_event, socket), do: {:noreply, socket}
