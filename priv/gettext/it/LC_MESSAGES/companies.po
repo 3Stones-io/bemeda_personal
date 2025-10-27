@@ -479,3 +479,8 @@ msgstr "Sito web"
 #, elixir-autogen, elixir-format
 msgid "Write a brief overview of your organization."
 msgstr "Scrivi una breve panoramica della tua organizzazione."
+
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Upload logo"
+msgstr "Caricamento"

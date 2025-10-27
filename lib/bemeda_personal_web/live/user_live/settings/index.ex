@@ -6,6 +6,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings.Index do
   alias BemedaPersonal.Accounts
   alias BemedaPersonal.Companies
   alias BemedaPersonal.DateUtils
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.SharedHelpers
   alias BemedaPersonalWeb.UserLive.Settings.AccountInfoComponent
   alias BemedaPersonalWeb.UserLive.Settings.CompanyProfileComponent
@@ -144,6 +145,12 @@ defmodule BemedaPersonalWeb.UserLive.Settings.Index do
      socket
      |> put_flash(:error, message)
      |> assign(:show_company_info_form?, false)}
+  end
+
+  def handle_info({AssetUploaderComponent, msg}, socket) do
+    send_update(AccountInfoComponent, id: "account-info-component", asset_uploader_event: msg)
+    send_update(CompanyProfileComponent, id: "personal-info-component", asset_uploader_event: msg)
+    {:noreply, socket}
   end
 
   defp menu_items do

@@ -19,10 +19,16 @@ defmodule BemedaPersonal.MediaDataUtils do
     media_data = Map.get(attrs, "media_data")
     fresh_media_asset = get_fresh_media_asset(repo, existing_media_asset)
 
-    if media_data && Enum.empty?(media_data) do
-      process_media_data(nil, repo, nil, parent)
-    else
-      process_media_data(media_data, repo, fresh_media_asset, parent)
+    cond do
+      media_data && Enum.empty?(media_data) && fresh_media_asset ->
+        Media.delete_media_asset(fresh_media_asset)
+        {:ok, nil}
+
+      media_data && Enum.empty?(media_data) ->
+        {:ok, nil}
+
+      true ->
+        process_media_data(media_data, repo, fresh_media_asset, parent)
     end
   end
 
