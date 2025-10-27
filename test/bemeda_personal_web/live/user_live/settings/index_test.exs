@@ -6,6 +6,12 @@ defmodule BemedaPersonalWeb.UserLive.Settings.IndexTest do
   import Phoenix.LiveViewTest
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonal.Accounts.Scope
+  alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Companies
+  alias BemedaPersonal.Companies.Company
+  alias BemedaPersonal.Repo
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
 
   describe "Settings page - navigation" do
     test "renders settings index page with menu items", %{conn: conn} do
@@ -296,7 +302,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings.IndexTest do
 
       assert render(lv) =~ "Company information updated successfully"
 
-      updated_company = BemedaPersonal.Repo.get!(BemedaPersonal.Companies.Company, company.id)
+      updated_company = Repo.get!(Company, company.id)
       assert updated_company.name == "Updated Company Name"
       assert updated_company.description == "Updated company description for our organization"
       assert updated_company.website_url == "https://updated-example.com"
@@ -362,7 +368,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings.IndexTest do
 
       assert render(lv) =~ "Company information updated successfully"
 
-      updated_company = BemedaPersonal.Repo.get!(BemedaPersonal.Companies.Company, company.id)
+      updated_company = Repo.get!(Company, company.id)
       assert updated_company.name == "Just Updated Name"
       assert updated_company.description == company.description
       assert updated_company.location == company.location
@@ -438,7 +444,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings.IndexTest do
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) == "Account deleted successfully."
 
-      deleted_user = BemedaPersonal.Repo.get!(BemedaPersonal.Accounts.User, user.id)
+      deleted_user = Repo.get!(User, user.id)
       assert deleted_user.deleted_at != nil
       refute Accounts.get_user_by_email(user.email)
     end
@@ -456,6 +462,266 @@ defmodule BemedaPersonalWeb.UserLive.Settings.IndexTest do
         })
 
       assert redirected_to(conn) == ~p"/users/log_in"
+    end
+  end
+
+  describe "User avatar upload" do
+    setup %{conn: conn} do
+      user = user_fixture(user_type: :job_seeker)
+      %{conn: log_in_user(conn, user), user: user}
+    end
+
+    test "uploads user avatar successfully", %{conn: conn, user: user} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings/info")
+
+      lv
+      |> element("#personal-information-section button")
+      |> render_click()
+
+      media_data = %{
+        "file_name" => "avatar.jpg",
+        "type" => "image/jpeg",
+        "upload_id" => Ecto.UUID.generate()
+      }
+
+      send(lv.pid, {AssetUploaderComponent, {:upload_completed, media_data}})
+
+      lv
+      |> form("#account-information-form", %{
+        "user" => %{
+          "first_name" => user.first_name,
+          "last_name" => user.last_name,
+          "email" => user.email
+        }
+      })
+      |> render_submit()
+
+      assert render(lv) =~ "Account information updated successfully"
+
+      updated_user = Accounts.get_user!(user.id)
+      updated_user_with_media = Repo.preload(updated_user, [:media_asset])
+
+      assert updated_user_with_media.media_asset
+      assert updated_user_with_media.media_asset.file_name == "avatar.jpg"
+      assert updated_user_with_media.media_asset.type == "image/jpeg"
+    end
+
+    test "replaces existing user avatar", %{conn: conn, user: user} do
+      {:ok, user_with_avatar} =
+        Accounts.update_account_information(user, %{
+          "email" => user.email,
+          "first_name" => user.first_name,
+          "media_data" => %{
+            "file_name" => "old_avatar.jpg",
+            "type" => "image/jpeg",
+            "upload_id" => Ecto.UUID.generate()
+          }
+        })
+
+      {:ok, lv, _html} = live(conn, ~p"/users/settings/info")
+
+      lv
+      |> element("#personal-information-section button")
+      |> render_click()
+
+      new_media_data = %{
+        "file_name" => "new_avatar.png",
+        "type" => "image/png",
+        "upload_id" => Ecto.UUID.generate()
+      }
+
+      send(lv.pid, {AssetUploaderComponent, {:upload_completed, new_media_data}})
+
+      lv
+      |> form("#account-information-form", %{
+        "user" => %{
+          "first_name" => user.first_name,
+          "last_name" => user.last_name,
+          "email" => user.email
+        }
+      })
+      |> render_submit()
+
+      updated_user = Accounts.get_user!(user_with_avatar.id)
+      updated_user_with_new_media = Repo.preload(updated_user, [:media_asset])
+
+      assert updated_user_with_new_media.media_asset
+      assert updated_user_with_new_media.media_asset.file_name == "new_avatar.png"
+      assert updated_user_with_new_media.media_asset.type == "image/png"
+    end
+
+    test "deletes user avatar successfully", %{conn: conn, user: user} do
+      {:ok, user_with_avatar} =
+        Accounts.update_account_information(user, %{
+          "email" => user.email,
+          "first_name" => user.first_name,
+          "media_data" => %{
+            "file_name" => "avatar.jpg",
+            "type" => "image/jpeg",
+            "upload_id" => Ecto.UUID.generate()
+          }
+        })
+
+      user_with_avatar_preloaded = Repo.preload(user_with_avatar, [:media_asset])
+      assert user_with_avatar_preloaded.media_asset
+
+      {:ok, lv, _html} = live(conn, ~p"/users/settings/info")
+
+      lv
+      |> element("#personal-information-section button")
+      |> render_click()
+
+      send(lv.pid, {AssetUploaderComponent, {:delete_asset, %{}}})
+
+      lv
+      |> form("#account-information-form", %{
+        "user" => %{
+          "first_name" => user.first_name,
+          "last_name" => user.last_name,
+          "email" => user.email
+        }
+      })
+      |> render_submit()
+
+      updated_user = Accounts.get_user!(user.id)
+      updated_user_final = Repo.preload(updated_user, [:media_asset])
+
+      refute updated_user_final.media_asset
+    end
+  end
+
+  describe "Company logo upload" do
+    setup %{conn: conn} do
+      user = employer_user_fixture()
+      company = company_fixture(user)
+      %{conn: log_in_user(conn, user), user: user, company: company}
+    end
+
+    test "uploads company logo successfully", %{conn: conn, company: company} do
+      {:ok, lv, _html} = live(conn, ~p"/users/settings/info")
+
+      lv
+      |> element("#company-information-section button")
+      |> render_click()
+
+      media_data = %{
+        "file_name" => "company_logo.png",
+        "type" => "image/png",
+        "upload_id" => Ecto.UUID.generate()
+      }
+
+      send(lv.pid, {AssetUploaderComponent, {:upload_completed, media_data}})
+
+      lv
+      |> form("#company-profile-form", %{
+        "company" => %{
+          "name" => company.name,
+          "description" => company.description
+        }
+      })
+      |> render_submit()
+
+      assert render(lv) =~ "Company information updated successfully"
+
+      updated_company = Repo.get!(Company, company.id)
+      updated_company_with_media = Repo.preload(updated_company, [:media_asset])
+
+      assert updated_company_with_media.media_asset
+      assert updated_company_with_media.media_asset.file_name == "company_logo.png"
+      assert updated_company_with_media.media_asset.type == "image/png"
+    end
+
+    test "replaces existing company logo", %{conn: conn, company: company} do
+      company = Repo.preload(company, [:admin_user, :media_asset])
+
+      scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, company_with_logo} =
+        Companies.update_company(scope, company, %{
+          "name" => company.name,
+          "media_data" => %{
+            "file_name" => "old_logo.jpg",
+            "type" => "image/jpeg",
+            "upload_id" => Ecto.UUID.generate()
+          }
+        })
+
+      {:ok, lv, _html} = live(conn, ~p"/users/settings/info")
+
+      lv
+      |> element("#company-information-section button")
+      |> render_click()
+
+      new_media_data = %{
+        "file_name" => "new_logo.svg",
+        "type" => "image/svg+xml",
+        "upload_id" => Ecto.UUID.generate()
+      }
+
+      send(lv.pid, {AssetUploaderComponent, {:upload_completed, new_media_data}})
+
+      lv
+      |> form("#company-profile-form", %{
+        "company" => %{
+          "name" => company.name,
+          "description" => company.description
+        }
+      })
+      |> render_submit()
+
+      updated_company = Repo.get!(Company, company_with_logo.id)
+      updated_company_with_new_media = Repo.preload(updated_company, [:media_asset])
+
+      assert updated_company_with_new_media.media_asset
+      assert updated_company_with_new_media.media_asset.file_name == "new_logo.svg"
+      assert updated_company_with_new_media.media_asset.type == "image/svg+xml"
+    end
+
+    test "deletes company logo successfully", %{conn: conn, company: company} do
+      company = Repo.preload(company, [:admin_user, :media_asset])
+
+      scope =
+        company.admin_user
+        |> Scope.for_user()
+        |> Scope.put_company(company)
+
+      {:ok, company_with_logo} =
+        Companies.update_company(scope, company, %{
+          "name" => company.name,
+          "media_data" => %{
+            "file_name" => "logo.png",
+            "type" => "image/png",
+            "upload_id" => Ecto.UUID.generate()
+          }
+        })
+
+      company_with_logo_preloaded = Repo.preload(company_with_logo, [:media_asset])
+      assert company_with_logo_preloaded.media_asset
+
+      {:ok, lv, _html} = live(conn, ~p"/users/settings/info")
+
+      lv
+      |> element("#company-information-section button")
+      |> render_click()
+
+      send(lv.pid, {AssetUploaderComponent, {:delete_asset, %{}}})
+
+      lv
+      |> form("#company-profile-form", %{
+        "company" => %{
+          "name" => company.name,
+          "description" => company.description
+        }
+      })
+      |> render_submit()
+
+      updated_company = Repo.get!(Company, company.id)
+      updated_company_final = Repo.preload(updated_company, [:media_asset])
+
+      refute updated_company_final.media_asset
     end
   end
 

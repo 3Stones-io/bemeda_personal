@@ -309,6 +309,27 @@ defmodule BemedaPersonal.MediaTest do
       assert deleted_asset.id == media_asset.id
     end
 
+    test "employer can delete their own user media asset (profile photo)" do
+      employer = employer_user_fixture()
+      employer_scope = user_scope_fixture(employer)
+      media_asset = media_asset_fixture(employer, %{file_name: "employer_profile.jpg"})
+
+      assert {:ok, deleted_asset} = Media.delete_media_asset(employer_scope, media_asset)
+      assert deleted_asset.id == media_asset.id
+      refute Repo.get(MediaAsset, media_asset.id)
+    end
+
+    test "employer cannot delete another employer's user media asset" do
+      other_employer = employer_user_fixture()
+      other_media_asset = media_asset_fixture(other_employer, %{file_name: "other_profile.jpg"})
+
+      my_employer = employer_user_fixture()
+      my_scope = user_scope_fixture(my_employer)
+
+      assert {:error, :unauthorized} = Media.delete_media_asset(my_scope, other_media_asset)
+      assert Repo.get(MediaAsset, other_media_asset.id)
+    end
+
     test "job seeker cannot delete another user's media asset" do
       other_user = job_seeker_user_fixture()
       other_media_asset = media_asset_fixture(other_user, %{file_name: "other_profile.jpg"})

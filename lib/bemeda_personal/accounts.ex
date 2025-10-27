@@ -509,6 +509,7 @@ defmodule BemedaPersonal.Accounts do
   @spec update_account_information(user(), attrs(), function() | nil) ::
           {:ok, user()} | {:ok, user(), :email_update_sent} | {:error, changeset()}
   def update_account_information(user, attrs, email_update_url_fun \\ nil) do
+    user = Repo.preload(user, [:media_asset])
     changeset = User.change_account_information_changeset(user, attrs)
 
     if changeset.valid? do
@@ -524,22 +525,44 @@ defmodule BemedaPersonal.Accounts do
     if email_changed? do
       update_account_with_email_change(user, changeset, attrs, email_update_url_fun)
     else
-      update_account_fields_only(changeset)
+      update_account_fields_only(user, changeset, attrs)
     end
   end
 
-  defp update_account_fields_only(changeset) do
-    Repo.update(changeset)
+  defp update_account_fields_only(user, changeset, attrs) do
+    multi =
+      Multi.new()
+      |> Multi.update(:user, changeset)
+      |> Multi.run(:media_asset, fn repo, %{user: updated_user} ->
+        MediaDataUtils.handle_media_asset(repo, user.media_asset, updated_user, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{user: updated_user}} ->
+        updated_user = Repo.preload(updated_user, [:media_asset], force: true)
+        {:ok, updated_user}
+
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
+    end
   end
 
-  defp update_account_with_email_change(_user, changeset, attrs, email_update_url_fun) do
+  defp update_account_with_email_change(user, changeset, attrs, email_update_url_fun) do
     changeset_without_email = Ecto.Changeset.delete_change(changeset, :email)
 
-    case Repo.update(changeset_without_email) do
-      {:ok, updated_user} ->
+    multi =
+      Multi.new()
+      |> Multi.update(:user, changeset_without_email)
+      |> Multi.run(:media_asset, fn repo, %{user: updated_user} ->
+        MediaDataUtils.handle_media_asset(repo, user.media_asset, updated_user, attrs)
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{user: updated_user}} ->
+        updated_user = Repo.preload(updated_user, [:media_asset], force: true)
         handle_email_confirmation_result(updated_user, attrs, email_update_url_fun)
 
-      {:error, changeset} ->
+      {:error, _operation, changeset, _changes} ->
         {:error, changeset}
     end
   end

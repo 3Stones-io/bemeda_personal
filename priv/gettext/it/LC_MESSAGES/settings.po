@@ -212,6 +212,7 @@ msgid "Settings"
 msgstr "Impostazioni"
 
 #: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#: lib/bemeda_personal_web/live/user_live/settings/company_profile_component.ex
 #: lib/bemeda_personal_web/live/user_live/settings/password_component.ex
 #, elixir-autogen, elixir-format
 msgid "Submitting..."
@@ -246,3 +247,8 @@ msgstr "Vuoi eliminare il tuo account Bemeda Personal? L'eliminazione di questo 
 #, elixir-autogen, elixir-format
 msgid "You are not authorized to update this company."
 msgstr "Non sei autorizzato ad aggiornare questa azienda."
+
+#: lib/bemeda_personal_web/live/user_live/settings/account_info_component.ex
+#, elixir-autogen, elixir-format
+msgid "Upload photo"
+msgstr "Carica foto"

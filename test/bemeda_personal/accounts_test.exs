@@ -1018,6 +1018,127 @@ defmodule BemedaPersonal.AccountsTest do
 
       assert sent_to_email == new_email
     end
+
+    test "creates user media asset when media_data is provided" do
+      user = user_fixture()
+
+      attrs = %{
+        "email" => user.email,
+        "first_name" => "UpdatedFirst",
+        "last_name" => "UpdatedLast",
+        "media_data" => %{
+          "file_name" => "avatar.jpg",
+          "type" => "image/jpeg",
+          "upload_id" => "550e8400-e29b-41d4-a716-446655440000"
+        }
+      }
+
+      assert {:ok, updated_user} = Accounts.update_account_information(user, attrs)
+      assert updated_user.first_name == "UpdatedFirst"
+      assert updated_user.last_name == "UpdatedLast"
+
+      updated_user = Repo.preload(updated_user, [:media_asset], force: true)
+      assert updated_user.media_asset
+      assert updated_user.media_asset.file_name == "avatar.jpg"
+      assert updated_user.media_asset.type == "image/jpeg"
+      assert updated_user.media_asset.upload_id == "550e8400-e29b-41d4-a716-446655440000"
+    end
+
+    test "updates existing user media asset when media_data is provided" do
+      user = user_fixture()
+
+      {:ok, user_with_media} =
+        Accounts.update_account_information(user, %{
+          "email" => user.email,
+          "first_name" => user.first_name,
+          "media_data" => %{
+            "file_name" => "old_avatar.jpg",
+            "type" => "image/jpeg",
+            "upload_id" => Ecto.UUID.generate()
+          }
+        })
+
+      user_with_media_preloaded = Repo.preload(user_with_media, [:media_asset], force: true)
+      assert user_with_media_preloaded.media_asset
+      old_media_id = user_with_media_preloaded.media_asset.id
+
+      new_upload_id = Ecto.UUID.generate()
+
+      attrs = %{
+        "email" => user.email,
+        "first_name" => "NewName",
+        "media_data" => %{
+          "file_name" => "new_avatar.png",
+          "type" => "image/png",
+          "upload_id" => new_upload_id
+        }
+      }
+
+      assert {:ok, updated_user} = Accounts.update_account_information(user_with_media, attrs)
+      updated_user_final = Repo.preload(updated_user, [:media_asset], force: true)
+
+      assert updated_user_final.media_asset
+      assert updated_user_final.media_asset.id == old_media_id
+      assert updated_user_final.media_asset.file_name == "new_avatar.png"
+      assert updated_user_final.media_asset.type == "image/png"
+      assert updated_user_final.media_asset.upload_id == new_upload_id
+    end
+
+    test "deletes user media asset when media_data is empty" do
+      user = user_fixture()
+
+      {:ok, user_with_media} =
+        Accounts.update_account_information(user, %{
+          "email" => user.email,
+          "first_name" => user.first_name,
+          "media_data" => %{
+            "file_name" => "avatar.jpg",
+            "type" => "image/jpeg",
+            "upload_id" => Ecto.UUID.generate()
+          }
+        })
+
+      user_with_media_preloaded = Repo.preload(user_with_media, [:media_asset], force: true)
+      assert user_with_media_preloaded.media_asset
+
+      attrs = %{
+        "email" => user.email,
+        "first_name" => "UpdatedName",
+        "media_data" => %{}
+      }
+
+      assert {:ok, updated_user} = Accounts.update_account_information(user_with_media, attrs)
+      updated_user_final = Repo.preload(updated_user, [:media_asset], force: true)
+
+      refute updated_user_final.media_asset
+    end
+
+    test "handles media_data with email change" do
+      user = user_fixture()
+      drain_existing_emails()
+      new_email = unique_user_email()
+
+      attrs = %{
+        "email" => new_email,
+        "first_name" => "UpdatedFirst",
+        "media_data" => %{
+          "file_name" => "avatar.jpg",
+          "type" => "image/jpeg",
+          "upload_id" => Ecto.UUID.generate()
+        }
+      }
+
+      email_update_url_fun = fn _token -> "http://test.com/confirm" end
+
+      assert {:ok, updated_user, :email_update_sent} =
+               Accounts.update_account_information(user, attrs, email_update_url_fun)
+
+      updated_user = Repo.preload(updated_user, [:media_asset], force: true)
+      assert updated_user.media_asset
+      assert updated_user.media_asset.file_name == "avatar.jpg"
+
+      assert_received {:email, _email_struct}
+    end
   end
 
   describe "soft_delete_user/1" do

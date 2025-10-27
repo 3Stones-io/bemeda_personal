@@ -385,6 +385,10 @@ defmodule BemedaPersonal.Media do
     )
   end
 
+  defp broadcast_to_parent(_media_asset) do
+    :ok
+  end
+
   @doc """
   Deletes a media asset with scope authorization.
 
@@ -441,7 +445,7 @@ defmodule BemedaPersonal.Media do
   end
 
   def delete_media_asset(
-        %Scope{user: %User{user_type: :job_seeker, id: user_id}},
+        %Scope{user: %User{id: user_id}},
         %MediaAsset{user_id: asset_user_id} = media_asset
       ) do
     if asset_user_id == user_id do

@@ -6,6 +6,8 @@ defmodule BemedaPersonalWeb.UserLive.Settings.CompanyProfileComponent do
   import Phoenix.HTML.Form, only: [input_value: 2]
 
   alias BemedaPersonal.Companies
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
+  alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.SharedHelpers
 
   @impl Phoenix.LiveComponent
@@ -23,6 +25,17 @@ defmodule BemedaPersonalWeb.UserLive.Settings.CompanyProfileComponent do
         <h2 class="text-base font-semibold text-[#1f1f1f] mb-6">
           {dgettext("settings", "Company Information")}
         </h2>
+
+        <div class="mb-8">
+          <.live_component
+            module={AssetUploaderComponent}
+            id="company-logo-uploader"
+            type={:image}
+            parent_record={@company}
+            current_scope={@current_scope}
+            label={dgettext("companies", "Upload logo")}
+          />
+        </div>
 
         <div class="grid gap-y-6">
           <.custom_input
@@ -79,15 +92,23 @@ defmodule BemedaPersonalWeb.UserLive.Settings.CompanyProfileComponent do
 
         <div class="flex items-center justify-center md:justify-end gap-x-4 mt-8">
           <.custom_button
-            class="text-[#7c4eab] border-[.5px] border-[#7c4eab] w-[48%] md:w-[25%]"
+            class={[
+              "text-[#7c4eab] border-[.5px] border-[#7c4eab] w-[48%] md:w-[25%]",
+              !@enable_submit? && "opacity-75 cursor-not-allowed"
+            ]}
             phx-click={JS.push("hide_company_info_form")}
           >
             {dgettext("settings", "Cancel")}
           </.custom_button>
 
           <.custom_button
-            class="text-white bg-[#7c4eab] w-[48%] md:w-[25%]"
+            class={[
+              "text-white bg-[#7c4eab] w-[48%] md:w-[25%]",
+              !@enable_submit? && "opacity-75 cursor-not-allowed"
+            ]}
             type="submit"
+            phx-disable-with={dgettext("settings", "Submitting...")}
+            disabled={!@enable_submit?}
           >
             {dgettext("settings", "Save")}
           </.custom_button>
@@ -98,11 +119,19 @@ defmodule BemedaPersonalWeb.UserLive.Settings.CompanyProfileComponent do
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{asset_uploader_event: {event_type, media_data}} = _assigns, socket) do
+    {:ok, SharedHelpers.handle_asset_uploader_event(event_type, media_data, socket)}
+  end
+
   def update(assigns, socket) do
     socket = assign(socket, assigns)
     changeset = Companies.change_company(socket.assigns.company)
 
-    {:ok, assign_form(socket, changeset)}
+    {:ok,
+     socket
+     |> assign(:media_data, %{})
+     |> assign(:enable_submit?, true)
+     |> assign_form(changeset)}
   end
 
   @impl Phoenix.LiveComponent
@@ -115,11 +144,12 @@ defmodule BemedaPersonalWeb.UserLive.Settings.CompanyProfileComponent do
   @impl Phoenix.LiveComponent
   def handle_event("save", params, socket) do
     %{"company" => company_params} = params
+    company_params_with_media = Map.put(company_params, "media_data", socket.assigns.media_data)
 
     case Companies.update_company(
            socket.assigns.current_scope,
            socket.assigns.company,
-           company_params
+           company_params_with_media
          ) do
       {:ok, company} ->
         send(self(), {:company_updated, company})

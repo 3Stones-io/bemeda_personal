@@ -4,6 +4,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings.AccountInfoComponent do
   use BemedaPersonalWeb, :live_component
 
   alias BemedaPersonal.Accounts
+  alias BemedaPersonalWeb.Components.Shared.AssetUploaderComponent
   alias BemedaPersonalWeb.I18n
   alias BemedaPersonalWeb.SharedHelpers
 
@@ -22,6 +23,17 @@ defmodule BemedaPersonalWeb.UserLive.Settings.AccountInfoComponent do
         <h2 class="text-base font-semibold text-[#1f1f1f] mb-6">
           {dgettext("settings", "Account Information")}
         </h2>
+
+        <div class="mb-8">
+          <.live_component
+            module={AssetUploaderComponent}
+            id="user-avatar-uploader"
+            type={:image}
+            parent_record={@current_user}
+            current_scope={@current_scope}
+            label={dgettext("settings", "Upload photo")}
+          />
+        </div>
 
         <div class="grid gap-y-8">
           <.custom_input
@@ -109,6 +121,7 @@ defmodule BemedaPersonalWeb.UserLive.Settings.AccountInfoComponent do
             ]}
             type="submit"
             phx-disable-with={dgettext("settings", "Submitting...")}
+            disabled={!@enable_submit?}
           >
             {dgettext("settings", "Save")}
           </.custom_button>
@@ -119,6 +132,10 @@ defmodule BemedaPersonalWeb.UserLive.Settings.AccountInfoComponent do
   end
 
   @impl Phoenix.LiveComponent
+  def update(%{asset_uploader_event: {event_type, media_data}} = _assigns, socket) do
+    {:ok, SharedHelpers.handle_asset_uploader_event(event_type, media_data, socket)}
+  end
+
   def update(assigns, socket) do
     socket = assign(socket, assigns)
 
@@ -127,7 +144,9 @@ defmodule BemedaPersonalWeb.UserLive.Settings.AccountInfoComponent do
 
     {:ok,
      socket
+     |> assign(:media_data, %{})
      |> assign(:enable_submit?, true)
+     |> assign(:current_scope, Map.get(assigns, :current_scope))
      |> assign_form(changeset)}
   end
 
@@ -146,10 +165,11 @@ defmodule BemedaPersonalWeb.UserLive.Settings.AccountInfoComponent do
 
   def handle_event("save", params, socket) do
     %{"user" => user_params} = params
+    user_params_with_media = Map.put(user_params, "media_data", socket.assigns.media_data)
 
     case Accounts.update_account_information(
            socket.assigns.current_user,
-           user_params,
+           user_params_with_media,
            &url(~p"/users/settings/confirm-email/#{&1}")
          ) do
       {:ok, updated_user, :email_update_sent} ->
