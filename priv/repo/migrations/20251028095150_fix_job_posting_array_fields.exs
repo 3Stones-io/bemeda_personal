@@ -6,19 +6,31 @@ defmodule BemedaPersonal.Repo.Migrations.FixJobPostingArrayFields do
   alias BemedaPersonal.Repo
 
   def up do
-    migrate_field(:department, departments())
-    migrate_field(:region, regions())
+    migrate_job_posting_field(:department, departments())
+    migrate_job_posting_field(:region, regions())
+    migrate_company_field(:location, regions())
   end
 
   def down do
   end
 
-  defp migrate_field(field, values) do
+  defp migrate_job_posting_field(field, values) do
     job_postings = Repo.all(from(jp in "job_postings", select: [:id]))
 
     Enum.each(job_postings, fn %{id: id} ->
       Repo.update_all(
         from(jp in "job_postings", where: jp.id == ^id),
+        set: [{field, Enum.random(values)}]
+      )
+    end)
+  end
+
+  defp migrate_company_field(field, values) do
+    companies = Repo.all(from(c in "companies", select: [:id]))
+
+    Enum.each(companies, fn %{id: id} ->
+      Repo.update_all(
+        from(c in "companies", where: c.id == ^id),
         set: [{field, Enum.random(values)}]
       )
     end)
