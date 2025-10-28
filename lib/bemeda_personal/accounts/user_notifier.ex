@@ -62,6 +62,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.ConfirmationEmail.render(
+        logo_url: EmailDelivery.logo_url(),
         url: url,
         user_name: user_name
       )
@@ -92,6 +93,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.InvitationEmail.render(
+        logo_url: EmailDelivery.logo_url(),
         url: url,
         user_name: user_name
       )
@@ -120,6 +122,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.MagicLinkEmail.render(
+        logo_url: EmailDelivery.logo_url(),
         url: url,
         user_name: user_name
       )
@@ -150,6 +153,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.ResetPasswordEmail.render(
+        logo_url: EmailDelivery.logo_url(),
         url: url,
         user_name: user_name
       )
@@ -182,6 +186,7 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.UpdateEmailInstructions.render(
+        logo_url: EmailDelivery.logo_url(),
         url: url,
         user_name: user_name
       )
@@ -218,9 +223,10 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.NewMessageEmail.render(
+        logo_url: EmailDelivery.logo_url(),
+        sender_name: sender_name,
         url: url,
-        user_name: user_name,
-        sender_name: sender_name
+        user_name: user_name
       )
 
     text_body = """
@@ -256,10 +262,11 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.JobApplicationReceivedEmail.render(
-        url: url,
-        user_name: user_name,
+        company_name: company_name,
         job_title: job_title,
-        company_name: company_name
+        logo_url: EmailDelivery.logo_url(),
+        url: url,
+        user_name: user_name
       )
 
     text_body = """
@@ -303,12 +310,13 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.JobApplicationStatusEmail.render(
-        url: url,
-        user_name: user_name,
         job_title: job_title,
+        logo_url: EmailDelivery.logo_url(),
         new_status: new_status,
+        status_description: status_description,
         status_message: readable_status,
-        status_description: status_description
+        url: url,
+        user_name: user_name
       )
 
     text_body = """
@@ -346,10 +354,11 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.EmployerJobApplicationReceivedEmail.render(
-        url: url,
-        user_name: employer_name,
+        applicant_name: applicant_name,
         job_title: job_title,
-        applicant_name: applicant_name
+        logo_url: EmailDelivery.logo_url(),
+        url: url,
+        user_name: employer_name
       )
 
     text_body = """
@@ -395,13 +404,14 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.EmployerJobApplicationStatusEmail.render(
-        url: url,
-        user_name: employer_name,
+        applicant_name: applicant_name,
         job_title: job_title,
+        logo_url: EmailDelivery.logo_url(),
         new_status: new_status,
-        status_message: readable_status,
         status_description: status_description,
-        applicant_name: applicant_name
+        status_message: readable_status,
+        url: url,
+        user_name: employer_name
       )
 
     text_body = """
@@ -453,8 +463,9 @@ defmodule BemedaPersonal.Accounts.UserNotifier do
 
     html_body =
       EmailTemplates.PasswordChangedEmail.render(
-        user_name: user_name,
-        changed_at: changed_at
+        changed_at: changed_at,
+        logo_url: EmailDelivery.logo_url(),
+        user_name: user_name
       )
 
     text_body = """

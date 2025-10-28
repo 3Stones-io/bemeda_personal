@@ -7,8 +7,12 @@ defmodule BemedaPersonal.Accounts.EmailDelivery do
 
   import Swoosh.Email
 
+  alias BemedaPersonal.Accounts.User
+  alias BemedaPersonal.Mailer
+  alias BemedaPersonalWeb.Endpoint
+
   @type email :: Swoosh.Email.t()
-  @type user :: BemedaPersonal.Accounts.User.t()
+  @type user :: User.t()
 
   @from {"BemedaPersonal", "contact@mg.bemeda-personal.ch"}
 
@@ -17,7 +21,7 @@ defmodule BemedaPersonal.Accounts.EmailDelivery do
   """
   @spec deliver(user(), String.t(), String.t(), String.t()) ::
           {:ok, email()} | {:error, any()}
-  def deliver(%BemedaPersonal.Accounts.User{} = recipient, subject, html_body, text_body) do
+  def deliver(%User{} = recipient, subject, html_body, text_body) do
     email =
       new()
       |> to({"#{recipient.first_name} #{recipient.last_name}", recipient.email})
@@ -26,7 +30,7 @@ defmodule BemedaPersonal.Accounts.EmailDelivery do
       |> text_body(text_body)
       |> html_body(html_body)
 
-    case BemedaPersonal.Mailer.deliver(email) do
+    case Mailer.deliver(email) do
       {:ok, _metadata} ->
         {:ok, email}
 
@@ -43,5 +47,13 @@ defmodule BemedaPersonal.Accounts.EmailDelivery do
     user.locale
     |> Atom.to_string()
     |> Gettext.put_locale()
+  end
+
+  @doc """
+  Returns the URL of the logo image.
+  """
+  @spec logo_url() :: String.t()
+  def logo_url do
+    Phoenix.VerifiedRoutes.static_url(Endpoint, "/images/logo.png")
   end
 end

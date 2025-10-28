@@ -50,17 +50,17 @@
           <!-- Logo Section -->
           <mj-section background-color="#fff" css-class="logo-section">
             <mj-column width="100%">
-              <mj-image src="http://localhost:3845/assets/20989716a5f61a32709d19842051eb1f938ba1be.svg" alt="Bemeda Personal" width="200px" align="center" />
+              <mj-image src="<%= @logo_url %>" alt="Bemeda Personal" width="200px" align="center" />
             </mj-column>
           </mj-section>
-          
+
           <!-- Content Section -->
           <mj-section background-color="#fff" padding="0 24px 32px 24px">
             <mj-column width="100%">
               <%= @inner_content %>
             </mj-column>
           </mj-section>
-          
+
           <!-- Footer Section -->
           <mj-section background-color="#fff" padding="0 24px 24px 24px">
             <mj-column width="100%">
