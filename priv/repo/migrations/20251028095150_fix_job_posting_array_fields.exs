@@ -1,91 +1,26 @@
 defmodule BemedaPersonal.Repo.Migrations.FixJobPostingArrayFields do
   use Ecto.Migration
 
-  import Ecto.Query
-
-  alias BemedaPersonal.Repo
-
   def up do
-    migrate_job_posting_field(:department, departments())
-    migrate_job_posting_field(:region, regions())
-    migrate_company_field(:location, regions())
+    execute """
+    UPDATE job_postings
+    SET department = 'Other'
+    WHERE department IS NOT NULL
+    """
+
+    execute """
+    UPDATE job_postings
+    SET region = 'Zurich'
+    WHERE region IS NOT NULL
+    """
+
+    execute """
+    UPDATE companies
+    SET location = 'Zurich'
+    WHERE location IS NOT NULL
+    """
   end
 
   def down do
-  end
-
-  defp migrate_job_posting_field(field, values) do
-    job_postings = Repo.all(from(jp in "job_postings", select: [:id]))
-
-    Enum.each(job_postings, fn %{id: id} ->
-      Repo.update_all(
-        from(jp in "job_postings", where: jp.id == ^id),
-        set: [{field, Enum.random(values)}]
-      )
-    end)
-  end
-
-  defp migrate_company_field(field, values) do
-    companies = Repo.all(from(c in "companies", select: [:id]))
-
-    Enum.each(companies, fn %{id: id} ->
-      Repo.update_all(
-        from(c in "companies", where: c.id == ^id),
-        set: [{field, Enum.random(values)}]
-      )
-    end)
-  end
-
-  defp departments do
-    [
-      "Acute Care",
-      "Administration",
-      "Anesthesia",
-      "Day Clinic",
-      "Emergency Department",
-      "Home Care (Spitex)",
-      "Hospital / Clinic",
-      "Intensive Care",
-      "Intermediate Care (IMC)",
-      "Long-Term Care",
-      "Medical Practices",
-      "Operating Room",
-      "Other",
-      "Psychiatry",
-      "Recovery Room (PACU)",
-      "Rehabilitation",
-      "Therapies"
-    ]
-  end
-
-  defp regions do
-    [
-      "Aargau",
-      "Appenzell Ausserrhoden",
-      "Appenzell Innerrhoden",
-      "Basel-Landschaft",
-      "Basel-Stadt",
-      "Bern",
-      "Fribourg",
-      "Geneva",
-      "Glarus",
-      "Grisons",
-      "Jura",
-      "Lucerne",
-      "Neuchâtel",
-      "Nidwalden",
-      "Obwalden",
-      "Schaffhausen",
-      "Schwyz",
-      "Solothurn",
-      "St. Gallen",
-      "Thurgau",
-      "Ticino",
-      "Uri",
-      "Valais",
-      "Vaud",
-      "Zug",
-      "Zurich"
-    ]
   end
 end
